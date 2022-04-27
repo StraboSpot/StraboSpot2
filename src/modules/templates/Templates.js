@@ -50,14 +50,6 @@ const Templates = (props) => {
       setIsTemplateInUse(templates.useMeasurementTemplates || false);
       let activeTemplatesTemp = templates.activeMeasurementTemplates || [];
       let templatesForKeyTemp = templates.measurementTemplates || [];
-      if (props.typeKey === 'planar_orientation' || props.typeKey === 'tabular_orientation') {
-        activeTemplatesTemp = getPlanarTemplates(activeTemplatesTemp);
-        templatesForKeyTemp = getPlanarTemplates(templatesForKeyTemp);
-      }
-      else if (props.typeKey === 'linear_orientation') {
-        activeTemplatesTemp = getLinearTemplates(activeTemplatesTemp);
-        templatesForKeyTemp = getLinearTemplates(templatesForKeyTemp);
-      }
       setTemplatesForKey(templatesForKeyTemp);
       setActiveTemplatesForKey(activeTemplatesTemp);
     }
@@ -402,14 +394,18 @@ const Templates = (props) => {
       existingTemplatesCopy = existingTemplatesCopy.sort(
         (templateA, templateB) => templateA.name.localeCompare(templateB.name));
       dispatch(addedTemplates({key: templateKey, templates: existingTemplatesCopy}));
-      setAsTemplate(templateObject);
+
+      // Update active templates so updated template becomes active
+      const templatesUpdated = activeTemplatesForKey?.filter(t => t.id !== templateObject.id) || [];
+      dispatch(setActiveTemplates({key: templateKey, templates: [...templatesUpdated, templateObject]}));
+
       closeTemplates();
     }
   };
 
   const setAsTemplate = (template) => {
-    let activeTemplatesForKeyCopy = !isEmpty(activeTemplatesForKey) ? JSON.parse(JSON.stringify(activeTemplatesForKey))
-      : [];
+    const activeTemplatesForKeyCopy = !isEmpty(activeTemplatesForKey)
+      ? JSON.parse(JSON.stringify(activeTemplatesForKey)) : [];
     const foundTemplate = activeTemplatesForKeyCopy.find(t => t.id === template.id);
     if (foundTemplate) {
       const templatesUpdated = activeTemplatesForKeyCopy.filter(t => t.id !== template.id);

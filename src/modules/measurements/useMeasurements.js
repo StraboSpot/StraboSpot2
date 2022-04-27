@@ -18,6 +18,7 @@ const useMeasurements = () => {
   const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
   const activeMeasurementTemplates = useSelector(
     state => state.project.project?.templates?.activeMeasurementTemplates) || [];
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
 
   const [useTags] = useTagsHook();
   const [useForm] = useFormHook();
@@ -130,11 +131,12 @@ const useMeasurements = () => {
       else return [...acc, meas];
     }, []);
 
-    let updatedOrientationData = spot.properties.orientation_data;
+    let updatedOrientationData = JSON.parse(JSON.stringify(spot.properties.orientation_data));
     flattenedMeasurementsToDelete.forEach(measurementToDelete => {
       updatedOrientationData = removeMeasurementFromObj(updatedOrientationData, measurementToDelete);
     });
     dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));
+    dispatch(setSelectedAttributes([]));
   };
 
   const getLabel = (key) => {

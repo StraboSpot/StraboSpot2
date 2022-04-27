@@ -106,6 +106,7 @@ export const PRIMARY_PAGES = [
     overview_component: MeasurementsOverview,
     page_component: MeasurementsPage,
     modal_component: AddMeasurementModal,
+    action_label: 'Take a Measurement',
   }, {
     key: PAGE_KEYS.IMAGES,
     label: 'Photos & Sketches',

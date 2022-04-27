@@ -55,6 +55,8 @@ const AddMeasurementModal = (props) => {
   const formRef = useRef(null);
 
   const groupKey = 'measurement';
+  // Is an attitude already selected (like when adding an associated measurement to an already existing attitude)
+  const isSelectedAttitude = !isEmpty(selectedAttributes) && selectedAttributes?.length > 0;
 
   useLayoutEffect(() => {
     console.log('UE AddMeasurementModal [compassMeasurementTypes, templates]', compassMeasurementTypes, templates);
@@ -62,9 +64,11 @@ const AddMeasurementModal = (props) => {
     setSelectedTypeIndex(MEASUREMENT_TYPES.findIndex(t => t.key === typeObj.key));
 
     // Get the templates for the measurement type
-    const gotRelevantTemplates = templates.measurementTemplates && templates.useMeasurementTemplates
-      && templates.activeMeasurementTemplates && templates.activeMeasurementTemplates.filter(
-        t => typeObj.form_keys.includes(t.values?.type || t.type)) || [];
+    // (We're not using templates if there is already a selected attitude, like when adding an associated
+    // measurement to an existing attitude, so default to [] in that case)
+    const gotRelevantTemplates = !isSelectedAttitude && templates.measurementTemplates
+      && templates.useMeasurementTemplates && templates.activeMeasurementTemplates
+      && templates.activeMeasurementTemplates.filter(t => typeObj.form_keys.includes(t.values?.type || t.type)) || [];
     setRelevantTemplates(gotRelevantTemplates);
 
     let initialValuesTemp = {
@@ -213,7 +217,7 @@ const AddMeasurementModal = (props) => {
       : measurementTypeForForm;
     return (
       <React.Fragment>
-        {!isShowTemplates && isEmpty(selectedAttributes) && (
+        {!isShowTemplates && !isSelectedAttitude && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
             onPress={onMeasurementTypePress}
@@ -224,11 +228,13 @@ const AddMeasurementModal = (props) => {
             textStyle={{color: PRIMARY_TEXT_COLOR}}
           />
         )}
-        <Templates
-          isShowTemplates={isShowTemplates}
-          setIsShowTemplates={bool => setIsShowTemplates(bool)}
-          typeKey={typeKey}
-        />
+        {!isSelectedAttitude && (
+          <Templates
+            isShowTemplates={isShowTemplates}
+            setIsShowTemplates={bool => setIsShowTemplates(bool)}
+            typeKey={typeKey}
+          />
+        )}
         {!isShowTemplates && (
           <React.Fragment>
             {Platform.OS !== 'android' && (
@@ -382,7 +388,7 @@ const AddMeasurementModal = (props) => {
         ? JSON.parse(JSON.stringify(spotToUpdate.properties.orientation_data)) : [];
 
       // If already a measurement but adding a new associated measurement
-      if (selectedAttributes?.length > 0) {
+      if (isSelectedAttitude) {
         const newAssocMeasurement = JSON.parse(JSON.stringify(editedMeasurementData));
         editedMeasurementData = JSON.parse(JSON.stringify(selectedAttributes[0]));
         if (!editedMeasurementData.associated_orientation) editedMeasurementData.associated_orientation = [];
@@ -396,22 +402,41 @@ const AddMeasurementModal = (props) => {
 
       // If multiple templates then make all linear measurements associated to every planar and tabular meausurement
       if (relevantTemplates.length > 1) {
-        if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
+        if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR || isSelectedAttitude) {
           let planarTabularTemplates = getPlanarTemplates(relevantTemplates);
-          if (planarTabularTemplates.length === 0) planarTabularTemplates = [editedMeasurementData];
           let linearTemplates = getLinearTemplates(relevantTemplates);
-          if (linearTemplates.length === 0) linearTemplates = editedMeasurementData.associated_orientation;
-          planarTabularTemplates.forEach((t) => {
-            const associatedMeasurements = linearTemplates.map(
-              lT => ({...lT.values, ...editedMeasurementData.associated_orientation[0], id: getNewUUID()}));
-            editedMeasurementsData.push(
-              {
-                ...t.values,
-                ...editedMeasurementData,
-                id: getNewUUID(),
-                associated_orientation: associatedMeasurements,
-              });
-          });
+          // If already a measurement but adding a new associated measurements with multiple templates
+          // NOTE Right now the code in the first 'If' below is unreachable as relevantTemplates are always
+          // empty if there is a selectedAttitude
+          if (isSelectedAttitude) {
+            const newAssocMeasurement = editedMeasurementData.associated_orientation.splice(-1, 1)[0];
+            planarTabularTemplates.forEach((t) => {
+              editedMeasurementData.associated_orientation.push(
+                {...t.values, ...newAssocMeasurement, id: getNewUUID()});
+            });
+            linearTemplates.forEach((t) => {
+              editedMeasurementData.associated_orientation.push(
+                {...t.values, ...newAssocMeasurement, id: getNewUUID()});
+            });
+            editedMeasurementsData = editedMeasurementsData.filter(d => d.id !== editedMeasurementData.id);
+            editedMeasurementsData.push(editedMeasurementData);
+          }
+          // If an associated measurement from the Quick Entry Modal with multiple templates
+          else {
+            if (planarTabularTemplates.length === 0) planarTabularTemplates = [editedMeasurementData];
+            if (linearTemplates.length === 0) linearTemplates = editedMeasurementData.associated_orientation;
+            planarTabularTemplates.forEach((t) => {
+              const associatedMeasurements = linearTemplates.map(
+                lT => ({...lT.values, ...editedMeasurementData.associated_orientation[0], id: getNewUUID()}));
+              editedMeasurementsData.push(
+                {
+                  ...t.values,
+                  ...editedMeasurementData,
+                  id: getNewUUID(),
+                  associated_orientation: associatedMeasurements,
+                });
+            });
+          }
         }
         else {
           relevantTemplates.forEach(
@@ -421,7 +446,7 @@ const AddMeasurementModal = (props) => {
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
       else {
-        if (selectedAttributes?.length > 0) {
+        if (isSelectedAttitude) {
           editedMeasurementsData = editedMeasurementsData.filter(d => d.id !== editedMeasurementData.id);
           editedMeasurementsData.push(editedMeasurementData);
         }
@@ -430,7 +455,7 @@ const AddMeasurementModal = (props) => {
         console.log('Saving Measurement data to Spot ...', editedMeasurementsData);
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
-      if (selectedAttributes?.length > 0) {
+      if (isSelectedAttitude) {
         dispatch(setSelectedAttributes([editedMeasurementData]));
         onCloseButton();
       }
