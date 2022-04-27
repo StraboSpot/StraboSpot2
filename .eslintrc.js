@@ -29,6 +29,7 @@ module.exports = {
     ],
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
     'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
+    'react-native/no-inline-styles': 0,
   },
   settings: {
     'import/ignore': ['react-native'],
