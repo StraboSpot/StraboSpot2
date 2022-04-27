@@ -1,16 +1,16 @@
-import {Alert, Image, Platform} from 'react-native';
+import { Alert, Image, Platform } from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import RNFS from 'react-native-fs';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../services/device.constants';
-import {getNewId} from '../../shared/Helpers';
-import {setLoadingStatus} from '../home/home.slice';
+import { APP_DIRECTORIES } from '../../services/device.constants';
+import { getNewId } from '../../shared/Helpers';
+import { setLoadingStatus } from '../home/home.slice';
 import useHomeHook from '../home/useHome';
-import {setCurrentImageBasemap} from '../maps/maps.slice';
+import { setCurrentImageBasemap } from '../maps/maps.slice';
 import {
   editedSpotImage,
   editedSpotImages,
@@ -45,7 +45,7 @@ const useImages = () => {
       const imagesDataCopy = spotWithImage.properties.images;
       const allOtherImages = imagesDataCopy.filter(item => imageId !== item.id);
       dispatch(setSelectedSpot(spotWithImage));
-      dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
+      dispatch(editedSpotProperties({ field: 'images', value: allOtherImages }));
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
@@ -68,7 +68,7 @@ const useImages = () => {
 
   const editImage = (image) => {
     dispatch(setSelectedAttributes([image]));
-    navigation.navigate('ImageInfo', {imageId: image.id});
+    navigation.navigate('ImageInfo', { imageId: image.id });
   };
 
   const launchCameraFromNotebook = async () => {
@@ -136,7 +136,7 @@ const useImages = () => {
         // dispatch(addedStatusMessage('Images Needed to Download: ' + neededImagesIds.length));
       }
       console.log('Promised Finished');
-      return {neededImagesIds: neededImagesIds, imageIds: imageIds};
+      return { neededImagesIds: neededImagesIds, imageIds: imageIds };
     }
     catch (err) {
       console.error('Error Gathering Images.');
@@ -151,20 +151,16 @@ const useImages = () => {
   const getImagesFromCameraRoll = async () => {
     return new Promise((res, rej) => {
       try {
-        dispatch(setLoadingStatus({view: 'home', bool: true}));
+        dispatch(setLoadingStatus({ view: 'home', bool: true }));
         launchImageLibrary({}, async response => {
           console.log('RES', response);
-          if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
+          if (response.didCancel) dispatch(setLoadingStatus({ view: 'home', bool: false }));
           else if (response.errorCode === 'others') {
             console.error(response.errorMessage('Error Here'));
-            dispatch(setLoadingStatus({view: 'home', bool: false}));
+            dispatch(setLoadingStatus({ view: 'home', bool: false }));
           }
           else {
             let imageAsset = response.assets;
-            // const imageAssetsLength = response.assets.length;
-            // dispatch(clearedStatusMessages());
-            // dispatch(addedStatusMessage(`You selected ${imageAssetsLength} image to save:`));
-            // dispatch(setStatusMessagesModalVisible(true));
             await Promise.all(
               imageAsset.map(async image => {
                 imageCount++;
@@ -172,21 +168,16 @@ const useImages = () => {
                 const savedPhoto = await saveFile(resizedImage);
                 console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
                 dispatch(editedSpotImages([savedPhoto]));
-                // dispatch(removedLastStatusMessage());
-                // dispatch(addedStatusMessage(`Image/s saved ${imageCount}`));
-                // console.log(1);
               }),
-              // console.log(2)
             );
-            // console.log(3);
             res(imageCount);
-            dispatch(setLoadingStatus({view: 'home', bool: false}));
+            dispatch(setLoadingStatus({ view: 'home', bool: false }));
           }
         });
       }
       catch (err) {
         console.error('Error saving image');
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
+        dispatch(setLoadingStatus({ view: 'home', bool: false }));
         rej('Error saving image.');
       }
     });
@@ -195,7 +186,7 @@ const useImages = () => {
   const getImageHeightAndWidth = (imageURI) => {
     return new Promise((resolve, reject) => {
       Image.getSize(imageURI, (width, height) => {
-        resolve({height: height, width: width});
+        resolve({ height: height, width: width });
       }, (err) => {
         console.log('Error getting size of image:', err.message);
         reject();
@@ -224,7 +215,7 @@ const useImages = () => {
     }
     catch (err) {
       console.error('Error creating thumbnails', err);
-      throw Error(err);
+      // throw Error(err);
     }
   };
 
@@ -232,7 +223,7 @@ const useImages = () => {
     let height = imageData.height;
     let width = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    if (!height || !width) ({ height, width } = await getImageHeightAndWidth(tempImageURI));
     let resizedImage, createResizedImageProps = {};
     createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
       : [tempImageURI, width, height, 'JPEG', 100, 0];
@@ -245,7 +236,7 @@ const useImages = () => {
     let height = imageData.height;
     let width = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    if (!height || !width) ({ height, width } = await getImageHeightAndWidth(tempImageURI));
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
@@ -274,7 +265,7 @@ const useImages = () => {
       const updatedImages = selectedSpot.properties.images.filter(image2 => imageCopy.id !== image2.id);
       console.log(updatedImages);
       updatedImages.push(imageCopy);
-      dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
+      dispatch(editedSpotProperties({ field: 'images', value: updatedImages }));
     }
     if (!imageCopy.annotated) dispatch(setCurrentImageBasemap(undefined));
   };
@@ -285,7 +276,7 @@ const useImages = () => {
       const isValidImageURI = await RNFS.exists(imageURI);
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
-        const updatedImage = {...image, ...imageSize};
+        const updatedImage = { ...image, ...imageSize };
         dispatch(editedSpotImage(updatedImage));
         if (currentImageBasemap.id === updatedImage.id) {
           dispatch(setCurrentImageBasemap(updatedImage));
@@ -299,7 +290,7 @@ const useImages = () => {
   const takePicture = async () => {
     return new Promise((resolve, reject) => {
       try {
-        launchCamera({saveToPhotos: true}, async (response) => {
+        launchCamera({ saveToPhotos: true }, async (response) => {
           console.log('Response = ', response);
           if (response.didCancel) resolve('cancelled');
           else if (response.error) reject();

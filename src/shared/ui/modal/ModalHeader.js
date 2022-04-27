@@ -26,7 +26,8 @@ const ModalHeader = (props) => {
 
   return (
     <View style={modalStyle.modalTop}>
-      <View style={{flex: 1, flexDirection: 'column', padding: 10, paddingTop: 5}}>
+      <View
+        style={{flex: 1, flexDirection: 'column', padding: 10, paddingTop: 5}}>
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'flex-start'}}>
             <Button

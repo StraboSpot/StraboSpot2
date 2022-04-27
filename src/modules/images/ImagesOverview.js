@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {Button, FlatList, Switch, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, FlatList, Switch, Text, View } from 'react-native';
 
-import {Icon, Image} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {Image } from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty, truncateText} from '../../shared/Helpers';
+import { isEmpty, truncateText } from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import { addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible } from '../home/home.slice';
 import { setCurrentImageBasemap } from '../maps/maps.slice';
@@ -22,7 +22,6 @@ const ImagesOverview = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
-  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     console.log('UE ImagesOverview []');
@@ -35,14 +34,11 @@ const ImagesOverview = () => {
         const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs([spot]);
         if (!isEmpty(imageThumbnailURIsTemp)) {
           setImageThumbnails(imageThumbnailURIsTemp);
-          setIsError(false);
         }
       }
-
     }
     catch (err) {
       console.error('Error in getImageThumbnailURIs', err);
-      setIsError(true);
     }
   };
 
@@ -66,14 +62,14 @@ const ImagesOverview = () => {
             transition
             onPress={() => handlePress(image)}
           />
-          <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
+          <View style={{ alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10 }}>
             {image.title && (
               <Text
-                style={[commonStyles.dialogContent, {textAlign: 'left', textDecorationLine: 'underline'}]}>
+                style={[commonStyles.dialogContent, { textAlign: 'left', textDecorationLine: 'underline' }]}>
                 {truncateText(image.title, 20)}
               </Text>
             )}
-            <View style={[{alignSelf: 'flex-start'}]}>
+            <View style={[{ alignSelf: 'flex-start' }]}>
               {image.annotated && (
                 <Button
                   title={'View as Image Basemap'}
@@ -93,7 +89,7 @@ const ImagesOverview = () => {
                 onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
                 value={image.annotated}
               />
-              <Text style={{textAlign: 'left', paddingLeft: 5}}>Use as Image Basemap?</Text>
+              <Text style={{ textAlign: 'left', paddingLeft: 5 }}>Use as Image Basemap?</Text>
             </View>
           </View>
         </View>
@@ -105,16 +101,16 @@ const ImagesOverview = () => {
     return (
       <FlatList
         data={images}
-        renderItem={({item}) => renderImage(item)}
+        renderItem={({ item }) => renderImage(item)}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+        ListEmptyComponent={<ListEmptyText text={'No Images'} />}
       />
     );
   };
 
   return (
     <React.Fragment>
-      {isError ? renderError() : renderImages()}
+      {renderImages()}
     </React.Fragment>
   );
 };
