@@ -23,6 +23,8 @@ import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
 import {REDUX} from '../shared/app.constants';
 
+const createDebugger = require('redux-flipper').default;
+
 // Redux Persist
 export const persistConfig = {
   key: 'root',
@@ -107,7 +109,11 @@ const defalutMiddlewareOptions = {
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(defalutMiddlewareOptions).concat(loggerMiddleware),
+  middleware: (getDefaultMiddleware) => __DEV__
+    ? getDefaultMiddleware(defalutMiddlewareOptions)
+      .concat(createDebugger())
+      .concat(loggerMiddleware)
+    : getDefaultMiddleware(defalutMiddlewareOptions),
 });
 
 export default store;
