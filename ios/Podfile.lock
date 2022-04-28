@@ -72,6 +72,7 @@ PODS:
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
   - glog (0.3.5)
+  - hermes-engine (0.7.2)
   - libevent (2.1.12)
   - Mapbox-iOS-SDK (5.9.0):
     - MapboxMobileEvents (= 0.10.2)
@@ -86,6 +87,11 @@ PODS:
     - boost-for-react-native
     - DoubleConversion
     - glog
+  - RCT-Folly/Futures (2020.01.13.00):
+    - boost-for-react-native
+    - DoubleConversion
+    - glog
+    - libevent
   - RCTRequired (0.64.1)
   - RCTTypeSafety (0.64.1):
     - FBLazyVector (= 0.64.1)
@@ -141,6 +147,16 @@ PODS:
     - React-jsi (= 0.64.1)
     - React-jsiexecutor (= 0.64.1)
     - React-jsinspector (= 0.64.1)
+    - React-perflogger (= 0.64.1)
+    - Yoga
+  - React-Core/Hermes (0.64.1):
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2020.01.13.00)
+    - RCT-Folly/Futures
+    - React-cxxreact (= 0.64.1)
+    - React-jsi (= 0.64.1)
+    - React-jsiexecutor (= 0.64.1)
     - React-perflogger (= 0.64.1)
     - Yoga
   - React-Core/RCTActionSheetHeaders (0.64.1):
@@ -298,7 +314,7 @@ PODS:
     - Mapbox-iOS-SDK (~> 5.9.0)
     - React
     - React-Core
-  - react-native-netinfo (6.0.1):
+  - react-native-netinfo (8.2.0):
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
@@ -472,6 +488,8 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.123.0)
   - FlipperKit/SKIOSNetworkPlugin (= 0.123.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - hermes-engine (~> 0.7.2)
+  - libevent (~> 2.1.12)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -479,6 +497,7 @@ DEPENDENCIES:
   - React-callinvoker (from `../node_modules/react-native/ReactCommon/callinvoker`)
   - React-Core (from `../node_modules/react-native/`)
   - React-Core/DevSupport (from `../node_modules/react-native/`)
+  - React-Core/Hermes (from `../node_modules/react-native/`)
   - React-Core/RCTWebSocket (from `../node_modules/react-native/`)
   - React-CoreModules (from `../node_modules/react-native/React/CoreModules`)
   - React-cxxreact (from `../node_modules/react-native/ReactCommon/cxxreact`)
@@ -540,6 +559,7 @@ SPEC REPOS:
     - Flipper-PeerTalk
     - Flipper-RSocket
     - FlipperKit
+    - hermes-engine
     - libevent
     - Mapbox-iOS-SDK
     - MapboxMobileEvents
@@ -679,6 +699,7 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: 6ff8327c15058e9e220f27f150431a50cd41c4cf
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  hermes-engine: 7d97ba46a1e29bacf3e3c61ecb2804a5ddd02d4f
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
   MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
@@ -702,7 +723,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-mapbox-gl: 94ddd813fd5d4fdab9ca9d45ce108125480cfffd
-  react-native-netinfo: 7cb7877ff31ebeb3d03ce0b4fbb616f121ddd859
+  react-native-netinfo: e922cb2e3eaf9ccdf16b8d4744a89657377aa4a1
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   React-perflogger: aad6d4b4a267936b3667260d1f649b6f6069a675
@@ -740,6 +761,6 @@ SPEC CHECKSUMS:
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: e3a64bcdbdd00af20e02cce9a66b18ee75a9f168
+PODFILE CHECKSUM: 9ecfb7e163db19dd4a6e293b16bee7911f142169
 
 COCOAPODS: 1.10.2
