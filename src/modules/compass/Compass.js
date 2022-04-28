@@ -70,7 +70,7 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    modalVisible === 'orientation_data' && displayCompassData();
+    displayCompassData();
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
       unsubscribe();
