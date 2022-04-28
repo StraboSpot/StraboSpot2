@@ -60,6 +60,7 @@ const ImagesOverview = () => {
             source={imageThumbnails[image.id] ? { uri: imageThumbnails[image.id] } : placeholderImage}
             style={imageStyles.notebookImage}
             transition
+            transitionDuration={250}
             onPress={() => handlePress(image)}
           />
           <View style={{ alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10 }}>
