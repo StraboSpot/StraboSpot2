@@ -33,6 +33,7 @@ const Compass = (props) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
+  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const [compassData, setCompassData] = useState({
@@ -161,7 +162,7 @@ const Compass = (props) => {
           <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
           {renderCompassSymbols()}
         </TouchableOpacity>
-        {props.setCompassRawDataToDisplay && (
+        {props.setCompassRawDataToDisplay && isTestingMode && (
           <Button
             containerStyle={{position: 'absolute', bottom: 0, right: 0, width: 75}}
             titleStyle={{fontSize: 10}}
