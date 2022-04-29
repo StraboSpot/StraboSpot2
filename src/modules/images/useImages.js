@@ -244,7 +244,7 @@ const useImages = () => {
       await RNFS.mkdir(APP_DIRECTORIES.IMAGES);
       await RNFS.copyFile(tempImageURI, imageURI);
       console.log(imageCount, 'File saved to:', imageURI);
-      imageCount++;
+      // imageCount++;
       return {
         id: imageId,
         height: height,
