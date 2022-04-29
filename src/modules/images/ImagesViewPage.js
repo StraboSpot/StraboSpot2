@@ -28,7 +28,7 @@ const ImagesViewPage = (props) => {
 
   useEffect(() => {
     console.log('UE ImagesViewPage [images]', images);
-    getImageThumbnailURIs().catch(err => console.error(err));
+    getImageThumbnailURIs().catch(err => console.error('Error getting thumbnails', err));
   }, [images]);
 
   const getImagesFromCameraRoll = async () => {

@@ -151,8 +151,9 @@ const useImages = () => {
   const getImagesFromCameraRoll = async () => {
     return new Promise((res, rej) => {
       try {
+        const selectionLimitNumber = Platform.OS === 'ios' ? 10 : 0;
         dispatch(setLoadingStatus({ view: 'home', bool: true }));
-        launchImageLibrary({}, async response => {
+        launchImageLibrary({selectionLimit: selectionLimitNumber}, async response => {
           console.log('RES', response);
           if (response.didCancel) dispatch(setLoadingStatus({ view: 'home', bool: false }));
           else if (response.errorCode === 'others') {
@@ -253,6 +254,7 @@ const useImages = () => {
     catch (err) {
       imageCount++;
       console.log('Error on', imageId, ':', err);
+      dispatch(setLoadingStatus({ view: 'home', bool: false }));
       throw Error;
     }
   };
