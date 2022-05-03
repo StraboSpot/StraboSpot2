@@ -444,6 +444,9 @@ const Map = React.forwardRef((props, ref) => {
         const {screenPointX, screenPointY} = e.properties;
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
+        else if (stratSection) {
+          useMaps.setSelectedSpotOnMap(useSpots.getSpotWithThisStratSection(stratSection.strat_section_id));
+        }
         else clearSelectedSpots();
       }
       // Draw a feature
