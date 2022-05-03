@@ -9,6 +9,7 @@ import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBaseMaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
+import StratSectionsList from '../maps/strat-section/StratSectionsList';
 import {PAGE_KEYS} from '../page/page.constants';
 import Miscellaneous from '../preferences/Miscellaneous';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
@@ -27,8 +28,6 @@ import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
-import StratSectionPage from '../sed/StratSectionPage';
-import StratSectionsList from '../maps/strat-section/StratSectionsList';
 
 const MainMenuPanel = props => {
   const dispatch = useDispatch();

@@ -9,7 +9,6 @@ import {
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
-import useProjectHook from '../modules/project/useProject';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './device.constants';
 import useDeviceHook from './useDevice';
@@ -17,8 +16,6 @@ import useDeviceHook from './useDevice';
 const useExport = () => {
   const dispatch = useDispatch();
   const dbs = useSelector(state => state);
-
-  const [useProject] = useProjectHook();
 
   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
   let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
@@ -220,7 +217,7 @@ const useExport = () => {
         }
       })
       .catch(err => {
-        console.warn(err);
+        console.warn('Error moving maps in useExport', err);
       });
   };
 

@@ -16,7 +16,7 @@ const BatteryInfo = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE BatteryInfo [batteryLevel]', batteryLevel);
+    // console.log('UE BatteryInfo [batteryLevel]', batteryLevel);
     lowBatteryLevel();
   }, [batteryLevel]);
 
@@ -37,7 +37,6 @@ const BatteryInfo = () => {
 
   const batteryPercentColor = () => {
     if (batteryLevel > 0 && batteryLevel <= 0.30) return {color: 'red', fontWeight: 'bold'};
-    return;
   };
 
   const batteryWarning = () => {
