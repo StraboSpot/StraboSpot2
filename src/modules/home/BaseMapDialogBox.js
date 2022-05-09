@@ -48,7 +48,7 @@ const BaseMapDialog = props => {
     let mapsToDisplay = BASEMAPS;
     if (!isOnline.isInternetReachable) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
-        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm'
+        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
           ? [...acc, offlineMap] : acc;
       }, []);
       sectionTitle = 'Offline Default Basemaps';
