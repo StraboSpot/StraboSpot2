@@ -101,13 +101,6 @@ const useServerRequests = () => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
   };
 
-  const getMapWarperBbox = async (mapId) => {
-    const response = await fetch(mapWarperApi + mapId);
-    const responseJson = await response.json();
-    console.log('MAP_WARPER MAP RES', responseJson);
-    return responseJson;
-  };
-
   const getMyMapsBbox = async (mapId) => {
     const response = await fetch(straboMyMapsApi + mapId);
     return handleResponse(response);
@@ -306,7 +299,6 @@ const useServerRequests = () => {
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
     getDbUrl: getDbUrl,
-    getMapWarperBbox: getMapWarperBbox,
     getMyMapsBbox: getMyMapsBbox,
     getProfile: getProfile,
     getProject: getProject,
