@@ -814,8 +814,7 @@ const Map = React.forwardRef((props, ref) => {
       //Assign the promise unresolved first then get the data using the json method.
       console.log('sending this extent to server: ', extentString);
       console.log('sending zoom to server: ', zoomLevel);
-      const tileCountApiCall = await fetch(
-        'http://tiles.strabospot.org/zipcount?extent=' + extentString + '&zoom=' + zoomLevel);
+      const tileCountApiCall = await fetch(useMaps.getExtentAndZoomCall(extentString, zoomLevel));
       const tileCountThisScope = await tileCountApiCall.json();
       console.log('got count from server: ', tileCountThisScope);
       return tileCountThisScope.count;

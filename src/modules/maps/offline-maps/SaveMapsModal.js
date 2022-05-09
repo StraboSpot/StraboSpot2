@@ -9,7 +9,7 @@ import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../../services/device.constants';
+import {APP_DIRECTORIES} from '../../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';

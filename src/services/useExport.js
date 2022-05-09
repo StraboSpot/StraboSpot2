@@ -10,7 +10,7 @@ import {
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './device.constants';
+import {APP_DIRECTORIES} from './deviceAndAPI.constants';
 import useDeviceHook from './useDevice';
 
 const useExport = () => {

@@ -25,7 +25,7 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './device.constants';
+import {APP_DIRECTORIES, STRABO_APIS} from './deviceAndAPI.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 
@@ -34,9 +34,6 @@ const useDownload = () => {
   let imagesFailedCount = 0;
   let savedImagesCount = 0;
   let imageCount = 0;
-
-  // const testUrl = 'https://strabospot.org/testimages/images.json';
-  // const missingImage = require('../../assets/images/noimage.jpg');
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
@@ -119,7 +116,7 @@ const useDownload = () => {
 
   const downloadAndSaveImagesToDevice = async (imageId) => {
     try {
-      const imageURI = 'https://strabospot.org/pi/';
+      const imageURI = STRABO_APIS.STRABO + '/pi/';
       return RNFS.downloadFile({
         fromUrl: imageURI + imageId,
         toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',

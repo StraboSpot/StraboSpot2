@@ -15,7 +15,7 @@ import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slic
 import {addedDatasets, addedProject, clearedDatasets, setSelectedProject} from '../modules/project/projects.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './device.constants';
+import {APP_DIRECTORIES} from './deviceAndAPI.constants';
 import useDeviceHook from './useDevice';
 
 const useImport = () => {

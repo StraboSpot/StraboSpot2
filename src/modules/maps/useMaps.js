@@ -27,6 +27,7 @@ import {
   setCurrentBasemap,
   setMapSymbols,
 } from './maps.slice';
+import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
 
 const useMaps = (mapRef) => {
   const [useServerRequests] = useServerRequestsHook();
@@ -295,6 +296,11 @@ const useMaps = (mapRef) => {
         spots[drawFeatureFound.properties.id]);
     }
     return Promise.resolve(...[drawFeatureFound]);
+  };
+
+  const getExtentAndZoomCall = (extentString, zoomLevel) => {
+    console.log(STRABO_APIS.TILE_COUNT + '?extent=' + extentString + '&zoom=' + zoomLevel)
+    return STRABO_APIS.TILE_COUNT + '?extent=' + extentString + '&zoom=' + zoomLevel;
   };
 
   // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one

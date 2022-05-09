@@ -6,7 +6,7 @@ import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../../MapboxConfig';
-import {APP_DIRECTORIES} from '../../../services/device.constants';
+import {APP_DIRECTORIES} from '../../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';

@@ -3,14 +3,15 @@ import {Alert} from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {useSelector} from 'react-redux';
 
+import {STRABO_APIS} from './deviceAndAPI.constants';
+
 const useServerRequests = () => {
   const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const baseUrl = databaseEndpoint.url && databaseEndpoint.isSelected
     ? databaseEndpoint.url
-    : 'https://strabospot.org/db';
-  const mapWarperApi = 'http://mapwarper.net/api/v1/maps/';
-  const straboMyMapsApi = 'https://strabospot.org/geotiff/bbox/';
-  const tilehost = 'http://tiles.strabospot.org/';
+    : STRABO_APIS.DB;
+  const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
+  const tilehost = STRABO_APIS.TILE_HOST;
 
   const user = useSelector(state => state.user);
 

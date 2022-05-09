@@ -3,6 +3,7 @@ import {FlatList, Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import {STRABO_APIS} from '../../../services/deviceAndAPI.constants';
 import useUploadHook from '../../../services/useUpload';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
@@ -33,7 +34,7 @@ const UploadModal = (props) => {
         <View>
           <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
           <Text style={commonStyles.dialogContentImportantText}>
-            {endPoint.isSelected ? endPoint.url : 'https://strabospot.org/db'}
+            {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>

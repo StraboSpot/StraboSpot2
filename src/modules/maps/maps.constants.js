@@ -1,5 +1,7 @@
 import {Dimensions} from 'react-native';
 
+import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
+
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
@@ -115,7 +117,7 @@ export const MAP_PROVIDERS = {
     imageType: 'png',
     mime: 'image/png',
     tilePath: '{z}/{x}/{y}.png',
-    url: ['https://strabospot.org/geotiff/tiles/'],
+    url: [STRABO_APIS.MY_MAPS_TILES],
     maxZoom: 25,
   },
 };

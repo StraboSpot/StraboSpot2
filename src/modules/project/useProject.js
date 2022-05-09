@@ -1,7 +1,7 @@
 import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../services/device.constants';
+import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';
