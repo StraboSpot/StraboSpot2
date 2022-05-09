@@ -84,6 +84,7 @@ const SaveMapsModal = (props) => {
     console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
     console.log('extentString is UE', extentString);
     if (downloadZoom > 0) {
+      setIsLoadingWave(true);
       updateCount().then(() => {
         console.log('TileCount', tileCount);
 
@@ -213,6 +214,7 @@ const SaveMapsModal = (props) => {
     props.map.getTileCount(downloadZoom).then((tileCount) => {
       console.log('downloadZoom from updateCount: ', downloadZoom);
       setTileCount(tileCount);
+      setIsLoadingWave(false);
       console.log('return_from_mapview_getTileCount: ', tileCount);
     });
   };
@@ -330,14 +332,19 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
             </View>
-            <View style={{flex: 1}}>
-              {showMainMenu && (
-                <Button
-                  onPress={() => saveMap()}
-                  type={'clear'}
-                  title={`Download ${tileCount} Tiles`}
-                />
-              )}
+            <View style={{flex: 1, justifyContent: 'center'}}>
+              {showMainMenu && !isLoadingWave
+                ? (
+                  <Button
+                    onPress={() => saveMap()}
+                    type={'clear'}
+                    title={`Download ${tileCount} Tiles`}
+                  />
+                )
+                : (
+                    <loading.BallIndicator animating={isLoadingWave} count={6} size={30}/>
+                )
+              }
               {isError && (
                 <Button
                   onPress={props.close}
