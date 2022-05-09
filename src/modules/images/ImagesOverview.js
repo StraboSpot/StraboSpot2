@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FlatList, Switch, Text, View } from 'react-native';
+import { FlatList, Switch, Text, View } from 'react-native';
 
-import {Image } from 'react-native-elements';
+import {Button, Image } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -74,6 +74,7 @@ const ImagesOverview = () => {
               {image.annotated && (
                 <Button
                   title={'View as Image Basemap'}
+                  type={'clear'}
                   onPress={() => dispatch(setCurrentImageBasemap(image))}
                 />
               )}
