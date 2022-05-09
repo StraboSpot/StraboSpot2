@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   sectionDividerText: {
-    fontSize: Platform.OS === 'ios' ? 16 : 20,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
     fontWeight: 'bold',
     // textTransform: 'uppercase',
     color: themes.PRIMARY_TEXT_COLOR,
