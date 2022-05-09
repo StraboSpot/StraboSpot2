@@ -72,7 +72,7 @@ const BaseMapDialog = props => {
     let customMapsToDisplay = Object.values(customMaps).filter((customMap) => !customMap.overlay);
     if (!isOnline.isInternetReachable) {
       customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
-        if (map.source === 'map_warper' || map.source === 'strabospot_mymaps' || map.source === 'mapbox_styles') return offlineMaps[map.id];
+        if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm' && map.id !== 'macrostrat') return offlineMaps[map.id];
       });
       sectionTitle = 'Offline Custom Basemaps';
     }
