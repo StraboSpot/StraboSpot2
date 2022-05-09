@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
@@ -55,7 +55,7 @@ const MyStraboSpot = props => {
               <ProjectList source={'device'}/>
               <View style={{marginBottom: 20}}>
                 <ActiveProjectList/>
-                <Button
+                {Platform.OS === 'ios'  && <Button
                   title={'View/Edit Files on Device'}
                   type={'outline'}
                   containerStyle={commonStyles.buttonPadding}
@@ -68,7 +68,7 @@ const MyStraboSpot = props => {
                     type: 'ionicon',
                     color: BLUE,
                   }}
-                />
+                />}
               </View>
             </View>
           );

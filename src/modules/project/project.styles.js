@@ -37,6 +37,7 @@ const dialogStyles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
   dialogButtonText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
     color: 'black',
   },
   dialogDisabledButtonText: {
