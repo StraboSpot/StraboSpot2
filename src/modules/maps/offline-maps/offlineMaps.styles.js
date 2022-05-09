@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../../../shared/styles.constants';
 
@@ -46,12 +46,16 @@ const styles = StyleSheet.create({
   itemSubTextStyle: {
     fontSize: 14,
   },
-  picker: {
+  pickerIOS: {
     flex: 1,
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  pickerAndroid: {
+    flex: 1,
+    width: '50%',
   },
   saveModalContainer: {
     flex: 1,
