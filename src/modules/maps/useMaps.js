@@ -518,8 +518,7 @@ const useMaps = (mapRef) => {
     customMap = {...map, ...providerInfo, id: mapId, source: map.source};
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
-    if (map.source === 'map_warper') testTileUrl = 'https://strabospot.org/map_warper_check/' + map.id;
-    if (map.source === 'strabospot_mymaps') testTileUrl = 'https://strabospot.org/strabo_mymaps_check/' + map.id;
+    if (map.source === 'strabospot_mymaps') testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
@@ -646,6 +645,7 @@ const useMaps = (mapRef) => {
     getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     getDrawFeatureAtPress: getDrawFeatureAtPress,
+    getExtentAndZoomCall: getExtentAndZoomCall,
     getFeatureInRect: getFeatureInRect,
     getMeasureFeatures: getMeasureFeatures,
     getSpotAtPress: getSpotAtPress,
