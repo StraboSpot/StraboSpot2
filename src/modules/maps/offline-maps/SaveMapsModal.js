@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {Button} from 'react-native-elements';
@@ -242,7 +242,7 @@ const SaveMapsModal = (props) => {
         setShowMainMenu(true);
         setShowComplete(false);
       }}
-      height={400}
+      height={Platform.OS === 'ios' ? 400 : 275}
       visible={props.visible}
       dialogStyle={commonStyles.dialogBox}
       dialogAnimation={new SlideAnimation({
@@ -262,16 +262,19 @@ const SaveMapsModal = (props) => {
                 </View>
               )}
             </View>
-            <View style={{flex: 3}}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               {showMainMenu && (
                 <Picker
+                  mode={'dropdown'}
+                  prompt={'Select a zoom level'}
                   onValueChange={(value) => updatePicker(value)}
                   selectedValue={downloadZoom}
-                  style={styles.picker}
+                  style={Platform.OS === 'ios' ? styles.pickerIOS : styles.pickerAndroid}
                 >
                   {zoomLevels.map(zoom => {
                     return (
                       <Picker.Item
+                        style={{width: 100}}
                         key={zoom}
                         value={zoom}
                         label={zoom.toString()}
@@ -318,7 +321,7 @@ const SaveMapsModal = (props) => {
               )}
               {showComplete && (
                 <View style={commonStyles.alignItemsCenter}>
-                  <Text style={{fontSize: 20, padding: 20}}>Success!</Text>
+                  <Text style={{fontSize: 20, padding: 10}}>Success!</Text>
                 </View>
               )}
               {showComplete && (
@@ -333,14 +336,6 @@ const SaveMapsModal = (props) => {
                   onPress={() => saveMap()}
                   type={'clear'}
                   title={`Download ${tileCount} Tiles`}
-                />
-              )}
-              {showComplete && (
-                <Button
-                  onPress={props.close}
-                  type={'clear'}
-                  buttonStyle={styles.button}
-                  title={'Continue'}
                 />
               )}
               {isError && (
