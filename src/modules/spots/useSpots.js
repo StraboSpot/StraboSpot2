@@ -4,7 +4,7 @@ import {Alert} from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import {getNewCopyId, getNewId, isEmpty} from '../../shared/Helpers';
+import {getNewCopyId, getNewId, isEmpty, isEqual} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
 import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {
@@ -239,10 +239,26 @@ const useSpots = () => {
     });
   };
 
-  // Get Active Spots with Geometry
+  // Get Active Spots with Valid Geometry
   const getMappableSpots = () => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
-    return allSpotsCopy.filter(spot => spot.geometry);
+    const allSpotsCopyFiltered = allSpotsCopy.filter(spot => {
+      const geometries = spot.geometry?.geometries || [spot.geometry] || [];
+      let hasValidGeometry = true;
+      geometries.forEach(g => {
+        const coordsFlat = g?.coordinates?.flat(Infinity) || [];
+        const coordsFlatValid = coordsFlat.filter(c => c !== null && c !== undefined && !Number.isNaN(c));
+        if (!hasValidGeometry || isEmpty(coordsFlat) || !isEqual(coordsFlat, coordsFlatValid)) hasValidGeometry = false;
+      });
+      if (spot.geometry && !hasValidGeometry) {
+        Alert.alert('Invalid Geometry', 'Found a Spot with invalid geometry. Unable to map this Spot.'
+          + '\nSpot Name: ' + spot.properties.name);
+        console.error('INVALID Geometry! Spot:', spot);
+      }
+      return hasValidGeometry;
+    });
+    console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
+    return allSpotsCopyFiltered;
   };
 
   // Return the keys for the Spot pages that are populated with data
