@@ -14,8 +14,8 @@ const straboSpotAPI = 'https://strabospot.org';
 const tilehost = 'https://tiles.strabospot.org';
 const straboDB = straboSpotAPI + '/db';
 const myMapsGeotiff = straboSpotAPI + '/geotiff';
-const myMapsBbox = myMapsGeotiff + '/bbox';
-const myMapsTiles = myMapsGeotiff + '/tiles';
+const myMapsBbox = myMapsGeotiff + '/bbox/';
+const myMapsTiles = myMapsGeotiff + '/tiles/';
 const myMapsCheck = straboSpotAPI + '/strabo_mymaps_check/';
 const tileCount = tilehost + '/zipcount';
 
