@@ -6,7 +6,7 @@ import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {MAPBOX_KEY} from '../../../MapboxConfig';
-import {APP_DIRECTORIES} from '../../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES, STRABO_APIS} from '../../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
@@ -206,7 +206,7 @@ const useMapsOffline = () => {
       let startZipURL = 'unset';
       let mapKey = currentBasemap.id;
       const layerSource = currentBasemap.source;
-      const tilehost = APP_DIRECTORIES.TILE_HOST;
+      const tilehost = STRABO_APIS.TILE_HOST;
 
       if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
         //configure advanced URL for custom map types here.

@@ -9,7 +9,7 @@ import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES, STRABO_APIS} from '../../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';
@@ -122,7 +122,7 @@ const SaveMapsModal = (props) => {
 
   const downloadZip = async (zipUID) => {
     try {
-      const downloadZipURL = APP_DIRECTORIES.TILE_HOST + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
+      const downloadZipURL = STRABO_APIS.TILE_HOST + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,
         toFile: APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip',
