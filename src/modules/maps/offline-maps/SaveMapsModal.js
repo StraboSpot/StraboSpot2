@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, Text, View} from 'react-native';
+import {ActivityIndicator, Platform, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {Button} from 'react-native-elements';
 import RNFS from 'react-native-fs';
-import * as loading from 'react-native-indicators';
 import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
@@ -43,6 +42,7 @@ const SaveMapsModal = (props) => {
   const [showLoadingMenu, setShowLoadingMenu] = useState(false);
   const [showLoadingBar, setShowLoadingBar] = useState(false);
   const [isLoadingWave, setIsLoadingWave] = useState(false);
+  const [isLoadingCircle, setIsLoadingCircle] = useState(false);
   const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
   const [zoomLevels, setZoomLevels] = useState([]);
@@ -84,7 +84,7 @@ const SaveMapsModal = (props) => {
     console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
     console.log('extentString is UE', extentString);
     if (downloadZoom > 0) {
-      setIsLoadingWave(true);
+      setIsLoadingCircle(true);
       updateCount().then(() => {
         console.log('TileCount', tileCount);
 
@@ -166,6 +166,7 @@ const SaveMapsModal = (props) => {
       setShowLoadingMenu(true);
       setShowLoadingBar(true);
       setIsLoadingWave(true);
+      setIsLoadingCircle(false);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Gathering Tiles...'));
       const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
@@ -195,6 +196,7 @@ const SaveMapsModal = (props) => {
       setShowMainMenu(false);
       setShowLoadingMenu(false);
       setShowLoadingBar(false);
+      setIsLoadingCircle(false);
     }
   };
 
@@ -214,7 +216,7 @@ const SaveMapsModal = (props) => {
     props.map.getTileCount(downloadZoom).then((tileCount) => {
       console.log('downloadZoom from updateCount: ', downloadZoom);
       setTileCount(tileCount);
-      setIsLoadingWave(false);
+      setIsLoadingCircle(false);
       console.log('return_from_mapview_getTileCount: ', tileCount);
     });
   };
@@ -290,7 +292,7 @@ const SaveMapsModal = (props) => {
                   {isLoadingWave
                     ? (
                       <View style={{paddingBottom: 35}}>
-                        <loading.DotIndicator animating={isLoadingWave} count={6} size={10}/>
+                        <ActivityIndicator size='large' color={themes.BLACK}/>
                       </View>
                     ) : (
                       <View>
@@ -333,17 +335,20 @@ const SaveMapsModal = (props) => {
               )}
             </View>
             <View style={{flex: 1, justifyContent: 'center'}}>
-              {showMainMenu && !isLoadingWave
-                ? (
-                  <Button
-                    onPress={() => saveMap()}
-                    type={'clear'}
-                    title={`Download ${tileCount} Tiles`}
-                  />
-                )
-                : (
-                    <loading.BallIndicator animating={isLoadingWave} count={6} size={30}/>
-                )
+              {showMainMenu && (
+                <View>
+                  {isLoadingCircle
+                  ? (
+                      <ActivityIndicator size={'large'} color={themes.BLACK}/>
+                    ) : (
+                      <Button
+                        onPress={() => saveMap()}
+                        type={'clear'}
+                        title={`Download ${tileCount} Tiles`}
+                      />
+                    )}
+                </View>
+              )
               }
               {isError && (
                 <Button
