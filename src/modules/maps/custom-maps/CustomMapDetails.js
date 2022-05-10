@@ -76,7 +76,7 @@ const AddCustomMaps = () => {
       dispatch(setStatusMessagesModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(
-        `Something Went Wrong \n\nCheck the id:\n\n ${err} \n\n and/or the map type you are trying to save.`));
+        `Something Went Wrong \n\nCheck the id and/or the map type you are trying to save. \n\n ${err}`));
       dispatch(setErrorMessagesModalVisible(true));
     }
   };
