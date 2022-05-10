@@ -277,7 +277,7 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const response = await timeoutPromise(30000, fetch(tilehost + 'asyncstatus/' + zipId));
+      const response = await timeoutPromise(30000, fetch(tilehost + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
