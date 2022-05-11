@@ -8,11 +8,12 @@ import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {truncateText} from '../../../shared/Helpers';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import TextInputModal from '../../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
-import {setOfflineMapVisible} from './offlineMaps.slice';
+import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
@@ -86,6 +87,11 @@ const ManageOfflineMaps = (props) => {
     );
   };
 
+  const editMap = (map) => {
+    setSelectedMap(map);
+    setIsNameModalVisible(true);
+  };
+
   const getTitle = (map) => {
     let name = map.name;
     if (!map.name) {
@@ -93,6 +99,23 @@ const ManageOfflineMaps = (props) => {
       return map.id;
     }
     else return name;
+  };
+
+  const renderNameChangeModal = () => {
+    return (
+      <View style={{backgroundColor: 'red', alignContent: 'flex-start'}}>
+        <TextInputModal
+          dialogTitle={'Edit Map Name'}
+          placeholder={selectedMap.name}
+          style={styles.dialogTitle}
+          visible={isNameModalVisible}
+          onPress={() => saveMapEdits()}
+          close={() => setIsNameModalVisible(false)}
+          value={selectedMap.name}
+          onChangeText={(text) => setSelectedMap({...selectedMap, name: text})}
+         />
+      </View>
+    );
   };
 
   const renderMapsList = () => {
@@ -106,6 +129,19 @@ const ManageOfflineMaps = (props) => {
           + ' level on map then select "Download tiles of current map"'}/>}
       />
     );
+  };
+
+  const renderMapEditModal = (map) => {
+    if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm' && map.id !== 'macrostrat') {
+      return (
+        <Button
+          onPress={() => editMap(map)}
+          titleStyle={commonStyles.viewMapsButtonText}
+          type={'clear'}
+          title={'Edit'}
+        />
+      );
+    }
   };
 
   const renderMapsListItem = (item) => {
@@ -143,16 +179,25 @@ const ManageOfflineMaps = (props) => {
               type={'clear'}
               title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
             />}
-            <Button
-              onPress={() => confirmDeleteMap(item)}
-              titleStyle={commonStyles.viewMapsButtonText}
-              type={'clear'}
-              title={'Delete'}
-            />
+            <View style={{flexDirection: 'row', padding: 0}}>
+              <Button
+                onPress={() => confirmDeleteMap(item)}
+                titleStyle={commonStyles.viewMapsButtonText}
+                type={'clear'}
+                title={'Delete'}
+              />
+              {renderMapEditModal(item)}
+            </View>
           </View>
         </ListItem.Content>
       </ListItem>
     );
+  };
+
+  const saveMapEdits = () => {
+    console.log('Map name saved!', selectedMap.name);
+    dispatch(editedOfflineMap(selectedMap));
+    setIsNameModalVisible(false);
   };
 
   const toggleOfflineMap = async (item) => {
@@ -183,6 +228,7 @@ const ManageOfflineMaps = (props) => {
       />
       <SectionDivider dividerText={'Offline Maps'}/>
       {loading ? <Text style={{textAlign: 'center', padding: 15}}>Loading...</Text> : renderMapsList()}
+      {renderNameChangeModal()}
     </React.Fragment>
   );
 };
