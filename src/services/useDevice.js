@@ -28,6 +28,8 @@ const useDevice = () => {
     console.log('Backup Directory Created');
     await RNFS.mkdir(APP_DIRECTORIES.TILES_DIRECTORY);
     console.log('Tiles Directory Created');
+    await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE);
+    console.log('Tile Cache Directory Created');
   };
 
   const createAppDirectory = (directory) => {
