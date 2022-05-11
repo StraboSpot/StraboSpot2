@@ -48,7 +48,7 @@ const TextInputModal = (props) => {
             inputContainerStyle={{borderColor: 'transparent'}}
             inputStyle={[styles.textInput, props.textInputStyle]}
             onChangeText={props.onChangeText}
-            placeholder={'Enter text here...'}
+            placeholder={props.placeholder || 'Enter text here...'}
           />
           {props.children}
         </DialogContent>
