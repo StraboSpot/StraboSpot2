@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Alert, Animated, FlatList, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
@@ -18,14 +18,17 @@ import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
-  const animatedPulse = new Animated.Value(1);
-  const [availableMaps, setAvailableMaps] = useState({});
-  const [loading, setLoading] = useState(false);
 
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const mainMenuPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const dispatch = useDispatch();
+
+  const animatedPulse = useMemo(() => new Animated.Value(1), []);
+  const [availableMaps, setAvailableMaps] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [isNameModalVisible, setIsNameModalVisible] = useState(false);
+  const [selectedMap, setSelectedMap] = useState({});
 
   const useDevice = useDeviceHook();
   const [useMaps] = useMapsHook();
@@ -34,7 +37,7 @@ const ManageOfflineMaps = (props) => {
   useEffect(() => {
     console.log('UE ManageOfflineMaps [mainMenuPageVisible]', mainMenuPageVisible);
     setLoading(true);
-    useMapsOffline.getSavedMapsFromDevice();
+    useMapsOffline.getSavedMapsFromDevice().then(r => console.log(`Got maps from device: ${r}`));
     setLoading(false);
   }, []);
 
@@ -95,7 +98,6 @@ const ManageOfflineMaps = (props) => {
   const getTitle = (map) => {
     let name = map.name;
     if (!map.name) {
-      console.log('No Name');
       return map.id;
     }
     else return name;
