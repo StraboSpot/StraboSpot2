@@ -15,17 +15,32 @@ const spotSlice = createSlice({
   initialState: initialSpotState,
   reducers: {
     addedSpot(state, action) {
-      console.log('ADDED Spot:', action.payload, 'to Existing Spots:', state.spots);
-      if (!isEmpty(state.selectedSpot) && state.selectedSpot.properties
-        && state.selectedSpot.properties.id === action.payload.properties.id) state.selectedSpot = action.payload;
-      action.payload.properties.modified_timestamp = Date.now();
-      state.selectedSpot = action.payload;
-      state.spots = {...state.spots, [action.payload.properties.id]: action.payload};
+      const modifiedSpot = {
+        ...action.payload,
+        properties: {...action.payload.properties, modified_timestamp: Date.now()},
+      };
+      state.spots = {...state.spots, [modifiedSpot.properties.id]: modifiedSpot};
+      console.log('UPDATED Spot:', modifiedSpot, 'in Existing Spots:', state.spots);
+      if (isEmpty(state.selectedSpot)) {
+        state.selectedSpot = modifiedSpot;
+        console.log('ADDED NEW Selected Spot:', state.selectedSpot);
+      }
+      else if (state.selectedSpot.properties.id === modifiedSpot.properties.id) {
+        state.selectedSpot = modifiedSpot;
+        console.log('UPDATED Selected Spot:', state.selectedSpot);
+      }
     },
     addedSpots(state, action) {
-      const spots = Object.assign({}, ...action.payload.map(spot => ({[spot.properties.id]: spot})));
-      console.log('ADDED Spots:', action.payload, 'to Existing Spots:', current(state));
+      const spotsWithTimestamp = action.payload.map(s => (
+        {...s, properties: {...s.properties, modified_timestamp: Date.now()}}
+      ));
+      const spots = Object.assign({}, ...spotsWithTimestamp.map(spot => ({[spot.properties.id]: spot})));
       state.spots = {...state.spots, ...spots};
+      console.log('UPDATED Spots:', state.spots, 'in Existing Spots:', current(state));
+      if (!isEmpty(state.selectedSpot) && Object.keys(spots).includes(state.selectedSpot.properties.id)) {
+        state.selectedSpot = spots[state.selectedSpot.properties.id];
+        console.log('UPDATED Selected Spot:', state.selectedSpot);
+      }
     },
     addedSpotsFromDevice(state, action) {
       state.spots = action.payload;

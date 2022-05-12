@@ -1,20 +1,25 @@
 import {Alert} from 'react-native';
 
-import {useSelector} from 'react-redux';
+import * as turf from '@turf/turf';
+import {useDispatch, useSelector} from 'react-redux';
 
+import useSedValidationHook from '../../sed/useSedValidation';
+import {addedSpot, addedSpots} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 
 const useStratSectionCalculations = (props) => {
+  const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [useSpots] = useSpotsHook();
+  const useSedValidation = useSedValidationHook();
 
   const xInterval = 10;  // Horizontal spacing between grain sizes/weathering tick marks
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
   // Calculate the geometry for an interval (single bed or interbedded)
-  function calculateIntervalGeometry(stratSectionId, sedData) {
+  const calculateIntervalGeometry = (stratSectionId, sedData, minY) => {
     const character = sedData.character;
     const interval = sedData.interval;
     const bedding = sedData.bedding;
@@ -22,7 +27,7 @@ const useStratSectionCalculations = (props) => {
     const intervalHeight = interval.interval_thickness * yMultiplier;
     const intervalWidth = getIntervalWidth(sedData, stratSectionId);
     const minX = 0;
-    const minY = getSectionHeight();
+    minY = minY === undefined ? getSectionHeight() : minY;
     const maxX = minX + intervalWidth;
     const maxY = minY + intervalHeight;
 
@@ -81,17 +86,17 @@ const useStratSectionCalculations = (props) => {
       console.log('Not enough data to properly draw interval', sedData);
       Alert.alert(
         'Data Error!',
-        'This interval is <b>interbedded</b> or <b>mixed</b> but there is not enough data to properly '
+        'This interval is interbedded or mixed but there is not enough data to properly '
         + 'draw this interval. Check that you have entered all of the necessary bedding data for two lithologies. '
-        + 'This includes the <b>Lithology 1: Interbed Relative Proportion (%)</b> and either the <b>Average '
-        + 'Thickness</b> or both the <b>Maximum Thickness</b> and <b>Minimum Thickness</b> of the interbeds for '
-        + 'both lithologies found on the <b>Bedding</b> page. ',
+        + 'This includes the Lithology 1: Interbed Relative Proportion (%) and either the Average '
+        + 'Thickness or both the Maximum Thickness and Minimum Thickness of the interbeds for '
+        + 'both lithologies found on the Bedding page. ',
       );
     }
     return geometry;
-  }
+  };
 
-  function getIntervalWidth(sedData, stratSectionId, interbed) {
+  const getIntervalWidth = (sedData, stratSectionId, interbed) => {
     const character = sedData.character;
     const lithologies = sedData.lithologies;
     const n = interbed ? 1 : 0;
@@ -111,23 +116,14 @@ const useStratSectionCalculations = (props) => {
       }
       // Basic Lithologies Column Profile
       else if (stratSection.column_profile === 'basic_lithologies') {
-        if (lithologies[n].primary_lithology === 'organic_coal') i = 1;
-        else if (lithologies[n].mud_silt_grain_size) i = 2;
-        else if (lithologies[n].sand_grain_size) i = 3;
-        else if (lithologies[n].congl_grain_size || lithologies[n].breccia_grain_size) i = 4;
-        else if (lithologies[n].dunham_classification) i = 5;
-        else i = 0;
+        i = useSedValidation.getBasicLithologyIndex(lithologies[n]);
         intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
       }
       // Primary Lithology = siliciclastic
-      else if (lithologies[n].primary_lithology === 'siliciclastic' && (lithologies[n].mud_silt_grain_size
-        || lithologies[n].sand_grain_size || lithologies[n].congl_grain_size || lithologies[n].breccia_grain_size)) {
-        i = SED_LABEL_DICTIONARY.clastic.findIndex(grainSizeOption => {
-          return grainSizeOption.name === lithologies[n].mud_silt_grain_size
-            || grainSizeOption.name === lithologies[n].sand_grain_size
-            || grainSizeOption.name === lithologies[n].congl_grain_size
-            || grainSizeOption.name === lithologies[n].breccia_grain_size;
-        });
+      else if (lithologies[n].primary_lithology === 'siliciclastic'
+        && useSedValidation.getSiliciclasticGrainSize(lithologies[n])) {
+        const grainSizeName = useSedValidation.getSiliciclasticGrainSize(lithologies[n]);
+        i = SED_LABEL_DICTIONARY.clastic.findIndex(grainSizeOption => grainSizeOption.name === grainSizeName);
         intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
       }
       // Primary Lithology = limestone or dolostone
@@ -149,10 +145,10 @@ const useStratSectionCalculations = (props) => {
     }
     else console.error('Sed data error:', lithologies[n]);
     return intervalWidth;
-  }
+  };
 
   // Get the height (y) of the whole section
-  function getSectionHeight() {
+  const getSectionHeight = () => {
     const intervals = useSpots.getIntervalSpotsThisStratSection(stratSection.strat_section_id);
     return intervals.reduce((acc, i) => {
       const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
@@ -160,10 +156,75 @@ const useStratSectionCalculations = (props) => {
       const maxY = Math.max(...ys);
       return Math.max(acc, maxY);
     }, 0);
-  }
+  };
+
+  // Move Spot up or down by a given number of pixels (a positive number for pixels to move up or negative for down)
+  const moveSpotByPixels = (spot, pixels) => {
+    const spotCopyGeom = JSON.parse(JSON.stringify(spot.geometry));
+    if (spot.geometry.type === 'Point') spotCopyGeom.coordinates[1] = spot.geometry.coordinates[1] + pixels;
+    else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
+      spot.geometry.coordinates.forEach((pointCoords, i) => {
+        spotCopyGeom.coordinates[i][1] = pointCoords[1] + pixels;
+      });
+    }
+    else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
+      spot.geometry.coordinates.forEach((lineCoords, l) => {
+        lineCoords.forEach((pointCoords, i) => {
+          spotCopyGeom.coordinates[l][i][1] = pointCoords[1] + pixels;
+        });
+      });
+    }
+    else if (spot.geometry.type === 'MultiPolygon') {
+      spot.geometry.coordinates.forEach((polygonCoords, p) => {
+        polygonCoords.forEach((lineCoords, l) => {
+          lineCoords.forEach((pointCoords, i) => {
+            spotCopyGeom.coordinates[p][l][i][1] = pointCoords[1] + pixels;
+          });
+        });
+      });
+    }
+    // Interbedded (Geometry Collections)
+    else if (spot.geometry.type === 'GeometryCollection') {
+      spot.geometry.geometries.forEach((geometry, g) => {
+        geometry.coordinates.forEach((lineCoords, l) => {
+          lineCoords.forEach((pointCoords, i) => {
+            spotCopyGeom.geometries[g].coordinates[l][i][1] = pointCoords[1] + pixels;
+          });
+        });
+      });
+    }
+    return {...spot, geometry: spotCopyGeom};
+  };
+
+  // Move all Spots (except excluded Spot, if given) in a specified Strat Section
+  // up after cutoff (if pixels is positive) or down after cutoff (if pixels is negative)
+  const moveSpotsUpOrDownByPixels = (stratSectionId, cutoff, pixels, excludedSpotId) => {
+    const spots = useSpots.getSpotsMappedOnGivenStratSection(stratSectionId);
+    let spotsFiltered = spots.filter(spot => excludedSpotId && spot.properties.id !== excludedSpotId);
+    let movedSpots = [];
+    spotsFiltered.map((spot, h) => {
+      const extent = turf.bbox(spot); //bbox extent in minX, minY, maxX, maxY order
+      if (extent[1] >= cutoff) movedSpots.push(moveSpotByPixels(spot, pixels));
+    });
+    console.log('Dispatching', movedSpots);
+    dispatch(addedSpots(movedSpots));
+  };
+
+  const recalculateIntervalGeometry = (spot) => {
+    console.log('Recalculating Spot Geometry...', spot);
+    const extent = turf.bbox(spot);
+    const updatedGeometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
+    const editedSpot = {...spot, geometry: updatedGeometry};
+    console.log('Spot after geometry recalculation', editedSpot);
+    dispatch(addedSpot(editedSpot));
+    console.log('Dispatching', editedSpot);
+    return editedSpot;
+  };
 
   return {
     calculateIntervalGeometry: calculateIntervalGeometry,
+    moveSpotsUpOrDownByPixels: moveSpotsUpOrDownByPixels,
+    recalculateIntervalGeometry: recalculateIntervalGeometry,
   };
 };
 

@@ -1,19 +1,22 @@
 import {Alert} from 'react-native';
 
+import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
+import {getNewId, getNewUUID, isEmpty, toTitleCase, roundToDecimalPlaces} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {setStratSection} from '../maps/maps.slice';
+import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';
 import {PAGE_KEYS} from '../page/page.constants';
 import {useSpotsHook} from '../spots';
-import {editedSpotProperties} from '../spots/spots.slice';
+import {addedSpot, editedSpotProperties} from '../spots/spots.slice';
 import {
   INTERPRETATIONS_SUBPAGES,
   LITHOLOGY_SUBPAGES,
   ROCK_SECOND_ORDER_TYPE_FIELDS,
   STRUCTURE_SUBPAGES,
 } from './sed.constants';
+import useSedValidationHook from './useSedValidation';
 
 const useSed = () => {
   const dispatch = useDispatch();
@@ -21,6 +24,141 @@ const useSed = () => {
 
   const [useForm] = useFormHook();
   const [useSpots] = useSpotsHook();
+  const useSedValidation = useSedValidationHook();
+  const useStratSectionCalculations = useStratSectionCalculationsHook();
+
+  const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
+
+  // Check for any changes we need to make to the Sed fields or geometry when a Spot that is a strat interval
+  // has fields that are changed
+  const checkForIntervalUpdates = (pageKey, spot, savedSpot) => {
+    let extent;
+    let needToRecalculateIntervalGeometry = false;      // Do we need to recalculate the geometry for the interval?
+    if (spot.geometry && spot.properties.sed && savedSpot.properties.sed) {
+      const sedData = spot.properties.sed;
+      const sedDataSaved = savedSpot.properties.sed;
+
+      // Current pageKey is spot tab
+      if (pageKey === PAGE_KEYS.OVERVIEW) {
+        // Calculate interval thickness if Spot has geometry and the surface feature type changed to strat interval
+        if (!savedSpot.properties.surface_feature || !savedSpot.properties.surface_feature.surface_feature_type
+          || savedSpot.properties.surface_feature.surface_feature_type !== 'strat_interval') {
+          if (spot.geometry) {
+            if (!spot.properties.sed) spot.properties.sed = {};
+            if (!spot.properties.sed.interval) spot.properties.sed.interval = {};
+            console.log('Updating interval thickness ...');
+            extent = turf.bbox(spot);
+            let thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
+            thickness = roundToDecimalPlaces(thickness, 2);
+            spot.properties.sed.interval.interval_thickness = thickness;
+            const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(spot.properties.strat_section_id);
+            if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed
+              && spotWithThisStratSection.properties.sed.strat_section) {
+              spot.properties.sed.interval.thickness_units
+                = spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
+            }
+            if (!spot.properties.sed.character) spot.properties.sed.character = 'unexposed_cove';
+          }
+        }
+      }
+
+      // Check for changes to certain fields which would require recalculation of the interval geometry
+      // If current page is sed-interval
+      else if (pageKey === PAGE_KEYS.INTERVAL) {
+        const intervalFields = ['character', 'interval_thickness', 'thickness_units'];
+        needToRecalculateIntervalGeometry = intervalFields.find(field => {
+          if (field === 'character') {
+            if ((sedData[field] && !sedDataSaved[field]) || (!sedData[field] && !sedDataSaved[field])) return true;
+            return ((sedData[field] === 'bed' || sedData[field] === 'package_succe')
+                && !(sedDataSaved[field] === 'bed' || sedDataSaved[field] === 'package_succe'))
+              || ((sedData[field] === 'unexposed_cove' || sedData[field] === 'not_measured')
+                && !(sedDataSaved[field] === 'unexposed_cove' || sedDataSaved[field] === 'not_measured'))
+              || ((sedData[field] === 'interbedded' || sedData[field] === 'bed_mixed_lit')
+                && !(sedDataSaved[field] === 'interbedded' || sedDataSaved[field] === 'bed_mixed_lit'));
+          }
+          if (sedData.interval && sedDataSaved.interval && ((sedData.interval[field] && !sedDataSaved.interval[field])
+            || (!sedData.interval[field] && sedDataSaved.interval[field]))) return true;
+          return sedData.interval && sedDataSaved.interval && sedData.interval[field] && sedDataSaved.interval[field]
+            && sedData.interval[field] !== sedDataSaved.interval[field];
+        });
+      }
+
+      // If current page is sed-lithologies
+      else if (pageKey === PAGE_KEYS.LITHOLOGIES) {
+        const lithologiesFields = ['primary_lithology', 'siliciclastic_type', 'mud_silt_grain_size', 'sand_grain_size',
+          'congl_grain_size', 'breccia_grain_size', 'dunham_classification', 'relative_resistance_weather'];
+        needToRecalculateIntervalGeometry = lithologiesFields.find(field => {
+          if ((sedData.lithologies && !sedDataSaved.lithologies)
+            || (!sedData.lithologies && sedDataSaved.lithologies)) return true;
+          if (sedData.lithologies && sedDataSaved.lithologies
+            && ((sedData.lithologies[0] && !sedDataSaved.lithologies[0])
+              || (!sedData.lithologies[0] && sedDataSaved.lithologies[0]))) return true;
+          if (sedData.lithologies && sedDataSaved.lithologies && sedData.lithologies[0] && sedDataSaved.lithologies[0]
+            && sedData.lithologies[0][field] && sedDataSaved.lithologies[0][field]
+            && sedData.lithologies[0][field] !== sedDataSaved.lithologies[0][field]) return true;
+          if (sedData.lithologies && sedDataSaved.lithologies
+            && ((sedData.lithologies[1] && !sedDataSaved.lithologies[1])
+              || (!sedData.lithologies[1] && sedDataSaved.lithologies[1]))) return true;
+          return sedData.lithologies && sedDataSaved.lithologies
+            && sedData.lithologies[1] && sedDataSaved.lithologies[1]
+            && sedData.lithologies[1][field] && sedDataSaved.lithologies[1][field]
+            && sedData.lithologies[1][field] !== sedDataSaved.lithologies[1][field];
+        });
+      }
+      // If current page is sed-bedding
+      else if (pageKey === PAGE_KEYS.BEDDING) {
+        const beddingFields = ['interbed_proportion_change', 'interbed_proportion', 'lithology_at_bottom_contact',
+          'lithology_at_top_contact', 'thickness_of_individual_beds', 'avg_thickness', 'max_thickness',
+          'min_thickness'];
+        needToRecalculateIntervalGeometry = beddingFields.find(field => {
+          if ((sedData.bedding && !sedDataSaved.bedding) || (!sedData.bedding && sedDataSaved.bedding)) return true;
+          if (sedData.bedding && sedDataSaved.bedding && ((sedData.bedding[field] && !sedDataSaved.bedding[field])
+            || (!sedData.bedding[field] && sedDataSaved.bedding[field]))) return true;
+          if (field !== 'avg_thickness' && field !== 'max_thickness' && field !== 'min_thickness') {
+            return sedData.bedding && sedDataSaved.bedding && sedData.bedding[field] && sedDataSaved.bedding[field]
+              && sedData.bedding[field] !== sedDataSaved.bedding[field];
+          }
+          if ((sedData.bedding.beds && !sedDataSaved.bedding.beds)
+            || (!sedData.bedding.beds && sedDataSaved.bedding.beds)) return true;
+          if (sedData.bedding.beds && sedDataSaved.bedding.beds
+            && ((sedData.bedding.beds[0] && !sedDataSaved.bedding.beds[0])
+              || (!sedData.bedding.beds[0] && sedDataSaved.bedding.beds[0]))) return true;
+          if (sedData.bedding.beds && sedDataSaved.bedding.beds
+            && sedData.bedding.beds[0] && sedDataSaved.bedding.beds[0]
+            && sedData.bedding.beds[0][field] && sedDataSaved.bedding.beds[0][field]
+            && sedData.bedding.beds[0][field] !== sedDataSaved.bedding.beds[0][field]) return true;
+          if (sedData.bedding.beds && sedDataSaved.bedding.beds
+            && ((sedData.bedding.beds[1] && !sedDataSaved.bedding.beds[1])
+              || (!sedData.bedding.beds[1] && sedDataSaved.bedding.beds[1]))) return true;
+          return sedData.bedding.beds && sedDataSaved.bedding.beds
+            && sedData.bedding.beds[1] && sedDataSaved.bedding.beds[1]
+            && sedData.bedding.beds[1][field] && sedDataSaved.bedding.beds[1][field]
+            && sedData.bedding.beds[1][field] !== sedDataSaved.bedding.beds[1][field];
+        });
+      }
+      if (needToRecalculateIntervalGeometry) {
+        spot = useStratSectionCalculations.recalculateIntervalGeometry(spot);
+        // Move above intervals up or down if interval thickness changed
+        if (sedData.interval && sedData.interval.interval_thickness && sedDataSaved.interval
+          && sedDataSaved.interval.interval_thickness) {
+          const targetIntervalExtent = turf.bbox(spot); //bbox extent in minX, minY, maxX, maxY order
+          const savedSpotIntervalExtent = turf.bbox(savedSpot);
+          const diff = targetIntervalExtent[3] - savedSpotIntervalExtent[3];
+          // Move above spots up
+          if (sedData.interval.interval_thickness > sedDataSaved.interval.interval_thickness) {
+            useStratSectionCalculations.moveSpotsUpOrDownByPixels(spot.properties.strat_section_id,
+              savedSpotIntervalExtent[3], diff, spot.properties.id);
+          }
+          // Move above spots down
+          else if (sedData.interval.interval_thickness < sedDataSaved.interval.interval_thickness) {
+            useStratSectionCalculations.moveSpotsUpOrDownByPixels(spot.properties.strat_section_id,
+              targetIntervalExtent[3], diff, spot.properties.id);
+          }
+        }
+      }
+    }
+    return spot;
+  };
 
   const createNewStratSection = (spot) => {
     let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
@@ -32,27 +170,28 @@ const useSed = () => {
   };
 
   const deleteSedFeature = (key, spot, selectedFeature) => {
-    if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) key = PAGE_KEYS.LITHOLOGIES;
-    else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) key = PAGE_KEYS.STRUCTURES;
-    else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) key = PAGE_KEYS.INTERPRETATIONS;
+    let pageKey = key;
+    if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) pageKey = PAGE_KEYS.LITHOLOGIES;
+    else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) pageKey = PAGE_KEYS.STRUCTURES;
+    else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) pageKey = PAGE_KEYS.INTERPRETATIONS;
 
     let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
-    if (!editedSedData[key]) editedSedData[key] = [];
-    if (key === PAGE_KEYS.STRAT_SECTION) {
+    if (!editedSedData[pageKey]) editedSedData[pageKey] = [];
+    if (pageKey === PAGE_KEYS.STRAT_SECTION) {
       // ToDo Check if any spots mapped on this strat section before deleting
       console.log('Delete not implemented yet.');
       Alert.alert('Notice', 'Unable to delete. This feature has not been implemented yet.');
     }
-    else if (key === PAGE_KEYS.BEDDING) {
-      if (editedSedData[key].beds) {
-        editedSedData[key].beds = editedSedData[key].beds.filter(type => type.id !== selectedFeature.id);
+    else if (pageKey === PAGE_KEYS.BEDDING) {
+      if (editedSedData[pageKey].beds) {
+        editedSedData[pageKey].beds = editedSedData[pageKey].beds.filter(type => type.id !== selectedFeature.id);
       }
-      if (isEmpty(editedSedData[key].beds)) delete editedSedData[key].beds;
-      if (isEmpty(editedSedData[key])) delete editedSedData[key];
+      if (isEmpty(editedSedData[pageKey].beds)) delete editedSedData[pageKey].beds;
+      if (isEmpty(editedSedData[pageKey])) delete editedSedData[pageKey];
     }
     else {
-      editedSedData[key] = editedSedData[key].filter(type => type.id !== selectedFeature.id);
-      if (isEmpty(editedSedData[key])) delete editedSedData[key];
+      editedSedData[pageKey] = editedSedData[pageKey].filter(type => type.id !== selectedFeature.id);
+      if (isEmpty(editedSedData[pageKey])) delete editedSedData[pageKey];
     }
     dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
@@ -109,51 +248,67 @@ const useSed = () => {
   };
 
   const saveSedFeature = async (key, spot, formCurrent, isLeavingPage, subKey) => {
-    if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) key = PAGE_KEYS.LITHOLOGIES;
-    else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) key = PAGE_KEYS.STRUCTURES;
-    else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) key = PAGE_KEYS.INTERPRETATIONS;
+    let pageKey = key;
+    if (Object.values(LITHOLOGY_SUBPAGES).includes(key)) pageKey = PAGE_KEYS.LITHOLOGIES;
+    else if (Object.values(STRUCTURE_SUBPAGES).includes(key)) pageKey = PAGE_KEYS.STRUCTURES;
+    else if (Object.values(INTERPRETATIONS_SUBPAGES).includes(key)) pageKey = PAGE_KEYS.INTERPRETATIONS;
 
     try {
       await formCurrent.submitForm();
       let editedFeatureData = useForm.showErrors(formCurrent, isLeavingPage);
-      console.log('Saving', key, 'data to Spot ...');
-      let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
+      let editedSpot = JSON.parse(JSON.stringify(spot));
+      let editedSedData = editedSpot.properties.sed ? editedSpot.properties.sed : {};
       if (subKey) {
-        if (!editedSedData[key]) editedSedData[key] = {};
-        if (!editedSedData[key][subKey]) editedSedData[key][subKey] = [];
-        let i = editedSedData[key][subKey].findIndex(b => b.id === editedFeatureData.id);
-        if (i === -1) i = editedSedData[key][subKey].length;
-        editedSedData[key][subKey].splice(i, 1, editedFeatureData);
+        if (!editedSedData[pageKey]) editedSedData[pageKey] = {};
+        if (!editedSedData[pageKey][subKey]) editedSedData[pageKey][subKey] = [];
+        let i = editedSedData[pageKey][subKey].findIndex(b => b.id === editedFeatureData.id);
+        if (i === -1) i = editedSedData[pageKey][subKey].length;
+        editedSedData[pageKey][subKey].splice(i, 1, editedFeatureData);
       }
-      else if (key === PAGE_KEYS.BEDDING) editedSedData[key] = editedFeatureData;
-      else if (key === PAGE_KEYS.INTERVAL) {
+      else if (pageKey === PAGE_KEYS.BEDDING) editedSedData[pageKey] = editedFeatureData;
+      else if (pageKey === PAGE_KEYS.INTERVAL) {
         const {character, ...intervalData} = editedFeatureData;
         if (character) editedSedData.character = character;
         else if (editedSedData.character) delete editedSedData.character;
         editedSedData.interval = intervalData;
       }
-      else if (key === PAGE_KEYS.STRAT_SECTION) {
-        editedSedData[key] = Object.entries(editedSedData[key]).reduce((acc, [k, v]) => {
+      else if (pageKey === PAGE_KEYS.STRAT_SECTION) {
+        editedSedData[pageKey] = Object.entries(editedSedData[pageKey]).reduce((acc, [k, v]) => {
           return k === 'strat_section_id' || k === 'images' ? {...acc, [k]: v} : acc;
         }, {});
-        editedSedData[key] = {...editedSedData[key], ...editedFeatureData};
+        editedSedData[pageKey] = {...editedSedData[pageKey], ...editedFeatureData};
       }
       else {
-        if (!editedSedData[key] || !Array.isArray(editedSedData[key])) editedSedData[key] = [];
-        let i = editedSedData[key].findIndex(b => b.id === editedFeatureData.id);
-        if (i === -1) i = editedSedData[key].length;
-        editedSedData[key].splice(i, 1, editedFeatureData);
+        if (!editedSedData[pageKey] || !Array.isArray(editedSedData[pageKey])) editedSedData[pageKey] = [];
+        let i = editedSedData[pageKey].findIndex(b => b.id === editedFeatureData.id);
+        if (i === -1) i = editedSedData[pageKey].length;
+        editedSedData[pageKey].splice(i, 1, editedFeatureData);
       }
-      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+
+      // Validate more conditions for Sed
+      useSedValidation.validateSedData(editedSpot, pageKey);
+
+      // Update geometry if Interval
+      if (useSpots.isStratInterval(spot)) {
+        const updatedSpot = checkForIntervalUpdates(pageKey, editedSpot, spot);
+        console.log('Saving', pageKey, 'data to Spot ...');
+        dispatch(addedSpot(updatedSpot));
+      }
+      // Update Sed data
+      else {
+        console.log('Saving', pageKey, 'data to Spot ...');
+        dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+      }
 
       // Update strat section for map if matches edited strat section
       const stratSectionSettings = editedSedData.strat_section || {};
-      if (stratSectionSettings.strat_section_id && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
+      if (stratSectionSettings.strat_section_id
+        && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
         dispatch(setStratSection(stratSectionSettings));
       }
     }
     catch (err) {
-      console.log('Error saving', key, err);
+      console.log('Error saving', pageKey, err);
       throw Error;
     }
   };

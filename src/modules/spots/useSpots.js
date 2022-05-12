@@ -449,6 +449,10 @@ const useSpots = () => {
     return Object.values(activeSpots).filter(spot => spot?.properties?.sed?.strat_section);
   };
 
+  const isStratInterval = (spot) => {
+    return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
+  };
+
   return [{
     checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
@@ -475,6 +479,7 @@ const useSpots = () => {
     getSpotsWithSamples: getSpotsWithSamples,
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
+    isStratInterval: isStratInterval,
   }];
 };
 

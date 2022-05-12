@@ -971,9 +971,7 @@ const Map = React.forwardRef((props, ref) => {
       setDisplayedSpots([editingModeData.spotEditing]);
       await dispatch(setSelectedSpot(editingModeData.spotEditing));
     }
-    if (!isEmpty(editingModeData.spotsEdited)) {
-      dispatch(addedSpots([...editingModeData.spotsNotEdited, ...editingModeData.spotsEdited]));
-    }
+    if (!isEmpty(editingModeData.spotsEdited)) dispatch(addedSpots(editingModeData.spotsEdited));
     clearEditing();
   };
 
