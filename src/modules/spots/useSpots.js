@@ -380,7 +380,7 @@ const useSpots = () => {
       else if (spot.properties?.strat_section_id) return require('../../assets/icons/StratLine_pressed.png');
       else return require('../../assets/icons/Line_pressed.png');
     }
-    else if (spot?.geometry?.type === 'Polygon') {
+    else if (spot?.geometry?.type === 'Polygon' || spot?.geometry?.type === 'GeometryCollection') {
       if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePolygon_pressed.png');
       else if (spot.properties?.strat_section_id) return require('../../assets/icons/StratPolygon_pressed.png');
       else return require('../../assets/icons/Polygon_pressed.png');
