@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
+import {ActivityIndicator, Platform, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
 
 import {Image} from 'react-native-elements';
 

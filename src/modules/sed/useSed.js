@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId, getNewUUID, isEmpty, toTitleCase, roundToDecimalPlaces} from '../../shared/Helpers';
+import {getNewId, getNewUUID, isEmpty, roundToDecimalPlaces, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {setStratSection} from '../maps/maps.slice';
 import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';

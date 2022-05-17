@@ -52,7 +52,7 @@ const useUpload = () => {
     }
     catch (err) {
       dispatch(addedStatusMessage('----------'));
-      dispatch(addedStatusMessage('Upload Failed!' ));
+      dispatch(addedStatusMessage('Upload Failed!'));
       console.error('Upload Failed!', err);
     }
     dispatch(setLoadingStatus({view: 'modal', bool: false}));

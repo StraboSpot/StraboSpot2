@@ -608,7 +608,7 @@ const Home = () => {
       />
       <View style={uiStyles.iconContainer}>
         {Platform.OS === 'ios' && <BatteryInfo/>}
-        <ConnectionStatus />
+        <ConnectionStatus/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <ToastPopup toastRef={toastRef}/>

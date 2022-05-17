@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Image, Text, View} from 'react-native';
+import React from 'react';
+import {Image, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -20,13 +20,13 @@ const ConnectionStatus = (props) => {
 
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    <Image
-      source={getNetworkStatusIcon()}
-      style={uiStyles.offlineIcon}
-    />
-    {/*<Text>Is Online: {isOnline?.isInternetReachable?.toString()} </Text>*/}
-    {/*<Text>Is Connected: {isOnline?.isConnected?.toString()}</Text>*/}
-  </View>
+      <Image
+        source={getNetworkStatusIcon()}
+        style={uiStyles.offlineIcon}
+      />
+      {/*<Text>Is Online: {isOnline?.isInternetReachable?.toString()} </Text>*/}
+      {/*<Text>Is Connected: {isOnline?.isConnected?.toString()}</Text>*/}
+    </View>
   );
 };
 

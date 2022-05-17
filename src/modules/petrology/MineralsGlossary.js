@@ -31,7 +31,7 @@ const MineralsGlossary = (props) => {
           />
           <Button
             titleStyle={styles.buttonText}
-            title='Add Mineral'
+            title={'Add Mineral'}
             type={'clear'}
             onPress={() => props.addMineral(activeMineralInfo)}
           />

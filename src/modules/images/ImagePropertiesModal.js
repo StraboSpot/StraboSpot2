@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';

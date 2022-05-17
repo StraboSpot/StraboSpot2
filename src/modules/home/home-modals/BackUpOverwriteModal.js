@@ -59,7 +59,7 @@ const BackUpOverwriteModal = (props) => {
               textStyle={styles.dialogButtonText}
             />
             <DialogButton
-              text='CANCEL'
+              text={'CANCEL'}
               onPress={() => cancel()}
               style={styles.dialogButton}
               textStyle={[styles.dialogButtonText, {color: 'red'}]}

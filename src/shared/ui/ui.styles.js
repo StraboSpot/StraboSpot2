@@ -1,9 +1,9 @@
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import * as themes from '../styles.constants';
 
 const styles = StyleSheet.create({
-  accessPointIcon:{
+  accessPointIcon: {
     height: 30,
     width: 30,
   },

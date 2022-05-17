@@ -6,6 +6,7 @@ import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
 import {
@@ -27,7 +28,6 @@ import {
   setCurrentBasemap,
   setMapSymbols,
 } from './maps.slice';
-import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
 
 const useMaps = (mapRef) => {
   const [useServerRequests] = useServerRequestsHook();
@@ -189,11 +189,10 @@ const useMaps = (mapRef) => {
   };
 
   const getBboxCoords = async (map) => {
-      if (map.source === 'strabospot_mymaps') {
-        const myMapsBbox = await useServerRequests.getMyMapsBbox(map.id);
-        if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
-      }
-      return;
+    if (map.source === 'strabospot_mymaps') {
+      const myMapsBbox = await useServerRequests.getMyMapsBbox(map.id);
+      if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
+    }
   };
 
   const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
@@ -498,39 +497,39 @@ const useMaps = (mapRef) => {
   const isOnStratSection = (feature) => feature.properties?.strat_section_id;
 
   const saveCustomMap = async (map) => {
-      let mapId = map.id;
-      let customMap = {};
-      const providerInfo = getProviderInfo(map.source);
-      let bbox = '';
-      // Pull out mapbox styles map id
-      if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
-        mapId = map.id.split('/').slice(3).join('/');
-      }
-      customMap = {...map, ...providerInfo, id: mapId, source: map.source};
-      const tileUrl = buildTileUrl(customMap);
-      let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
-      if (map.source === 'strabospot_mymaps') testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
-      console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
+    let mapId = map.id;
+    let customMap = {};
+    const providerInfo = getProviderInfo(map.source);
+    let bbox = '';
+    // Pull out mapbox styles map id
+    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
+      mapId = map.id.split('/').slice(3).join('/');
+    }
+    customMap = {...map, ...providerInfo, id: mapId, source: map.source};
+    const tileUrl = buildTileUrl(customMap);
+    let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
+    if (map.source === 'strabospot_mymaps') testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
+    console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
-      const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
-      console.log('RES', testUrlResponse);
-      if (testUrlResponse) {
-        if (!customMap.bbox) bbox = await getBboxCoords(map);
-        if (map.overlay && map.id === currentBasemap.id) {
-          console.log(('Setting Basemap to Mapbox Topo...'));
-          setBasemap(null);
-        }
-        if (project.other_maps) {
-          const otherMapsInProject = project.other_maps;
-          if (customMap.source !== 'mapbox_styles') delete customMap.key;
-          dispatch(updatedProject(
-            {field: 'other_maps', value: [...otherMapsInProject, customMap]}));
-        }
-        else dispatch(updatedProject({field: 'other_maps', value: [map]}));
-        dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
-        return customMap;
+    const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+    console.log('RES', testUrlResponse);
+    if (testUrlResponse) {
+      if (!customMap.bbox) bbox = await getBboxCoords(map);
+      if (map.overlay && map.id === currentBasemap.id) {
+        console.log(('Setting Basemap to Mapbox Topo...'));
+        setBasemap(null);
       }
-      else throw (customMap.id);
+      if (project.other_maps) {
+        const otherMapsInProject = project.other_maps;
+        if (customMap.source !== 'mapbox_styles') delete customMap.key;
+        dispatch(updatedProject(
+          {field: 'other_maps', value: [...otherMapsInProject, customMap]}));
+      }
+      else dispatch(updatedProject({field: 'other_maps', value: [map]}));
+      dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
+      return customMap;
+    }
+    else throw (customMap.id);
   };
 
   // Create a point feature at the current location

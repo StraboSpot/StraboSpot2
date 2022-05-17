@@ -2,15 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {configureStore} from '@reduxjs/toolkit';
 import {combineReducers} from 'redux';
 import {createLogger} from 'redux-logger';
-import {
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
+import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
 
 import compassSlice from '../modules/compass/compass.slice';
 import homeSlice from '../modules/home/home.slice';

@@ -103,7 +103,7 @@ const OTHER_MODALS = [
     key: MODAL_KEYS.OTHER.DAILY_NOTES,
     label: 'Daily Notes',
     modal_component: DailyNotesModal,
-  },{
+  }, {
     key: MODAL_KEYS.OTHER.ADD_INTERVAL,
     label: 'Add Interval',
     modal_component: AddIntervalModal,

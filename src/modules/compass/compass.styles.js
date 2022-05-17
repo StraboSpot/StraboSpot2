@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
     // textAlign: 'center',
   },
   compassMatrixHeader: {
-      textAlign: 'center',
+    textAlign: 'center',
     fontWeight: 'bold',
-    marginBottom: 5
+    marginBottom: 5,
   },
   compassImage: {
     marginTop: 15,

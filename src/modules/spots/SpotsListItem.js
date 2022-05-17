@@ -58,7 +58,7 @@ const SpotsListItem = (props) => {
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
-      keyExtractor={(item, index) => item?.properties?.id?.toString() ||  index.toString()}
+      keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
       onPress={() => props.onPress(props.spot)}
     >
       <Avatar source={useSpots.getSpotGemometryIconSource(props.spot)}

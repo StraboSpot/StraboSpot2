@@ -6,7 +6,6 @@ import {
   clearedStatusMessages,
   removedLastStatusMessage,
   setLoadingStatus,
-  setProjectLoadComplete,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
@@ -15,8 +14,8 @@ import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.sli
 import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
 import {addedCustomMap, clearedMaps} from '../modules/maps/maps.slice';
 import {
-  addedProject,
   addedNeededImagesToDataset,
+  addedProject,
   addedSpotsIdsToDataset,
   clearedDatasets,
   setActiveDatasets,

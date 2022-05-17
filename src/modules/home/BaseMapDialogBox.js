@@ -116,13 +116,15 @@ const BaseMapDialog = props => {
       key={customMap.id}
       onPress={() => setBaseMap(customMap)}>
       <ListItem.Content style={{}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name || truncateText(customMap.id, 16)} -
-          ({customMap.source || customMap.sources['raster-tiles'].type})</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>
+          {customMap.title || customMap.name || truncateText(customMap.id, 16)} -
+          ({customMap.source || customMap.sources['raster-tiles'].type})
+        </ListItem.Title>
         {!isOnline.isInternetReachable
-        && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
+          && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
       </ListItem.Content>
       {currentBasemap && customMap.id === currentBasemap.id
-      && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
     </ListItem>
   );
 
@@ -135,10 +137,10 @@ const BaseMapDialog = props => {
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
         {!isOnline.isInternetReachable
-        && <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>}
+          && <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>}
       </ListItem.Content>
       {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
-      && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
     </ListItem>
   );
 
@@ -156,7 +158,7 @@ const BaseMapDialog = props => {
         <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
           ({customMap.source})</ListItem.Title>
         {!isOnline.isInternetReachable
-        && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
+          && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
       </ListItem.Content>
       <Switch
         style={{marginRight: 10}}
@@ -174,7 +176,8 @@ const BaseMapDialog = props => {
     }
     else {
       await useMapsOffline.setOfflineMapTiles(customMap);
-      offlineMaps[customMap.id].bbox && setTimeout(() => props.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
+      offlineMaps[customMap.id].bbox
+      && setTimeout(() => props.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
     }
   };
 

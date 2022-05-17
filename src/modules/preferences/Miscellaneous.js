@@ -82,7 +82,7 @@ const Miscellaneous = () => {
         Data saved under pages that are in testing may NOT be compatible with future versions of StraboSpot.
       </Text>
       <Input
-        placeholder="Password"
+        placeholder={'Password'}
         secureTextEntry={true}
         defaultValue={''}
         onChangeText={userEntry}

@@ -46,8 +46,8 @@ const AddRemoveTagFeatures = () => {
           </ListItem.Content>
           <ListItem.CheckBox
             checked={!isEmpty(selectedTag) && !isEmpty(selectedTag.features)
-            && !isEmpty(selectedTag.features[spotId])
-            && selectedTag.features[spotId].includes(feature.id)}
+              && !isEmpty(selectedTag.features[spotId])
+              && selectedTag.features[spotId].includes(feature.id)}
             onPress={() => useTags.addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
           />
         </ListItem>

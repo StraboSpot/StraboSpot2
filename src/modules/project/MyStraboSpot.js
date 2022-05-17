@@ -55,7 +55,7 @@ const MyStraboSpot = props => {
               <ProjectList source={'device'}/>
               <View style={{marginBottom: 20}}>
                 <ActiveProjectList/>
-                {Platform.OS === 'ios'  && <Button
+                {Platform.OS === 'ios' && <Button
                   title={'View/Edit Files on Device'}
                   type={'outline'}
                   containerStyle={commonStyles.buttonPadding}

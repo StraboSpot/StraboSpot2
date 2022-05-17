@@ -1,11 +1,7 @@
 import React, {useRef} from 'react';
 import {ScrollView} from 'react-native';
 
-import Dialog, {
-  DialogTitle,
-  DialogContent,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import Dialog, {DialogContent, DialogTitle, FadeAnimation} from 'react-native-popup-dialog';
 
 import styles from '../../shared/common.styles';
 

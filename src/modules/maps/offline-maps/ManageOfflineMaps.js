@@ -115,7 +115,7 @@ const ManageOfflineMaps = (props) => {
           close={() => setIsNameModalVisible(false)}
           value={selectedMap.name}
           onChangeText={(text) => setSelectedMap({...selectedMap, name: text})}
-         />
+        />
       </View>
     );
   };
@@ -162,8 +162,8 @@ const ManageOfflineMaps = (props) => {
                   <Animated.View style={{transform: [{scale: animatedPulse}]}}>
                     <Icon
                       containerStyle={{margin: 5}}
-                      name='alert'
-                      type='material-community'
+                      name={'alert'}
+                      type={'material-community'}
                       size={17}
                       color={'red'}
                     />

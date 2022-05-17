@@ -22,7 +22,7 @@ const tileCount = tilehost + '/zipcount';
 export const APP_DIRECTORIES = {
   ROOT_PATH: devicePath,
   APP_DIR: appDirectory,
-  BACKUP_DIR:  appDirectoryForDistributedBackups,
+  BACKUP_DIR: appDirectoryForDistributedBackups,
   SHARED_DOCUMENTS_PATH_IOS: sharedDocumentsPathIOS,
   IMAGES: imagesDirectory,
   TILE_CACHE: tileCacheDirectory,

@@ -19,7 +19,7 @@ function FeatureTagsList(props) {
       {!isEmpty(tagsString) && (
         <View style={{
           flexDirection: 'row',
-          paddingTop:5,
+          paddingTop: 5,
         }}>
           <Avatar
             source={useSpots.getSpotDataIconSource('tags')}

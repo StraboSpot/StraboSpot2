@@ -72,23 +72,23 @@ const MapSymbolsDialog = (props) => {
       visible={props.visible}
       dialogTitle={
         <DialogTitle
-          title='Map Symbols'
+          title={'Map Symbols'}
           style={dialogStyles.dialogTitle}
           textStyle={dialogStyles.dialogTitleText}
         />}
       onTouchOutside={props.onTouchOutside}
     >
       <DialogContent>
-        {!isEmpty(mapSymbols)
-        && <View style={{maxHeight: deviceHeight * 0.60}}>
-          <FlatList
-            keyExtractor={item => item}
-            data={mapSymbols}
-            renderItem={renderSymbolsList}
-            ItemSeparatorComponent={FlatListItemSeparator}
-          />
-        </View>
-        }
+        {!isEmpty(mapSymbols) && (
+          <View style={{maxHeight: deviceHeight * 0.60}}>
+            <FlatList
+              keyExtractor={item => item}
+              data={mapSymbols}
+              renderItem={renderSymbolsList}
+              ItemSeparatorComponent={FlatListItemSeparator}
+            />
+          </View>
+        )}
         <ListItem key={'all'} containerStyle={{...dialogStyles.dialogContent, paddingTop: 40}}>
           <ListItem.Content>
             <ListItem.Title style={dialogStyles.dialogLargerText}>{'All Symbols'}</ListItem.Title>

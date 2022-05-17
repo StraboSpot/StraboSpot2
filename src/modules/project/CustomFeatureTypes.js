@@ -92,8 +92,8 @@ const CustomFeatureTypes = () => {
         renderItem={(item) => renderFeature(item.item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No custom feature types added yet. '
-        + 'Add a custom feature type in Other Features tab of a spot by selecting'
-        + ' the type \'other\' when adding a feature.'}/>}
+          + 'Add a custom feature type in Other Features tab of a spot by selecting'
+          + ' the type \'other\' when adding a feature.'}/>}
       />
     </React.Fragment>
   );

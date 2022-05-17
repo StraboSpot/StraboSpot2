@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import {useNetInfo} from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useDispatch, useSelector} from 'react-redux';

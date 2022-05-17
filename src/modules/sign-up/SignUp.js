@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
 import {Button, CheckBox} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
@@ -13,10 +12,8 @@ import {validate} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
-import {setOnlineStatus} from '../home/home.slice';
 import styles from './signUp.styles';
 
-const checkMark = {type: 'feather', name: 'check', color: 'green'};
 const {State: TextInputState} = TextInput;
 
 const SignUp = (props) => {
@@ -67,7 +64,6 @@ const SignUp = (props) => {
   const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
   const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
-  const dispatch = useDispatch();
   const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
@@ -193,14 +189,14 @@ const SignUp = (props) => {
     return (
       <View>
         <Button
-          title='Sign Up'
+          title={'Sign Up'}
           buttonStyle={styles.buttonStyle}
           containerStyle={styles.buttonContainer}
           disabled={!isOnline.isInternetReachable}
           onPress={signUp}
         />
         <Button
-          title='Back to Sign In'
+          title={'Back to Sign In'}
           buttonStyle={styles.buttonStyle}
           containerStyle={styles.buttonContainer}
           onPress={() => props.navigation.navigate('SignIn')}
@@ -232,19 +228,19 @@ const SignUp = (props) => {
               <View style={{flexDirection: 'row'}}>
                 <TextInput
                   style={styles.input}
-                  placeholder='First Name'
-                  autoCapitalize='none'
+                  placeholder={'First Name'}
+                  autoCapitalize={'none'}
                   autoCorrect={false}
-                  placeholderTextColor='#6a777e'
+                  placeholderTextColor={'#6a777e'}
                   onChangeText={val => onChangeText('firstName', val)}
                   value={userData.firstName.value}
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder='Last Name'
-                  autoCapitalize='none'
+                  placeholder={'Last Name'}
+                  autoCapitalize={'none'}
                   autoCorrect={false}
-                  placeholderTextColor='#6a777e'
+                  placeholderTextColor={'#6a777e'}
                   onChangeText={val => onChangeText('lastName', val)}
                   value={userData.lastName.value}
                 />
@@ -255,19 +251,19 @@ const SignUp = (props) => {
               <View style={{flexDirection: 'row'}}>
                 <TextInput
                   style={styles.input}
-                  placeholder='Password'
-                  autoCapitalize='none'
+                  placeholder={'Password'}
+                  autoCapitalize={'none'}
                   autoCorrect={false}
-                  placeholderTextColor='#6a777e'
+                  placeholderTextColor={'#6a777e'}
                   onChangeText={val => onChangeText('password', val)}
                   value={userData.password.value}
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder='Confirm Password'
-                  autoCapitalize='none'
+                  placeholder={'Confirm Password'}
+                  autoCapitalize={'none'}
                   autoCorrect={false}
-                  placeholderTextColor='#6a777e'
+                  placeholderTextColor={'#6a777e'}
                   secureTextEntry={!userData.password.showPassword}
                   onChangeText={val => onChangeText('confirmPassword', val)}
                   value={userData.confirmPassword.value}
@@ -287,10 +283,10 @@ const SignUp = (props) => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder='Email'
-                autoCapitalize='none'
+                placeholder={'Email'}
+                autoCapitalize={'none'}
                 autoCorrect={false}
-                placeholderTextColor='#6a777e'
+                placeholderTextColor={'#6a777e'}
                 onChangeText={val => onChangeText('email', val)}
                 value={userData.email.value}
               />

@@ -17,13 +17,13 @@ const offlineMapsSlice = createSlice({
     addMapFromDevice(state, action) {
       state.offlineMaps = {...state.offlineMaps, ...action.payload};
     },
-    clearedMapsFromRedux (state, action) {
+    clearedMapsFromRedux(state, action) {
       state.offlineMaps = initialOfflineMapsState.offlineMaps;
     },
     deletedOfflineMap(state, action) {
       delete state.offlineMaps[action.payload];
     },
-    editedOfflineMap (state, action) {
+    editedOfflineMap(state, action) {
       state.offlineMaps[action.payload.id].name = action.payload.name;
     },
     setOfflineMap(state, action) {

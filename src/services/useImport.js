@@ -6,9 +6,9 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setStatusMessagesModalVisible,
-  setLoadingStatus,
   setErrorMessagesModalVisible,
+  setLoadingStatus,
+  setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
@@ -141,7 +141,7 @@ const useImport = () => {
               await unzip(source, dest);
               console.log('unzip completed', file, 'to destination:', dest);
             }
-            else {console.log('its not a zip file');}
+            else console.log('its not a zip file');
           }),
         );
       }

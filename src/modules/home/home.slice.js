@@ -104,7 +104,7 @@ const homeSlice = createSlice({
     },
     setWarningModalVisible(state, action) {
       state.isWarningMessagesModalVisible = action.payload;
-    }
+    },
   },
 });
 

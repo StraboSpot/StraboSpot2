@@ -3,10 +3,10 @@ import {View} from 'react-native';
 
 import {Input} from 'react-native-elements';
 import Dialog, {
-  DialogTitle,
-  DialogContent,
   DialogButton,
+  DialogContent,
   DialogFooter,
+  DialogTitle,
   FadeAnimation,
 } from 'react-native-popup-dialog';
 

@@ -59,7 +59,7 @@ const MeasurementsPage = (props) => {
 
   useEffect(() => {
     console.log('UE MeasurementsPage [selectedAttributes, spot]', selectedAttributes, spot);
-    if (!isMultipleFeaturesTaggingEnabled && selectedAttributes?.length > 0) {setIsDetailView(true)}
+    if (!isMultipleFeaturesTaggingEnabled && selectedAttributes?.length > 0) setIsDetailView(true);
   }, [selectedAttributes, spot]);
 
   // Create a new measurement on grabbing new compass measurements

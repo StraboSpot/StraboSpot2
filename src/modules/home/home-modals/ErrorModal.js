@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
-import {setErrorMessagesModalVisible, setStatusMessagesModalVisible} from '../home.slice';
+import {setErrorMessagesModalVisible} from '../home.slice';
 
 
 const ErrorModal = () => {

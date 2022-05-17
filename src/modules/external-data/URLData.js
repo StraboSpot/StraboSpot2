@@ -65,10 +65,10 @@ const UrlData = (props) => {
               onPress={() => editUrl(urlItem, i)}
               icon={
                 <Icon
-                  name='edit'
+                  name={'edit'}
                   type={'material'}
                   size={20}
-                  color='darkgrey'
+                  color={'darkgrey'}
                   containerStyle={externalDataStyles.iconContainer}
                 />
               }
@@ -80,10 +80,10 @@ const UrlData = (props) => {
                 onPress={() => props.initializeDelete('url', urlItem)}
                 icon={
                   <Icon
-                    name='trash'
+                    name={'trash'}
                     type={'font-awesome'}
                     size={20}
-                    color='darkgrey'
+                    color={'darkgrey'}
                     containerStyle={externalDataStyles.iconContainer}
                   />
                 }

@@ -27,7 +27,7 @@ const UploadDialogBox = (props) => {
         footer={
           <DialogFooter>
             <DialogButton
-              text='CANCEL'
+              text={'CANCEL'}
               onPress={props.cancel}
               style={styles.dialogButton}
               textStyle={[styles.dialogButtonText, {color: 'red'}]}

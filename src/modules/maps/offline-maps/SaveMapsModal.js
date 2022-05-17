@@ -292,7 +292,7 @@ const SaveMapsModal = (props) => {
                   {isLoadingWave
                     ? (
                       <View style={{paddingBottom: 35}}>
-                        <ActivityIndicator size='large' color={themes.BLACK}/>
+                        <ActivityIndicator size={'large'} color={themes.BLACK}/>
                       </View>
                     ) : (
                       <View>
@@ -338,9 +338,8 @@ const SaveMapsModal = (props) => {
               {showMainMenu && (
                 <View>
                   {isLoadingCircle
-                  ? (
-                      <ActivityIndicator size={'large'} color={themes.BLACK}/>
-                    ) : (
+                    ? <ActivityIndicator size={'large'} color={themes.BLACK}/>
+                     : (
                       <Button
                         onPress={() => saveMap()}
                         type={'clear'}

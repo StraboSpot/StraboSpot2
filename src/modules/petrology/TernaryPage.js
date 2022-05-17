@@ -43,17 +43,18 @@ const TernaryPage = (props) => {
       <ReturnToOverviewButton/>
       <SectionDivider dividerText={'Ternary'}/>
       {!((ternary.q > 0 && ternary.a > 0 && ternary.p > 0)
-        || (ternary.a > 0 && ternary.p > 0 && ternary.f > 0)
-        || (ternary.ol > 0 && ternary.opx > 0 && ternary.cpx > 0)
-        || (ternary.ol > 0 && ternary.cpx > 0 && ternary.p > 0)
-        || (ternary.ol > 0 && ternary.pyx > 0 && ternary.hbl > 0))
-      && (
-        <View style={{padding: 10}}>
-          <Text>No calculations to display. Add relevant minerals with modal percents to the Minerals list to calculate
-            QAP, APF, Ultramafics (Ol, Opx, Cpx), Ultramafics (Ol, Cpx, Plag) and Ultramafics (Ol, Pyx, Hbl).
-          </Text>
-        </View>
-      )}
+          || (ternary.a > 0 && ternary.p > 0 && ternary.f > 0)
+          || (ternary.ol > 0 && ternary.opx > 0 && ternary.cpx > 0)
+          || (ternary.ol > 0 && ternary.cpx > 0 && ternary.p > 0)
+          || (ternary.ol > 0 && ternary.pyx > 0 && ternary.hbl > 0))
+        && (
+          <View style={{padding: 10}}>
+            <Text>
+              No calculations to display. Add relevant minerals with modal percents to the Minerals list to calculate
+              QAP, APF, Ultramafics (Ol, Opx, Cpx), Ultramafics (Ol, Cpx, Plag) and Ultramafics (Ol, Pyx, Hbl).
+            </Text>
+          </View>
+        )}
       {ternary.q > 0 && ternary.a > 0 && ternary.p > 0 && (
         <ListItem>
           <ListItem.Content>

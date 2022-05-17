@@ -2,9 +2,9 @@ import React from 'react';
 
 import Dialog, {
   DialogButton,
+  DialogContent,
   DialogFooter,
   DialogTitle,
-  DialogContent,
   FadeAnimation,
 } from 'react-native-popup-dialog';
 

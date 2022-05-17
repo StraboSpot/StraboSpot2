@@ -78,7 +78,8 @@ const useStratSection = (props) => {
     });
     if (!isEmpty(lithologiesFields)) geojsonObj.properties.sed.lithologies = lithologiesFields;
 
-    geojsonObj.geometry = useStratSectionCalculations.calculateIntervalGeometry(stratSectionId, geojsonObj.properties.sed);
+    geojsonObj.geometry = useStratSectionCalculations.calculateIntervalGeometry(stratSectionId,
+      geojsonObj.properties.sed);
     return geojsonObj;
   };
 

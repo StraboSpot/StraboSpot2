@@ -106,7 +106,7 @@ const NotebookHeader = (props) => {
   const renderCoordsText = () => {
     return (
       <Button
-        type="clear"
+        type={'clear'}
         title={getSpotCoordText()}
         titleStyle={{textAlign: 'left', color: PRIMARY_TEXT_COLOR}}
         buttonStyle={{padding: 0, justifyContent: 'flex-start'}}
@@ -120,7 +120,7 @@ const NotebookHeader = (props) => {
       <View style={{flexDirection: 'row'}}>
         {!spot.properties.trace && !spot.properties.surface_feature && (
           <Button
-            type="clear"
+            type={'clear'}
             title={'Set To Current Location'}
             titleStyle={{fontSize: 14, color: PRIMARY_TEXT_COLOR}}
             buttonStyle={{padding: 0, paddingRight: 15}}
@@ -128,7 +128,7 @@ const NotebookHeader = (props) => {
           />
         )}
         <Button
-          type="clear"
+          type={'clear'}
           title={'Set in Current View'}
           titleStyle={{fontSize: 14, color: PRIMARY_TEXT_COLOR}}
           buttonStyle={{padding: 0}}
@@ -151,9 +151,9 @@ const NotebookHeader = (props) => {
     dispatch(setSelectedSpot(editedSpot));
   };
 
-  const toFixedIfNecessary = ( value, dp ) => {
-    return +parseFloat(value).toFixed( dp );
-  }
+  const toFixedIfNecessary = (value, dp) => {
+    return +parseFloat(value).toFixed(dp);
+  };
 
   return (
     <React.Fragment>

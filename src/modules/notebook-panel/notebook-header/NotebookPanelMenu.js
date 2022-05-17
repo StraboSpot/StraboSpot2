@@ -41,7 +41,7 @@ const NotebookPanelMenu = (props) => {
       onTouchOutside={props.onTouchOutside}
       dialogTitle={
         <DialogTitle
-          title='Spot Actions'
+          title={'Spot Actions'}
           style={styles.dialogTitle}
           textStyle={styles.dialogTitleText}
         />
@@ -49,7 +49,7 @@ const NotebookPanelMenu = (props) => {
     >
       <DialogContent>
         <DialogButton
-          text='Copy this Spot'
+          text={'Copy this Spot'}
           textStyle={styles.dialogText}
           onPress={() => {
             useSpots.copySpot().catch(err => console.log('Error copying Spot!', err));
@@ -59,7 +59,7 @@ const NotebookPanelMenu = (props) => {
         />
         <DialogButton
           style={styles.dialogContent}
-          text='Zoom to this Spot'
+          text={'Zoom to this Spot'}
           textStyle={styles.dialogText}
           onPress={() => {
             props.zoomToSpot();
@@ -68,7 +68,7 @@ const NotebookPanelMenu = (props) => {
         />
         <DialogButton
           style={styles.dialogContent}
-          text='Delete this Spot'
+          text={'Delete this Spot'}
           textStyle={styles.dialogText}
           onPress={() => {
             deleteSelectedSpot();
@@ -77,7 +77,7 @@ const NotebookPanelMenu = (props) => {
         />
         <DialogButton
           style={styles.dialogContent}
-          text='Show Nesting'
+          text={'Show Nesting'}
           textStyle={styles.dialogText}
           onPress={() => {
             dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
@@ -86,7 +86,7 @@ const NotebookPanelMenu = (props) => {
         />
         <DialogButton
           style={styles.dialogContent}
-          text='Close Notebook'
+          text={'Close Notebook'}
           textStyle={styles.dialogText}
           onPress={async () => {
             await props.closeNotebookPanelMenu();

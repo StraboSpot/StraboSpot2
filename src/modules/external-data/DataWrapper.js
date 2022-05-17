@@ -41,10 +41,20 @@ function DataWrapper(props) {
 
   return (
     <View>
-      {props.urlData && <UrlData spot={props.spot} editable={props.editable}
-                                 initializeDelete={(type, item) => initializeDelete(type, item)}/>}
-      {!props.urlData && <TablesData spot={props.spot} editable={props.editable}
-                                 initializeDelete={(type, item) => initializeDelete(type, item)}/>}
+      {props.urlData && (
+        <UrlData
+          spot={props.spot}
+          editable={props.editable}
+          initializeDelete={(type, item) => initializeDelete(type, item)}
+        />
+      )}
+      {!props.urlData && (
+        <TablesData
+          spot={props.spot}
+          editable={props.editable}
+          initializeDelete={(type, item) => initializeDelete(type, item)}
+        />
+      )}
       {!isEmpty(itemToDelete) && renderDeleteConformation()}
     </View>
   );
