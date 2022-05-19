@@ -51,7 +51,7 @@ const useStratSectionCalculations = (props) => {
       interbedHeight2 = interbedHeight2 > y2 ? interbedHeight2 : y2;
       const interbedHeight1 = intervalHeight - interbedHeight2;                             // primary interbed
 
-      const numInterbeds2 = interbedHeight2 / y2;
+      const numInterbeds2 = Math.min(interbedHeight2 / y2, 3); // Draw a max of 3 beds per lithology
       const y1 = interbedHeight1 / numInterbeds2; // assume an equal number of beds for both lithologies so beds alternate
 
       const interbedIntervalWidth = getIntervalWidth(sedData, stratSectionId, true);
