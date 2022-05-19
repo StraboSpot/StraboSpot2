@@ -207,14 +207,14 @@ const useMaps = (mapRef) => {
     return [minDistance, minIndex];
   };
 
-  // Identify the coordinate span for the for the image basemap.
-  const getCoordQuad = (imageBasemapProps) => {
+  // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
+  const getCoordQuad = (imageBasemapProps, [x = 0, y = 0]) => {
     // identify the [lat,lng] corners of the image basemap
-    const bottomLeft = [0, 0];
-    const bottomRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width, 0]);
+    const bottomLeft = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [x, y]);
+    const bottomRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width + x, y]);
     const topRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-      [imageBasemapProps.width, imageBasemapProps.height]);
-    const topLeft = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [0, imageBasemapProps.height]);
+      [imageBasemapProps.width + x, imageBasemapProps.height + y]);
+    const topLeft = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [x, imageBasemapProps.height + y]);
     let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;

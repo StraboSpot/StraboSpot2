@@ -1,0 +1,281 @@
+import React, {useRef} from 'react';
+import {Alert, Platform, View} from 'react-native';
+
+import {Field, Formik} from 'formik';
+import {Button, ListItem} from 'react-native-elements';
+import {useDispatch, useSelector} from 'react-redux';
+
+import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
+import {WARNING_COLOR} from '../../shared/styles.constants';
+import DragAnimation from '../../shared/ui/DragAmination';
+import Modal from '../../shared/ui/modal/Modal';
+import {NumberInputField, SelectInputField, useFormHook} from '../form';
+import {setStratSection} from '../maps/maps.slice';
+import {editedSpotProperties} from '../spots/spots.slice';
+
+const AddImageOverlayModal = (props) => {
+  const dispatch = useDispatch();
+  const spot = useSelector(state => state.spot.selectedSpot);
+  const stratSection = useSelector(state => state.map.stratSection);
+
+  const [useForm] = useFormHook();
+
+  const overlayFormRef = useRef(null);
+
+  const deleteImageOverlay = () => {
+    let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
+    const editedStratSectionImages = editedSedData.strat_section.images.filter(i => i.id !== props.image.id);
+    if (isEmpty(editedStratSectionImages)) delete editedSedData.strat_section.images;
+    else editedSedData.strat_section.images = editedStratSectionImages;
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+
+    // Update strat section for map if matches edited strat section
+    const stratSectionSettings = editedSedData.strat_section || {};
+    if (stratSectionSettings.strat_section_id
+      && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
+      dispatch(setStratSection(stratSectionSettings));
+    }
+
+    props.close();
+  };
+
+  const deleteImageOverlayConfirm = () => {
+    Alert.alert(
+      'Remove Image Overlay?',
+      'Are you sure you want to remove this image overlay?',
+      [{
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }, {
+        text: 'Remove',
+        onPress: deleteImageOverlay,
+      }],
+    );
+  };
+
+  const getImageChoices = () => {
+    const getImageLabel = (image) => (image.title || 'Untitled') + ' (' + image.width + ' x ' + image.height + ')';
+
+    return spot.properties.images?.map(i => ({
+      label: getImageLabel(i),
+      value: i.id,
+    })) || [];
+  };
+
+  // Resize image preserving image ratio
+  const onMyChange = async (name, value) => {
+    const image = spot.properties.images.find(i => i.id === overlayFormRef.current?.values?.id);
+    if (value && name === 'image_width') {
+      overlayFormRef.current.setFieldValue('image_width', value);
+      overlayFormRef.current.setFieldValue('image_height', Math.round(image.height / image.width * value));
+    }
+    else if (value && name === 'image_height') {
+      overlayFormRef.current.setFieldValue('image_height', value);
+      overlayFormRef.current.setFieldValue('image_width', Math.round(image.width / image.height * value));
+    }
+    else if (name === 'image_width' || name === 'image_height') {
+      overlayFormRef.current?.setFieldValue('image_height', undefined);
+      overlayFormRef.current?.setFieldValue('image_width', undefined);
+    }
+  };
+
+  const renderAddImageOverlayModal = () => {
+    return (
+      <Modal
+        title={'Add Image Overlay'}
+        buttonTitleLeft={'Cancel'}
+        buttonTitleRight={'Save'}
+        cancel={() => props.close()}
+        close={() => saveImageOverlay(overlayFormRef?.current?.values)}>
+        <Formik
+          initialValues={props.image || {}}
+          onSubmit={() => console.log('Submitting form...')}
+          validate={validateImageOverlay}
+          validateOnChange={false}
+          innerRef={overlayFormRef}
+          enableReinitialize={false}
+        >
+          {(outerFormProps) => (
+            <View>
+              <ListItem containerStyle={commonStyles.listItemFormField}>
+                <ListItem.Content>
+                  <Field
+                    component={formProps =>
+                      SelectInputField({
+                        setFieldValue: formProps.form.setFieldValue,
+                        ...formProps.field,
+                        ...formProps,
+                      })
+                    }
+                    name={'id'}
+                    key={'id'}
+                    label={'Image to Use as Overlay'}
+                    choices={getImageChoices()}
+                    single={true}
+                  />
+                </ListItem.Content>
+              </ListItem>
+              {outerFormProps.values?.id && (
+                <React.Fragment>
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <Field
+                        component={NumberInputField}
+                        name={'image_origin_x'}
+                        label={'Image Origin X Value'}
+                        key={'image_origin_x'}
+                        placeholder={'x value for the bottom left corner of image relative to axes origin (0,0)'}
+                        onShowFieldInfo={showFieldInfo}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <Field
+                        component={NumberInputField}
+                        name={'image_origin_y'}
+                        label={'Image Origin Y Value'}
+                        key={'image_origin_y'}
+                        placeholder={'y value for the bottom left corner of image relative to axes origin (0,0)'}
+                        onShowFieldInfo={showFieldInfo}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <Field
+                        component={NumberInputField}
+                        name={'image_width'}
+                        label={'Adjusted Image Width'}
+                        key={'image_width'}
+                        placeholder={'height adjusted automatically to maintain aspect ratio'}
+                        onShowFieldInfo={showFieldInfo}
+                        onMyChange={onMyChange}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <Field
+                        component={NumberInputField}
+                        name={'image_height'}
+                        label={'Adjusted Image Height'}
+                        key={'image_height'}
+                        placeholder={'width adjusted automatically to maintain aspect ratio'}
+                        onShowFieldInfo={showFieldInfo}
+                        onMyChange={onMyChange}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <Field
+                        component={NumberInputField}
+                        name={'image_opacity'}
+                        label={'Image Opacity'}
+                        key={'image_opacity'}
+                        placeholder={'0-1 with 0 being transparent and 1 opaque'}
+                        onShowFieldInfo={showFieldInfo}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
+                  {/* Note: I don't think Mapbox has the z index property like we used with Open Layers in SS1 */}
+                  {/*<ListItem containerStyle={commonStyles.listItemFormField}>*/}
+                  {/*  <ListItem.Content>*/}
+                  {/*    <Field*/}
+                  {/*      component={NumberInputField}*/}
+                  {/*      name={'z_index'}*/}
+                  {/*      label={'Z-Index'}*/}
+                  {/*      key={'z_index'}*/}
+                  {/*      placeholder={'layer ordering'}*/}
+                  {/*      onShowFieldInfo={showFieldInfo}*/}
+                  {/*    />*/}
+                  {/*  </ListItem.Content>*/}
+                  {/*</ListItem>*/}
+                </React.Fragment>
+              )}
+            </View>
+          )}
+        </Formik>
+        {props.image && (
+          <Button
+            titleStyle={{color: WARNING_COLOR}}
+            title={'Remove Image Overlay'}
+            type={'clear'}
+            onPress={deleteImageOverlayConfirm}
+          />
+        )}
+      </Modal>
+    );
+  };
+
+  const saveImageOverlay = async () => {
+    await overlayFormRef.current.submitForm();
+    const editedImageOverlayData = useForm.showErrors(overlayFormRef.current);
+    console.log('Image Overlay Data', editedImageOverlayData);
+    if (!isEmpty(editedImageOverlayData) && editedImageOverlayData.id) {
+      let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
+      let editedStratSectionData = editedSedData.strat_section ? JSON.parse(
+        JSON.stringify(editedSedData.strat_section)) : {};
+      let editedImageOverlaysData = editedStratSectionData.images ? JSON.parse(
+        JSON.stringify(editedStratSectionData.images)) : [];
+      editedImageOverlaysData = editedImageOverlaysData.filter(i => i.id !== editedImageOverlayData.id);
+      editedImageOverlaysData.push(editedImageOverlayData);
+      editedStratSectionData = {...editedStratSectionData, images: editedImageOverlaysData};
+      editedSedData = {...editedSedData, strat_section: editedStratSectionData};
+      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+
+      // Update strat section for map if matches edited strat section
+      const stratSectionSettings = editedSedData.strat_section || {};
+      if (stratSectionSettings.strat_section_id
+        && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
+        dispatch(setStratSection(stratSectionSettings));
+      }
+    }
+    props.close();
+  };
+
+  const showFieldInfo = (label, info) => {
+    Alert.alert(label, info);
+  };
+
+  const validateImageOverlay = (values) => {
+    let errors = {};
+    console.log('Values before image overlay validation:', values);
+    if ((values.image_height && !values.image_width) || (values.image_width && !values.image_height)) {
+      delete values.image_height;
+      delete values.image_width;
+    }
+    Object.entries(values).forEach(([key, value]) => {
+      switch (key) {
+        case 'id':
+          break;
+        case 'image_height':
+        case 'image_width':
+          if (parseFloat(value) > 0) values[key] = parseFloat(value);
+          else {
+            delete values.image_height;
+            delete values.image_width;
+          }
+          break;
+        case 'image_opacity':
+          if (parseFloat(value) < 0 || parseFloat(value) > 1) errors[key] = 'Opacity must be between 0 and 1.';
+          else values[key] = parseFloat(value);
+          break;
+        default:
+          if (parseFloat(value)) values[key] = parseFloat(value);
+          else delete values[key];
+          break;
+      }
+    });
+    console.log('Values after image overlay validation:', values);
+    return errors;
+  };
+
+  if (Platform.OS === 'android') return renderAddImageOverlayModal();
+  else return <DragAnimation>{renderAddImageOverlayModal()}</DragAnimation>;
+};
+
+export default AddImageOverlayModal;

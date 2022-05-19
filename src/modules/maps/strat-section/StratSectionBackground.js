@@ -1,17 +1,27 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 
+import useImagesHook from '../../images/useImages';
+import useSpotsHook from '../../spots/useSpots';
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from '../maps.constants';
 import useMapsHook from '../useMaps';
 import useStratSectionSymbologyHook from './useStratSectionSymbology';
 import XAxis from './XAxis';
 
-function StratSectionBackground(props) {
+const StratSectionBackground = (props) => {
   const useStratSectionSymbology = useStratSectionSymbologyHook();
+  const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
+  const [useSpots] = useSpotsHook();
+
+  const stratSectionSpot = useSpots.getSpotWithThisStratSection(props.stratSection.strat_section_id);
+
+  useEffect(() => {
+
+  }, [props.stratSection]);
 
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
@@ -54,6 +64,28 @@ function StratSectionBackground(props) {
         />
       </MapboxGL.VectorSource>
 
+      {/* Image Overlay Layers */}
+      {props.stratSection.images?.map(oI => {
+        // const coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
+        const image = stratSectionSpot.properties.images.find(i => i.id === oI.id);
+        let imageCopy = JSON.parse(JSON.stringify(image));
+        if (oI.image_height) imageCopy.height = oI.image_height;
+        if (oI.image_width) imageCopy.width = oI.image_width;
+        const coordQuad = useMaps.getCoordQuad(imageCopy, [oI.image_origin_x, oI.image_origin_y]);
+        console.log('overlayimage coordQuad', coordQuad);
+        return (
+          <MapboxGL.Animated.ImageSource
+            id={'imageOverlay' + oI.id}
+            coordinates={coordQuad}
+            url={useImages.getLocalImageURI(image.id)}>
+            <MapboxGL.RasterLayer
+              id={'imageOverlayLayer' + oI.id}
+              style={{rasterOpacity: oI.image_opacity || 1}}
+            />
+          </MapboxGL.Animated.ImageSource>
+        );
+      })}
+
       {/* Y Axis Line */}
       <MapboxGL.ShapeSource
         id={'yAxisSource'}
@@ -92,6 +124,6 @@ function StratSectionBackground(props) {
       {props.stratSection.misc_labels && <XAxis stratSection={props.stratSection} n={2} misc={true}/>}
     </React.Fragment>
   );
-}
+};
 
 export default (StratSectionBackground);

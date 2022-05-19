@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Switch, View} from 'react-native';
+import {FlatList, Switch, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Avatar, ListItem} from 'react-native-elements';
@@ -17,7 +17,7 @@ import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import ImageOverlayDetail from './ImageOverlayDetail';
+import AddImageOverlayModal from './AddImageOverlayModal';
 import useSedHook from './useSed';
 
 const StratSectionPage = (props) => {
@@ -25,7 +25,7 @@ const StratSectionPage = (props) => {
 
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [selectedImage, setSelectedImage] = useState({});
+  const [selectedImage, setSelectedImage] = useState(undefined);
 
   const stratSection = spot.properties?.sed?.strat_section || {};
 
@@ -39,15 +39,6 @@ const StratSectionPage = (props) => {
     console.log('Spot:', spot);
     console.log('Strat Section:', stratSection);
   }, []);
-
-  const renderImageDetail = () => {
-    return (
-      <ImageOverlayDetail
-        image={selectedImage}
-        cancel={() => setSelectedImage({})}
-      />
-    );
-  };
 
   const renderImageItem = (image) => {
     return (
@@ -75,7 +66,7 @@ const StratSectionPage = (props) => {
         <SectionDividerWithRightButton
           dividerText={'Image Overlays'}
           buttonTitle={'Add'}
-          onPress={() => Alert.alert('Notice', 'This feature has not been implemented yet.')}
+          onPress={() => setSelectedImage({})}
         />
         <FlatList
           keyExtractor={item => item.id}
@@ -140,7 +131,8 @@ const StratSectionPage = (props) => {
           <View style={{flex: 1}}>
             <FlatListItemSeparator/>
             <ListItem
-              containerStyle={commonStyles.listItem} key={'strat_section'}
+              containerStyle={commonStyles.listItem}
+              key={'strat_section'}
               onPress={() => dispatch(setStratSection(stratSection))}
             >
               <Avatar
@@ -156,6 +148,7 @@ const StratSectionPage = (props) => {
             {renderSectionSettingsSection()}
           </View>
         )}
+        {selectedImage && <AddImageOverlayModal close={() => setSelectedImage(undefined)} image={selectedImage}/>}
       </View>
     );
   };
@@ -168,7 +161,7 @@ const StratSectionPage = (props) => {
 
   return (
     <React.Fragment>
-      {isEmpty(selectedImage) ? renderStratSectionsMain() : renderImageDetail()}
+      {renderStratSectionsMain()}
     </React.Fragment>
   );
 };
