@@ -1,0 +1,114 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start",
+      "label": "",
+      "required": "",
+      "calculation": ""
+    },
+    {
+      "type": "end",
+      "name": "end",
+      "label": "",
+      "required": "",
+      "calculation": ""
+    },
+    {
+      "type": "decimal",
+      "name": "interval_thickness",
+      "label": "Interval Thickness",
+      "required": false,
+      "calculation": ""
+    },
+    {
+      "type": "select_one ch4zy56",
+      "name": "thickness_units",
+      "label": "Thickness Units",
+      "required": false,
+      "calculation": ""
+    },
+    {
+      "type": "select_one du1tq15",
+      "name": "character",
+      "label": "Character",
+      "required": false,
+      "calculation": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": "",
+      "calculation": "'vk3EeZPfRr6ukkygwyAC2b'"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "ch4zy56",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "ch4zy56",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "ch4zy56",
+      "name": "in",
+      "label": "in",
+      "order": ""
+    },
+    {
+      "list_name": "ch4zy56",
+      "name": "ft",
+      "label": "ft",
+      "order": ""
+    },
+    {
+      "list_name": "du1tq15",
+      "name": "bed",
+      "label": "bed",
+      "order": ""
+    },
+    {
+      "list_name": "du1tq15",
+      "name": "bed_mixed_lit",
+      "label": "bed, mixed lithologies",
+      "order": 1
+    },
+    {
+      "list_name": "du1tq15",
+      "name": "interbedded",
+      "label": "interbedded",
+      "order": 2
+    },
+    {
+      "list_name": "du1tq15",
+      "name": "package_succe",
+      "label": "package (succession of beds)",
+      "order": 3
+    },
+    {
+      "list_name": "du1tq15",
+      "name": "unexposed_cove",
+      "label": "unexposed/covered",
+      "order": 4
+    },
+    {
+      "list_name": "du1tq15",
+      "name": "not_measured",
+      "label": "not measured",
+      "order": 5
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-24)"
+    }
+  ]
+}

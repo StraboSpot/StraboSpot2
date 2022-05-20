@@ -1,0 +1,132 @@
+{
+  "survey": [
+    {
+      "type": "decimal",
+      "name": "thickness_of_individual_beds",
+      "label": "Thickness of Individual Beds",
+      "required": false,
+      "constraint": ". > 0",
+      "relevant": "",
+      "read_only": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one zc89y27",
+      "name": "package_thickness_units",
+      "label": "Package Beds Thickness Units",
+      "required": true,
+      "constraint": "",
+      "relevant": "${thickness_of_individual_beds} != ''",
+      "read_only": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one mf0hv76",
+      "name": "package_bedding_trends",
+      "label": "Package Bedding Trends",
+      "required": false,
+      "constraint": "",
+      "relevant": "",
+      "read_only": false,
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_bedding_trend",
+      "label": "Other Package Bedding Trend",
+      "required": false,
+      "constraint": "",
+      "relevant": "${package_bedding_trends} = 'other'",
+      "read_only": false,
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "constraint": "",
+      "relevant": "",
+      "read_only": "",
+      "calculation": "'vJzGRtoY7niyfJi4odJRgA'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": "",
+      "constraint": "",
+      "relevant": "",
+      "read_only": "",
+      "calculation": "'vhHdU2Tm577qS7E46AFGgQ'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "zc89y27",
+      "name": "cm",
+      "label": "cm",
+      "order": ""
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "m",
+      "label": "m",
+      "order": ""
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "in",
+      "label": "in",
+      "order": ""
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "ft",
+      "label": "ft",
+      "order": ""
+    },
+    {
+      "list_name": "mf0hv76",
+      "name": "upward_thin",
+      "label": "upward thinning",
+      "order": ""
+    },
+    {
+      "list_name": "mf0hv76",
+      "name": "upward_thicken",
+      "label": "upward thickening",
+      "order": 1
+    },
+    {
+      "list_name": "mf0hv76",
+      "name": "uniform",
+      "label": "uniform (no trend)",
+      "order": 2
+    },
+    {
+      "list_name": "mf0hv76",
+      "name": "can_t_be_deter",
+      "label": "can't be determined",
+      "order": 3
+    },
+    {
+      "list_name": "mf0hv76",
+      "name": "other",
+      "label": "other",
+      "order": 4
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-12)"
+    }
+  ]
+}

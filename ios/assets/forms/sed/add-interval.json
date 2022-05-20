@@ -1,0 +1,1236 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start",
+      "label": "",
+      "read_only": null,
+      "required": null,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end",
+      "name": "end",
+      "label": "",
+      "read_only": null,
+      "required": null,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "interval_thickness",
+      "label": "Interval Thickness",
+      "read_only": false,
+      "required": true,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one hq17k89",
+      "name": "thickness_units",
+      "label": "Thickness Units",
+      "read_only": false,
+      "required": true,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one th1pp14",
+      "name": "interval_type",
+      "label": "Type of Interval",
+      "read_only": false,
+      "required": true,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_fa2em80",
+      "label": "Lithology 1",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'bed' or ${interval_type} = 'interbedded' or ${interval_type} = 'package_succe' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one eb2oc45",
+      "name": "primary_lithology",
+      "label": "Primary Lithology",
+      "read_only": false,
+      "required": true,
+      "relevant": "${interval_type} = 'bed' or ${interval_type} = 'package_succe' or ${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one md69g21",
+      "name": "siliciclastic_type",
+      "label": "Siliciclastic Type",
+      "read_only": false,
+      "required": true,
+      "relevant": "${primary_lithology} = 'siliciclastic'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one en2os90",
+      "name": "mud_silt_grain_size",
+      "label": "Mudstone/Siltstone Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type} = 'claystone' or ${siliciclastic_type} = 'mudstone' or ${siliciclastic_type} = 'shale' or ${siliciclastic_type} = 'siltstone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one he4ke66",
+      "name": "sand_grain_size",
+      "label": "Sandstone Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type} = 'sandstone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one te32l95",
+      "name": "congl_grain_size",
+      "label": "Conglomerate Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type} = 'conglomerate'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one te32l95",
+      "name": "breccia_grain_size",
+      "label": "Breccia Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type} = 'breccia'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one xc2bv28",
+      "name": "grain_type",
+      "label": "Grain Type",
+      "read_only": null,
+      "required": false,
+      "relevant": "${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolostone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one uf03r86",
+      "name": "dunham_classification",
+      "label": "Dunham Classification",
+      "read_only": false,
+      "required": true,
+      "relevant": "${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolostone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one sk35h56",
+      "name": "lithification",
+      "label": "Lithification",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'bed' or ${interval_type} = 'bed_mixed_lit' or ${interval_type} = 'interbedded' or ${interval_type} = 'package_succe'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "fresh_color",
+      "label": "Fresh Color",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'bed' or ${interval_type} = 'bed_mixed_lit' or ${interval_type} = 'interbedded' or ${interval_type} = 'package_succe'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "weathered_color",
+      "label": "Weathered Color",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'bed' or ${interval_type} = 'bed_mixed_lit' or ${interval_type} = 'interbedded' or ${interval_type} = 'package_succe'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one dt0dc27",
+      "name": "relative_resistance_weather",
+      "label": "Relative Resistance (Weathering Profile)",
+      "read_only": false,
+      "required": false,
+      "relevant": "${interval_type} = 'bed' or ${interval_type} = 'interbedded' or ${interval_type} = 'package_succe' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one li1ty81",
+      "name": "primary_stratification",
+      "label": "Primary Stratification",
+      "read_only": null,
+      "required": false,
+      "relevant": "${primary_lithology} = 'siliciclastic' or ${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolostone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "read_only": null,
+      "required": null,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_ll1lb85",
+      "label": "Lithology 2",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one eb2oc45",
+      "name": "primary_lithology_1",
+      "label": "Primary Lithology",
+      "read_only": false,
+      "required": true,
+      "relevant": "${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one md69g21",
+      "name": "siliciclastic_type_1",
+      "label": "Siliciclastic Type",
+      "read_only": false,
+      "required": true,
+      "relevant": "${primary_lithology_1} = 'siliciclastic'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one en2os90",
+      "name": "mud_silt_grain_size_1",
+      "label": "Mudstone/Siltstone Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type_1} = 'claystone' or ${siliciclastic_type_1} = 'mudstone' or ${siliciclastic_type_1} = 'shale' or ${siliciclastic_type_1} = 'siltstone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one he4ke66",
+      "name": "sand_grain_size_1",
+      "label": "Sandstone Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type_1} = 'sandstone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one te32l95",
+      "name": "congl_grain_size_1",
+      "label": "Conglomerate Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type_1} = 'conglomerate'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one te32l95",
+      "name": "breccia_grain_size_1",
+      "label": "Breccia Grain Size",
+      "read_only": false,
+      "required": true,
+      "relevant": "${siliciclastic_type_1} = 'breccia'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one hl23w64",
+      "name": "grain_type_1",
+      "label": "Grain Type",
+      "read_only": null,
+      "required": false,
+      "relevant": "${primary_lithology_1} = 'limestone' or ${primary_lithology_1} = 'dolostone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one uf03r86",
+      "name": "dunham_classification_1",
+      "label": "Dunham Classification",
+      "read_only": false,
+      "required": true,
+      "relevant": "${primary_lithology_1} = 'limestone' or ${primary_lithology_1} = 'dolostone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one wo2ym83",
+      "name": "lithification_1",
+      "label": "Lithification",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'bed_mixed_lit' or ${interval_type} = 'interbedded'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "fresh_color_1",
+      "label": "Fresh Color",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "weathered_color_1",
+      "label": "Weathered Color",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one dt0dc27",
+      "name": "relative_resistance_weather_1",
+      "label": "Relative Resistance (Weathering Profile)",
+      "read_only": false,
+      "required": false,
+      "relevant": "${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gt2mz25",
+      "name": "primary_stratification_1",
+      "label": "Primary Stratification",
+      "read_only": null,
+      "required": false,
+      "relevant": "${primary_lithology_1} = 'siliciclastic' or ${primary_lithology_1} = 'limestone' or ${primary_lithology_1} = 'dolostone'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "read_only": null,
+      "required": null,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_ql94d26",
+      "label": "Bedding",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interval_type} = 'bed_mixed_lit' or ${interval_type} = 'interbedded' or ${interval_type} = 'package_succe'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one ss8kj53",
+      "name": "interbed_proportion_change",
+      "label": "Interbed Proportion Change (Up Section)",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interval_type} = 'interbedded' or ${interval_type} = 'bed_mixed_lit'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "avg_thickness",
+      "label": "Lithology 1: Average Thickness",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'no_change'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "max_thickness",
+      "label": "Lithology 1: Maximum Thickness",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "min_thickness",
+      "label": "Lithology 1: Minimum Thickness",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "interbed_proportion",
+      "label": "Lithology 2: Interbed Relative Proportion (%)",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'no_change' or ${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease'",
+      "constraint": ". > 0 and . <= 50",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "avg_thickness_1",
+      "label": "Lithology 2: Average Thickness",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'no_change'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "max_thickness_1",
+      "label": "Lithology 2: Maximum Thickness",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "min_thickness_1",
+      "label": "Lithology 2: Minimum Thickness",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one zc89y27",
+      "name": "interbed_thickness_units",
+      "label": "Interbed Thickness Units",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gv7rs89",
+      "name": "lithology_at_bottom_contact",
+      "label": "Which Lithology is at Bottom Contact?",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one du76k53",
+      "name": "lithology_at_top_contact",
+      "label": "Which Lithology is at Top Contact?",
+      "read_only": null,
+      "required": false,
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "thickness_of_individual_beds",
+      "label": "Thickness of Individual Beds",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interval_type} = 'package_succe'",
+      "constraint": ". > 0",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one zc89y27",
+      "name": "package_thickness_units",
+      "label": "Package Beds Thickness Units",
+      "read_only": null,
+      "required": true,
+      "relevant": "${interval_type} = 'package_succe'",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "read_only": null,
+      "required": null,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "read_only": false,
+      "required": false,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "multiline",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "read_only": false,
+      "required": false,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "'vNiTHUwnQZKJk9JW5qVQRg'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "read_only": null,
+      "required": false,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "'vighgytGVHsbZ2562N8225'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "read_only": null,
+      "required": null,
+      "relevant": "",
+      "constraint": "",
+      "appearance": "",
+      "calculation": "'vvdiZzsJaLAo5PnXN36huJ'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "hq17k89",
+      "name": "cm",
+      "label": "cm",
+      "order": null
+    },
+    {
+      "list_name": "hq17k89",
+      "name": "m",
+      "label": "m",
+      "order": null
+    },
+    {
+      "list_name": "hq17k89",
+      "name": "in",
+      "label": "in",
+      "order": null
+    },
+    {
+      "list_name": "hq17k89",
+      "name": "ft",
+      "label": "ft",
+      "order": null
+    },
+    {
+      "list_name": "th1pp14",
+      "name": "bed",
+      "label": "bed",
+      "order": null
+    },
+    {
+      "list_name": "th1pp14",
+      "name": "bed_mixed_lit",
+      "label": "bed, mixed lithologies",
+      "order": 1
+    },
+    {
+      "list_name": "th1pp14",
+      "name": "interbedded",
+      "label": "interbedded",
+      "order": 2
+    },
+    {
+      "list_name": "th1pp14",
+      "name": "package_succe",
+      "label": "package (succession of beds)",
+      "order": 3
+    },
+    {
+      "list_name": "th1pp14",
+      "name": "unexposed_cove",
+      "label": "unexposed/covered",
+      "order": 4
+    },
+    {
+      "list_name": "th1pp14",
+      "name": "not_measured",
+      "label": "not measured",
+      "order": 5
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "siliciclastic",
+      "label": "siliciclastic",
+      "order": null
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "limestone",
+      "label": "limestone",
+      "order": 1
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "dolostone",
+      "label": "dolostone",
+      "order": 2
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "organic_coal",
+      "label": "organic/coal",
+      "order": 3
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "evaporite",
+      "label": "evaporite",
+      "order": 4
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "chert",
+      "label": "chert",
+      "order": 5
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "ironstone",
+      "label": "ironstone",
+      "order": 6
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "phosphatic",
+      "label": "phosphatic",
+      "order": 7
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "volcaniclastic",
+      "label": "volcaniclastic",
+      "order": 8
+    },
+    {
+      "list_name": "md69g21",
+      "name": "claystone",
+      "label": "claystone",
+      "order": null
+    },
+    {
+      "list_name": "md69g21",
+      "name": "mudstone",
+      "label": "mudstone",
+      "order": null
+    },
+    {
+      "list_name": "md69g21",
+      "name": "shale",
+      "label": "shale",
+      "order": null
+    },
+    {
+      "list_name": "md69g21",
+      "name": "siltstone",
+      "label": "siltstone",
+      "order": null
+    },
+    {
+      "list_name": "md69g21",
+      "name": "sandstone",
+      "label": "sandstone",
+      "order": null
+    },
+    {
+      "list_name": "md69g21",
+      "name": "conglomerate",
+      "label": "conglomerate",
+      "order": null
+    },
+    {
+      "list_name": "md69g21",
+      "name": "breccia",
+      "label": "breccia",
+      "order": null
+    },
+    {
+      "list_name": "en2os90",
+      "name": "clay",
+      "label": "clay",
+      "order": null
+    },
+    {
+      "list_name": "en2os90",
+      "name": "silt",
+      "label": "silt",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_very_fin",
+      "label": "sand- very fine",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_fine_low",
+      "label": "sand- fine lower",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_fine_upp",
+      "label": "sand- fine upper",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_medium_l",
+      "label": "sand- medium lower",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_medium_u",
+      "label": "sand- medium upper",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_coarse_l",
+      "label": "sand- coarse lower",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_coarse_u",
+      "label": "sand- coarse upper",
+      "order": null
+    },
+    {
+      "list_name": "he4ke66",
+      "name": "sand_very_coa",
+      "label": "sand- very coarse",
+      "order": null
+    },
+    {
+      "list_name": "te32l95",
+      "name": "granule",
+      "label": "granule",
+      "order": null
+    },
+    {
+      "list_name": "te32l95",
+      "name": "pebble",
+      "label": "pebble",
+      "order": null
+    },
+    {
+      "list_name": "te32l95",
+      "name": "cobble",
+      "label": "cobble",
+      "order": null
+    },
+    {
+      "list_name": "te32l95",
+      "name": "boulder",
+      "label": "boulder",
+      "order": null
+    },
+    {
+      "list_name": "xc2bv28",
+      "name": "oolitic",
+      "label": "oolitic",
+      "order": null
+    },
+    {
+      "list_name": "xc2bv28",
+      "name": "non_skeletal",
+      "label": "non-skeletal",
+      "order": null
+    },
+    {
+      "list_name": "xc2bv28",
+      "name": "skeletal",
+      "label": "skeletal",
+      "order": null
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "mudstone",
+      "label": "mudstone",
+      "order": null
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "wackestone",
+      "label": "wackestone",
+      "order": 1
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "packstone",
+      "label": "packstone",
+      "order": 2
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "grainstone",
+      "label": "grainstone",
+      "order": 3
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "floatstone",
+      "label": "floatstone",
+      "order": 4
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "rudstone",
+      "label": "rudstone",
+      "order": 5
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "boundstone",
+      "label": "boundstone",
+      "order": 6
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "framestone",
+      "label": "framestone",
+      "order": 7
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "bindstone",
+      "label": "bindstone",
+      "order": 8
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "bafflestone",
+      "label": "bafflestone",
+      "order": 9
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "cementstone",
+      "label": "cementstone",
+      "order": 10
+    },
+    {
+      "list_name": "uf03r86",
+      "name": "recrystallized",
+      "label": "recrystallized",
+      "order": 11
+    },
+    {
+      "list_name": "sk35h56",
+      "name": "lithified",
+      "label": "lithified",
+      "order": null
+    },
+    {
+      "list_name": "sk35h56",
+      "name": "poorly_lithifi",
+      "label": "poorly lithified",
+      "order": null
+    },
+    {
+      "list_name": "sk35h56",
+      "name": "unlithified_un",
+      "label": "unlithified/unconsolidated",
+      "order": null
+    },
+    {
+      "list_name": "sk35h56",
+      "name": "metamorphosed",
+      "label": "metamorphosed",
+      "order": null
+    },
+    {
+      "list_name": "dt0dc27",
+      "name": "1",
+      "label": "1 - least resistant",
+      "order": null
+    },
+    {
+      "list_name": "dt0dc27",
+      "name": "2",
+      "label": "2",
+      "order": null
+    },
+    {
+      "list_name": "dt0dc27",
+      "name": "3",
+      "label": "3 - moderately resistant",
+      "order": null
+    },
+    {
+      "list_name": "dt0dc27",
+      "name": "4",
+      "label": "4",
+      "order": null
+    },
+    {
+      "list_name": "dt0dc27",
+      "name": "5",
+      "label": "5 - most resistant",
+      "order": null
+    },
+    {
+      "list_name": "li1ty81",
+      "name": "massive",
+      "label": "massive",
+      "order": null
+    },
+    {
+      "list_name": "li1ty81",
+      "name": "cross_bedded",
+      "label": "cross-bedded",
+      "order": null
+    },
+    {
+      "list_name": "li1ty81",
+      "name": "hummocky_cross",
+      "label": "hummocky cross-bedded",
+      "order": null
+    },
+    {
+      "list_name": "li1ty81",
+      "name": "ripple_laminat",
+      "label": "ripple laminated",
+      "order": null
+    },
+    {
+      "list_name": "li1ty81",
+      "name": "laminated",
+      "label": "laminated",
+      "order": null
+    },
+    {
+      "list_name": "li1ty81",
+      "name": "bioturbated",
+      "label": "bioturbated",
+      "order": null
+    },
+    {
+      "list_name": "hl23w64",
+      "name": "oolitic",
+      "label": "oolitic",
+      "order": null
+    },
+    {
+      "list_name": "hl23w64",
+      "name": "non_skeletal",
+      "label": "non-skeletal",
+      "order": null
+    },
+    {
+      "list_name": "hl23w64",
+      "name": "skelatal",
+      "label": "skelatal",
+      "order": null
+    },
+    {
+      "list_name": "wo2ym83",
+      "name": "lithified",
+      "label": "lithified",
+      "order": null
+    },
+    {
+      "list_name": "wo2ym83",
+      "name": "poorly_lithifi",
+      "label": "poorly lithified",
+      "order": null
+    },
+    {
+      "list_name": "wo2ym83",
+      "name": "unlithified_un",
+      "label": "unlithified/unconsolidated",
+      "order": null
+    },
+    {
+      "list_name": "wo2ym83",
+      "name": "metamorphosed",
+      "label": "metamorphosed",
+      "order": null
+    },
+    {
+      "list_name": "gt2mz25",
+      "name": "massive",
+      "label": "massive",
+      "order": null
+    },
+    {
+      "list_name": "gt2mz25",
+      "name": "cross_bedded",
+      "label": "cross-bedded",
+      "order": null
+    },
+    {
+      "list_name": "gt2mz25",
+      "name": "hummocky_cross",
+      "label": "hummocky cross-bedded",
+      "order": null
+    },
+    {
+      "list_name": "gt2mz25",
+      "name": "ripple_laminat",
+      "label": "ripple laminated",
+      "order": null
+    },
+    {
+      "list_name": "gt2mz25",
+      "name": "laminated",
+      "label": "laminated",
+      "order": null
+    },
+    {
+      "list_name": "gt2mz25",
+      "name": "bioturbated",
+      "label": "bioturbated",
+      "order": null
+    },
+    {
+      "list_name": "ss8kj53",
+      "name": "increase",
+      "label": "increase",
+      "order": null
+    },
+    {
+      "list_name": "ss8kj53",
+      "name": "decrease",
+      "label": "decrease",
+      "order": 1
+    },
+    {
+      "list_name": "ss8kj53",
+      "name": "no_change",
+      "label": "no change",
+      "order": 2
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "cm",
+      "label": "cm",
+      "order": null
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "m",
+      "label": "m",
+      "order": null
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "in",
+      "label": "in",
+      "order": null
+    },
+    {
+      "list_name": "zc89y27",
+      "name": "ft",
+      "label": "ft",
+      "order": null
+    },
+    {
+      "list_name": "gv7rs89",
+      "name": "lithology_1",
+      "label": "lithology 1",
+      "order": null
+    },
+    {
+      "list_name": "gv7rs89",
+      "name": "lithology_2",
+      "label": "lithology 2",
+      "order": null
+    },
+    {
+      "list_name": "gv7rs89",
+      "name": "not_specified",
+      "label": "not specified",
+      "order": null
+    },
+    {
+      "list_name": "du76k53",
+      "name": "lithology_1",
+      "label": "lithology 1",
+      "order": null
+    },
+    {
+      "list_name": "du76k53",
+      "name": "lithology_2",
+      "label": "lithology 2",
+      "order": null
+    },
+    {
+      "list_name": "du76k53",
+      "name": "not_specified",
+      "label": "not specified",
+      "order": null
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-12)"
+    }
+  ]
+}

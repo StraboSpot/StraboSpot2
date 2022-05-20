@@ -1,0 +1,496 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_wo9iu92",
+      "label": "Architecture Interpretation",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple mx6hb20",
+      "name": "description",
+      "label": "Description",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple di5fn81",
+      "name": "stacking_sequence_stratigraphy",
+      "label": "Stacking/Sequence Stratigraphy",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_stacking_sequence_stratigraphy",
+      "label": "Other Stacking/Sequence Stratigraphy",
+      "required": false,
+      "relevant": "selected(${stacking_sequence_stratigraphy}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple nk4ga99",
+      "name": "fluvial_architectural_elements",
+      "label": "Fluvial Architectural Elements",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_fluvial_element",
+      "label": "Other Fluvial Element",
+      "required": false,
+      "relevant": "selected(${fluvial_architectural_elements}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple oa3pi37",
+      "name": "lacustrine_architecture_interpretation",
+      "label": "Lacustrine Architecture Interpretation",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_lacustrine_architecture_interpretation",
+      "label": "Other Lacustrine Architecture Interpretation",
+      "required": false,
+      "relevant": "selected(${lacustrine_architecture_interpretation}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple dh0ic29",
+      "name": "carbonate_platform_geometry",
+      "label": "Carbonate Platform Geometry",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_platform_geometry",
+      "label": "Other Platform Geometry",
+      "required": false,
+      "relevant": "selected(${carbonate_platform_geometry}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple nd4uk01",
+      "name": "deep_water_architctural_element",
+      "label": "Deep-Water Architectural Elements",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_deep_water_architectural_element",
+      "label": "Other Deep-Water Architectural Element",
+      "required": false,
+      "relevant": "selected(${deep_water_architctural_element}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple od5ow19",
+      "name": "carbonate_margin_geometry",
+      "label": "Carbonate Margin Geometry",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_carbonate_margin_geometry",
+      "label": "Other Carbonate Margin Geometry",
+      "required": false,
+      "relevant": "selected(${carbonate_margin_geometry}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "appearance": "multiline",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vJxDtJFELDdH6dpQqg5d9n'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'viRQuNg6SUoTzuReNgMCJt'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vwRnX55c3SZDnNzHg7wQUb'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "mx6hb20",
+      "name": "fining_upward",
+      "label": "fining upward",
+      "order": ""
+    },
+    {
+      "list_name": "mx6hb20",
+      "name": "coarsening_upw",
+      "label": "coarsening upward",
+      "order": ""
+    },
+    {
+      "list_name": "mx6hb20",
+      "name": "cyclic",
+      "label": "cyclic",
+      "order": ""
+    },
+    {
+      "list_name": "mx6hb20",
+      "name": "random",
+      "label": "random",
+      "order": ""
+    },
+    {
+      "list_name": "mx6hb20",
+      "name": "stacked",
+      "label": "stacked",
+      "order": ""
+    },
+    {
+      "list_name": "mx6hb20",
+      "name": "isolated",
+      "label": "isolated",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "progradational",
+      "label": "progradational",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "aggradational",
+      "label": "aggradational",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "retrogradation",
+      "label": "retrogradational",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "degradational",
+      "label": "degradational",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "transgres_hem",
+      "label": "transgressive hemicycle",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "regressive_hem",
+      "label": "regressive hemicycle",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "highstand_syst",
+      "label": "Highstand Systems Tract",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "lowstand_syste",
+      "label": "Lowstand Systems Tract",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "transgres_sys",
+      "label": "Transgressive Systems Tract",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "falling_stage",
+      "label": "Falling Stage Systems Tract",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "incised_valley",
+      "label": "incised valley fill",
+      "order": ""
+    },
+    {
+      "list_name": "di5fn81",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "channel_ch",
+      "label": "channel (CH)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "gravelly_bar_o",
+      "label": "gravelly bar or bedform (GB)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "sandy_bedform",
+      "label": "sandy bedform (SB)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "foreset_macrof",
+      "label": "foreset macroforms (FM)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "lateral_accret",
+      "label": "lateral accretion macroform (LA)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "sediment_gravi",
+      "label": "sediment gravity flow (SG)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "laminated_sand",
+      "label": "laminated sand sheet (LS)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "overbank_fines",
+      "label": "overbank fines (OF)",
+      "order": ""
+    },
+    {
+      "list_name": "nk4ga99",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "oa3pi37",
+      "name": "underfilled",
+      "label": "Underfilled",
+      "order": ""
+    },
+    {
+      "list_name": "oa3pi37",
+      "name": "overfilled",
+      "label": "Overfilled",
+      "order": ""
+    },
+    {
+      "list_name": "oa3pi37",
+      "name": "balanced",
+      "label": "Balanced",
+      "order": ""
+    },
+    {
+      "list_name": "oa3pi37",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "rimmed_platfor",
+      "label": "Rimmed Platform",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "ramp",
+      "label": "Ramp",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "attached",
+      "label": "Attached",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "isolated",
+      "label": "Isolated",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "homocline_ramp",
+      "label": "Homocline Ramp",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "distally_steep",
+      "label": "Distally Steepened Ramp",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "unrimmed_platf",
+      "label": "Unrimmed Platform",
+      "order": ""
+    },
+    {
+      "list_name": "dh0ic29",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "channel",
+      "label": "channel",
+      "order": ""
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "levee",
+      "label": "levee",
+      "order": 1
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "sheet",
+      "label": "sheet",
+      "order": 2
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "splay",
+      "label": "splay",
+      "order": 3
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "overbank",
+      "label": "overbank deposits",
+      "order": 4
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "mound",
+      "label": "mound",
+      "order": 5
+    },
+    {
+      "list_name": "nd4uk01",
+      "name": "other",
+      "label": "other",
+      "order": 6
+    },
+    {
+      "list_name": "od5ow19",
+      "name": "escarpment_mar",
+      "label": "escarpment margin",
+      "order": ""
+    },
+    {
+      "list_name": "od5ow19",
+      "name": "accretionary_m",
+      "label": "accretionary margin",
+      "order": ""
+    },
+    {
+      "list_name": "od5ow19",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

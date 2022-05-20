@@ -1,0 +1,833 @@
+{
+  "survey":[
+    {
+      "type": "begin_group",
+      "name": "group_dh9oi63",
+      "label": "Primary Lithology",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one eb2oc45",
+      "name": "primary_lithology",
+      "label": "Primary Lithology",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gb31w57",
+      "name": "siliciclastic_type",
+      "label": "Siliciclastic Type",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'siliciclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one qf3ff03",
+      "name": "dunham_classification",
+      "label": "Dunham Classification",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'limestone' or ${primary_lithology} = 'dolostone'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one ye65k64",
+      "name": "grain_type",
+      "label": "Grain Type",
+      "required": false,
+      "read_only": "",
+      "relevant": "${dunham_classification} != ''",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple gg6bk97",
+      "name": "evaporite_type",
+      "label": "Evaporite type",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'evaporite'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_evaporite_type",
+      "label": "Other Evaporite Type",
+      "required": false,
+      "read_only": "",
+      "relevant": "selected(${evaporite_type}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple om8xr30",
+      "name": "organic_coal_lithologies",
+      "label": "Organic/Coal Lithologies",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'organic_coal'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_organic_coal_lithology",
+      "label": "Other Organic/Coal Lithology",
+      "required": false,
+      "read_only": "",
+      "relevant": "selected(${organic_coal_lithologies}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple so29n97",
+      "name": "volcaniclastic_type",
+      "label": "Volcaniclastic type",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'volcaniclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_volcaniclastic_type",
+      "label": "Other Volcaniclastic Type",
+      "required": false,
+      "read_only": "",
+      "relevant": "selected(${volcaniclastic_type}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "report_presence_of_particle_ag",
+      "label": "Report presence of particle aggregates",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'volcaniclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple uh44f36",
+      "name": "componentry",
+      "label": "Componentry",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'volcaniclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "approximate_relative_abundance",
+      "label": "Approximate relative abundances of clasts",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'volcaniclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple mo7ce83",
+      "name": "phosphorite_type",
+      "label": "Phosphorite type",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'phosphatic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_phosphorite_type",
+      "label": "Other Phosphorite Type",
+      "required": false,
+      "read_only": "",
+      "relevant": "selected(${phosphorite_type}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_dl2nh17",
+      "label": "Lithification & Color",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one wc2ju40",
+      "name": "relative_resistance_weather",
+      "label": "Relative resistance (weathering profile)",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one wa8pw49",
+      "name": "lithification",
+      "label": "Lithification",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "evidence_of_deposit_alteration",
+      "label": "Evidence of deposit alteration",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'volcaniclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "evidence_of_clast_alteration",
+      "label": "Evidence of clast alteration",
+      "required": false,
+      "read_only": "",
+      "relevant": "${primary_lithology} = 'volcaniclastic'",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "fresh_color",
+      "label": "Fresh Color",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "weathered_color",
+      "label": "Weathered Color",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple qx0wn31",
+      "name": "color_appearance",
+      "label": "Color Appearance",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_color_appearance",
+      "label": "Other Color Appearance",
+      "required": false,
+      "read_only": "",
+      "relevant": "selected(${color_appearance}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "appearance": "multiline",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'v9rHiuuiAyP6sZb37Z3rhL'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vA7MpAXXjjrXEZxSwSN3Wk'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vayfXGBiyQZrNKiyzyuu6A'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "eb2oc45",
+      "name": "siliciclastic",
+      "label": "siliciclastic",
+      "order": ""
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "limestone",
+      "label": "limestone",
+      "order": 1
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "dolostone",
+      "label": "dolostone",
+      "order": 2
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "organic_coal",
+      "label": "organic/coal",
+      "order": 3
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "evaporite",
+      "label": "evaporite",
+      "order": 4
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "chert",
+      "label": "chert",
+      "order": 5
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "ironstone",
+      "label": "ironstone",
+      "order": 6
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "phosphatic",
+      "label": "phosphatic",
+      "order": 7
+    },
+    {
+      "list_name": "eb2oc45",
+      "name": "volcaniclastic",
+      "label": "volcaniclastic",
+      "order": 8
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "claystone",
+      "label": "claystone",
+      "order": ""
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "mudstone",
+      "label": "mudstone",
+      "order": ""
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "shale",
+      "label": "shale",
+      "order": ""
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "siltstone",
+      "label": "siltstone",
+      "order": ""
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "sandstone",
+      "label": "sandstone",
+      "order": ""
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "conglomerate",
+      "label": "conglomerate",
+      "order": ""
+    },
+    {
+      "list_name": "gb31w57",
+      "name": "breccia",
+      "label": "breccia",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "mudstone",
+      "label": "mudstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "wackestone",
+      "label": "wackestone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "packstone",
+      "label": "packstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "grainstone",
+      "label": "grainstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "boundstone",
+      "label": "boundstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "cementstone",
+      "label": "cementstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "recrystallized",
+      "label": "recrystallized",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "floatstone",
+      "label": "floatstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "rudstone",
+      "label": "rudstone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "framestone",
+      "label": "framestone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "bafflestone",
+      "label": "bafflestone",
+      "order": ""
+    },
+    {
+      "list_name": "qf3ff03",
+      "name": "bindstone",
+      "label": "bindstone",
+      "order": ""
+    },
+    {
+      "list_name": "ye65k64",
+      "name": "oolitic",
+      "label": "oolitic",
+      "order": ""
+    },
+    {
+      "list_name": "ye65k64",
+      "name": "non_skeletal",
+      "label": "non-skeletal",
+      "order": ""
+    },
+    {
+      "list_name": "ye65k64",
+      "name": "skeletal",
+      "label": "skeletal",
+      "order": ""
+    },
+    {
+      "list_name": "gg6bk97",
+      "name": "gyp_anhyd_prim",
+      "label": "gypsum - anhydrite primary",
+      "order": ""
+    },
+    {
+      "list_name": "gg6bk97",
+      "name": "gyp_anhyd_dia",
+      "label": "gypsum - anhydrite diagenetic",
+      "order": ""
+    },
+    {
+      "list_name": "gg6bk97",
+      "name": "halite_primary",
+      "label": "halite - primary",
+      "order": ""
+    },
+    {
+      "list_name": "gg6bk97",
+      "name": "halite_diagene",
+      "label": "halite - diagenetic",
+      "order": ""
+    },
+    {
+      "list_name": "gg6bk97",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "amber",
+      "label": "amber",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "peat",
+      "label": "peat",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "lignite",
+      "label": "lignite",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "subbituminous",
+      "label": "subbituminous",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "bituminous",
+      "label": "bituminous",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "coal_ball",
+      "label": "coal ball",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "tar",
+      "label": "tar",
+      "order": ""
+    },
+    {
+      "list_name": "om8xr30",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "volcanic_mudst",
+      "label": "volcanic mudstone",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "volcanic_sands",
+      "label": "volcanic sandstone",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "lapillistone",
+      "label": "lapillistone",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "agglomerate",
+      "label": "agglomerate",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "volcanic_brecc",
+      "label": "volcanic breccia",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "bentonite",
+      "label": "bentonite",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "tuff",
+      "label": "tuff",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "welded_tuff",
+      "label": "welded tuff",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "ignimbrite",
+      "label": "ignimbrite",
+      "order": ""
+    },
+    {
+      "list_name": "so29n97",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "uh44f36",
+      "name": "pumice",
+      "label": "pumice",
+      "order": ""
+    },
+    {
+      "list_name": "uh44f36",
+      "name": "accidental_lit",
+      "label": "accidental lithic",
+      "order": ""
+    },
+    {
+      "list_name": "uh44f36",
+      "name": "accessory_lith",
+      "label": "accessory lithic",
+      "order": ""
+    },
+    {
+      "list_name": "uh44f36",
+      "name": "glass_obsidian",
+      "label": "glass/obsidian",
+      "order": ""
+    },
+    {
+      "list_name": "uh44f36",
+      "name": "crystals",
+      "label": "crystals",
+      "order": ""
+    },
+    {
+      "list_name": "uh44f36",
+      "name": "accretionary_l",
+      "label": "accretionary lapilli",
+      "order": ""
+    },
+    {
+      "list_name": "mo7ce83",
+      "name": "nodular",
+      "label": "nodular",
+      "order": ""
+    },
+    {
+      "list_name": "mo7ce83",
+      "name": "bedded",
+      "label": "bedded",
+      "order": ""
+    },
+    {
+      "list_name": "mo7ce83",
+      "name": "massive",
+      "label": "massive",
+      "order": ""
+    },
+    {
+      "list_name": "mo7ce83",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "wc2ju40",
+      "name": "1",
+      "label": "1 - least resistant",
+      "order": ""
+    },
+    {
+      "list_name": "wc2ju40",
+      "name": "2",
+      "label": "2",
+      "order": ""
+    },
+    {
+      "list_name": "wc2ju40",
+      "name": "3",
+      "label": "3 - moderately resistant",
+      "order": ""
+    },
+    {
+      "list_name": "wc2ju40",
+      "name": "4",
+      "label": "4",
+      "order": ""
+    },
+    {
+      "list_name": "wc2ju40",
+      "name": "5",
+      "label": "5 - most resistant",
+      "order": ""
+    },
+    {
+      "list_name": "wa8pw49",
+      "name": "lithified",
+      "label": "lithified",
+      "order": ""
+    },
+    {
+      "list_name": "wa8pw49",
+      "name": "poorly_lithifi",
+      "label": "poorly lithified",
+      "order": ""
+    },
+    {
+      "list_name": "wa8pw49",
+      "name": "unlithified_un",
+      "label": "unlithified/unconsolidated",
+      "order": ""
+    },
+    {
+      "list_name": "wa8pw49",
+      "name": "metamorphosed",
+      "label": "metamorphosed",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "uniform",
+      "label": "uniform",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "patchy",
+      "label": "patchy",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "striped",
+      "label": "striped",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "mottled",
+      "label": "mottled",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "spotted",
+      "label": "spotted",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "gradational",
+      "label": "gradational",
+      "order": ""
+    },
+    {
+      "list_name": "qx0wn31",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-11)"
+    }
+  ]
+}

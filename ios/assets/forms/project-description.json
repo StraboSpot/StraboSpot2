@@ -1,0 +1,143 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_bv69u01",
+      "label": "Basic Info",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "project_name",
+      "label": "Project Name",
+      "required": "true"
+    },
+    {
+      "type": "date",
+      "name": "start_date",
+      "label": "Start Date",
+      "required": "false"
+    },
+    {
+      "type": "date",
+      "name": "end_date",
+      "label": "End Date",
+      "required": "false",
+      "constraint_message": "End Date cannot be greater then Start Date"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_cq6ux93",
+      "label": "Notes",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_qf5ar76",
+      "label": "Technical Details",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "instruments",
+      "label": "Instruments Used",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "gps_datum",
+      "label": "GPS Datum",
+      "hint": "default value is WGS84, enter to change",
+      "required": "false"
+    },
+    {
+      "type": "decimal",
+      "name": "magnetic_declination",
+      "label": "Magnetic Declination",
+      "hint": "Enter declination based on whether magnetic north is east or west of geographic north. If magnetic north is west of geographic north, enter declination as a negative number; if it is east enter declination as a positive number.",
+      "required": "false",
+      "constraint_message": "Declination must be between -180 to 180.",
+      "constraint": ". >= -180 and . <= 180"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_tm6hw79",
+      "label": "General Details",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "orcid",
+      "label": "ORCID",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_team_members",
+      "label": "Other Team Members",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "area_of_interest",
+      "label": "Area of Interest",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "purpose_of_study",
+      "label": "Purpose of Study",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "grant_id",
+      "label": "Grant ID",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "funding_agency",
+      "label": "Funding Agency",
+      "required": "false"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "calculation": "'vBjsct9hFCpTHdUtPckoG7'"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "project_description",
+      "version": "vBjsct9hFCpTHdUtPckoG7"
+    }
+  ]
+}

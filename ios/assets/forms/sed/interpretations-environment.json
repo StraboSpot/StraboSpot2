@@ -1,0 +1,1245 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_qo3sq24",
+      "label": "Environment Interpretation",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple ee59y88",
+      "name": "general",
+      "label": "General",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple ml38g37",
+      "name": "clastic",
+      "label": "Clastic",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple xt0tt07",
+      "name": "alluvial_fan_environments",
+      "label": "Alluvial fan environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'alluvial_fan')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_alluvial_fan",
+      "label": "Other Alluvial Fan",
+      "required": false,
+      "relevant": "selected(${alluvial_fan_environments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple hy05n94",
+      "name": "eolian_environments",
+      "label": "Eolian environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'eolian')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_eolian",
+      "label": "Other Eolian",
+      "required": false,
+      "relevant": "selected(${eolian_environments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple qc4iq45",
+      "name": "fluvial_environments",
+      "label": "Fluvial environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'fluvial') or selected(${clastic}, 'floodplain')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_fluvial",
+      "label": "Other Fluvial",
+      "required": false,
+      "relevant": "selected(${fluvial_environments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple kw9js55",
+      "name": "shallow_marine_clastic_environ",
+      "label": "Shallow marine clastic environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'tidal_flat') or selected(${clastic}, 'delta') or selected(${clastic}, 'shoreface') or selected(${clastic}, 'shelf') or selected(${clastic}, 'offshore_trans') or selected(${clastic}, 'open_marine')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_shallow_marine",
+      "label": "Other Shallow Marine",
+      "required": false,
+      "relevant": "selected(${shallow_marine_clastic_environ}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple um6fk82",
+      "name": "deep_marine_environments",
+      "label": "Deep marine environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'depwater_chann') or selected(${clastic}, 'deepwater_fan')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_deep_marine",
+      "label": "Other Deep Marine",
+      "required": false,
+      "relevant": "selected(${deep_marine_environments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple tv89s87",
+      "name": "glacial_and_proglacial_environ",
+      "label": "Glacial and proglacial environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'glacial_and_pr')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_glacial",
+      "label": "Other Glacial",
+      "required": false,
+      "relevant": "selected(${glacial_and_proglacial_environ}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple er65b70",
+      "name": "lake_environments",
+      "label": "Lake environments",
+      "required": false,
+      "relevant": "selected(${clastic}, 'lake')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_lake",
+      "label": "Other Lake",
+      "required": false,
+      "relevant": "selected(${lake_environments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_clastic",
+      "label": "Other Clastic",
+      "required": false,
+      "relevant": "selected(${clastic}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple yi3tp14",
+      "name": "carbonates",
+      "label": "Carbonates",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple ow54y55",
+      "name": "factory",
+      "label": "Factory",
+      "required": false,
+      "relevant": "selected(${carbonates}, 'factory')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple pv3ex57",
+      "name": "carbonate",
+      "label": "Environment",
+      "required": false,
+      "relevant": "selected(${carbonates}, 'environment')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_carbonate_environment",
+      "label": "Other Carbonate Environment",
+      "required": false,
+      "relevant": "selected(${carbonate}, 'shallow')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple em9bi13",
+      "name": "lake_subenvironments",
+      "label": "Lake Subenvironments",
+      "required": false,
+      "relevant": "selected(${carbonate}, 'lake')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_carbonate_lake_subenvironment",
+      "label": "Other Carbonate Lake Subenvironment",
+      "required": false,
+      "relevant": "selected(${lake_subenvironments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple kx3or79",
+      "name": "tidal_flat_subenvironments",
+      "label": "Tidal Flat Subenvironments",
+      "required": false,
+      "relevant": "selected(${carbonate}, 'tidal_flat')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_tidal_flat",
+      "label": "Other Tidal Flat",
+      "required": false,
+      "relevant": "selected(${tidal_flat_subenvironments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple vh0av40",
+      "name": "reef_subenvironments",
+      "label": "Reef Subenvironments",
+      "required": false,
+      "relevant": "selected(${carbonate}, 'reef_and_assoc')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_reef",
+      "label": "Other Reef",
+      "required": false,
+      "relevant": "selected(${reef_subenvironments}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "detailed_carbonate_env_interpr",
+      "label": "Detailed carbonate environmental interpretations",
+      "required": false,
+      "relevant": "selected(${carbonate}, 'subaerial_expo') or selected(${carbonate}, 'lake') or selected(${carbonate}, 'cave') or selected(${carbonate}, 'eolian') or selected(${carbonate}, 'tidal_flat') or selected(${carbonate}, 'lagoon') or selected(${carbonate}, 'beach') or selected(${carbonate}, 'reef_and_assoc') or selected(${carbonate}, 'shoal') or selected(${carbonate}, 'shelf') or selected(${carbonate}, 'slope') or selected(${carbonate}, 'basin')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple xm7ti94",
+      "name": "tectonic_setting",
+      "label": "Tectonic Setting",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_tectonic_setting",
+      "label": "Other Tectonic Setting",
+      "required": false,
+      "relevant": "selected(${tectonic_setting}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "calculation": "'vJTSGLr3iUX4Epntceu998'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "calculation": "'vufUV8e5QGFko9CtfdLfuG'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "ee59y88",
+      "name": "continental",
+      "label": "Continental",
+      "order": ""
+    },
+    {
+      "list_name": "ee59y88",
+      "name": "transitional",
+      "label": "Transitional",
+      "order": ""
+    },
+    {
+      "list_name": "ee59y88",
+      "name": "shallow_marine",
+      "label": "Shallow marine",
+      "order": ""
+    },
+    {
+      "list_name": "ee59y88",
+      "name": "deep_marine",
+      "label": "Deep marine",
+      "order": ""
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "alluvial_fan",
+      "label": "Alluvial fan",
+      "order": ""
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "glacial_and_pr",
+      "label": "Glacial and proglacial",
+      "order": 1
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "fluvial",
+      "label": "Fluvial",
+      "order": 2
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "floodplain",
+      "label": "Floodplain",
+      "order": 3
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "mire_swamp",
+      "label": "Mire/swamp",
+      "order": 4
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "lake",
+      "label": "Lake",
+      "order": 5
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "playa",
+      "label": "Playa",
+      "order": 6
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "eolian",
+      "label": "Eolian",
+      "order": 7
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "sabkha",
+      "label": "Sabkha",
+      "order": 8
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "tidal_flat",
+      "label": "Tidal flat",
+      "order": 9
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "lagoon",
+      "label": "Lagoon",
+      "order": 10
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "delta",
+      "label": "Delta",
+      "order": 11
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "beach",
+      "label": "Beach",
+      "order": 12
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "shoreface",
+      "label": "Shoreface",
+      "order": 13
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "shelf",
+      "label": "Shelf",
+      "order": 14
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "offshore_trans",
+      "label": "Offshore transition zone",
+      "order": ""
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "open_marine",
+      "label": "Open marine",
+      "order": ""
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "depwater_chann",
+      "label": "Deepwater channel",
+      "order": ""
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "deepwater_fan",
+      "label": "Deepwater fan",
+      "order": ""
+    },
+    {
+      "list_name": "ml38g37",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "xt0tt07",
+      "name": "mud_flow",
+      "label": "Mud flow",
+      "order": ""
+    },
+    {
+      "list_name": "xt0tt07",
+      "name": "debris_flow",
+      "label": "Debris flow",
+      "order": ""
+    },
+    {
+      "list_name": "xt0tt07",
+      "name": "sheet_flow",
+      "label": "Sheet flow",
+      "order": ""
+    },
+    {
+      "list_name": "xt0tt07",
+      "name": "braided_stream",
+      "label": "Braided stream",
+      "order": ""
+    },
+    {
+      "list_name": "xt0tt07",
+      "name": "paleosol",
+      "label": "Paleosol",
+      "order": ""
+    },
+    {
+      "list_name": "xt0tt07",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "hy05n94",
+      "name": "dune",
+      "label": "Dune",
+      "order": ""
+    },
+    {
+      "list_name": "hy05n94",
+      "name": "interdune",
+      "label": "Interdune",
+      "order": ""
+    },
+    {
+      "list_name": "hy05n94",
+      "name": "extradune",
+      "label": "Extradune",
+      "order": ""
+    },
+    {
+      "list_name": "hy05n94",
+      "name": "sand_sheet",
+      "label": "Sand sheet",
+      "order": ""
+    },
+    {
+      "list_name": "hy05n94",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "channel",
+      "label": "Channel",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "thalweg",
+      "label": "Thalweg",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "bar",
+      "label": "Bar",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "mid_channel_ba",
+      "label": "Mid-channel bar",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "bank_attached",
+      "label": "Bank-attached bar",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "scour_hollow",
+      "label": "Scour hollow",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "abandoned_chan",
+      "label": "Abandoned channel",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "levee",
+      "label": "Levee",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "crevasse_splay",
+      "label": "Crevasse splay",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "crevasse_chann",
+      "label": "Crevasse channel",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "floodplain",
+      "label": "Floodplain",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "wet_floodplain",
+      "label": "Wet floodplain",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "drained_floodp",
+      "label": "Drained floodplain",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "floodplain_lak",
+      "label": "Floodplain lake",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "avulsion_depos",
+      "label": "Avulsion deposits",
+      "order": ""
+    },
+    {
+      "list_name": "qc4iq45",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "wave_dominated",
+      "label": "Wave dominated",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "tide_dominated",
+      "label": "Tide dominated",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "river_dominate",
+      "label": "River dominated",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "inner_shelf",
+      "label": "Inner shelf",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "middle_shelf",
+      "label": "Middle shelf",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "outer_shelf",
+      "label": "Outer shelf",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "foreshore",
+      "label": "Foreshore",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "upper_shorefac",
+      "label": "Upper shoreface",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "lower_shorefac",
+      "label": "Lower shoreface",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "offshore",
+      "label": "Offshore",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "delta_plain",
+      "label": "Delta plain",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "distributary_c",
+      "label": "Distributary channel",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "delta_front",
+      "label": "Delta front",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "prodelta",
+      "label": "Prodelta",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "intertidal",
+      "label": "Intertidal",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "tidal_flat",
+      "label": "Tidal flat",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "tidal_channel",
+      "label": "Tidal channel",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "subtidal",
+      "label": "Subtidal",
+      "order": ""
+    },
+    {
+      "list_name": "kw9js55",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "submarine_chan",
+      "label": "Submarine channel deposit",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "submarine_cany",
+      "label": "Submarine canyon",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "slump",
+      "label": "Slump",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "levee",
+      "label": "Levee",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "overbank",
+      "label": "Overbank",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "splay",
+      "label": "Splay",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "lateral_accret",
+      "label": "Lateral accretion package/bar",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "upper_fan",
+      "label": "Upper fan",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "middle_fan",
+      "label": "Middle fan",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "lower_fan",
+      "label": "Lower fan",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "sand_sheet",
+      "label": "Sand sheet",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "depositional_l",
+      "label": "Depositional lobe",
+      "order": ""
+    },
+    {
+      "list_name": "um6fk82",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "tv89s87",
+      "name": "till",
+      "label": "Till",
+      "order": ""
+    },
+    {
+      "list_name": "tv89s87",
+      "name": "outwash",
+      "label": "Outwash",
+      "order": ""
+    },
+    {
+      "list_name": "tv89s87",
+      "name": "moraine",
+      "label": "Moraine",
+      "order": ""
+    },
+    {
+      "list_name": "tv89s87",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "delta",
+      "label": "Delta",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "fan_delta",
+      "label": "Fan delta",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "sheet_delta_te",
+      "label": "Sheet delta/terminal splay",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "wetlands",
+      "label": "Wetlands",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "backshore",
+      "label": "Backshore",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "beach",
+      "label": "Beach",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "upr_shoreface",
+      "label": "Upper shoreface",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "lwr_shoreface",
+      "label": "Lower shoreface",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "offshore_trans",
+      "label": "Offshore transition",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "shlw_opn_water",
+      "label": "Shallow open water",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "dp_opn_water",
+      "label": "Deep open water",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "dry_mudflat",
+      "label": "Dry mudflat",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "saline_mudflat",
+      "label": "Saline mudflat",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "ephemeral_sali",
+      "label": "Ephemeral saline lake/saline pan",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "saline_lake",
+      "label": "perennial saline lake",
+      "order": ""
+    },
+    {
+      "list_name": "er65b70",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "yi3tp14",
+      "name": "factory",
+      "label": "Factory",
+      "order": ""
+    },
+    {
+      "list_name": "yi3tp14",
+      "name": "environment",
+      "label": "Environment",
+      "order": ""
+    },
+    {
+      "list_name": "ow54y55",
+      "name": "heterozoan",
+      "label": "Heterozoan",
+      "order": ""
+    },
+    {
+      "list_name": "ow54y55",
+      "name": "photozoan",
+      "label": "Photozoan",
+      "order": ""
+    },
+    {
+      "list_name": "ow54y55",
+      "name": "metozoan",
+      "label": "Metozoan",
+      "order": ""
+    },
+    {
+      "list_name": "ow54y55",
+      "name": "calcareous_gre",
+      "label": "Calcareous Green Algae",
+      "order": ""
+    },
+    {
+      "list_name": "ow54y55",
+      "name": "microbial",
+      "label": "Microbial",
+      "order": ""
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "subaerial_expo",
+      "label": "Subaerial exposure",
+      "order": ""
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "lake",
+      "label": "Lake",
+      "order": 1
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "cave",
+      "label": "Cave",
+      "order": 2
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "eolian",
+      "label": "Eolian",
+      "order": 3
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "tidal_flat",
+      "label": "Tidal flat",
+      "order": 4
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "tidal_flat",
+      "label": "Supratidal",
+      "order": 5
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "intertidal",
+      "label": "Intertidal",
+      "order": 6
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "subtidal",
+      "label": "Subtidal",
+      "order": 7
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "lagoon",
+      "label": "Lagoon",
+      "order": 8
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "beach",
+      "label": "Beach",
+      "order": 9
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "reef_and_assoc",
+      "label": "Reef and associated environments",
+      "order": 10
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "shoal",
+      "label": "Shoal",
+      "order": 11
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "shelf",
+      "label": "Shelf",
+      "order": 12
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "slope",
+      "label": "Slope",
+      "order": 13
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "basin",
+      "label": "Basin",
+      "order": 14
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "shallow",
+      "label": "shallow",
+      "order": ""
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "deep",
+      "label": "deep",
+      "order": ""
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "shoreline",
+      "label": "shoreline",
+      "order": ""
+    },
+    {
+      "list_name": "pv3ex57",
+      "name": "other_env",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "evaporitic",
+      "label": "Evaporitic",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "brackish",
+      "label": "Brackish",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "fresh",
+      "label": "Fresh",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "saline",
+      "label": "Saline",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "alkaline",
+      "label": "Alkaline",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "playa",
+      "label": "Playa",
+      "order": ""
+    },
+    {
+      "list_name": "em9bi13",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "kx3or79",
+      "name": "arid",
+      "label": "Arid",
+      "order": ""
+    },
+    {
+      "list_name": "kx3or79",
+      "name": "humid",
+      "label": "Humid",
+      "order": ""
+    },
+    {
+      "list_name": "kx3or79",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "vh0av40",
+      "name": "back_reef",
+      "label": "Back reef",
+      "order": ""
+    },
+    {
+      "list_name": "vh0av40",
+      "name": "reef",
+      "label": "Reef",
+      "order": ""
+    },
+    {
+      "list_name": "vh0av40",
+      "name": "fore_reef_slop",
+      "label": "Fore reef slope",
+      "order": ""
+    },
+    {
+      "list_name": "vh0av40",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "intracratonic",
+      "label": "Intracratonic basin",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "rift",
+      "label": "Rift",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "passive_margin",
+      "label": "Passive margin",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "offshore_bank",
+      "label": "Offshore bank",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "foreland_basin",
+      "label": "Foreland basin",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "forearc_basin",
+      "label": "Forearc basin",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "backarc_basin",
+      "label": "Backarc basin",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "volcanic_pedes",
+      "label": "Volcanic pedestal",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "caldera",
+      "label": "Caldera",
+      "order": ""
+    },
+    {
+      "list_name": "xm7ti94",
+      "name": "other",
+      "label": "Other",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

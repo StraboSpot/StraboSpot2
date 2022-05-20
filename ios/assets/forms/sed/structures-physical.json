@@ -1,0 +1,908 @@
+{
+  "survey": [
+    {
+      "type": "select_one ld5to24",
+      "name": "massive_structureless",
+      "label": "Massive/Structureless?",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_rh8hl43",
+      "label": "Cross Bedding",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple re0hj03",
+      "name": "cross_bedding_type",
+      "label": "Cross Bedding Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "cross_bedding_height_cm",
+      "label": "Cross Bedding Height (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "cross_bedding_width_cm",
+      "label": "Cross Bedding Width (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "cross_bedding_thickness_cm",
+      "label": "Cross Bedding Thickness (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "cross_bedding_spacing_cm",
+      "label": "Cross Bedding Spacing (cm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_wy6rv67",
+      "label": "Ripple Lamination",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple jz8he61",
+      "name": "ripple_lamination_type",
+      "label": "Ripple Lamination Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_ripple_lamination_type",
+      "label": "Other Ripple Lamination Type",
+      "required": false,
+      "relevant": "selected(${ripple_lamination_type}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "ripple_lamination_height_mm",
+      "label": "Ripple Lamination Height (mm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "ripple_lamination_width_mm",
+      "label": "Ripple Lamination Width (mm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "ripple_lamination_thick_mm",
+      "label": "Ripple Lamination Thickness (mm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "ripple_lamination_spacing_mm",
+      "label": "Ripple Lamination Spacing (mm)",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_wz0qz25",
+      "label": "Horizontal Bedding",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple sm1jb70",
+      "name": "horizontal_bedding_type",
+      "label": "Horizontal Bedding Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_horizontal_bedding_type",
+      "label": "Other Horizontal Bedding Type",
+      "required": false,
+      "relevant": "selected(${horizontal_bedding_type}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_wt3hz92",
+      "label": "Graded Bedding",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one ra89g56",
+      "name": "graded_bedding_type",
+      "label": "Graded Bedding Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_wx21s79",
+      "label": "Deformation Structures",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple aj0xd06",
+      "name": "deformation_structures",
+      "label": "Deformation Structure Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_deformation_structure_type",
+      "label": "Other Deformation Structure Type",
+      "required": false,
+      "relevant": "selected(${deformation_structures}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_uy2hu92",
+      "label": "Lags",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple sp5hn71",
+      "name": "lag_type",
+      "label": "Lag Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_lag_type",
+      "label": "Other Lag Type",
+      "required": false,
+      "relevant": "selected(${lag_type}, 'other')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "clast_composition",
+      "label": "Clast Composition",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "clast_size",
+      "label": "Clast Size",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "layer_thickness_shape",
+      "label": "Layer Thickness/Shape",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "begin_group",
+      "name": "group_uj9cj06",
+      "label": "Other Common Structures",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple hi3ol65",
+      "name": "other_common_structures",
+      "label": "Other Common Structure Type",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple nw3sv70",
+      "name": "bouma_sequence_part",
+      "label": "Bouma Sequence Part",
+      "required": false,
+      "relevant": "selected(${other_common_structures}, 'bouma_sequence')",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "relevant": "",
+      "appearance": "multiline",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vuHxrawX538zBkUTaiR4AB'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": "",
+      "relevant": "",
+      "appearance": "",
+      "calculation": "'vpQXtuVJRdaFwHnGuGABZj'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "ld5to24",
+      "name": "yes",
+      "label": "yes",
+      "order": ""
+    },
+    {
+      "list_name": "ld5to24",
+      "name": "no",
+      "label": "no",
+      "order": ""
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "cross_bedding",
+      "label": "cross bedding (general)",
+      "order": ""
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "trough",
+      "label": "trough",
+      "order": 1
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "hummocky",
+      "label": "hummocky",
+      "order": 2
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "swaley",
+      "label": "swaley",
+      "order": 3
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "planar_tabular",
+      "label": "planar tabular",
+      "order": 4
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "festoon",
+      "label": "festoon",
+      "order": 5
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "wedge",
+      "label": "wedge",
+      "order": 6
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "low_angle",
+      "label": "low angle",
+      "order": 7
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "high_angle",
+      "label": "high angle",
+      "order": 8
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "symmetric",
+      "label": "symmetric",
+      "order": 9
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "asymmetric",
+      "label": "asymmetric",
+      "order": 10
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "herringbone",
+      "label": "herringbone",
+      "order": 11
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "bi_directional",
+      "label": "bi-directional",
+      "order": 12
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "sigmoidal",
+      "label": "sigmoidal",
+      "order": 13
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "pinstripe",
+      "label": "pinstripe",
+      "order": 14
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "avalanche_tong",
+      "label": "avalanche tongues",
+      "order": 15
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "large_scale",
+      "label": "large scale",
+      "order": 16
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "carb_drapes",
+      "label": "carbonaceous drapes",
+      "order": 17
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "mud_drape",
+      "label": "mud drape",
+      "order": 18
+    },
+    {
+      "list_name": "re0hj03",
+      "name": "other",
+      "label": "other",
+      "order": 19
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "cross_lamin",
+      "label": "cross lamination (general)",
+      "order": ""
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "trough",
+      "label": "trough",
+      "order": 1
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "climbing",
+      "label": "climbing",
+      "order": 2
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "flaser",
+      "label": "flaser",
+      "order": 3
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "wavy",
+      "label": "wavy",
+      "order": 4
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "lenticular",
+      "label": "lenticular",
+      "order": 5
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "translatent",
+      "label": "translatent",
+      "order": 6
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "starved",
+      "label": "starved",
+      "order": 7
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "herringbone",
+      "label": "herringbone",
+      "order": 8
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "symm_ripple",
+      "label": "symmetric",
+      "order": 9
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "asymm_ripple",
+      "label": "asymmetric",
+      "order": 10
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "bi_directional",
+      "label": "bi-directional",
+      "order": 11
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "pinstripe",
+      "label": "pinstripe",
+      "order": 12
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "wind",
+      "label": "wind",
+      "order": 13
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "interference",
+      "label": "interference",
+      "order": 14
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "carb_drape",
+      "label": "carbonaceous drape",
+      "order": 15
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "mud_drape",
+      "label": "mud drape",
+      "order": 16
+    },
+    {
+      "list_name": "jz8he61",
+      "name": "other",
+      "label": "other",
+      "order": 17
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "horizontal",
+      "label": "horizontal",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "planar",
+      "label": "planar",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "rhythmic",
+      "label": "rhythmic",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "wavy",
+      "label": "wavy",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "lenticular",
+      "label": "lenticular",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "carbo_drape",
+      "label": "carbonaceous drape",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "mud_drape",
+      "label": "mud drape",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "sandy_stringer",
+      "label": "sandy stringers",
+      "order": ""
+    },
+    {
+      "list_name": "sm1jb70",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "ra89g56",
+      "name": "normally_grade",
+      "label": "normally graded",
+      "order": ""
+    },
+    {
+      "list_name": "ra89g56",
+      "name": "inverse_graded",
+      "label": "inverse graded",
+      "order": ""
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "contorted_bedd",
+      "label": "contorted bedding",
+      "order": ""
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "convolute_bedd",
+      "label": "convolute bedding",
+      "order": 1
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "rip_up_clasts",
+      "label": "rip-up clasts",
+      "order": 2
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "nodular_beddin",
+      "label": "nodular bedding",
+      "order": 3
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "pipes",
+      "label": "pipes",
+      "order": 4
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "dikes",
+      "label": "dikes",
+      "order": 5
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "sills",
+      "label": "sills",
+      "order": 6
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "dish_structrue",
+      "label": "dish structrues",
+      "order": 7
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "flame_structur",
+      "label": "flame structures",
+      "order": 8
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "sand_mud_volca",
+      "label": "sand/mud volcanoes",
+      "order": 9
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "load_structure",
+      "label": "load structures",
+      "order": 10
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "ball_and_pillo",
+      "label": "ball and pillow",
+      "order": 11
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "boudinage",
+      "label": "boudinage",
+      "order": 12
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "intrastrat_crk",
+      "label": "intrastratal cracks",
+      "order": 13
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "liquefaction",
+      "label": "liquefaction features",
+      "order": 14
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "syn_sedimentar",
+      "label": "syn-sedimentary faults",
+      "order": 15
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "neptunian_dike",
+      "label": "Neptunian dikes",
+      "order": 16
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "post_lithifica",
+      "label": "post-lithification deformational structures",
+      "order": 17
+    },
+    {
+      "list_name": "aj0xd06",
+      "name": "other",
+      "label": "other",
+      "order": 19
+    },
+    {
+      "list_name": "sp5hn71",
+      "name": "lag_deposit",
+      "label": "lag deposit",
+      "order": ""
+    },
+    {
+      "list_name": "sp5hn71",
+      "name": "rip_up_clasts",
+      "label": "rip-up clasts",
+      "order": ""
+    },
+    {
+      "list_name": "sp5hn71",
+      "name": "intraclasts",
+      "label": "intraclasts",
+      "order": ""
+    },
+    {
+      "list_name": "sp5hn71",
+      "name": "other",
+      "label": "other",
+      "order": ""
+    },
+    {
+      "list_name": "hi3ol65",
+      "name": "bouma_sequence",
+      "label": "Bouma Sequence",
+      "order": ""
+    },
+    {
+      "list_name": "hi3ol65",
+      "name": "tidal_bundles",
+      "label": "Tidal Bundles",
+      "order": ""
+    },
+    {
+      "list_name": "nw3sv70",
+      "name": "a",
+      "label": "a",
+      "order": ""
+    },
+    {
+      "list_name": "nw3sv70",
+      "name": "b",
+      "label": "b",
+      "order": ""
+    },
+    {
+      "list_name": "nw3sv70",
+      "name": "c",
+      "label": "c",
+      "order": ""
+    },
+    {
+      "list_name": "nw3sv70",
+      "name": "d",
+      "label": "d",
+      "order": ""
+    },
+    {
+      "list_name": "nw3sv70",
+      "name": "e",
+      "label": "e",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

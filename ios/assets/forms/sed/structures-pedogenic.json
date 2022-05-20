@@ -1,0 +1,367 @@
+{
+  "survey": [
+    {
+      "type": "begin_group",
+      "name": "group_ck6ux23",
+      "label": "Pedogenic Structures",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple da8ok49",
+      "name": "paleosol_horizons",
+      "label": "Master Paleosol Horizons",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_horizon",
+      "label": "Other Horizon",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "o_horizon_thickness_cm",
+      "label": "O Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'o')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "a_horizon_thickness_cm",
+      "label": "A Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'a')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "e_horizon_thickness_cm",
+      "label": "E Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'e')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "b_horizon_thickness_cm",
+      "label": "B Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'b')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "k_horizon_thickness_cm",
+      "label": "K Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'k')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "c_horizon_thickness_cm",
+      "label": "C Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'c')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "r_horizon_thickness_cm",
+      "label": "R Horizon thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'r')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "compound_thickness_cm",
+      "label": "Compound thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'compound')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "composite_thickness_cm",
+      "label": "Composite thickness (cm)",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_horizons}, 'composite')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple lg4oy98",
+      "name": "paleosol_structures",
+      "label": "Paleosol structures",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "other_structure",
+      "label": "Other Paleosol Structure",
+      "required": false,
+      "read_only": false,
+      "relevant": "selected(${paleosol_structures}, 'other')",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "additional_modifiers",
+      "label": "Additional modifiers",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_multiple hu6nm09",
+      "name": "paleosol_classification",
+      "label": "Paleosol classification (after Soil Survey Staff, 1999; Retallack, 2001)",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "end_group",
+      "name": "",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "label": "",
+      "required": false,
+      "read_only": false,
+      "relevant": "",
+      "calculation": "'v5hWSTnHxSBfsy5RxjeR57'",
+      "$given_name": ""
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "label": "",
+      "required": false,
+      "read_only": "",
+      "relevant": "",
+      "calculation": "'vVRpoaJJ7NVACKq8ssCHcR'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "label": "",
+      "required": "",
+      "read_only": "",
+      "relevant": "",
+      "calculation": "'vBqw7dxiSkhHD4YAcUqiGJ'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "da8ok49",
+      "name": "o",
+      "label": "O"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "a",
+      "label": "A"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "e",
+      "label": "E"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "b",
+      "label": "B"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "k",
+      "label": "K"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "c",
+      "label": "C"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "r",
+      "label": "R"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "compound",
+      "label": "compound"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "composite",
+      "label": "composite"
+    },
+    {
+      "list_name": "da8ok49",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "peds",
+      "label": "peds"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "slickensides",
+      "label": "slickensides"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "rooting",
+      "label": "rooting"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "mottling",
+      "label": "mottling"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "carbonate_nodu",
+      "label": "carbonate nodules"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "leaching_horiz",
+      "label": "leaching horizons"
+    },
+    {
+      "list_name": "lg4oy98",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "gelisol",
+      "label": "gelisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "histosol",
+      "label": "histosol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "spodosol",
+      "label": "spodosol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "andisol",
+      "label": "andisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "oxisol",
+      "label": "oxisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "vertisol",
+      "label": "vertisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "aridisol",
+      "label": "aridisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "ultisol",
+      "label": "ultisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "mollisol",
+      "label": "mollisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "alfisol",
+      "label": "alfisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "inceptisol",
+      "label": "inceptisol"
+    },
+    {
+      "list_name": "hu6nm09",
+      "name": "entisol",
+      "label": "entisol"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-25)"
+    }
+  ]
+}

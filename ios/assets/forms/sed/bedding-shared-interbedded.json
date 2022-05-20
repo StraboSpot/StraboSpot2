@@ -1,0 +1,110 @@
+{
+  "survey": [
+    {
+      "type": "select_one ss8kj53",
+      "name": "interbed_proportion_change",
+      "label": "Interbed Proportion Change (Up Section)",
+      "required": false,
+      "constraint": "",
+      "relevant": "",
+      "read_only": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "decimal",
+      "name": "interbed_proportion",
+      "label": "Lithology 1: Interbed Relative Proportion (%)",
+      "required": false,
+      "constraint": ". > 0 and . <= 50",
+      "relevant": "",
+      "read_only": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one gv7rs89",
+      "name": "lithology_at_bottom_contact",
+      "label": "Which Lithology is at Bottom Contact?",
+      "required": false,
+      "constraint": "",
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change'",
+      "read_only": "",
+      "calculation": "",
+      "$given_name": ""
+    },
+    {
+      "type": "select_one du76k53",
+      "name": "lithology_at_top_contact",
+      "label": "Which Lithology is at Top Contact?",
+      "required": false,
+      "constraint": "",
+      "relevant": "${interbed_proportion_change} = 'increase' or ${interbed_proportion_change} = 'decrease' or ${interbed_proportion_change} = 'no_change'",
+      "read_only": "",
+      "calculation": "",
+      "$given_name": ""
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "ss8kj53",
+      "name": "increase",
+      "label": "increase",
+      "order": ""
+    },
+    {
+      "list_name": "ss8kj53",
+      "name": "decrease",
+      "label": "decrease",
+      "order": 1
+    },
+    {
+      "list_name": "ss8kj53",
+      "name": "no_change",
+      "label": "no change",
+      "order": 2
+    },
+    {
+      "list_name": "gv7rs89",
+      "name": "lithology_1",
+      "label": "lithology 1",
+      "order": ""
+    },
+    {
+      "list_name": "gv7rs89",
+      "name": "lithology_2",
+      "label": "lithology 2",
+      "order": ""
+    },
+    {
+      "list_name": "gv7rs89",
+      "name": "not_specified",
+      "label": "not specified",
+      "order": ""
+    },
+    {
+      "list_name": "du76k53",
+      "name": "lithology_1",
+      "label": "lithology 1",
+      "order": ""
+    },
+    {
+      "list_name": "du76k53",
+      "name": "lithology_2",
+      "label": "lithology 2",
+      "order": ""
+    },
+    {
+      "list_name": "du76k53",
+      "name": "not_specified",
+      "label": "not specified",
+      "order": ""
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "SS1 Copy",
+      "version": "2 (2021-1-12)"
+    }
+  ]
+}
