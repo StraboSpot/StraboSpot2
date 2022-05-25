@@ -234,6 +234,7 @@ function Basemap(props) {
           id={'spotsNotSelectedSource'}
           shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
         >
+          {/* Polygon Not Selected */}
           <MapboxGL.FillLayer
             id={'polygonLayerNotSelected'}
             minZoomLevel={1}
@@ -252,7 +253,14 @@ function Basemap(props) {
             filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().line}
           />
+          <MapboxGL.SymbolLayer
+            id={'polygonLabelLayerNotSelected'}
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygonLabel}
+          />
 
+          {/* Line Not Selected */}
           {/* Need 4 different lines for the different types of line dashes since
            lineDasharray is not suppported with data-driven styling*/}
           <MapboxGL.LineLayer
@@ -279,7 +287,14 @@ function Basemap(props) {
             filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
             style={useMapSymbology.getMapSymbology().lineDotDashed}
           />
+          <MapboxGL.SymbolLayer
+            id={'lineLabelLayerNotSelected'}
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'LineString']}
+            style={useMapSymbology.getMapSymbology().lineLabel}
+          />
 
+          {/* Point Not Selected */}
           <MapboxGL.SymbolLayer
             id={'pointLayerNotSelected'}
             minZoomLevel={1}
@@ -293,6 +308,7 @@ function Basemap(props) {
           id={'spotsSelectedSource'}
           shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected)))}
         >
+          {/* Polygon Selected */}
           <MapboxGL.FillLayer
             id={'polygonLayerSelected'}
             minZoomLevel={1}
@@ -311,7 +327,14 @@ function Basemap(props) {
             filter={['==', ['geometry-type'], 'Polygon']}
             style={useMapSymbology.getMapSymbology().line}
           />
+          <MapboxGL.SymbolLayer
+            id={'polygonLabelLayerSelected'}
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'Polygon']}
+            style={useMapSymbology.getMapSymbology().polygonLabel}
+          />
 
+          {/* Line Selected */}
           {/* Need 4 different lines for the different types of line dashes since
            lineDasharray is not suppported with data-driven styling*/}
           <MapboxGL.LineLayer
@@ -337,6 +360,12 @@ function Basemap(props) {
             minZoomLevel={1}
             filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
             style={useMapSymbology.getMapSymbology().lineSelectedDotDashed}
+          />
+          <MapboxGL.SymbolLayer
+            id={'lineLabelLayerSelected'}
+            minZoomLevel={1}
+            filter={['==', ['geometry-type'], 'LineString']}
+            style={useMapSymbology.getMapSymbology().lineLabel}
           />
 
         </MapboxGL.ShapeSource>

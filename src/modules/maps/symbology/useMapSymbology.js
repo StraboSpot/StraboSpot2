@@ -336,6 +336,11 @@ const useMapSymbology = (props) => {
       circleRadius: 17,
       circleColor: ['get', 'circleColor', ['get', 'symbology']],
     },
+    lineLabel: {
+      textField: isShowSpotLabelsOn ? ['get', 'name'] : '',
+      symbolPlacement: 'line',
+      textAnchor: 'bottom',
+    },
     line: {
       lineColor: ['get', 'lineColor', ['get', 'symbology']],
       lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
@@ -356,6 +361,9 @@ const useMapSymbology = (props) => {
       lineColor: ['get', 'lineColor', ['get', 'symbology']],
       lineWidth: ['get', 'lineWidth', ['get', 'symbology']],
       lineDasharray: linePatterns.dotDashed,
+    },
+    polygonLabel: {
+      textField: isShowSpotLabelsOn ? ['get', 'name'] : '',
     },
     polygon: {
       fillColor: ['get', 'fillColor', ['get', 'symbology']],
