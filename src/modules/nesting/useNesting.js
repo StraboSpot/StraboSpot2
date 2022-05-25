@@ -21,20 +21,20 @@ const useNesting = (props) => {
     try {
       // Make sure we're using booleanWithin with valid types
       if (Object.keys(validTypesForBooleanWithin).includes(spot1.geometry.type)
-        && validTypesForBooleanWithin[spot1.geometry.type].includes(spot2.geometry.type)) {
+        && validTypesForBooleanWithin[spot1.geometry.type]?.includes(spot2.geometry.type)) {
         boolWithin = turf.booleanWithin(spot1, spot2);
       }
       // Handle Geometry Collections
       else if (spot1.geometry.type === 'GeometryCollection') {
         spot1.geometry.geometries.forEach(geometry1 => {
           if (!boolWithin && Object.keys(validTypesForBooleanWithin).includes(geometry1.type)
-            && validTypesForBooleanWithin[geometry1].includes(spot2.geometry.type)) {
+            && validTypesForBooleanWithin[geometry1]?.includes(spot2.geometry.type)) {
             boolWithin = turf.booleanWithin(geometry1, spot2.geometry.type);
           }
           else if (!boolWithin && spot2.geometry.type === 'GeometryCollection') {
             spot2.geometry.geometries.forEach(geometry2 => {
               if (!boolWithin && Object.keys(validTypesForBooleanWithin).includes(geometry1.type)
-                && validTypesForBooleanWithin[geometry1].includes(geometry2)) {
+                && validTypesForBooleanWithin[geometry1]?.includes(geometry2)) {
                 boolWithin = turf.booleanWithin(geometry1, geometry2);
               }
             });
@@ -44,7 +44,7 @@ const useNesting = (props) => {
       else if (spot2.geometry.type === 'GeometryCollection') {
         spot2.geometry.geometries.forEach(geometry2 => {
           if (!boolWithin && Object.keys(validTypesForBooleanWithin).includes(spot1.geometry.type)
-            && validTypesForBooleanWithin[spot1.geometry.type].includes(geometry2.type)) {
+            && validTypesForBooleanWithin[spot1.geometry.type]?.includes(geometry2.type)) {
             boolWithin = turf.booleanWithin(spot1.geometry, geometry2);
           }
         });
