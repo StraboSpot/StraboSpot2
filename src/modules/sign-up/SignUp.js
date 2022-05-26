@@ -81,8 +81,8 @@ const SignUp = (props) => {
     Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp);
     Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp);
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowSignUp);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideSignUp);
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp).remove();
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp).remove();
       console.log('Home Keyboard Listeners Removed');
     };
   }, []);
