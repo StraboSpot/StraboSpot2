@@ -196,6 +196,48 @@ const useStratSectionCalculations = (props) => {
     return {...spot, geometry: spotCopyGeom};
   };
 
+  // Move target interval to after given interval (the preceding interval)
+  const moveIntervalToAfter = (targetInterval, precedingInterval) => {
+    let targetIntervalExtent = turf.bbox(targetInterval);
+    const targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
+    console.log('interval to move:', targetInterval, 'height:', targetIntervalHeight);
+
+    // Move new interval (to bottom if no precedingInterval)
+    let minY = 0;
+    if (precedingInterval) {
+      const precedingIntervalExtent = turf.bbox(precedingInterval);
+      minY = precedingIntervalExtent[3];
+    }
+    let maxY = minY + targetIntervalHeight;
+    let targetIntervalModified = JSON.parse(JSON.stringify(targetInterval));
+    // Regular interval (polygon geometry)
+    if (targetIntervalModified.geometry.type !== 'GeometryCollection') {
+      let targetIntervalModifiedCoords = targetIntervalModified.geometry.coordinates;
+      targetIntervalModifiedCoords[0][0][1] = targetIntervalModifiedCoords[0][3][1] = targetIntervalModifiedCoords[0][4][1] = minY;
+      targetIntervalModifiedCoords[0][1][1] = targetIntervalModifiedCoords[0][2][1] = maxY;
+    }
+    // Interbedded interval (geometry collection)
+    else {
+      targetIntervalModified.geometry.geometries.forEach((geometry, g) => {
+        const interbedExtent = turf.bbox(targetIntervalModified.geometry.geometries[g]);
+        const newInterbedHeight = interbedExtent[3] - interbedExtent[1];
+        maxY = minY + newInterbedHeight;
+        targetIntervalModified.geometry.geometries[g].coordinates[0][0][1] = minY;
+        targetIntervalModified.geometry.geometries[g].coordinates[0][1][1] = maxY;
+        targetIntervalModified.geometry.geometries[g].coordinates[0][2][1] = maxY;
+        targetIntervalModified.geometry.geometries[g].coordinates[0][3][1] = minY;
+        targetIntervalModified.geometry.geometries[g].coordinates[0][4][1] = minY;
+        minY = maxY;
+      });
+    }
+    console.log('interval w new geom:', targetIntervalModified);
+    dispatch(addedSpot(targetIntervalModified));
+    targetIntervalExtent = turf.bbox(targetIntervalModified);
+    moveSpotsUpOrDownByPixels(targetIntervalModified.properties.strat_section_id, targetIntervalExtent[1],
+      targetIntervalHeight, targetIntervalModified.properties.id);
+    return;
+  };
+
   // Move all Spots (except excluded Spot, if given) in a specified Strat Section
   // up after cutoff (if pixels is positive) or down after cutoff (if pixels is negative)
   const moveSpotsUpOrDownByPixels = (stratSectionId, cutoff, pixels, excludedSpotId) => {
@@ -223,6 +265,7 @@ const useStratSectionCalculations = (props) => {
 
   return {
     calculateIntervalGeometry: calculateIntervalGeometry,
+    moveIntervalToAfter: moveIntervalToAfter,
     moveSpotsUpOrDownByPixels: moveSpotsUpOrDownByPixels,
     recalculateIntervalGeometry: recalculateIntervalGeometry,
   };

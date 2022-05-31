@@ -15,6 +15,7 @@ import {updatedProject} from '../../project/projects.slice';
 import useSpotsHook from '../../spots/useSpots';
 import useMapsHook from '../useMaps';
 import useStratSectionHook from './useStratSection';
+import useStratSectionCalculationsHook from './useStratSectionCalculations';
 
 const AddIntervalModal = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const AddIntervalModal = () => {
   const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
   const useStratSection = useStratSectionHook();
+  const useStratSectionCalculations = useStratSectionCalculationsHook();
 
   const formRef = useRef(null);
   const preFormRef = useRef(null);
@@ -153,6 +155,8 @@ const AddIntervalModal = () => {
     const initialIntervalName = {
       intervalName: (preferences.spot_prefix || '') + (preferences.starting_number_for_spot || ''),
     };
+    const orderedIntervals = useStratSection.orderStratSectionIntervals(intervals);
+    const intervalsForInsert = [...orderedIntervals, {properties: {name: '-- Bottom --', id: 1}}];
     return (
       <Formik
         initialValues={initialIntervalName}
@@ -170,10 +174,24 @@ const AddIntervalModal = () => {
                   component={(formProps) => (
                     SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
                   )}
+                  name={'intervalToInsertAfter'}
+                  key={'intervalToInsertAfter'}
+                  label={'Insert New Interval After:'}
+                  choices={intervalsForInsert.map(s => ({label: s.properties.name, value: s.properties.id}))}
+                  single={true}
+                />
+              </ListItem.Content>
+            </ListItem>
+            <ListItem containerStyle={commonStyles.listItemFormField}>
+              <ListItem.Content>
+                <Field
+                  component={(formProps) => (
+                    SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
+                  )}
                   name={'intervalToCopyId'}
                   key={'intervalToCopyId'}
                   label={'Copy Interval Data From:'}
-                  choices={intervals.map(s => ({label: s.properties.name, value: s.properties.id}))}
+                  choices={orderedIntervals.map(s => ({label: s.properties.name, value: s.properties.id}))}
                   single={true}
                 />
               </ListItem.Content>
@@ -233,6 +251,12 @@ const AddIntervalModal = () => {
       if (preFormRef.current?.values?.intervalName) newInterval.properties.name = preFormRef.current.values.intervalName;
       if (intervalToCopy) newInterval = copyRestOfInterval(newInterval);
       const newSpot = await useSpots.createSpot({type: 'Feature', ...newInterval});
+      if (preFormRef.current?.values?.intervalToInsertAfter) {
+        const intervalToInsertAfterObj = intervals.find(
+          i => i.properties.id === preFormRef.current.values.intervalToInsertAfter);
+        console.log('Insert after', preFormRef.current.values.intervalToInsertAfter, intervalToInsertAfterObj);
+        useStratSectionCalculations.moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
+      }
       useMaps.setSelectedSpotOnMap(newSpot);
       dispatch(setModalValues({}));
       dispatch(setModalVisible({modal: null}));

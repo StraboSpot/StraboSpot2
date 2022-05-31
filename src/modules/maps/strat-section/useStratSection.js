@@ -1,3 +1,5 @@
+import * as turf from '@turf/turf';
+
 import {isEmpty} from '../../../shared/Helpers';
 import {useFormHook} from '../../form';
 import {useSpotsHook} from '../../spots';
@@ -89,9 +91,38 @@ const useStratSection = (props) => {
     && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
   };
 
+  const orderStratSectionIntervals = (intervals) => {
+    const orderedIntervals = [];
+    intervals.forEach(interval => {
+      let i = 0;
+      while (i <= orderedIntervals.length) {
+        if (i === orderedIntervals.length) {
+          orderedIntervals.push(interval);
+          break;
+        }
+        else {
+          const newExtent = turf.bbox(interval);
+          const curExtent = turf.bbox(orderedIntervals[i]);
+          if (newExtent[3] >= curExtent[3]) {
+            orderedIntervals.splice(i, 0, interval);
+            break;
+          }
+          const nextExtent = turf.bbox(orderedIntervals[i]);
+          if (newExtent[3] < curExtent[3] && newExtent[3] >= nextExtent[3]) {
+            orderedIntervals.splice(i, 0, interval);
+            break;
+          }
+        }
+        i++;
+      }
+    });
+    return orderedIntervals;
+  };
+
   return {
     createInterval: createInterval,
     getStratSectionSettings: getStratSectionSettings,
+    orderStratSectionIntervals: orderStratSectionIntervals,
   };
 };
 
