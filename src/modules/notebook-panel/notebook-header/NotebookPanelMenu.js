@@ -4,6 +4,7 @@ import {Alert} from 'react-native';
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
@@ -14,6 +15,12 @@ const NotebookPanelMenu = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [useSpots] = useSpotsHook();
+  const useStratSection = useStratSectionHook();
+
+  const continueDeleteSelectedSpot = () => {
+    if (useSpots.isStratInterval(spot)) useStratSection.deleteInterval(spot);
+    else useSpots.deleteSpot(spot.properties.id);
+  };
 
   const deleteSelectedSpot = () => {
     const errorMsg = useSpots.checkIsSafeDelete(spot);
@@ -28,7 +35,7 @@ const NotebookPanelMenu = (props) => {
           style: 'cancel',
         }, {
           text: 'Delete',
-          onPress: () => useSpots.deleteSpot(spot.properties.id),
+          onPress: continueDeleteSelectedSpot,
         }],
       );
     }

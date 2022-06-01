@@ -235,7 +235,6 @@ const useStratSectionCalculations = (props) => {
     targetIntervalExtent = turf.bbox(targetIntervalModified);
     moveSpotsUpOrDownByPixels(targetIntervalModified.properties.strat_section_id, targetIntervalExtent[1],
       targetIntervalHeight, targetIntervalModified.properties.id);
-    return;
   };
 
   // Move all Spots (except excluded Spot, if given) in a specified Strat Section
