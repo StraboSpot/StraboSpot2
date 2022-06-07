@@ -25,7 +25,6 @@ Sentry.init({
 });
 
 const App = () => {
-  const netInfo = useNetInfo();
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
@@ -33,7 +32,7 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={<Loading/>} persistor={persistor}>
         {/*<Sentry.TouchEventBoundary>*/}
-          <Routes netInfo={netInfo}/>
+          <Routes/>
         {/*</Sentry.TouchEventBoundary>*/}
       </PersistGate>
     </Provider>

@@ -132,16 +132,6 @@ const Home = () => {
   const toastRef = useRef(null);
 
   useEffect(() => {
-    return () => {
-      NetInfo.fetch() // fetches internet connection cause logging out clears Redux.
-        .then(res => {
-          console.log(res);
-          dispatch(setOnlineStatus(res));
-        });
-    };
-  }, [isOnline]);
-
-  useEffect(() => {
     console.log('UE Home [selectedProject]', selectedProject);
   }, [selectedProject]);
 
