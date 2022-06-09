@@ -5,7 +5,7 @@ platform :ios, '11.0'
 install! 'cocoapods', :deterministic_uuids => false
 
 # used for automatic bumping
-flipperkit_version = '0.123.0'
+flipperkit_version = '0.147.1'
 
 target 'StraboSpot2' do
   config = use_native_modules!
