@@ -151,7 +151,7 @@ const Map = React.forwardRef((props, ref) => {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
     else {
-      const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap) : undefined;
+      const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap, []) : undefined;
       setMapPropsMutable(m => ({
         ...m,
         coordQuad: calculatedCoordQuad,

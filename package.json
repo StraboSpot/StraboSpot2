@@ -21,6 +21,7 @@
     "@react-native-community/masked-view": "0.1.11",
     "@react-native-community/netinfo": "8.3.0",
     "@react-native-community/slider": "4.2.2",
+    "@react-native-mapbox-gl/maps": "8.3.0",
     "@react-native-picker/picker": "2.4.1",
     "@react-navigation/native": "6.0.10",
     "@react-navigation/stack": "6.2.1",
@@ -73,7 +74,6 @@
     "redux-flipper": "2.0.1",
     "redux-logger": "3.0.6",
     "redux-persist": "6.0.0",
-    "rnmaps": "github:StraboSpot/rnmaps",
     "uuid": "8.3.2"
   },
   "devDependencies": {
