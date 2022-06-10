@@ -286,7 +286,7 @@ PODS:
     - glog
   - react-native-document-picker (8.1.0):
     - React-Core
-  - react-native-flipper (0.145.0):
+  - react-native-flipper (0.146.1):
     - React-Core
   - react-native-geolocation (2.1.0):
     - React-Core
@@ -724,7 +724,7 @@ SPEC CHECKSUMS:
   React-jsinspector: c5989c77cb89ae6a69561095a61cce56a44ae8e8
   React-logger: a0833912d93b36b791b7a521672d8ee89107aff1
   react-native-document-picker: 5663fe4bcdb646200683a41790464d2793307ac8
-  react-native-flipper: 1b78844db5b0de19bd64847c3b88cafc6cc119ba
+  react-native-flipper: 4bfe0a324e663f1ae2f76ad0da75673de6895efe
   react-native-geolocation: 69f4fd37650b8e7fee91816d395e62dd16f5ab8d
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
   react-native-image-picker: e95b4785b685cfc06609bc50ed6fb55b59990c99
@@ -769,6 +769,6 @@ SPEC CHECKSUMS:
   Yoga: 99652481fcd320aefa4a7ef90095b95acd181952
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 469304afc775d663205d0ed7df4e1cc235419965
+PODFILE CHECKSUM: 6b84858f7021c0aa37f38bc0e85eea8393e33686
 
 COCOAPODS: 1.10.2

@@ -33,7 +33,7 @@ ReactNativeMapboxGLIOSVersion = '~> 6.1'
  pod 'RNPDF', :path => '../node_modules/react-native-view-pdf'
 
  post_install do |installer|
-#      flipper_post_install(installer)
+     flipper_post_install(installer)
 #  react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
     $RNMBGL.post_install(installer)
