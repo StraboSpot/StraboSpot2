@@ -71,7 +71,7 @@ const StratSectionBackground = (props) => {
         let imageCopy = JSON.parse(JSON.stringify(image));
         if (oI.image_height) imageCopy.height = oI.image_height;
         if (oI.image_width) imageCopy.width = oI.image_width;
-        const coordQuad = useMaps.getCoordQuad(imageCopy, [oI.image_origin_x, oI.image_origin_y]);
+        const coordQuad = useMaps.getCoordQuad(imageCopy, {x: oI.image_origin_x, y: oI.image_origin_y});
         console.log('overlayimage coordQuad', coordQuad);
         return (
           <MapboxGL.Animated.ImageSource

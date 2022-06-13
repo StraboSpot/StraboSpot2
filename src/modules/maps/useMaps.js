@@ -208,9 +208,11 @@ const useMaps = (mapRef) => {
   };
 
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
-  const getCoordQuad = (imageBasemapProps, [x = 0, y = 0]) => {
+  const getCoordQuad = (imageBasemapProps, altOrigin) => {
     // identify the [lat,lng] corners of the image basemap
-    const bottomLeft = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [x, y]);
+    const x = altOrigin && altOrigin.x || 0;
+    const y = altOrigin && altOrigin.y || 0;
+    const bottomLeft = altOrigin ? proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [x, y]) : [x, y];
     const bottomRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width + x, y]);
     const topRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
       [imageBasemapProps.width + x, imageBasemapProps.height + y]);
