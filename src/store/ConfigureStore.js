@@ -22,12 +22,14 @@ export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   blacklist: ['compass', 'notebook', 'home', 'mainMenu', 'spot'],
+  timeout: null,
 };
 
 const compassConfig = {
   key: 'compass',
   storage: AsyncStorage,
   blacklist: ['measurements'],
+  timeout: null,
 };
 
 const homeConfig = {
@@ -36,24 +38,28 @@ const homeConfig = {
   blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible', 'isStatusMessagesModalVisible',
     'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible', 'isOfflineMapModalVisible',
     'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible', 'isProjectLoadComplete'],
+  timeout: null,
 };
 
 const notebookConfig = {
   key: 'notebook',
   storage: AsyncStorage,
   blacklist: ['visibleNotebookPagesStack', 'isNotebookPanelVisible'],
+  timeout: null,
 };
 
 const mainMenuConfig = {
   key: 'mainMenu',
   storage: AsyncStorage,
   blacklist: ['mainMenuPageVisible', 'isSidePanelVisible', 'sidePanelView'],
+  timeout: null,
 };
 
 const spotsConfig = {
   key: 'spot',
   storage: AsyncStorage,
   blacklist: ['selectedAttributes'],
+  timeout: null,
 };
 
 const loggerMiddleware = createLogger({
@@ -91,7 +97,7 @@ const rootReducer = (state, action) => {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const defalutMiddlewareOptions = {
+const defaultMiddlewareOptions = {
   immutableCheck: false,
   serializableCheck: {
     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
@@ -102,10 +108,10 @@ const defalutMiddlewareOptions = {
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => __DEV__
-    ? getDefaultMiddleware(defalutMiddlewareOptions)
+    ? getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(createDebugger())
       .concat(loggerMiddleware)
-    : getDefaultMiddleware(defalutMiddlewareOptions),
+    : getDefaultMiddleware(defaultMiddlewareOptions),
 });
 
 export default store;
