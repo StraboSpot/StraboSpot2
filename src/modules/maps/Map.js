@@ -156,7 +156,7 @@ const Map = React.forwardRef((props, ref) => {
         ...m,
         coordQuad: calculatedCoordQuad,
         imageBasemap: currentImageBasemap,
-        stratSection: undefined,
+        stratSection: currentImageBasemap ? undefined : m.stratSection,
       }));
       setMapToggle(!mapToggle);
     }
@@ -166,7 +166,7 @@ const Map = React.forwardRef((props, ref) => {
     console.log('UE Map [stratSection]', stratSection);
     setMapPropsMutable(m => ({
       ...m,
-      imageBasemap: undefined,
+      imageBasemap: stratSection ? undefined : m.imageBasemap,
       stratSection: stratSection,
     }));
     setMapToggle(!mapToggle);
