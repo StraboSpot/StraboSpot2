@@ -51,8 +51,6 @@ const BatteryInfo = () => {
   const lowBatteryLevel = () => {
     switch (batteryLevel) {
       case 0.05:
-      case 0.10:
-      case 0.15:
       case 0.20:
       case 0.30:
         batteryWarning();
