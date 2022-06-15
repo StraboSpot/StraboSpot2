@@ -16,6 +16,7 @@ const SelectInputField = (props) => {
   const fieldValueChanged = (value) => {
     if (props.single) {
       if (value[0] === props.value) props.setFieldValue(props.name, undefined);
+      else if (props.onMyChange && typeof props.onMyChange === 'function') props.onMyChange(props.name, value[0]);
       else props.setFieldValue(props.name, value[0]);
     }
     else props.setFieldValue(props.name, isEmpty(value) ? undefined : value);

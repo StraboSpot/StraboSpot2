@@ -243,6 +243,17 @@ const useSed = () => {
       + ' (' + columnYUnits + ')';
   };
 
+  const onSedFormChange = (formCurrent, name, value) => {
+    console.log(name, 'changed to', value);
+    if (name === 'siliciclastic_type' && (value === 'claystone' || value === 'mudstone')) {
+      formCurrent.setFieldValue('mud_silt_grain_size', 'clay');
+    }
+    else if (name === 'siliciclastic_type' && value === 'siltstone') {
+      formCurrent.setFieldValue('mud_silt_grain_size', 'silt');
+    }
+    formCurrent.setFieldValue(name, value);
+  };
+
   const saveSedBedFeature = async (key, spot, formCurrent, isLeavingPage) => {
     await saveSedFeature(key, spot, formCurrent, isLeavingPage, 'beds');
   };
@@ -353,6 +364,7 @@ const useSed = () => {
     getIntervalTitle: getIntervalTitle,
     getRockTitle: getRockTitle,
     getStratSectionTitle: getStratSectionTitle,
+    onSedFormChange: onSedFormChange,
     saveSedBedFeature: saveSedBedFeature,
     saveSedFeature: saveSedFeature,
     saveSedFeatureValuesFromTemplates: saveSedFeatureValuesFromTemplates,
