@@ -97,6 +97,7 @@ const Form = (props) => {
         onShowFieldInfo={showFieldInfo}
         showExpandedChoices={isExpanded}
         errors={props.errors}
+        onMyChange={props.onMyChange}
       />
     );
   };

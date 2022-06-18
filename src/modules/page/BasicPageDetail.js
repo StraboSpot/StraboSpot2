@@ -11,6 +11,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import NoteForm from '../notes/NoteForm';
 import usePetrologyHook from '../petrology/usePetrology';
+import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
@@ -131,8 +132,11 @@ const BasicPageDetail = (props) => {
             <Form {...{
               ...formProps,
               formName: formName,
-              onMyChange: props.page.key === PAGE_KEYS.MINERALS && ((name, value) => usePetrology.onMineralChange(
-                formRef.current, name, value)),
+              onMyChange: props.page.key === PAGE_KEYS.MINERALS
+                ? ((name, value) => usePetrology.onMineralChange(formRef.current, name, value))
+                : props.page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
+                  ? ((name, value) => useSed.onSedFormChange(formRef.current, name, value))
+                  : undefined,
             }}/>
           )}
           initialValues={props.selectedFeature}

@@ -105,6 +105,17 @@ export const deepFindFeatureTypeById = (obj, id) => {
   return result;
 };
 
+// Deep extend an object
+export const deepObjectExtend = (target, source) => {
+  for (const prop in source) {
+    if (source.hasOwnProperty(prop)) {
+      if (target[prop] && typeof source[prop] === 'object') deepObjectExtend(target[prop], source[prop]);
+      else target[prop] = source[prop];
+    }
+  }
+  return target;
+};
+
 export const getDimensions = () => {
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   return Dimensions.get(platform);

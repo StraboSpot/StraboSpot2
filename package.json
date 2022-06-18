@@ -1,6 +1,6 @@
 {
-  "name": "strabospot2",
-  "version": "1.25.0",
+  "name": "StraboSpot2",
+  "version": "1.26.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,9 +9,8 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.25.0 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.25.0",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'",
-    "ios-sim": "npx react-native run-ios --simulator='iPad Pro (11-inch) (3rd generation)'"
+    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.26.1 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.26.1",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.17.6",
