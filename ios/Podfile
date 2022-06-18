@@ -30,7 +30,6 @@ ReactNativeMapboxGLIOSVersion = '~> 6.1'
   # you should disable these next few lines.
   use_flipper!({ 'Flipper' => flipperkit_version, 'Flipper-Folly' => '2.6.10', 'Flipper-RSocket' => '1.4.3', 'Flipper-DoubleConversion' => '3.1.7', 'Flipper-Glog' => '0.3.9', 'Flipper-PeerTalk' => '0.0.4' })
 
- pod 'RNPDF', :path => '../node_modules/react-native-view-pdf'
 
  post_install do |installer|
      flipper_post_install(installer)
