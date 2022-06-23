@@ -144,8 +144,7 @@ const homeStyles = StyleSheet.create({
     textShadowColor: themes.BLACK,
     textShadowRadius: 5,
     marginLeft: 10,
-    // fontWeight: 'bold',
-  },
+    },
   batteryLevelContainer: {
     alignItems: 'flex-end',
     flexDirection: 'row',
