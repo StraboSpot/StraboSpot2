@@ -100,27 +100,18 @@ const useSedValidation = () => {
             });
           }
         }
-        else {
-          errorMessages.push('- Bedding measurements must be specified for a/an '
-            + useForm.getLabel(sed.character, ['sed', 'interval']) + '  interval.');
-        }
       }
     };
 
     // Validation checks for Interval page
     const validateIntervalPage = () => {
       if (isMappedInterval && (isEmpty(sed.interval) || !sed.interval.interval_thickness)) {
-        errorMessages.push('- Interval data must be specified for a/an '
-          + useForm.getLabel(sed.character, ['sed', 'interval']));
+        errorMessages.push('Interval Thickness: Required');
       }
       const units = getDefaultUnits(spot);
       if (units !== sed.interval.thickness_units) {
-        errorMessages.push('- Thickness units must be ' + units + ' since ' + units
+        errorMessages.push('Thickness Units: Must be ' + units + ' since ' + units
           + ' have been assigned for this strat section.');
-      }
-      if (sed.character === 'bed' || sed.character === 'bed_mixed_lit' || sed.character === 'interbedded'
-        || sed.character === 'package_succe') {
-        validateLithologiesPage();
       }
     };
 
@@ -131,25 +122,21 @@ const useSedValidation = () => {
         if (!isEmpty(sed.lithologies) && sed.lithologies.length > 0) {
           sed.lithologies.forEach((lithology, n) => {
             if (!lithology.primary_lithology) {
-              errorMessages.push(
-                '- Primary lithology must be specified for Lithology ' + (n + 1) + ' if there '
-                + 'is any type of bedding.');
+              errorMessages.push('Primary Lithology: Required for lithology ' + (n + 1));
             }
             if (lithology.primary_lithology === 'siliciclastic' && !getSiliciclasticGrainSize(lithology)) {
               errorMessages.push(
-                '- Grain size must be specified for Lithology ' + (n + 1) + ' if the primary lithology is '
-                + 'siliciclastic.');
+                'Grain Size: Required for lithology ' + (n + 1) + ' if the primary lithology is siliciclastic.');
             }
             if ((lithology.primary_lithology === 'limestone' || lithology.primary_lithology === 'dolostone')
               && !lithology.dunham_classification) {
-              errorMessages.push(
-                '- Dunham classification must be specified for lithology ' + (n + 1) + ' if the primary '
+              errorMessages.push('Dunham Classification: Required for lithology ' + (n + 1) + ' if the primary '
                 + 'lithology is limestone or dolostone.');
             }
           });
         }
         else {
-          errorMessages.push('- Lithologies must be specified for a/an '
+          errorMessages.push('Lithologies: Required for '
             + useForm.getLabel(sed.character, ['sed', 'interval']) + ' interval.');
         }
       }
@@ -161,7 +148,8 @@ const useSedValidation = () => {
 
     if (isEmpty(errorMessages)) return true;
     else {
-      Alert.alert('Data Validation Error', errorMessages.join('\n'));
+      Alert.alert('Error Saving', 'Errors found in following fields. Unable to save these changes.'
+        + ' Please fix the following errors.\n\n' + errorMessages.join('\n'));
       throw Error('Sed Validation Error');
     }
   };

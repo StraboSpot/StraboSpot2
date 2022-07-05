@@ -85,10 +85,10 @@ const useStratSectionCalculations = (props) => {
     else if (character === 'interbedded' || character === 'bed_mixed_lit') {
       console.log('Not enough data to properly draw interval', sedData);
       Alert.alert(
-        'Data Error!',
+        'Missing Data!',
         'This interval is interbedded or mixed but there is not enough data to properly '
         + 'draw this interval. Check that you have entered all of the necessary bedding data for two lithologies. '
-        + 'This includes the Lithology 1: Interbed Relative Proportion (%) and either the Average '
+        + 'This includes the fields Lithology 1: Interbed Relative Proportion (%) and either the Average '
         + 'Thickness or both the Maximum Thickness and Minimum Thickness of the interbeds for '
         + 'both lithologies found on the Bedding page. ',
       );
@@ -104,7 +104,9 @@ const useStratSectionCalculations = (props) => {
     const defaultWidth = xInterval / 4;
     let i, intervalWidth = defaultWidth;
     // Unexposed/Covered
-    if (character === 'unexposed_cove' || character === 'not_measured') intervalWidth = (0 + 1) * xInterval; // Same as clay
+    if (!character || character === 'unexposed_cove' || character === 'not_measured' || !lithologies) {
+      intervalWidth = (0 + 1) * xInterval;  // Same as clay
+    }
     else if (lithologies[n] && (character === 'bed' || character === 'bed_mixed_lit' || character === 'interbedded'
       || character === 'package_succe')) {
       // Weathering Column
@@ -135,13 +137,14 @@ const useStratSectionCalculations = (props) => {
         intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
       }
       // Other Lithologies
-      else {
+      else if (lithologies[n].primary_lithology) {
         i = SED_LABEL_DICTIONARY.lithologies.findIndex(grainSizeOption => {
           return grainSizeOption.name === lithologies[n].primary_lithology;
         });
         i = i - 3; // First 3 indexes are siliciclastic, limestone & dolostone which are handled above
         intervalWidth = i === -1 ? defaultWidth : (i + 2.66) * xInterval;
       }
+      else intervalWidth = (0 + 1) * xInterval;  // Same as clay
     }
     else console.error('Sed data error:', lithologies[n]);
     return intervalWidth;
