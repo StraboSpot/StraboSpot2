@@ -261,8 +261,7 @@ const MeasurementDetail = (props) => {
             <MeasurementItem
               item={selectedAttitude}
               selectedIds={[selectedMeasurement.id]}
-              isAssociatedItem={false}
-              isAssociatedList={true}
+              isDetail={true}
               onPress={() => onSwitchSelectedMeasurement(selectedAttitude)}
             />
             <FlatListItemSeparator/>
@@ -276,8 +275,6 @@ const MeasurementDetail = (props) => {
                 <MeasurementItem
                   item={item}
                   selectedIds={[selectedMeasurement.id]}
-                  isAssociatedItem={true}
-                  isAssociatedList={true}
                   onPress={() => onSwitchSelectedMeasurement(item)}
                   key={item.id}
                 />

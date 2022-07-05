@@ -47,7 +47,7 @@ const MeasurementItem = (props) => {
               style={props.selectedIds.includes(props.item.id) ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}
             >
-              <MeasurementLabel item={props.item}/>
+              <MeasurementLabel item={props.item} isDetail={props.isDetail}/>
             </ListItem.Title>
             <FeatureTagsList spotId={spot.properties.id} featureId={props.item.id}/>
           </ListItem.Content>

@@ -20,15 +20,6 @@ const MeasurementLabel = (props) => {
       measurementText += (isEmpty(item.plunge) ? '?' : padWithLeadingZeros(item.plunge, 2)) + '\u2192'
         + (isEmpty(item.trend) ? '?' : padWithLeadingZeros(item.trend, 3));
     }
-    if (!props.isAssociatedList) {
-      if (item.associated_orientation && item.associated_orientation.length === 1) {
-        measurementText += '\n' + getMeasurementText(item.associated_orientation[0]);
-      }
-      else if (item.associated_orientation && item.associated_orientation.length > 1) {
-        if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') measurementText += '\n' + 'Multiple Lines';
-        else if (item.type === 'linear_orientation') measurementText += '\n' + 'Multiple Planes';
-      }
-    }
     return measurementText === '' ? '?' : measurementText;
   };
 
@@ -41,22 +32,15 @@ const MeasurementLabel = (props) => {
     firstOrderClassLabel = firstOrderClassLabel.replace('Orientation', 'Feature');
     if (firstOrderClassLabel === 'Tabular Feature') firstOrderClassLabel = 'Planar Feature (TZ)';
     const secondOrderClassLabel = secondOrderClass && useMeasurements.getLabel(item[secondOrderClass]).toUpperCase();
-    let typeText = firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
-
-    // Is an associated orientation on an associated list
-    if (props.isAssociatedList && props.isAssociatedItem) return 'Associated ' + typeText;
-    // Doesn't have associated orientation(s) or is the main orientation on an associated list
-    else if (!item.associated_orientation || (props.isAssociatedList && !props.isAssociatedItem)) return typeText;
-    // Has associated orientation(s)
-    else if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') {
-      typeText += ' + Associated Linear Feature' + (item.associated_orientation.length > 1 ? 's' : '');
-    }
-    else typeText += ' + Associated Planar Feature' + (item.associated_orientation.length > 1 ? 's' : '');
-    return typeText;
+    return firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
   };
 
   return (
-    <Text>{getMeasurementText(props.item)} {getTypeText(props.item)}</Text>
+    <React.Fragment>
+      <Text>{getMeasurementText(props.item)} {getTypeText(props.item)}</Text>
+      {!props.isDetail && props.item.associated_orientation
+        && props.item.associated_orientation.map(ao => <Text>{'\n'}{getMeasurementText(ao)} {getTypeText(ao)}</Text>)}
+    </React.Fragment>
   );
 };
 
