@@ -3,10 +3,14 @@ import {Alert} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import * as turf from '@turf/turf';
 import moment from 'moment';
+import {useSelector} from 'react-redux';
 
+import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
 import useSpotsHook from '../spots/useSpots';
 
 const useMapFeatures = (props) => {
+
+  const user = useSelector(state => state.user);
 
   const [useSpots] = useSpotsHook();
 
@@ -52,93 +56,96 @@ const useMapFeatures = (props) => {
       'Day',
       'Month',
       'Year',
-      'Notes',
+      'Notes', //Everything below 'Notes' is new for v4 of Stereonet
+      'Checked',
+      'Strabo Type',
+      'Strabo Quality',
+      'Strabo Plane Detail',
+      'Strabo Plane Addl Detail',
+      'Plane Thickness',
+      'Plane Length',
+      'Geologist',
+      'UnixTimeStamp',
+      'ModifiedTimeStamp',
+      'Associated Obs',
+      'Method',
     ];
 
     let planes = [];
     let lines = [];
-    let row = [];
     let out = [];
 
     spots.forEach(spot => {
-
-      let longitude = 999;
-      let latitude = 99;
-      let trendStrike = '';
-      let plungeDip = '';
-      let notes = '';
+      const unixTimestamp = Date.parse(spot.properties.time);
+      const modifiedTimestamp = spot.properties.modified_timestamp;
+      const longitude = spot.geometry.type === 'Point' ? spot.geometry?.coordinates?.[0] : 999;
+      const latitude = spot.geometry.type === 'Point' ? spot.geometry?.coordinates?.[1] : 99;
+      let geologist = user.name;
+      let associatedObs = [];
       let spotOrientations = [];
       const d = getTimeAndDateFromModifiedTimestamp(spot.properties.modified_timestamp);
-
-      if (spot.geometry.type === 'Point') {
-        longitude = spot.geometry.coordinates[0];
-        latitude = spot.geometry.coordinates[1];
-      }
-
 
       // Gather individual orientation data measurements.
       if (spot.properties.orientation_data) {
         spot.properties.orientation_data.forEach(od => {
           spotOrientations.push(od);
-          if (od.associated_orientation) od.associated_orientation.forEach(ao => spotOrientations.push(ao));
+          associatedObs.push(od.associated_orientation?.length || 0);
+          if (od.associated_orientation) {
+            od.associated_orientation.forEach(ao => {
+              spotOrientations.push(ao);
+              associatedObs.push(0);
+            });
+          }
         });
       }
 
-      spotOrientations.forEach(od => {
+      spotOrientations.forEach((od, index) => {
         console.log('Spot Orientation', od);
         console.log(d.time, '\n', d.day, '\n', d.month, '\n', d.year);
-        if (od.type === 'planar_orientation' || od.type === 'tabular_orientation') {
-          if (od.strike && od.dip) {
-            trendStrike = od.strike;
-            plungeDip = od.dip;
-            if (od.notes) notes = od.notes;
-            row = [
-              '',
-              'P',
-              'Strabo Planes',
-              '000000000',
-              trendStrike,
-              plungeDip,
-              longitude,
-              latitude,
-              '',
-              '0',
-              '',
-              d.time,
-              d.day,
-              d.month,
-              d.year,
-              notes,
-            ];
-            planes.push(row);
-          }
-        }
-        else if (od.type === 'linear_orientation') {
-          if (od.trend && od.plunge) {
-            trendStrike = od.trend;
-            plungeDip = od.plunge;
-            if (od.notes) notes = od.notes;
-            row = [
-              '',
-              'L',
-              'Strabo Lines',
-              '000000000',
-              trendStrike,
-              plungeDip,
-              longitude,
-              latitude,
-              '',
-              '0',
-              '',
-              d.time,
-              d.day,
-              d.month,
-              d.year,
-              notes,
-            ];
-            lines.push(row);
-          }
-        }
+        const trendStrike = od.strike || od.trend || 0;
+        const plungeDip = od.dip || od.plunge || 0;
+        const type = od.type === 'linear_orientation' ? 'L' : 'P';
+        const featureTypeField = FIRST_ORDER_CLASS_FIELDS.find(firstOrderClassField => od[firstOrderClassField]);
+        const planeDetailField = SECOND_ORDER_CLASS_FIELDS.find(secondOrderClassField => od[secondOrderClassField]);
+        const featureType = od[featureTypeField] || '';
+        const notes = od.notes || '';
+        const quality = od.quality || 5;
+        const planeThickness = od.thickness || 0;
+        const planeLength = od.length || 0;
+        const planeDetail = od[planeDetailField] || '';
+        const planeAddlDetail = '';
+
+        const row = [             // Headers
+          '',                     // No.
+          type,                   // Type
+          featureType,            // Structure
+          '000000000',            // Color
+          trendStrike,            // Trd/Strk
+          plungeDip,              // Plg/Dip
+          longitude,              // Longitude
+          latitude,               // Latitude
+          '',                     // Horiz ± m
+          '0',                    // Elevation
+          '',                     // Elev ± m
+          d.time,                 // Time
+          d.day,                  // Day
+          d.month,                // Month
+          d.year,                 // Year
+          notes,                  // Notes
+          '1',                    // Checked
+          featureType,            // Strabo Type
+          quality,                // Quality
+          planeDetail,            // Strabo Plane Detail
+          planeAddlDetail,        // Strabo Plane Addl Detail
+          planeThickness,         // Plane Thickness
+          planeLength,            // Plane Length
+          geologist,              // Geologist
+          unixTimestamp,          // UnixTimeStamp
+          modifiedTimestamp,       // Modified Timestamp
+          associatedObs[index],   // Associated Obs
+          'From Strabo',          // Method
+        ];
+        od.type === 'linear_orientation' ? lines.push(row) : planes.push(row);
       });
     });
 
