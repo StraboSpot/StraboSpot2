@@ -427,7 +427,7 @@ const MeasurementDetail = (props) => {
 
       orientationDataCopy.forEach((measurement, i) => {
         if (idsOfMeasurementsToEdit.includes(measurement.id)) {
-          orientationDataCopy[i] = selectedAttributes.length === 1 ? formValues : {...measurement, ...formValues};
+          orientationDataCopy[i] = selectedAttributes.length === 1 ? {...formValues, modified_timestamp: Date.now()} : {...measurement, ...formValues};
           editedSelectedMeasurements.push(orientationDataCopy[i]);
         }
         else if (measurement.associated_orientation) {
