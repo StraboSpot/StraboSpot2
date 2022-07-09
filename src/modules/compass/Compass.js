@@ -111,9 +111,10 @@ const Compass = (props) => {
           if (success) console.log('successfully finished playing compass sound');
           else console.log('compass sound failed due to audio decoding errors');
         });
+        const unixTimestamp = Date.now();
         console.log('Compass measurements', compassData, sliderValue);
         if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
-        else if (props.setMeasurements) props.setMeasurements({...compassData, quality: sliderValue.toString()});
+        else if (props.setMeasurements) props.setMeasurements({...compassData, quality: sliderValue.toString(), unixTimeStamp: unixTimestamp});
         else {
           dispatch(setCompassMeasurements(compassData.quality ? compassData
             : {...compassData, quality: sliderValue.toString()}));
