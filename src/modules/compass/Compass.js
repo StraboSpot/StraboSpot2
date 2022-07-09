@@ -246,6 +246,7 @@ const Compass = (props) => {
 
   const unsubscribe = () => {
     if (Platform.OS === 'ios') {
+      NativeModules.Compass.stopObserving();
       CompassEvents.addListener('rotationMatrix', matrixRotation).remove();
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
