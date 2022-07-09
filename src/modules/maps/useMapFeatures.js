@@ -76,8 +76,6 @@ const useMapFeatures = (props) => {
     let out = [];
 
     spots.forEach(spot => {
-      const unixTimestamp = Date.parse(spot.properties.time);
-      const modifiedTimestamp = spot.properties.modified_timestamp;
       const longitude = spot.geometry.type === 'Point' ? spot.geometry?.coordinates?.[0] : 999;
       const latitude = spot.geometry.type === 'Point' ? spot.geometry?.coordinates?.[1] : 99;
       let geologist = user.name;
@@ -114,6 +112,8 @@ const useMapFeatures = (props) => {
         const planeLength = od.length || 0;
         const planeDetail = od[planeDetailField] || '';
         const planeAddlDetail = '';
+        const unixTimeStamp = od.unixTimeStamp ? (od.unixTimeStamp) / 1000 : Date.parse(spot.properties.time) / 1000;
+        const modifiedTimestamp = od.modified_timestamp ? od.modified_timestamp / 1000 : spot.properties.modified_timestamp / 1000; // Converting into seconds from milliseconds
 
         const row = [             // Headers
           '',                     // No.
@@ -140,7 +140,7 @@ const useMapFeatures = (props) => {
           planeThickness,         // Plane Thickness
           planeLength,            // Plane Length
           geologist,              // Geologist
-          unixTimestamp,          // UnixTimeStamp
+          unixTimeStamp,          // UnixTimeStamp
           modifiedTimestamp,       // Modified Timestamp
           associatedObs[index],   // Associated Obs
           'From Strabo',          // Method
