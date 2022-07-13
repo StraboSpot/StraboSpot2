@@ -87,9 +87,9 @@ const useForm = () => {
     if (isEmpty(field.relevant)) return true;
     let relevant = field.relevant;
     relevant = relevant.replace(/not/g, '!');
-    relevant = relevant.replace(/selected\(\${(.*?)}, /g, 'values.$1.includes(');
+    relevant = relevant.replace(/selected\(\${(.*?)}, /g, 'values?.$1?.includes(');
     relevant = relevant.replace(/\$/g, '');
-    relevant = relevant.replace(/{/g, 'values.');
+    relevant = relevant.replace(/{/g, 'values?.');
     relevant = relevant.replace(/}/g, '');
     relevant = relevant.replace(/''/g, 'undefined');
     relevant = relevant.replace(/ = /g, ' == ');
@@ -97,12 +97,8 @@ const useForm = () => {
     relevant = relevant.replace(/ and /g, ' && ');
     //console.log(field.name, 'relevant:', relevant);
 
-    try {
-      return eval(relevant);
-    }
-    catch (e) {
-      return false;
-    }
+    const F = new Function('values', 'return ' + relevant);
+    return F(values);
   };
 
   // Remove errors from data, if any, and show alert. Throw error if not leaving page.

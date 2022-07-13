@@ -21,7 +21,7 @@ const useExternalData = () => {
     try {
 
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.csv],
       });
       console.log({

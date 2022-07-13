@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 
-import {useNetInfo} from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';

@@ -9,15 +9,13 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* StraboSpot2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* StraboSpot2Tests.m */; };
 		073ED693BC00E0DA4121F226 /* libPods-StraboSpot2-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* StraboSpot2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* StraboSpot2Tests.m */; };
-		4DF0C77CBE525B72C85069A4 /* libPods-StraboSpot2-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27534FA021E6200B166D67CC /* libPods-StraboSpot2-tvOSTests.a */; };
 		76FC8D26292DBAFE7EF34F8C /* libPods-StraboSpot2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFDB77BC79E8B01259D0F1D4 /* libPods-StraboSpot2.a */; };
+		8269947B8F2E2835C7CFDB79 /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91B9B4EEEB01F2766A6FF20A /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */; };
 		D62C055F2679A5CC0001AEA5 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = D62C055E2679A5CC0001AEA5 /* main.jsbundle */; };
 		D688C0D12383476F004931BF /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D02383476F004931BF /* Compass.swift */; };
 		D688C0D323834799004931BF /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D223834798004931BF /* Compass.m */; };
@@ -25,6 +23,7 @@
 		D6A11FEA255EBD7D00DBF5D1 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AA1AF324D31CB4006219E2 /* Dummy.swift */; };
 		D6CF9E9A2715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */; };
 		D6CF9E9C2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */; };
+		D6D9B483285269080029F3A7 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = D6D9B482285269080029F3A7 /* AppDelegate.mm */; };
 		D6F7B073281B37F000A543BF /* compass_button_click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D6F7B072281B37F000A543BF /* compass_button_click.mp3 */; };
 /* End PBXBuildFile section */
 
@@ -51,20 +50,21 @@
 		00E356F21AD99517003FC87E /* StraboSpot2Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StraboSpot2Tests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* StraboSpot2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StraboSpot2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = StraboSpot2/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = StraboSpot2/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = StraboSpot2/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = StraboSpot2/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = StraboSpot2/main.m; sourceTree = "<group>"; };
 		1B4D651BF00059BB886484AE /* Pods-StraboSpot2Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2Tests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2Tests/Pods-StraboSpot2Tests.release.xcconfig"; sourceTree = "<group>"; };
-		27534FA021E6200B166D67CC /* libPods-StraboSpot2-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		278E14AC1A4470F2805EE6D4 /* Pods-StraboSpot2-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS/Pods-StraboSpot2-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* StraboSpot2-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StraboSpot2-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* StraboSpot2-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "StraboSpot2-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30ACDE0F41C8177AAACF209D /* Pods-StraboSpot2-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		3EAD887CDBBD4E7EAAAEEEF3 /* libRNSimpleCompass.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleCompass.a; sourceTree = "<group>"; };
 		4666FF88ED8CACFCBAB00B0D /* Pods-StraboSpot2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4956CE92038BC56D8322A26C /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		5B4BD55FA21D091CE5E6D5D9 /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5E9ABD89187CEAC66366071B /* Pods-StraboSpot2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2/Pods-StraboSpot2.debug.xcconfig"; sourceTree = "<group>"; };
 		81F5D7E2F92B28FE76304E4D /* Pods-StraboSpot2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2Tests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2Tests/Pods-StraboSpot2Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		91B9B4EEEB01F2766A6FF20A /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D62C055E2679A5CC0001AEA5 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		D688C0CF2383476E004931BF /* StraboSpot2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StraboSpot2-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -74,6 +74,7 @@
 		D6AA1AF324D31CB4006219E2 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
 		D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Airdrop-from-iPad-to-iPad.pdf"; sourceTree = "<group>"; };
 		D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Moving-Project-Backups-Out-of-StraboSpot2.pdf"; sourceTree = "<group>"; };
+		D6D9B482285269080029F3A7 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = StraboSpot2/AppDelegate.mm; sourceTree = "<group>"; };
 		D6EFEBEF26E1534D00D45DB6 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../src/assets; sourceTree = "<group>"; };
 		D6F13FFF25CE078E00BD5624 /* StraboSpot2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StraboSpot2.entitlements; path = StraboSpot2/StraboSpot2.entitlements; sourceTree = "<group>"; };
 		D6F7B072281B37F000A543BF /* compass_button_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = compass_button_click.mp3; path = ../src/assets/sounds/compass_button_click.mp3; sourceTree = "<group>"; };
@@ -112,7 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DF0C77CBE525B72C85069A4 /* libPods-StraboSpot2-tvOSTests.a in Frameworks */,
+				8269947B8F2E2835C7CFDB79 /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,12 +140,12 @@
 		13B07FAE1A68108700A75B9A /* StraboSpot2 */ = {
 			isa = PBXGroup;
 			children = (
+				D6D9B482285269080029F3A7 /* AppDelegate.mm */,
 				D6F13FFF25CE078E00BD5624 /* StraboSpot2.entitlements */,
 				D688C0D223834798004931BF /* Compass.m */,
 				D688C0D02383476F004931BF /* Compass.swift */,
 				D6AA1AF324D31CB4006219E2 /* Dummy.swift */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -165,6 +166,8 @@
 				30ACDE0F41C8177AAACF209D /* Pods-StraboSpot2-tvOSTests.release.xcconfig */,
 				81F5D7E2F92B28FE76304E4D /* Pods-StraboSpot2Tests.debug.xcconfig */,
 				1B4D651BF00059BB886484AE /* Pods-StraboSpot2Tests.release.xcconfig */,
+				5B4BD55FA21D091CE5E6D5D9 /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */,
+				4956CE92038BC56D8322A26C /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -175,8 +178,8 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */,
-				27534FA021E6200B166D67CC /* libPods-StraboSpot2-tvOSTests.a */,
 				FFDB77BC79E8B01259D0F1D4 /* libPods-StraboSpot2.a */,
+				91B9B4EEEB01F2766A6FF20A /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -531,7 +534,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-StraboSpot2-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -572,6 +575,7 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/double-conversion/double-conversion.framework/double-conversion",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/glog/glog.framework/glog",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -580,6 +584,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/double-conversion.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/glog.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -639,10 +644,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				D6A11FEA255EBD7D00DBF5D1 /* Dummy.swift in Sources */,
 				D688C0D323834799004931BF /* Compass.m in Sources */,
+				D6D9B483285269080029F3A7 /* AppDelegate.mm in Sources */,
 				D688C0D12383476F004931BF /* Compass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -652,7 +657,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
-				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -960,7 +964,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4666FF88ED8CACFCBAB00B0D /* Pods-StraboSpot2-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 5B4BD55FA21D091CE5E6D5D9 /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -995,7 +999,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 30ACDE0F41C8177AAACF209D /* Pods-StraboSpot2-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 4956CE92038BC56D8322A26C /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

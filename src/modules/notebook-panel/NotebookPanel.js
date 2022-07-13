@@ -44,8 +44,8 @@ const NotebookPanel = (props) => {
       Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook);
     }
     return function cleanup() {
-      Keyboard.removeListener('keyboardDidShow', handleKeyboardDidShowNotebook);
-      Keyboard.removeListener('keyboardDidHide', handleKeyboardDidHideNotebook);
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook).remove();
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook).remove();
       console.log('NB Keyboard Listeners Removed');
     };
   }, [isNotebookPanelVisible]);
