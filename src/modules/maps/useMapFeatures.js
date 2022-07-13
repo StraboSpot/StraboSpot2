@@ -81,6 +81,9 @@ const useMapFeatures = (props) => {
       let geologist = user.name;
       let associatedObs = [];
       let spotOrientations = [];
+      let horizontalAccuracy = spot.properties.gps_accuracy ? spot.properties.gps_accuracy.toFixed(4) : 0
+      let elevation = spot.properties.altitude ? spot.properties.altitude.toFixed(4) : 0
+      let altitudeAccuracy = spot.properties.altitude_accuracy ? spot.properties.altitude_accuracy.toFixed(4) : 0;
       const d = getTimeAndDateFromModifiedTimestamp(spot.properties.modified_timestamp);
 
       // Gather individual orientation data measurements.
@@ -124,9 +127,9 @@ const useMapFeatures = (props) => {
           plungeDip,              // Plg/Dip
           longitude,              // Longitude
           latitude,               // Latitude
-          '',                     // Horiz ± m
-          '0',                    // Elevation
-          '',                     // Elev ± m
+          horizontalAccuracy,
+          elevation,
+          altitudeAccuracy,                 // Elev ± m
           d.time,                 // Time
           d.day,                  // Day
           d.month,                // Month
