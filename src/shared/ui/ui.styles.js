@@ -19,6 +19,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
     zIndex: 50,
   },
+  batteryLevelYellow: {
+    color: 'yellow',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
+  },
+  batteryLevelRed: {
+    color: 'red',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
+  },
   imageIcon: {
     width: 65,
     height: 65,

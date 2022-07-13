@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import {ScaleAnimation} from 'react-native-popup-dialog/src';
@@ -61,12 +62,14 @@ const MapActionsDialog = props => {
           textStyle={styles.dialogText}
           onPress={() => props.onPress('addTag')}
         />
-        <DialogButton
-          style={styles.dialogContent}
-          text={'Lasso Spots for Stereonet'}
-          textStyle={styles.dialogText}
-          onPress={() => props.onPress('stereonet')}
-        />
+        {Platform.OS === 'ios' && (
+          <DialogButton
+            style={styles.dialogContent}
+            text={'Lasso Spots for Stereonet'}
+            textStyle={styles.dialogText}
+            onPress={() => props.onPress('stereonet')}
+          />
+        )}
         <DialogButton
           style={styles.dialogContent}
           text={'Measure Distance'}

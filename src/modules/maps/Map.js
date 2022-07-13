@@ -885,22 +885,8 @@ const Map = React.forwardRef((props, ref) => {
           feature = useMaps.convertFeatureGeometryToImagePixels(feature);
           feature.properties.strat_section_id = stratSection.strat_section_id;
         }
-        if (props.isSelectingForStereonet) {
-          await getStereonetForFeature(feature);
-        }
-        else if (props.isSelectingForTagging) {
-          const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
-          if (selectedSpots.length > 0) {
-            dispatch(setIntersectedSpotsForTagging(selectedSpots));
-            dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS}));
-          }
-          else {
-            Alert.alert(
-              'Error!',
-              'No spots selected.',
-            );
-          }
-        }
+        if (props.isSelectingForStereonet) await getStereonetForFeature(feature);
+        else if (props.isSelectingForTagging) selectSpotsForTagging(feature);
         else {
           const symbology = useSymbology.getSymbology(feature);
           feature.properties.symbology = symbology;
@@ -911,7 +897,7 @@ const Map = React.forwardRef((props, ref) => {
       }
     }
     else if (!isEmpty(mapPropsMutable.drawFeatures)) {
-      let newFeature = mapPropsMutable.drawFeatures[0];  // If one, draw feature the Spot is just a point
+      let newFeature = mapPropsMutable.drawFeatures[0];  // If one draw feature the Spot is just a point
       // If there is more than one draw feature (should be no more than three) the first is the first vertex
       // placed, the second is the line or polygon between the vertices, and the third is the last vertex placed
       // Grab the second feature to create the Spot
@@ -928,9 +914,8 @@ const Map = React.forwardRef((props, ref) => {
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.strat_section_id = stratSection.strat_section_id;
       }
-      if (props.isSelectingForStereonet) {
-        await getStereonetForFeature(newFeature);
-      }
+      if (props.isSelectingForStereonet) await getStereonetForFeature(newFeature);
+      if (props.isSelectingForTagging) selectSpotsForTagging(newFeature);
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
         useMaps.setSelectedSpotOnMap(newOrEditedSpot);
@@ -939,6 +924,20 @@ const Map = React.forwardRef((props, ref) => {
     }
     console.log('Draw ended.');
     return Promise.resolve(newOrEditedSpot);
+  };
+
+  const selectSpotsForTagging = async (feature) => {
+    const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
+    if (selectedSpots.length > 0) {
+      dispatch(setIntersectedSpotsForTagging(selectedSpots));
+      dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS}));
+    }
+    else {
+      Alert.alert(
+        'Error!',
+        'No Spots selected.',
+      );
+    }
   };
 
   const getStereonetForFeature = async (feature) => {

@@ -63,12 +63,33 @@ const BeddingPage = (props) => {
     }
   };
 
-  const addAttribute = () => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedAttribute({id: getNewUUID()});
-      dispatch(setModalVisible({modal: null}));
-    });
+  const addAttribute = async () => {
+    if (beddingSharedRef.current && beddingSharedRef.current.dirty) {
+      Alert.alert('Unsaved Changes',
+        'Would you like to save your general bedding data and continue?',
+        [
+          {text: 'No', style: 'cancel'},
+          {
+            text: 'Yes', onPress: async () => {
+              await useSed.saveSedFeature(props.page.key, spot, beddingSharedRef.current);
+              batch(() => {
+                setIsDetailView(true);
+                setSelectedAttribute({id: getNewUUID()});
+                dispatch(setModalVisible({modal: null}));
+              });
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+    else {
+      batch(() => {
+        setIsDetailView(true);
+        setSelectedAttribute({id: getNewUUID()});
+        dispatch(setModalVisible({modal: null}));
+      });
+    }
   };
 
   const editAttribute = (attribute, i) => {

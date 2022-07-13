@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
-import NetInfo from '@react-native-community/netinfo';
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -55,7 +54,6 @@ import {
   setMainMenuPanelVisible,
   setModalVisible,
   setOfflineMapsModalVisible,
-  setOnlineStatus,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
 } from './home.slice';
@@ -270,6 +268,8 @@ const Home = () => {
         mapComponentRef.current.clearSelectedSpots();
         setIsSelectingForTagging(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');

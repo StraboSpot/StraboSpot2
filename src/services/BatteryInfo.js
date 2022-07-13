@@ -1,24 +1,16 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
 import {useBatteryLevel, usePowerState} from 'react-native-device-info';
 import {Icon} from 'react-native-elements';
-import {useDispatch} from 'react-redux';
 
-import {addedStatusMessage, clearedStatusMessages, setWarningModalVisible} from '../modules/home/home.slice';
 import homeStyles from '../modules/home/home.style';
 import {roundToDecimalPlaces, toNumberFixedValue} from '../shared/Helpers';
+import uiStyles from '../shared/ui/ui.styles';
 
 const BatteryInfo = () => {
   const batteryLevel = roundToDecimalPlaces(useBatteryLevel(), 2);
   const powerState = usePowerState();
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    // console.log('UE BatteryInfo [batteryLevel]', batteryLevel);
-    lowBatteryLevel();
-  }, [batteryLevel]);
 
   const batteryLevelIcon = () => {
     if (powerState.batteryState === 'charging') return 'battery-charging';
@@ -36,25 +28,8 @@ const BatteryInfo = () => {
   };
 
   const batteryPercentColor = () => {
-    if (batteryLevel > 0 && batteryLevel <= 0.30) return {color: 'red', fontWeight: 'bold'};
-  };
-
-  const batteryWarning = () => {
-    dispatch(clearedStatusMessages());
-    dispatch(
-      addedStatusMessage(
-        `Battery level is at ${batteryLevel * 100}%!  Please find another source of power soon!`,
-      ));
-    dispatch(setWarningModalVisible(true));
-  };
-
-  const lowBatteryLevel = () => {
-    switch (batteryLevel) {
-      case 0.05:
-      case 0.20:
-      case 0.30:
-        batteryWarning();
-    }
+    if (batteryLevel > 0.21 && batteryLevel <= 0.30) return uiStyles.batteryLevelYellow;
+    if (batteryLevel > 0 && batteryLevel <= 0.20) return uiStyles.batteryLevelRed;
   };
 
   return (
