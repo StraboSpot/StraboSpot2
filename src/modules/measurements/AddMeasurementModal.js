@@ -469,8 +469,8 @@ const AddMeasurementModal = (props) => {
     const typeKey = MEASUREMENT_TYPES[selectedTypeIndex]
     && MEASUREMENT_TYPES[selectedTypeIndex].key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR_LINEAR
       : measurementTypeForForm;
-    const planarCompassFields = ['strike', 'dip_direction', 'dip', 'quality', 'unixTimeStamp'];
-    const linearCompassFields = ['trend', 'plunge', 'rake', 'quality', 'unixTimeStamp'];
+    const planarCompassFields = ['strike', 'dip_direction', 'dip', 'quality', 'unix_timestamp'];
+    const linearCompassFields = ['trend', 'plunge', 'rake', 'quality', 'unix_timestamp'];
     const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields : linearCompassFields;
     compassFields.forEach(compassFieldKey => {
       if (!isEmpty(data[compassFieldKey])) formRef.current.setFieldValue(compassFieldKey, data[compassFieldKey]);

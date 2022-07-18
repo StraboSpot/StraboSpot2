@@ -114,7 +114,7 @@ const Compass = (props) => {
         const unixTimestamp = Date.now();
         console.log('Compass measurements', compassData, sliderValue);
         if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
-        else if (props.setMeasurements) props.setMeasurements({...compassData, quality: sliderValue.toString(), unixTimeStamp: unixTimestamp});
+        else if (props.setMeasurements) props.setMeasurements({...compassData, quality: sliderValue.toString(), unix_timestamp: unixTimestamp});
         else {
           dispatch(setCompassMeasurements(compassData.quality ? compassData
             : {...compassData, quality: sliderValue.toString()}));

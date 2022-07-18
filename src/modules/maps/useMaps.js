@@ -168,7 +168,7 @@ const useMaps = (mapRef) => {
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
-  // All Spots mapped on curent map
+  // All Spots mapped on current map
   const getAllMappedSpots = () => {
     const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
     let mappedSpots = {};
