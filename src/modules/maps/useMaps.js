@@ -224,8 +224,8 @@ const useMaps = (mapRef) => {
 
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
-    let geolocationOptions = {timeout: 5000, maximumAge: 10000, enableHighAccuracy: true};
-    // Fixes issue with Android not getting current location if enableHighAccuracy is true
+    const geolocationOptions = {timeout: 5000, maximumAge: 10000, enableHighAccuracy: Platform.OS === 'ios'};
+    // Issue with Android not getting current location if enableHighAccuracy is true
     return (
       new Promise((resolve, reject) => {
         Geolocation.getCurrentPosition(
