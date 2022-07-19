@@ -330,11 +330,11 @@ PODS:
     - Mapbox-iOS-SDK (~> 5.9.0)
     - React
     - React-Core
-  - react-native-netinfo (9.0.0):
+  - react-native-netinfo (9.3.0):
     - React-Core
-  - react-native-safe-area-context (3.1.9):
+  - react-native-safe-area-context (3.4.1):
     - React-Core
-  - react-native-slider (4.2.2):
+  - react-native-slider (4.2.4):
     - React-Core
   - React-perflogger (0.68.2)
   - React-RCTActionSheet (0.68.2):
@@ -401,25 +401,25 @@ PODS:
     - React-jsi (= 0.68.2)
     - React-logger (= 0.68.2)
     - React-perflogger (= 0.68.2)
-  - RNCAsyncStorage (1.17.6):
+  - RNCAsyncStorage (1.17.7):
     - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPicker (2.4.1):
+  - RNCPicker (2.4.2):
     - React-Core
-  - RNDateTimePicker (6.1.3):
+  - RNDateTimePicker (6.2.0):
     - React-Core
-  - RNDeviceInfo (9.0.2):
+  - RNDeviceInfo (10.0.2):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.4.2):
+  - RNGestureHandler (2.5.0):
     - React-Core
   - RNPDF (0.13.2):
     - React
-  - RNReanimated (2.8.0):
+  - RNReanimated (2.9.1):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -446,14 +446,14 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.13.1):
+  - RNScreens (3.15.0):
     - React-Core
     - React-RCTImage
   - RNSensors (7.3.5):
     - React-Core
-  - RNSentry (3.4.3):
+  - RNSentry (4.1.3):
     - React-Core
-    - Sentry (= 7.11.0)
+    - Sentry (= 7.20.0)
   - RNSketchCanvas (0.8.0):
     - React
   - RNSound (0.11.2):
@@ -461,7 +461,7 @@ PODS:
     - RNSound/Core (= 0.11.2)
   - RNSound/Core (0.11.2):
     - React-Core
-  - RNVectorIcons (9.1.0):
+  - RNVectorIcons (9.2.0):
     - React-Core
   - RNZipArchive (6.0.8):
     - React-Core
@@ -470,9 +470,9 @@ PODS:
   - RNZipArchive/Core (6.0.8):
     - React-Core
     - SSZipArchive (= 2.2.3)
-  - Sentry (7.11.0):
-    - Sentry/Core (= 7.11.0)
-  - Sentry/Core (7.11.0)
+  - Sentry (7.20.0):
+    - Sentry/Core (= 7.20.0)
+  - Sentry/Core (7.20.0)
   - SocketRocket (0.6.0)
   - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
@@ -715,7 +715,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
+  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: a7a655862f6b09625d11c772296b01cd5164b648
   FBReactNativeSpec: 81ce99032d5b586fddd6a38d450f8595f7e04be4
   Flipper: 53851f5b89559bb6e251572589dc166d1f8d6e2e
@@ -728,7 +728,7 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: 51cf8b6f5b0931e251c57d4d60a15a1c2ba546aa
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 476ee3e89abb49e07f822b48323c51c57124b572
+  glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   hermes-engine: 84e3af1ea01dd7351ac5d8689cbbea1f9903ffc3
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
@@ -756,9 +756,9 @@ SPEC CHECKSUMS:
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-mapbox-gl: 955d2c064b56ef058b9cc0fbbf6cf743b05c928e
-  react-native-netinfo: 5b664b2945a8f02102b296f0f812bddd6827ed9c
-  react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
-  react-native-slider: 2f25c919f1dc309b90e2cc8346b8042ecec2102f
+  react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
+  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
+  react-native-slider: cecabb58ecffad671d2ad3ccc58c7f4d2d029e95
   React-perflogger: a18b4f0bd933b8b24ecf9f3c54f9bf65180f3fe6
   React-RCTActionSheet: 547fe42fdb4b6089598d79f8e1d855d7c23e2162
   React-RCTAnimation: bc9440a1c37b06ae9ebbb532d244f607805c6034
@@ -771,24 +771,24 @@ SPEC CHECKSUMS:
   React-RCTVibration: 79040b92bfa9c3c2d2cb4f57e981164ec7ab9374
   React-runtimeexecutor: b960b687d2dfef0d3761fbb187e01812ebab8b23
   ReactCommon: 095366164a276d91ea704ce53cb03825c487a3f2
-  RNCAsyncStorage: 466b9df1a14bccda91da86e0b7d9a345d78e1673
+  RNCAsyncStorage: d81ee5c3db1060afd49ea7045ad460eff82d2b7d
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNCPicker: abc646b53a3d28ccfa3232c927a0ca52e0cf024d
-  RNDateTimePicker: 04b805a3cb4d386e5e6aff54b47ace7bad706fda
-  RNDeviceInfo: 1e3f62b9ec32f7754fac60bd06b8f8a27124e7f0
+  RNCPicker: 0250e95ad170569a96f5b0555cdd5e65b9084dca
+  RNDateTimePicker: 30e6733efc179d1e49d6008ea5fce42cdc9aeeca
+  RNDeviceInfo: 0a7c1d2532aa7691f9b9925a27e43af006db4dae
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
+  RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNPDF: c68cd74a3393b80f572fb62347f4efe293e01658
-  RNReanimated: 64573e25e078ae6bec03b891586d50b9ec284393
-  RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
+  RNReanimated: 5c8c17e26787fd8984cd5accdc70fef2ca70aafd
+  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
-  RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
+  RNSentry: 49ac40f818ad2bb65f3578d400e2474767e12a5b
   RNSketchCanvas: 9c28adb5381543ed55cc98ce6de46479cb3cb12c
   RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
-  RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
+  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   RNZipArchive: 3f89b114cfeb89dac027fc5c7afd7e58d3dc4ebf
-  Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341
+  Sentry: 9e8ec837fa37e7b397f19f75542800461b138d0e
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: 99652481fcd320aefa4a7ef90095b95acd181952

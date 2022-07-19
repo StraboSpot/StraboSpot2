@@ -38,8 +38,9 @@ const ProjectList = (props) => {
     console.log('UE ProjectList []');
     AppState.addEventListener('change', handleStateChange);
     return () => {
-      AppState.removeEventListener('change');
-      console.log('Listners removed');
+      AppState.addEventListener(
+        'change',
+        () => console.log('APP STATE EVENT REMOVED IN PROJECT LIST')).remove();
     };
   }, []);
 
