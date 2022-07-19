@@ -21,6 +21,7 @@
 		D688C0D323834799004931BF /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D223834798004931BF /* Compass.m */; };
 		D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */; };
 		D6A11FEA255EBD7D00DBF5D1 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AA1AF324D31CB4006219E2 /* Dummy.swift */; };
+		D6BB020E2887526300C94124 /* Strabo_Help_Guide.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6BB020D2887526300C94124 /* Strabo_Help_Guide.pdf */; };
 		D6CF9E9A2715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */; };
 		D6CF9E9C2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */; };
 		D6D9B483285269080029F3A7 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = D6D9B482285269080029F3A7 /* AppDelegate.mm */; };
@@ -72,6 +73,7 @@
 		D688C0D223834798004931BF /* Compass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Compass.m; sourceTree = "<group>"; };
 		D688C0DE2385D3FC004931BF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D6AA1AF324D31CB4006219E2 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
+		D6BB020D2887526300C94124 /* Strabo_Help_Guide.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Strabo_Help_Guide.pdf; sourceTree = "<group>"; };
 		D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Airdrop-from-iPad-to-iPad.pdf"; sourceTree = "<group>"; };
 		D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Moving-Project-Backups-Out-of-StraboSpot2.pdf"; sourceTree = "<group>"; };
 		D6D9B482285269080029F3A7 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = StraboSpot2/AppDelegate.mm; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				D6BB020D2887526300C94124 /* Strabo_Help_Guide.pdf */,
 				D6F7B072281B37F000A543BF /* compass_button_click.mp3 */,
 				D6CF9E9B2715FA850093837E /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */,
 				D6CF9E992715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf */,
@@ -383,6 +386,7 @@
 				D688C0DF2385D3FC004931BF /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				D6CF9E9A2715F80D0093837E /* Airdrop-from-iPad-to-iPad.pdf in Resources */,
+				D6BB020E2887526300C94124 /* Strabo_Help_Guide.pdf in Resources */,
 				D6F7B073281B37F000A543BF /* compass_button_click.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

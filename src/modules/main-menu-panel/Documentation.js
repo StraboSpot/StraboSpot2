@@ -32,6 +32,11 @@ const Documentation = (props) => {
       name: 'Moving backups out of StraboSpot 2 folder ',
       file: Platform.OS === 'ios' ? 'Moving-Project-Backups-Out-of-StraboSpot2.pdf' : null,
     },
+    {
+      label: 'helpDocument',
+      name: 'Strabo Help Guide',
+      file: 'Strabo_Help_Guide.pdf'
+    }
   ];
 
   const toggleOverlay = (pdfLabel) => {
