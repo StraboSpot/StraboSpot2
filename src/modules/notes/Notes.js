@@ -60,19 +60,15 @@ const Notes = (props) => {
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
       }
       await currentForm.submitForm();
-      await saveNote(currentForm.values.note, pageTransition);
+      dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
+      dispatch(setSelectedSpotNotesTimestamp());
       await currentForm.resetForm();
-      if (props.goToCurrentLocation) await props.goToCurrentLocation();
+      if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
+      else if (props.goToCurrentLocation) await props.goToCurrentLocation();
     }
     catch (err) {
       console.log('Error submitting form', err);
     }
-  };
-
-  const saveNote = async (note, pageTransition) => {
-    dispatch(editedSpotProperties({field: 'notes', value: note}));
-    dispatch(setSelectedSpotNotesTimestamp());
-    if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };
 
   return (
