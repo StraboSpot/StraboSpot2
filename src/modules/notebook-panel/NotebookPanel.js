@@ -72,7 +72,7 @@ const NotebookPanel = (props) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === (pageVisible || PAGE_KEYS.OVERVIEW));
     const Page = page?.page_component || Overview;
     let pageProps = {page: page, openMainMenu: props.openMainMenu};
-    if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps, toast: props.toast};
+    if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
     return (
       <React.Fragment>
         <Animated.View style={{flex: 1, transform: [{translateY: textInputAnimate}]}}>

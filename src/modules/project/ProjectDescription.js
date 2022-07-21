@@ -77,7 +77,7 @@ const ProjectDescription = (props) => {
           if (!publicRef?.current?.dirty && !formRef?.current?.dirty) {
             props.toastMessage('No Changes Were Made.');
           }
-          else props.toastMessage('Changes Saved!');
+          else props.toastMessage('Changes Saved!', 'success');
           dispatch(setSidePanelVisible({bool: false}));
         }}
       />

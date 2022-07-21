@@ -8,20 +8,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import ToastPopup from '../../shared/ui/Toast';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {useToast} from 'react-native-toast-notifications';
 
 const ImagesViewPage = (props) => {
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
+  const toast = useToast();
 
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
   const spot = useSelector(state => state.spot.selectedSpot);
-
-  const toastRef = useRef(null);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [isError, setIsError] = useState(false);
@@ -33,7 +32,12 @@ const ImagesViewPage = (props) => {
 
   const getImagesFromCameraRoll = async () => {
     useImages.getImagesFromCameraRoll().then((res) => {
-      props.toast(`${res} image saved!`);
+      console.log(res)
+      toast.show(`${res} image saved!`,
+        {
+          type: 'success',
+          duration: 1000,
+        });
     });
   };
 
@@ -53,8 +57,13 @@ const ImagesViewPage = (props) => {
 
   const takePhoto = async () => {
     const imagesSavedLength = await useImages.launchCameraFromNotebook();
-    imagesSavedLength > 0 && props.toast(
-      imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved');
+    imagesSavedLength > 0 && toast.show(
+      imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved',
+      {
+        type: 'success',
+        duration: 1000,
+      })
+    ;
   };
 
   const renderError = () => (
@@ -151,7 +160,6 @@ const ImagesViewPage = (props) => {
             />
           </View>
         </View>
-        <ToastPopup toastRef={toastRef}/>
       </View>
     );
   };

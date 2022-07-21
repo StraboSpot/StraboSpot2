@@ -16,6 +16,7 @@ import {clearedSelectedSpots} from '../spots/spots.slice';
 import {MODAL_KEYS, SHORTCUT_MODALS} from './home.constants';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
+import {useToast} from 'react-native-toast-notifications';
 
 const RightSideButtons = (props) => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const RightSideButtons = (props) => {
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
   const navigation = useNavigation();
+  const toast = useToast();
 
   const [pointIconType, setPointIconType] = useState({
     point: MAP_MODES.DRAW.POINT,
@@ -110,8 +112,10 @@ const RightSideButtons = (props) => {
           if (point) {
             console.log('New Spot at current location:', point);
             const imagesSavedLength = await useImages.launchCameraFromNotebook();
-            imagesSavedLength > 0 && props.toastRef.current.show(
-              imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name);
+            imagesSavedLength > 0 && toast.show(
+              imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name,
+              {type: 'success'}
+            );
             props.openNotebookPanel();
           }
           break;

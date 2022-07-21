@@ -31,6 +31,7 @@ import {
   setSelectedDataset,
   setSelectedProject,
 } from './projects.slice';
+import { useToast } from "react-native-toast-notifications";
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const useProject = () => {
   // const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
+  const toast = useToast();
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
 
@@ -191,15 +193,17 @@ const useProject = () => {
   };
 
   const makeDatasetCurrent = (datasetId) => {
+    const datasetName = datasets[datasetId].name;
+    const id = toast.show(`Selected Dataset has been switched to ${datasetName}!`, {type: 'warning', animationType: 'slide-in'})
+    toast.hideAll();
     dispatch(setSelectedDataset(datasetId));
-    return Promise.resolve();
   };
 
   const setSwitchValue = async (val, dataset) => { //TODO look at setSwitchValue to see if condition is needed.
     try {
       if (!isEmpty(user.name) && val) {
         dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
-        dispatch(setSelectedDataset(dataset.id));
+        makeDatasetCurrent(dataset.id)
       }
       else dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
     }

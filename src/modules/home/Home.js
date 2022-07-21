@@ -61,6 +61,7 @@ import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
+import {useToast} from 'react-native-toast-notifications';
 
 const {State: TextInputState} = TextInput;
 
@@ -77,6 +78,7 @@ const Home = () => {
   const navigation = useNavigation();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
+  const toast = useToast();
   const useDevice = useDeviceHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -127,7 +129,6 @@ const Home = () => {
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const mapComponentRef = useRef(null);
-  const toastRef = useRef(null);
 
   useEffect(() => {
     console.log('UE Home [selectedProject]', selectedProject);
@@ -443,7 +444,7 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP:
         return <CustomMapDetails/>;
       case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
-        return <ProjectDescription toastMessage={(message) => toastRef.current.show(message)}/>;
+        return <ProjectDescription toastMessage={(message, type) => toast.show(message, {type: type})}/>;
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
         return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
@@ -451,7 +452,9 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
         return <TagAddRemoveFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
-        return <UserProfile toast={(message) => toastRef.current.show(message)}/>;
+        return <UserProfile toast={(message, type) =>
+          toast.show(message, {type: type})
+        }/>;
     }
   };
 
@@ -479,8 +482,11 @@ const Home = () => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       await useMaps.setPointAtCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      toastRef.current.show(
+      toast.show(
         `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,
+        {
+          type: 'success',
+        },
       );
       openNotebookPanel();
     }
@@ -579,7 +585,6 @@ const Home = () => {
           createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
           openMainMenu={() => toggleHomeDrawerButton()}
           zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
-          toast={(message) => toastRef.current.show(message)}
         />
       </Animated.View>
     );
@@ -601,7 +606,6 @@ const Home = () => {
         <ConnectionStatus/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
-      <ToastPopup toastRef={toastRef}/>
       <RightSideButtons
         closeNotebookPanel={closeNotebookPanel}
         openNotebookPanel={openNotebookPanel}
@@ -611,7 +615,6 @@ const Home = () => {
         mapMode={mapMode}
         endDraw={() => endDraw()}
         rightsideIconAnimation={rightsideIconAnimation}
-        toastRef={toastRef}
         distance={distance}
         endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
       />
@@ -623,6 +626,7 @@ const Home = () => {
         leftsideIconAnimation={leftsideIconAnimation}
         zoomToCustomMap={(bbox, duration) => mapComponentRef.current.zoomToCustomMap(bbox, duration)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
+        toast={message => toast.show(message, {type: 'warning'})}
       />
       {(imageSlideshowData.length) > 0 && (
         <View>

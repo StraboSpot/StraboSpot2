@@ -11,6 +11,7 @@ import Routes from './src/routes/Routes';
 import {BUNDLE_ID, RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import store from './src/store/ConfigureStore';
+import Toast from './src/shared/ui/Toast';
 
 Sentry.init({
   dsn: SENTRY_DSN,
@@ -28,13 +29,15 @@ const App = () => {
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={<Loading/>} persistor={persistor}>
-        {/*<Sentry.TouchEventBoundary>*/}
+    <Toast>
+      <Provider store={store}>
+        <PersistGate loading={<Loading/>} persistor={persistor}>
+          {/*<Sentry.TouchEventBoundary>*/}
           <Routes/>
-        {/*</Sentry.TouchEventBoundary>*/}
-      </PersistGate>
-    </Provider>
+          {/*</Sentry.TouchEventBoundary>*/}
+        </PersistGate>
+      </Provider>
+    </Toast>
   );
 };
 

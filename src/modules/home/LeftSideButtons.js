@@ -26,8 +26,6 @@ const LeftSideButtons = (props) => {
   });
   const [userLocationButtonOn, setUserLocationButtonOn] = useState(false);
 
-  const toastRef = useRef(null);
-
   let timeout;
 
   useEffect(() => {
@@ -53,7 +51,7 @@ const LeftSideButtons = (props) => {
   const clearLocationTimer = () => {
     setUserLocationButtonOn(false);
     props.clickHandler('toggleUserLocation', false);
-    toastRef.current.show('Geolocation turned off automatically to conserve battery.');
+    props.toast('Geolocation turned off automatically to conserve battery.');
     console.log('Location timer cleared');
   };
 
@@ -149,11 +147,6 @@ const LeftSideButtons = (props) => {
           />
         </Animated.View>
       )}
-      <ToastPopup
-        toastRef={toastRef}
-        positionValue={50}
-        style={{backgroundColor: 'lightyellow'}}
-      />
     </React.Fragment>
   );
 };

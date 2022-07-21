@@ -65,6 +65,7 @@ const UserProfile = (props) => {
     }
     dispatch(setUserData(newValues));
     if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
+    else props.toast('Not connected to internet to upload profile changes', 'noWifi')
   };
 
   const saveImage = async () => {
@@ -136,11 +137,11 @@ const UserProfile = (props) => {
     try {
       console.log(values);
       await useUpload.uploadProfile(values);
-      props.toast('Profile uploaded successfully!');
+      props.toast('Profile uploaded successfully!', 'success');
     }
     catch (err) {
       console.error(err);
-      props.toast('Profile uploaded UN-successfully...');
+      props.toast('Profile uploaded UN-successfully...', 'danger');
     }
   };
 
