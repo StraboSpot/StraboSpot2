@@ -9,8 +9,10 @@ import {roundToDecimalPlaces, toNumberFixedValue} from '../shared/Helpers';
 import uiStyles from '../shared/ui/ui.styles';
 
 const BatteryInfo = () => {
-  const batteryLevel = roundToDecimalPlaces(useBatteryLevel(), 2);
+  const batteryLevel = useBatteryLevel();
   const powerState = usePowerState();
+
+  const batteryPercentage = (batteryLevel * 100).toFixed(0);
 
   const batteryLevelIcon = () => {
     if (powerState.batteryState === 'charging') return 'battery-charging';
@@ -34,7 +36,7 @@ const BatteryInfo = () => {
 
   return (
     <View style={homeStyles.batteryLevelContainer}>
-      <Text style={batteryPercentColor()}>{toNumberFixedValue(batteryLevel, 0)}</Text>
+      <Text style={batteryPercentColor()}>{batteryPercentage}%</Text>
       <Icon
         name={batteryLevelIcon()}
         iconStyle={batteryPercentColor()}
