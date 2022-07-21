@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
@@ -84,6 +84,7 @@ const Home = () => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isHomeLoading = useSelector(state => state.home.loading.home);
@@ -217,10 +218,9 @@ const Home = () => {
 
   const clickHandler = async (name, value) => {
     switch (name) {
-      case 'search':
-        Alert.alert('Still in the works',
-          `The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
-        break;
+      // case 'search':
+      //   toast.show(`Still in the works. \n The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
+      //   break;
       case 'home':
         toggleHomeDrawerButton();
         break;
@@ -235,7 +235,7 @@ const Home = () => {
         dispatch(clearedSelectedSpots());
         if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) setPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
-        else Alert.alert('No Current Dataset', 'A current dataset needs to be set before drawing Spots.');
+        else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':
         endDraw();
@@ -331,8 +331,9 @@ const Home = () => {
       useHome.toggleLoading(false);
     }
     catch (err) {
+      console.error('Geolocation Error:', err)
       useHome.toggleLoading(false);
-      Alert.alert('Geolocation Error', err);
+      toast.show(`${err.toString()}`);
     }
   };
 
