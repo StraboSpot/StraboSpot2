@@ -203,7 +203,7 @@ const useProject = () => {
     try {
       if (!isEmpty(user.name) && val) {
         dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
-        makeDatasetCurrent(dataset.id)
+        return 'SWITCHED';
       }
       else dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
     }

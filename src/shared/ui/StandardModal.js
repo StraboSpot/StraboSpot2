@@ -32,8 +32,8 @@ const StandardModal = (props) => {
         }
         footer={props.footerButtonsVisible && (
           <DialogFooter>
-            <DialogButton text={'OK'} onPress={props.onPress}/>
-            <DialogButton text={'Cancel'} onPress={props.close}/>
+            <DialogButton text={props.rightButtonText || 'OK'} onPress={props.onPress}/>
+            <DialogButton text={props.leftButtonText || 'Cancel'} onPress={props.close}/>
           </DialogFooter>
         )}
       >

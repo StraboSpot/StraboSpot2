@@ -14,14 +14,17 @@ import {setProjectLoadComplete} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import styles from './project.styles';
 import {updatedDatasetProperties} from './projects.slice';
+import StandardModal from '../../shared/ui/StandardModal';
 
 const DatasetList = () => {
   const [useProject] = useProjectHook();
   const useDownload = useDownloadHook();
 
+  const [selectedDataset, setSelectedDataset] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [isDatasetNameModalVisible, setIsDatasetNameModalVisible] = useState(false);
-  const [selectedDataset, setSelectedDatasetProperties] = useState({});
+  const [isMakeDatasetCurrentModalVisible, setMakeIsDatasetCurrentModalVisible] = useState(false);
+  const [selectedDatasetToEdit, setSelectedDatasetToEdit] = useState({});
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
@@ -33,14 +36,14 @@ const DatasetList = () => {
   }, [datasets]);
 
   const editDataset = (id, name) => {
-    setSelectedDatasetProperties({name: name, id: id});
+    setSelectedDatasetToEdit({name: name, id: id});
     setIsDatasetNameModalVisible(true);
   };
 
   const initializeDeleteDataset = () => {
     setIsDatasetNameModalVisible(false);
     setIsDeleteConfirmModalVisible(false);
-    if (selectedDataset && selectedDataset.id) useProject.destroyDataset(selectedDataset.id).catch(console.log);
+    if (selectedDatasetToEdit && selectedDatasetToEdit.id) useProject.destroyDataset(selectedDatasetToEdit.id).catch(console.log);
     else console.error('Selected dataset or id is undefined!');
   };
 
@@ -113,14 +116,14 @@ const DatasetList = () => {
           visible={isDatasetNameModalVisible}
           onPress={() => saveDataset()}
           close={() => setIsDatasetNameModalVisible(false)}
-          value={selectedDataset.name}
-          onChangeText={(text) => setSelectedDatasetProperties({...selectedDataset, name: text})}
+          value={selectedDatasetToEdit.name}
+          onChangeText={(text) => setSelectedDatasetToEdit({...selectedDatasetToEdit, name: text})}
         >
           <Button
             title={'Delete Dataset'}
             titleStyle={{color: 'red'}}
             type={'clear'}
-            disabled={isDisabled(selectedDataset.id)}
+            disabled={isDisabled(selectedDatasetToEdit.id)}
             buttonStyle={{padding: 0}}
             onPress={() => setIsDeleteConfirmModalVisible(true)}
             icon={
@@ -133,10 +136,10 @@ const DatasetList = () => {
               />
             }
           />
-          {isDisabled(selectedDataset.id) && (
+          {isDisabled(selectedDatasetToEdit.id) && (
             <View>
               <Text style={[styles.dialogContentImportantText, {paddingTop: 10, textAlign: 'center'}]}>
-                {selectedDataset.name} can not be deleted while still selected as the current dataset.
+                {selectedDatasetToEdit.name} can not be deleted while still selected as the current dataset.
               </Text>
             </View>
           )}
@@ -154,8 +157,8 @@ const DatasetList = () => {
         delete={() => initializeDeleteDataset()}
       >
         <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
-          {selectedDataset && selectedDataset.name
-            && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDataset.name}</Text>}
+          {selectedDatasetToEdit && selectedDatasetToEdit.name
+            && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDatasetToEdit.name}</Text>}
           ?
         </Text>
         <Text style={styles.dialogConfirmText}>
@@ -167,13 +170,39 @@ const DatasetList = () => {
     );
   };
 
+  const renderMakeDatasetCurrentModal = () => {
+    return (
+      <StandardModal
+        dialogTitleStyle={{backgroundColor: 'green'}}
+        visible={isMakeDatasetCurrentModalVisible}
+        footerButtonsVisible={true}
+        dialogTitle={'Make Current?'}
+        rightButtonText={'Yes'}
+        leftButtonText={'No'}
+        onPress={() => {
+          useProject.makeDatasetCurrent(selectedDataset.id)
+          setMakeIsDatasetCurrentModalVisible(false)
+        }}
+        close={() => setMakeIsDatasetCurrentModalVisible(false)}
+      >
+        <View>
+          <Text style={commonStyles.dialogText}>By selecting "Yes" any new data will be saved into</Text>
+          <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>{selectedDataset.name}.</Text>
+        </View>
+      </StandardModal>
+    )
+  }
+
   const saveDataset = () => {
-    dispatch(updatedDatasetProperties(selectedDataset));
+    dispatch(updatedDatasetProperties(selectedDatasetToEdit));
     setIsDatasetNameModalVisible(false);
   };
 
   const setSwitchValue = async (val, dataset) => {
-    await useProject.setSwitchValue(val, dataset);
+    setSelectedDataset(dataset);
+    const value = await useProject.setSwitchValue(val, dataset);
+    console.log('Value has been switched', value)
+    val && setMakeIsDatasetCurrentModalVisible(true);
     dispatch(setProjectLoadComplete(true));
   };
 
@@ -187,6 +216,7 @@ const DatasetList = () => {
       />
       {renderDatasetNameChangeModal()}
       {renderDeleteConfirmationModal()}
+      {renderMakeDatasetCurrentModal()}
     </View>
   );
 };
