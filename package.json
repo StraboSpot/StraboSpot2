@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
     "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.27.1 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.27.1",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'"
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'",
+    "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
+    "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
+    "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.17.7",
