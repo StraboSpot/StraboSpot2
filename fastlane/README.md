@@ -19,7 +19,31 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane bump
 ```
 
-Bump build numbers, and set the version to match the pacakage.json version.
+Bump build numbers, and set the version to match the package.json version.
+
+### beta
+
+```sh
+[bundle exec] fastlane beta
+```
+
+Builds/archives and deploys a beta version to TestFlight
+
+### production
+
+```sh
+[bundle exec] fastlane production
+```
+
+
+
+### slack_message
+
+```sh
+[bundle exec] fastlane slack_message
+```
+
+Send a message to group on Slack
 
 ----
 

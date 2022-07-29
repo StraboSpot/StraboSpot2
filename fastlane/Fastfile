@@ -1,13 +1,22 @@
-  desc 'Android: Increment versionCode and set versionName to package.json version.'
-  package = load_json(json_path: "./package.json")
+  before_all do |lane, options|
+    ensure_git_branch(branch: 'master')
+    ensure_git_status_clean
+    git_pull
+    puts "Before all has completed"
+  end
 
+  message = 'A new version is available on TestFlight!'
+
+  desc 'Android: Increment versionCode and set versionName to package.json version.'
+  package = load_json(json_path: './package.json')
   private_lane :inc_ver_and do
+
     increment_version_code(
-      gradle_file_path: "./android/app/build.gradle",
+      gradle_file_path: './android/app/build.gradle',
     )
 
     increment_version_name(
-      gradle_file_path: "./android/app/build.gradle",
+      gradle_file_path: './android/app/build.gradle',
       version_name: package['version']
     )
   end
@@ -15,7 +24,7 @@
 
   desc 'iOS: Increment build number and set the version to package.json version.'
   private_lane :inc_ver_ios do
-  package = load_json(json_path: "./package.json")
+  package = load_json(json_path: './package.json')
 
     increment_build_number(
       xcodeproj: './ios/' + package['name'] + '.xcodeproj'
@@ -26,9 +35,56 @@
     )
   end
 
-
-  desc 'Bump build numbers, and set the version to match the pacakage.json version.'
+  desc 'Bump build numbers, and set the version to match the package.json version.'
   lane :bump do
     inc_ver_ios
     inc_ver_and
   end
+
+  desc 'Builds/archives and deploys a beta version to TestFlight'
+  lane :beta do
+    cocoapods(podfile: 'ios/Podfile')
+    gym(workspace: 'ios/StraboSpot2.xcworkspace', silent: true)
+    upload_to_testflight(
+    skip_submission: true,
+    username: 'nathan.novak79@gmail.com',
+    team_name:"The University of Kansas",
+    app_identifier: "org.StraboSpot2"
+    )
+
+    slack_message(version: version_number)
+  end
+
+  lane :production do
+     version_number = get_version_number(
+        xcodeproj: 'ios/StraboSpot2.xcodeproj',
+        target: 'StraboSpot2'
+      )
+     slack_message(version: version_number)
+  end
+
+  desc 'Send a message to group on Slack'
+  lane :slack_message do |options|
+    slack(
+    message: message,
+    slack_url: 'https://hooks.slack.com/services/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',
+    default_payloads: [],
+    payload: {
+      'Build Date' => Time.new.to_s,
+      'Version' => options[:version],
+    }
+  )
+  end
+
+  error do |lane, exception, options|
+
+      if options[:debug]
+        puts "RAISED AN ERROR!!!"
+        puts exception
+        slack(
+          message: exception.message,
+          slack_url: 'https://hooks.slack.com/services/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',
+          success: false
+        )
+      end
+    end
