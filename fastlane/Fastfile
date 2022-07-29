@@ -17,6 +17,7 @@
 
     increment_version_name(
       gradle_file_path: './android/app/build.gradle',
+
       version_name: package['version']
     )
   end
@@ -25,6 +26,7 @@
   desc 'iOS: Increment build number and set the version to package.json version.'
   private_lane :inc_ver_ios do
   package = load_json(json_path: './package.json')
+
 
     increment_build_number(
       xcodeproj: './ios/' + package['name'] + '.xcodeproj'
@@ -36,6 +38,7 @@
   end
 
   desc 'Bump build numbers, and set the version to match the package.json version.'
+
   lane :bump do
     inc_ver_ios
     inc_ver_and
