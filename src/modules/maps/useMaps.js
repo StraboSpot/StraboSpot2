@@ -558,7 +558,7 @@ const useMaps = (mapRef) => {
         if (newBasemap) {
           newBasemap = buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
-          if (isOnline.isInternetReachable && !newBasemap.bbox && (newBasemap.source === 'map_warper' || newBasemap.source === 'strabospot_mymaps')) {
+          if (isOnline.isInternetReachable && !newBasemap.bbox && newBasemap.source === 'strabospot_mymaps') {
             bbox = await getBboxCoords(newBasemap);
             newBasemap = {...newBasemap, bbox: bbox};
           }

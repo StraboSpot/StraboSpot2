@@ -174,20 +174,7 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
-    const getCenter = async () => {
-      const center = mapRef && mapRef.current ? await mapRef.current.getCenter() : initialMapPropsMutable.centerCoordinate;
-      const zoom = mapRef && mapRef.current ? await mapRef.current.getZoom() : initialMapPropsMutable.zoom;
-      const latAndLng = !isEmpty(currentBasemap) && await useOfflineMaps.getMapCenterTile(currentBasemap.id);
-      setMapPropsMutable(m => ({
-        ...m,
-        basemap: currentBasemap,
-        centerCoordinate: isZoomToCenterOffline ? latAndLng : center,
-        zoom: isZoomToCenterOffline ? 12 : zoom,
-      }));
-      setMapToggle(!mapToggle);
-      setIsZoomToCenterOffline(false);
-    };
-    getCenter();
+    getCenter().catch(err => console.warn('Error getting center of custom map:', err));
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
@@ -310,6 +297,20 @@ const Map = React.forwardRef((props, ref) => {
       ...m,
       measureFeatures: [],
     }));
+  };
+
+  const getCenter = async () => {
+    const center = mapRef && mapRef.current ? await mapRef.current.getCenter() : initialMapPropsMutable.centerCoordinate;
+    const zoom = mapRef && mapRef.current ? await mapRef.current.getZoom() : initialMapPropsMutable.zoom;
+    const latAndLng = !isEmpty(currentBasemap) && await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+    setMapPropsMutable(m => ({
+      ...m,
+      basemap: currentBasemap,
+      centerCoordinate: isZoomToCenterOffline ? latAndLng : center,
+      zoom: isZoomToCenterOffline ? 12 : zoom,
+    }));
+    setMapToggle(!mapToggle);
+    setIsZoomToCenterOffline(false);
   };
 
   const moveVertex = async () => {
