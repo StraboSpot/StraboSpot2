@@ -172,7 +172,7 @@ const BaseMapDialog = props => {
     if (isOnline.isInternetReachable) {
       const baseMap = await useMaps.setBasemap(customMap.id);
       props.close();
-      customMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+      setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
     }
     else {
       await useMapsOffline.setOfflineMapTiles(customMap);
