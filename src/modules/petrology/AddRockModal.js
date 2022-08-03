@@ -105,10 +105,10 @@ const AddRockModal = (props) => {
                 <Formik
                   innerRef={formRef}
                   initialValues={initialValues}
-                  onSubmit={(values) => console.log('Submitting form...', values)}
+                  onSubmit={values => console.log('Submitting form...', values)}
                   enableReinitialize={true}
                 >
-                  {(formProps) => (
+                  {formProps => (
                     <View style={{flex: 1}}>
                       {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
                     </View>

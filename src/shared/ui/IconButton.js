@@ -3,7 +3,7 @@ import {Image, Pressable} from 'react-native';
 
 import uiStyles from '../ui/ui.styles';
 
-const IconButton = props => {
+const IconButton = (props) => {
 
   return (
     <Pressable

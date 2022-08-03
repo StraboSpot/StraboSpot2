@@ -99,7 +99,7 @@ const ReactionTexturesPage = (props) => {
             && spot.properties.pet[props.page.key].slice().sort(
               (a, b) => (a[props.page.key] || 'Unknown').localeCompare((b[props.page.key] || 'Unknown')))}
           renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editReaction}/>}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No ' + props.page.label.toLowerCase() + ' at this Spot.'}/>}
         />

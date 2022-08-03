@@ -316,8 +316,8 @@ const MeasurementDetail = (props) => {
             innerRef={formRef}
             onSubmit={values => console.log('Submitting form...', values)}
             onReset={() => console.log('Resetting form...')}
-            validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            children={(formProps) => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
+            validate={values => useForm.validateForm({formName: formName, values: values})}
+            children={formProps => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
             initialValues={selectedMeasurement}
             enableReinitialize={true}
             initialStatus={{formName: formName}}
@@ -427,7 +427,9 @@ const MeasurementDetail = (props) => {
 
       orientationDataCopy.forEach((measurement, i) => {
         if (idsOfMeasurementsToEdit.includes(measurement.id)) {
-          orientationDataCopy[i] = selectedAttributes.length === 1 ? {...formValues, modified_timestamp: Date.now()} : {...measurement, ...formValues};
+          orientationDataCopy[i] = selectedAttributes.length === 1
+            ? {...formValues, modified_timestamp: Date.now()}
+            : {...measurement, ...formValues};
           editedSelectedMeasurements.push(orientationDataCopy[i]);
         }
         else if (measurement.associated_orientation) {

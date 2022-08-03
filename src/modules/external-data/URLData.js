@@ -43,7 +43,7 @@ const UrlData = (props) => {
         onPress={() => saveEdits()}
         close={() => setIsEditModalVisible(false)}
         value={urlToEdit.url}
-        onChangeText={(text) => setUrlToEdit({...urlToEdit, url: text})}
+        onChangeText={text => setUrlToEdit({...urlToEdit, url: text})}
       />
     );
   };
@@ -115,7 +115,7 @@ const UrlData = (props) => {
     <View>
       <FlatList
         listKey={'urls'}
-        keyExtractor={(index) => index}
+        keyExtractor={index => index}
         data={props.spot.properties?.data?.urls}
         renderItem={({item, index}) => renderUrlListItem(item, index)}
         ItemSeparatorComponent={FlatListItemSeparator}

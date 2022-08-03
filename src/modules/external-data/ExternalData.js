@@ -70,7 +70,7 @@ const ExternalData = () => {
                 multiline={true}
                 placeholder={'Example -> www.usgs.gov'}
                 style={[formStyles.fieldValue]}
-                onChangeText={(text) => setUrl(text)}
+                onChangeText={text => setUrl(text)}
                 textContentType={'URL'}
                 keyboardType={'url'}
                 value={url}

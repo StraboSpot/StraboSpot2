@@ -3,6 +3,7 @@ import {Animated, Platform, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -16,7 +17,6 @@ import {clearedSelectedSpots} from '../spots/spots.slice';
 import {MODAL_KEYS, SHORTCUT_MODALS} from './home.constants';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
-import {useToast} from 'react-native-toast-notifications';
 
 const RightSideButtons = (props) => {
   const dispatch = useDispatch();
@@ -114,7 +114,7 @@ const RightSideButtons = (props) => {
             const imagesSavedLength = await useImages.launchCameraFromNotebook();
             imagesSavedLength > 0 && toast.show(
               imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name,
-              {type: 'success'}
+              {type: 'success'},
             );
             props.openNotebookPanel();
           }

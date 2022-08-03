@@ -132,7 +132,7 @@ const useMeasurements = () => {
     }, []);
 
     let updatedOrientationData = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-    flattenedMeasurementsToDelete.forEach(measurementToDelete => {
+    flattenedMeasurementsToDelete.forEach((measurementToDelete) => {
       updatedOrientationData = removeMeasurementFromObj(updatedOrientationData, measurementToDelete);
     });
     dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));

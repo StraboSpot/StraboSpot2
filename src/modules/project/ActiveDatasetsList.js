@@ -46,7 +46,7 @@ const ActiveDatasetsList = () => {
   return (
     <React.Fragment>
       <FlatList
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         extraData={refresh}
         data={activeDatasetsIds}
         renderItem={({item}) => renderActiveDatasets(item)}

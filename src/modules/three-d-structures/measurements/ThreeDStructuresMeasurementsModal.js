@@ -17,7 +17,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
     let renamedCompassData = {};
     if (isEmpty(compassData)) {
       let updatedFormData = JSON.parse(JSON.stringify(props.formProps.values));
-      Object.values(props.measurementsGroup).forEach(k => {
+      Object.values(props.measurementsGroup).forEach((k) => {
         if (isEmpty(compassData) && updatedFormData[k]) delete updatedFormData[k];
       });
       props.formProps.setValues(updatedFormData);

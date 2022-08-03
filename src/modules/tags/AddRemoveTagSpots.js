@@ -13,7 +13,7 @@ import {useTagsHook} from '../tags';
 
 const AddRemoveTagSpots = () => {
   const dispatch = useDispatch();
-  const selectedTag = useSelector((state) => state.project.selectedTag);
+  const selectedTag = useSelector(state => state.project.selectedTag);
 
   const [useTags] = useTagsHook();
 

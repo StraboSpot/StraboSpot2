@@ -21,7 +21,7 @@ const slideAnimation = new ScaleAnimation({
   useNativeDriver: true,
 });
 
-const BaseMapDialog = props => {
+const BaseMapDialog = (props) => {
 
   const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
@@ -69,7 +69,7 @@ const BaseMapDialog = props => {
 
   const renderCustomBasemapsList = () => {
     let sectionTitle = 'Custom Basemaps';
-    let customMapsToDisplay = Object.values(customMaps).filter((customMap) => !customMap.overlay);
+    let customMapsToDisplay = Object.values(customMaps).filter(customMap => !customMap.overlay);
     if (!isOnline.isInternetReachable) {
       customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
         if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm' && map.id !== 'macrostrat') return offlineMaps[map.id];
@@ -92,9 +92,9 @@ const BaseMapDialog = props => {
 
   const renderCustomMapOverlaysList = () => {
     let sectionTitle = 'Custom Map Overlays';
-    let customMapOverlaysToDisplay = Object.values(customMaps).filter((customMap) => customMap.overlay);
+    let customMapOverlaysToDisplay = Object.values(customMaps).filter(customMap => customMap.overlay);
     if (!isOnline.isInternetReachable) {
-      customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter((customMap) => offlineMaps[customMap.id]);
+      customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
       sectionTitle = 'Offline Custom Overlays';
     }
     return (
@@ -110,7 +110,7 @@ const BaseMapDialog = props => {
     );
   };
 
-  const renderCustomMapItem = (customMap) => (
+  const renderCustomMapItem = customMap => (
     <ListItem
       containerStyle={styles.dialogContent}
       key={customMap.id}
@@ -128,7 +128,7 @@ const BaseMapDialog = props => {
     </ListItem>
   );
 
-  const renderDefaultMapItem = (map) => (
+  const renderDefaultMapItem = map => (
     <ListItem
       key={map.id}
       containerStyle={styles.dialogContent}
@@ -144,7 +144,7 @@ const BaseMapDialog = props => {
     </ListItem>
   );
 
-  const renderMapOverlayItem = (customMap) => (
+  const renderMapOverlayItem = customMap => (
     <ListItem
       containerStyle={styles.dialogContent}
       key={customMap.id}
@@ -163,7 +163,7 @@ const BaseMapDialog = props => {
       <Switch
         style={{marginRight: 10}}
         value={customMap.isViewable}
-        onValueChange={(val) => useMaps.setCustomMapSwitchValue(val, customMap)}
+        onValueChange={val => useMaps.setCustomMapSwitchValue(val, customMap)}
       />
     </ListItem>
   );

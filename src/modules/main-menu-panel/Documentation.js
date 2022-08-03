@@ -35,8 +35,8 @@ const Documentation = (props) => {
     {
       label: 'helpDocument',
       name: 'Strabo Help Guide',
-      file: 'Strabo_Help_Guide.pdf'
-    }
+      file: 'Strabo_Help_Guide.pdf',
+    },
   ];
 
   const toggleOverlay = (pdfLabel) => {
@@ -86,7 +86,7 @@ const Documentation = (props) => {
           resource={findFile()}
           resourceType={resourceType}
           onLoad={() => console.log(`PDF rendered from ${resourceType}`)}
-          onError={(error) => console.log('Cannot render PDF', error)}
+          onError={error => console.log('Cannot render PDF', error)}
         />
       </Overlay>
     );
@@ -100,7 +100,7 @@ const Documentation = (props) => {
 
   const renderFAQitems = () => (
     <FlatList
-      keyExtractor={(item) => item.toString()}
+      keyExtractor={item => item.toString()}
       data={files}
       renderItem={renderFAQListItem}
       ItemSeparatorComponent={FlatListItemSeparator}

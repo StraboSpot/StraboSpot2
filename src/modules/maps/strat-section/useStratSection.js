@@ -102,7 +102,7 @@ const useStratSection = (props) => {
 
   const orderStratSectionIntervals = (intervals) => {
     const orderedIntervals = [];
-    intervals.forEach(interval => {
+    intervals.forEach((interval) => {
       let i = 0;
       while (i <= orderedIntervals.length) {
         if (i === orderedIntervals.length) {

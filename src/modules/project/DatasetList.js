@@ -10,11 +10,11 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
+import StandardModal from '../../shared/ui/StandardModal';
 import {setProjectLoadComplete} from '../home/home.slice';
 import useProjectHook from '../project/useProject';
 import styles from './project.styles';
 import {updatedDatasetProperties} from './projects.slice';
-import StandardModal from '../../shared/ui/StandardModal';
 
 const DatasetList = () => {
   const [useProject] = useProjectHook();
@@ -43,7 +43,9 @@ const DatasetList = () => {
   const initializeDeleteDataset = () => {
     setIsDatasetNameModalVisible(false);
     setIsDeleteConfirmModalVisible(false);
-    if (selectedDatasetToEdit && selectedDatasetToEdit.id) useProject.destroyDataset(selectedDatasetToEdit.id).catch(console.log);
+    if (selectedDatasetToEdit && selectedDatasetToEdit.id) {
+      useProject.destroyDataset(selectedDatasetToEdit.id).catch(console.log);
+    }
     else console.error('Selected dataset or id is undefined!');
   };
 
@@ -80,7 +82,7 @@ const DatasetList = () => {
           </ListItem.Subtitle>
         </ListItem.Content>
         <Switch
-          onValueChange={(value) => setSwitchValue(value, dataset)}
+          onValueChange={value => setSwitchValue(value, dataset)}
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
@@ -117,7 +119,7 @@ const DatasetList = () => {
           onPress={() => saveDataset()}
           close={() => setIsDatasetNameModalVisible(false)}
           value={selectedDatasetToEdit.name}
-          onChangeText={(text) => setSelectedDatasetToEdit({...selectedDatasetToEdit, name: text})}
+          onChangeText={text => setSelectedDatasetToEdit({...selectedDatasetToEdit, name: text})}
         >
           <Button
             title={'Delete Dataset'}
@@ -180,8 +182,8 @@ const DatasetList = () => {
         rightButtonText={'Yes'}
         leftButtonText={'No'}
         onPress={() => {
-          useProject.makeDatasetCurrent(selectedDataset.id)
-          setMakeIsDatasetCurrentModalVisible(false)
+          useProject.makeDatasetCurrent(selectedDataset.id);
+          setMakeIsDatasetCurrentModalVisible(false);
         }}
         close={() => setMakeIsDatasetCurrentModalVisible(false)}
       >
@@ -190,8 +192,8 @@ const DatasetList = () => {
           <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>{selectedDataset.name}.</Text>
         </View>
       </StandardModal>
-    )
-  }
+    );
+  };
 
   const saveDataset = () => {
     dispatch(updatedDatasetProperties(selectedDatasetToEdit));
@@ -201,7 +203,7 @@ const DatasetList = () => {
   const setSwitchValue = async (val, dataset) => {
     setSelectedDataset(dataset);
     const value = await useProject.setSwitchValue(val, dataset);
-    console.log('Value has been switched', value)
+    console.log('Value has been switched', value);
     val && setMakeIsDatasetCurrentModalVisible(true);
     dispatch(setProjectLoadComplete(true));
   };
@@ -209,7 +211,7 @@ const DatasetList = () => {
   return (
     <View style={{flex: 1}}>
       <FlatList
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         data={Object.values(datasets)}
         renderItem={({item}) => renderDatasetListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

@@ -10,7 +10,7 @@ const NoteForm = (props) => {
   return (
     <Formik
       initialValues={props.initialNotesValues}
-      onSubmit={(values) => console.log('Submitting form...', values)}
+      onSubmit={values => console.log('Submitting form...', values)}
       innerRef={props.formRef}
       enableReinitialize={true}
     >

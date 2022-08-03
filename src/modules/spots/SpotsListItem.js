@@ -15,7 +15,7 @@ const SpotsListItem = (props) => {
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
 
-  const selectedTag = useSelector((state) => state.project.selectedTag);
+  const selectedTag = useSelector(state => state.project.selectedTag);
 
   const renderCheckboxes = () => {
     return (

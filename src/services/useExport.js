@@ -73,11 +73,11 @@ const useExport = () => {
       if (data.spotsDb) {
         console.log('Spots Exist!');
         await Promise.all(
-          Object.values(data.spotsDb).map(async spot => {
+          Object.values(data.spotsDb).map(async (spot) => {
             if (spot.properties.images) {
               console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
               await Promise.all(
-                spot.properties.images.map(async image => {
+                spot.properties.images.map(async (image) => {
                   await moveDistributedImage(image.id, fileName);
                   console.log('Moved file:', image.id);
                 }),
@@ -113,7 +113,7 @@ const useExport = () => {
         await useDevice.doesDeviceDirectoryExist(
           APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps');
         await Promise.all(
-          Object.values(maps).map(async map => {
+          Object.values(maps).map(async (map) => {
             const mapId = await moveDistributedMap(map.mapId, fileName);
             console.log('Moved map:', mapId);
             promises.push(mapId);
@@ -201,7 +201,7 @@ const useExport = () => {
   const moveDistributedMap = async (mapId, fileName) => {
     console.log('Moving Map:', mapId);
     return RNFS.exists(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
-      .then(exists => {
+      .then((exists) => {
         if (exists) {
           console.log(mapId + '.zip exists?', exists);
           return RNFS.copyFile(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
@@ -216,7 +216,7 @@ const useExport = () => {
           return Promise.resolve();
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.warn('Error moving maps in useExport', err);
       });
   };

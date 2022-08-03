@@ -65,13 +65,13 @@ const ImageGallery = (props) => {
           dispatch(setLoadingStatus({view: 'home', bool: false}));
         }
       })
-      .catch((e) => console.error('Image not found', e));
+      .catch(e => console.error('Image not found', e));
   };
 
   const renderImagesInSpot = (images) => {
     return (
       <FlatList
-        keyExtractor={(image) => image.id}
+        keyExtractor={image => image.id}
         data={images}
         numColumns={3}
         renderItem={({item}) => renderImage(item)}

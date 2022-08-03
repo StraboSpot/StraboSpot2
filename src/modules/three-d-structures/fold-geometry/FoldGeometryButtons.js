@@ -12,7 +12,7 @@ const FoldGeometryButtons = (props) => {
 
   const renderFoldGeometryIcons = () => {
     let foldGeometryData = [];
-    FOLD_GEOMETRY_KEYS.forEach(key => {
+    FOLD_GEOMETRY_KEYS.forEach((key) => {
       if (props.formProps?.values[key]) {
         const iconSource = FOLD_ICONS[key] && FOLD_ICONS[key].PRESSED
           && FOLD_ICONS[key].PRESSED[props.formProps?.values[key]]

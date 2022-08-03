@@ -122,8 +122,8 @@ const Map = React.forwardRef((props, ref) => {
       || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE),
     allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode !== MAP_MODES.EDIT,
     ref: {mapRef: mapRef, cameraRef: cameraRef},
-    onMapPress: (e) => onMapPress(e),
-    onMapLongPress: (e) => onMapLongPress(e),
+    onMapPress: e => onMapPress(e),
+    onMapLongPress: e => onMapLongPress(e),
     spotsInMapExtent: () => spotsInMapExtent(),
   };
 
@@ -183,7 +183,7 @@ const Map = React.forwardRef((props, ref) => {
     else if (isOnline.isInternetReachable && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
-      useMaps.setBasemap(currentBasemap.id).catch(error => {
+      useMaps.setBasemap(currentBasemap.id).catch((error) => {
         console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
@@ -196,7 +196,7 @@ const Map = React.forwardRef((props, ref) => {
     else if (!isEmpty(isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null
       && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
-      Object.values(customBasemap).map(map => {
+      Object.values(customBasemap).map((map) => {
         if (offlineMaps[map.id]?.id !== map.id) useMaps.setCustomMapSwitchValue(false, map);
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
@@ -400,7 +400,7 @@ const Map = React.forwardRef((props, ref) => {
     let explodedFeatures = turf.explode(spotToEdit).features;
     // If polygon remove last exploded point because it is the same as the first
     if (turf.getType(spotToEdit) === 'Polygon') explodedFeatures.pop();
-    explodedFeatures = explodedFeatures.map(feature => {
+    explodedFeatures = explodedFeatures.map((feature) => {
       return {
         ...feature,
         properties: {
@@ -593,7 +593,7 @@ const Map = React.forwardRef((props, ref) => {
     console.log('Cleared selected Spot.');
   };
 
-  const setSelectedVertexToEdit = async vertex => {
+  const setSelectedVertexToEdit = async (vertex) => {
     console.log('setSelectedVertexToEdit, vertex:', vertex);
     clearVertexes();
     setEditingModeData(d => ({
@@ -752,7 +752,7 @@ const Map = React.forwardRef((props, ref) => {
         let explodedFeatures = turf.explode(spotEditingCopy).features;
         // If polygon remove last exploded point because it is the same as the first
         if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
-        explodedFeatures = explodedFeatures.map(feature => {
+        explodedFeatures = explodedFeatures.map((feature) => {
           return {
             ...feature,
             properties: {
@@ -1104,7 +1104,7 @@ const Map = React.forwardRef((props, ref) => {
             let explodedFeatures = turf.explode(spotEditingCopy).features;
             // If polygon remove last exploded point because it is the same as the first
             if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
-            explodedFeatures = explodedFeatures.map(feature => {
+            explodedFeatures = explodedFeatures.map((feature) => {
               return {
                 ...feature,
                 properties: {
@@ -1201,7 +1201,7 @@ const Map = React.forwardRef((props, ref) => {
       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
       if (selectedSpot.properties.image_basemap
         && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {
-        const imageBasemapData = useSpots.getImageBasemaps().find(imgBasemap => {
+        const imageBasemapData = useSpots.getImageBasemaps().find((imgBasemap) => {
           return imgBasemap.id === selectedSpot.properties.image_basemap;
         });
         dispatch(setCurrentImageBasemap(imageBasemapData));

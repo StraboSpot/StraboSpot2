@@ -117,10 +117,11 @@ const Templates = (props) => {
     setName(template.name);
   };
 
-  const getPlanarTemplates = (templatesToFilter) => templatesToFilter.filter(
-    t => t.values?.type === 'planar_orientation' || t.values?.type === 'tabular_orientation' || t.type === 'planar_orientation');
+  const getPlanarTemplates = templatesToFilter => templatesToFilter.filter(
+    t => t.values?.type === 'planar_orientation' || t.values?.type === 'tabular_orientation'
+      || t.type === 'planar_orientation');
 
-  const getLinearTemplates = (templatesToFilter) => templatesToFilter.filter(
+  const getLinearTemplates = templatesToFilter => templatesToFilter.filter(
     t => t.values?.type === 'linear_orientation' || t.type === 'linear_orientation');
 
   const renderFormFields = () => {
@@ -209,7 +210,7 @@ const Templates = (props) => {
         <FlatList
           listKey={JSON.stringify(relevantTemplates)}
           data={relevantTemplates}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           renderItem={({item}) => renderTemplateListItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no templates defined yet.'}/>}
@@ -325,7 +326,7 @@ const Templates = (props) => {
           : (
             <FlatList
               data={activeTemplates}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={item => item.id.toString()}
               listKey={'templates' + type}
               renderItem={({item}) =>
                 <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
@@ -381,7 +382,7 @@ const Templates = (props) => {
           'name': name,
           'values': values,
         };
-        existingTemplatesCopy = existingTemplatesCopy.filter((templateId) => templateObject.id !== templateId.id);
+        existingTemplatesCopy = existingTemplatesCopy.filter(templateId => templateObject.id !== templateId.id);
       }
       else {
         templateObject = {

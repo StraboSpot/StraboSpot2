@@ -81,7 +81,7 @@ const useSpots = () => {
     } = selectedSpot.properties;
     copiedSpot.properties = properties;
     if (properties.orientation_data) {
-      const orientation_data = properties.orientation_data.map(measurement => {
+      const orientation_data = properties.orientation_data.map((measurement) => {
         let {
           id: measurementId,
           strike,
@@ -94,7 +94,7 @@ const useSpots = () => {
           ...measurementRest
         } = measurement;
         if (measurementRest.associated_orientation) {
-          const associated_orientation = measurementRest.associated_orientation.map(assocMeasurement => {
+          const associated_orientation = measurementRest.associated_orientation.map((assocMeasurement) => {
             let {
               id: measurementIdA,
               strike: strikeA,
@@ -194,7 +194,7 @@ const useSpots = () => {
       return (dataset && dataset.spotIds && !isEmpty(dataset.spotIds)) ? [...acc, ...dataset.spotIds] : acc;
     }, []);
     // Check for undefined Spot Ids and Spots referenced in a dataset but do not exist in the spots object
-    activeSpotIds.map(spotId => {
+    activeSpotIds.map((spotId) => {
       if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
       else console.log('Missing Spot', spotId);
     });
@@ -207,11 +207,11 @@ const useSpots = () => {
     if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(getActiveSpotsObj());
     else spotsToEvaluate = [spotToEvaluate];
     let featureElements = [PAGE_KEYS.MEASUREMENTS, PAGE_KEYS.OTHER_FEATURES, PAGE_KEYS.THREE_D_STRUCTURES];
-    spotsToEvaluate.forEach(spot => {
-      featureElements.map(featureElement => {
+    spotsToEvaluate.forEach((spot) => {
+      featureElements.map((featureElement) => {
         if (spot.properties[featureElement]) {
           let featuresCopy = JSON.parse(JSON.stringify(spot.properties[featureElement]));
-          featuresCopy.map(featureCopy => {
+          featuresCopy.map((featureCopy) => {
             featureCopy.parentSpotId = spot.properties.id;
           });
           allFeatures = allFeatures.concat(featuresCopy);
@@ -233,7 +233,7 @@ const useSpots = () => {
 
   // Get Interval Spots on a given Strat Section
   const getIntervalSpotsThisStratSection = (stratSectionId) => {
-    return Object.values(getActiveSpotsObj()).filter(s => {
+    return Object.values(getActiveSpotsObj()).filter((s) => {
       return s.properties.strat_section_id === stratSectionId
         && s.properties.surface_feature?.surface_feature_type === 'strat_interval';
     });
@@ -242,10 +242,10 @@ const useSpots = () => {
   // Get Active Spots with Valid Geometry
   const getMappableSpots = () => {
     const allSpotsCopy = JSON.parse(JSON.stringify(Object.values(getActiveSpotsObj())));
-    const allSpotsCopyFiltered = allSpotsCopy.filter(spot => {
+    const allSpotsCopyFiltered = allSpotsCopy.filter((spot) => {
       const geometries = spot.geometry?.geometries || [spot.geometry] || [];
       let hasValidGeometry = true;
-      geometries.forEach(g => {
+      geometries.forEach((g) => {
         const coordsFlat = g?.coordinates?.flat(Infinity) || [];
         const coordsFlatValid = coordsFlat.filter(c => c !== null && c !== undefined && !Number.isNaN(c));
         if (!hasValidGeometry || isEmpty(coordsFlat) || !isEqual(coordsFlat, coordsFlatValid)) hasValidGeometry = false;
@@ -359,7 +359,7 @@ const useSpots = () => {
   };
 
   const getSpotByImageId = (imageId) => {
-    return Object.values(getActiveSpotsObj()).find(spot => {
+    return Object.values(getActiveSpotsObj()).find((spot) => {
       return spot.properties.images && spot.properties.images.find(image => image.id === imageId);
     });
   };
@@ -399,7 +399,7 @@ const useSpots = () => {
 
   const getSpotsByIds = (spotIds) => {
     const foundSpots = [];
-    Object.entries(spots).forEach(obj => {
+    Object.entries(spots).forEach((obj) => {
       if (spotIds.includes(obj[1].properties.id)) foundSpots.push(obj[1]);
     });
     return foundSpots;

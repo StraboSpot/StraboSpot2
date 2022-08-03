@@ -56,7 +56,7 @@ const AddImageOverlayModal = (props) => {
   };
 
   const getImageChoices = () => {
-    const getImageLabel = (image) => (image.title || 'Untitled') + ' (' + image.width + ' x ' + image.height + ')';
+    const getImageLabel = image => (image.title || 'Untitled') + ' (' + image.width + ' x ' + image.height + ')';
 
     return spot.properties.images?.map(i => ({
       label: getImageLabel(i),
@@ -97,7 +97,7 @@ const AddImageOverlayModal = (props) => {
           innerRef={overlayFormRef}
           enableReinitialize={false}
         >
-          {(outerFormProps) => (
+          {outerFormProps => (
             <View>
               <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>

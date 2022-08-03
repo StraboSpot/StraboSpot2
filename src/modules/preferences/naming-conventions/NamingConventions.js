@@ -23,9 +23,9 @@ const NamingConventions = () => {
   return (
     <Formik
       innerRef={formRef}
-      onSubmit={(values) => console.log('Submitting form...', values)}
-      validate={(values) => useForm.validateForm({formName: formName, values: values})}
-      children={(formProps) => (
+      onSubmit={values => console.log('Submitting form...', values)}
+      validate={values => useForm.validateForm({formName: formName, values: values})}
+      children={formProps => (
         <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>
       )}
       initialValues={preferences}

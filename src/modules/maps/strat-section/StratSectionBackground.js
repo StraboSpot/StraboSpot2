@@ -65,7 +65,7 @@ const StratSectionBackground = (props) => {
       </MapboxGL.VectorSource>
 
       {/* Image Overlay Layers */}
-      {props.stratSection.images?.map(oI => {
+      {props.stratSection.images?.map((oI) => {
         // const coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
         const image = stratSectionSpot.properties.images.find(i => i.id === oI.id);
         let imageCopy = JSON.parse(JSON.stringify(image));

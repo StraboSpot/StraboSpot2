@@ -1,10 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
-import ToastPopup from '../../shared/ui/Toast';
 import UseMapsHook from '../maps/useMaps';
 import BaseMapDialog from './BaseMapDialogBox';
 import homeStyles from './home.style';
@@ -35,7 +34,7 @@ const LeftSideButtons = (props) => {
   }, [userLocationButtonOn]);
 
   // Toggle given dialog between true (visible) and false (hidden)
-  const toggleDialog = dialog => {
+  const toggleDialog = (dialog) => {
     console.log('Toggle', dialog);
     setDialogs(d => ({...d, [dialog]: !d[dialog]}));
     console.log(dialog, 'is set to', dialogs[dialog]);

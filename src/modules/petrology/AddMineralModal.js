@@ -86,7 +86,7 @@ const AddMineralModal = (props) => {
 
     // Remove relevant values
     const relevantIgMetFields = useForm.getRelevantFields(survey, igOrMetKey);
-    relevantIgMetFields.map(f => {
+    relevantIgMetFields.map((f) => {
       if (f.name !== igOrMetKey && formRef.current?.values[f.name]) formRef.current?.setFieldValue(f.name, undefined);
     });
   };
@@ -188,10 +188,10 @@ const AddMineralModal = (props) => {
                 <Formik
                   innerRef={formRef}
                   initialValues={initialValues}
-                  onSubmit={(values) => console.log('Submitting form...', values)}
+                  onSubmit={values => console.log('Submitting form...', values)}
                   enableReinitialize={true}
                 >
-                  {(formProps) => (
+                  {formProps => (
                     <View style={{flex: 1}}>
                       {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
                     </View>

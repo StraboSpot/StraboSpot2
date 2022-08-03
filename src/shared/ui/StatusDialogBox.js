@@ -5,7 +5,7 @@ import Dialog, {DialogContent, DialogTitle, FadeAnimation} from 'react-native-po
 
 import styles from '../../shared/common.styles';
 
-const StatusDialogBox = props => {
+const StatusDialogBox = (props) => {
   const scrollView = useRef();
 
   return (

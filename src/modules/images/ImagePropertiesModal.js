@@ -27,8 +27,8 @@ const ImagePropertiesModal = (props) => {
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={(values) => useForm.validateForm({formName: formName, values: values})}
-        component={(formProps) => Form({formName: formName, ...formProps})}
+        validate={values => useForm.validateForm({formName: formName, values: values})}
+        component={formProps => Form({formName: formName, ...formProps})}
         initialValues={selectedImage}
         initialStatus={{formName: formName}}
       />
@@ -68,7 +68,7 @@ const ImagePropertiesModal = (props) => {
           <View style={styles.switch}>
             <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
             <Switch
-              onValueChange={(a) => setAnnotated(a)}
+              onValueChange={a => setAnnotated(a)}
               value={annotated}
             />
           </View>

@@ -62,7 +62,7 @@ const spotSlice = createSlice({
       state.recentViews = state.recentViews.filter(id => id !== action.payload);
     },
     editedSpotImage(state, action) {
-      const foundSpot = Object.values(state.spots).find(spot => {
+      const foundSpot = Object.values(state.spots).find((spot) => {
         return spot.properties.images && spot.properties.images.find(image => image.id === action.payload.id);
       });
       if (foundSpot) {
@@ -79,7 +79,7 @@ const spotSlice = createSlice({
     editedSpotImages(state, action) {
       let tempImages = [];
       if (state.selectedSpot.properties.images) tempImages = state.selectedSpot.properties.images;
-      const updatedSpotObj = action.payload.map(image => {
+      const updatedSpotObj = action.payload.map((image) => {
         return {id: image.id, height: image.height, width: image.width, image_type: image.image_type};
       });
       tempImages = [...tempImages, ...updatedSpotObj];

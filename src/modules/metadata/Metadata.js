@@ -58,11 +58,11 @@ const Metadata = () => {
     return (
       <Formik
         initialValues={spot.properties}
-        onSubmit={(values) => console.log('Submitting form...', values)}
+        onSubmit={values => console.log('Submitting form...', values)}
         innerRef={metadataFormRef}
         enableReinitialize={true}
       >
-        {(formProps) => (
+        {formProps => (
           <View>
             <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>

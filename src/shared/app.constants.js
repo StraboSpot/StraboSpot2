@@ -1,4 +1,4 @@
-import {version, name} from '../../package.json';
+import {name, version} from '../../package.json';
 
 export const REDUX = {
   CLEAR_STORE: 'CLEAR_STORE',

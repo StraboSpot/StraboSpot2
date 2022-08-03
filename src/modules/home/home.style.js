@@ -146,7 +146,7 @@ const homeStyles = StyleSheet.create({
     textShadowColor: themes.BLACK,
     textShadowRadius: 10,
     marginLeft: 40,
-    },
+  },
   batteryLevelContainer: {
     alignItems: 'flex-end',
     flexDirection: 'row',

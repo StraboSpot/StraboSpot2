@@ -51,7 +51,7 @@ const CustomFeatureTypes = () => {
     let spotsWithOtherFeatures = allSpots.filter(
       spot => spot.properties.other_features && spot.properties.other_features.length > 0);
     if (!isEmpty(spotsWithOtherFeatures)) {
-      spotsWithOtherFeatures.map(spot => {
+      spotsWithOtherFeatures.map((spot) => {
         let otherFeatures = spot.properties.other_features;
         let featuresWithFeatureType = otherFeatures.filter(spotFeature => feature === spotFeature.type);
         if (!isEmpty(featuresWithFeatureType)) {
@@ -86,10 +86,10 @@ const CustomFeatureTypes = () => {
   return (
     <React.Fragment>
       <FlatList
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         extraData={refresh}
         data={customFeatureTypes}
-        renderItem={(item) => renderFeature(item.item)}
+        renderItem={item => renderFeature(item.item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No custom feature types added yet. '
           + 'Add a custom feature type in Other Features tab of a spot by selecting'

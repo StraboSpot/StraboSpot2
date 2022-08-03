@@ -122,10 +122,10 @@ const AddMeasurementModal = (props) => {
     return true;
   };
 
-  const getPlanarTemplates = (templatesToFilter) => templatesToFilter.filter(
+  const getPlanarTemplates = templatesToFilter => templatesToFilter.filter(
     t => t.values?.type === 'planar_orientation' || t.values?.type === 'tabular_orientation' || t.type === 'planar_orientation');
 
-  const getLinearTemplates = (templatesToFilter) => templatesToFilter.filter(
+  const getLinearTemplates = templatesToFilter => templatesToFilter.filter(
     t => t.values?.type === 'linear_orientation' || t.type === 'linear_orientation');
 
   const onCloseButton = () => {
@@ -252,7 +252,7 @@ const AddMeasurementModal = (props) => {
                   setMeasurements={setMeasurements}
                   formValues={formProps.values}
                   showCompassDataModal={showCompassMetadataModal}
-                  setCompassRawDataToDisplay={(data) => showCompassRawDataView && setCompassData(data)}
+                  setCompassRawDataToDisplay={data => showCompassRawDataView && setCompassData(data)}
                 />
               )}
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
@@ -315,11 +315,11 @@ const AddMeasurementModal = (props) => {
                   innerRef={formRef}
                   initialValues={initialValues}
                   initialStatus={{formName: formName}}
-                  onSubmit={(values) => console.log('Submitting form...', values)}
-                  validate={(values) => useForm.validateForm({formName: formName, values: values})}
+                  onSubmit={values => console.log('Submitting form...', values)}
+                  validate={values => useForm.validateForm({formName: formName, values: values})}
                   validateOnChange={false}
                   enableReinitialize={true}
-                  children={(formProps) => choicesViewKey ? renderSubform(formProps)
+                  children={formProps => choicesViewKey ? renderSubform(formProps)
                     : assocChoicesViewKey ? renderSubformAssoc(formProps) : renderForm(formProps)}
                 />
               }
@@ -472,11 +472,11 @@ const AddMeasurementModal = (props) => {
     const planarCompassFields = ['strike', 'dip_direction', 'dip', 'quality', 'unix_timestamp'];
     const linearCompassFields = ['trend', 'plunge', 'rake', 'quality', 'unix_timestamp'];
     const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields : linearCompassFields;
-    compassFields.forEach(compassFieldKey => {
+    compassFields.forEach((compassFieldKey) => {
       if (!isEmpty(data[compassFieldKey])) formRef.current.setFieldValue(compassFieldKey, data[compassFieldKey]);
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
-      linearCompassFields.forEach(compassFieldKey => {
+      linearCompassFields.forEach((compassFieldKey) => {
         formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], data[compassFieldKey]);
       });
     }

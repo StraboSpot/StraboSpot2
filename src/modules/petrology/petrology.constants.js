@@ -1281,7 +1281,7 @@ export const MINERAL_GLOSSARY_INFO = [
 export const ABBREVIATIONS_WITH_LABELS = (
   MINERAL_GLOSSARY_INFO.reduce((acc, mineral) => {
     if (mineral.Abbreviation) {
-      mineral.Abbreviation.split(', ').forEach((abb) => acc[abb] = mineral.Label);
+      mineral.Abbreviation.split(', ').forEach(abb => acc[abb] = mineral.Label);
     }
     return acc;
   }, {})

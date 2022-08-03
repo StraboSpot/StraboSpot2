@@ -107,7 +107,7 @@ const defaultMiddlewareOptions = {
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => __DEV__
+  middleware: getDefaultMiddleware => __DEV__
     ? getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(createDebugger())
       .concat(loggerMiddleware)

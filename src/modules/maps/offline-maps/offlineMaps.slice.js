@@ -33,7 +33,7 @@ const offlineMapsSlice = createSlice({
     },
     setOfflineMapVisible(state, action) {
       const {mapId, viewable} = action.payload;
-      const toggleFalse = Object.values(state.offlineMaps).map(offlineMap => {
+      const toggleFalse = Object.values(state.offlineMaps).map((offlineMap) => {
         offlineMap.isOfflineMapVisible = false;
         return offlineMap;
       });

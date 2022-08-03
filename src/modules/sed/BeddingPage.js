@@ -167,8 +167,8 @@ const BeddingPage = (props) => {
           innerRef={beddingSharedRef}
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
-          validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          children={(formProps) => <Form {...{...formProps, formName: formName}}/>}
+          validate={values => useForm.validateForm({formName: formName, values: values})}
+          children={formProps => <Form {...{...formProps, formName: formName}}/>}
           initialValues={bedding}
           validateOnChange={false}
           enableReinitialize={true}

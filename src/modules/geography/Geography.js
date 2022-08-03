@@ -37,7 +37,9 @@ const Geography = () => {
     if (currentLocation.longitude) geomFormRef.current.setFieldValue('longitude', currentLocation.longitude);
     if (currentLocation.altitude) formRef.current.setFieldValue('altitude', currentLocation.altitude);
     if (currentLocation.accuracy) formRef.current.setFieldValue('gps_accuracy', currentLocation.accuracy);
-    if (currentLocation.altitudeAccuracy) formRef.current.setFieldValue('altitude_accuracy', currentLocation.altitudeAccuracy);
+    if (currentLocation.altitudeAccuracy) {
+      formRef.current.setFieldValue('altitude_accuracy', currentLocation.altitudeAccuracy);
+    }
   };
 
   const renderCancelSaveButtons = () => {
@@ -59,8 +61,8 @@ const Geography = () => {
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
-          validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          component={(formProps) => Form({formName: formName, ...formProps})}
+          validate={values => useForm.validateForm({formName: formName, values: values})}
+          component={formProps => Form({formName: formName, ...formProps})}
           initialValues={spot.properties}
           initialStatus={{formName: formName}}
           enableReinitialize={true}

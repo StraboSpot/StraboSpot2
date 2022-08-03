@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
@@ -38,7 +38,7 @@ function Basemap(props) {
   }, [props.imageBasemap]);
 
   const checkImageExistance = async () => {
-    return useImages.doesImageExistOnDevice(props.imageBasemap.id).then((doesExist) => setDoesImageExist(doesExist));
+    return useImages.doesImageExistOnDevice(props.imageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
   useEffect(() => {
@@ -53,7 +53,7 @@ function Basemap(props) {
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
   // doesn't work for colors by tags and more complex styling
   const addSymbology = (features) => {
-    return features.map(feature => {
+    return features.map((feature) => {
       const symbology = useMapSymbology.getSymbology(feature);
       if (!isEmpty(symbology)) feature.properties.symbology = symbology;
       return feature;
@@ -112,7 +112,7 @@ function Basemap(props) {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-            <ScaleBarAndZoom zoom={currentZoom} latitude={center[1]} currentZoom={currentZoom} basemap={props.basemap}/>
+          <ScaleBarAndZoom zoom={currentZoom} latitude={center[1]} currentZoom={currentZoom} basemap={props.basemap}/>
         </View>
       )}
       <MapboxGL.MapView
@@ -153,7 +153,7 @@ function Basemap(props) {
         />
 
         {/* Custom Overlay Layer */}
-        {Object.values(customMaps).map(customMap => {
+        {Object.values(customMaps).map((customMap) => {
           return (
             customMap.overlay && customMap.isViewable && (
               <MapboxGL.RasterSource
@@ -222,7 +222,7 @@ function Basemap(props) {
         {/* Feature Layer */}
         <MapboxGL.Images
           images={symbols}
-          onImageMissing={imageKey => {
+          onImageMissing={(imageKey) => {
             setSymbol({...symbols, [imageKey]: symbols.default_point});
           }}
         />

@@ -34,7 +34,7 @@ const ShortcutMenu = (props) => {
         <Text style={shortcutMenuStyles.textStyle}>Shortcuts will create a NEW spot</Text>
       </View>
       <FlatList
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         data={SHORTCUT_MODALS}
         renderItem={({item}) => renderShortcutListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

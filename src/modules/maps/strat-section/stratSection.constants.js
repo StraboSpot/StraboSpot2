@@ -75,7 +75,7 @@ export const STRAT_PATTERNS = {
 export const SED_LABEL_DICTIONARY = ['clastic', 'carbonate', 'lithologies', 'weathering'].reduce((acc, key) => {
   const survey = forms.default.sed.add_interval.survey;
   const choices = forms.default.sed.add_interval.choices;
-  const groupFields = survey.filter(field => {
+  const groupFields = survey.filter((field) => {
     if (key === 'clastic') {
       return field.name === 'mud_silt_grain_size' || field.name === 'sand_grain_size'
         || field.name === 'congl_grain_size' || field.name === 'breccia_grain_size';

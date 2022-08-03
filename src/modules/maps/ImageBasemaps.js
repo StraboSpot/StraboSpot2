@@ -28,7 +28,7 @@ const ImageBaseMaps = (props) => {
         dispatch(clearedSelectedSpots());
         dispatch(setCurrentImageBasemap(image));
       })
-      .catch((e) => console.error('Image not found', e));
+      .catch(e => console.error('Image not found', e));
   };
 
   const renderImageBasemapThumbnail = (image) => {
@@ -50,7 +50,7 @@ const ImageBaseMaps = (props) => {
     <React.Fragment>
       <View style={imageStyles.galleryImageContainer}>
         <FlatList
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           data={imageBasemaps}
           numColumns={3}
           renderItem={({item}) => renderImageBasemapThumbnail(item)}

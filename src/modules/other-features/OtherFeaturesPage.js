@@ -66,7 +66,7 @@ const OtherFeaturesPage = () => {
           <FlatList
             data={spot.properties.other_features}
             renderItem={item => renderFeature(item.item)}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={item => item.id.toString()}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'There are no other features at this Spot.'}/>}
           />
@@ -77,7 +77,7 @@ const OtherFeaturesPage = () => {
           featureTypes={otherFeatures}
           hideFeatureDetail={() => setIsFeatureDetailVisible(false)}
           selectedFeature={selectedFeature}
-          renderFeature={(feature) => renderFeature(feature)}
+          renderFeature={feature => renderFeature(feature)}
         />)}
     </React.Fragment>
   );

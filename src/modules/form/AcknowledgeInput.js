@@ -13,7 +13,7 @@ const AcknowledgeInput = (props) => {
         <View>
           <Switch
             value={props.value}
-            onValueChange={(bool) => props.setFieldValue(props.name, bool)}
+            onValueChange={bool => props.setFieldValue(props.name, bool)}
           />
         </View>
         <View style={[formStyles.fieldLabelContainer, {flex: 1}]}>

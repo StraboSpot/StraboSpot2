@@ -138,7 +138,7 @@ const ProjectList = (props) => {
     if (!isEmpty(projectsArr) && !isEmpty(userData)) {
       return (
         <FlatList
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           data={Object.values(projectsArr.projects)}
           renderItem={({item}) => renderProjectItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}

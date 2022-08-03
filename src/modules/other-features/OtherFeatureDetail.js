@@ -113,7 +113,7 @@ const OtherFeatureDetail = (props) => {
       <View style={{flex: 1}}>
         <Formik
           initialValues={initialFeatureValues}
-          onSubmit={(values) => console.log('Submitting form...', values)}
+          onSubmit={values => console.log('Submitting form...', values)}
           validate={validateFeature}
           innerRef={formRef}
           enableReinitialize={true}
@@ -145,7 +145,7 @@ const OtherFeatureDetail = (props) => {
               <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
                   <Field
-                    component={(formProps) => (
+                    component={formProps => (
                       SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
                     )}
                     name={'type'}
@@ -257,7 +257,7 @@ const OtherFeatureDetail = (props) => {
   };
 
   const validateAndSetNewType = (newType) => {
-    let existingCustomFeatureTypes = customFeatureTypes.filter((feature) => feature === newType);
+    let existingCustomFeatureTypes = customFeatureTypes.filter(feature => feature === newType);
     if (!isEmpty(existingCustomFeatureTypes)) {
       Alert.alert('Alert!',
         'The type ' + newType + ' is already being used. Choose a different type name.');

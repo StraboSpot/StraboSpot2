@@ -61,7 +61,7 @@ const ActiveProjectPanel = () => {
         onPress={() => onAddDataset()}
         close={() => setIsAddDatasetModalVisible(false)}
         value={datasetName}
-        onChangeText={(text) => setDatasetName(text)}
+        onChangeText={text => setDatasetName(text)}
       />
     );
   };

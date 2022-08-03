@@ -39,7 +39,7 @@ const MainMenuPanelList = (props) => {
       <React.Fragment>
         <SectionDivider dividerText={toTitleCase(menuItem)}/>
         <FlatList
-          keyExtractor={(item) => item.toString()}
+          keyExtractor={item => item.toString()}
           data={Object.values(submenuItems)}
           renderItem={({item}) => renderMenuListItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
@@ -50,7 +50,7 @@ const MainMenuPanelList = (props) => {
 
   return (
     <FlatList
-      keyExtractor={(item) => item.toString()}
+      keyExtractor={item => item.toString()}
       data={Object.entries(MAIN_MENU_ITEMS)}
       renderItem={({item}) => renderMenuSection(item)}
     />

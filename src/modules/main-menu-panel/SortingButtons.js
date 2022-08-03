@@ -38,7 +38,7 @@ const SortingButtons = (props) => {
         buttonStyle={{padding: 5}}
         selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
         textStyle={{fontSize: 12}}
-        onPress={(selected) => updateIndex(selected)}
+        onPress={selected => updateIndex(selected)}
       />
     </React.Fragment>
   );

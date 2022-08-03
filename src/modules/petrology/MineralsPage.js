@@ -87,14 +87,14 @@ const MineralsPage = (props) => {
     return (
       <Formik
         innerRef={preFormRef}
-        validate={(fieldValues) => copyMineralData(fieldValues.spot_id_for_pet_copy)}
+        validate={fieldValues => copyMineralData(fieldValues.spot_id_for_pet_copy)}
         validateOnChange={true}
         initialValues={{}}
       >
         <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
             <Field
-              component={(formProps) => (
+              component={formProps => (
                 SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
               )}
               name={'spot_id_for_pet_copy'}

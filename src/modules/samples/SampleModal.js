@@ -120,10 +120,10 @@ const SampleModal = (props) => {
             <Formik
               innerRef={formRef}
               initialValues={{sample_id_name: namePrefix + startingNumber, inplaceness_of_sample: '5___definitely'}}
-              onSubmit={(values) => console.log('Submitting form...', values)}
+              onSubmit={values => console.log('Submitting form...', values)}
               enableReinitialize={true}
             >
-              {(formProps) => (
+              {formProps => (
                 <View style={{}}>
                   {renderForm(formProps)}
                 </View>

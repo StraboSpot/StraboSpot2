@@ -114,7 +114,7 @@ const ManageOfflineMaps = (props) => {
           onPress={() => saveMapEdits()}
           close={() => setIsNameModalVisible(false)}
           value={selectedMap.name}
-          onChangeText={(text) => setSelectedMap({...selectedMap, name: text})}
+          onChangeText={text => setSelectedMap({...selectedMap, name: text})}
         />
       </View>
     );
@@ -123,7 +123,7 @@ const ManageOfflineMaps = (props) => {
   const renderMapsList = () => {
     return (
       <FlatList
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         data={Object.values(offlineMaps)}
         renderItem={({item}) => renderMapsListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

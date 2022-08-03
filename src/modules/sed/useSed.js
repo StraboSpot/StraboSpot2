@@ -62,11 +62,11 @@ const useSed = () => {
         }
       }
 
-      // Check for changes to certain fields which would require recalculation of the interval geometry
+        // Check for changes to certain fields which would require recalculation of the interval geometry
       // If current page is sed-interval
       else if (pageKey === PAGE_KEYS.INTERVAL) {
         const intervalFields = ['character', 'interval_thickness', 'thickness_units'];
-        needToRecalculateIntervalGeometry = intervalFields.find(field => {
+        needToRecalculateIntervalGeometry = intervalFields.find((field) => {
           if (field === 'character') {
             if ((sedData[field] && !sedDataSaved[field]) || (!sedData[field] && !sedDataSaved[field])) return true;
             return ((sedData[field] === 'bed' || sedData[field] === 'package_succe')
@@ -87,7 +87,7 @@ const useSed = () => {
       else if (pageKey === PAGE_KEYS.LITHOLOGIES) {
         const lithologiesFields = ['primary_lithology', 'siliciclastic_type', 'mud_silt_grain_size', 'sand_grain_size',
           'congl_grain_size', 'breccia_grain_size', 'dunham_classification', 'relative_resistance_weather'];
-        needToRecalculateIntervalGeometry = lithologiesFields.find(field => {
+        needToRecalculateIntervalGeometry = lithologiesFields.find((field) => {
           if ((sedData.lithologies && !sedDataSaved.lithologies)
             || (!sedData.lithologies && sedDataSaved.lithologies)) return true;
           if (sedData.lithologies && sedDataSaved.lithologies
@@ -110,7 +110,7 @@ const useSed = () => {
         const beddingFields = ['interbed_proportion_change', 'interbed_proportion', 'lithology_at_bottom_contact',
           'lithology_at_top_contact', 'thickness_of_individual_beds', 'avg_thickness', 'max_thickness',
           'min_thickness'];
-        needToRecalculateIntervalGeometry = beddingFields.find(field => {
+        needToRecalculateIntervalGeometry = beddingFields.find((field) => {
           if ((sedData.bedding && !sedDataSaved.bedding) || (!sedData.bedding && sedDataSaved.bedding)) return true;
           if (sedData.bedding && sedDataSaved.bedding && ((sedData.bedding[field] && !sedDataSaved.bedding[field])
             || (!sedData.bedding[field] && sedDataSaved.bedding[field]))) return true;
@@ -327,7 +327,7 @@ const useSed = () => {
   const saveSedFeatureValuesFromTemplates = (key, spot, activeTemplates) => {
     let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
     if (!editedSedData[key] || !Array.isArray(editedSedData[key])) editedSedData[key] = [];
-    activeTemplates.forEach((t) => editedSedData[key].push({...t.values, id: getNewId()}));
+    activeTemplates.forEach(t => editedSedData[key].push({...t.values, id: getNewId()}));
     dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 

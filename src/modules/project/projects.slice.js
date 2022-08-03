@@ -103,7 +103,7 @@ const projectSlice = createSlice({
     deletedSpotIdFromTags(state, action) {
       const spotId = action.payload;
       if (!isEmpty(state.project.tags)) {
-        const updatedTags = state.project.tags.map(tag => {
+        const updatedTags = state.project.tags.map((tag) => {
           let updatedTag = JSON.parse(JSON.stringify(tag));
           if (updatedTag.spots?.includes(spotId)) {
             updatedTag.spots = updatedTag.spots.filter(id => id !== spotId);

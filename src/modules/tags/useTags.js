@@ -34,9 +34,9 @@ const useTags = () => {
 
   const addSpotsToTags = (tagsList, spotsList) => {
     let tagsToUpdate = [];
-    tagsList.map(tag => {
+    tagsList.map((tag) => {
       let spotsListForTagging = [];
-      spotsList.map(spot => {
+      spotsList.map((spot) => {
         if (!tagSpotExists(tag, spot)) spotsListForTagging.push(spot.properties.id);
       });
       let tagCopy = JSON.parse(JSON.stringify(tag));
@@ -70,7 +70,7 @@ const useTags = () => {
   const addRemoveSpotFeaturesFromTag = (tag, features, spotId, isAlreadyChecked) => {
     if (!tag.features) tag.features = {};
     let featureTagsForSpot = tag.features[spotId] || [];
-    features.map(feature => {
+    features.map((feature) => {
       const index = featureTagsForSpot.findIndex(id => id === feature.id);
       if (isAlreadyChecked) { // if checked (action is uncheck), then remove from tag from all selected features
         if (index !== -1) featureTagsForSpot.splice(index, 1);
@@ -117,7 +117,7 @@ const useTags = () => {
     if (features.length === 0) return;
     let tagsToUpdate = [];
     let featureIds = features.map(feature => feature.id);
-    projectTags.map(tag => {
+    projectTags.map((tag) => {
       let allOtherFeatureIds = [];
       let copyTag = JSON.parse(JSON.stringify(tag));
       if (selectedSpot && copyTag && copyTag.features
@@ -146,7 +146,7 @@ const useTags = () => {
     const spotFeatures = tag.features;
     if (isEmpty(spotFeatures)) return [];
     for (const [spotId, features] of Object.entries(spotFeatures)) {
-      features.forEach(featureId => {
+      features.forEach((featureId) => {
         const feature = getFeature(spotId, featureId);
         if (feature) {
           feature.parentSpotId = spotId;
@@ -269,8 +269,8 @@ const useTags = () => {
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
-          validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          component={(formProps) => Form({formName: formName, ...formProps})}
+          validate={values => useForm.validateForm({formName: formName, values: values})}
+          component={formProps => Form({formName: formName, ...formProps})}
           initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
           initialStatus={{formName: formName}}
           enableReinitialize={true}

@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import BatteryInfo from '../../services/BatteryInfo';
@@ -13,7 +14,6 @@ import useDeviceHook from '../../services/useDevice';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
-import ToastPopup from '../../shared/ui/Toast';
 import uiStyles from '../../shared/ui/ui.styles';
 import Preview from '../images/Preview';
 import useImagesHook from '../images/useImages';
@@ -61,7 +61,6 @@ import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import useHomeHook from './useHome';
-import {useToast} from 'react-native-toast-notifications';
 
 const {State: TextInputState} = TextInput;
 
@@ -171,7 +170,7 @@ const Home = () => {
     };
   }, [modalVisible]);
 
-  const handleKeyboardDidShowHome = (event) => Helpers.handleKeyboardDidShow(event, TextInputState,
+  const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
     homeTextInputAnimate);
 
   const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
@@ -331,7 +330,7 @@ const Home = () => {
       useHome.toggleLoading(false);
     }
     catch (err) {
-      console.error('Geolocation Error:', err)
+      console.error('Geolocation Error:', err);
       useHome.toggleLoading(false);
       toast.show(`${err.toString()}`);
     }
@@ -447,7 +446,7 @@ const Home = () => {
       case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
         return <ProjectDescription toastMessage={(message, type) => toast.show(message, {type: type})}/>;
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
-        return <TagDetailSidePanel openNotebookPanel={(pageView) => openNotebookPanel(pageView)}/>;
+        return <TagDetailSidePanel openNotebookPanel={pageView => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
         return <TagAddRemoveSpots/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
@@ -459,7 +458,7 @@ const Home = () => {
     }
   };
 
-  const setDraw = async mapModeToSet => {
+  const setDraw = async (mapModeToSet) => {
     mapComponentRef.current.cancelDraw();
     if (mapMode === mapModeToSet
       || (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON && mapModeToSet === MAP_MODES.DRAW.POLYGON)
@@ -568,11 +567,11 @@ const Home = () => {
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
         logout={() => onLogout()}
-        openMainMenu={(action) => setOpenMenu(action)}
+        openMainMenu={action => setOpenMenu(action)}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
-        openNotebookPanel={(pageView) => openNotebookPanel(pageView)}
+        openNotebookPanel={pageView => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
-        zoomToCustomMap={(bbox) => mapComponentRef.current.zoomToCustomMap(bbox)}
+        zoomToCustomMap={bbox => mapComponentRef.current.zoomToCustomMap(bbox)}
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
       />
     </Animated.View>
@@ -643,7 +642,7 @@ const Home = () => {
             component={(
               <Preview
                 toggle={() => toggleImageModal()}
-                openNotebookPanel={(page) => openNotebookPanel(page)}
+                openNotebookPanel={page => openNotebookPanel(page)}
               />
             )}
           />
@@ -651,7 +650,7 @@ const Home = () => {
       )}
       {/*Modals for Home Page*/}
       <BackupModal/>
-      <BackUpOverwriteModal onPress={(action) => useProject.switchProject(action)}/>
+      <BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>
       <InfoModal/>
       <InitialProjectLoadModal
         openMainMenu={() => toggleHomeDrawerButton()}

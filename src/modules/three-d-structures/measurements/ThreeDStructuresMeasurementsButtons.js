@@ -67,7 +67,7 @@ const ThreeDStructuresMeasurementsButtons = (props) => {
 
   return (
     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', paddingLeft: 10, paddingRight: 10}}>
-      {groupFields.map(field => {
+      {groupFields.map((field) => {
         return (
           <Button
             containerStyle={{flex: 1, padding: 2}}

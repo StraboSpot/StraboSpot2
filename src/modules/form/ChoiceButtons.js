@@ -15,7 +15,7 @@ const ChoiceButtons = (props) => {
 
   return (
     <View style={formStyles.halfWidthButtonsContainer}>
-      {useForm.getChoicesByKey(props.survey, props.choices, props.choiceFieldKey).map(choice => {
+      {useForm.getChoicesByKey(props.survey, props.choices, props.choiceFieldKey).map((choice) => {
         return (
           <Button
             containerStyle={formStyles.halfWidthButtonContainer}

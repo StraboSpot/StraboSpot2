@@ -122,7 +122,7 @@ export const MAP_PROVIDERS = {
   },
 };
 
-export const BASEMAPS = DEFAULT_MAPS.map(map => {
+export const BASEMAPS = DEFAULT_MAPS.map((map) => {
   const tileUrl = map.source === 'osm' ? MAP_PROVIDERS[map.source].url[0] + MAP_PROVIDERS[map.source].tilePath
     : MAP_PROVIDERS[map.source].url[0] + map.id + MAP_PROVIDERS[map.source].tilePath;
   map.version = 8;
@@ -145,7 +145,7 @@ export const BASEMAPS = DEFAULT_MAPS.map(map => {
 });
 console.log('BASEMAPS', BASEMAPS);
 
-export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map(map => {
+export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map((map) => {
   return {...map, ...MAP_PROVIDERS[map.source]};
 });
 console.log('CUSTOMBASEMAPS', BASEMAPS);

@@ -68,7 +68,7 @@ const BasicSedPage = (props) => {
         <React.Fragment>
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
-            onPress={(i) => setSelectedTypeIndex(i)}
+            onPress={i => setSelectedTypeIndex(i)}
             buttons={Object.values(subpages).map(v => toTitleCase(v.replace(/_/g, ' ')))}
             containerStyle={{height: 40, borderRadius: 10}}
             buttonStyle={{padding: 5}}

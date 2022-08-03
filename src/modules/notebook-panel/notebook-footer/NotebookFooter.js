@@ -18,7 +18,7 @@ const NotebookFooter = (props) => {
   ));
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
-  const notebookPagesValidOn = notebookPagesOn.filter(i => {
+  const notebookPagesValidOn = notebookPagesOn.filter((i) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === i);
     if (!page) return false;
     return !page.testing || (isTestingMode && page?.testing);

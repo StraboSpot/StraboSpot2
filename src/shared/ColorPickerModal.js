@@ -48,10 +48,10 @@ const ColorPickerModal = (props) => {
           <Text style={commonStyles.dialogTitleText}>Select a Custom Color</Text>
         </View>
         <Spacer/>
-        {COLOR_CHOICES.map(colorRow => {
+        {COLOR_CHOICES.map((colorRow) => {
           return (
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              {colorRow.map(colorChoice => {
+              {colorRow.map((colorChoice) => {
                 return (
                   <TouchableOpacity style={{width: 25, height: 25, backgroundColor: colorChoice}}
                                     onPress={() => setColor(colorChoice)}/>);

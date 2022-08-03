@@ -5,7 +5,7 @@ import {BallIndicator} from 'react-native-indicators';
 
 import styles from './ui.styles';
 
-const Loading = props => {
+const Loading = (props) => {
 
   return (
     <React.Fragment>

@@ -101,7 +101,7 @@ const useImages = () => {
 
   const getAllImagesIds = (spotsArray) => {
     let imageIds = [];
-    spotsArray.filter(spot => {
+    spotsArray.filter((spot) => {
       if (spot.properties.images) spot.properties.images.map(image => imageIds.push(image.id));
     });
     return imageIds;
@@ -150,7 +150,7 @@ const useImages = () => {
       try {
         const selectionLimitNumber = Platform.OS === 'ios' ? 10 : 0;
         dispatch(setLoadingStatus({view: 'home', bool: true}));
-        launchImageLibrary({selectionLimit: selectionLimitNumber}, async response => {
+        launchImageLibrary({selectionLimit: selectionLimitNumber}, async (response) => {
           console.log('RES', response);
           if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
           else if (response.errorCode === 'others') {
@@ -160,7 +160,7 @@ const useImages = () => {
           else {
             let imageAsset = response.assets;
             await Promise.all(
-              imageAsset.map(async image => {
+              imageAsset.map(async (image) => {
                 imageCount++;
                 const resizedImage = await resizeImageIfNecessary(image);
                 const savedPhoto = await saveFile(resizedImage);

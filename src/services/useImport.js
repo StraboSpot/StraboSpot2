@@ -41,13 +41,13 @@ const useImport = () => {
         if (fileEntries) {
           dispatch(addedStatusMessage('Importing maps...'));
           await Promise.all(
-            fileEntries.map(async fileEntry => {
+            fileEntries.map(async (fileEntry) => {
               const source = APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps/' + fileEntry;
               const dest = APP_DIRECTORIES.TILE_ZIP + fileEntry;
               await RNFS.copyFile(source, dest).then(() => {
                 console.log(`File ${fileEntry} Copied`);
               })
-                .catch(async err => {
+                .catch(async (err) => {
                   console.error('Error copying maps.', err);
                   await RNFS.unlink(dest);
                   console.log(`${fileEntry} removed`);
@@ -133,7 +133,7 @@ const useImport = () => {
         const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_ZIP);
         console.log(fileEntries);
         await Promise.all(
-          fileEntries.map(async file => {
+          fileEntries.map(async (file) => {
             const fileExtension = file.substring(file.lastIndexOf('.') + 1);
             if (fileExtension === 'zip') {
               const source = APP_DIRECTORIES.TILE_ZIP + file;
@@ -170,7 +170,7 @@ const useImport = () => {
   const moveFiles = async (dataFile, zipId) => {
     console.log(dataFile.mapNamesDb);
     await Promise.all(
-      Object.values(dataFile.mapNamesDb).map(async map => {
+      Object.values(dataFile.mapNamesDb).map(async (map) => {
         const checkSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
         if (checkSuccess) {
           console.log('dir exists');
@@ -189,7 +189,7 @@ const useImport = () => {
 
   const moveTile = async (tileArray, zipId, map) => {
     await Promise.all(
-      tileArray.map(async tile => {
+      tileArray.map(async (tile) => {
         fileCount++;
         const fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
         if (!fileExists) {
@@ -240,7 +240,7 @@ const useImport = () => {
         console.log(imageFiles);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         if (!isEmpty(imageFiles)) {
-          imageFiles.map(async image => {
+          imageFiles.map(async (image) => {
             await RNFS.copyFile(APP_DIRECTORIES.BACKUP_DIR
               + fileName + '/Images/' + image, APP_DIRECTORIES.IMAGES + image);
           });
@@ -265,7 +265,7 @@ const useImport = () => {
   const readDeviceJSONFile = async (fileName) => {
     const dataFile = '/data.json';
     return await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile).then(
-      response => {
+      (response) => {
         return Promise.resolve(JSON.parse(response));
       }, () => {
         batch(() => {

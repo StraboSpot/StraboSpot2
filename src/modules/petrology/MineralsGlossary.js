@@ -57,7 +57,7 @@ const MineralsGlossary = (props) => {
   const renderMineralList = () => {
     return (
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
-        {glossaryChunked.map((glossaryChunk) => (
+        {glossaryChunked.map(glossaryChunk => (
           <View style={{flex: 1}}>
             {glossaryChunk.map(mineralInfo => (
               <Button

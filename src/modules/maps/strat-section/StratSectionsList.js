@@ -42,7 +42,7 @@ const StratSectionsList = () => {
   return (
     <View style={{flex: 1}}>
       <FlatList
-        keyExtractor={(spot) => spot.properties.id.toString()}
+        keyExtractor={spot => spot.properties.id.toString()}
         data={spotsWithStratSection}
         renderItem={({item}) => renderStratSectionItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

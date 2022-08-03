@@ -67,7 +67,7 @@ const ThreeDStructuresPage = (props) => {
   };
 
   const render3dStructure = (threeDStructure) => {
-    return <ThreeDStructureItem item={threeDStructure} edit3dStructure={(item) => edit3dStructure((item))}/>;
+    return <ThreeDStructureItem item={threeDStructure} edit3dStructure={item => edit3dStructure((item))}/>;
   };
 
   const renderSectionHeader = (sectionTitle) => {

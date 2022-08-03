@@ -21,11 +21,11 @@ const ManualMeasurement = (props) => {
     <React.Fragment>
       <Formik
         initialValues={{}}
-        onSubmit={(values) => console.log('Submitting form...', values)}
+        onSubmit={values => console.log('Submitting form...', values)}
         innerRef={manualFormRef}
         enableReinitialize={true}
       >
-        {(formProps) => (
+        {formProps => (
           <View>
             {props.measurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) && (
               <React.Fragment>

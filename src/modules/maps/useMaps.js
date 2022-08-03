@@ -49,7 +49,7 @@ const useMaps = (mapRef) => {
     console.log('UE useMaps [isMainMenuPanelVisible]', isMainMenuPanelVisible);
   }, [isMainMenuPanelVisible]);
 
-  const buildStyleURL = map => {
+  const buildStyleURL = (map) => {
     let tileURL;
     let mapID = map.id;
     if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
@@ -129,13 +129,13 @@ const useMaps = (mapRef) => {
     }
     else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiLineString') {
       feature.geometry.coordinates = feature.geometry.coordinates.map((lineCoords) => {
-        return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+        return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
       });
     }
     else if (feature.geometry.type === 'MultiPolygon') {
       feature.geometry.coordinates = feature.geometry.coordinates.map((polygonCoords) => {
         return polygonCoords.map((lineCoords) => {
-          return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+          return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
         });
       });
     }
@@ -145,7 +145,7 @@ const useMaps = (mapRef) => {
         return {
           type: geometry.type,
           coordinates: geometry.coordinates.map((lineCoords) => {
-            return lineCoords.map((pointCoords) => proj4(fromProjection, toProjection, pointCoords));
+            return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
           }),
         };
       });
@@ -234,7 +234,7 @@ const useMaps = (mapRef) => {
             console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
             resolve(position.coords);
           },
-          (error) => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
+          error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
           geolocationOptions,
         );
       })
@@ -388,12 +388,12 @@ const useMaps = (mapRef) => {
   // Spots with mulitple measurements become mulitple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
     let mappedFeatures = [];
-    spotsToFeatures.map(spot => {
+    spotsToFeatures.map((spot) => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && spot.properties.orientation_data) {
         spot.properties.orientation_data.map((orientation, i) => {
           const feature = JSON.parse(JSON.stringify(spot));
           delete feature.properties.orientation_data;
-          orientation.associated_orientation && orientation.associated_orientation.map(associatedOrientation => {
+          orientation.associated_orientation && orientation.associated_orientation.map((associatedOrientation) => {
             feature.properties.orientation = associatedOrientation;
             mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
           });
@@ -493,9 +493,9 @@ const useMaps = (mapRef) => {
     return !feature.properties.image_basemap && !feature.properties.strat_section_id;
   };
 
-  const isOnImageBasemap = (feature) => feature.properties?.image_basemap;
+  const isOnImageBasemap = feature => feature.properties?.image_basemap;
 
-  const isOnStratSection = (feature) => feature.properties?.strat_section_id;
+  const isOnStratSection = feature => feature.properties?.strat_section_id;
 
   const saveCustomMap = async (map) => {
     let mapId = map.id;
@@ -551,7 +551,7 @@ const useMaps = (mapRef) => {
       if (!mapId) mapId = 'mapbox.outdoors';
       newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);
       if (newBasemap === undefined) {
-        newBasemap = await Object.values(customMaps).find(basemap => {
+        newBasemap = await Object.values(customMaps).find((basemap) => {
           console.log(basemap);
           return basemap.id === mapId;
         });

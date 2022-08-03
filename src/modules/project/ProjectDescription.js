@@ -85,9 +85,9 @@ const ProjectDescription = (props) => {
         <View style={{flex: 2}}>
           <Formik
             innerRef={formRef}
-            onSubmit={(values) => console.log('Submitting form...', values)}
-            validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            component={(formProps) => Form({formName: formName, ...formProps})}
+            onSubmit={values => console.log('Submitting form...', values)}
+            validate={values => useForm.validateForm({formName: formName, values: values})}
+            component={formProps => Form({formName: formName, ...formProps})}
             initialValues={projectDescription}
             validateOnChange={true}
             enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
@@ -100,7 +100,7 @@ const ProjectDescription = (props) => {
             onSubmit={() => console.log('Submitting form project preferences...')}
             innerRef={publicRef}
           >
-            {(formProps) =>
+            {formProps =>
               <View>
                 <SectionDivider dividerText={'Privacy Settings'}/>
                 <ListItem>
@@ -109,7 +109,7 @@ const ProjectDescription = (props) => {
                   </ListItem.Content>
                   <Switch
                     value={formProps.values.public}
-                    onValueChange={(bool) => formProps.setFieldValue('public', bool)}/>
+                    onValueChange={bool => formProps.setFieldValue('public', bool)}/>
                 </ListItem>
                 <View style={{paddingBottom: 15}}>
                   <Text style={{padding: 10}}>Datasets that are made public can be accessed by anyone at

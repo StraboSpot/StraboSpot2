@@ -74,7 +74,7 @@ const SaveMapsModal = (props) => {
         setZoomLevels(initialZoom);
       });
 
-      props.map.getExtentString().then(ex => {
+      props.map.getExtentString().then((ex) => {
         setExtentString(ex);
       });
     }
@@ -107,7 +107,7 @@ const SaveMapsModal = (props) => {
     }
   };
 
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const doUnzip = async () => {
     try {
@@ -271,11 +271,11 @@ const SaveMapsModal = (props) => {
                 <Picker
                   mode={'dropdown'}
                   prompt={'Select a zoom level'}
-                  onValueChange={(value) => updatePicker(value)}
+                  onValueChange={value => updatePicker(value)}
                   selectedValue={downloadZoom}
                   style={Platform.OS === 'ios' ? styles.pickerIOS : styles.pickerAndroid}
                 >
-                  {zoomLevels.map(zoom => {
+                  {zoomLevels.map((zoom) => {
                     return (
                       <Picker.Item
                         style={{width: 100}}
@@ -339,7 +339,7 @@ const SaveMapsModal = (props) => {
                 <View>
                   {isLoadingCircle
                     ? <ActivityIndicator size={'large'} color={themes.BLACK}/>
-                     : (
+                    : (
                       <Button
                         onPress={() => saveMap()}
                         type={'clear'}

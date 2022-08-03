@@ -88,7 +88,7 @@ const ImagesOverview = () => {
                 alignItems: 'center',
               }}>
               <Switch
-                onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
+                onValueChange={annotated => useImages.setAnnotation(image, annotated)}
                 value={image.annotated}
               />
               <Text style={{textAlign: 'left', paddingLeft: 5}}>Use as Image Basemap?</Text>
@@ -104,7 +104,7 @@ const ImagesOverview = () => {
       <FlatList
         data={images}
         renderItem={({item}) => renderImage(item)}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
         ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
       />
     );

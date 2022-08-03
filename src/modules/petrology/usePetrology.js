@@ -114,7 +114,7 @@ const usePetrology = () => {
   const savePetFeatureValuesFromTemplates = (key, spot, activeTemplates) => {
     let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
     if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
-    activeTemplates.forEach((t) => editedPetData[key].push({...t.values, id: getNewId()}));
+    activeTemplates.forEach(t => editedPetData[key].push({...t.values, id: getNewId()}));
     console.log('editedPetData', editedPetData);
     dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
   };

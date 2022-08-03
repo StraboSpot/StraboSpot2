@@ -100,7 +100,7 @@ const SignUp = (props) => {
     console.log('IsConnected in SignUp', isOnline);
   }, [isOnline]);
 
-  const handleKeyboardDidShowSignUp = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardDidShowSignUp = event => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
   const handleKeyboardDidHideSignUp = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 

@@ -13,7 +13,7 @@ import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
-const MyStraboSpot = props => {
+const MyStraboSpot = (props) => {
     const [showSection, setShowSection] = useState('none');
 
     const useDevice = useDeviceHook();

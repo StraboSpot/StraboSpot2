@@ -26,7 +26,7 @@ const Nesting = () => {
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   ));
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const spots = useSelector((state) => state.spot.spots);
+  const spots = useSelector(state => state.spot.spots);
   const [parentGenerations, setParentGenerations] = useState();
   const [childrenGenerations, setChildrenGenerations] = useState();
 
@@ -128,7 +128,7 @@ const Nesting = () => {
         <View>
           <FlatList
             listKey={type}
-            keyExtractor={(item) => item.toString()}
+            keyExtractor={item => item.toString()}
             data={type === 'Parents' ? generationData.reverse() : generationData}
             renderItem={({item, index}) => renderGeneration(type, item, index, generationData.length)}
           />
@@ -141,7 +141,7 @@ const Nesting = () => {
     return (
       <FlatList
         listKey={type + i + b}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         data={group}
         renderItem={({item}) => renderName(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
@@ -149,7 +149,7 @@ const Nesting = () => {
     );
   };
 
-  const renderSelf = self => {
+  const renderSelf = (self) => {
     return (
       <View style={{borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black'}}>
         {renderItem(self)}
@@ -173,7 +173,7 @@ const Nesting = () => {
       <FlatList
         ListHeaderComponent={renderGenerations('Parents')}
         ListFooterComponent={renderGenerations('Children')}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         data={[selectedSpot]}
         renderItem={({item}) => renderSelf(item)}
       />

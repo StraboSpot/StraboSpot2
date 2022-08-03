@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button, Card, Icon} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -11,7 +12,6 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {useToast} from 'react-native-toast-notifications';
 
 const ImagesViewPage = (props) => {
   const navigation = useNavigation();
@@ -32,7 +32,7 @@ const ImagesViewPage = (props) => {
 
   const getImagesFromCameraRoll = async () => {
     useImages.getImagesFromCameraRoll().then((res) => {
-      console.log(res)
+      console.log(res);
       toast.show(`${res} image saved!`,
         {
           type: 'success',
@@ -87,7 +87,7 @@ const ImagesViewPage = (props) => {
           <Text style={{fontSize: 14, textAlign: 'left'}}>Image as {'\n'}Basemap?</Text>
           <Switch
             style={{height: 20}}
-            onValueChange={(annotated) => useImages.setAnnotation(image, annotated)}
+            onValueChange={annotated => useImages.setAnnotation(image, annotated)}
             value={image.annotated}
           />
         </View>

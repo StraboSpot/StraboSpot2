@@ -55,7 +55,7 @@ const getMeasurementSurveyForBulkInput = (form) => {
 
 // Modify Sed Lithology form to use in Sed Rocks page
 const getSedimentaryRockForm = () => {
-  const modifiedSurvey = sedLithologiesLithology.survey.map(f => {
+  const modifiedSurvey = sedLithologiesLithology.survey.map((f) => {
     if (f.name === 'group_dh9oi63') return {...f, label: 'Sedimentary Rock'};
     else if (f.name === 'primary_lithology') return {...f, label: 'Sedimentary Rock Type'};
     else return f;

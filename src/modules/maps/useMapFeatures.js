@@ -19,7 +19,7 @@ const useMapFeatures = (props) => {
     let selectedSpots;
     try {
       const selectedFeaturesIds = [];
-      features.forEach(feature => {
+      features.forEach((feature) => {
         if (feature.geometry.type !== 'GeometryCollection' && (turf.booleanWithin(feature, drawnPolygon)
           || (feature.geometry.type === 'LineString' && turf.lineIntersect(feature, drawnPolygon).features.length > 0)
           || (feature.geometry.type === 'Polygon' && turf.booleanOverlap(feature, drawnPolygon)))) {
@@ -75,24 +75,24 @@ const useMapFeatures = (props) => {
     let lines = [];
     let out = [];
 
-    spots.forEach(spot => {
+    spots.forEach((spot) => {
       const longitude = spot.geometry.type === 'Point' ? spot.geometry?.coordinates?.[0] : 999;
       const latitude = spot.geometry.type === 'Point' ? spot.geometry?.coordinates?.[1] : 99;
       let geologist = user.name;
       let associatedObs = [];
       let spotOrientations = [];
-      let horizontalAccuracy = spot.properties.gps_accuracy ? spot.properties.gps_accuracy.toFixed(4) : 0
-      let elevation = spot.properties.altitude ? spot.properties.altitude.toFixed(4) : 0
+      let horizontalAccuracy = spot.properties.gps_accuracy ? spot.properties.gps_accuracy.toFixed(4) : 0;
+      let elevation = spot.properties.altitude ? spot.properties.altitude.toFixed(4) : 0;
       let altitudeAccuracy = spot.properties.altitude_accuracy ? spot.properties.altitude_accuracy.toFixed(4) : 0;
       const d = getTimeAndDateFromModifiedTimestamp(spot.properties.modified_timestamp);
 
       // Gather individual orientation data measurements.
       if (spot.properties.orientation_data) {
-        spot.properties.orientation_data.forEach(od => {
+        spot.properties.orientation_data.forEach((od) => {
           spotOrientations.push(od);
           associatedObs.push(od.associated_orientation?.length || 0);
           if (od.associated_orientation) {
-            od.associated_orientation.forEach(ao => {
+            od.associated_orientation.forEach((ao) => {
               spotOrientations.push(ao);
               associatedObs.push(0);
             });
@@ -156,14 +156,14 @@ const useMapFeatures = (props) => {
       let recordNum = 1;
       out.push(headers.join('\t'));
       if (planes.length > 0) {
-        planes.forEach(plane => {
+        planes.forEach((plane) => {
           plane[0] = recordNum;
           out.push(plane.join('\t'));
           recordNum++;
         });
       }
       if (lines.length > 0) {
-        lines.forEach(line => {
+        lines.forEach((line) => {
           line[0] = recordNum;
           out.push(line.join('\t'));
           recordNum++;

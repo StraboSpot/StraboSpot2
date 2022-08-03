@@ -10,7 +10,7 @@ import {formStyles, useFormHook} from '../form';
 const MainButtons = (props) => {
   const [useForm] = useFormHook();
 
-  const mainButttonsText = (key) => (
+  const mainButttonsText = key => (
     <View style={{flex: 1, alignItems: 'center'}}>
       <Text
         style={props.formProps?.values[key] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>

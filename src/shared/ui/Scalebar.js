@@ -1,6 +1,8 @@
-import React from 'react'
-import {View, Text} from 'react-native';
+import React from 'react';
+import {Text} from 'react-native';
+
 import RNScalebar from 'react-native-map-scale-bar';
+
 import homeStyles from '../../modules/home/home.style';
 
 const ScaleBarAndZoom = (props) => {
@@ -22,7 +24,7 @@ const ScaleBarAndZoom = (props) => {
         {props.currentZoom}
       </Text>
     </>
-  )
-}
+  );
+};
 
 export default ScaleBarAndZoom;

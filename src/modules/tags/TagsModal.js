@@ -70,8 +70,8 @@ const TagsModal = (props) => {
   const save = async () => {
     let tagsToUpdate = [];
     if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
-      useMaps.setPointAtCurrentLocation().then(spot => {
-        checkedTagsTemp.map(tag => {
+      useMaps.setPointAtCurrentLocation().then((spot) => {
+        checkedTagsTemp.map((tag) => {
           if (isEmpty(tag.spots)) tag.spots = [];
           tag.spots.push(spot.properties.id);
           tagsToUpdate.push(tag);
@@ -92,15 +92,15 @@ const TagsModal = (props) => {
           && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && (
             <Formik
               initialValues={{}}
-              validate={(fieldValues) => setSearchText(fieldValues.searchText)}
-              onSubmit={(values) => console.log('Submitting form...', values)}
+              validate={fieldValues => setSearchText(fieldValues.searchText)}
+              onSubmit={values => console.log('Submitting form...', values)}
               innerRef={formRef}
             >
               {() => (
                 <ListItem containerStyle={commonStyles.listItemFormField}>
                   <ListItem.Content>
                     <Field
-                      component={(formProps) => (
+                      component={formProps => (
                         SelectInputField(
                           {setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
                       )}

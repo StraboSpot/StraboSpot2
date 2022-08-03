@@ -70,7 +70,7 @@ const useStratSectionCalculations = (props) => {
       }
 
       const geometries = [];
-      polyCoords.forEach(polyCoord => {
+      polyCoords.forEach((polyCoord) => {
         geometries.push({
           'type': 'Polygon',
           'coordinates': [polyCoord],
@@ -111,7 +111,7 @@ const useStratSectionCalculations = (props) => {
       || character === 'package_succe')) {
       // Weathering Column
       if (stratSection.column_profile === 'weathering_pro') {
-        i = SED_LABEL_DICTIONARY.weathering.findIndex(weatheringOption => {
+        i = SED_LABEL_DICTIONARY.weathering.findIndex((weatheringOption) => {
           return weatheringOption.name === lithologies[n].relative_resistance_weather;
         });
         intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
@@ -131,14 +131,14 @@ const useStratSectionCalculations = (props) => {
       // Primary Lithology = limestone or dolostone
       else if ((lithologies[n].primary_lithology === 'limestone' || lithologies[n].primary_lithology === 'dolostone')
         && lithologies[n].dunham_classification) {
-        i = SED_LABEL_DICTIONARY.carbonate.findIndex(grainSizeOption => {
+        i = SED_LABEL_DICTIONARY.carbonate.findIndex((grainSizeOption) => {
           return grainSizeOption.name === lithologies[n].dunham_classification;
         });
         intervalWidth = i === -1 ? defaultWidth : (i + 2.33) * xInterval;
       }
       // Other Lithologies
       else if (lithologies[n].primary_lithology) {
-        i = SED_LABEL_DICTIONARY.lithologies.findIndex(grainSizeOption => {
+        i = SED_LABEL_DICTIONARY.lithologies.findIndex((grainSizeOption) => {
           return grainSizeOption.name === lithologies[n].primary_lithology;
         });
         i = i - 3; // First 3 indexes are siliciclastic, limestone & dolostone which are handled above

@@ -48,7 +48,7 @@ const useServerRequests = () => {
       const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
         method: method,
         headers: {
-          Authorization: 'Basic ' + login + '/',
+          'Authorization': 'Basic ' + login + '/',
           'Content-Type': 'application/json',
         },
         // body: JSON.stringify({data: data}),
@@ -69,7 +69,7 @@ const useServerRequests = () => {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          Authorization: 'Basic ' + login,
+          'Authorization': 'Basic ' + login,
           'Content-Type': 'application/json',
         },
       });
@@ -178,7 +178,7 @@ const useServerRequests = () => {
     }
   };
 
-  const handleResponse = response => {
+  const handleResponse = (response) => {
     if (response.ok && response.status === 204) return response.text();
     else if (response.ok) return response.json();
     else return handleError(response);

@@ -38,7 +38,7 @@ const UserProfile = (props) => {
 
   const pickImageSource = async (source) => {
     if (source === 'gallery') {
-      launchImageLibrary({}, async response => {
+      launchImageLibrary({}, async (response) => {
         console.log('Profile Image', response);
         if (response.didCancel) return;
         if (response) setAvatar(response.assets[0]);
@@ -65,7 +65,7 @@ const UserProfile = (props) => {
     }
     dispatch(setUserData(newValues));
     if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
-    else props.toast('Not connected to internet to upload profile changes', 'noWifi')
+    else props.toast('Not connected to internet to upload profile changes', 'noWifi');
   };
 
   const saveImage = async () => {
@@ -175,9 +175,9 @@ const UserProfile = (props) => {
         <View style={{flex: 1}}>
           <Formik
             innerRef={formRef}
-            onSubmit={(values) => console.log('Submitting form...', values)}
-            validate={(values) => useForm.validateForm({formName: formName, values: values})}
-            component={(formProps) => Form({formName: formName, ...formProps})}
+            onSubmit={values => console.log('Submitting form...', values)}
+            validate={values => useForm.validateForm({formName: formName, values: values})}
+            component={formProps => Form({formName: formName, ...formProps})}
             initialValues={userData}
             validateOnChange={true}
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented

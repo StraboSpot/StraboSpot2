@@ -114,7 +114,9 @@ const Compass = (props) => {
         const unixTimestamp = Date.now();
         console.log('Compass measurements', compassData, sliderValue);
         if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
-        else if (props.setMeasurements) props.setMeasurements({...compassData, quality: sliderValue.toString(), unix_timestamp: unixTimestamp});
+        else if (props.setMeasurements) {
+          props.setMeasurements({...compassData, quality: sliderValue.toString(), unix_timestamp: unixTimestamp});
+        }
         else {
           dispatch(setCompassMeasurements(compassData.quality ? compassData
             : {...compassData, quality: sliderValue.toString()}));
@@ -134,7 +136,7 @@ const Compass = (props) => {
     }
   };
 
-  const matrixRotation = res => {
+  const matrixRotation = (res) => {
     if (res) {
       setCompassData({
         heading: res.heading,
@@ -277,7 +279,7 @@ const Compass = (props) => {
       <View style={compassStyles.sliderContainer}>
         <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
         <Slider
-          onSlidingComplete={(value) => setSliderValue(value)}
+          onSlidingComplete={value => setSliderValue(value)}
           value={sliderValue}
           step={1}
           maximumValue={5}

@@ -239,7 +239,7 @@ const AddCustomMaps = () => {
             <View style={{flex: 2}}>
               <Slider
                 value={editableCustomMapData && editableCustomMapData.opacity}
-                onValueChange={(val) => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                onValueChange={val => setEditableCustomMapData(e => ({...e, opacity: val}))}
                 maximumValue={1}
                 minimumValue={0.05}
                 step={0.05}

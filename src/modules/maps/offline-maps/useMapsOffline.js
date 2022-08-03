@@ -128,7 +128,7 @@ const useMapsOffline = () => {
         maxZoom = 14;
       }
 
-      entries.map(entry => {
+      entries.map((entry) => {
         const parts = entry.replace('.png', '').split('_');
         const z = Number(parts[0]);
         const x = Number(parts[1]);
@@ -335,7 +335,7 @@ const useMapsOffline = () => {
         currentOfflineMaps = [];
       }
 
-      const customMap = Object.values(customMaps).filter(map => {
+      const customMap = Object.values(customMaps).filter((map) => {
         const customMapID = map.source === 'mapbox_styles' ? map.id.split('/')[1] : map.id;
         return mapID === customMapID;
       });
@@ -357,7 +357,7 @@ const useMapsOffline = () => {
       const files = await useDevice.readDirectoryForMapFiles();
       console.log('B Map Tiles', files);
       if (!isEmpty(files)) {
-        files.map(async file => {
+        files.map(async (file) => {
           const isMapInRedux = Object.keys(offlineMaps).includes(file);
           console.log(isMapInRedux);
           if (isMapInRedux) {

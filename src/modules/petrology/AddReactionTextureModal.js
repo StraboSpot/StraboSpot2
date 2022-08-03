@@ -55,7 +55,7 @@ const AddReactionTextureModal = (props) => {
 
     // Remove relevant values
     const relevantFields = useForm.getRelevantFields(survey, fieldKey);
-    relevantFields.map(f => {
+    relevantFields.map((f) => {
       if (f.name !== fieldKey && formRef.current?.values[f.name]) formRef.current?.setFieldValue(f.name, undefined);
     });
   };
@@ -75,9 +75,9 @@ const AddReactionTextureModal = (props) => {
                 <Formik
                   innerRef={formRef}
                   initialValues={{id: getNewId()}}
-                  onSubmit={(values) => console.log('Submitting form...', values)}
+                  onSubmit={values => console.log('Submitting form...', values)}
                 >
-                  {(formProps) => (
+                  {formProps => (
                     <View style={{flex: 1}}>
                       {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
                     </View>
@@ -108,7 +108,7 @@ const AddReactionTextureModal = (props) => {
           survey={survey}
           choices={choices}
           formProps={formProps}
-          onPress={(choice) => onMultiChoiceSelected(basedOnKey, choice)}
+          onPress={choice => onMultiChoiceSelected(basedOnKey, choice)}
         />
         {!isEmpty(formRef.current?.values[basedOnKey]) && formRef.current?.values[basedOnKey].includes('other') && (
           <React.Fragment>

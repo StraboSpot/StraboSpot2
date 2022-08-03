@@ -15,7 +15,7 @@ const FoldGeometryChoices = (props) => {
     props.formProps.setValues(updatedFormData);
   };
 
-  return FOLD_GEOMETRY_KEYS.map(key => {
+  return FOLD_GEOMETRY_KEYS.map((key) => {
     const foldGeometryField = useForm.getRelevantFields(props.survey, key)[0];
     const foldGeometryChoices = useForm.getChoicesByKey(props.survey, props.choices, key);
     return (
@@ -26,7 +26,7 @@ const FoldGeometryChoices = (props) => {
           </View>
         )}
         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
-          {foldGeometryChoices.map(c => {
+          {foldGeometryChoices.map((c) => {
             return (
               FOLD_ICONS[key] && FOLD_ICONS[key].DEFAULT && FOLD_ICONS[key].DEFAULT[c.name] && FOLD_ICONS[key].PRESSED
               && FOLD_ICONS[key].PRESSED[c.name] && (

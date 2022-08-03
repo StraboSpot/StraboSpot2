@@ -13,7 +13,7 @@ const MineralsByRockClass = (props) => {
         <View style={{flex: 1, flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'flex-start'}}>
             <SectionDivider dividerText={'Plutonic'}/>
-            {MINERALS_BY_CLASS.plutonic.map((mineral) => (
+            {MINERALS_BY_CLASS.plutonic.map(mineral => (
               <Button
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
@@ -24,7 +24,7 @@ const MineralsByRockClass = (props) => {
           </View>
           <View style={{flex: 1, alignItems: 'flex-start'}}>
             <SectionDivider dividerText={'Metamorphic'}/>
-            {MINERALS_BY_CLASS.metamorphic.map((mineral) => (
+            {MINERALS_BY_CLASS.metamorphic.map(mineral => (
               <Button
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
@@ -37,7 +37,7 @@ const MineralsByRockClass = (props) => {
         <View style={{flex: 1, flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'flex-start'}}>
             <SectionDivider dividerText={'Volcanic'}/>
-            {MINERALS_BY_CLASS.volcanic.map((mineral) => (
+            {MINERALS_BY_CLASS.volcanic.map(mineral => (
               <Button
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
@@ -48,7 +48,7 @@ const MineralsByRockClass = (props) => {
           </View>
           <View style={{flex: 1, alignItems: 'flex-start'}}>
             <SectionDivider dividerText={'Alteration, Ore'}/>
-            {MINERALS_BY_CLASS.alteration_ore.map((mineral) => (
+            {MINERALS_BY_CLASS.alteration_ore.map(mineral => (
               <Button
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}

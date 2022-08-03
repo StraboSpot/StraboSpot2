@@ -127,8 +127,8 @@ const BasicPageDetail = (props) => {
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
-          validate={(values) => useForm.validateForm({formName: formName, values: values})}
-          children={(formProps) => (
+          validate={values => useForm.validateForm({formName: formName, values: values})}
+          children={formProps => (
             <Form {...{
               ...formProps,
               formName: formName,

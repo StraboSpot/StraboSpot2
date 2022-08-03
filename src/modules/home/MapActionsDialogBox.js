@@ -10,7 +10,7 @@ import styles from './dialog.styles';
 
 const slideAnimation = new ScaleAnimation({useNativeDriver: true});
 
-const MapActionsDialog = props => {
+const MapActionsDialog = (props) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const isOnline = useSelector(state => state.home.isOnline);

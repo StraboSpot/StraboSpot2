@@ -5,7 +5,7 @@ import {setLoadingStatus} from './home.slice';
 const useHome = () => {
   const dispatch = useDispatch();
 
-  const toggleLoading = bool => {
+  const toggleLoading = (bool) => {
     dispatch(setLoadingStatus({view: 'home', bool: bool}));
   };
 

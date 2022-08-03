@@ -19,7 +19,7 @@ const AddRemoveTagFeatures = () => {
   const [useSpots] = useSpotsHook();
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
-  const selectedTag = useSelector((state) => state.project.selectedTag);
+  const selectedTag = useSelector(state => state.project.selectedTag);
 
   const renderSpotFeatureItem = (feature) => {
     const spotId = feature.parentSpotId;

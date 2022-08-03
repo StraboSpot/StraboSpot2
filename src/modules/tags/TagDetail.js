@@ -70,7 +70,7 @@ const TagDetail = (props) => {
     return (
       <FlatList
         listKey={2}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         data={useTags.getAllTaggedFeatures(selectedTag)}
         renderItem={({item}) => renderSpotFeatureItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
@@ -96,7 +96,7 @@ const TagDetail = (props) => {
           />
           <FlatList
             listKey={1}
-            keyExtractor={(item) => item.toString()}
+            keyExtractor={item => item.toString()}
             data={selectedTag.spots && selectedTag.spots.filter(spotId => spots[spotId])}
             renderItem={({item}) => renderSpotItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}

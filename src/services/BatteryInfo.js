@@ -5,7 +5,6 @@ import {useBatteryLevel, usePowerState} from 'react-native-device-info';
 import {Icon} from 'react-native-elements';
 
 import homeStyles from '../modules/home/home.style';
-import {roundToDecimalPlaces, toNumberFixedValue} from '../shared/Helpers';
 import uiStyles from '../shared/ui/ui.styles';
 
 const BatteryInfo = () => {

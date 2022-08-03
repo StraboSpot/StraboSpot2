@@ -55,7 +55,7 @@ const NotebookPanel = (props) => {
     dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
 
-  const handleKeyboardDidShowNotebook = (event) => Helpers.handleKeyboardDidShow(event, TextInputState,
+  const handleKeyboardDidShowNotebook = event => Helpers.handleKeyboardDidShow(event, TextInputState,
     textInputAnimate);
 
   const handleKeyboardDidHideNotebook = () => Helpers.handleKeyboardDidHide(textInputAnimate);
@@ -113,7 +113,7 @@ const NotebookPanel = (props) => {
       <View style={notebookStyles.centerContainer}>
         <SectionDivider dividerText={'Recent Spots'}/>
         <FlatList
-          keyExtractor={(item) => item.properties.id.toString()}
+          keyExtractor={item => item.properties.id.toString()}
           data={spotsList}
           renderItem={({item}) => (
             <SpotsListItem

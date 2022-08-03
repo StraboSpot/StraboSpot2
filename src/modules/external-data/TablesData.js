@@ -110,7 +110,7 @@ function TablesData(props) {
         : (
           <FlatList
             listKey={'tables'}
-            keyExtractor={(index) => index}
+            keyExtractor={index => index}
             data={props.spot.properties?.data?.tables}
             renderItem={({item}) => renderTableListItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}

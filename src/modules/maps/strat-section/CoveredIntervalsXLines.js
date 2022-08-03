@@ -10,7 +10,7 @@ function CoveredIntervalsXLines(props) {
     const spotsX = props.spotsDisplayed.filter(
       s => s.properties?.sed?.character === 'unexposed_cove' || s.properties?.sed?.character === 'not_measured');
     const xLines = [];
-    spotsX.forEach(s => {
+    spotsX.forEach((s) => {
       const bbox = turf.bbox(s);
       const poly = turf.bboxPolygon(bbox);
       const coords = turf.getCoords(poly);

@@ -171,7 +171,7 @@ const AddIntervalModal = () => {
             <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>
                 <Field
-                  component={(formProps) => (
+                  component={formProps => (
                     SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
                   )}
                   name={'intervalToInsertAfter'}
@@ -185,7 +185,7 @@ const AddIntervalModal = () => {
             <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>
                 <Field
-                  component={(formProps) => (
+                  component={formProps => (
                     SelectInputField({setFieldValue: formProps.form.setFieldValue, ...formProps.field, ...formProps})
                   )}
                   name={'intervalToCopyId'}
@@ -217,8 +217,8 @@ const AddIntervalModal = () => {
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={(values) => useForm.validateForm({formName: formName, values: values})}
-        children={(formProps) => <Form {...{...formProps, formName: formName}}/>}
+        validate={values => useForm.validateForm({formName: formName, values: values})}
+        children={formProps => <Form {...{...formProps, formName: formName}}/>}
         initialValues={initialFormValues}
         initialStatus={{formName: formName}}
         enableReinitialize={true}

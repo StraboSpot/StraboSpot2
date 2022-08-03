@@ -165,7 +165,7 @@ const NotebookHeader = (props) => {
       <View style={headerStyles.headerSpotNameAndCoordsContainer}>
         <TextInput
           defaultValue={spot.properties.name}
-          onChangeText={(text) => onSpotEdit('name', text)}
+          onChangeText={text => onSpotEdit('name', text)}
           style={headerStyles.headerSpotName}/>
         {getSpotCoordText() ? renderCoordsText() : renderSetCoordsText()}
       </View>

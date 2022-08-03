@@ -120,7 +120,7 @@ const useDownload = () => {
         fromUrl: imageURI + imageId,
         toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
         begin: res => console.log('IMAGE DOWNLOAD HAS BEGUN', res.jobId),
-      }).promise.then(res => {
+      }).promise.then((res) => {
           console.log('Image Info', res);
           if (res.statusCode === 200) {
             imageCount++;
@@ -136,7 +136,7 @@ const useDownload = () => {
           }
         },
       )
-        .catch(err => {
+        .catch((err) => {
           console.error('ERR in RNFS.downloadFile', err);
         });
     }
@@ -220,7 +220,7 @@ const useDownload = () => {
         // Check path first, if doesn't exist, then create
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         await Promise.all(
-          neededImageIds.map(async imageId => {
+          neededImageIds.map(async (imageId) => {
             await downloadAndSaveImagesToDevice(imageId);
             imagesDownloadedCount++;
             savedImagesCount++;
@@ -266,7 +266,7 @@ const useDownload = () => {
   };
 
   const loadCustomMaps = (maps) => {
-    maps.map(map => {
+    maps.map((map) => {
       let mapId = map.id;
       // Pull out mapbox styles map id
       if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {

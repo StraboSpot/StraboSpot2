@@ -123,11 +123,11 @@ const AddFabricModal = (props) => {
                 <Formik
                   innerRef={formRef}
                   initialValues={{}}
-                  onSubmit={(values) => console.log('Submitting form...', values)}
-                  validate={(values) => useForm.validateForm({formName: formName, values: values})}
+                  onSubmit={values => console.log('Submitting form...', values)}
+                  validate={values => useForm.validateForm({formName: formName, values: values})}
                   validateOnChange={false}
                 >
-                  {(formProps) => (
+                  {formProps => (
                     <View style={{flex: 1}}>
                       {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
                     </View>

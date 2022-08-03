@@ -215,7 +215,7 @@ const MeasurementsPage = (props) => {
 
   const renderSections = () => {
     const sections = Object.values(SECTIONS).reduce((acc, {title, keys}) => {
-      const data = spot?.properties?.orientation_data?.filter(meas => {
+      const data = spot?.properties?.orientation_data?.filter((meas) => {
         return ((keys.length !== 3 && !meas.associated_orientation)
           || (keys.length === 3 && meas.associated_orientation)) && keys.includes(meas.type);
       }) || [];

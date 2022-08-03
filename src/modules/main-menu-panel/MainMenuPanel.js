@@ -29,7 +29,7 @@ import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 
-const MainMenuPanel = props => {
+const MainMenuPanel = (props) => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
@@ -113,7 +113,7 @@ const MainMenuPanel = props => {
           <SamplesMenuItem
             openSpotInNotebook={openSpotInNotebook}
             spotsInMapExtent={spotsInMapExtent}
-            openNotebookPanel={(notebookPage) => props.openNotebookPanel(notebookPage)}
+            openNotebookPanel={notebookPage => props.openNotebookPanel(notebookPage)}
           />
         </View>
       );
@@ -169,7 +169,7 @@ const MainMenuPanel = props => {
       page = (
         <View style={styles.mainMenuContainer}>
           <ShortcutMenu
-            toggleSwitch={(switchName) => toggleSwitch(switchName)}
+            toggleSwitch={switchName => toggleSwitch(switchName)}
             shortcutSwitchPosition={switchPosition}
           />
         </View>
@@ -205,7 +205,7 @@ const MainMenuPanel = props => {
       page = (
         <React.Fragment>
           <MainMenuPanelList
-            onPress={(name) => setVisibleMenu(name)}
+            onPress={name => setVisibleMenu(name)}
             activeProject={!isEmpty(project) && project.description ? project.description.project_name
               : 'No Active Project'}
           />

@@ -92,13 +92,13 @@ const Tags = (props) => {
     let tagsInMapExtent;
     const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
     if (props.type === PAGE_KEYS.GEOLOGIC_UNITS) {
-      tagsInMapExtent = tags.filter(tag => {
+      tagsInMapExtent = tags.filter((tag) => {
         return tag.spots && !isEmpty(
           tag.spots.find(spotId => spotIds.includes(spotId))) && tag.type === PAGE_KEYS.GEOLOGIC_UNITS;
       });
     }
     else {
-      tagsInMapExtent = tags.filter(tag => {
+      tagsInMapExtent = tags.filter((tag) => {
         return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
           && tag.type !== 'geologic_unit';
       });
@@ -107,7 +107,7 @@ const Tags = (props) => {
 
     return (
       <FlatList
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
         data={tagsInMapExtent}
         renderItem={({item}) => renderTag(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
@@ -147,7 +147,7 @@ const Tags = (props) => {
       {!isEmpty(tags) && (
         <ButtonGroup
           selectedIndex={selectedIndex}
-          onPress={(index) => setSelectedIndex(index)}
+          onPress={index => setSelectedIndex(index)}
           buttons={getButtonTitle()}
           containerStyle={{height: 50}}
           buttonStyle={{padding: 5}}
@@ -166,7 +166,7 @@ const Tags = (props) => {
             style={commonStyles.listItemTitle}>{'Continuous Tagging'}
           </ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={(value) => dispatch(setUseContinuousTagging(value))}
+        <Switch onValueChange={value => dispatch(setUseContinuousTagging(value))}
                 value={useContinuousTagging}/>
       </ListItem>
       {!isEmpty(tags) && (

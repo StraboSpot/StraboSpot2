@@ -123,7 +123,7 @@ const useForm = () => {
     console.log('Validating', formName, 'with', values);
     const errors = {};
 
-    getSurvey(formName).forEach(fieldModel => {
+    getSurvey(formName).forEach((fieldModel) => {
       const key = fieldModel.name;
       if (values[key] && typeof values[key] === 'string') values[key] = values[key].trim();
       if (isEmpty(values[key]) || !isRelevant(fieldModel, values)) delete values[key];

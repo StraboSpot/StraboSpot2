@@ -43,8 +43,8 @@ const NewProjectForm = (props) => {
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={(values) => useForm.validateForm({formName: formName, values: values})}
-        component={(formProps) => Form({formName: formName, ...formProps})}
+        validate={values => useForm.validateForm({formName: formName, values: values})}
+        component={formProps => Form({formName: formName, ...formProps})}
         initialValues={initialValues}
         initialStatus={{formName: formName}}
         enableReinitialize={false}

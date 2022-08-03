@@ -1,4 +1,5 @@
 import RNFS from 'react-native-fs';
+import {useToast} from 'react-native-toast-notifications';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
@@ -31,7 +32,6 @@ import {
   setSelectedDataset,
   setSelectedProject,
 } from './projects.slice';
-import { useToast } from "react-native-toast-notifications";
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const useProject = () => {
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
 
-  const addDataset = async name => {
+  const addDataset = async (name) => {
     const datasetObj = createDataset(name);
     await dispatch(addedDataset(datasetObj));
     console.log('Added datasets', datasets);
@@ -111,7 +111,7 @@ const useProject = () => {
       if (datasets && datasets[id] && datasets[id].spotIds) {
         let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
-        await Promise.all(datasets[id].spotIds.map(spotId => {
+        await Promise.all(datasets[id].spotIds.map((spotId) => {
             dispatch(deletedSpotIdFromDatasets(spotId));
             dispatch(deletedSpot(spotId));
             spotsDeletedCount++;
@@ -160,13 +160,13 @@ const useProject = () => {
   };
 
   const getAllDeviceProjects = async () => {
-    const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then(res => {
+    const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
       console.log('/StraboProjects exists:', res);
       if (res) {
-        return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then(files => {
+        return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
           let id = 0;
           if (!isEmpty(files)) {
-            const deviceFiles = files.map(file => {
+            const deviceFiles = files.map((file) => {
               return {id: id++, fileName: file};
             });
             return Promise.resolve({projects: deviceFiles});
@@ -194,7 +194,8 @@ const useProject = () => {
 
   const makeDatasetCurrent = (datasetId) => {
     const datasetName = datasets[datasetId].name;
-    const id = toast.show(`Selected Dataset has been switched to ${datasetName}!`, {type: 'warning', animationType: 'slide-in'})
+    const id = toast.show(`Selected Dataset has been switched to ${datasetName}!`,
+      {type: 'warning', animationType: 'slide-in'});
     toast.hideAll();
     dispatch(setSelectedDataset(datasetId));
   };

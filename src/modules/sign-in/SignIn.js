@@ -53,7 +53,7 @@ const SignIn = (props) => {
     };
   }, []);
 
-  const handleKeyboardDidShowSignIn = (event) => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
+  const handleKeyboardDidShowSignIn = event => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
 
   const handleKeyboardDidHideSignIn = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
@@ -73,7 +73,7 @@ const SignIn = (props) => {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
       // login with provider
       if (userAuthResponse?.valid === 'true') {
-        Sentry.configureScope(scope => {
+        Sentry.configureScope((scope) => {
           scope.setUser({'username': user.name, 'email': user.email});
         });
         const encodedLogin = Base64.encode(username + ':' + password);
