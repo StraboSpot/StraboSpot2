@@ -133,17 +133,19 @@ const homeStyles = StyleSheet.create({
   },
   currentZoomTextBlack: {
     color: themes.BLACK,
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '600',
     textShadowColor: themes.LIGHTGREY,
-    textShadowRadius: 5,
-    marginRight: 20,
+    textShadowRadius: 10,
+    marginLeft: 40,
   },
   currentZoomTextWhite: {
     color: themes.LIGHTGREY,
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '600',
     textShadowColor: themes.BLACK,
-    textShadowRadius: 5,
-    marginLeft: 10,
+    textShadowRadius: 10,
+    marginLeft: 40,
     },
   batteryLevelContainer: {
     alignItems: 'flex-end',
@@ -170,9 +172,10 @@ const homeStyles = StyleSheet.create({
     zIndex: 1,
     position: 'absolute',
     bottom: 35,
-    left: 70,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    left: '40%',
+    // flexDirection: 'row',
+    // alignItems: 'flex-end',
+    // backgroundColor: 'red'
   },
 });
 

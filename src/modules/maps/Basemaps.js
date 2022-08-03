@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import ScaleBar from 'react-native-map-scale-bar';
+import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
@@ -112,11 +112,7 @@ function Basemap(props) {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <Text style={props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
-            : homeStyles.currentZoomTextBlack}>
-            Zoom: {currentZoom}
-          </Text>
-          <ScaleBar zoom={currentZoom} latitude={center[1]}/>
+            <ScaleBarAndZoom zoom={currentZoom} latitude={center[1]} currentZoom={currentZoom} basemap={props.basemap}/>
         </View>
       )}
       <MapboxGL.MapView
