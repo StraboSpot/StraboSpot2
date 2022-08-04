@@ -48,8 +48,10 @@ const BaseMapDialog = (props) => {
     let mapsToDisplay = BASEMAPS;
     if (!isOnline.isInternetReachable) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
-        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
-          ? [...acc, offlineMap] : acc;
+        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors'
+        || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
+          ? [...acc, offlineMap]
+          : acc;
       }, []);
       sectionTitle = 'Offline Default Basemaps';
     }
@@ -72,7 +74,8 @@ const BaseMapDialog = (props) => {
     let customMapsToDisplay = Object.values(customMaps).filter(customMap => !customMap.overlay);
     if (!isOnline.isInternetReachable) {
       customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
-        if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm' && map.id !== 'macrostrat') return offlineMaps[map.id];
+        if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm'
+          && map.id !== 'macrostrat') return offlineMaps[map.id];
       });
       sectionTitle = 'Offline Custom Basemaps';
     }

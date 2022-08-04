@@ -10,7 +10,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {TERNARY_MINERALS} from './petrology.constants';
 
-const TernaryPage = (props) => {
+const TernaryPage = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const gatherTernaryValues = () => {

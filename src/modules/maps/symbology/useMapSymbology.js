@@ -4,7 +4,7 @@ import {hexToRgb, isEmpty} from '../../../shared/Helpers';
 import useTagsHook from '../../tags/useTags';
 import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
 
-const useMapSymbology = (props) => {
+const useMapSymbology = () => {
   const [useTags] = useTagsHook();
   const useStratSymbology = useStratSymbologyHook();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);

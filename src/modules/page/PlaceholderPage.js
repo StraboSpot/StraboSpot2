@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import ReturnToOverviewButton from './ui/ReturnToOverviewButton';
 
-const PlaceholderPage = (props) => {
+const PlaceholderPage = () => {
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   ));

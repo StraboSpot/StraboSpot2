@@ -158,7 +158,7 @@ const Miscellaneous = () => {
   return (
     <Formik
       innerRef={formRef}
-      onSubmit={(values, actions) => console.log('Submitting Form', values)}
+      onSubmit={values => console.log('Submitting Form', values)}
       initialValues={initialValues}
       enableReinitialize
     >

@@ -21,7 +21,6 @@ const useExport = () => {
   let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
 
   const useDevice = useDeviceHook();
-  let imageCount = 0;
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
@@ -186,7 +185,6 @@ const useExport = () => {
     try {
       const imageExists = await useDevice.doesDeviceFileExist(image_id, '.jpg');
       if (imageExists) {
-        imageCount++;
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
           APP_DIRECTORIES.BACKUP_DIR + fileName + '/Images/' + image_id + '.jpg');
         imageSuccess++;

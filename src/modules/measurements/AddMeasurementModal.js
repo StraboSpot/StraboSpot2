@@ -274,7 +274,8 @@ const AddMeasurementModal = (props) => {
                   <AddLine
                     survey={assocSurvey}
                     choices={assocChoices}
-                    setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey : onSetChoicesViewKey}
+                    setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey
+                      : onSetChoicesViewKey}
                     formName={[groupKey, MEASUREMENT_KEYS.LINEAR]}
                     formProps={formProps}
                     isManualMeasurement={isManualMeasurement}
@@ -471,7 +472,8 @@ const AddMeasurementModal = (props) => {
       : measurementTypeForForm;
     const planarCompassFields = ['strike', 'dip_direction', 'dip', 'quality', 'unix_timestamp'];
     const linearCompassFields = ['trend', 'plunge', 'rake', 'quality', 'unix_timestamp'];
-    const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields : linearCompassFields;
+    const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields
+      : linearCompassFields;
     compassFields.forEach((compassFieldKey) => {
       if (!isEmpty(data[compassFieldKey])) formRef.current.setFieldValue(compassFieldKey, data[compassFieldKey]);
     });

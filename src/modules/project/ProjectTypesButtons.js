@@ -12,7 +12,6 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 
 const ProjectTypesButtons = (props) => {
-  const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const deviceBackUpDirectoryExists = useSelector(state => state.project.deviceBackUpDirectoryExists);
 

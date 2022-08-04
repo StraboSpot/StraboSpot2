@@ -1,7 +1,7 @@
 import useSedValidationHook from '../../sed/useSedValidation';
 import useStratSectionHook from './useStratSection';
 
-const useStratSectionSymbology = (props) => {
+const useStratSectionSymbology = () => {
   const useSedValidation = useSedValidationHook();
   const useStratSection = useStratSectionHook();
 

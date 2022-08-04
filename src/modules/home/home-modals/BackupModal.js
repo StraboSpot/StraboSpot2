@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Text, TextInput, View} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useExportHook from '../../../services/useExport';
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty, truncateText} from '../../../shared/Helpers';
+import {isEmpty} from '../../../shared/Helpers';
 import projectStyles from '../../project/project.styles';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
 import {setBackupModalVisible} from '../home.slice';
 
-const BackupModal = (props) => {
+const BackupModal = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
@@ -30,19 +30,6 @@ const BackupModal = (props) => {
   }, [currentProject, user]);
 
   const fileName = exportFileName.replace(/\s/g, '');
-
-  const renderDatasetNames = () => {
-    const activeDatasets = useProject.getActiveDatasets();
-    return (
-      <FlatList
-        data={activeDatasets}
-        renderItem={({item}) =>
-          <Text>{item.name.length > 30 ? '- ' + truncateText(item.name, 30)
-            : '- ' + item.name}</Text>
-        }
-      />
-    );
-  };
 
   return (
     <UploadDialogBox

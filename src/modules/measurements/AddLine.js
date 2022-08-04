@@ -22,7 +22,8 @@ const AddLine = (props) => {
       ...updatedProps,
       formProps: {
         ...updatedProps.formProps,
-        values: (updatedProps.formProps.values.associated_orientation && updatedProps.formProps.values.associated_orientation[0]) || {},
+        values: (updatedProps.formProps.values.associated_orientation
+          && updatedProps.formProps.values.associated_orientation[0]) || {},
       },
     };
   }

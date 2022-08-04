@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
 import {FlatListSlider} from 'react-native-flatlist-slider';
@@ -74,7 +73,6 @@ const Home = () => {
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
-  const navigation = useNavigation();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const toast = useToast();
@@ -83,51 +81,48 @@ const Home = () => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
-  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
-  const isOnline = useSelector(state => state.home.isOnline);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
-  const [openMenu, setOpenMenu] = useState('');
-  const selectedProject = useSelector(state => state.home.selectedProject);
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const selectedProject = useSelector(state => state.home.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
-  const statusMessages = useSelector(state => state.home.statusMessages);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
-  const [dialogs, setDialogs] = useState({
-    mapActionsMenuVisible: false,
-    mapSymbolsMenuVisible: false,
-    baseMapMenuVisible: false,
-  });
   const [buttons, setButtons] = useState({
     drawButtonsVisible: true,
     editButtonsVisible: false,
     userLocationButtonOn: false,
   });
-  const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
-  const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
+  const [dialogs, setDialogs] = useState({
+    mapActionsMenuVisible: false,
+    mapSymbolsMenuVisible: false,
+    baseMapMenuVisible: false,
+  });
   const [distance, setDistance] = useState(0);
-  const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
-  const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
-  const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
-  const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
+  const [homeTextInputAnimate] = useState(new Animated.Value(0));
+  const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
-  const [imageSlideshowData, setImageSlideshowData] = useState([]);
-  const [homeTextInputAnimate] = useState(new Animated.Value(0));
+  const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
+  const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
+  const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
+
+  const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
+  const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
+  const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
+
   const mapComponentRef = useRef(null);
 
   useEffect(() => {
@@ -555,19 +550,16 @@ const Home = () => {
     return Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
   };
 
+  const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
-  const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
   const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
   const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
-  let compassModal = null;
-  let samplesModal = null;
 
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
         logout={() => onLogout()}
-        openMainMenu={action => setOpenMenu(action)}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={pageView => openNotebookPanel(pageView)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}

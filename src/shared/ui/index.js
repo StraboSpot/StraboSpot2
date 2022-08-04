@@ -1,1 +1,1 @@
-export ImageButton from './ImageButton';
+export {default as ImageButton} from './ImageButton';

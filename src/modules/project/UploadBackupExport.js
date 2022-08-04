@@ -19,7 +19,7 @@ import {
 } from '../home/home.slice';
 import {setSelectedProject} from './projects.slice';
 
-const UploadBackAndExport = (props) => {
+const UploadBackAndExport = () => {
 
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.home.isOnline);
@@ -28,29 +28,14 @@ const UploadBackAndExport = (props) => {
 
   const useDevice = useDeviceHook();
 
-  const onShareProjectAsCSV = () => {
-    console.log('onShareProjectAsCSV');
-  };
-
-  const onShareNotebookAsPDF = () => {
-    console.log('onShareNotebookAsPDF');
-  };
-
-  const onShareProjectAsShapefile = () => {
-    console.log('onShareProjectAsShapefile');
-  };
-
   const checkforActiveDatasets = () => {
     if (activeDatasets.length > 0) {
       dispatch(setSelectedProject({source: '', project: ''}));
       dispatch(setBackupModalVisible(true));
     }
     else {
-      props.openMainMenu('Active Project');
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('There are no active datasets selected.'));
-      dispatch(addedStatusMessage(
-        'Pressing "OK" will direct you to the Active Projects panel where you can make selecitions.'));
       dispatch(setErrorMessagesModalVisible(true));
     }
   };
@@ -117,10 +102,9 @@ const UploadBackAndExport = (props) => {
         && (
           <View style={{flex: 1, justifyContent: 'flex-end', paddingBottom: 15}}>
             <View style={{padding: 10, alignItems: 'center'}}>
-              <Text style={{...uiStyles.sectionDividerText, textAlign: 'center'}}>Additional help documents can be found
-                in
-                the Menu -> Help ->
-                Documentation</Text>
+              <Text style={{...uiStyles.sectionDividerText, textAlign: 'center'}}>
+                Additional help documents can be found in the Menu -&gt; Help -&gt; Documentation
+              </Text>
             </View>
             <Button
               title={'View/Edit Files on Device'}

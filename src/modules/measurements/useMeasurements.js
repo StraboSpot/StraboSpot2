@@ -12,16 +12,15 @@ import {useTagsHook} from '../tags';
 
 const useMeasurements = () => {
   const dispatch = useDispatch();
-  const compassMeasurements = useSelector(state => state.compass.measurements);
-  const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
-  const spot = useSelector(state => state.spot.selectedSpot);
-  const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
   const activeMeasurementTemplates = useSelector(
     state => state.project.project?.templates?.activeMeasurementTemplates) || [];
-  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
+  const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
+  const compassMeasurements = useSelector(state => state.compass.measurements);
+  const spot = useSelector(state => state.spot.selectedSpot);
+  const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
 
-  const [useTags] = useTagsHook();
   const [useForm] = useFormHook();
+  const [useTags] = useTagsHook();
 
   const createNewMeasurement = () => {
     let measurements = [];

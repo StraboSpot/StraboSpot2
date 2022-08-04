@@ -116,7 +116,8 @@ function Basemap(props) {
         </View>
       )}
       <MapboxGL.MapView
-        id={props.imageBasemap ? props.imageBasemap.id : props.stratSection ? props.stratSection.strat_section_id : props.basemap.id}
+        id={props.imageBasemap ? props.imageBasemap.id : props.stratSection ? props.stratSection.strat_section_id
+          : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
         styleURL={!props.imageBasemap && !props.stratSection && JSON.stringify(props.basemap)}

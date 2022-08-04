@@ -20,9 +20,7 @@ module.exports = {
     'brace-style': ['error', 'stroustrup', {allowSingleLine: true}], // Prettier can't do this so don't use prettier
     'curly': ['error', 'multi-line'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'max-len': ['error', {
-      'code': 120, 'tabWidth': 2, 'ignoreTrailingComments': true, 'ignoreUrls': true, 'ignoreRegExpLiterals': true,
-    }],
+    'no-unused-vars': ['error', {args: 'none', ignoreRestSiblings: true}],
     'object-curly-newline': ['error', {'consistent': true}],
     'operator-linebreak': ['error', 'before'],
     'quote-props': ['error', 'consistent'],
@@ -45,7 +43,7 @@ module.exports = {
 
     // Override React Hooks rules
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
-    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
+    'react-hooks/exhaustive-deps': 'off', // Checks effect dependencies
 
     // Turn off rules
     'react/prop-types': 'off',

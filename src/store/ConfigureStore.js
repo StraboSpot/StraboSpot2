@@ -35,9 +35,10 @@ const compassConfig = {
 const homeConfig = {
   key: 'home',
   storage: AsyncStorage,
-  blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible', 'isStatusMessagesModalVisible',
-    'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible', 'isOfflineMapModalVisible',
-    'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible', 'isProjectLoadComplete'],
+  blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible',
+    'isStatusMessagesModalVisible', 'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible',
+    'isOfflineMapModalVisible', 'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible',
+    'isProjectLoadComplete'],
   timeout: null,
 };
 

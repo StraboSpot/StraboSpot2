@@ -8,7 +8,7 @@ import {addedSpot, addedSpots} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 
-const useStratSectionCalculations = (props) => {
+const useStratSectionCalculations = () => {
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
@@ -41,8 +41,10 @@ const useStratSectionCalculations = (props) => {
       && bedding.beds[1] && (bedding.beds[1].avg_thickness && bedding.beds[1].avg_thickness > 0
         || (bedding.beds[1].max_thickness && bedding.beds[1].max_thickness > 0 && bedding.beds[1].min_thickness
           && bedding.beds[1].min_thickness > 0)) && bedding.interbed_proportion > 0) {
-      //const thickness1 = bedding.beds[0].avg_thickness ? bedding.beds[0].avg_thickness : (bedding.beds[0].max_thickness + bedding.beds[0].min_thickness) / 2;
-      const thickness2 = bedding.beds[1].avg_thickness ? bedding.beds[1].avg_thickness : (bedding.beds[1].max_thickness + bedding.beds[1].min_thickness) / 2;
+      //const thickness1 = bedding.beds[0].avg_thickness ? bedding.beds[0].avg_thickness
+      // : (bedding.beds[0].max_thickness + bedding.beds[0].min_thickness) / 2;
+      const thickness2 = bedding.beds[1].avg_thickness ? bedding.beds[1].avg_thickness
+        : (bedding.beds[1].max_thickness + bedding.beds[1].min_thickness) / 2;
 
       // Per Casey: Don't use the data from Lithology 1 interbed thickness for plotting since it, along with interval
       // thickness, proportion and Lithology 2 interbed thickness are too many data numbers to plot all faithfully
@@ -61,7 +63,8 @@ const useStratSectionCalculations = (props) => {
       let currentBedHeight = bedding.lithology_at_bottom_contact === 'lithology_2' ? y2 : y1;
       const polyCoords = [];
       while (maxYBed < minY + intervalHeight) {
-        maxYBed = minYBed + currentBedHeight <= minY + intervalHeight ? minYBed + currentBedHeight : minY + intervalHeight;
+        maxYBed = minYBed + currentBedHeight <= minY + intervalHeight ? minYBed + currentBedHeight
+          : minY + intervalHeight;
         const coords = [[minX, minYBed], [minX, maxYBed], [maxXBed, maxYBed], [maxXBed, minYBed], [minX, minYBed]];
         polyCoords.push(coords);
         currentBedHeight = currentBedHeight === y1 ? y2 : y1;

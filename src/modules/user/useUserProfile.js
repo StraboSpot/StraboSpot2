@@ -1,8 +1,6 @@
-import React from 'react';
-
 import {useSelector} from 'react-redux';
 
-const useUserProfile = (props) => {
+const useUserProfile = () => {
   const userData = useSelector(state => state.user);
 
   const getUserInitials = () => {

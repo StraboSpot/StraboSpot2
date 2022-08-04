@@ -19,7 +19,6 @@ const Preview = (props) => {
   const spots = useSelector(state => state.spot.spots);
   const [imageNoteModal, setImageNoteModal] = useState(false);
   const [buttonsDisplay, setButtonsDisplay] = useState(false);
-  const [disable, setDisable] = useState(false);
   const dispatch = useDispatch();
 
   const closeModal = () => {
@@ -34,7 +33,6 @@ const Preview = (props) => {
   };
 
   const updateImage = (item) => {
-    setDisable(true);
     dispatch(setSelectedAttributes([item.image]));
     setImageNoteModal(true);
   };

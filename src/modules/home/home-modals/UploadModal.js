@@ -12,7 +12,7 @@ import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
 import {setUploadModalVisible} from '../home.slice';
 
-const UploadModal = (props) => {
+const UploadModal = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.project.databaseEndpoint);

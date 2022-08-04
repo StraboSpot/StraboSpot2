@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import {useSpotsHook} from '../spots';
 
-const useNesting = (props) => {
+const useNesting = () => {
   const [useSpots] = useSpotsHook();
   const spots = useSelector(state => state.spot.spots);
 

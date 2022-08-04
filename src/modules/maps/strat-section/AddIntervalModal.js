@@ -248,7 +248,9 @@ const AddIntervalModal = () => {
     const intervalData = useForm.showErrors(formRef.current);
     if (doUnitsFieldsMatch(intervalData)) {
       let newInterval = useStratSection.createInterval(stratSection.strat_section_id, intervalData);
-      if (preFormRef.current?.values?.intervalName) newInterval.properties.name = preFormRef.current.values.intervalName;
+      if (preFormRef.current?.values?.intervalName) {
+        newInterval.properties.name = preFormRef.current.values.intervalName;
+      }
       if (intervalToCopy) newInterval = copyRestOfInterval(newInterval);
       const newSpot = await useSpots.createSpot({type: 'Feature', ...newInterval});
       if (preFormRef.current?.values?.intervalToInsertAfter) {

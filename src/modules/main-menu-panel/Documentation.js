@@ -12,7 +12,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from './documentation.styles';
 
-const Documentation = (props) => {
+const Documentation = () => {
 
   const isOnline = useSelector(state => state.home.isOnline.isInternetReachable);
 

@@ -13,7 +13,7 @@ import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
-const ImagesViewPage = (props) => {
+const ImagesViewPage = () => {
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
   const toast = useToast();

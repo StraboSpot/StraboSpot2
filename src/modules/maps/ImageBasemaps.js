@@ -11,7 +11,7 @@ import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {setCurrentImageBasemap} from './maps.slice';
 
-const ImageBaseMaps = (props) => {
+const ImageBaseMaps = () => {
   const dispatch = useDispatch();
 
   const [useSpots] = useSpotsHook();

@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
 import useSpotsHook from '../spots/useSpots';
 
-const useMapFeatures = (props) => {
+const useMapFeatures = () => {
 
   const user = useSelector(state => state.user);
 

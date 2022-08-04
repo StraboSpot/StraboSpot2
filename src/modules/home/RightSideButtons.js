@@ -107,18 +107,19 @@ const RightSideButtons = (props) => {
     const toggleShortcutModal = async (key) => {
       dispatch(clearedSelectedSpots());
       switch (key) {
-        case 'photo':
+        case 'photo': {
           const point = await useMaps.setPointAtCurrentLocation();
           if (point) {
             console.log('New Spot at current location:', point);
             const imagesSavedLength = await useImages.launchCameraFromNotebook();
             imagesSavedLength > 0 && toast.show(
-              imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot ' + point.properties.name,
-              {type: 'success'},
+              imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot '
+              + point.properties.name, {type: 'success'},
             );
             props.openNotebookPanel();
           }
           break;
+        }
         default:
           if (modalVisible === key) await dispatch(setModalVisible({modal: null}));
           else await dispatch(setModalVisible({modal: key}));

@@ -8,7 +8,7 @@ import {setFreehandFeatureCoords} from '../maps/maps.slice';
 import styles from './sketch.styles';
 
 let freehandFeatureCoords = [];
-const Sketch = (props) => {
+const Sketch = () => {
   const dispatch = useDispatch();
 
   const onDrop = () => {

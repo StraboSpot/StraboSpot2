@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 
 import uiStyles from '../shared/ui/ui.styles';
 
-const ConnectionStatus = (props) => {
+const ConnectionStatus = () => {
   const onlineIcon = require('../assets/icons/ConnectionStatusButton_online.png');
   const offlineIcon = require('../assets/icons/ConnectionStatusButton_offline.png');
   const accessPointIcon = require('../assets/icons/ConnectionStatusButton_connected.png');

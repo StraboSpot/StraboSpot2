@@ -188,7 +188,7 @@ const DatasetList = () => {
         close={() => setMakeIsDatasetCurrentModalVisible(false)}
       >
         <View>
-          <Text style={commonStyles.dialogText}>By selecting "Yes" any new data will be saved into</Text>
+          <Text style={commonStyles.dialogText}>By selecting &quot;Yes&quot; any new data will be saved into</Text>
           <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>{selectedDataset.name}.</Text>
         </View>
       </StandardModal>

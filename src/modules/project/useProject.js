@@ -194,8 +194,7 @@ const useProject = () => {
 
   const makeDatasetCurrent = (datasetId) => {
     const datasetName = datasets[datasetId].name;
-    const id = toast.show(`Selected Dataset has been switched to ${datasetName}!`,
-      {type: 'warning', animationType: 'slide-in'});
+    toast.show(`Selected Dataset has been switched to ${datasetName}!`, {type: 'warning', animationType: 'slide-in'});
     toast.hideAll();
     dispatch(setSelectedDataset(datasetId));
   };

@@ -227,7 +227,8 @@ const useMapsOffline = () => {
           username = parts[0];
           id = parts[1];
           const accessToken = user.mapboxToken && !isEmpty(user.mapboxToken) ? user.mapboxToken : MAPBOX_KEY;
-          startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
+          startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom
+            + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
         }
         else if (downloadMap.source === 'Map Warper' || downloadMap.source === 'map_warper') {
           layer = 'mapwarper';

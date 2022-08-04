@@ -251,8 +251,6 @@ const useDownload = () => {
           dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
         }
       }
-      else {
-      }
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));

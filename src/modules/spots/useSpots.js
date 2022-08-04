@@ -40,7 +40,7 @@ const useSpots = () => {
   }, [datasets]);
 
   const checkIsSafeDelete = (spotToDelete) => {
-    // Check if Spot is manually nested - get the the first Spot that has this Spot nested manually in spot.properties.nesting
+    // Check if Spot is manually nested - get the first Spot that has this Spot nested manually in spot.properties.nesting
     const spotWithManualNest = Object.values(spots).find(
       spot => spot.properties?.nesting?.includes(spotToDelete.properties.id));
     if (spotWithManualNest) {

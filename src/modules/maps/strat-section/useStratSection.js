@@ -5,7 +5,7 @@ import {useFormHook} from '../../form';
 import {useSpotsHook} from '../../spots';
 import useStratSectionCalculationsHook from './useStratSectionCalculations';
 
-const useStratSection = (props) => {
+const useStratSection = () => {
   const [useForm] = useFormHook();
   const [useSpots] = useSpotsHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
