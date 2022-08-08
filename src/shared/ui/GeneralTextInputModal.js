@@ -16,7 +16,7 @@ const TextInputModal = (props) => {
   return (
     <View>
       <Dialog
-        dialogStyle={[styles.dialogBox, {position: 'absolute', top: '25%'}]}
+        dialogStyle={[styles.dialogBox, {top: props.topPosition || '10%'}]}
         width={300}
         visible={props.visible}
         dialogAnimation={new FadeAnimation({
@@ -33,13 +33,22 @@ const TextInputModal = (props) => {
         }
         footer={
           <DialogFooter>
-            <DialogButton text={'Save'} onPress={props.onPress}/>
-            <DialogButton text={'Cancel'} onPress={props.close}/>
+            <DialogButton
+              text={props.buttonText || 'Save'}
+              textStyle={props.buttonTextStyle}
+              onPress={props.onPress}
+            />
+            <DialogButton
+              text={'Cancel'}
+              onPress={props.close}
+            />
           </DialogFooter>
         }
       >
         <DialogContent style={[styles.dialogContent, props.dialogContent]}>
+          {props.textAboveInput}
           <Input
+            autoCapitalize={props.autoCapitalize || 'none'}
             multiline={props.multiline}
             numberOfLines={5}
             value={props.value}
@@ -49,6 +58,9 @@ const TextInputModal = (props) => {
             inputStyle={[styles.textInput, props.textInputStyle]}
             onChangeText={props.onChangeText}
             placeholder={props.placeholder || 'Enter text here...'}
+            errorMessage={props.errorMessage}
+            renderErrorMessage={props.renderErrorMessage}
+            onSubmitEditing={props.onSubmitEditing}
           />
           {props.children}
         </DialogContent>
