@@ -29,7 +29,7 @@ const SaveMapsModal = (props) => {
   const dispatch = useDispatch();
 
   const currentMapName = currentBasemap && currentBasemap.title;
-  const maxZoom = currentBasemap && MAP_PROVIDERS[currentBasemap.source]?.maxZoom;
+  const maxZoom = MAP_PROVIDERS[currentBasemap.source]?.maxZoom;
   let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);

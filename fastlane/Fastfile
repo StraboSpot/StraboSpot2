@@ -7,6 +7,7 @@
 
   message = 'A new version is available on TestFlight!'
 
+# Lanes
   desc 'Android: Increment versionCode and set versionName to package.json version.'
   package = load_json(json_path: './package.json')
   private_lane :inc_ver_and do
@@ -38,7 +39,6 @@
   end
 
   desc 'Bump build numbers, and set the version to match the package.json version.'
-
   lane :bump do
     inc_ver_ios
     inc_ver_and

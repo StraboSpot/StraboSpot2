@@ -8,10 +8,10 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {SENTRY_DSN} from './Config';
 import Routes from './src/routes/Routes';
-import {BUNDLE_ID, RELEASE_NAME} from './src/shared/app.constants';
+import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
-import store from './src/store/ConfigureStore';
 import Toast from './src/shared/ui/Toast';
+import store from './src/store/ConfigureStore';
 
 Sentry.init({
   dsn: SENTRY_DSN,
