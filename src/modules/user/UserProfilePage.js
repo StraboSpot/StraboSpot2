@@ -1,14 +1,20 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
-import {Animated, Image, View} from 'react-native';
+import {Animated, Image, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
+import {Base64} from 'js-base64';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useServerRequestsHook from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
+import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
@@ -25,16 +31,75 @@ const UserProfile = (props) => {
 
   const [avatar, setAvatar] = useState(userData.image);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
+  const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
+  const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [useForm] = useFormHook();
+  const navigation = useNavigation();
+  const toast = useToast();
   const useUpload = useUploadHook();
+  const [useServerRequest] = useServerRequestsHook();
 
   const formName = ['general', 'user_profile'];
+
+  const deleteModalText
+    = <View><Text style={userStyles.deleteProfileText}>Deleting your profile will
+    <Text style={commonStyles.dialogContentImportantText}> PERMANENTLY {'\n'} </Text>
+    remove any personal info and data saved for user{'\n'}{userData.email}{'\n'} from www.Strabospot.org!
+  </Text>
+    <Text style={userStyles.deleteProfileText}>Enter password to delete:</Text>
+  </View>;
+
+  const offlineText = <Text style={userStyles.deleteProfileText}>Need to be online in order to delete profile.</Text>;
 
   useLayoutEffect(() => {
     console.log('UE UserProfile []');
     return () => saveForm();
   }, []);
+
+  const deleteProfile = async () => {
+    console.log(deleteProfileInputValue);
+    if (!isEmpty(deleteProfileInputValue)) {
+      const isAuthenticated = await useServerRequest.authenticateUser(userData.email, deleteProfileInputValue);
+      if (isAuthenticated.valid === 'true') {
+        const encodedLogin = Base64.encode(`${userData.email}:${deleteProfileInputValue}`);
+        console.log(encodedLogin);
+        const res = await useServerRequest.deleteProfile(encodedLogin);
+        console.log('PROFILE DELETED!', res);
+        setDeleteProfileModalVisible(false);
+        dispatch({type: REDUX.CLEAR_STORE});
+        toast.show('Profile Successfully Deleted!', {type: 'success', duration: 2000})
+        setTimeout(() => navigation.navigate('SignIn'), 200)
+      }
+      else setErrorMessage('Wrong password');
+    }
+    else setErrorMessage('Need to enter your password');
+  };
+
+  const deleteProfileModal = () => {
+    return (
+      <TextInputModal
+        topPosition={10}
+        dialogTitle={'DANGER!'}
+        buttonText={'DELETE'}
+        buttonTextStyle={{color: 'red'}}
+        style={{backgroundColor: 'red'}}
+        visible={isDeleteProfileModalVisible}
+        onPress={deleteProfile}
+        close={() => setDeleteProfileModalVisible(false)}
+        textAboveInput={isOnline.isInternetReachable ? deleteModalText : offlineText}
+        onChangeText={text => handleOnChange(text)}
+        errorMessage={errorMessage}
+        onSubmitEditing={deleteProfile}
+      />
+    );
+  };
+
+  const handleOnChange = (text) => {
+    if (!isEmpty(errorMessage)) setErrorMessage('');
+    setDeleteProfileInputValue(text);
+  };
 
   const pickImageSource = async (source) => {
     if (source === 'gallery') {
@@ -183,7 +248,16 @@ const UserProfile = (props) => {
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
         </View>
+        <Button
+          title={'DELETE PROFILE'}
+          type={'clear'}
+          onPress={() => setDeleteProfileModalVisible(true)}
+          containerStyle={userStyles.deleteProfileButtonContainer}
+          titleStyle={userStyles.deleteProfileButtonText}
+        />
         {ImageModal()}
+        {deleteProfileModal()}
+        {<TextInputModal/>}
       </Animated.View>
     </View>
   );

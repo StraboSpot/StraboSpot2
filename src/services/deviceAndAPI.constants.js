@@ -1,6 +1,7 @@
 import RNFS from 'react-native-fs';
 
 const devicePath = RNFS.DocumentDirectoryPath;
+const account = '/account';
 const appDirectoryForDistributedBackups = devicePath + '/ProjectBackups/';
 const appDirectory = devicePath + '/StraboSpot';
 const sharedDocumentsPathIOS = 'shareddocuments://'; // To access Files.app on iOS
@@ -32,6 +33,7 @@ export const APP_DIRECTORIES = {
 };
 
 export const STRABO_APIS = {
+  ACCOUNT: account,
   STRABO: straboSpotAPI,
   TILE_HOST: tilehost,
   DB: straboDB,

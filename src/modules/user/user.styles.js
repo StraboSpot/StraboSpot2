@@ -26,6 +26,19 @@ const UserStyles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
+  deleteProfileButtonText: {
+    color: themes.RED,
+  },
+  deleteProfileButtonContainer: {
+    marginBottom: 15,
+  },
+  deleteProfileText: {
+    textAlign: 'center',
+    lineHeight: 25,
+    paddingTop: 10,
+    paddingBottom: 20,
+    fontWeight: '600',
+  },
   dialogTitleContainer: {
     alignContent: 'center',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,

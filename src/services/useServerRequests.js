@@ -85,6 +85,25 @@ const useServerRequests = () => {
     return request('DELETE', '/datasetSpots/' + datasetId, encodedLogin);
   };
 
+  const deleteProfile = async (login) => {
+    try {
+      const response = await fetch(
+        baseUrl + STRABO_APIS.ACCOUNT,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Basic ' + login,
+            'Content-Type': 'application/json',
+          },
+        });
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Posting', err);
+      Alert.alert('Error', `${err.toString()}`);
+    }
+  };
+
   const getDataset = (datasetId) => {
     return request('GET', '/dataset/' + datasetId);
   };
@@ -179,7 +198,7 @@ const useServerRequests = () => {
   };
 
   const handleResponse = (response) => {
-    if (response.ok && response.status === 204) return response.text();
+    if (response.ok && response.status === 204) return response.text() || 'no  content';
     else if (response.ok) return response.json();
     else return handleError(response);
   };
@@ -292,6 +311,7 @@ const useServerRequests = () => {
   const serverRequests = {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
+    deleteProfile: deleteProfile,
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     downloadImage: downloadImage,
     getMyProjects: getMyProjects,
