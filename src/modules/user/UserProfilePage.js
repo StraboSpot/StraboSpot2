@@ -122,15 +122,18 @@ const UserProfile = (props) => {
 
   const saveForm = async () => {
     const formCurrent = formRef.current;
-    await formRef.current.submitForm();
-    let newValues = JSON.parse(JSON.stringify(formCurrent.values));
-    console.log(newValues);
-    if (useForm.hasErrors(formCurrent)) {
-      console.log(formCurrent.hasErrors());
+    if (formCurrent.dirty) {
+      await formRef.current.submitForm();
+      let newValues = JSON.parse(JSON.stringify(formCurrent.values));
+      console.log(newValues);
+      if (useForm.hasErrors(formCurrent)) {
+        console.log(formCurrent.hasErrors());
+      }
+      dispatch(setUserData(newValues));
+      if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
+      else props.toast('Not connected to internet to upload profile changes', 'noWifi');
     }
-    dispatch(setUserData(newValues));
-    if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
-    else props.toast('Not connected to internet to upload profile changes', 'noWifi');
+   else toast.show('No changes were made.')
   };
 
   const saveImage = async () => {
@@ -202,11 +205,11 @@ const UserProfile = (props) => {
     try {
       console.log(values);
       await useUpload.uploadProfile(values);
-      props.toast('Profile uploaded successfully!', 'success');
+      toast.show('Profile uploaded successfully!', {type: 'success'});
     }
     catch (err) {
-      console.error(err);
-      props.toast('Profile uploaded UN-successfully...', 'danger');
+      console.error('Error uploading profile', err);
+      toast.show('Profile uploaded UN-successfully...', {type: 'danger'});
     }
   };
 
