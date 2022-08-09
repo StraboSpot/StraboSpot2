@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Platform} from 'react-native';
 
 import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
@@ -11,18 +11,9 @@ import styles from './dialog.styles';
 const slideAnimation = new ScaleAnimation({useNativeDriver: true});
 
 const MapActionsDialog = (props) => {
-  const [isVisible, setIsVisible] = useState(false);
 
   const isOnline = useSelector(state => state.home.isOnline);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const stratSection = useSelector(state => state.map.stratSection);
-
-  useEffect(() => {
-    console.log('UE MapActionsDialog [offlineMaps]', offlineMaps);
-    setIsVisible(
-      Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true),
-    );
-  }, [offlineMaps]);
 
   return (
     <Dialog
