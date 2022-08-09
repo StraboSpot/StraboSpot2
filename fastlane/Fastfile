@@ -36,7 +36,6 @@
       version_number: package['version']
     )
   end
-
   desc 'Bump build numbers, and set the version to match the package.json version.'
   lane :bump do
     inc_ver_ios
@@ -52,6 +51,10 @@
     username: 'nathan.novak79@gmail.com',
     team_name:"The University of Kansas",
     app_identifier: "org.StraboSpot2"
+    )
+    version_number = get_version_number(
+       xcodeproj: 'ios/StraboSpot2.xcodeproj',
+       target: 'StraboSpot2'
     )
 
     slack_message(version: version_number)
