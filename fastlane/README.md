@@ -45,7 +45,6 @@ Builds/archives and deploys a beta version to TestFlight
 
 Send a message to group on Slack
 
-
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
