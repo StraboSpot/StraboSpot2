@@ -105,7 +105,7 @@ const NotebookPanel = (props) => {
   const renderRecentSpotsList = () => {
     modalVisible !== null && dispatch(setModalVisible({modal: null}));
     let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
-      if (spots && spots.hasOwnProperty(key)) obj.push(spots[key]);
+      if (spots?.[key]) obj.push(spots[key]);
       return obj;
     }, []);
     if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();

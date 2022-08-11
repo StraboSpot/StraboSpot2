@@ -65,7 +65,7 @@ const AddRockMetamorphicModal = (props) => {
   };
 
   const renderFaciesModal = () => {
-    const {width, height} = Dimensions.get('window');
+    const {width} = Dimensions.get('window');
     const faciesModalWidth = width > 520 ? 500 : '90%';
     return (
       <Overlay

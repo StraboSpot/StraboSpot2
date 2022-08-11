@@ -51,15 +51,15 @@ const Overview = (props) => {
 
   useEffect(() => {
     console.log('UE Overview [spot]', spot);
-    setIsTraceSurfaceFeatureEnabled((spot.properties.hasOwnProperty('trace') && spot.properties.trace.trace_feature)
-      || spot.properties.hasOwnProperty('surface_feature'));
+    setIsTraceSurfaceFeatureEnabled((spot.properties.trace?.trace_feature) || spot.properties.surface_feature);
     setIsTraceSurfaceFeatureEdit(false);
   }, [spot]);
 
   const cancelFormAndGo = () => {
     setIsTraceSurfaceFeatureEdit(false);
-    if (isTraceSurfaceFeatureEnabled && !spot.properties.hasOwnProperty('trace')
-      && !spot.properties.hasOwnProperty('surface_feature')) setIsTraceSurfaceFeatureEnabled(false);
+    if (isTraceSurfaceFeatureEnabled && !spot.properties.trace && !spot.properties.surface_feature) {
+      setIsTraceSurfaceFeatureEnabled(false);
+    }
   };
 
   const openPage = (page) => {
@@ -177,9 +177,9 @@ const Overview = (props) => {
       }
     };
 
-    if (isTraceSurfaceFeatureEnabled && ((spot.properties.hasOwnProperty('trace')
+    if (isTraceSurfaceFeatureEnabled && ((spot.properties.trace
         && !isEmpty(Object.keys(spot.properties.trace).filter(t => t !== 'trace_feature')))
-      || spot.properties.hasOwnProperty('surface_feature'))) {
+      || spot.properties.surface_feature)) {
       let featureTypeText = spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString'
         ? 'Trace' : 'Surface';
       Alert.alert('Turn Off ' + featureTypeText + ' Feature Warning',

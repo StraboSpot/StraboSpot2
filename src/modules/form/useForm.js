@@ -16,7 +16,7 @@ const useForm = () => {
   const getChoicesByKey = (survey, choices, key) => {
     const field = survey.find(f => f.name === key);
     if (field) {
-      const [fieldType, choicesListName] = field.type?.split(' ');
+      const choicesListName = field.type?.split(' ')[1];
       return choices.filter(choice => choice.list_name === choicesListName);
     }
     else return {};
@@ -136,9 +136,9 @@ const useForm = () => {
         else if (fieldModel.type === 'decimal') {
           values[key] = isNaN(parseFloat(values[key])) ? undefined : parseFloat(values[key]);
         }
-        else if (fieldModel.type === 'date') values[key] = values[key];
-        if (key === 'end_date'
-          && Date.parse(values.start_date) > Date.parse(values.end_date)) errors[key] = fieldModel.constraint_message;
+        if (key === 'end_date' && Date.parse(values.start_date) > Date.parse(values.end_date)) {
+          errors[key] = fieldModel.constraint_message;
+        }
         if (fieldModel.constraint) {
           // Max constraint
           // Look for <= in constraint, followed by a space and then any number of digits (- preceding the digits is optional)

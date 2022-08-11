@@ -116,7 +116,7 @@ const useImages = () => {
       if (dataset?.images?.neededImagesIds) {
         imageIds = dataset.images.neededImagesIds;
       }
-      else imageIds = await getAllImagesIds(spotsOnServer);
+      else imageIds = getAllImagesIds(spotsOnServer);
       await Promise.all(
         imageIds.map(async (imageId) => {
           const doesExist = await doesImageExistOnDevice(imageId);
@@ -222,7 +222,7 @@ const useImages = () => {
     let width = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
     if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
-    let resizedImage, createResizedImageProps = {};
+    let resizedImage, createResizedImageProps;
     createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
       : [tempImageURI, width, height, 'JPEG', 100, 0];
     resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);

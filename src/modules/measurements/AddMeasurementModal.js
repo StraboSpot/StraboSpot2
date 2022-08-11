@@ -320,9 +320,10 @@ const AddMeasurementModal = (props) => {
                   validate={values => useForm.validateForm({formName: formName, values: values})}
                   validateOnChange={false}
                   enableReinitialize={true}
-                  children={formProps => choicesViewKey ? renderSubform(formProps)
+                >
+                  {formProps => choicesViewKey ? renderSubform(formProps)
                     : assocChoicesViewKey ? renderSubformAssoc(formProps) : renderForm(formProps)}
-                />
+                </Formik>
               }
             />
           )}

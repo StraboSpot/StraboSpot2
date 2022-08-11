@@ -36,7 +36,7 @@ const MeasurementDetail = (props) => {
   const [isAddingAssociatedMeasurementAfterSave, setIsAddingAssociatedMeasurementAfterSave] = useState(false);
   const [selectedMeasurement, setSelectedMeasurement] = useState(null);
 
-  const isTemplate = props.hasOwnProperty('saveTemplate');
+  const isTemplate = props.saveTemplate;
   const selectedAttitude = selectedAttributes?.length > 0 ? JSON.parse(JSON.stringify(selectedAttributes[0]))
     : isTemplate ? props.selectedAttitudes[0]
       : {};
@@ -317,11 +317,12 @@ const MeasurementDetail = (props) => {
             onSubmit={values => console.log('Submitting form...', values)}
             onReset={() => console.log('Resetting form...')}
             validate={values => useForm.validateForm({formName: formName, values: values})}
-            children={formProps => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
             initialValues={selectedMeasurement}
             enableReinitialize={true}
             initialStatus={{formName: formName}}
-          />
+          >
+            {formProps => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
+          </Formik>
         </View>
       </View>
     );

@@ -41,7 +41,7 @@ const BasicPageDetail = (props) => {
     ? toTitleCase(props.selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
     : props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
 
-  const isTemplate = props.hasOwnProperty('saveTemplate');
+  const isTemplate = props.saveTemplate;
 
   useLayoutEffect(() => {
     console.log('ULE BasicPageDetail []');
@@ -128,7 +128,11 @@ const BasicPageDetail = (props) => {
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
           validate={values => useForm.validateForm({formName: formName, values: values})}
-          children={formProps => (
+          initialValues={props.selectedFeature}
+          initialStatus={{formName: formName}}
+          enableReinitialize={true}
+        >
+          {formProps => (
             <Form {...{
               ...formProps,
               formName: formName,
@@ -139,10 +143,7 @@ const BasicPageDetail = (props) => {
                   : undefined,
             }}/>
           )}
-          initialValues={props.selectedFeature}
-          initialStatus={{formName: formName}}
-          enableReinitialize={true}
-        />
+        </Formik>
         <Button
           titleStyle={{color: themes.RED}}
           title={'Delete ' + title + (isTemplate ? ' Template' : '')}

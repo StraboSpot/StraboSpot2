@@ -65,8 +65,7 @@ const useDevice = () => {
 
   const doesDeviceDirectoryExist = async (directory) => {
     try {
-      let checkDirSuccess = false;
-      checkDirSuccess = await RNFS.exists(directory);
+      let checkDirSuccess = await RNFS.exists(directory);
       console.log(checkDirSuccess);
       if (checkDirSuccess) console.log('Directory', directory, 'exists.', checkDirSuccess);
       // If directory does not exist then one is created

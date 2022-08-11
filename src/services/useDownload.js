@@ -217,7 +217,7 @@ const useDownload = () => {
       console.log('Downloading Needed Images...');
       dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImageIds)) {
-        // Check path first, if doesn't exist, then create
+        // Check path first and if it doesn't exist, then create
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         await Promise.all(
           neededImageIds.map(async (imageId) => {

@@ -105,7 +105,6 @@ const AddCustomMaps = () => {
     console.log(source);
     if (source === 'map_warper') {
       dispatch(clearedStatusMessages());
-      // dispatch(addedStatusMessage('Map Warper is temporarily unavailable. \n\nYou are able to save a map but it will not display. We have reached out to the author and hope for a resolution soon.'));
       dispatch(setWarningModalVisible(true));
     }
     setEditableCustomMapData(e => ({...e, source: source}));

@@ -214,7 +214,7 @@ const useImport = () => {
     const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject.fileName);
     if (dirExists) {
       const dataFile = await readDeviceJSONFile(selectedProject.fileName);
-      const {projectDb, spotsDb, otherMapsDb, mapNamesDb} = dataFile;
+      const {projectDb, spotsDb} = dataFile;
       console.log(dirExists);
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));

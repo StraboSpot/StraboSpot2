@@ -20,7 +20,7 @@ module.exports = {
     'brace-style': ['error', 'stroustrup', {allowSingleLine: true}], // Prettier can't do this so don't use prettier
     'curly': ['error', 'multi-line'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'no-unused-vars': ['error', {args: 'none', ignoreRestSiblings: true}],
+    'no-unused-vars': ['error', {args: 'none', ignoreRestSiblings: true, destructuredArrayIgnorePattern: '[a-z]'}],
     'object-curly-newline': ['error', {'consistent': true}],
     'operator-linebreak': ['error', 'before'],
     'quote-props': ['error', 'consistent'],

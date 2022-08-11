@@ -171,7 +171,7 @@ const useMaps = (mapRef) => {
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
     const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
-    let mappedSpots = {};
+    let mappedSpots;
     if (currentImageBasemap) {
       mappedSpots = spotsWithGeometry.filter(
         spot => spot.properties.image_basemap && spot.properties.image_basemap === currentImageBasemap.id);
@@ -196,9 +196,9 @@ const useMaps = (mapRef) => {
   };
 
   const getClosestSpotDistanceAndIndex = (distancesFromSpot) => {
-    var minDistance = Number.MAX_VALUE;
-    var minIndex = -1;
-    for (var j = 0; j < distancesFromSpot.length; j++) {
+    let minDistance = Number.MAX_VALUE;
+    let minIndex = -1;
+    for (let j = 0; j < distancesFromSpot.length; j++) {
       if (minDistance > distancesFromSpot[j]) { // trying to get the minimum distance
         minDistance = distancesFromSpot[j];
         minIndex = j;
@@ -250,21 +250,21 @@ const useMaps = (mapRef) => {
         'coordinates': [screenPointX, screenPointY],
       },
     };
-    var distances = [];
-    var screenCoords = [];
-    for (var i = 0; i < featuresInRect.length; i++) {
+    const distances = [];
+    let screenCoords = [];
+    for (let i = 0; i < featuresInRect.length; i++) {
       if (featuresInRect[i].geometry.type === 'Polygon' || featuresInRect[i].geometry.type === 'LineString'
         || featuresInRect[i].geometry.type === 'MultiLineString' || featuresInRect[i].geometry.type === 'MultiPolygon') {
         // trying to get a distance that is closest from the vertices of a polygon or line
         // to the dummy feature with screenX and screenY
-        var explodedFeatures = turf.explode(featuresInRect[i]);
-        var explodedFeaturesDistancesFromSpot = await getDistancesFromSpot(screenPointX, screenPointY,
+        const explodedFeatures = turf.explode(featuresInRect[i]);
+        const explodedFeaturesDistancesFromSpot = await getDistancesFromSpot(screenPointX, screenPointY,
           explodedFeatures.features);
         const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(explodedFeaturesDistancesFromSpot);
         distances[i] = distance;
       }
       else {
-        var eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
+        const eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
         screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
         eachFeature.geometry.coordinates = screenCoords;
         distances[i] = turf.distance(dummyFeature, eachFeature);
@@ -280,7 +280,7 @@ const useMaps = (mapRef) => {
     if (!isEmpty(drawFeatureFound)) {
       console.log('drawFeatureFound', drawFeatureFound, 'mapPropsMutable.drawFeatures', drawFeaturesCopy);
       // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
-      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
+      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp ID
       drawFeatureFound = drawFeaturesCopy.find(
         feature => feature.properties.tempEditId === drawFeatureFound.properties.tempEditId);
       console.log('Got draw feature at press: ', drawFeatureFound, 'in Spot: ',
@@ -327,7 +327,7 @@ const useMaps = (mapRef) => {
     const featureAtPoint = await getFeatureInRect(screenPointX, screenPointY, ['measureLayerPoints']);
     // console.log('Feature at pressed point:', featureAtPoint);
 
-    // Remove the linestring from the group so we can redraw it based on the points collection.
+    // Remove the linestring from the group so that we can redraw it based on points collection.
     if (measureFeaturesTemp.length > 1) measureFeaturesTemp.pop();
 
     // Clear the distance container to populate it with a new value.
@@ -375,7 +375,7 @@ const useMaps = (mapRef) => {
     let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
     if (!isEmpty(spotFound)) {
       // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
-      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp Id
+      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp ID
       // spotFound = spots[spotFound.properties.id];
       // spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
       //   spot => spot.properties.id === spotFound.properties.id);
@@ -415,7 +415,7 @@ const useMaps = (mapRef) => {
     return mappedFeatures;
   };
 
-  // Point Spots the are currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
+  // Point Spots currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
   const getVisibleMappedSpots = (mappedSpots) => {
     return (
       mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
@@ -480,7 +480,7 @@ const useMaps = (mapRef) => {
     const explodedFeatures = turf.explode(spotFoundCopy).features;
     const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
     const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);
-    // in case of imagebasemap, return the original non converted vertex.
+    // In case of imagebasemap, return the original non-converted vertex
     if (currentImageBasemap || stratSection) {
       return [turf.explode(spotFound).features[closestVertexIndex], closestVertexIndex];
     }
@@ -499,7 +499,7 @@ const useMaps = (mapRef) => {
 
   const saveCustomMap = async (map) => {
     let mapId = map.id;
-    let customMap = {};
+    let customMap;
     const providerInfo = getProviderInfo(map.source);
     let bbox = '';
     // Pull out mapbox styles map id
@@ -546,7 +546,7 @@ const useMaps = (mapRef) => {
 
   const setBasemap = async (mapId) => {
     try {
-      let newBasemap = {};
+      let newBasemap;
       let bbox = '';
       if (!mapId) mapId = 'mapbox.outdoors';
       newBasemap = BASEMAPS.find(basemap => basemap.id === mapId);

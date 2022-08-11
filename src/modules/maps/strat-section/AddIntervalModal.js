@@ -126,22 +126,16 @@ const AddIntervalModal = () => {
     const addIntervalFieldNames = addIntervalSurvey.map(f => f.name);
     let data = addIntervalFieldNames.reduce((obj, key) => {
       // Interval
-      if (sedData.interval?.hasOwnProperty(key)) obj[key] = sedData.interval[key];
+      if (sedData.interval?.[key]) obj[key] = sedData.interval[key];
       // Lithologies
-      else if (sedData.lithologies?.[0] && sedData.lithologies[0].hasOwnProperty(key)) {
-        obj[key] = sedData.lithologies[0][key];
-      }
-      else if (key.endsWith('_1') && sedData.lithologies?.[1]
-        && sedData.lithologies[1].hasOwnProperty(key.slice(0, -2))) {
+      else if (sedData.lithologies?.[0]?.[key]) obj[key] = sedData.lithologies[0][key];
+      else if (key.endsWith('_1') && sedData.lithologies?.[1]?.[key.slice(0, -2)]) {
         obj[key] = sedData.lithologies[1][key.slice(0, -2)];
       }
       // Bedding
-      else if (sedData.bedding?.hasOwnProperty(key)) obj[key] = sedData.bedding[key];
-      else if (sedData.bedding?.beds?.[0] && sedData.bedding.beds[0].hasOwnProperty(key)) {
-        obj[key] = sedData.bedding.beds[0][key];
-      }
-      else if (key.endsWith('_1') && sedData.bedding?.beds?.[1]
-        && sedData.bedding.beds[1].hasOwnProperty(key.slice(0, -2))) {
+      else if (sedData.bedding?.[key]) obj[key] = sedData.bedding[key];
+      else if (sedData.bedding?.beds?.[0]?.[key]) obj[key] = sedData.bedding.beds[0][key];
+      else if (key.endsWith('_1') && sedData.bedding?.beds?.[1]?.[key.slice(0, -2)]) {
         obj[key] = sedData.bedding.beds[1][key.slice(0, -2)];
       }
       // Character
@@ -218,11 +212,12 @@ const AddIntervalModal = () => {
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
         validate={values => useForm.validateForm({formName: formName, values: values})}
-        children={formProps => <Form {...{...formProps, formName: formName}}/>}
         initialValues={initialFormValues}
         initialStatus={{formName: formName}}
         enableReinitialize={true}
-      />
+      >
+        {formProps => <Form {...{...formProps, formName: formName}}/>}
+      </Formik>
     );
   };
 

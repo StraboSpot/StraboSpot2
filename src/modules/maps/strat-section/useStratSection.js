@@ -25,7 +25,7 @@ const useStratSection = () => {
     const intervalFieldNames = intervalSurvey.map(f => f.name);
     const intervalFieldNamesFiltered = intervalFieldNames.filter(n => n !== 'interval_type');
     const intervalFields = intervalFieldNamesFiltered.reduce((acc, name) => {
-      if (data && data.hasOwnProperty(name)) acc[name] = data[name];
+      if (data && data.name) acc[name] = data[name];
       return acc;
     }, {});
     if (!isEmpty(intervalFields)) geojsonObj.properties.sed.interval = intervalFields;
@@ -52,7 +52,7 @@ const useStratSection = () => {
       : useForm.getSurvey(['sed', 'bedding_shared_package']);
     const beddingSharedFieldNames = beddingSharedSurvey.map(f => f.name);
     let beddingSharedFields = beddingSharedFieldNames.reduce((acc, name) => {
-      if (data && data.hasOwnProperty(name)) acc[name] = data[name];
+      if (data && data.name) acc[name] = data[name];
       return acc;
     }, {});
     if (!isEmpty(beddingSharedFields)) {

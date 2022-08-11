@@ -21,7 +21,7 @@ const ThreeDStructuresMeasurementsButtons = (props) => {
     props.setIsMeasurementsModalVisible(true);
     props.setMeasurementsGroupField(groupField);
     const groupKeys = props.measurementsKeys[groupField.name];
-    if (groupKeys.hasOwnProperty('strike')) dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
+    if (groupKeys.strike) dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
     else dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
   };
 
@@ -34,7 +34,7 @@ const ThreeDStructuresMeasurementsButtons = (props) => {
     const getValueText = () => {
       const values = props.formProps.values;
       const groupKeys = props.measurementsKeys[field.name];
-      if (groupKeys.hasOwnProperty('strike')) {
+      if (groupKeys.strike) {
         const strike = values[groupKeys.strike];
         const dip = values[groupKeys.dip];
         return (isEmpty(strike) ? '?' : padWithLeadingZeros(strike, 3)) + '/'

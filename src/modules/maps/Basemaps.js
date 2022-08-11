@@ -149,7 +149,7 @@ function Basemap(props) {
           zoomLevel={setInitialZoomLevel()}
           centerCoordinate={evaluateCenterCoordinates()}
           animationDuration={0}
-          // followUserLocation={true}   // Can't follow user location if want to zoom to extent of Spots
+          // followUserLocation={true}   // Can't follow user location if wanting to zoom to extent of Spots
           // followUserMode='normal'
         />
 
@@ -449,7 +449,9 @@ function Basemap(props) {
 export const MapLayer1 = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
+MapLayer1.displayName = 'MapLayer1';
 
 export const MapLayer2 = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
+MapLayer2.displayName = 'MapLayer2';

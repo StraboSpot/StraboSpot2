@@ -9,7 +9,6 @@ import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import projectStyles from '../../project/project.styles';
 import UploadDialogBox from '../../project/UploadDialogBox';
-import useProjectHook from '../../project/useProject';
 import {setBackupModalVisible} from '../home.slice';
 
 const BackupModal = () => {
@@ -20,7 +19,6 @@ const BackupModal = () => {
   const [exportFileName, setExportFileName] = useState('');
 
   const useExport = useExportHook();
-  const [useProject] = useProjectHook();
 
   useEffect(() => {
     console.log('UE BackupModal [currentProject, user]', currentProject, user);

@@ -119,10 +119,9 @@ const Home = () => {
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
 
-  const [animation, setAnimation] = useState(new Animated.Value(notebookPanelWidth));
-  const [leftsideIconAnimationValue, setLeftsideIconAnimationValue] = useState(new Animated.Value(0));
-  const [rightsideIconAnimationValue, setRightsideIconAnimationValue] = useState(new Animated.Value(0));
-
+  const animation = useRef(new Animated.Value(notebookPanelWidth)).current;
+  const leftsideIconAnimationValue = useRef(new Animated.Value(0)).current;
+  const rightsideIconAnimationValue = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
 
   useEffect(() => {

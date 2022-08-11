@@ -278,10 +278,10 @@ const useUpload = () => {
     // Get the URI of the image file if it exists on local device
     const getImageFile = async (imageProps) => {
       try {
-        const imageURI = await useImages.getLocalImageURI(imageProps.id);
+        const imageURI = useImages.getLocalImageURI(imageProps.id);
         const isValidImageURI = await RNFS.exists(imageURI);
         if (isValidImageURI) return imageURI;
-        throw Error;  // Webstorm giving warning here but we want this caught locally so we get the log
+        throw Error;  // Webstorm giving warning here, but we want this caught locally so that we get the log
       }
       catch {
         console.log('Local file not found for image:' + imageProps.id);

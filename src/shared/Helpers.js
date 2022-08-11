@@ -83,7 +83,7 @@ export const deepFindFeatureById = (obj, id) => {
   if (obj.id === id) return obj;
   let result, p;
   for (p in obj) {
-    if (obj.hasOwnProperty(p) && typeof obj[p] === 'object') {
+    if (obj[p] && typeof obj[p] === 'object') {
       result = deepFindFeatureById(obj[p], id);
       if (result) return result;
     }
@@ -97,7 +97,7 @@ export const deepFindFeatureTypeById = (obj, id) => {
   if (obj.id === id) return obj;
   let result, p;
   for (p in obj) {
-    if (obj.hasOwnProperty(p) && typeof obj[p] === 'object') {
+    if (obj[p] && typeof obj[p] === 'object') {
       result = deepFindFeatureTypeById(obj[p], id);
       if (result) return p;
     }
@@ -108,7 +108,7 @@ export const deepFindFeatureTypeById = (obj, id) => {
 // Deep extend an object
 export const deepObjectExtend = (target, source) => {
   for (const prop in source) {
-    if (source.hasOwnProperty(prop)) {
+    if (source[prop]) {
       if (target[prop] && typeof source[prop] === 'object') deepObjectExtend(target[prop], source[prop]);
       else target[prop] = source[prop];
     }
@@ -228,11 +228,11 @@ export const toRadians = (deg) => {
 };
 
 export const truncateText = (str, maxLength) => {
-  if (str.length >= maxLength) return str.substr(0, maxLength) + '...';
+  if (str.length >= maxLength) return str.substring(0, maxLength) + '...';
   else return str;
 };
 
-// Check if array, object, string, number is empty and if so return true
+// Check if an array, object, string or number is empty and if so return true
 export const isEmpty = (value) => {
   if (value === null || value === undefined) return true;
   if (Array.isArray(value)) return value.length === 0;

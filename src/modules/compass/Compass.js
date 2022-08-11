@@ -196,9 +196,9 @@ const Compass = (props) => {
     let image = require('../../assets/images/compass/strike-dip-centered.png');
     const spin = strikeSpinValue.interpolate({
       inputRange: [0, compassData.strike],
-      // inputRange: [0, 360], // Changed to get symbols to render while we figure out android compass
+      // inputRange: [0, 360], // Changed to get symbols to render while we figure out the android compass
       outputRange: ['0deg', compassData.strike + 'deg'],
-      // outputRange: ['0deg', 180 + 'deg'], // Changed to get symbols to render while we figure out android compass
+      // outputRange: ['0deg', 180 + 'deg'], // Changed to get symbols to render while we figure out the android compass
     });
     // First set up animation
     Animated.timing(

@@ -25,13 +25,12 @@ const NamingConventions = () => {
       innerRef={formRef}
       onSubmit={values => console.log('Submitting form...', values)}
       validate={values => useForm.validateForm({formName: formName, values: values})}
-      children={formProps => (
-        <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>
-      )}
       initialValues={preferences}
       validateOnChange={false}
       enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
-    />
+    >
+      {formProps => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
+    </Formik>
   );
 };
 

@@ -528,7 +528,7 @@ const Map = React.forwardRef((props, ref) => {
               if (spotFound.properties.id !== vertexSelected.properties.id) vertexSelected = undefined;
             }
             if (isEmpty(vertexSelected)) {
-              // draw features did not return anything.. generally a scenario of selecting a vertex on a spot press.
+              // draw features did not return anything - generally a scenario of selecting a vertex on a spot press.
               closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotFound, screenPointX,
                 screenPointY, editingModeData);
               vertexSelected = closestVertexDetails[0];
@@ -544,7 +544,7 @@ const Map = React.forwardRef((props, ref) => {
               }
             }
             else {
-              //if the vertex is not empty, check if its identified at spot press or vertex press
+              //if the vertex is not empty, check if it's identified at spot press or vertex press
               if (isVertexIdentifiedAtSpotPress) {
                 //  this is the case when the spot and vertex are chosen to be edited at once.
                 let editedSpot = editingModeData.spotsEdited.find(
@@ -646,7 +646,7 @@ const Map = React.forwardRef((props, ref) => {
     if (isEmpty(vertex)) {
       return {};
     }
-    var indexOfCoordinatesToUpdate = [];
+    let indexOfCoordinatesToUpdate = [];
     for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++) {
       if (mapPropsMutable.drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId) {
         indexOfCoordinatesToUpdate.push(index);
@@ -665,7 +665,7 @@ const Map = React.forwardRef((props, ref) => {
         console.log('Editing Coordinate');
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
         console.log('Feature Editing:', spotEditingCopy);
-        let coords = {};
+        let coords;
         try {
           coords = turf.getCoords(spotEditingCopy);
         }
@@ -682,7 +682,7 @@ const Map = React.forwardRef((props, ref) => {
           // the index on drawFeatures array that matches with vertex to edit is the index of the coordinates to be edited
         // on the actual polygon or linestring.
         else {
-          var indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(editingModeData.vertexToEdit);
+          let indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(editingModeData.vertexToEdit);
           if (!isEmpty(indexOfCoordinatesToUpdate)) {
             if (indexOfCoordinatesToUpdate.includes(0)) {
               setEditingModeData(d => ({
@@ -807,7 +807,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const getTileCount = async (zoomLevel) => {
-    var extentString = await getExtentString();
+    const extentString = await getExtentString();
     try {
       //Assign the promise unresolved first then get the data using the json method.
       console.log('sending this extent to server: ', extentString);
@@ -833,14 +833,9 @@ const Map = React.forwardRef((props, ref) => {
   // Fly the map to the current location
   const goToCurrentLocation = async () => {
     if (cameraRef.current) {
-      try {
-        console.log('%cFlying to location', 'color: red');
-        const currentLocation = await useMaps.getCurrentLocation();
-        await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
-      }
-      catch (err) {
-        throw err;
-      }
+      console.log('%cFlying to location', 'color: red');
+      const currentLocation = await useMaps.getCurrentLocation();
+      await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
     }
     else throw 'Error Getting Map Camera';
   };
@@ -1019,7 +1014,7 @@ const Map = React.forwardRef((props, ref) => {
       let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
         [...mapPropsMutable.drawFeatures]);
       if (isEmpty(closestVertexToSelect)) {
-        // draw features did not return anything.. generally a scenario of selecting a vertex on a spot long press.
+        // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
         closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
           editingModeData);
         closestVertexToSelect = closestVertexDetails[0];
@@ -1066,7 +1061,7 @@ const Map = React.forwardRef((props, ref) => {
             else {
               console.log('Deleting selected vertex...');
               const coords = turf.getCoords(spotEditingCopy);
-              var indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexSelected);
+              const indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexSelected);
               let isModified = false;
               if (turf.getType(spotEditingCopy) === 'LineString' && coords.length > 2) {
                 for (let i = 0; i < coords.length; i++) {
@@ -1347,5 +1342,6 @@ const Map = React.forwardRef((props, ref) => {
     </View>
   );
 });
+Map.displayName = 'Map';
 
 export default (Map);

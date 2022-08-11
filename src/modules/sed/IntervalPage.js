@@ -77,11 +77,12 @@ const IntervalPage = (props) => {
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
           validate={values => useForm.validateForm({formName: formName, values: values})}
-          children={formProps => <Form {...{...formProps, formName: formName}}/>}
           initialValues={{...interval, character}}
           validateOnChange={false}
           enableReinitialize={true}
-        />
+        >
+          {formProps => <Form {...{...formProps, formName: formName}}/>}
+        </Formik>
       </View>
     </React.Fragment>
   );

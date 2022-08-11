@@ -94,11 +94,12 @@ const StratSectionPage = (props) => {
             onSubmit={() => console.log('Submitting form...')}
             onReset={() => console.log('Resetting form...')}
             validate={values => useForm.validateForm({formName: formName, values: values})}
-            children={formProps => <Form {...{...formProps, formName: formName}}/>}
             initialValues={stratSection}
             validateOnChange={false}
             enableReinitialize={true}
-          />
+          >
+            {formProps => <Form {...{...formProps, formName: formName}}/>}
+          </Formik>
         </View>
       </View>
     );

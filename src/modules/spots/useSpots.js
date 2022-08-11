@@ -202,7 +202,7 @@ const useSpots = () => {
   };
 
   const getAllFeaturesFromSpot = (spotToEvaluate) => {
-    let spotsToEvaluate = [];
+    let spotsToEvaluate;
     let allFeatures = [];
     if (isEmpty(spotToEvaluate)) spotsToEvaluate = Object.values(getActiveSpotsObj());
     else spotsToEvaluate = [spotToEvaluate];
@@ -388,7 +388,7 @@ const useSpots = () => {
     else return require('../../assets/icons/QuestionMark_pressed.png');
   };
 
-  // Get the Spot that Contains a Specific Strat Section Given the Id of the Strat Section
+  // Get the Spot that Contains a Specific Strat Section Given the ID of the Strat Section
   const getSpotWithThisStratSection = (stratSectionId) => {
     const activeSpots = getActiveSpotsObj();
     // Comparing int to string so use only 2 equal signs

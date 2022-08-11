@@ -226,7 +226,7 @@ const useTags = () => {
     else return [];
   };
 
-  // Get Tags at a Spot given an Id or if no Id specified get tags at the selected Spot
+  // Get Tags at a Spot given an ID or if no ID specified get tags at the selected Spot
   const getTagsAtSpot = (spotId) => {
     if (!spotId && !isEmpty(selectedSpot)) spotId = selectedSpot.properties.id;
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
