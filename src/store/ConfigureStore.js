@@ -84,7 +84,10 @@ const rootReducer = (state, action) => {
   if (action.type === REDUX.CLEAR_STORE) {
     state = {
       compass: undefined,
-      home: undefined,
+      home: {
+        ...state.home,
+        isOnline: state.home.isOnline,
+      },
       notebook: undefined,
       map: undefined,
       project: undefined,

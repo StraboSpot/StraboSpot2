@@ -207,7 +207,7 @@ const useServerRequests = () => {
     const timeoutPromiseException = (err) => {
       const timeoutError = Symbol();
       if (err === timeoutError) throw new Error('Network timeout');
-      else throw 'Unable to Reach Server.';
+      else throw 'Unable to Reach Server!';
     };
 
     let timer;
