@@ -16,7 +16,13 @@ import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import uiStyles from '../../shared/ui/ui.styles';
-import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import WarningModal from '../home/home-modals/WarningModal';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setProjectLoadSelectionModalVisible,
+  setWarningModalVisible,
+} from '../home/home.slice';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
@@ -94,6 +100,9 @@ const SignIn = (props) => {
     catch (err) {
       console.log('error:', err);
       Sentry.captureException(err);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(err));
+      dispatch(setWarningModalVisible(true));
     }
   };
 
@@ -216,6 +225,7 @@ const SignIn = (props) => {
           </Animated.View>
         </View>
       </View>
+      <WarningModal/>
     </ImageBackground>
   );
 };
