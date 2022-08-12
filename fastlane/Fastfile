@@ -1,6 +1,6 @@
   before_all do |lane, options|
     ensure_git_branch(branch: 'master')
-    git_pull
+#     git_pull
     puts "Before all has completed"
   end
 
