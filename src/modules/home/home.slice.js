@@ -26,12 +26,12 @@ const initialHomeState = {
   isMainMenuPanelVisible: false,
   isUploadModalVisible: false,
   shortcutSwitchPosition: {
-    Tag: false,
-    Measurement: false,
-    Sample: false,
-    Note: false,
-    Photo: false,
-    Sketch: false,
+    tag: false,
+    measurement: false,
+    sample: false,
+    note: false,
+    photo: false,
+    sketch: false,
   },
   isProjectLoadComplete: false,
 };
