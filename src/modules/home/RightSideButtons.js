@@ -120,12 +120,13 @@ const RightSideButtons = (props) => {
           }
           break;
         }
+        case 'sketch':
+          navigation.navigate('Sketch')
+          break;
         default:
           if (modalVisible === key) await dispatch(setModalVisible({modal: null}));
           else await dispatch(setModalVisible({modal: key}));
-          props.closeNotebookPanel();
       }
-      if (key === 'sketch') navigation.navigate('Sketch');
     };
 
     return (
@@ -135,6 +136,7 @@ const RightSideButtons = (props) => {
             return (
               shortcutSwitchPosition[sm.key] ? [...acc, (
                   <IconButton
+                    key={sm.key}
                     source={modalVisible === sm.key ? sm.icon_pressed_src : sm.icon_src}
                     onPress={() => toggleShortcutModal(sm.key)}
                   />
