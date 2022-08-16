@@ -156,7 +156,7 @@ function Basemap(props) {
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map((customMap) => {
           return (
-            customMap.overlay && customMap.isViewable && (
+            customMap.overlay && (
               <MapboxGL.RasterSource
                 key={customMap.id}
                 id={customMap.id}
@@ -165,7 +165,7 @@ function Basemap(props) {
                 <MapboxGL.RasterLayer
                   id={customMap.id + 'Layer'}
                   sourceID={customMap.id}
-                  style={{rasterOpacity: customMap.opacity}}
+                  style={{rasterOpacity: customMap.opacity, visibility: customMap.isViewable ? 'visible' : 'none'}}
                 />
               </MapboxGL.RasterSource>
             )
