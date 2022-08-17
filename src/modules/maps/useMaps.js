@@ -14,6 +14,7 @@ import {
   clearedStatusMessages,
   setErrorMessagesModalVisible,
   setOfflineMapsModalVisible,
+  setWarningModalVisible,
 } from '../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -164,6 +165,13 @@ const useMaps = (mapRef) => {
   };
 
   const customMapDetails = (map) => {
+    if (map.source === 'map_warper') {
+      const warningMessage = 'Map Warper maps are no longer available. Download the .tiff'
+        + ' file from Mapwarper.net and upload it into your Strabo MyMaps account.';
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(warningMessage));
+      dispatch(setWarningModalVisible(true));
+    }
     dispatch(selectedCustomMapToEdit(map));
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };

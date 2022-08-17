@@ -71,7 +71,8 @@ const BaseMapDialog = (props) => {
 
   const renderCustomBasemapsList = () => {
     let sectionTitle = 'Custom Basemaps';
-    let customMapsToDisplay = Object.values(customMaps).filter(customMap => !customMap.overlay);
+    let customMapsToDisplay = Object.values(customMaps).filter(
+      customMap => !customMap.overlay && customMap.source !== 'map_warper');
     if (!isOnline.isInternetReachable) {
       customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
         if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm'
@@ -95,7 +96,8 @@ const BaseMapDialog = (props) => {
 
   const renderCustomMapOverlaysList = () => {
     let sectionTitle = 'Custom Map Overlays';
-    let customMapOverlaysToDisplay = Object.values(customMaps).filter(customMap => customMap.overlay);
+    let customMapOverlaysToDisplay = Object.values(customMaps).filter(
+      customMap => customMap.overlay && customMap.source !== 'map_warper');
     if (!isOnline.isInternetReachable) {
       customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
       sectionTitle = 'Offline Custom Overlays';

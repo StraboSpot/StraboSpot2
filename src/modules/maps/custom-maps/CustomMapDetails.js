@@ -18,7 +18,6 @@ import {
   setErrorMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
-  setWarningModalVisible,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
@@ -37,8 +36,6 @@ const AddCustomMaps = () => {
   const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
 
   const [editableCustomMapData, setEditableCustomMapData] = useState(null);
-
-  let sliderValuePercent = editableCustomMapData && Math.round(editableCustomMapData.opacity * 100).toFixed(0);
 
   useEffect(() => {
     console.log('UE AddCustomMaps [customMapToEdit]', customMapToEdit);
@@ -101,15 +98,6 @@ const AddCustomMaps = () => {
     );
   };
 
-  const selectMap = (source) => {
-    console.log(source);
-    if (source === 'map_warper') {
-      dispatch(clearedStatusMessages());
-      dispatch(setWarningModalVisible(true));
-    }
-    setEditableCustomMapData(e => ({...e, source: source}));
-  };
-
   const renderCustomMapName = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
     const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
@@ -122,7 +110,7 @@ const AddCustomMaps = () => {
           checked={editableCustomMapData && item.source === editableCustomMapData.source}
           checkedIcon={radioSelected}
           uncheckedIcon={radioUnslected}
-          onPress={() => selectMap(item.source)}
+          onPress={() => setEditableCustomMapData(e => ({...e, source: item.source}))}
         />
       </ListItem>
     );
@@ -183,9 +171,8 @@ const AddCustomMaps = () => {
       <SectionDivider dividerText={'Map Type'}/>
       <View style={customMapStyles.mapTypeInfoContainer}>
         <Text style={customMapStyles.mapTypeInfoText}>
-          If you wish to save a new MapWarper map please download the <Text
-          style={{fontWeight: 'bold'}}>.tiff</Text> file from Mapwarper.net and upload it into your Strabo MyMaps
-          account.
+          If you wish to save a new MapWarper map please download the <Text style={{fontWeight: 'bold'}}>.tiff </Text>
+          file from Mapwarper.net and upload it into your Strabo MyMaps account.
         </Text>
       </View>
       <FlatList
@@ -217,6 +204,9 @@ const AddCustomMaps = () => {
   };
 
   const renderOverlay = () => {
+    const opacity = editableCustomMapData?.opacity && typeof (editableCustomMapData.opacity) === 'number'
+    && editableCustomMapData.opacity >= 0 && editableCustomMapData.opacity <= 1 ? editableCustomMapData.opacity : 1;
+    const sliderValuePercent = Math.round(opacity * 100).toFixed(0);
     return (
       <React.Fragment>
         <SectionDivider dividerText={'Overlay Settings'}/>
@@ -237,7 +227,7 @@ const AddCustomMaps = () => {
             </ListItem.Content>
             <View style={{flex: 2}}>
               <Slider
-                value={editableCustomMapData && editableCustomMapData.opacity}
+                value={opacity}
                 onValueChange={val => setEditableCustomMapData(e => ({...e, opacity: val}))}
                 maximumValue={1}
                 minimumValue={0.05}
@@ -284,8 +274,8 @@ const AddCustomMaps = () => {
           title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
           containerStyle={commonStyles.standardButtonContainer}
           type={'clear'}
-          disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(
-            editableCustomMapData.id))}
+          disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(editableCustomMapData.id)
+            || editableCustomMapData.source === 'map_warper')}
           onPress={() => addMap()}
         />
         <Button

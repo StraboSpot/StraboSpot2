@@ -165,7 +165,11 @@ function Basemap(props) {
                 <MapboxGL.RasterLayer
                   id={customMap.id + 'Layer'}
                   sourceID={customMap.id}
-                  style={{rasterOpacity: customMap.opacity, visibility: customMap.isViewable ? 'visible' : 'none'}}
+                  style={{
+                    rasterOpacity: customMap.opacity && typeof (customMap.opacity) === 'number'
+                    && customMap.opacity >= 0 && customMap.opacity <= 1 ? customMap.opacity : 1,
+                    visibility: customMap.isViewable ? 'visible' : 'none',
+                  }}
                 />
               </MapboxGL.RasterSource>
             )
