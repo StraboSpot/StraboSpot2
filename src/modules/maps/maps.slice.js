@@ -1,6 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+import {LATITUDE, LONGITUDE} from './maps.constants';
+
 const initialMapsState = {
+  center: [LONGITUDE, LATITUDE],
   currentBasemap: null,
   currentImageBasemap: undefined,
   customMaps: {},
@@ -51,6 +54,9 @@ const mapsSlice = createSlice({
       console.log('Map All Symbols Toggled', action.payload);
       state.isAllSymbolsOn = action.payload;
       state.symbolsOn = action.payload ? state.mapSymbols : state.symbolsOn;
+    },
+    setCenter(state, action) {
+      state.center = action.payload;
     },
     setCurrentBasemap(state, action) {
       // const newBasemap = BASEMAPS.find(basemap => basemap.id === action.payload);
@@ -106,6 +112,7 @@ export const {
   deletedCustomMap,
   selectedCustomMapToEdit,
   setAllSymbolsToggled,
+  setCenter,
   setCurrentBasemap,
   setCurrentImageBasemap,
   setFreehandFeatureCoords,

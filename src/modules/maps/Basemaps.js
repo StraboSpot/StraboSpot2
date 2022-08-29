@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import ScaleBarAndZoom from '../../shared/ui/Scalebar';
@@ -12,6 +12,7 @@ import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
+import {setCenter} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -20,6 +21,8 @@ import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 
 function Basemap(props) {
+  const dispatch = useDispatch();
+  const center = useSelector(state => state.map.center);
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
@@ -29,7 +32,6 @@ function Basemap(props) {
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
   const [currentZoom, setCurrentZoom] = useState(0);
-  const [center, setCenter] = useState([0, 0]);
   const [doesImageExist, setDoesImageExist] = useState(false);
 
   useEffect(() => {
@@ -39,15 +41,6 @@ function Basemap(props) {
 
   const checkImageExistance = async () => {
     return useImages.doesImageExistOnDevice(props.imageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
-  };
-
-  useEffect(() => {
-    console.log('UE Basemap [currentZoom]', currentZoom);
-    getCenter();
-  }, [currentZoom]);
-
-  const getCenter = async () => {
-    setCenter(await mapRef.current.getCenter());
   };
 
   // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
@@ -103,9 +96,18 @@ function Basemap(props) {
     return props.zoom;
   };
 
-  const onRegionDidChange = () => {
+  const onRegionDidChange = async () => {
     console.log('Event onRegionDidChange');
+    console.log('Updating spots in map extent...');
     props.spotsInMapExtent();
+    if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
+      const newCenter = await mapRef.current.getCenter();
+      if (center !== newCenter) {
+        // console.log('Prev Center:', center, 'New Center:', newCenter);
+        console.log('Setting new map center...');
+        dispatch(setCenter(await mapRef.current.getCenter()));
+      }
+    }
   };
 
   return (

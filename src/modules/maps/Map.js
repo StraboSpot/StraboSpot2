@@ -28,7 +28,7 @@ import {
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
-import {GEO_LAT_LNG_PROJECTION, LATITUDE, LONGITUDE, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
+import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {
   clearedStratSection,
   clearedVertexes,
@@ -56,6 +56,7 @@ const Map = React.forwardRef((props, ref) => {
   const useOfflineMaps = useOfflineMapsHook();
   const useStratSection = useStratSectionHook();
 
+  const center = useSelector(state => state.map.center);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customBasemap = useSelector(state => state.map.customMaps);
   const stratSection = useSelector(state => state.map.stratSection);
@@ -89,7 +90,7 @@ const Map = React.forwardRef((props, ref) => {
   const initialMapPropsMutable = {
     allowMapViewMove: true,
     basemap: currentBasemap,
-    centerCoordinate: [LONGITUDE, LATITUDE],
+    centerCoordinate: center,
     drawFeatures: [],
     editFeatureVertex: [],
     imageBasemap: currentImageBasemap,
@@ -198,7 +199,7 @@ const Map = React.forwardRef((props, ref) => {
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
-    if (!currentImageBasemap && !stratSection) setCurrentLocationAsCenter();
+    if (!currentImageBasemap && !stratSection && !center) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user, isOnline]);
 
@@ -254,7 +255,6 @@ const Map = React.forwardRef((props, ref) => {
       if (selectedSpot.properties.trace) setDefaultGeomType('LineString');
       else if (selectedSpot.properties.surface_feature) setDefaultGeomType('Polygon');
       else setShowSetInCurrentViewModal(true);
-
     }
     else console.warn('Error creating a default geometry as there is no map or Selected Spot');
   };
