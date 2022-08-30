@@ -21,6 +21,8 @@ const initialProjectState = {
   selectedTag: {},
   isMultipleFeaturesTaggingEnabled: false,
   addTagToSelectedSpot: false,
+  projectUploadProgress: 0,
+  isImageUploading: false,
 };
 
 const projectSlice = createSlice({
@@ -142,6 +144,9 @@ const projectSlice = createSlice({
     doesBackupDirectoryExist(state, action) {
       state.deviceBackUpDirectoryExists = action.payload;
     },
+    imageIsUploading(state, action) {
+      state.isImageUploading = action.payload;
+    },
     setActiveDatasets(state, action) {
       const {bool, dataset} = action.payload;
       if (bool) state.activeDatasetsIds = [...new Set([...state.activeDatasetsIds, dataset])];
@@ -214,6 +219,9 @@ const projectSlice = createSlice({
       state.project[field] = value;
       state.project.modified_timestamp = Date.now();
     },
+    updatedProjectUploadProgress(state, action) {
+      state.projectUploadProgress = action.payload;
+    },
   },
 });
 
@@ -234,6 +242,7 @@ export const {
   deletedSpotIdFromDatasets,
   deletedSpotIdFromTags,
   doesBackupDirectoryExist,
+  imageIsUploading,
   setActiveDatasets,
   setActiveTemplates,
   setDatabaseEndpoint,
@@ -247,6 +256,7 @@ export const {
   updatedDatasetProperties,
   updatedDatasets,
   updatedProject,
+  updatedProjectUploadProgress,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

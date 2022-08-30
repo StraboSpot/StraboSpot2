@@ -25,6 +25,7 @@ const initialHomeState = {
   isImageModalVisible: false,
   isMainMenuPanelVisible: false,
   isUploadModalVisible: false,
+  isUploadProgressModalVisible: false,
   shortcutSwitchPosition: {
     tag: false,
     measurement: false,
