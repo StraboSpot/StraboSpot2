@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
+import LottieView from 'lottie-react-native';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -9,6 +10,7 @@ import useUploadHook from '../../../services/useUpload';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';
+import useAnimationsHook from '../../../shared/ui/useAnimations';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import UploadProgressModal from '../../project/UploadProgressModal';
 import useProjectHook from '../../project/useProject';
@@ -29,10 +31,13 @@ const UploadModal = () => {
   // const [imageUpload, setImageUpload] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [response, setResponse] = useState('');
-  const [uploadComplete, setUploadComplete] = useState('');
+  const [uploadComplete, setUploadComplete] = useState(false);
 
-  const handleProgress = (event) => {
-    setUploadProgress(Math.round((event.loaded * 100) / event.total));
+  const useAnimations = useAnimationsHook();
+
+  const handleCompletePress = () => {
+    setIsVisible(false);
+    setUploadComplete(false);
   };
 
   const renderUploadProgressModal = async () => {
@@ -42,38 +47,51 @@ const UploadModal = () => {
     setUploadComplete(uploadStatus);
   };
 
-  return (
-    <>
-      <UploadDialogBox
-        dialogTitle={'OVERWRITE WARNING!'}
-        visible={isUploadModalVisible}
-        cancel={() => dispatch(setUploadModalVisible(false))}
-        buttonText={'Upload'}
-        onPress={async () => renderUploadProgressModal()}
-      >
+
+  const renderUploadingAnimation = (type) => {
+    return (<>
+      <LottieView
+        source={useAnimations.getAnimationType(type)}
+        autoPlay
+        loop={type === 'uploading'}
+      />
+    </>);
+  };
+
+  return (<>
+    <UploadDialogBox
+      dialogTitle={'OVERWRITE WARNING!'}
+      visible={isUploadModalVisible}
+      cancel={() => dispatch(setUploadModalVisible(false))}
+      buttonText={'Upload'}
+      onPress={async () => renderUploadProgressModal()}
+    >
+      <View>
         <View>
-          <View>
-            <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
-            <Text style={commonStyles.dialogContentImportantText}>
-              {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
-            </Text>
-          </View>
-          <Spacer/>
-          <Text>
-            <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
-              currentProject) && currentProject.description.project_name} </Text>
-            project properties and datasets will be uploaded and will
-            <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
-            for this project:
+          <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
+          <Text style={commonStyles.dialogContentImportantText}>
+            {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
           </Text>
         </View>
-      </UploadDialogBox>
-      <UploadProgressModal
-        closeProgressModal={() => setIsVisible(false)}
-        upload={isVisible}
-        onPressComplete={() => setIsVisible(false)}
-        showButton={uploadComplete !== ''}
-      >
+        <Spacer/>
+        <Text>
+          <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
+            currentProject) && currentProject.description.project_name} </Text>
+          project properties and datasets will be uploaded and will
+          <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
+          for this project:
+        </Text>
+      </View>
+    </UploadDialogBox>
+    <UploadProgressModal
+      closeProgressModal={() => setIsVisible(false)}
+      upload={isVisible}
+      onPressComplete={() => handleCompletePress()}
+      showButton={uploadComplete}
+      uploadingAnimation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
+    >
+
+      <View style={{flex: 1}}>
         <Text>{statusMessages}</Text>
         {isImageUploading && <View style={{paddingTop: 10}}>
           <ProgressBar
@@ -84,9 +102,10 @@ const UploadModal = () => {
           />
           <Text style={{textAlign: 'center'}}>{`${(projectUploadProgress * 100).toFixed(0)}%`}</Text>
         </View>}
-      </UploadProgressModal>
-    </>
-  );
+      </View>
+
+    </UploadProgressModal>
+  </>);
 };
 
 export default UploadModal;
