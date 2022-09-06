@@ -5,7 +5,6 @@ import {Dialog, DialogButton, DialogContent, DialogFooter, SlideAnimation} from 
 
 // import ProgressBar from 'react-native-progress/Bar';
 import commonStyles from '../../shared/common.styles';
-import styles from '../maps/offline-maps/offlineMaps.styles';
 
 const UploadProgressModal = (props) => {
 
@@ -19,10 +18,8 @@ const UploadProgressModal = (props) => {
         slideFrom: 'top',
       })}
       dialogTitle={
-        <View style={styles.dialogTitleContainer}>
-          <View style={styles.dialogTitle}>
-            <Text style={{fontSize: 25}}>UPLOAD</Text>
-          </View>
+        <View style={commonStyles.dialogTitleContainer}>
+          <Text style={{fontSize: 25}}>UPLOADING...</Text>
         </View>
       }
       footer={
@@ -31,16 +28,18 @@ const UploadProgressModal = (props) => {
             <DialogButton
               text={props.buttonText || 'OK'}
               onPress={props.onPressComplete}
-              style={[styles.dialogButton]}
-              textStyle={props.disabled ? styles.dialogDisabledButtonText : styles.dialogButtonText}
+              textStyle={commonStyles.dialogButtonText}
               disabled={props.disabled}
             />
           </DialogFooter>}
         </View>
       }
     >
-      <DialogContent style={commonStyles.dialogContent}>
+      <DialogContent style={{...commonStyles.dialogContent}}>
         {props.children}
+      </DialogContent>
+      <DialogContent style={{height: 150, marginBottom: 20}}>
+        {props.uploadingAnimation}
       </DialogContent>
     </Dialog>
   );
