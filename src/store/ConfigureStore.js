@@ -105,7 +105,7 @@ const defaultMiddlewareOptions = {
   immutableCheck: false,
   serializableCheck: {
     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    warnAfter: 50,
+    warnAfter: 60,
   },
 };
 
