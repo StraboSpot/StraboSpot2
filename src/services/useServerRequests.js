@@ -1,11 +1,13 @@
 import {Alert} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {updatedProjectUploadProgress} from '../modules/project/projects.slice';
 import {STRABO_APIS} from './deviceAndAPI.constants';
 
-const useServerRequests = () => {
+const useServerRequests = (props) => {
+  const dispatch = useDispatch();
   const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const baseUrl = databaseEndpoint.url && databaseEndpoint.isSelected
     ? databaseEndpoint.url
@@ -257,20 +259,34 @@ const useServerRequests = () => {
     return post('/datasetspots/' + datasetId, encodedLogin, spotCollection);
   };
 
-  const updateProject = (project, encodedLogin) => {
+  const uploadProgress = (event) => {
+    const percentage = Math.floor((event.loaded / event.total) * 100);
+    console.log('UPLOAD IS ' + percentage + '% DONE!');
+    dispatch(updatedProjectUploadProgress(event.loaded / event.total));
+  };
+
+  const updateProject = async (project, encodedLogin) => {
     return post('/project', encodedLogin, project);
   };
 
   const uploadImage = async (formdata, encodedLogin) => {
-    const response = await fetch(baseUrl + '/image', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Basic ' + encodedLogin,
-      },
-      body: formdata,
+    const xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+      xhr.upload.addEventListener('progress', uploadProgress);
+      xhr.addEventListener('load', () => {
+        console.log('XHR RES', xhr.response);
+        if (xhr.status === 404) reject(false);
+        else resolve(true);
+      });
+      xhr.addEventListener('error', () => {
+        console.error('REJECTED UPDATE');
+        reject(false);
+      });
+      xhr.open('POST', baseUrl + '/image');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
+      xhr.send(formdata);
     });
-    return handleResponse(response);
   };
 
   const uploadProfileImage = async (formdata, encodedLogin) => {

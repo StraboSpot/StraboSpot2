@@ -19,6 +19,13 @@ const commonStyles = StyleSheet.create({
     fontSize: themes.SMALL_TEXT_SIZE,
     color: themes.PRIMARY_ACCENT_COLOR,
   },
+  dialogButtonText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    color: 'black',
+  },
+  dialogDisabledButtonText: {
+    color: themes.PRIMARY_TEXT_COLOR,
+  },
   dialogContent: {
     flex: 1,
     marginTop: 15,
@@ -46,6 +53,11 @@ const commonStyles = StyleSheet.create({
   },
   dialogWarning: {
     backgroundColor: 'yellow',
+  },
+  dialogTitleContainer: {
+    alignItems: 'center',
+    backgroundColor: 'green',
+    padding: 10,
   },
   dialogText: {
     paddingTop: 10,
