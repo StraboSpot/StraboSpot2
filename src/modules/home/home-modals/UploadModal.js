@@ -9,10 +9,10 @@ import {STRABO_APIS} from '../../../services/deviceAndAPI.constants';
 import useUploadHook from '../../../services/useUpload';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
+import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 import Spacer from '../../../shared/ui/Spacer';
 import useAnimationsHook from '../../../shared/ui/useAnimations';
 import UploadDialogBox from '../../project/UploadDialogBox';
-import UploadProgressModal from '../../project/UploadProgressModal';
 import useProjectHook from '../../project/useProject';
 import {setUploadModalVisible} from '../home.slice';
 
@@ -41,6 +41,7 @@ const UploadModal = () => {
   };
 
   const renderUploadProgressModal = async () => {
+    dispatch(setUploadModalVisible(false));
     setIsVisible(true);
     const uploadStatus = await useUpload.initializeUpload();
     console.log('DATASET UPLOAD COMPLETE!', uploadStatus);
@@ -83,12 +84,12 @@ const UploadModal = () => {
         </Text>
       </View>
     </UploadDialogBox>
-    <UploadProgressModal
+    <ProgressModal
       closeProgressModal={() => setIsVisible(false)}
       upload={isVisible}
       onPressComplete={() => handleCompletePress()}
       showButton={uploadComplete}
-      uploadingAnimation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
+      animation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
     >
 
       <View style={{flex: 1}}>
@@ -104,7 +105,7 @@ const UploadModal = () => {
         </View>}
       </View>
 
-    </UploadProgressModal>
+    </ProgressModal>
   </>);
 };
 

@@ -4,9 +4,9 @@ import {Platform, Text, View} from 'react-native';
 import {Dialog, DialogButton, DialogContent, DialogFooter, SlideAnimation} from 'react-native-popup-dialog';
 
 // import ProgressBar from 'react-native-progress/Bar';
-import commonStyles from '../../shared/common.styles';
+import commonStyles from '../../common.styles';
 
-const UploadProgressModal = (props) => {
+const ProgressModal = (props) => {
 
   return (
     <Dialog
@@ -39,10 +39,10 @@ const UploadProgressModal = (props) => {
         {props.children}
       </DialogContent>
       <DialogContent style={{height: 150, marginBottom: 20}}>
-        {props.uploadingAnimation}
+        {props.animation}
       </DialogContent>
     </Dialog>
   );
 };
 
-export default UploadProgressModal;
+export default ProgressModal;
