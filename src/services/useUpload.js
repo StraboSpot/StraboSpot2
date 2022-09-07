@@ -9,7 +9,6 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setUploadModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {
@@ -37,18 +36,15 @@ const useUpload = () => {
   const [useProject] = useProjectHook();
 
   const initializeUpload = async () => {
-    let uploadStatus = false;
     KeepAwake.activate();
-    dispatch(setUploadModalVisible(false));
     try {
       await uploadProject();
-      uploadStatus = await uploadDatasets();
+      const uploadStatus = await uploadDatasets();
       if (uploadStatus) {
         console.log('Upload Complete');
         batch(() => {
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Upload Complete!'));
-          // dispatch(setLoadingStatus({view: 'modal', bool: false}));
           KeepAwake.deactivate();
         });
       }
@@ -59,7 +55,6 @@ const useUpload = () => {
       console.error('Upload Failed!', err.toString());
       return true;
     }
-    // dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
   const uploadDataset = async (dataset) => {
