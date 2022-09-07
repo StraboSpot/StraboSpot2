@@ -4,35 +4,38 @@ import {View} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
-import {setCenter} from './maps.slice';
+import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, STRAT_SECTION_CENTER} from './maps.constants';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
+import useMapViewHook from './useMapView';
 
 function Basemap(props) {
-  const dispatch = useDispatch();
   const center = useSelector(state => state.map.center);
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const zoom = useSelector(state => state.map.zoom);
 
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
-  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
-  const [currentZoom, setCurrentZoom] = useState(0);
+  const useMapView = useMapViewHook();
+
+  const [currentCenter] = useState(center);
+  const [currentZoom] = useState(zoom);
   const [doesImageExist, setDoesImageExist] = useState(false);
+  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
 
   useEffect(() => {
     console.log('UE Basemap [props.imageBasemap]', props.imageBasemap);
@@ -53,22 +56,24 @@ function Basemap(props) {
     });
   };
 
-  const defaultCenterCoordinates = () => {
-    return props.imageBasemap ? proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2])
-      : props.centerCoordinate;
-  };
-
   // Evaluate and return appropriate center coordinates
-  const evaluateCenterCoordinates = () => {
-    if (props.stratSection) return [0.001, 0.0007];
-    else if (props.zoomToSpot && !isEmpty(selectedSpot)) {
-      if (props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id) {
+  const getCenterCoordinates = () => {
+    console.log('Getting map center...');
+    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
+      if ((props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id)
+        || (props.stratSection && selectedSpot.properties.strat_section_id === props.stratSection.strat_section_id)) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
       }
-      else if (!selectedSpot.properties.image_basemap) return turf.centroid(selectedSpot).geometry.coordinates;
+      else if (!selectedSpot.properties.image_basemap && !selectedSpot.properties.strat_section_id) {
+        return turf.centroid(selectedSpot).geometry.coordinates;
+      }
     }
-    return defaultCenterCoordinates();
+    else if (props.imageBasemap) {
+      return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+        [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2]);
+    }
+    else if (props.stratSection) return STRAT_SECTION_CENTER;
+    return currentCenter;
   };
 
   // Get max X and max Y for strat intervals
@@ -85,28 +90,20 @@ function Basemap(props) {
     }, [0, 0]);
   };
 
-  const mapZoomLevel = async () => {
-    const zoom = await mapRef.current.getZoom();
-    setCurrentZoom(zoom.toFixed(1));
-  };
-
-  const setInitialZoomLevel = () => {
-    if (props.imageBasemaps) return 14;
-    if (props.stratSection) return 18;
-    return props.zoom;
+  const getZoomLevel = () => {
+    console.log('Getting zoom...');
+    if (props.imageBasemap) return 14;
+    else if (props.stratSection) return 18;
+    return currentZoom;
   };
 
   const onRegionDidChange = async () => {
     console.log('Event onRegionDidChange');
-    console.log('Updating spots in map extent...');
     props.spotsInMapExtent();
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
       const newCenter = await mapRef.current.getCenter();
-      if (center !== newCenter) {
-        // console.log('Prev Center:', center, 'New Center:', newCenter);
-        console.log('Setting new map center...');
-        dispatch(setCenter(await mapRef.current.getCenter()));
-      }
+      const newZoom = await mapRef.current.getZoom();
+      useMapView.setMapView(newCenter, newZoom);
     }
   };
 
@@ -114,7 +111,7 @@ function Basemap(props) {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom zoom={currentZoom} latitude={center[1]} currentZoom={currentZoom} basemap={props.basemap}/>
+          <ScaleBarAndZoom basemap={props.basemap}/>
         </View>
       )}
       <MapboxGL.MapView
@@ -135,8 +132,6 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onDidFinishLoadingMap={mapZoomLevel}
-        onRegionIsChanging={mapZoomLevel}
         onRegionDidChange={onRegionDidChange}
       >
 
@@ -148,8 +143,8 @@ function Basemap(props) {
 
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={setInitialZoomLevel()}
-          centerCoordinate={evaluateCenterCoordinates()}
+          zoomLevel={getZoomLevel()}
+          centerCoordinate={getCenterCoordinates()}
           animationDuration={0}
           // followUserLocation={true}   // Can't follow user location if wanting to zoom to extent of Spots
           // followUserMode='normal'

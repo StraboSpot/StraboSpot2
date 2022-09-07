@@ -11,6 +11,8 @@ export const LATITUDE_DELTA = 0.0922;
 export const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export const GEO_LAT_LNG_PROJECTION = 'EPSG:4326';
 export const PIXEL_PROJECTION = 'EPSG:3857';
+export const STRAT_SECTION_CENTER = [0.001, 0.0007];
+export const ZOOM = 14;
 
 export const MAP_MODES = {
   VIEW: 'view',

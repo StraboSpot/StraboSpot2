@@ -43,6 +43,7 @@ import useStratSectionHook from './strat-section/useStratSection';
 import useMapSymbology from './symbology/useMapSymbology';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
+import useMapViewHook from './useMapView';
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -53,6 +54,7 @@ const Map = React.forwardRef((props, ref) => {
   const [useSymbology] = useMapSymbology();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
+  const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
   const useStratSection = useStratSectionHook();
 
@@ -72,6 +74,8 @@ const Map = React.forwardRef((props, ref) => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
+  const zoom = useSelector(state => state.map.zoom);
+
   const isDrawFeatureModeOn = () => {
     return (props.mapMode === MAP_MODES.DRAW.POINT || props.mapMode === MAP_MODES.DRAW.LINE
       || props.mapMode === MAP_MODES.DRAW.POLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
@@ -99,7 +103,6 @@ const Map = React.forwardRef((props, ref) => {
     coordQuad: [],
     showUserLocation: false,
     zoomToSpot: false,
-    zoom: 14,
     freehandSketchMode: false,
     measureFeatures: [],
   };
@@ -172,7 +175,7 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
-    getCenter().catch(err => console.warn('Error getting center of custom map:', err));
+    updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
@@ -296,15 +299,23 @@ const Map = React.forwardRef((props, ref) => {
     }));
   };
 
-  const getCenter = async () => {
-    const center = mapRef && mapRef.current ? await mapRef.current.getCenter() : initialMapPropsMutable.centerCoordinate;
-    const zoom = mapRef && mapRef.current ? await mapRef.current.getZoom() : initialMapPropsMutable.zoom;
-    const latAndLng = !isEmpty(currentBasemap) && await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+  const updateMapView = async () => {
+    console.log('Updating map view from Map.js');
+    let newCenter = JSON.parse(JSON.stringify(center));
+    let newZoom = JSON.parse(JSON.stringify(zoom));
+    if (!isEmpty(currentBasemap) && isZoomToCenterOffline) {
+      newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+      newZoom = 12;
+    }
+    else if (mapRef && mapRef.current) {
+      newCenter = await mapRef.current.getCenter();
+      newZoom = await mapRef.current.getZoom();
+    }
+    useMapView.setMapView(newCenter, newZoom);
+
     setMapPropsMutable(m => ({
       ...m,
       basemap: currentBasemap,
-      centerCoordinate: isZoomToCenterOffline ? latAndLng : center,
-      zoom: isZoomToCenterOffline ? 12 : zoom,
     }));
     setMapToggle(!mapToggle);
     setIsZoomToCenterOffline(false);
@@ -843,11 +854,7 @@ const Map = React.forwardRef((props, ref) => {
   // Get the current location from the device and set it in the state as the map center
   const setCurrentLocationAsCenter = async () => {
     console.log('%cFlying to location MAP.JS 829', 'color: red');
-    const currentLocation = await useMaps.getCurrentLocation();
-    setMapPropsMutable(m => ({
-      ...m,
-      centerCoordinate: [currentLocation.longitude, currentLocation.latitude],
-    }));
+    useMapView.setMapView(await useMaps.getCurrentLocation(), await mapRef.current.getZoom());
   };
 
   const endDraw = async () => {
@@ -1262,6 +1269,7 @@ const Map = React.forwardRef((props, ref) => {
   // Calculate the Spots in the current map extent and send to redux
   const spotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
+      console.log('Updating spots in map extent...');
       const mapBounds = await mapRef.current.getVisibleBounds();
       let right = mapBounds[0][0];
       let top = mapBounds[0][1];

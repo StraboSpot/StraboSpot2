@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-import {LATITUDE, LONGITUDE} from './maps.constants';
+import {LATITUDE, LONGITUDE, ZOOM} from './maps.constants';
 
 const initialMapsState = {
   center: [LONGITUDE, LATITUDE],
@@ -18,6 +18,7 @@ const initialMapsState = {
   tagTypeForColor: undefined,
   isShowSpotLabelsOn: true,
   stratSection: undefined,
+  zoom: ZOOM,
 };
 
 const mapsSlice = createSlice({
@@ -100,6 +101,9 @@ const mapsSlice = createSlice({
       console.log('Set vertex selected start coords: ', action.payload);
       state.vertexStartCoords = action.payload;
     },
+    setZoom(state, action) {
+      state.zoom = action.payload;
+    },
   },
 });
 
@@ -124,6 +128,7 @@ export const {
   setTagTypeForColor,
   setVertexEndCoords,
   setVertexStartCoords,
+  setZoom,
 } = mapsSlice.actions;
 
 export default mapsSlice.reducer;
