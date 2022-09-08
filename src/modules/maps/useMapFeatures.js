@@ -6,19 +6,21 @@ import moment from 'moment';
 import {useSelector} from 'react-redux';
 
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
+import useNestingHook from '../nesting/useNesting';
 import useSpotsHook from '../spots/useSpots';
 
 const useMapFeatures = () => {
 
   const user = useSelector(state => state.user);
 
+  const [useNesting] = useNestingHook();
   const [useSpots] = useSpotsHook();
 
   // Get Spots within (points) or intersecting (line or polygon) the drawn polygon
   const getLassoedSpots = (features, drawnPolygon) => {
     let selectedSpots;
     try {
-      const selectedFeaturesIds = [];
+      let selectedFeaturesIds = [];
       features.forEach((feature) => {
         if (feature.geometry.type !== 'GeometryCollection' && (turf.booleanWithin(feature, drawnPolygon)
           || (feature.geometry.type === 'LineString' && turf.lineIntersect(feature, drawnPolygon).features.length > 0)
@@ -26,7 +28,17 @@ const useMapFeatures = () => {
           selectedFeaturesIds.push(feature.properties.id);
         }
       });
-      const selectedSpotsIds = [...new Set(selectedFeaturesIds)]; // Remove duplicate ids
+      let selectedSpotsIds = [...new Set(selectedFeaturesIds)]; // Remove duplicate ids
+      selectedSpots = useSpots.getSpotsByIds(selectedSpotsIds);
+
+      // Get Nested children and add to selected Ids
+      selectedSpots.forEach((spot) => {
+        const children = useNesting.getChildrenGenerationsSpots(spot, 10).flat();
+        const childrenIds = children.map(child => child.properties.id);
+        selectedSpotsIds.push(...childrenIds);
+        console.log('selectedFeaturesIds', selectedFeaturesIds);
+      });
+      selectedSpotsIds = [...new Set(selectedSpotsIds)]; // Remove duplicate ids
       selectedSpots = useSpots.getSpotsByIds(selectedSpotsIds);
     }
     catch (e) {
