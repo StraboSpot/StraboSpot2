@@ -10,8 +10,7 @@ const ProgressModal = (props) => {
 
   return (
     <Dialog
-      visible={props.upload}
-      onBackdropPress={props.closeProgressModal}
+      visible={props.isProgressModalVisible}
       maxHeight={Platform.OS === 'ios' ? 400 : 275}
       dialogStyle={{...commonStyles.dialogBox, width: 300}}
       dialogAnimation={new SlideAnimation({
@@ -19,7 +18,7 @@ const ProgressModal = (props) => {
       })}
       dialogTitle={
         <View style={commonStyles.dialogTitleContainer}>
-          <Text style={{fontSize: 25}}>UPLOADING...</Text>
+          <Text style={{fontSize: 25}}>{props.dialogTitle}</Text>
         </View>
       }
       footer={
