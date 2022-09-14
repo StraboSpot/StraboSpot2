@@ -5,16 +5,12 @@ import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  removedLastStatusMessage,
-} from '../modules/home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {
   deletedSpotIdFromDataset,
-  imageIsUploading,
-  updatedProjectUploadProgress,
+  setIsImageTransferring,
+  updatedProjectTransferProgress,
 } from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
@@ -98,7 +94,7 @@ const useUpload = () => {
         console.log(msgText);
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage(msgText));
-        dispatch(updatedProjectUploadProgress(0));
+        dispatch(updatedProjectTransferProgress(0));
       }
     };
 
@@ -302,7 +298,7 @@ const useUpload = () => {
     const uploadImage = async (imageId, resizedImage) => {
       try {
         console.log(datasetName + ': Uploading Image', imageId, '...');
-        dispatch(imageIsUploading(true));
+        dispatch(setIsImageTransferring(true));
         // dispatch(addedStatusMessage(`Uploading ${imageId}`))
 
         let formdata = new FormData();
@@ -311,14 +307,14 @@ const useUpload = () => {
         formdata.append('modified_timestamp', Date.now());
         await useServerRequests.uploadImage(formdata, user.encoded_login);
         console.log(datasetName + ': Finished Uploading Image', imageId);
-        dispatch(updatedProjectUploadProgress(0));
+        dispatch(updatedProjectTransferProgress(0));
         dispatch(clearedStatusMessages());
-        dispatch(imageIsUploading(false));
+        dispatch(setIsImageTransferring(false));
         // dispatch(addedStatusMessage(`Finished Uploading Image`))
       }
       catch (err) {
         console.log(datasetName + ': Error Uploading Image', imageId, err);
-        dispatch(imageIsUploading(false));
+        dispatch(setIsImageTransferring(false));
         throw Error;
       }
     };

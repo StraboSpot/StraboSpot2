@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {updatedProjectUploadProgress} from '../modules/project/projects.slice';
+import {updatedProjectTransferProgress} from '../modules/project/projects.slice';
 import {STRABO_APIS} from './deviceAndAPI.constants';
 
 const useServerRequests = (props) => {
@@ -262,7 +262,7 @@ const useServerRequests = (props) => {
   const uploadProgress = (event) => {
     const percentage = Math.floor((event.loaded / event.total) * 100);
     console.log('UPLOAD IS ' + percentage + '% DONE!');
-    dispatch(updatedProjectUploadProgress(event.loaded / event.total));
+    dispatch(updatedProjectTransferProgress(event.loaded / event.total));
   };
 
   const updateProject = async (project, encodedLogin) => {
