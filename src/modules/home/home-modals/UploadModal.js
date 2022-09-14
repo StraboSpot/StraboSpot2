@@ -21,13 +21,13 @@ const UploadModal = () => {
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.project.databaseEndpoint);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
-  const isImageUploading = useSelector(state => state.project.isImageUploading);
-  const projectUploadProgress = useSelector(state => state.project.projectUploadProgress);
+  const isImageTransferring = useSelector(state => state.project.isImageTransferring);
+  const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const useUpload = useUploadHook();
   const [useProject] = useProjectHook();
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   // const [imageUpload, setImageUpload] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [response, setResponse] = useState('');
@@ -36,13 +36,13 @@ const UploadModal = () => {
   const useAnimations = useAnimationsHook();
 
   const handleCompletePress = () => {
-    setIsVisible(false);
+    setIsProgressModalVisible(false);
     setUploadComplete(false);
   };
 
   const renderUploadProgressModal = async () => {
     dispatch(setUploadModalVisible(false));
-    setIsVisible(true);
+    setIsProgressModalVisible(true);
     const uploadStatus = await useUpload.initializeUpload();
     console.log('DATASET UPLOAD COMPLETE!', uploadStatus);
     setUploadComplete(uploadStatus);
@@ -85,8 +85,9 @@ const UploadModal = () => {
       </View>
     </UploadDialogBox>
     <ProgressModal
-      closeProgressModal={() => setIsVisible(false)}
-      upload={isVisible}
+      closeProgressModal={() => setIsProgressModalVisible(false)}
+      dialogTitle={'UPLOADING...'}
+      isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}
       showButton={uploadComplete}
       animation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
@@ -94,17 +95,16 @@ const UploadModal = () => {
 
       <View style={{flex: 1}}>
         <Text>{statusMessages}</Text>
-        {isImageUploading && <View style={{paddingTop: 10}}>
+        {isImageTransferring && <View style={{paddingTop: 10}}>
           <ProgressBar
-            progress={projectUploadProgress}
+            progress={projectTransferProgress}
             width={250}
             height={15}
             borderRadius={20}
           />
-          <Text style={{textAlign: 'center'}}>{`${(projectUploadProgress * 100).toFixed(0)}%`}</Text>
+          <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
         </View>}
       </View>
-
     </ProgressModal>
   </>);
 };
