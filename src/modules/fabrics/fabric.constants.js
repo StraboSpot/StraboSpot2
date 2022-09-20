@@ -5,7 +5,7 @@ export const FABRIC_TYPES = {
 };
 
 export const FIRST_ORDER_FABRIC_FIELDS = {
-  fault_rock: ['structural_fabric', 'kinematic_fab'],
+  fault_rock: ['structural_fabric', 'kinematic_fab', 'spatial_config'],
   igneous_rock: ['planar_fab', 'lin_fab', 'magmatic_str', 'mag_kin_fab'],
   metamorphic_rock: ['planar_fabric', 'linear_fab', 'other_met_fab', 'kinematic_fab'],
 };
