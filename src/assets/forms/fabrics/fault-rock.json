@@ -17,7 +17,7 @@
     {
       "type": "select_multiple lg33p50",
       "name": "structural_fabric",
-      "label": "Planar structural fabrics",
+      "label": "Planar fabric",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -332,7 +332,7 @@
     {
       "type": "text",
       "name": "interp_note",
-      "label": "Interpretations and notes",
+      "label": "Notes",
       "required": "false",
       "appearance": "multiline"
     },
@@ -345,7 +345,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vQh95pqyhJndWKU888kGnb'",
+      "calculation": "'v9jj5vdhBifDS96gM725HY'",
       "$given_name": "__version__"
     }
   ],
@@ -358,7 +358,7 @@
     {
       "list_name": "lg33p50",
       "name": "fractures",
-      "label": "fractures",
+      "label": "fracture",
       "order": "1"
     },
     {
@@ -791,8 +791,8 @@
   ],
   "settings": [
     {
-      "form_title": "Fabrics - Fault and shear zone (11/21)",
-      "version": "2 (2022-03-29 18:16:12)"
+      "form_title": "Fabrics - Fault and shear zone (9/22)",
+      "version": "3 (2022-09-13 20:36:43)"
     }
   ]
 }

@@ -15,24 +15,9 @@
       "required": "false"
     },
     {
-      "type": "select_one bt7xf34",
-      "name": "grain_size",
-      "label": "Grain size",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "specify",
-      "label": "Describe grain size distribution",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${grain_size} = 'other' or ${grain_size} = 'bimodal'"
-    },
-    {
       "type": "select_multiple cs2ki85",
       "name": "planar_fabric",
-      "label": "Planar fabrics",
+      "label": "Planar fabric",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -111,7 +96,7 @@
     {
       "type": "select_multiple sv9wq27",
       "name": "linear_fab",
-      "label": "Linear fabrics",
+      "label": "Linear fabric",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -159,6 +144,30 @@
       "label": "Mineral(s) that define the linear fabric",
       "required": "false",
       "relevant": "${linear_fab} != '' and not(selected(${linear_fab}, 'intersect_lin'))"
+    },
+    {
+      "type": "select_multiple lw8uh27",
+      "name": "kinematic_fab",
+      "label": "Kinematic indicators",
+      "required": "false",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "text",
+      "name": "ob_grain_char",
+      "label": "Characterize other kinematic indicators",
+      "required": "false",
+      "appearance": "multiline",
+      "relevant": "${kinematic_fab} != ''"
+    },
+    {
+      "type": "text",
+      "name": "sense_of_shear",
+      "label": "Sense of shear",
+      "hint": "e.g., top-NW, dextral, etc.",
+      "required": "false",
+      "appearance": "multiline",
+      "relevant": "${kinematic_fab} != ''"
     },
     {
       "type": "select_multiple ps78s13",
@@ -405,30 +414,6 @@
       "relevant": "selected(${additional_fab}, 'other')"
     },
     {
-      "type": "select_multiple lw8uh27",
-      "name": "kinematic_fab",
-      "label": "Kinematic indicators",
-      "required": "false",
-      "appearance": "horizontal-compact"
-    },
-    {
-      "type": "text",
-      "name": "ob_grain_char",
-      "label": "Characterize other kinematic indicators",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${kinematic_fab} != ''"
-    },
-    {
-      "type": "text",
-      "name": "sense_of_shear",
-      "label": "Sense of shear",
-      "hint": "e.g., top-NW, dextral, etc.",
-      "required": "false",
-      "appearance": "multiline",
-      "relevant": "${kinematic_fab} != ''"
-    },
-    {
       "type": "select_one au84l98",
       "name": "tectonite_type",
       "label": "Tectonite classification",
@@ -453,7 +438,7 @@
     {
       "type": "text",
       "name": "interp_note_meta",
-      "label": "Interpretations and notes",
+      "label": "Notes",
       "required": "false",
       "appearance": "multiline"
     },
@@ -466,40 +451,11 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vZRPKYoP4tNFLbpXFtSGaC'",
+      "calculation": "'vNvcdtPZZ2zometsaoJx5t'",
       "$given_name": "__version__"
     }
   ],
   "choices": [
-    {
-      "list_name": "bt7xf34",
-      "name": "fine",
-      "label": "fine"
-    },
-    {
-      "list_name": "bt7xf34",
-      "name": "medium",
-      "label": "medium",
-      "order": "1"
-    },
-    {
-      "list_name": "bt7xf34",
-      "name": "coarse",
-      "label": "coarse",
-      "order": "2"
-    },
-    {
-      "list_name": "bt7xf34",
-      "name": "bimodal",
-      "label": "bimodal",
-      "order": "3"
-    },
-    {
-      "list_name": "bt7xf34",
-      "name": "other",
-      "label": "other",
-      "order": "4"
-    },
     {
       "list_name": "cs2ki85",
       "name": "gneissic_band",
@@ -525,26 +481,26 @@
     },
     {
       "list_name": "cs2ki85",
-      "name": "mylonitic_fol",
-      "label": "mylonitic foliation",
+      "name": "cleavage",
+      "label": "cleavage",
       "order": "4"
     },
     {
       "list_name": "cs2ki85",
-      "name": "cleavage",
-      "label": "cleavage",
+      "name": "mylonitic_fol",
+      "label": "mylonitic foliation",
       "order": "5"
-    },
-    {
-      "list_name": "cs2ki85",
-      "name": "stylolite",
-      "label": "stylolite",
-      "order": "6"
     },
     {
       "list_name": "cs2ki85",
       "name": "scaly_fabric",
       "label": "scaly fabric",
+      "order": "6"
+    },
+    {
+      "list_name": "cs2ki85",
+      "name": "stylolite",
+      "label": "stylolite",
       "order": "7"
     },
     {
@@ -647,6 +603,101 @@
       "list_name": "sv9wq27",
       "name": "other_lin",
       "label": "other"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "oblique_fabric",
+      "label": "oblique grain shape fabric"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "asymm_fold",
+      "label": "asymmetric folds",
+      "order": "1"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "asymm_clast",
+      "label": "asymmetric clast",
+      "order": "2"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "mica_fish",
+      "label": "mica fish",
+      "order": "3"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "bookshelf_slip",
+      "label": "bookshelf slip",
+      "order": "4"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "s_c",
+      "label": "S-C fabric",
+      "order": "5"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "riedel_shear",
+      "label": "Riedel fracture/shear",
+      "order": "6"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "sigmoidal_gash",
+      "label": "sigmoidal tension gash(es)",
+      "order": "7"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "drag_folds",
+      "label": "drag folds (layering curvature)",
+      "order": "8"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "offset_deflect",
+      "label": "offset or deflected marker",
+      "order": "9"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "minor_offset",
+      "label": "minor offset",
+      "order": "10"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "crescent_frac",
+      "label": "crescentic fractures",
+      "order": "11"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "slickenfiber",
+      "label": "slickenfibers",
+      "order": "12"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "fiber_growth",
+      "label": "fiber growth",
+      "order": "13"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "gouge_fill",
+      "label": "gouge fill",
+      "order": "14"
+    },
+    {
+      "list_name": "lw8uh27",
+      "name": "other_kin",
+      "label": "other",
+      "order": "15"
     },
     {
       "list_name": "ps78s13",
@@ -860,101 +911,6 @@
       "label": "other"
     },
     {
-      "list_name": "lw8uh27",
-      "name": "oblique_fabric",
-      "label": "oblique grain shape fabric"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "asymm_fold",
-      "label": "asymmetric folds",
-      "order": "1"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "asymm_clast",
-      "label": "asymmetric clast",
-      "order": "2"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "mica_fish",
-      "label": "mica fish",
-      "order": "3"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "bookshelf_slip",
-      "label": "bookshelf slip",
-      "order": "4"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "s_c",
-      "label": "S-C fabric",
-      "order": "5"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "riedel_shear",
-      "label": "Riedel fracture/shear",
-      "order": "6"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "sigmoidal_gash",
-      "label": "sigmoidal tension gash(es)",
-      "order": "7"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "drag_folds",
-      "label": "drag folds (layering curvature)",
-      "order": "8"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "offset_deflect",
-      "label": "offset or deflected marker",
-      "order": "9"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "minor_offset",
-      "label": "minor offset",
-      "order": "10"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "crescent_frac",
-      "label": "crescentic fractures",
-      "order": "11"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "slickenfiber",
-      "label": "slickenfibers",
-      "order": "12"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "fiber_growth",
-      "label": "fiber growth",
-      "order": "13"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "gouge_fill",
-      "label": "gouge fill",
-      "order": "14"
-    },
-    {
-      "list_name": "lw8uh27",
-      "name": "other_kin",
-      "label": "other",
-      "order": "15"
-    },
-    {
       "list_name": "au84l98",
       "name": "s",
       "label": "S only"
@@ -1004,8 +960,8 @@
   ],
   "settings": [
     {
-      "form_title": "Fabrics - Metamorphic (11/21)",
-      "version": "2 (2022-03-01 15:42:52)"
+      "form_title": "Fabrics - Metamorphic (9/22)",
+      "version": "2 (2022-09-12 17:00:25)"
     }
   ]
 }

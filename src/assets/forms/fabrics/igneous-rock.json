@@ -303,7 +303,7 @@
     {
       "type": "text",
       "name": "mag_interp_note",
-      "label": "Interpretatons and notes",
+      "label": "Notes",
       "required": "false",
       "appearance": "multiline"
     },
@@ -316,7 +316,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vcTSCqFPzg3icRPYRfvjqo'",
+      "calculation": "'v7UetHR9i2oQNtMBTay7SB'",
       "$given_name": "__version__"
     }
   ],
@@ -611,8 +611,8 @@
   ],
   "settings": [
     {
-      "form_title": "Fabrics - Igneous (11/21)",
-      "version": "2 (2022-03-01 15:37:09)"
+      "form_title": "Fabrics - Igneous (9/22)",
+      "version": "2 (2022-09-12 17:22:43)"
     }
   ]
 }
