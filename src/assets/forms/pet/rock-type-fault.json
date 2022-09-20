@@ -18,7 +18,7 @@
     {
       "type": "select_multiple gu8yk54",
       "name": "fault_rock",
-      "label": "Fault and shear zone rock types",
+      "label": "Fault and Shear Zone Rock type",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -45,7 +45,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'vwuvyvJb6zLo7wEUbfZdWL'",
+      "calculation": "'vSVxyYb5y3zzprKjpza82J'",
       "$given_name": "__version__"
     }
   ],
@@ -109,7 +109,7 @@
   "settings": [
     {
       "form_title": "Rock Type - Fault and shear zone (11/21)",
-      "version": "2 (2022-03-29 18:18:34)"
+      "version": "2 (2022-09-09 20:21:36)"
     }
   ]
 }
