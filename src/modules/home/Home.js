@@ -124,6 +124,12 @@ const Home = () => {
   const rightsideIconAnimationValue = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
 
+  console.log('home');
+
+  useEffect(() => {
+    console.log('UEHome');
+  }, []);
+
   useEffect(() => {
     console.log('UE Home [selectedProject]', selectedProject);
   }, [selectedProject]);
@@ -656,7 +662,7 @@ const Home = () => {
       {isHomeLoading && <LoadingSpinner/>}
       {renderNotebookPanel()}
       {MainMenu}
-      {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
+      {/*{toggleOfflineMapLabel() && renderOfflineMapViewLabel()}*/}
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}

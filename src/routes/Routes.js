@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,27 +16,32 @@ import {isEmpty} from '../shared/Helpers';
 const Routes = () => {
 
   const dispatch = useDispatch();
-  const netInfo = useNetInfo();
+  // const netInfo = useNetInfo();
   const Stack = createStackNavigator();
   const AppStack = createStackNavigator();
-  //
-  // NetInfo.configure({
-  //   reachabilityUrl: 'https://clients3.google.com/generate_204',
-  //   reachabilityTest: async (response) => {
-  //     // console.log('Response Status', response.status);
-  //     return response.status === 204;
-  //   },
-  //   reachabilityLongTimeout: 5 * 1000, // 60s
-  //   reachabilityShortTimeout: 5 * 1000, // 5s
-  //   reachabilityRequestTimeout: 15 * 1000, // 15s
-  // });
+
+  NetInfo.configure({
+    reachabilityUrl: 'https://clients3.google.com/generate_204',
+    reachabilityTest: async response => response.status === 204,
+    reachabilityLongTimeout: 120 * 1000, // 60s
+    reachabilityShortTimeout: 120 * 1000, // 5s
+    reachabilityRequestTimeout: 15 * 1000, // 15s
+    reachabilityShouldRun: () => true,
+    useNativeReachability: false,
+    shouldFetchWiFiSSID: true,
+  });
 
   useEffect(() => {
-    console.log('UE Routes []');
-    if (netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
-      dispatch(setOnlineStatus(netInfo));
-    }
-  }, [netInfo]);
+    console.log('UERoutes');
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isInternetReachable !== null && state.isConnected !== null) dispatch(setOnlineStatus(state));
+    });
+    return () => unsubscribe();
+  }, []);
+  //
+  // NetInfo.addEventListener((state) => {
+  //   if (state.isInternetReachable !== null && state.isConnected !== null) dispatch(setOnlineStatus(state));
+  // });
 
   const navigationOptions = {
     gestureEnabled: false,

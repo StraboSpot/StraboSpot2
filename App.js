@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 
-import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
@@ -23,18 +22,6 @@ Sentry.init({
   autoSessionTracking: true,
   environment: __DEV__ ? 'development' : 'production',
   deactivateStacktraceMerging: true,
-});
-
-NetInfo.configure({
-  // reachabilityUrl: 'https://clients3.google.com/generate_204',
-  // reachabilityTest: async (response) => {
-  //   console.log('Response Status', response.status);
-  //   return response.status === 204;
-  // },
-  // reachabilityLongTimeout: 5 * 1000, // 60s
-  // reachabilityShortTimeout: 5 * 1000, // 5s
-  // reachabilityRequestTimeout: 15 * 1000, // 15s
-  shouldFetchWiFiSSID: true,
 });
 
 const App = () => {

@@ -174,13 +174,15 @@ const ManageOfflineMaps = (props) => {
             </View>
           </View>
           <View style={styles.itemSubContainer}>
-            {isOnline.isInternetReachable && <Button
-              onPress={() => toggleOfflineMap(item)}
-              disabled={item.count === 0}
-              titleStyle={commonStyles.viewMapsButtonText}
-              type={'clear'}
-              title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
-            />}
+            {isOnline.isInternetReachable && (
+              <Button
+                onPress={() => toggleOfflineMap(item)}
+                disabled={item.count === 0}
+                titleStyle={commonStyles.viewMapsButtonText}
+                type={'clear'}
+                title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
+              />
+            )}
             <View style={{flexDirection: 'row', padding: 0}}>
               <Button
                 onPress={() => confirmDeleteMap(item)}
@@ -209,7 +211,7 @@ const ManageOfflineMaps = (props) => {
     }
     else {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: true}));
-      await useMapsOffline.switchToOfflineMap(item.id);
+      // await useMapsOffline.switchToOfflineMap(item.id);
       props.zoomToCenterOfflineTile();
     }
   };

@@ -27,7 +27,7 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {MapLayer1, MapLayer2} from './Basemaps';
+import {MapLayer1} from './Basemaps';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {
   clearedStratSection,
@@ -109,10 +109,12 @@ const Map = React.forwardRef((props, ref) => {
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
-  const [mapToggle, setMapToggle] = useState(true);
+  // const [mapToggle, setMapToggle] = useState(true);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [defaultGeomType, setDefaultGeomType] = useState();
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
+
+  const isInternetReachable = isOnline.isInternetReachable && isOnline.type !== 'none';
 
   const mapRef = useRef(null);
   const cameraRef = useRef(null);
@@ -131,8 +133,11 @@ const Map = React.forwardRef((props, ref) => {
     spotsInMapExtent: () => spotsInMapExtent(),
   };
 
+  console.log('Loading Map Component...');
+
   useEffect(() => {
-    console.log('UE Map []');
+    console.log('UEMap');
+    // console.log('UE Map []');
     Logger.setLogCallback((log) => {
       const {message} = log;
       // console.log('LOGGER MESSAGE IN MAPS.JS', message);
@@ -159,7 +164,7 @@ const Map = React.forwardRef((props, ref) => {
         imageBasemap: currentImageBasemap,
         stratSection: currentImageBasemap ? undefined : m.stratSection,
       }));
-      setMapToggle(!mapToggle);
+      // setMapToggle(!mapToggle);
     }
   }, [currentImageBasemap]);
 
@@ -170,7 +175,7 @@ const Map = React.forwardRef((props, ref) => {
       imageBasemap: stratSection ? undefined : m.imageBasemap,
       stratSection: stratSection,
     }));
-    setMapToggle(!mapToggle);
+    // setMapToggle(!mapToggle);
   }, [stratSection]);
 
   useEffect(() => {
@@ -179,32 +184,27 @@ const Map = React.forwardRef((props, ref) => {
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    console.log('UE Map [user, isOnline]', user, isOnline);
-    if (isOnline.isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
-    else if (isOnline.isInternetReachable && currentBasemap) {
-      console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
-      // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
-      useMaps.setBasemap(currentBasemap.id).catch((error) => {
-        console.log('Error Setting Basemap', error);
-        // Sentry.captureMessage('Something went wrong', error);
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.' + error));
-        dispatch(setErrorMessagesModalVisible(true));
-        // useMaps.setBasemap();
-        // Sentry.captureException(error);
-      });
-    }
-    else if (!isEmpty(isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null
-      && currentBasemap) {
-      console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
-      Object.values(customBasemap).map((map) => {
-        if (offlineMaps[map.id]?.id !== map.id) useMaps.setCustomMapSwitchValue(false, map);
-      });
-      useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
-    }
-    if (!currentImageBasemap && !stratSection && !center) setCurrentLocationAsCenter();
-    clearVertexes();
-  }, [user, isOnline]);
+      console.log('UE Map [user, isOnline]', user, isOnline, isInternetReachable);
+      // if (isInternetReachable !== undefined) {
+      if (isInternetReachable !== null && isInternetReachable !== undefined) {
+        console.log('isInternetReachable is defined');
+        // If Internet and no current basemap set a default basemap (mapbox.outdoors)
+        if (isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
+        // If no Internet check that current basemap can be switched to offline
+        else if (!isInternetReachable && currentBasemap) {
+          const offlineMap = offlineMaps[currentBasemap.id];
+          useOfflineMaps.switchToOfflineMap(offlineMap).catch(
+            error => console.log('Error Setting Offline Basemap', error));
+        }
+        // If no Internet and no current basemap give user warning
+        else if (!isInternetReachable && !currentBasemap) {
+          useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
+        }
+        if (!currentImageBasemap && !stratSection && !center) setCurrentLocationAsCenter();
+        clearVertexes();
+      }
+    },
+    [isInternetReachable]);
 
   useEffect(() => {
     console.log(
@@ -317,7 +317,7 @@ const Map = React.forwardRef((props, ref) => {
       ...m,
       basemap: currentBasemap,
     }));
-    setMapToggle(!mapToggle);
+    // setMapToggle(!mapToggle);
     setIsZoomToCenterOffline(false);
   };
 
@@ -1344,8 +1344,9 @@ const Map = React.forwardRef((props, ref) => {
   return (
     <View style={{flex: 1, zIndex: -1}}>
       {/* Switch identical layers to force basemap raster re-render based on mapToggle value*/}
-      {mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}
-      {mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}
+      {mapProps.basemap && <MapLayer1  {...mapProps}/>}
+      {/*{mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}*/}
+      {/*{mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}*/}
       {renderSetInCurrentViewModal()}
     </View>
   );

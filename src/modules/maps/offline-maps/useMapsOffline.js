@@ -382,23 +382,27 @@ const useMapsOffline = () => {
     dispatch(setCurrentBasemap(mapStyleURL));
   };
 
-  const switchToOfflineMap = async (mapId) => {
-    if (!isEmpty(offlineMaps)) {
-      const selectedOfflineMap = mapId ? offlineMaps[mapId] : offlineMaps[currentBasemap.id];
-      if (selectedOfflineMap) {
-        console.log('SelectedOfflineMap', selectedOfflineMap);
-        // Alert.alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
-        await setOfflineMapTiles(selectedOfflineMap);
-      }
-      else {
-        const firstAvailableOfflineMap = Object.values(offlineMaps)[0];
-        Alert.alert(
-          'Not Available',
-          'Selected map is not available for offline use.  '
-          + `${firstAvailableOfflineMap.name} is available`, [
-            {text: 'Use this map', onPress: () => setOfflineMapTiles(firstAvailableOfflineMap), style: 'destructive'},
-          ]);
-      }
+  const switchToOfflineMap = async (offlineMap) => {
+    if (offlineMap) await setOfflineMapTiles(offlineMap);
+    else if (!isEmpty(offlineMaps) && offlineMaps[0]) {
+      const firstAvailableOfflineMap = Object.values(offlineMaps)[0];
+      Alert.alert(
+        'Current Map Not Available Offline',
+        'Current map is not available for offline use.  '
+        + `${firstAvailableOfflineMap.name} is available`, [
+          {
+            text: 'Use this map',
+            onPress: () => setOfflineMapTiles(firstAvailableOfflineMap),
+            style: 'destructive',
+          },
+        ]);
+    }
+    else {
+      dispatch(setCurrentBasemap(null));
+      Alert.alert(
+        'No Offline Maps',
+        'No offline maps are available. Download offline maps before going offline.',
+      );
     }
   };
 
