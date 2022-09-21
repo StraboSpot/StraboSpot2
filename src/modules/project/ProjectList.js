@@ -166,7 +166,8 @@ const ProjectList = (props) => {
       <View style={{alignSelf: 'center'}}>
         <SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>
       </View>
-      {loading ? <Loading style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/> : renderProjectsList()}
+      <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
+      {renderProjectsList()}
     </React.Fragment>
   );
 };
