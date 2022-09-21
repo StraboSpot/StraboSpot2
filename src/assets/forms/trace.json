@@ -185,9 +185,29 @@
     {
       "type": "select_one er5hu03",
       "name": "geomorphic_feature",
-      "label": "Geomorphic Feature",
-      "hint": "gully, ridge, rill, striation, stream, shoreline",
-      "required": "true",
+      "label": "Geomorphic Trace Type",
+      "required": "false",
+      "relevant": "${trace_type} = 'geomorphic_fea'"
+    },
+    {
+      "type": "select_one rf1cl97",
+      "name": "associated_geomorphic_feature",
+      "label": "Associated Geomorphic Feature",
+      "required": "false",
+      "relevant": "${trace_type} = 'geomorphic_fea'"
+    },
+    {
+      "type": "select_one im6au74",
+      "name": "landscape_type",
+      "label": "Landscape Type",
+      "required": "false",
+      "relevant": "${trace_type} = 'geomorphic_fea'"
+    },
+    {
+      "type": "select_one ox48m23",
+      "name": "feature_origin",
+      "label": "Feature Origin",
+      "required": "false",
       "relevant": "${trace_type} = 'geomorphic_fea'"
     },
     {
@@ -195,7 +215,14 @@
       "name": "other_geomorphic_feature",
       "label": "Other Geomorphic Feature",
       "required": "true",
-      "relevant": "${geomorphic_feature} = 'other'"
+      "relevant": "${geomorphic_feature} = 'other' and ${associated_geomorphic_feature} = 'other'"
+    },
+    {
+      "type": "text",
+      "name": "other_landscape_type",
+      "label": "Other Landscape Type",
+      "required": "true",
+      "relevant": "${landscape_type} = 'glacial'"
     },
     {
       "type": "select_one gw8je20",
@@ -261,7 +288,7 @@
     {
       "type": "text",
       "name": "tace_notes",
-      "label": "Trace Notes",
+      "label": "Notes",
       "required": "false",
       "relevant": "${trace_feature} != ''",
       "appearance": "multiline"
@@ -269,7 +296,7 @@
     {
       "type": "calculate",
       "name": "__version__",
-      "calculation": "'v3suZcfr3TA3dA5fGpftrD'"
+      "calculation": "'vT5rk65RGUN65Y4cVxQSdE'"
     }
   ],
   "choices": [
@@ -775,32 +802,31 @@
     },
     {
       "list_name": "er5hu03",
-      "name": "gulley",
-      "label": "gulley",
-      "order": "0"
+      "name": "crest",
+      "label": "crest"
+    },
+    {
+      "list_name": "er5hu03",
+      "name": "base",
+      "label": "base",
+      "order": "1"
     },
     {
       "list_name": "er5hu03",
       "name": "ridge",
       "label": "ridge",
-      "order": "1"
+      "order": "2"
+    },
+    {
+      "list_name": "er5hu03",
+      "name": "gulley",
+      "label": "gulley",
+      "order": "3"
     },
     {
       "list_name": "er5hu03",
       "name": "striation",
       "label": "striation",
-      "order": "2"
-    },
-    {
-      "list_name": "er5hu03",
-      "name": "rill",
-      "label": "rill",
-      "order": "3"
-    },
-    {
-      "list_name": "er5hu03",
-      "name": "stream_bed",
-      "label": "stream bed",
       "order": "4"
     },
     {
@@ -811,9 +837,113 @@
     },
     {
       "list_name": "er5hu03",
+      "name": "stream_bed",
+      "label": "stream bed",
+      "order": "6"
+    },
+    {
+      "list_name": "er5hu03",
+      "name": "rill",
+      "label": "rill",
+      "order": "7"
+    },
+    {
+      "list_name": "er5hu03",
+      "name": "scarp",
+      "label": "scarp",
+      "order": "8"
+    },
+    {
+      "list_name": "er5hu03",
+      "name": "toe",
+      "label": "toe",
+      "order": "9"
+    },
+    {
+      "list_name": "er5hu03",
       "name": "other",
       "label": "other",
-      "order": "6"
+      "order": "10"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "terrace",
+      "label": "terrace"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "terrace_riser",
+      "label": "terrace riser"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "moraine",
+      "label": "moraine"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "dune",
+      "label": "dune"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "bedrock_ridge",
+      "label": "bedrock ridge"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "debris_flow",
+      "label": "debris flow"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "landslide",
+      "label": "landslide"
+    },
+    {
+      "list_name": "rf1cl97",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "im6au74",
+      "name": "glacial",
+      "label": "glacial"
+    },
+    {
+      "list_name": "im6au74",
+      "name": "fluvial",
+      "label": "fluvial"
+    },
+    {
+      "list_name": "im6au74",
+      "name": "marine",
+      "label": "marine"
+    },
+    {
+      "list_name": "im6au74",
+      "name": "lacustrine",
+      "label": "lacustrine"
+    },
+    {
+      "list_name": "im6au74",
+      "name": "arid",
+      "label": "arid"
+    },
+    {
+      "list_name": "im6au74",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "ox48m23",
+      "name": "erosional",
+      "label": "erosional"
+    },
+    {
+      "list_name": "ox48m23",
+      "name": "depositional",
+      "label": "depositional"
     },
     {
       "list_name": "gw8je20",
@@ -919,7 +1049,8 @@
   "settings": [
     {
       "id_string": "trace",
-      "version": "v3suZcfr3TA3dA5fGpftrD"
+      "form_title": "Trace",
+      "version": "3 (2022-09-21 00:09:36)"
     }
   ]
 }
