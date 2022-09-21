@@ -12,7 +12,14 @@ import {
 } from '../modules/home/home.slice';
 import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
-import {addedDatasets, addedProject, clearedDatasets, setSelectedProject} from '../modules/project/projects.slice';
+import {
+  addedDatasets,
+  addedProject,
+  clearedDatasets,
+  setActiveDatasets,
+  setSelectedDataset,
+  setSelectedProject,
+} from '../modules/project/projects.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './deviceAndAPI.constants';
@@ -219,6 +226,10 @@ const useImport = () => {
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       dispatch(addedDatasets(projectDb.datasets));
+      if (Object.values(projectDb.datasets).length > 0 && !isEmpty(Object.values(projectDb.datasets)[0])) {
+        dispatch(setActiveDatasets({bool: true, dataset: Object.values(projectDb.datasets)[0].id}));
+        dispatch(setSelectedDataset(Object.values(projectDb.datasets)[0].id));
+      }
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
       await checkForMaps(dataFile, selectedProject);
