@@ -9,14 +9,14 @@ const Loading = (props) => {
 
   return (
     <React.Fragment>
-      <View style={[styles.backdrop, props.style]}>
+      {props.isLoading && <View style={[styles.backdrop, props.style]}>
         {/*<View style={home.loadingContainer}>*/}
         <BallIndicator
           color={'darkgrey'}
           count={8}
           size={props.size || 40}
         />
-      </View>
+      </View>}
       {/*</View>*/}
     </React.Fragment>
   );

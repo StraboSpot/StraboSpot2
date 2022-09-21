@@ -15,6 +15,7 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
+import Loading from '../../shared/ui/Loading';
 import uiStyles from '../../shared/ui/ui.styles';
 import WarningModal from '../home/home-modals/WarningModal';
 import {
@@ -34,6 +35,7 @@ const SignIn = (props) => {
   const currentProject = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const [textInputAnimate] = useState(new Animated.Value(0));
@@ -74,6 +76,7 @@ const SignIn = (props) => {
   };
 
   const signIn = async () => {
+    setIsLoading(true);
     console.log(`Authenticating ${username} and signing in...`);
     try {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
@@ -87,6 +90,7 @@ const SignIn = (props) => {
           console.log(`${username} is successfully logged in!`);
           isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
           // dispatch(setSignedInStatus(true));
+          setIsLoading(false);
           setUsername('');
           setPassword('');
           navigation.navigate('HomeScreen');
@@ -94,12 +98,14 @@ const SignIn = (props) => {
       }
       else {
         Alert.alert('Login Failure', 'Incorrect username and/or password');
+        setIsLoading(false);
         setPassword('');
       }
     }
     catch (err) {
       console.log('error:', err);
       Sentry.captureException(err);
+      setIsLoading(false);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(err));
       dispatch(setWarningModalVisible(true));
@@ -226,6 +232,7 @@ const SignIn = (props) => {
         </View>
       </View>
       <WarningModal/>
+      <Loading isLoading={isLoading}/>
     </ImageBackground>
   );
 };
