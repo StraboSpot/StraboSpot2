@@ -22,6 +22,8 @@ const BackUpOverwriteModal = (props) => {
   const currentProject = useSelector(state => state.project.project);
   const isBackupOverwriteModalVisible = useSelector(state => state.home.isBackupOverwriteModalVisible);
   const isOnline = useSelector(state => state.home.isOnline);
+  const selectedProject = useSelector(state => state.project.selectedProject);
+  const user = useSelector(state => state.user);
 
   const cancel = () => {
     dispatch(setSelectedProject({project: '', source: ''}));
@@ -46,7 +48,7 @@ const BackUpOverwriteModal = (props) => {
               style={styles.dialogButton}
               textStyle={styles.dialogButtonText}
             />
-            {isOnline.isConnected && <DialogButton
+            {isOnline.isConnected && user.email && <DialogButton
               text={'Backup Project to Server'}
               onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
               style={styles.dialogButton}
