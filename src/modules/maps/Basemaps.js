@@ -34,6 +34,8 @@ function Basemap(props) {
 
   const [currentCenter] = useState(center);
   const [currentZoom] = useState(zoom);
+  const [scaleBarCenter, setScaleBarCenter] = useState(center);
+  const [zoomText, setZoomText] = useState(zoom);
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
 
@@ -97,6 +99,7 @@ function Basemap(props) {
     return currentZoom;
   };
 
+  // Update spots in extent and saved view (center and zoom)
   const onRegionDidChange = async () => {
     console.log('Event onRegionDidChange');
     props.spotsInMapExtent();
@@ -107,11 +110,22 @@ function Basemap(props) {
     }
   };
 
+  // Update scale bar and zoom text
+  const onRegionIsChanging = async () => {
+    console.log('Event onRegionIsChanging');
+    if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
+      const newCenter = await mapRef.current.getCenter();
+      const newZoom = await mapRef.current.getZoom();
+      setScaleBarCenter(newCenter);
+      setZoomText(newZoom);
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom basemap={props.basemap}/>
+          <ScaleBarAndZoom basemap={props.basemap} center={scaleBarCenter} zoom={zoomText}/>
         </View>
       )}
       <MapboxGL.MapView
@@ -132,7 +146,8 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onRegionDidChange={onRegionDidChange}
+        onRegionDidChange={onRegionDidChange}    // Update spots in extent and saved view (center and zoom)
+        onRegionIsChanging={onRegionIsChanging}  // Update scale bar and zoom text
       >
 
         {/* Blue dot for user location */}
