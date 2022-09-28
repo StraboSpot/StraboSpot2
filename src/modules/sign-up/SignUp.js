@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, ImageBackground, Keyboard, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Text, TextInput, useWindowDimensions, View} from 'react-native';
 
 import {Button, CheckBox} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
@@ -9,14 +9,15 @@ import useServerRequests from '../../services/useServerRequests';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {validate} from '../../shared/Helpers';
-import IconButton from '../../shared/ui/IconButton';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
 import styles from './signUp.styles';
 
 const {State: TextInputState} = TextInput;
 
+
 const SignUp = (props) => {
+  const {height, width} = useWindowDimensions();
 
   const initialState = {
     firstName: {
@@ -206,105 +207,120 @@ const SignUp = (props) => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <View style={{
-          position: 'absolute',
-          right: 0,
-          top: 40,
-          zIndex: -1,
-        }}>
-          <IconButton
-            source={isOnline.isInternetReachable ? online : offline}
+    <View style={{flex: 1, backgroundColor: 'green', padding: 10}}>
+      {/*<ImageBackground source={require('../../assets/images/background.jpg')} style={{...styles.backgroundImage}}>*/}
+      {/*<View style={styles.container}>*/}
+      {/*<View style={{*/}
+      {/*  position: 'absolute',*/}
+      {/*  right: 0,*/}
+      {/*  top: 40,*/}
+      {/*  zIndex: -1,*/}
+      {/*}}>*/}
+      {/*  <IconButton*/}
+      {/*    source={isOnline.isInternetReachable ? online : offline}*/}
+      {/*  />*/}
+      {/*</View>*/}
+      {/*<View style={{flex: 1}}>*/}
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Strabo Spot 2</Text>
+        <Text style={styles.version}>{VERSION_NUMBER}</Text>
+      </View>
+      <View>
+        <View style={styles.inputContainerGroup}>
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              style={styles.input}
+              placeholder={'First Name'}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              placeholderTextColor={'#6a777e'}
+              onChangeText={val => onChangeText('firstName', val)}
+              value={userData.firstName.value}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder={'Last Name'}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              placeholderTextColor={'#6a777e'}
+              onChangeText={val => onChangeText('lastName', val)}
+              value={userData.lastName.value}
+            />
+          </View>
+          <View style={{width: 700, alignItems: 'center'}}>
+            <Text style={styles.text}>Must contain at least one uppercase, one digit, and no spaces</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              style={styles.input}
+              placeholder={'Password'}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              placeholderTextColor={'#6a777e'}
+              onChangeText={val => onChangeText('password', val)}
+              value={userData.password.value}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder={'Confirm Password'}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              placeholderTextColor={'#6a777e'}
+              secureTextEntry={!userData.password.showPassword}
+              onChangeText={val => onChangeText('confirmPassword', val)}
+              value={userData.confirmPassword.value}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.text}>Show Password</Text>
+            <CheckBox
+              // title='Show Password'
+              textStyle={styles.checkBoxText}
+              containerStyle={{backgroundColor: 'transparent'}}
+              checkedColor={'white'}
+              uncheckedColor={'white'}
+              checked={userData.password.showPassword}
+              onPress={() => toggleCheck()}
+            />
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder={'Email'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            placeholderTextColor={'#6a777e'}
+            onChangeText={val => onChangeText('email', val)}
+            value={userData.email.value}
           />
-        </View>
-        <View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Strabo Spot 2</Text>
-            <Text style={styles.version}>{VERSION_NUMBER}</Text>
-          </View>
-          <View>
-            <Animated.View style={[styles.inputContainerGroup, {transform: [{translateY: textInputAnimate}]}]}>
-              <View style={{flexDirection: 'row'}}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={'First Name'}
-                  autoCapitalize={'none'}
-                  autoCorrect={false}
-                  placeholderTextColor={'#6a777e'}
-                  onChangeText={val => onChangeText('firstName', val)}
-                  value={userData.firstName.value}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={'Last Name'}
-                  autoCapitalize={'none'}
-                  autoCorrect={false}
-                  placeholderTextColor={'#6a777e'}
-                  onChangeText={val => onChangeText('lastName', val)}
-                  value={userData.lastName.value}
-                />
-              </View>
-              <View style={{width: 700, alignItems: 'center'}}>
-                <Text style={styles.text}>Must contain at least one uppercase, one digit, and no spaces</Text>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={'Password'}
-                  autoCapitalize={'none'}
-                  autoCorrect={false}
-                  placeholderTextColor={'#6a777e'}
-                  onChangeText={val => onChangeText('password', val)}
-                  value={userData.password.value}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={'Confirm Password'}
-                  autoCapitalize={'none'}
-                  autoCorrect={false}
-                  placeholderTextColor={'#6a777e'}
-                  secureTextEntry={!userData.password.showPassword}
-                  onChangeText={val => onChangeText('confirmPassword', val)}
-                  value={userData.confirmPassword.value}
-                />
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.text}>Show Password</Text>
-                <CheckBox
-                  // title='Show Password'
-                  textStyle={styles.checkBoxText}
-                  containerStyle={{backgroundColor: 'transparent'}}
-                  checkedColor={'white'}
-                  uncheckedColor={'white'}
-                  checked={userData.password.showPassword}
-                  onPress={() => toggleCheck()}
-                />
-              </View>
-              <TextInput
-                style={styles.input}
-                placeholder={'Email'}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                placeholderTextColor={'#6a777e'}
-                onChangeText={val => onChangeText('email', val)}
-                value={userData.email.value}
-              />
-              {renderButtons()}
-            </Animated.View>
-            <StatusDialog
-              visible={statusDialog}
-              dialogTitle={statusDialogTitle}
-              onTouchOutside={() => setStatusDialog(false)}
-              dialogAnimation={new SlideAnimation({slideFrom: 'bottom'})}
-            >
-              <Text>{statusMessage}</Text>
-            </StatusDialog>
-          </View>
+          <Button
+            title={'Sign Up'}
+            buttonStyle={styles.buttonStyle}
+            containerStyle={styles.buttonContainer}
+            disabled={!isOnline.isInternetReachable}
+            onPress={signUp}
+          />
+          <Button
+            title={'Back to Sign In'}
+            buttonStyle={styles.buttonStyle}
+            containerStyle={styles.buttonContainer}
+            onPress={() => props.navigation.navigate('SignIn')}
+          />
+          {/*{renderButtons()}*/}
         </View>
       </View>
+      {/*</View>*/}
+      {/*</View>*/}
+      <StatusDialog
+        visible={statusDialog}
+        dialogTitle={statusDialogTitle}
+        onTouchOutside={() => setStatusDialog(false)}
+        dialogAnimation={new SlideAnimation({slideFrom: 'bottom'})}
+      >
+        <Text>{statusMessage}</Text>
+      </StatusDialog>
       {loading && <Loading/>}
-    </ImageBackground>
+      {/*</ImageBackground>*/}
+    </View>
   );
 };
 

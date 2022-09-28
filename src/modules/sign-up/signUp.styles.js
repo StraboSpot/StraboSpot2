@@ -4,8 +4,8 @@ import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
+    // flex: 1,
+    // resizeMode: 'cover',
   },
   buttonStyle: {
     paddingRight: 50,
@@ -31,7 +31,10 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   inputContainerGroup: {
+    // flex: 1,
+    backgroundColor: 'blue',
     alignItems: 'center',
+    // maxHeight: 300,
   },
   inputContainer: {
     borderColor: 'transparent',
@@ -47,13 +50,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial-BoldMT',
   },
   titleContainer: {
+    flex: 1,
     alignItems: 'center',
     paddingBottom: 60,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // backgroundColor: 'red',
+    // maxHeight: '100%',
   },
   version: {
     textAlign: 'center',
