@@ -173,7 +173,7 @@
     {
       "type": "select_multiple nq4pv86",
       "name": "linear_structural_fabrics",
-      "label": "Linear structural fabrics",
+      "label": "Linear fabrics",
       "required": "false",
       "appearance": "horizontal-compact"
     },
@@ -345,7 +345,7 @@
     {
       "type": "calculate",
       "name": "_version_",
-      "calculation": "'v9jj5vdhBifDS96gM725HY'",
+      "calculation": "'vAXExUFRot3exLGJXyy6ZM'",
       "$given_name": "__version__"
     }
   ],
@@ -791,8 +791,8 @@
   ],
   "settings": [
     {
-      "form_title": "Fabrics - Fault and shear zone (9/22)",
-      "version": "3 (2022-09-13 20:36:43)"
+      "form_title": "Fabrics - Structural",
+      "version": "4 (2022-09-28 17:42:53)"
     }
   ]
 }

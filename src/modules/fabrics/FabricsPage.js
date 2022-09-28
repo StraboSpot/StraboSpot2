@@ -24,7 +24,7 @@ const FabricsPage = (props) => {
   const [isDetailView, setIsDetailView] = useState(false);
 
   const FABRIC_SECTIONS = {
-    FAULT_ROCK: {title: 'Fault & Shear Zone Fabrics', key: 'fault_rock'},
+    FAULT_ROCK: {title: 'Structural Fabrics', key: 'fault_rock'},
     IGNEOUS: {title: 'Igneous Fabrics', key: 'igneous_rock'},
     METAMORPHIC: {title: 'Metamorphic Fabrics', key: 'metamorphic_rock'},
     DEPRECATED: {title: 'Fabrics (Deprecated Version)', key: null},

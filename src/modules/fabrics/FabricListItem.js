@@ -25,7 +25,8 @@ const FabricListItem = (props) => {
           }
           else return acc;
         }, []);
-      if (isEmpty(labelsArr)) return toTitleCase(useForm.getLabel(fabric.type, ['fabrics', fabric.type]));
+      if (isEmpty(labelsArr) && fabric.type === 'fault_rock') return 'Structural Fabric';
+      else if (isEmpty(labelsArr)) return toTitleCase(useForm.getLabel(fabric.type, ['fabrics', fabric.type]));
       else return labelsArr.join(', ');
     }
   };
