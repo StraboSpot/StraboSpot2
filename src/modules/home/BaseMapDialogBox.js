@@ -64,6 +64,7 @@ const BaseMapDialog = (props) => {
           renderItem={({item}) => renderDefaultMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           scrollEnabled={false}
+          ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
         />
       </View>
     );
