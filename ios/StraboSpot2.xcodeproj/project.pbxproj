@@ -8,14 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* StraboSpot2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* StraboSpot2Tests.m */; };
-		073ED693BC00E0DA4121F226 /* libPods-StraboSpot2-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */; };
+		10FE2D33D5A48500046AC384 /* libPods-StraboSpot2-StraboSpot2-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89241997F8003991630A8BB7 /* libPods-StraboSpot2-StraboSpot2-tvOS.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* StraboSpot2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* StraboSpot2Tests.m */; };
+		5A4EBED119126C5136C3B9DE /* libPods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23F632375B03DCCC15817458 /* libPods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */; };
 		76FC8D26292DBAFE7EF34F8C /* libPods-StraboSpot2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFDB77BC79E8B01259D0F1D4 /* libPods-StraboSpot2.a */; };
-		8269947B8F2E2835C7CFDB79 /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91B9B4EEEB01F2766A6FF20A /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */; };
 		D62C055F2679A5CC0001AEA5 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = D62C055E2679A5CC0001AEA5 /* main.jsbundle */; };
 		D688C0D12383476F004931BF /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D02383476F004931BF /* Compass.swift */; };
 		D688C0D323834799004931BF /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D688C0D223834798004931BF /* Compass.m */; };
@@ -55,18 +55,21 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = StraboSpot2/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = StraboSpot2/main.m; sourceTree = "<group>"; };
 		1B4D651BF00059BB886484AE /* Pods-StraboSpot2Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2Tests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2Tests/Pods-StraboSpot2Tests.release.xcconfig"; sourceTree = "<group>"; };
+		23F632375B03DCCC15817458 /* libPods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		278E14AC1A4470F2805EE6D4 /* Pods-StraboSpot2-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS/Pods-StraboSpot2-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* StraboSpot2-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StraboSpot2-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* StraboSpot2-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "StraboSpot2-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30ACDE0F41C8177AAACF209D /* Pods-StraboSpot2-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		30B4D19E025696D50396247B /* Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		3EAD887CDBBD4E7EAAAEEEF3 /* libRNSimpleCompass.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleCompass.a; sourceTree = "<group>"; };
 		4666FF88ED8CACFCBAB00B0D /* Pods-StraboSpot2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4956CE92038BC56D8322A26C /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		5B4BD55FA21D091CE5E6D5D9 /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5CBE1E71C6DC8364579075B5 /* Pods-StraboSpot2-StraboSpot2-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-StraboSpot2-tvOS.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS/Pods-StraboSpot2-StraboSpot2-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		5E9ABD89187CEAC66366071B /* Pods-StraboSpot2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2/Pods-StraboSpot2.debug.xcconfig"; sourceTree = "<group>"; };
+		7A8B3E0E0D94394FB8F36721 /* Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81F5D7E2F92B28FE76304E4D /* Pods-StraboSpot2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2Tests.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2Tests/Pods-StraboSpot2Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		91B9B4EEEB01F2766A6FF20A /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89241997F8003991630A8BB7 /* libPods-StraboSpot2-StraboSpot2-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2-StraboSpot2-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D62C055E2679A5CC0001AEA5 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		D688C0CF2383476E004931BF /* StraboSpot2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StraboSpot2-Bridging-Header.h"; sourceTree = "<group>"; };
 		D688C0D02383476F004931BF /* Compass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compass.swift; sourceTree = "<group>"; wrapsLines = 1; };
@@ -80,6 +83,7 @@
 		D6EFEBEF26E1534D00D45DB6 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../src/assets; sourceTree = "<group>"; };
 		D6F13FFF25CE078E00BD5624 /* StraboSpot2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StraboSpot2.entitlements; path = StraboSpot2/StraboSpot2.entitlements; sourceTree = "<group>"; };
 		D6F7B072281B37F000A543BF /* compass_button_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = compass_button_click.mp3; path = ../src/assets/sounds/compass_button_click.mp3; sourceTree = "<group>"; };
+		E5C931E6A4C7ED25FAA2A9FE /* Pods-StraboSpot2-StraboSpot2-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-StraboSpot2-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS/Pods-StraboSpot2-StraboSpot2-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F7493456D6C9F22218B2A6B3 /* Pods-StraboSpot2-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-tvOS/Pods-StraboSpot2-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -107,7 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				073ED693BC00E0DA4121F226 /* libPods-StraboSpot2-tvOS.a in Frameworks */,
+				10FE2D33D5A48500046AC384 /* libPods-StraboSpot2-StraboSpot2-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,7 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8269947B8F2E2835C7CFDB79 /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a in Frameworks */,
+				5A4EBED119126C5136C3B9DE /* libPods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +174,10 @@
 				1B4D651BF00059BB886484AE /* Pods-StraboSpot2Tests.release.xcconfig */,
 				5B4BD55FA21D091CE5E6D5D9 /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */,
 				4956CE92038BC56D8322A26C /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */,
+				E5C931E6A4C7ED25FAA2A9FE /* Pods-StraboSpot2-StraboSpot2-tvOS.debug.xcconfig */,
+				5CBE1E71C6DC8364579075B5 /* Pods-StraboSpot2-StraboSpot2-tvOS.release.xcconfig */,
+				7A8B3E0E0D94394FB8F36721 /* Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */,
+				30B4D19E025696D50396247B /* Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -179,9 +187,9 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				B8AED9122E5EBF738C0B4F51 /* libPods-StraboSpot2-tvOS.a */,
 				FFDB77BC79E8B01259D0F1D4 /* libPods-StraboSpot2.a */,
-				91B9B4EEEB01F2766A6FF20A /* libPods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */,
+				89241997F8003991630A8BB7 /* libPods-StraboSpot2-StraboSpot2-tvOS.a */,
+				23F632375B03DCCC15817458 /* libPods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -288,6 +296,8 @@
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
 				2D02E4791E0B4A5D006451C7 /* Resources */,
 				2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */,
+				7179AA3158698BD4DE8C756B /* [CP] Embed Pods Frameworks */,
+				DB9706321C2FEA37E13052CB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -306,6 +316,8 @@
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
+				113486F207CE12708800508B /* [CP] Embed Pods Frameworks */,
+				4EC186A3ABDF5BBDE8F08992 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -423,6 +435,34 @@
 			shellPath = /bin/sh;
 			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $DERIVED_FILE_DIR/main.jsbundle.map\"\nexport NODE_BINARY=$(which node)\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
+		113486F207CE12708800508B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests-frameworks.sh",
+				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
+				"${BUILT_PRODUCTS_DIR}/MapboxMobileEvents/MapboxMobileEvents.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-DoubleConversion/double-conversion.framework/double-conversion",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-Glog/glog.framework/glog",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MapboxMobileEvents.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/double-conversion.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/glog.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		28BD122B1F1A89E343801369 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -487,6 +527,84 @@
 			shellPath = /bin/sh;
 			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $DERIVED_FILE_DIR/main.jsbundle.map\"\nexport NODE_BINARY=node\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		4EC186A3ABDF5BBDE8F08992 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7179AA3158698BD4DE8C756B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS/Pods-StraboSpot2-StraboSpot2-tvOS-frameworks.sh",
+				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
+				"${BUILT_PRODUCTS_DIR}/MapboxMobileEvents/MapboxMobileEvents.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-DoubleConversion/double-conversion.framework/double-conversion",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-Glog/glog.framework/glog",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MapboxMobileEvents.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/double-conversion.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/glog.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS/Pods-StraboSpot2-StraboSpot2-tvOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		90BB255215184F664461FA6D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -502,7 +620,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-StraboSpot2-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-StraboSpot2-StraboSpot2-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -538,7 +656,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -593,6 +711,56 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2/Pods-StraboSpot2-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DB9706321C2FEA37E13052CB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS/Pods-StraboSpot2-StraboSpot2-tvOS-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StraboSpot2-StraboSpot2-tvOS/Pods-StraboSpot2-StraboSpot2-tvOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -759,7 +927,7 @@
 				CODE_SIGN_ENTITLEMENTS = StraboSpot2/StraboSpot2.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 5CQY5S92XA;
 				ENABLE_BITCODE = NO;
@@ -770,6 +938,8 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "StraboSpot 2";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
@@ -846,6 +1016,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.StraboSpot2;
 				PRODUCT_NAME = StraboSpot2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -864,7 +1037,7 @@
 				CODE_SIGN_ENTITLEMENTS = StraboSpot2/StraboSpot2.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 5CQY5S92XA;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -874,6 +1047,8 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "StraboSpot 2";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
 				MARKETING_VERSION = 1.27.1;
@@ -885,6 +1060,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.StraboSpot2;
 				PRODUCT_NAME = StraboSpot2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -894,7 +1072,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F7493456D6C9F22218B2A6B3 /* Pods-StraboSpot2-tvOS.debug.xcconfig */;
+			baseConfigurationReference = E5C931E6A4C7ED25FAA2A9FE /* Pods-StraboSpot2-StraboSpot2-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -931,7 +1109,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 278E14AC1A4470F2805EE6D4 /* Pods-StraboSpot2-tvOS.release.xcconfig */;
+			baseConfigurationReference = 5CBE1E71C6DC8364579075B5 /* Pods-StraboSpot2-StraboSpot2-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -968,7 +1146,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B4BD55FA21D091CE5E6D5D9 /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 7A8B3E0E0D94394FB8F36721 /* Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1003,7 +1181,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4956CE92038BC56D8322A26C /* Pods-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 30B4D19E025696D50396247B /* Pods-StraboSpot2-StraboSpot2-tvOS-StraboSpot2-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
