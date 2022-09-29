@@ -32,12 +32,20 @@ function Basemap(props) {
   const [useMaps] = useMapsHook();
   const useMapView = useMapViewHook();
 
-  const [currentCenter] = useState(center);
-  const [currentZoom] = useState(zoom);
-  const [scaleBarCenter, setScaleBarCenter] = useState(center);
-  const [zoomText, setZoomText] = useState(zoom);
   const [doesImageExist, setDoesImageExist] = useState(false);
+  const [scaleBarCenter, setScaleBarCenter] = useState(center);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
+  const [zoomText, setZoomText] = useState(zoom);
+
+  const [initialCenter, setInitialCenter] = useState(center);
+  const [initialZoom, setInitialZoom] = useState(zoom);
+
+  useEffect(() => {
+      console.log('UE Basemap');
+      setInitialCenter(getCenterCoordinates());
+      setInitialZoom(getZoomLevel());
+    }, [],
+  );
 
   useEffect(() => {
     console.log('UE Basemap [props.imageBasemap]', props.imageBasemap);
@@ -60,7 +68,7 @@ function Basemap(props) {
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
-    console.log('Getting map center...');
+    console.log('Getting initial map center...');
     if (props.zoomToSpot && !isEmpty(selectedSpot)) {
       if ((props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id)
         || (props.stratSection && selectedSpot.properties.strat_section_id === props.stratSection.strat_section_id)) {
@@ -75,7 +83,7 @@ function Basemap(props) {
         [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2]);
     }
     else if (props.stratSection) return STRAT_SECTION_CENTER;
-    return currentCenter;
+    return center;
   };
 
   // Get max X and max Y for strat intervals
@@ -93,10 +101,10 @@ function Basemap(props) {
   };
 
   const getZoomLevel = () => {
-    console.log('Getting zoom...');
+    console.log('Getting initial zoom...');
     if (props.imageBasemap) return 14;
     else if (props.stratSection) return 18;
-    return currentZoom;
+    return zoom;
   };
 
   // Update spots in extent and saved view (center and zoom)
@@ -158,8 +166,8 @@ function Basemap(props) {
 
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={getZoomLevel()}
-          centerCoordinate={getCenterCoordinates()}
+          zoomLevel={initialZoom}
+          centerCoordinate={initialCenter}
           animationDuration={0}
           // followUserLocation={true}   // Can't follow user location if wanting to zoom to extent of Spots
           // followUserMode='normal'
