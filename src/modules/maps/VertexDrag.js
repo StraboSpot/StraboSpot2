@@ -13,7 +13,8 @@ const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
 const {height, width} = Dimensions.get('window');
 
 const VertexDrag = () => {
-  const selectedVertexOffsetY = Platform.OS === 'ios' ? 10 : -38;
+  const selectedVertexOffsetY = Platform.OS === 'ios' ? 10 : -14;
+  // const selectedVertexOffsetY = Platform.OS === 'ios' ? 10 : -38;  //The -38 is for an android phone
 
   const dispatch = useDispatch();
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords); // See note at bottom.
