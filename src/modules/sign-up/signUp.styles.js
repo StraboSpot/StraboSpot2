@@ -3,68 +3,45 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    // flex: 1,
-    // resizeMode: 'cover',
-  },
   buttonStyle: {
-    paddingRight: 50,
-    paddingLeft: 50,
+    paddingRight: 30,
+    paddingLeft: 30,
   },
   buttonContainer: {
-    marginTop: 10,
+    margin: 10,
     borderRadius: 30,
-
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    // margin: 10,
   },
   checkBoxText: {
     color: 'white',
   },
   input: {
-    width: 350,
+    width: 300,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: '500',
-    height: 55,
+    height: 40,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    margin: 10,
     color: 'black',
     padding: 8,
     borderRadius: 14,
   },
-  inputContainerGroup: {
-    // flex: 1,
-    backgroundColor: 'blue',
-    alignItems: 'center',
-    // maxHeight: 300,
-  },
   inputContainer: {
-    borderColor: 'transparent',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  signUpContainer: {
+    alignItems: 'center',
+    width: '90%',
   },
   text: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 14,
     textAlign: 'center',
-  },
-  title: {
-    fontSize: 110,
-    fontFamily: 'Arial-BoldMT',
-  },
-  titleContainer: {
-    flex: 1,
-    alignItems: 'center',
-    paddingBottom: 60,
-  },
-  container: {
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: 'red',
-    // maxHeight: '100%',
-  },
-  version: {
-    textAlign: 'center',
-    fontSize: 32,
-    fontFamily: 'ChalkboardSE-Bold',
   },
 });
 

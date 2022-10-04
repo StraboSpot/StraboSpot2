@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Animated, Keyboard, Text, TextInput, useWindowDimensions, View} from 'react-native';
 
-import {Button, CheckBox} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
-import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {validate} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
+import Splashscreen from '../splashscreen/Splashscreen';
 import styles from './signUp.styles';
 
 const {State: TextInputState} = TextInput;
@@ -62,14 +62,12 @@ const SignUp = (props) => {
       touched: false,
     },
   };
-  const online = require('../../assets/icons/ConnectionStatusButton_connected.png');
-  const offline = require('../../assets/icons/ConnectionStatusButton_offline.png');
 
   const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [statusDialog, setStatusDialog] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
   const [statusDialogTitle, setStatusDialogTitle] = useState(null);
@@ -146,8 +144,7 @@ const SignUp = (props) => {
 
   const signUp = async () => {
     console.log('ConnectedValue', userData.password.value);
-
-    setLoading(true);
+    setIsLoading(true);
     try {
       const newUser = await serverRequests.registerUser(userData);
       console.log('res', newUser);
@@ -158,19 +155,19 @@ const SignUp = (props) => {
           console.log('user successfully signed up!: ');
         }
         else setStatusDialogTitle('Something went wrong...!');
-        setLoading(false);
+        setIsLoading(false);
         setStatusDialog(true);
         setStatusMessage(newUser.message);
       }
       else {
-        setLoading(false);
+        setIsLoading(false);
         setStatusDialogTitle('Uh Oh!');
         setStatusMessage(newUser.message);
       }
     }
     catch (err) {
       console.log('error signing up: ', err);
-      setLoading(false);
+      setIsLoading(false);
       setStatusMessage('Error signing up. \n Possible bad network connection');
       setStatusDialog(true);
     }
@@ -188,9 +185,9 @@ const SignUp = (props) => {
 
   const renderButtons = () => {
     return (
-      <View>
+      <View style={styles.buttonsContainer}>
         <Button
-          title={'Sign Up'}
+          title={'Register'}
           buttonStyle={styles.buttonStyle}
           containerStyle={styles.buttonContainer}
           disabled={!isOnline.isInternetReachable}
@@ -207,82 +204,53 @@ const SignUp = (props) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: 'green', padding: 10}}>
-      {/*<ImageBackground source={require('../../assets/images/background.jpg')} style={{...styles.backgroundImage}}>*/}
-      {/*<View style={styles.container}>*/}
-      {/*<View style={{*/}
-      {/*  position: 'absolute',*/}
-      {/*  right: 0,*/}
-      {/*  top: 40,*/}
-      {/*  zIndex: -1,*/}
-      {/*}}>*/}
-      {/*  <IconButton*/}
-      {/*    source={isOnline.isInternetReachable ? online : offline}*/}
-      {/*  />*/}
-      {/*</View>*/}
-      {/*<View style={{flex: 1}}>*/}
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Strabo Spot 2</Text>
-        <Text style={styles.version}>{VERSION_NUMBER}</Text>
-      </View>
-      <View>
-        <View style={styles.inputContainerGroup}>
-          <View style={{flexDirection: 'row'}}>
-            <TextInput
-              style={styles.input}
-              placeholder={'First Name'}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              placeholderTextColor={'#6a777e'}
-              onChangeText={val => onChangeText('firstName', val)}
-              value={userData.firstName.value}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder={'Last Name'}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              placeholderTextColor={'#6a777e'}
-              onChangeText={val => onChangeText('lastName', val)}
-              value={userData.lastName.value}
-            />
-          </View>
-          <View style={{width: 700, alignItems: 'center'}}>
-            <Text style={styles.text}>Must contain at least one uppercase, one digit, and no spaces</Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <TextInput
-              style={styles.input}
-              placeholder={'Password'}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              placeholderTextColor={'#6a777e'}
-              onChangeText={val => onChangeText('password', val)}
-              value={userData.password.value}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder={'Confirm Password'}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              placeholderTextColor={'#6a777e'}
-              secureTextEntry={!userData.password.showPassword}
-              onChangeText={val => onChangeText('confirmPassword', val)}
-              value={userData.confirmPassword.value}
-            />
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={styles.text}>Show Password</Text>
-            <CheckBox
-              // title='Show Password'
-              textStyle={styles.checkBoxText}
-              containerStyle={{backgroundColor: 'transparent'}}
-              checkedColor={'white'}
-              uncheckedColor={'white'}
-              checked={userData.password.showPassword}
-              onPress={() => toggleCheck()}
-            />
-          </View>
+    <Splashscreen>
+      <View style={styles.signUpContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={'First Name'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            placeholderTextColor={'#6a777e'}
+            onChangeText={val => onChangeText('firstName', val)}
+            value={userData.firstName.value}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={'Last Name'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            placeholderTextColor={'#6a777e'}
+            onChangeText={val => onChangeText('lastName', val)}
+            value={userData.lastName.value}
+          />
+        </View>
+        <View style={{width: '100%'}}>
+          <Text style={styles.text}>Password must contain at least one uppercase, one digit, and no spaces</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={'Password'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            placeholderTextColor={'#6a777e'}
+            onChangeText={val => onChangeText('password', val)}
+            value={userData.password.value}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={'Confirm Password'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            placeholderTextColor={'#6a777e'}
+            secureTextEntry={!userData.password.showPassword}
+            onChangeText={val => onChangeText('confirmPassword', val)}
+            value={userData.confirmPassword.value}
+          />
+        </View>
+        <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder={'Email'}
@@ -292,24 +260,9 @@ const SignUp = (props) => {
             onChangeText={val => onChangeText('email', val)}
             value={userData.email.value}
           />
-          <Button
-            title={'Sign Up'}
-            buttonStyle={styles.buttonStyle}
-            containerStyle={styles.buttonContainer}
-            disabled={!isOnline.isInternetReachable}
-            onPress={signUp}
-          />
-          <Button
-            title={'Back to Sign In'}
-            buttonStyle={styles.buttonStyle}
-            containerStyle={styles.buttonContainer}
-            onPress={() => props.navigation.navigate('SignIn')}
-          />
-          {/*{renderButtons()}*/}
         </View>
+        {renderButtons()}
       </View>
-      {/*</View>*/}
-      {/*</View>*/}
       <StatusDialog
         visible={statusDialog}
         dialogTitle={statusDialogTitle}
@@ -318,9 +271,8 @@ const SignUp = (props) => {
       >
         <Text>{statusMessage}</Text>
       </StatusDialog>
-      {loading && <Loading/>}
-      {/*</ImageBackground>*/}
-    </View>
+      <Loading isLoading={isLoading}/>
+    </Splashscreen>
   );
 };
 
