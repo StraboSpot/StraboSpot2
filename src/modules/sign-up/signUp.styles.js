@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     height: 40,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    margin: 10,
     color: 'black',
     padding: 8,
     borderRadius: 14,
