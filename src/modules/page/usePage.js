@@ -1,9 +1,10 @@
 import {useSelector} from 'react-redux';
 
-import {PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from './page.constants';
+import {PAGE_KEYS, PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from './page.constants';
 
 const usePage = () => {
   const isTestingMode = useSelector(state => state.project.isTestingMode);
+  const spot = useSelector(state => state.spot.selectedSpot);
 
   const getRelevantGeneralPages = () => {
     return [...PRIMARY_PAGES, ...SECONDARY_PAGES].reduce((acc, page) => {
@@ -21,7 +22,9 @@ const usePage = () => {
   const getRelevantSedPages = () => {
     const sedPagesWithoutSedRocks = [...SED_PAGES.slice(1, SED_PAGES.length)];
     return sedPagesWithoutSedRocks.reduce((acc, page) => {
-      if (!page.testing || (isTestingMode && page?.testing)) {
+      if ((!page.testing || (isTestingMode && page?.testing))
+        && (page.key !== PAGE_KEYS.STRAT_SECTION || (page.key === PAGE_KEYS.STRAT_SECTION
+          && spot.properties?.surface_feature?.surface_feature_type !== 'strat_interval'))) {
         return [...acc, page];
       }
       return acc;
