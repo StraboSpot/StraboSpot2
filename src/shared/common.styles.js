@@ -33,7 +33,7 @@ const commonStyles = StyleSheet.create({
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 30,
+    borderRadius: 20,
     position: 'absolute',
     top: '15%',
     maxHeight: height * 0.90,
