@@ -11,10 +11,10 @@ import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Loading from '../../shared/ui/Loading';
-import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   clearedStatusMessages,
   setBackupOverwriteModalVisible,
+  setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
@@ -97,9 +97,11 @@ const ProjectList = (props) => {
         dispatch(clearedStatusMessages());
         dispatch(setStatusMessagesModalVisible(true));
         const res = await useImport.loadProjectFromDevice(project);
+        dispatch(setStatusMessageModalTitle(res.project.description.project_name));
         console.log('Done loading project', res);
       }
       else {
+        dispatch(setStatusMessageModalTitle(project.name));
         dispatch(clearedStatusMessages());
         dispatch(setStatusMessagesModalVisible(true));
         await useDownload.initializeDownload(project);
@@ -164,7 +166,7 @@ const ProjectList = (props) => {
   return (
     <React.Fragment>
       <View style={{alignSelf: 'center'}}>
-        <SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>
+        {/*<SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>*/}
       </View>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
