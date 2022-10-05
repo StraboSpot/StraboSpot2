@@ -1,12 +1,11 @@
 import React, {useEffect, useRef} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setBackupOverwriteModalVisible, setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
@@ -75,9 +74,6 @@ const NewProjectForm = (props) => {
 
   return (
     <React.Fragment>
-      <View style={{alignSelf: 'center'}}>
-        <SectionDivider dividerText={'Create a New Project'}/>
-      </View>
       <FlatList ListHeaderComponent={renderFormFields()}/>
       <Button
         title={'Save New Project'}
