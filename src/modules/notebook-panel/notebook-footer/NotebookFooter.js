@@ -7,22 +7,21 @@ import {useSelector} from 'react-redux';
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
 import {NOTEBOOK_PAGES} from '../../page/page.constants';
+import usePageHoook from '../../page/usePage';
 import MorePagesMenu from './MorePagesMenu';
 import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = (props) => {
-  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
   ));
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
-  const notebookPagesValidOn = notebookPagesOn.filter((i) => {
-    const page = NOTEBOOK_PAGES.find(p => p.key === i);
-    if (!page) return false;
-    return !page.testing || (isTestingMode && page?.testing);
-  });
+  const usePage = usePageHoook();
+
+  const pagesToShow = [...usePage.getRelevantGeneralPages(), ...usePage.getRelevantPetPages(), ...usePage.getRelevantSedPages()];
+  const notebookPagesValidOn = notebookPagesOn.filter(i => pagesToShow.find(p => p.key === i));
 
   const getPageIcon = (key) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
@@ -36,6 +35,7 @@ const NotebookFooter = (props) => {
       >
         {notebookPagesValidOn.map(key => (
           <IconButton
+            key={key}
             source={getPageIcon(key)}
             onPress={() => props.openPage(key)}
           />

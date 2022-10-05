@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import {PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from '../../page/page.constants';
+import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';
@@ -15,20 +15,12 @@ import footerStyles from './notebookFooter.styles';
 const MorePagesMenu = (props) => {
   const dispatch = useDispatch();
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
-  const isTestingMode = useSelector(state => state.project.isTestingMode);
 
-  const mainPagesToShow = [...PRIMARY_PAGES, ...SECONDARY_PAGES].reduce((acc, page) => {
-    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
-  }, []);
-  const petPagesToShow = PET_PAGES.reduce((acc, page) => {
-    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
-  }, []);
-  const sedPagesToShow = SED_PAGES.reduce((acc, page) => {
-    return (!page.testing || (isTestingMode && page?.testing)) ? [...acc, page] : acc;
-  }, []);
-  const petPagesToShowWithSedRocks = [...petPagesToShow.slice(0, 3), sedPagesToShow[0], ...petPagesToShow.slice(3,
-    petPagesToShow.length)];
-  const sedPagesToShowWithoutSedRocks = [...sedPagesToShow.slice(1, sedPagesToShow.length)];
+  const usePage = usePageHoook();
+
+  const generalPagesToShow = usePage.getRelevantGeneralPages();
+  const petPagesToShow = usePage.getRelevantPetPages();
+  const sedPagesToShow = usePage.getRelevantSedPages();
 
   const switchPage = (key) => {
     dispatch(setNotebookPageVisible(key));
@@ -83,23 +75,23 @@ const MorePagesMenu = (props) => {
     >
       <DialogContent style={{flex: 1, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
         <ScrollView>
-          {mainPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
-          {!isEmpty(petPagesToShowWithSedRocks) && (
+          {generalPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+          {!isEmpty(petPagesToShow) && (
             <React.Fragment>
               <SectionDivider
                 dividerText={'Rocks & Minerals'}
                 style={footerStyles.morePagesSectionDivider}
               />
-              {petPagesToShowWithSedRocks.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+              {petPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
             </React.Fragment>
           )}
-          {!isEmpty(sedPagesToShowWithoutSedRocks) && (
+          {!isEmpty(sedPagesToShow) && (
             <React.Fragment>
               <SectionDivider
                 dividerText={'Sedimentology\n*Under Development*'}
                 style={footerStyles.morePagesSectionDivider}
               />
-              {sedPagesToShowWithoutSedRocks.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
+              {sedPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
             </React.Fragment>
           )}
         </ScrollView>
