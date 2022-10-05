@@ -34,6 +34,7 @@ const initialHomeState = {
     photo: false,
     sketch: false,
   },
+  statusMessageModalTitle: '',
   isProjectLoadComplete: false,
 };
 
@@ -97,6 +98,9 @@ const homeSlice = createSlice({
     setStatusMessagesModalVisible(state, action) {
       state.isStatusMessagesModalVisible = action.payload;
     },
+    setStatusMessageModalTitle(state, action) {
+      state.statusMessageModalTitle = action.payload;
+    },
     shortcutSwitchPosition(state, action) {
       state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
     },
@@ -128,6 +132,7 @@ export const {
   setProjectLoadSelectionModalVisible,
   // setSignedInStatus,
   setStatusMessagesModalVisible,
+  setStatusMessageModalTitle,
   shortcutSwitchPosition,
   setUploadModalVisible,
   setWarningModalVisible,
