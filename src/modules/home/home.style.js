@@ -9,8 +9,8 @@ const homeStyles = StyleSheet.create({
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 10,
-    width: 400,
-    maxHeight: '90%',
+    width: 300,
+    // maxHeight: '90%',
   },
   dialogTitleContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
