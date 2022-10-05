@@ -14,9 +14,9 @@ import {Form, useFormHook} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import {useSpotsHook} from '../spots';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
+import usePageHoook from './usePage';
 
 const Overview = (props) => {
   const dispatch = useDispatch();
@@ -28,21 +28,21 @@ const Overview = (props) => {
   const formRef = useRef(null);
 
   const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const usePage = usePageHoook();
 
   useEffect(() => {
     console.log('UE Overview []');
     dispatch(setModalVisible({modal: null}));
   }, []);
 
-  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...useSpots.getPopulatedPagesKeys(spot)])];
+  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...usePage.getPopulatedPagesKeys(spot)])];
   const sections = visiblePagesKeys.reduce((acc, key) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (page.overview_component) {
       const SectionOverview = page.overview_component;
       const sectionOverview = {
         title: page,
-        data: [<SectionOverview page={page} openMainMenu={props.openMainMenu}/>],
+        data: [<SectionOverview key={key} page={page} openMainMenu={props.openMainMenu}/>],
       };
       return [...acc, sectionOverview];
     }

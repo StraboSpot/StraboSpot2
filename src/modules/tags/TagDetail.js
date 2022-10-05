@@ -10,12 +10,15 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {PAGE_KEYS} from '../page/page.constants';
+import usePageHoook from '../page/usePage';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
 const TagDetail = (props) => {
+  const usePage = usePageHoook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
+
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);
   const [refresh, setRefresh] = useState(false);
@@ -39,7 +42,7 @@ const TagDetail = (props) => {
           onPress={() => props.openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
-            source={useSpots.getSpotDataIconSource(featureType)}
+            source={usePage.getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />

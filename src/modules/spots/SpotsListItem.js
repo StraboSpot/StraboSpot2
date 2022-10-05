@@ -7,11 +7,13 @@ import {useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import useNestingHook from '../nesting/useNesting';
+import usePageHoook from '../page/usePage';
 import {useTagsHook} from '../tags';
 import useSpotsHook from './useSpots';
 
 const SpotsListItem = (props) => {
   const [useNesting] = useNestingHook();
+  const usePage = usePageHoook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
 
@@ -30,12 +32,12 @@ const SpotsListItem = (props) => {
     <FlatList
       listKey={new Date().toISOString()}
       keyExtractor={(item, index) => index.toString()}
-      data={useSpots.getPopulatedPagesKeys(props.spot)}
+      data={usePage.getPopulatedPagesKeys(props.spot)}
       horizontal={false}
       numColumns={5}
       renderItem={({item}) => (
         <Avatar
-          source={useSpots.getSpotDataIconSource(item)}
+          source={usePage.getSpotDataIconSource(item)}
           placeholderStyle={{backgroundColor: 'transparent'}}
           size={20}
         />

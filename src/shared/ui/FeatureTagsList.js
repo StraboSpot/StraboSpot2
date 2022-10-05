@@ -3,14 +3,14 @@ import {View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 
-import {useSpotsHook} from '../../modules/spots';
+import usePageHoook from '../../modules/page/usePage';
 import {useTagsHook} from '../../modules/tags';
 import {isEmpty} from '../Helpers';
 
 function FeatureTagsList(props) {
-
-  const [useSpots] = useSpotsHook();
+  const usePage = usePageHoook();
   const [useTags] = useTagsHook();
+
   const tags = useTags.getTagsAtFeature(props.spotId, props.featureId);
   const tagsString = tags.map(tag => tag.name).sort().join(', ');
 
@@ -22,7 +22,7 @@ function FeatureTagsList(props) {
           paddingTop: 5,
         }}>
           <Avatar
-            source={useSpots.getSpotDataIconSource('tags')}
+            source={usePage.getSpotDataIconSource('tags')}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />
