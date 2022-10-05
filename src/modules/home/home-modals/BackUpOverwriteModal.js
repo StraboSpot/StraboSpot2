@@ -11,6 +11,7 @@ import Dialog, {
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
+import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
 import * as ProjectActions from '../../project/project.constants';
 import styles from '../../project/project.styles';
 import {setSelectedProject} from '../../project/projects.slice';
@@ -27,6 +28,7 @@ const BackUpOverwriteModal = (props) => {
 
   const cancel = () => {
     dispatch(setSelectedProject({project: '', source: ''}));
+    dispatch(setMenuSelectionPage({name: undefined}));
     dispatch(setBackupOverwriteModalVisible(false));
   };
 
