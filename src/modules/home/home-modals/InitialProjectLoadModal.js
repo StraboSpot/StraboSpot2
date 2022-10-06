@@ -25,6 +25,8 @@ import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
   const welcomeTitle = 'Welcome to StraboSpot';
+  const serverTitle = 'Projects on Server';
+  const deviceTitle = 'Projects on Device';
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
@@ -55,7 +57,8 @@ const InitialProjectLoadModal = (props) => {
       dispatch(clearedDatasets());
       dispatch(clearedSpots());
       setVisibleInitialSection(source === 'device' ? 'deviceProjects' : 'serverProjects');
-      dispatch(setStatusMessageModalTitle(welcomeTitle));
+      dispatch(setStatusMessageModalTitle(source === 'device'
+        ? deviceTitle : source === 'server' ? serverTitle : welcomeTitle));
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
       setVisibleProjectSection('activeDatasetsList');
@@ -111,7 +114,7 @@ const InitialProjectLoadModal = (props) => {
           <Button
             onPress={() => goBack()}
             type={'clear'}
-            title={'Go Back'}
+            title={'Back'}
             // buttonStyle={[commonStyles.standardButton]}
             // titleStyle={commonStyles.standardButtonText}
           />
@@ -168,7 +171,7 @@ const InitialProjectLoadModal = (props) => {
           <Button
             onPress={() => goBack()}
             type={'clear'}
-            title={'Go Back'}
+            title={'Back'}
             // buttonStyle={[commonStyles.standardButton]}
             titleStyle={commonStyles.standardButtonText}
           />
