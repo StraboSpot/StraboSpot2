@@ -1,4 +1,4 @@
-import {Animated, Dimensions, Easing, findNodeHandle, Platform, UIManager} from 'react-native';
+import {Animated, Dimensions, Easing, findNodeHandle, PixelRatio, Platform, UIManager} from 'react-native';
 
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
@@ -134,6 +134,16 @@ export const getNewCopyId = () => Math.floor(10000000000000 + Math.random() * 90
 export const getNewUUID = () => {
   return uuidv4();
 };
+
+export const getFontSizeByWindowWidth = (window, fontSize) => {
+  const baseWidth = 320; // width of smallest iPhone
+  const width = getOrientation(window) === 'portrait' ? window.width : window.height;
+  return PixelRatio.roundToNearestPixel(fontSize * (width / baseWidth));
+};
+
+function getOrientation(window) {
+  return window.width < window.height ? 'portrait' : 'landscape';
+}
 
 // Truncate the decimal part of a number to 5 digits and return as a string
 export const truncDecimal = (num) => {

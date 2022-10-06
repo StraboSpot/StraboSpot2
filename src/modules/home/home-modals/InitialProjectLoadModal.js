@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Avatar, Button} from 'react-native-elements';
+import {Avatar, Button, Icon} from 'react-native-elements';
 import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -13,28 +13,42 @@ import Spacer from '../../../shared/ui/Spacer';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
 import NewProject from '../../project/NewProjectForm';
+import projectStyles from '../../project/project.styles';
 import ProjectList from '../../project/ProjectList';
 import {clearedDatasets, clearedProject} from '../../project/projects.slice';
 import ProjectTypesButtons from '../../project/ProjectTypesButtons';
 import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
+import {setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
+  const welcomeTitle = 'Welcome to StraboSpot';
+  const serverTitle = 'Projects on Server';
+  const deviceTitle = 'Projects on Device';
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
+  const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
+  const [source, setSource] = useState('');
 
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
+    return () => {
+      setVisibleInitialSection('none');
+    };
+  }, []);
+
+  useEffect(() => {
     console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
+    dispatch(setStatusMessageModalTitle(welcomeTitle));
   }, [isOnline]);
 
   const goBack = () => {
@@ -42,10 +56,19 @@ const InitialProjectLoadModal = (props) => {
       dispatch(clearedProject());
       dispatch(clearedDatasets());
       dispatch(clearedSpots());
-      setVisibleInitialSection('none');
+      setVisibleInitialSection(source === 'device' ? 'deviceProjects' : 'serverProjects');
+      dispatch(setStatusMessageModalTitle(source === 'device'
+        ? deviceTitle : source === 'server' ? serverTitle : welcomeTitle));
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
       setVisibleProjectSection('activeDatasetsList');
+    }
+  };
+
+  const goBackToMain = () => {
+    if (visibleInitialSection !== 'none') {
+      setVisibleInitialSection('none');
+      dispatch(setStatusMessageModalTitle(welcomeTitle));
     }
   };
 
@@ -53,29 +76,57 @@ const InitialProjectLoadModal = (props) => {
     return (
       <View>
         <ProjectTypesButtons
-          onLoadProjectsFromServer={() => setVisibleInitialSection('serverProjects')}
-          onLoadProjectsFromDevice={() => setVisibleInitialSection('deviceProjects')}
-          onStartNewProject={() => setVisibleInitialSection('project')}/>
+          onLoadProjectsFromServer={() => handleOnPress('serverProjects')}
+          onLoadProjectsFromDevice={() => handleOnPress('deviceProjects')}
+          onStartNewProject={() => handleOnPress('project')}/>
       </View>
     );
+  };
+
+  const handleOnPress = (type) => {
+    switch (type) {
+      case 'serverProjects':
+        setSource('server');
+        setVisibleInitialSection('serverProjects');
+        dispatch(setStatusMessageModalTitle('Projects on Server'));
+        break;
+      case 'deviceProjects':
+        setSource('device');
+        setVisibleInitialSection('deviceProjects');
+        dispatch(setStatusMessageModalTitle('Projects on Device'));
+        break;
+      case 'project':
+        setVisibleInitialSection('project');
+        dispatch(setStatusMessageModalTitle('Start New Project'));
+        break;
+      default:
+        setVisibleInitialSection('none');
+        dispatch(setStatusMessageModalTitle(welcomeTitle));
+    }
+
+
   };
 
   const renderCurrentDatasetSelection = () => {
     return (
       <React.Fragment>
-        <Button
-          onPress={() => goBack()}
-          title={'Go Back'}
-          buttonStyle={[commonStyles.standardButton]}
-          titleStyle={commonStyles.standardButtonText}
-        />
-        <Button
-          onPress={() => props.closeModal()}
-          title={'Done'}
-          disabled={isEmpty(activeDatasetsId)}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-        />
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            onPress={() => goBack()}
+            type={'clear'}
+            title={'Back'}
+            // buttonStyle={[commonStyles.standardButton]}
+            // titleStyle={commonStyles.standardButtonText}
+          />
+          <Button
+            onPress={() => props.closeModal()}
+            title={'Done'}
+            type={'clear'}
+            disabled={isEmpty(activeDatasetsId)}
+            // buttonStyle={commonStyles.standardButton}
+            // titleStyle={commonStyles.standardButtonText}
+          />
+        </View>
         <View style={{alignItems: 'center', paddingTop: 10}}>
           <Text>Select the dataset to add new spots.</Text>
         </View>
@@ -92,8 +143,9 @@ const InitialProjectLoadModal = (props) => {
       return (
         <Button
           onPress={() => setVisibleProjectSection('currentDatasetSelection')}
+          type={'clear'}
           title={'Next'}
-          buttonStyle={[commonStyles.standardButton]}
+          // buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
       );
@@ -102,9 +154,10 @@ const InitialProjectLoadModal = (props) => {
       return (
         <Button
           onPress={() => props.closeModal()}
+          type={'clear'}
           title={'Done'}
           disabled={isEmpty(activeDatasetsId)}
-          buttonStyle={[commonStyles.standardButton]}
+          // buttonStyle={[commonStyles.standardButton]}
           titleStyle={commonStyles.standardButtonText}
         />
       );
@@ -114,13 +167,16 @@ const InitialProjectLoadModal = (props) => {
   const renderDatasetList = () => {
     return (
       <React.Fragment>
-        <Button
-          onPress={() => goBack()}
-          title={'Go Back'}
-          buttonStyle={[commonStyles.standardButton]}
-          titleStyle={commonStyles.standardButtonText}
-        />
-        {renderContinueOrCloseButton()}
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            onPress={() => goBack()}
+            type={'clear'}
+            title={'Back'}
+            // buttonStyle={[commonStyles.standardButton]}
+            titleStyle={commonStyles.standardButtonText}
+          />
+          {renderContinueOrCloseButton()}
+        </View>
         <Spacer/>
         <View style={commonStyles.standardButtonText}>
           <Text> By default the first dataset selected will be made the current dataset. You can change this on the next
@@ -141,10 +197,28 @@ const InitialProjectLoadModal = (props) => {
     else {
       return (
         <React.Fragment>
-          {renderProjectTypesButtons()}
-          <Spacer/>
+          <View style={{alignContent: 'center', marginTop: 10}}>
+            <Button
+              onPress={() => goBackToMain()}
+              title={'Back'}
+              type={'clear'}
+              icon={
+                <Icon
+                  name={'ios-arrow-back'}
+                  type={'ionicon'}
+                  color={'black'}
+                  iconStyle={projectStyles.buttons}
+                  size={25}
+                />
+              }
+              containerStyle={{alignItems: 'flex-start'}}
+              titleStyle={commonStyles.standardButtonText}
+            />
+          </View>
+          {/*{renderProjectTypesButtons()}*/}
+          {/*<Spacer/>*/}
           <View style={{height: 400}}>
-            <ProjectList source={'device'}/>
+            <ProjectList source={source}/>
           </View>
         </React.Fragment>
       );
@@ -157,13 +231,29 @@ const InitialProjectLoadModal = (props) => {
     }
     else {
       return (
-        <React.Fragment>
-          {renderProjectTypesButtons()}
+        <View style={{alignContent: 'center', marginTop: 10}}>
+          <Button
+            onPress={() => goBackToMain()}
+            title={'Back'}
+            type={'clear'}
+            icon={
+              <Icon
+                name={'ios-arrow-back'}
+                type={'ionicon'}
+                color={'black'}
+                iconStyle={projectStyles.buttons}
+                size={25}
+              />
+            }
+            containerStyle={{alignItems: 'flex-start'}}
+            titleStyle={commonStyles.standardButtonText}
+          />
+          {/*{renderProjectTypesButtons()}*/}
           <Spacer/>
           <View style={{height: 400}}>
-            <ProjectList source={'server'}/>
+            <ProjectList source={source}/>
           </View>
-        </React.Fragment>
+        </View>
       );
     }
   };
@@ -192,8 +282,22 @@ const InitialProjectLoadModal = (props) => {
   const renderStartNewProject = () => {
     return (
       <React.Fragment>
-        {renderProjectTypesButtons()}
-        <Spacer/>
+        <Button
+          onPress={() => goBackToMain()}
+          title={'Back'}
+          type={'clear'}
+          icon={
+            <Icon
+              name={'ios-arrow-back'}
+              type={'ionicon'}
+              color={'black'}
+              iconStyle={projectStyles.buttons}
+              size={25}
+            />
+          }
+          containerStyle={{alignItems: 'flex-start'}}
+          titleStyle={commonStyles.standardButtonText}
+        />
         <View style={{height: 400}}>
           <NewProject openMainMenu={props.openMainMenu} onPress={() => props.closeModal()}/>
         </View>
@@ -245,14 +349,14 @@ const InitialProjectLoadModal = (props) => {
         })}
         dialogTitle={
           <DialogTitle
-            title={'Welcome to StraboSpot'}
+            title={statusMessageModalTitle}
             style={homeStyles.dialogTitleContainer}
             textStyle={homeStyles.dialogTitleText}
           />
         }
       >
         <DialogContent>
-          {renderUserProfile()}
+          {visibleInitialSection === 'none' && renderUserProfile()}
           {renderSectionView()}
         </DialogContent>
       </Dialog>

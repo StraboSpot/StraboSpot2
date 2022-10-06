@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, ImageBackground, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Alert, Animated, Keyboard, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
@@ -8,15 +8,11 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
-import BatteryInfo from '../../services/BatteryInfo';
-import ConnectionStatus from '../../services/ConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
-import {VERSION_NUMBER} from '../../shared/app.constants';
 import * as Helpers from '../../shared/Helpers';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
-import uiStyles from '../../shared/ui/ui.styles';
 import WarningModal from '../home/home-modals/WarningModal';
 import {
   addedStatusMessage,
@@ -24,6 +20,7 @@ import {
   setProjectLoadSelectionModalVisible,
   setWarningModalVisible,
 } from '../home/home.slice';
+import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
@@ -114,45 +111,26 @@ const SignIn = (props) => {
 
   const renderButtons = () => {
     return (
-      <View>
+      <View style={styles.buttonsContainer}>
         <Button
-          icon={{
-            name: 'log-in',
-            type: 'ionicon',
-            size: 30,
-            color: 'white',
-          }}
           type={'solid'}
-          containerStyle={{marginTop: 30}}
+          containerStyle={styles.buttonContainer}
           onPress={() => signIn()}
           buttonStyle={styles.buttonStyle}
           disabled={username === '' || password === ''}
           title={'Sign In'}
         />
         <Button
-          icon={{
-            style: styles.icon,
-            name: 'add',
-            type: 'ionicon',
-            size: 30,
-            color: 'white',
-          }}
           type={'solid'}
-          containerStyle={{marginTop: 10}}
+          containerStyle={styles.buttonContainer}
           onPress={() => createAccount()}
           buttonStyle={styles.buttonStyle}
-          title={'Create an Account'}
+          title={'Sign Up'}
         />
         <Button
-          icon={{
-            name: 'people',
-            type: 'ionicon',
-            size: 30,
-            color: 'white',
-          }}
           type={'solid'}
           onPress={() => guestSignIn()}
-          containerStyle={{marginTop: 10}}
+          containerStyle={styles.buttonContainer}
           buttonStyle={styles.buttonStyle}
           title={'Continue as Guest'}
         />
@@ -193,47 +171,37 @@ const SignIn = (props) => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <View style={uiStyles.iconContainer}>
-          {Platform.OS === 'ios' && <BatteryInfo/>}
-          <ConnectionStatus/>
+    <Splashscreen>
+      <Animated.View style={[{transform: [{translateY: textInputAnimate}]}]}>
+        <View style={styles.signInContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={'Username'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            placeholderTextColor={'#6a777e'}
+            onChangeText={val => setUsername(val.toLowerCase())}
+            value={username}
+            keyboardType={'email-address'}
+            returnKeyType={'go'}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={'Password'}
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+            placeholderTextColor={'#6a777e'}
+            onChangeText={val => setPassword(val)}
+            value={password}
+            returnKeyType={'go'}
+            onSubmitEditing={signIn}
+          />
+          {renderButtons()}
         </View>
-        <View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Strabo Spot 2</Text>
-            <Text style={styles.version}>{VERSION_NUMBER}</Text>
-          </View>
-          <Animated.View style={[styles.signInContainer, {transform: [{translateY: textInputAnimate}]}]}>
-            <TextInput
-              style={styles.input}
-              placeholder={'Username'}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              placeholderTextColor={'#6a777e'}
-              onChangeText={val => setUsername(val.toLowerCase())}
-              value={username}
-              keyboardType={'email-address'}
-              returnKeyType={'go'}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder={'Password'}
-              autoCapitalize={'none'}
-              secureTextEntry={true}
-              placeholderTextColor={'#6a777e'}
-              onChangeText={val => setPassword(val)}
-              value={password}
-              returnKeyType={'go'}
-              onSubmitEditing={signIn}
-            />
-            {renderButtons()}
-          </Animated.View>
-        </View>
-      </View>
+      </Animated.View>
       <WarningModal/>
       <Loading isLoading={isLoading}/>
-    </ImageBackground>
+    </Splashscreen>
   );
 };
 
