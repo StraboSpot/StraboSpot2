@@ -122,9 +122,7 @@ function Basemap(props) {
   const onRegionIsChanging = async () => {
     console.log('Event onRegionIsChanging');
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
-      const newCenter = await mapRef.current.getCenter();
       const newZoom = await mapRef.current.getZoom();
-      setScaleBarCenter(newCenter);
       setZoomText(newZoom);
     }
   };
@@ -133,7 +131,7 @@ function Basemap(props) {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom basemap={props.basemap} center={scaleBarCenter} zoom={zoomText}/>
+          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoomText}/>
         </View>
       )}
       <MapboxGL.MapView
