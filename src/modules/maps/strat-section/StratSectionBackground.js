@@ -18,6 +18,8 @@ const StratSectionBackground = (props) => {
   const [useSpots] = useSpotsHook();
 
   const stratSectionSpot = useSpots.getSpotWithThisStratSection(props.stratSection.strat_section_id);
+  const stratSectionImagesSorted = JSON.parse(JSON.stringify(props.stratSection.images || [])).sort(
+    (a, b) => a.z_index - b.z_index);
 
   useEffect(() => {
 
@@ -65,7 +67,7 @@ const StratSectionBackground = (props) => {
       </MapboxGL.VectorSource>
 
       {/* Image Overlay Layers */}
-      {props.stratSection.images?.map((oI) => {
+      {stratSectionImagesSorted.map((oI) => {
         // const coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
         const image = stratSectionSpot.properties.images.find(i => i.id === oI.id);
         let imageCopy = JSON.parse(JSON.stringify(image));

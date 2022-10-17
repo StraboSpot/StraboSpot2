@@ -181,19 +181,18 @@ const AddImageOverlayModal = (props) => {
                       />
                     </ListItem.Content>
                   </ListItem>
-                  {/* Note: I don't think Mapbox has the z index property like we used with Open Layers in SS1 */}
-                  {/*<ListItem containerStyle={commonStyles.listItemFormField}>*/}
-                  {/*  <ListItem.Content>*/}
-                  {/*    <Field*/}
-                  {/*      component={NumberInputField}*/}
-                  {/*      name={'z_index'}*/}
-                  {/*      label={'Z-Index'}*/}
-                  {/*      key={'z_index'}*/}
-                  {/*      placeholder={'layer ordering'}*/}
-                  {/*      onShowFieldInfo={showFieldInfo}*/}
-                  {/*    />*/}
-                  {/*  </ListItem.Content>*/}
-                  {/*</ListItem>*/}
+                  <ListItem containerStyle={commonStyles.listItemFormField}>
+                    <ListItem.Content>
+                      <Field
+                        component={NumberInputField}
+                        name={'z_index'}
+                        label={'Z-Index'}
+                        key={'z_index'}
+                        placeholder={'layer ordering'}
+                        onShowFieldInfo={showFieldInfo}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
                 </React.Fragment>
               )}
             </View>
