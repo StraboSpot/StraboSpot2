@@ -25,7 +25,7 @@ const Splashscreen = (props) => {
       </View>
       <View style={splashscreenStyles.contentContainer}>
         <View style={splashscreenStyles.titleContainer}>
-          <Text style={titleStyles}>Strabo Spot 2</Text>
+          <Text style={titleStyles}>StraboSpot 2</Text>
         </View>
         {props.children}
       </View>
