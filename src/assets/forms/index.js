@@ -42,6 +42,7 @@ import sedStructuresPhysical from './sed/structures-physical.json';
 import surfaceFeature from './surface-feature.json';
 import tags from './tags.json';
 import fabric from './three-d-structures/fabric.json';
+import fault from './three-d-structures/fault.json';
 import fold from './three-d-structures/fold.json';
 import other from './three-d-structures/other.json';
 import tensor from './three-d-structures/tensor.json';
@@ -65,9 +66,10 @@ const getSedimentaryRockForm = () => {
 
 const forms = {
   _3d_structures: {
-    other: other,
-    fold: fold,
     fabric: fabric,
+    fault: fault,
+    fold: fold,
+    other: other,
     tensor: tensor,
   },
   fabrics: {
@@ -79,9 +81,9 @@ const forms = {
     geography: geography,
     images: imageProperties,
     project_description: projectDescription,
-    trace: trace,
     samples: sample,
     surface_feature: surfaceFeature,
+    trace: trace,
     user_profile: userProfile,
   },
   measurement: {
