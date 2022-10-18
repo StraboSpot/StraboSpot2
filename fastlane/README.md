@@ -13,22 +13,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### ios_version
-
-```sh
-[bundle exec] fastlane ios_version
-```
-
-Get iOS version number
-
-### inc_ver_ios
-
-```sh
-[bundle exec] fastlane inc_ver_ios
-```
-
-iOS: Increment build number and set the version to package.json version.
-
 ### bump
 
 ```sh
