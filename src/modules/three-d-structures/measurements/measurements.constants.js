@@ -18,6 +18,15 @@ export const FOLD_MEASUREMENTS_KEYS = {
   },
 };
 
+export const FAULT_MEASUREMENTS_KEYS = {
+  group_ov4gw94: {
+    strike: 'strike',
+    dip_direction: 'dip_direction',
+    dip: 'dip',
+    quality: 'quality',
+  },
+};
+
 export const BOUDINAGE_MEASUREMENTS_KEYS = {
   group_boudin_plane: {
     strike: 'boudinage_strike',

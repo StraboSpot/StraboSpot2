@@ -9,7 +9,7 @@ const ThreeDStructureLabel = (props) => {
 
   const getTitle = (threeDStructure) => {
     const firstClassTitle = toTitleCase(threeDStructure.type || '3D Structure');
-    const secondClassTitle = useForm.getLabel(threeDStructure.feature_type,
+    const secondClassTitle = useForm.getLabel(threeDStructure.feature_type || threeDStructure.fault_or_sz_type,
       ['_3d_structures', threeDStructure.type]).toUpperCase();
     return firstClassTitle + ' - ' + secondClassTitle;
   };

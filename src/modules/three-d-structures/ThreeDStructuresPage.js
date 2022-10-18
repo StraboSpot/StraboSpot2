@@ -29,6 +29,7 @@ const ThreeDStructuresPage = (props) => {
   const SECTIONS = {
     // FABRICS: {title: 'Fabrics', key: 'fabric'}, // Hidden here and displayed on Fabrics page as deprecated
     FOLDS: {title: 'Folds', key: 'fold'},
+    FAULTS: {title: 'Faults', key: 'fault'},
     TENSORS: {title: 'Tensors', key: 'tensor'},
     OTHER: {title: 'Other', key: 'other'},
   };
@@ -61,8 +62,8 @@ const ThreeDStructuresPage = (props) => {
 
   const get3dStructureTitle = (threeDStructure) => {
     return threeDStructure.label
-      || toTitleCase(useForm.getLabel(threeDStructure.feature_type, ['_3d_structures', threeDStructure.feature_type]))
-      || toTitleCase(useForm.getLabel(threeDStructure.type, ['_3d_structures', threeDStructure.feature_type]))
+      || toTitleCase(useForm.getLabel(threeDStructure.feature_type || threeDStructure.fault_or_sz_type,
+        ['_3d_structures', threeDStructure.type]).toUpperCase())
       || '';
   };
 

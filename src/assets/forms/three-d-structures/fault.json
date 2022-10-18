@@ -1,0 +1,540 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "text",
+      "name": "label",
+      "label": "Label",
+      "hint": "If a label is not specified a default label will be given.",
+      "required": "false"
+    },
+    {
+      "type": "select_one kk9ik41",
+      "name": "fault_or_sz_type",
+      "label": "Fault Type",
+      "hint": "Specific type: e.g., dextral, sinistral, normal, reverse, oblique",
+      "required": "false",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "text",
+      "name": "other_fault_or_sz_type",
+      "label": "Other Fault Type",
+      "required": "false",
+      "relevant": "${fault_or_sz_type} = 'other'"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_ov4gw94",
+      "label": "Fault Orientation",
+      "required": "false"
+    },
+    {
+      "type": "integer",
+      "name": "strike",
+      "label": "Strike",
+      "hint": "Azimuth in degrees",
+      "required": "false",
+      "constraint": ". >= 0 and . <= 360",
+      "constraint_message": "Value must be a whole number between 0-360."
+    },
+    {
+      "type": "integer",
+      "name": "dip_direction",
+      "label": "Azimuth Dip Direction",
+      "required": "false",
+      "constraint": ". >= 0 and . <= 360",
+      "constraint_message": "Value must be a whole number between 0-360."
+    },
+    {
+      "type": "integer",
+      "name": "dip",
+      "label": "Dip",
+      "required": "false",
+      "constraint": ". >= 0 and . <= 90",
+      "constraint_message": "Value must be a whole number between 0-90."
+    },
+    {
+      "type": "select_one qt5nd15",
+      "name": "quality",
+      "label": "Measurement Quality",
+      "hint": "How well was this plane exposed or measured?",
+      "required": "false",
+      "appearance": "likert"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "select_one ia36i83",
+      "name": "movement",
+      "label": "Movement",
+      "hint": "Relative movement across structure",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_movement",
+      "label": "Other Movement",
+      "required": "false",
+      "relevant": "${movement} = 'other'"
+    },
+    {
+      "type": "select_multiple gq4wq38",
+      "name": "movement_justification",
+      "label": "Movement Justification",
+      "hint": "Offset feature types used to determine relative movement",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_movement_justification",
+      "label": "Other Movement Justification",
+      "required": "true",
+      "relevant": "selected(${movement_justification}, 'other')"
+    },
+    {
+      "type": "select_multiple tj67x48",
+      "name": "directional_indicators",
+      "label": "Directional Indicators",
+      "hint": "Specific sense of shear indicator, such as Riedel shears, S-C fabrics, drag folds, etc.",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_directional_indic",
+      "label": "Other Directional Indicator",
+      "required": "false",
+      "relevant": "selected(${directional_indicators}, 'other')"
+    },
+    {
+      "type": "decimal",
+      "name": "movement_amount_m",
+      "label": "Movement Amount (m)",
+      "hint": "How much movement?",
+      "required": "false",
+      "constraint": ". > 0",
+      "constraint_message": "Value must be greater than 0."
+    },
+    {
+      "type": "decimal",
+      "name": "amplitude_m",
+      "label": "Planar Feature Thickness (m)",
+      "required": "false"
+    },
+    {
+      "type": "decimal",
+      "name": "folded_layer_thickness_m",
+      "label": "Planar Feature Length (m)",
+      "required": "false",
+      "constraint": ". > 0",
+      "constraint_message": "Value must be greater than 0."
+    },
+    {
+      "type": "text",
+      "name": "fault_notes",
+      "label": "Notes",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "calculation": "'vLNpeho8MsFfdtpjgLiCkV'"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "kk9ik41",
+      "name": "dextral",
+      "label": "dextral strike-slip",
+      "order": "1"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "sinistral",
+      "label": "sinistral strike-slip",
+      "order": "2"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "normal",
+      "label": "normal",
+      "order": "3"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "reverse",
+      "label": "reverse",
+      "order": "4"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "thrust",
+      "label": "thrust",
+      "order": "5"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "low_angle_normal",
+      "label": "low-angle normal",
+      "order": "6"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "dextral_reverse",
+      "label": "dextral reverse",
+      "order": "7"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "dextral_normal",
+      "label": "dextral normal",
+      "order": "8"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "sinistral_reverse",
+      "label": "sinistral reverse",
+      "order": "9"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "sinistral_normal",
+      "label": "sinistral normal",
+      "order": "10"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "high_angle",
+      "label": "high-angle"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "low_angle",
+      "label": "low-angle"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "scissor",
+      "label": "scissor"
+    },
+    {
+      "list_name": "kk9ik41",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "qt5nd15",
+      "name": "5",
+      "label": "5 - excellent",
+      "order": "0"
+    },
+    {
+      "list_name": "qt5nd15",
+      "name": "4",
+      "label": "4",
+      "order": "1"
+    },
+    {
+      "list_name": "qt5nd15",
+      "name": "3",
+      "label": "3",
+      "order": "2"
+    },
+    {
+      "list_name": "qt5nd15",
+      "name": "2",
+      "label": "2",
+      "order": "3"
+    },
+    {
+      "list_name": "qt5nd15",
+      "name": "1",
+      "label": "1 - poor",
+      "order": "4"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "n_side_up",
+      "label": "N side up",
+      "order": "0"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "ne_side_up",
+      "label": "NE side up",
+      "order": "1"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "e_side_up",
+      "label": "E side up",
+      "order": "2"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "se_side_up",
+      "label": "SE side up",
+      "order": "3"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "s_side_up",
+      "label": "S side up",
+      "order": "4"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "sw_side_up",
+      "label": "SW side up",
+      "order": "5"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "w_side_up",
+      "label": "W side up",
+      "order": "6"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "nw_side_up",
+      "label": "NW side up",
+      "order": "7"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_n",
+      "label": "top to N",
+      "order": "8"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_ne",
+      "label": "top to NE",
+      "order": "9"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_e",
+      "label": "top to E",
+      "order": "10"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_se",
+      "label": "top to SE",
+      "order": "11"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_s",
+      "label": "top to S",
+      "order": "12"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_sw",
+      "label": "top to SW",
+      "order": "13"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_w",
+      "label": "top to W",
+      "order": "14"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "top_to_nw",
+      "label": "top to NW",
+      "order": "15"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "right_lateral",
+      "label": "right-lateral",
+      "order": "16"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "left_lateral",
+      "label": "left-lateral",
+      "order": "17"
+    },
+    {
+      "list_name": "ia36i83",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "not_specified",
+      "label": "not specified",
+      "order": "0"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "offset_bedding",
+      "label": "offset bedding",
+      "order": "1"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "offset_intrusion",
+      "label": "offset intrusion",
+      "order": "2"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "offset_foliation",
+      "label": "offset foliation",
+      "order": "3"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "offset_compostional_banding",
+      "label": "offset compostional banding",
+      "order": "4"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "igneous_feature",
+      "label": "igneous feature",
+      "order": "5"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "sedimentary_fe",
+      "label": "sedimentary feature",
+      "order": "6"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "fossil",
+      "label": "fossil",
+      "order": "7"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "geomorphic_fea",
+      "label": "geomorphic feature",
+      "order": "8"
+    },
+    {
+      "list_name": "gq4wq38",
+      "name": "other",
+      "label": "other",
+      "order": "9"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "riedel_shear",
+      "label": "riedel shear"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "gouge_fill",
+      "label": "gouge fill"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "crescentic_fra",
+      "label": "crescentic fractures"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "slickenfibers",
+      "label": "slickenfibers"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "oblique_gouge",
+      "label": "oblique gouge foliation"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "drag_folds",
+      "label": "drag folds"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "rotated_clasts",
+      "label": "rotated clasts"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "domino_texture",
+      "label": "domino texture"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "vein_arrays",
+      "label": "vein arrays"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "p_shear_array",
+      "label": "P shear array"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "asymm_folds",
+      "label": "asymmetric folds"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "microstructure",
+      "label": "microstructures"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "s_c_c__fabrics",
+      "label": "S-C-C' fabrics"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "fol_deflect",
+      "label": "foliation deflection"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "porphyroclast_",
+      "label": "porphyroclast system"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "porphyroblast_",
+      "label": "porphyroblast system"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "strain_assym",
+      "label": "strain assymetry"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "flanking_struc",
+      "label": "flanking structures"
+    },
+    {
+      "list_name": "tj67x48",
+      "name": "other",
+      "label": "other"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "fold",
+      "form_title": "3D Structures - Fault",
+      "version": "2 (2022-10-17 23:10:17)"
+    }
+  ]
+}

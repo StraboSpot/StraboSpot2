@@ -13,6 +13,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
+import AddFault from './AddFault';
 import AddOther from './AddOther';
 import AddTensor from './AddTensor';
 import {AddFold, FoldGeometryChoices} from './fold-geometry';
@@ -79,6 +80,15 @@ const AddThreeDStructureModal = (props) => {
           />
           {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.FOLD && (
             <AddFold
+              survey={survey}
+              choices={choices}
+              setChoicesViewKey={setChoicesViewKey}
+              formName={formProps.status.formName}
+              formProps={formProps}
+            />
+          )}
+          {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.FAULT && (
+            <AddFault
               survey={survey}
               choices={choices}
               setChoicesViewKey={setChoicesViewKey}

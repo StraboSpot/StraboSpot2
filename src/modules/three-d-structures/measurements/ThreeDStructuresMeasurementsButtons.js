@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import {isEmpty, padWithLeadingZeros} from '../../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_TEXT_SIZE} from '../../../shared/styles.constants';
 import {COMPASS_TOGGLE_BUTTONS} from '../../compass/compass.constants';
 import {setCompassMeasurementTypes} from '../../compass/compass.slice';
 import {formStyles, useFormHook} from '../../form';
@@ -52,12 +52,16 @@ const ThreeDStructuresMeasurementsButtons = (props) => {
       <View style={{flex: 1, alignItems: 'center'}}>
         <Text
           style={[isGroupEmpty(field) ? formStyles.formButtonTitle : formStyles.formButtonSelectedTitle,
-            {fontSize: 10, textAlign: 'center'}]}
+            {fontSize: groupFields.length === 1 ? SMALL_TEXT_SIZE : 10, textAlign: 'center'}]}
         >
           {field.label}
         </Text>
         {!isGroupEmpty(field) && (
-          <Text style={[formStyles.formButtonSelectedTitle, {fontSize: 10, textAlign: 'center', fontWeight: 'bold'}]}>
+          <Text style={[formStyles.formButtonSelectedTitle, {
+            fontSize: groupFields.length === 1 ? SMALL_TEXT_SIZE : 10,
+            textAlign: 'center',
+            fontWeight: 'bold',
+          }]}>
             {getValueText()}
           </Text>
         )}
