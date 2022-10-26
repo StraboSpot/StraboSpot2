@@ -329,7 +329,7 @@ const useMapSymbology = () => {
       iconRotate: getIconRotation(),
       iconAllowOverlap: true,     // Need to be able to stack symbols at same location
       iconIgnorePlacement: true,  // Need to be able to stack symbols at same location
-      iconSize: 0.08,
+      iconSize: 0.35,
       symbolSpacing: 0,
     },
     pointColorHalo: {
