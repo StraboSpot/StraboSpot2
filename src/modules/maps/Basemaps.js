@@ -40,7 +40,6 @@ function Basemap(props) {
   const useMapView = useMapViewHook();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
-  const [scaleBarCenter, setScaleBarCenter] = useState(center);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [zoomText, setZoomText] = useState(zoom);
 
