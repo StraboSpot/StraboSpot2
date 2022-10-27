@@ -28,10 +28,10 @@ import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
 
 function Basemap(props) {
-  const center = useSelector(state => state.map.center);
+  const center = useSelector(state => state.map.center || [LONGITUDE, LATITUDE]);
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const zoom = useSelector(state => state.map.zoom);
+  const zoom = useSelector(state => state.map.zoom || ZOOM);
 
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
@@ -42,9 +42,9 @@ function Basemap(props) {
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [scaleBarCenter, setScaleBarCenter] = useState(center);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
-  const [zoomText, setZoomText] = useState(zoom || ZOOM);
+  const [zoomText, setZoomText] = useState(zoom);
 
-  const [initialCenter, setInitialCenter] = useState(center || [LONGITUDE, LATITUDE]);
+  const [initialCenter, setInitialCenter] = useState(center);
   const [initialZoom, setInitialZoom] = useState(zoom);
 
   useEffect(() => {
@@ -138,7 +138,7 @@ function Basemap(props) {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoomText}/>
+          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoom}/>
         </View>
       )}
       <MapboxGL.MapView

@@ -854,7 +854,8 @@ const Map = React.forwardRef((props, ref) => {
   // Get the current location from the device and set it in the state as the map center
   const setCurrentLocationAsCenter = async () => {
     console.log('%cFlying to location MAP.JS 829', 'color: red');
-    useMapView.setMapView(await useMaps.getCurrentLocation(), await mapRef.current.getZoom());
+    const currentLocation = await useMaps.getCurrentLocation();
+    useMapView.setMapView([currentLocation.longitude, currentLocation.latitude], await mapRef.current.getZoom());
   };
 
   const endDraw = async () => {
