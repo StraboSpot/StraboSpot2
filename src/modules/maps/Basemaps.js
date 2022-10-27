@@ -11,7 +11,14 @@ import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, STRAT_SECTION_CENTER} from './maps.constants';
+import {
+  GEO_LAT_LNG_PROJECTION,
+  LATITUDE,
+  LONGITUDE,
+  PIXEL_PROJECTION,
+  STRAT_SECTION_CENTER,
+  ZOOM,
+} from './maps.constants';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -35,9 +42,9 @@ function Basemap(props) {
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [scaleBarCenter, setScaleBarCenter] = useState(center);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
-  const [zoomText, setZoomText] = useState(zoom);
+  const [zoomText, setZoomText] = useState(zoom || ZOOM);
 
-  const [initialCenter, setInitialCenter] = useState(center);
+  const [initialCenter, setInitialCenter] = useState(center || [LONGITUDE, LATITUDE]);
   const [initialZoom, setInitialZoom] = useState(zoom);
 
   useEffect(() => {
