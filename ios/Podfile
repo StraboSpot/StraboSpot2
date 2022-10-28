@@ -5,7 +5,7 @@ platform :ios, '11.0'
 install! 'cocoapods', :deterministic_uuids => false
 
 # used for automatic bumping
-flipperkit_version = '0.164.0'
+flipperkit_version = '0.161.0'
 
 target 'StraboSpot2' do
   config = use_native_modules!
@@ -30,6 +30,7 @@ ReactNativeMapboxGLIOSVersion = '~> 6.1'
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
   use_flipper!({ 'Flipper' => flipperkit_version, 'Flipper-Folly' => '2.6.10', 'Flipper-RSocket' => '1.4.3', 'Flipper-DoubleConversion' => '3.1.7', 'Flipper-Glog' => '0.3.9', 'Flipper-PeerTalk' => '0.0.4' })
+#   use_flipper!({ 'Flipper' => flipperkit_version })
 
  post_install do |installer|
      flipper_post_install(installer)
