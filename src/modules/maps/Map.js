@@ -9,8 +9,8 @@ import {Button} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {MAPBOX_KEY} from '../../MapboxConfig';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import config from '../../utils/config';
 import {MODAL_KEYS} from '../home/home.constants';
 import {
   addedStatusMessage,
@@ -45,7 +45,7 @@ import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
 
-MapboxGL.setAccessToken(MAPBOX_KEY);
+MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();

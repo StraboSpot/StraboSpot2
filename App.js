@@ -7,15 +7,15 @@ import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
-import {SENTRY_DSN} from './Config';
 import Routes from './src/routes/Routes';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
 import store from './src/store/ConfigureStore';
+import config from './src/utils/config';
 
 Sentry.init({
-  dsn: SENTRY_DSN,
+  dsn: config.get('Error_reporting_DSN'),
   enableNative: true,
   debug: __DEV__,
   release: RELEASE_NAME,

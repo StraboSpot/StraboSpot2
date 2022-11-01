@@ -3,16 +3,16 @@ Rewrite for native.
 
 Running for development:
 
-- Create a `Config.js` file at project root
-- Add
+- Create a `env.json` file at project root and add:
+
+      {
+       "mapbox_access_token": 'Your Mapbox public access token'
+       "Error_reporting_DSN": 'Optional Sentry DNS or other error reporting service'
+      }
+- Create a `Config.js` in project root and add:
 
       export const USERNAME_TEST = 'your username/email';
       export const PASSWORD_TEST = 'your password';
 
 - Run `npm install`
 - Run `npx react-native run-ios` or `npx react-native run-android`
-
-#iOS
-
-You will have to create a main.jsbundle by running:
-`react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios`

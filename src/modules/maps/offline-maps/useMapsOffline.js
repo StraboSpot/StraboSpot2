@@ -5,11 +5,11 @@ import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {MAPBOX_KEY} from '../../../MapboxConfig';
 import {APP_DIRECTORIES, STRABO_APIS} from '../../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
+import config from '../../../utils/config';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
 import {DEFAULT_MAPS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
@@ -226,7 +226,8 @@ const useMapsOffline = () => {
           const parts = downloadMap.id.split('/');
           username = parts[0];
           id = parts[1];
-          const accessToken = user.mapboxToken && !isEmpty(user.mapboxToken) ? user.mapboxToken : MAPBOX_KEY;
+          const accessToken = user.mapboxToken && !isEmpty(user.mapboxToken) ? user.mapboxToken : config.get(
+            'mapbox_access_token');
           startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom
             + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
         }
