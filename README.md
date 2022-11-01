@@ -1,4 +1,5 @@
 # StraboSpot-Mobile
+
 Rewrite for native.
 
 Running for development:
@@ -9,7 +10,7 @@ Running for development:
        "mapbox_access_token": 'Your Mapbox public access token'
        "Error_reporting_DSN": 'Optional Sentry DNS or other error reporting service'
       }
-- Create a `Config.js` in project root and add:
+- Create a `dev-test-logins.js` in project root and add:
 
       export const USERNAME_TEST = 'your username/email';
       export const PASSWORD_TEST = 'your password';

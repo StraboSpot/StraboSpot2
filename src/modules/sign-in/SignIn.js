@@ -7,7 +7,7 @@ import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {PASSWORD_TEST, USERNAME_TEST} from '../../../Config';
+import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import * as Helpers from '../../shared/Helpers';

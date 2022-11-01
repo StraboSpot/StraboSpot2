@@ -63,6 +63,6 @@ main.jsbundle.map
 /vendor/bundle/
 
 # Added by Developers
-Config.js
+dev-test-logins.js
 CHANGELOG.md
 env.json
