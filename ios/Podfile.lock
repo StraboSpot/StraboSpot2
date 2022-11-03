@@ -10,7 +10,7 @@ PODS:
     - React-Core (= 0.68.2)
     - React-jsi (= 0.68.2)
     - ReactCommon/turbomodule/core (= 0.68.2)
-  - Flipper (0.164.0):
+  - Flipper (0.161.0):
     - Flipper-Folly (~> 2.6)
   - Flipper-Boost-iOSX (1.76.0.1.11)
   - Flipper-DoubleConversion (3.1.7)
@@ -26,55 +26,55 @@ PODS:
   - Flipper-PeerTalk (0.0.4)
   - Flipper-RSocket (1.4.3):
     - Flipper-Folly (~> 2.6)
-  - FlipperKit (0.164.0):
-    - FlipperKit/Core (= 0.164.0)
-  - FlipperKit/Core (0.164.0):
-    - Flipper (~> 0.164.0)
+  - FlipperKit (0.161.0):
+    - FlipperKit/Core (= 0.161.0)
+  - FlipperKit/Core (0.161.0):
+    - Flipper (~> 0.161.0)
     - FlipperKit/CppBridge
     - FlipperKit/FBCxxFollyDynamicConvert
     - FlipperKit/FBDefines
     - FlipperKit/FKPortForwarding
     - SocketRocket (~> 0.6.0)
-  - FlipperKit/CppBridge (0.164.0):
-    - Flipper (~> 0.164.0)
-  - FlipperKit/FBCxxFollyDynamicConvert (0.164.0):
+  - FlipperKit/CppBridge (0.161.0):
+    - Flipper (~> 0.161.0)
+  - FlipperKit/FBCxxFollyDynamicConvert (0.161.0):
     - Flipper-Folly (~> 2.6)
-  - FlipperKit/FBDefines (0.164.0)
-  - FlipperKit/FKPortForwarding (0.164.0):
+  - FlipperKit/FBDefines (0.161.0)
+  - FlipperKit/FKPortForwarding (0.161.0):
     - CocoaAsyncSocket (~> 7.6)
     - Flipper-PeerTalk (~> 0.0.4)
-  - FlipperKit/FlipperKitHighlightOverlay (0.164.0)
-  - FlipperKit/FlipperKitLayoutHelpers (0.164.0):
+  - FlipperKit/FlipperKitHighlightOverlay (0.161.0)
+  - FlipperKit/FlipperKitLayoutHelpers (0.161.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitHighlightOverlay
     - FlipperKit/FlipperKitLayoutTextSearchable
-  - FlipperKit/FlipperKitLayoutIOSDescriptors (0.164.0):
+  - FlipperKit/FlipperKitLayoutIOSDescriptors (0.161.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitHighlightOverlay
     - FlipperKit/FlipperKitLayoutHelpers
     - YogaKit (~> 1.18)
-  - FlipperKit/FlipperKitLayoutPlugin (0.164.0):
+  - FlipperKit/FlipperKitLayoutPlugin (0.161.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitHighlightOverlay
     - FlipperKit/FlipperKitLayoutHelpers
     - FlipperKit/FlipperKitLayoutIOSDescriptors
     - FlipperKit/FlipperKitLayoutTextSearchable
     - YogaKit (~> 1.18)
-  - FlipperKit/FlipperKitLayoutTextSearchable (0.164.0)
-  - FlipperKit/FlipperKitNetworkPlugin (0.164.0):
+  - FlipperKit/FlipperKitLayoutTextSearchable (0.161.0)
+  - FlipperKit/FlipperKitNetworkPlugin (0.161.0):
     - FlipperKit/Core
-  - FlipperKit/FlipperKitReactPlugin (0.164.0):
+  - FlipperKit/FlipperKitReactPlugin (0.161.0):
     - FlipperKit/Core
-  - FlipperKit/FlipperKitUserDefaultsPlugin (0.164.0):
+  - FlipperKit/FlipperKitUserDefaultsPlugin (0.161.0):
     - FlipperKit/Core
-  - FlipperKit/SKIOSNetworkPlugin (0.164.0):
+  - FlipperKit/SKIOSNetworkPlugin (0.161.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
   - hermes-engine (0.11.0)
   - libevent (2.1.12)
-  - lottie-ios (3.4.3)
+  - lottie-ios (3.4.4)
   - lottie-react-native (5.1.4):
     - lottie-ios (~> 3.4.0)
     - React-Core
@@ -308,6 +308,8 @@ PODS:
     - glog
   - react-native-document-picker (8.1.1):
     - React-Core
+  - react-native-flipper (0.161.0):
+    - React-Core
   - react-native-geolocation (2.1.0):
     - React-Core
   - react-native-get-random-values (1.8.0):
@@ -486,7 +488,7 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
-  - Flipper (= 0.164.0)
+  - Flipper (= 0.161.0)
   - Flipper-Boost-iOSX (= 1.76.0.1.11)
   - Flipper-DoubleConversion (= 3.1.7)
   - Flipper-Fmt (= 7.1.7)
@@ -494,19 +496,19 @@ DEPENDENCIES:
   - Flipper-Glog (= 0.3.9)
   - Flipper-PeerTalk (= 0.0.4)
   - Flipper-RSocket (= 1.4.3)
-  - FlipperKit (= 0.164.0)
-  - FlipperKit/Core (= 0.164.0)
-  - FlipperKit/CppBridge (= 0.164.0)
-  - FlipperKit/FBCxxFollyDynamicConvert (= 0.164.0)
-  - FlipperKit/FBDefines (= 0.164.0)
-  - FlipperKit/FKPortForwarding (= 0.164.0)
-  - FlipperKit/FlipperKitHighlightOverlay (= 0.164.0)
-  - FlipperKit/FlipperKitLayoutPlugin (= 0.164.0)
-  - FlipperKit/FlipperKitLayoutTextSearchable (= 0.164.0)
-  - FlipperKit/FlipperKitNetworkPlugin (= 0.164.0)
-  - FlipperKit/FlipperKitReactPlugin (= 0.164.0)
-  - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.164.0)
-  - FlipperKit/SKIOSNetworkPlugin (= 0.164.0)
+  - FlipperKit (= 0.161.0)
+  - FlipperKit/Core (= 0.161.0)
+  - FlipperKit/CppBridge (= 0.161.0)
+  - FlipperKit/FBCxxFollyDynamicConvert (= 0.161.0)
+  - FlipperKit/FBDefines (= 0.161.0)
+  - FlipperKit/FKPortForwarding (= 0.161.0)
+  - FlipperKit/FlipperKitHighlightOverlay (= 0.161.0)
+  - FlipperKit/FlipperKitLayoutPlugin (= 0.161.0)
+  - FlipperKit/FlipperKitLayoutTextSearchable (= 0.161.0)
+  - FlipperKit/FlipperKitNetworkPlugin (= 0.161.0)
+  - FlipperKit/FlipperKitReactPlugin (= 0.161.0)
+  - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.161.0)
+  - FlipperKit/SKIOSNetworkPlugin (= 0.161.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (~> 0.11.0)
   - libevent (~> 2.1.12)
@@ -529,6 +531,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-flipper (from `../node_modules/react-native-flipper`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -636,6 +639,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-flipper:
+    :path: "../node_modules/react-native-flipper"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-get-random-values:
@@ -721,7 +726,7 @@ SPEC CHECKSUMS:
   DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBLazyVector: a7a655862f6b09625d11c772296b01cd5164b648
   FBReactNativeSpec: 81ce99032d5b586fddd6a38d450f8595f7e04be4
-  Flipper: d08578a2cc23c60c27086b07930efaeb39101342
+  Flipper: 62fd5d6f93d2d7b732ed77197f2910bd9395cbca
   Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
   Flipper-DoubleConversion: 57ffbe81ef95306cc9e69c4aa3aeeeeb58a6a28c
   Flipper-Fmt: 60cbdd92fc254826e61d669a5d87ef7015396a9b
@@ -729,12 +734,12 @@ SPEC CHECKSUMS:
   Flipper-Glog: 05579840e2750ec907ee2f81544f41ad76a7cae4
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
-  FlipperKit: ddf459d2625ca33f115492de5ba6d970e2576311
+  FlipperKit: 30acf6817ffbbe8cdadbcadb5711b82aef0c3883
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 476ee3e89abb49e07f822b48323c51c57124b572
   hermes-engine: 84e3af1ea01dd7351ac5d8689cbbea1f9903ffc3
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 9ae750cdc7820fecbd3c2f0cfc493038208fcdc4
+  lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
   MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
@@ -754,6 +759,7 @@ SPEC CHECKSUMS:
   React-jsinspector: c5989c77cb89ae6a69561095a61cce56a44ae8e8
   React-logger: a0833912d93b36b791b7a521672d8ee89107aff1
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
+  react-native-flipper: ea555c5b21d9d15814999327aecf31b98ac87079
   react-native-geolocation: 69f4fd37650b8e7fee91816d395e62dd16f5ab8d
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
   react-native-image-picker: cffb727cf2f59bd5c0408e30b3dbe0b935f88835
@@ -798,6 +804,6 @@ SPEC CHECKSUMS:
   Yoga: 99652481fcd320aefa4a7ef90095b95acd181952
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: f424091e46f07388fe290278465bad54b9808d2f
+PODFILE CHECKSUM: eb3632c1357affbe0bf7362a52bf5f453230c55f
 
 COCOAPODS: 1.11.3
