@@ -102,6 +102,20 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
+  const deleteProject = async (project, password) => {
+    try {
+      const isPasswordValid = await serverRequests.authenticateUser(user.email, password);
+      console.log('RES', isPasswordValid);
+      // if (isPasswordValid) await serverRequests.deleteProject(project);
+      if (isPasswordValid.error) return isPasswordValid;
+      if (isPasswordValid) console.log('Is Valid', isPasswordValid);
+      else console.log('NOT VALID PASSWORD');
+    }
+    catch (err) {
+      console.error('Error deleting project from server!', err);
+    }
+  };
+
   const destroyDataset = async (id) => {
     try {
       dispatch(setStatusMessagesModalVisible(true));
@@ -161,9 +175,10 @@ const useProject = () => {
 
   const getAllDeviceProjects = async () => {
     const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
-      console.log('/StraboProjects exists:', res);
+      console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
       if (res) {
         return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
+          console.log('Files on device', files);
           let id = 0;
           if (!isEmpty(files)) {
             const deviceFiles = files.map((file) => {
@@ -246,6 +261,7 @@ const useProject = () => {
     checkValidDateTime: checkValidDateTime,
     createDataset: createDataset,
     createProject: createProject,
+    deleteProject: deleteProject,
     destroyDataset: destroyDataset,
     destroyOldProject: destroyOldProject,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,

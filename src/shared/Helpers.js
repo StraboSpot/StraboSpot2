@@ -77,6 +77,10 @@ export const csvToArray = (strData, strDelimiter) => {
   return (arrData);
 };
 
+export const capitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export const deepFindFeatureById = (obj, id) => {
   //Early return
   if (isEmpty(obj)) return null;
