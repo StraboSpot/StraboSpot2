@@ -34,7 +34,7 @@ const useExport = () => {
 
   const backupProjectToDevice = async (exportedFileName) => {
     await gatherDataForBackup(exportedFileName);
-    await gatherOtherMapsForDistribution(exportedFileName);
+    // await gatherOtherMapsForDistribution(exportedFileName);
     await gatherMapsForDistribution(dataForExport, exportedFileName);
     await gatherImagesForDistribution(dataForExport, exportedFileName);
     console.log('Images Resolve Message:');
@@ -43,6 +43,7 @@ const useExport = () => {
   const exportData = async (directory, data, filename) => {
     await useDevice.doesDeviceDirectoryExist(directory);
     const res = await useDevice.writeFileToDevice(directory, filename, data);
+
     console.log(res);
   };
 

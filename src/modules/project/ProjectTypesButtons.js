@@ -21,7 +21,7 @@ const ProjectTypesButtons = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectTypesButtons []');
-    const exists = doesBackupDirExist();
+    doesBackupDirExist().catch(err => console.error('Error Checking if backup dir exists', err));
   }, []);
 
   const doesBackupDirExist = async () => {
