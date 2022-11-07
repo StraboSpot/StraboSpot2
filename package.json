@@ -1,5 +1,5 @@
 {
-  "name": "strabospot2",
+  "name": "StraboSpot2",
   "version": "1.32.0",
   "private": true,
   "scripts": {
@@ -21,11 +21,10 @@
     "@react-native-community/clipboard": "1.5.1",
     "@react-native-community/datetimepicker": "6.2.0",
     "@react-native-community/geolocation": "2.1.0",
-    "@react-native-community/masked-view": "0.1.11",
     "@react-native-community/netinfo": "9.3.0",
     "@react-native-community/slider": "4.2.4",
     "@react-native-mapbox-gl/maps": "8.5.0",
-    "@react-native-picker/picker": "2.4.2",
+    "@react-native-picker/picker": "2.4.8",
     "@react-navigation/native": "6.0.11",
     "@react-navigation/stack": "6.2.2",
     "@reduxjs/toolkit": "1.8.3",
@@ -42,8 +41,8 @@
     "password-validator": "5.3.0",
     "proj4": "2.8.0",
     "prop-types": "15.8.1",
-    "react": "17.0.2",
-    "react-native": "0.68.2",
+    "react": "18.0.0",
+    "react-native": "0.69.0",
     "react-native-device-info": "10.0.2",
     "react-native-document-picker": "8.1.1",
     "react-native-elements": "3.4.2",
@@ -57,7 +56,7 @@
     "react-native-indicators": "0.17.0",
     "react-native-keep-awake": "4.0.0",
     "react-native-map-scale-bar": "github:StraboSpot/react-native-map-scale-bar",
-    "react-native-multiple-select": "0.5.9",
+    "react-native-multiple-select": "0.5.12",
     "react-native-popup-dialog": "0.18.3",
     "react-native-progress": "5.0.0",
     "react-native-reanimated": "2.9.1",
@@ -68,7 +67,7 @@
     "react-native-table-component": "1.2.2",
     "react-native-toast-notifications": "^3.3.1",
     "react-native-vector-icons": "9.2.0",
-    "react-native-view-pdf": "0.13.2",
+    "react-native-view-pdf": "0.14.0",
     "react-native-zip-archive": "6.0.8",
     "react-redux": "8.0.2",
     "redux": "4.2.0",
@@ -89,8 +88,8 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-native": "4.0.0",
     "jest": "26.6.3",
-    "metro-react-native-babel-preset": "0.67.0",
-    "react-test-renderer": "17.0.2"
+    "metro-react-native-babel-preset": "^0.70.3",
+    "react-test-renderer": "18.0.0"
   },
   "jest": {
     "preset": "react-native"
