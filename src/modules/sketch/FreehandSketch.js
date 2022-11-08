@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
+import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
 import {setFreehandFeatureCoords} from '../maps/maps.slice';

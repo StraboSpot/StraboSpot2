@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
+import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {MODAL_KEYS} from '../home/home.constants';
