@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Text, View} from 'react-native';
 
+import LottieView from 'lottie-react-native';
 import {Button, Input, ListItem} from 'react-native-elements';
-import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
@@ -15,6 +15,7 @@ import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialo
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
+import useAnimationsHook from '../../shared/ui/useAnimations';
 import {
   clearedStatusMessages,
   setBackupOverwriteModalVisible,
@@ -31,7 +32,7 @@ const ProjectList = (props) => {
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
-  const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
+  const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
   const [projectsArr, setProjectsArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -39,7 +40,7 @@ const ProjectList = (props) => {
   const [selectedProjectToDelete, setSelectedProjectToDelete] = useState(null);
   const [passwordInputVal, setPasswordTextInputVal] = useState('');
 
-  const toast = useToast();
+  const useAnimations = useAnimationsHook();
   const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
@@ -57,31 +58,44 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
+    setDeletingProjectStatus('');
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
 
   const closeModal = () => {
     setIsDeleteConformationModalVisible(false);
-    setIsDeleteDisabled(true);
+    setErrorMessage('');
   };
+
   const deleteProject = async () => {
-    let projectResponse = [];
-    setLoading(true);
+    setDeletingProjectStatus('');
+    setDeletingProjectStatus('deleting');
     if (props.source === 'device') {
       useDevice.deleteProjectOnDevice(selectedProjectToDelete.fileName);
-      projectResponse = await useProject.getAllDeviceProjects();
+      setProjectsArr(await useProject.getAllDeviceProjects());
+      setDeletingProjectStatus('complete');
+      setTimeout(() => setIsDeleteConformationModalVisible(false), 1500);
     }
     else {
       const res = await useProject.deleteProject(selectedProjectToDelete, passwordInputVal);
-      if (res.error) toast.show(res.error.toString(), {type: 'danger'});
-      // else {
-      projectResponse = await useProject.getAllServerProjects();
-      console.log('Server project deleted!');
-      toast.show(`${selectedProjectToDelete.name} has been deleted successfully!`, {type: 'success'});
-      // }
-      setProjectsArr(projectResponse);
-      setLoading(false);
-      setIsDeleteConformationModalVisible(false);
+      if (res.error) {
+        setDeletingProjectStatus('');
+        setErrorMessage('Password cannot be empty');
+      }
+      else if (res === true) {
+        console.log('Server project deleted!');
+        // toast.show(`${selectedProjectToDelete.name} has been deleted successfully!`, {type: 'success'});
+        setProjectsArr(await useProject.getAllServerProjects());
+        // setIsButtonDisplayed(false);
+        setDeletingProjectStatus('complete');
+        setTimeout(() => setIsDeleteConformationModalVisible(false), 1500);
+      }
+      else if (res === false) {
+        console.log('NOT A VALID PASSWORD');
+        setDeletingProjectStatus('');
+        setErrorMessage('Incorrect Password! Please re-enter.');
+      }
+      setPasswordTextInputVal('');
     }
   };
 
@@ -157,29 +171,42 @@ const ProjectList = (props) => {
         title={`Delete from ${capitalizeFirstLetter(props.source)}`}
         visible={isDeleteConformationModalVisible}
         cancel={() => closeModal()}
-        delete={() => deleteProject(projectName)}
-        // disabled={props.source === 'server' && isDeleteDisabled}
+        delete={() => deletingProjectStatus !== 'complete' && deleteProject(projectName)}
+        deleteDisabled={props.source === 'server' && isEmpty(passwordInputVal) || deletingProjectStatus !== ''}
+        cancelDisabled={deletingProjectStatus !== ''}
       >
-        <View style={{}}>
-          <Text style={commonStyles.dialogContentImportantText}>Are you sure you want to delete{'\n' + projectName}?
-          </Text>
-          <Text style={styles.dialogConfirmText}>This will
-            <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
-            everything in this project including Spots, images, and all other data!
-          </Text>
-        </View>
-        {props.source === 'server' && (
-          <View style={{width: '100%', paddingTop: 10}}>
-            <Input
-              placeholder={'Enter Password'}
-              autoCapitalize={'none'}
-              onChangeText={val => validate(val)}
-            />
-            {/*<Input*/}
-            {/*  placeholder={'Type DELETE'}*/}
-            {/*/>*/}
+        {deletingProjectStatus === '' ? <View>
+            <View style={{}}>
+              <Text style={commonStyles.dialogContentImportantText}>Are you sure you want to delete{'\n' + projectName}?
+              </Text>
+              <Text style={styles.dialogConfirmText}>This will
+                <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
+                everything in this project including Spots, images, and all other data!
+              </Text>
+            </View>
+            {props.source === 'server' && (
+              <View style={{paddingTop: 10}}>
+                <Input
+                  value={passwordInputVal}
+                  placeholder={'Enter Password'}
+                  autoCapitalize={'none'}
+                  onChangeText={val => setPasswordTextInputVal(val)}
+                  errorMessage={errorMessage}
+                />
+              </View>
+            )}
           </View>
-        )}
+          : (
+            // <View>
+            <LottieView
+              style={{width: 200, height: 200}}
+              source={useAnimations.getAnimationType(
+                deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete')}
+              autoPlay
+              loop={deletingProjectStatus === 'deleteProject'}
+            />
+            // </View>
+          )}
       </DeleteConformationDialogBox>
     );
   };
@@ -239,12 +266,6 @@ const ProjectList = (props) => {
         </View>
       );
     }
-  };
-
-  const validate = (val) => {
-    console.log(val);
-    if (val === userData.password) setIsDeleteDisabled(false);
-    else setIsDeleteDisabled(true);
   };
 
   return (

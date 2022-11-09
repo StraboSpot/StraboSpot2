@@ -9,6 +9,7 @@ const useHome = () => {
     dispatch(setLoadingStatus({view: 'home', bool: bool}));
   };
 
+
   return [{
     toggleLoading: toggleLoading,
   }];

@@ -104,12 +104,13 @@ const useProject = () => {
 
   const deleteProject = async (project, password) => {
     try {
-      const isPasswordValid = await serverRequests.authenticateUser(user.email, password);
-      console.log('RES', isPasswordValid);
-      // if (isPasswordValid) await serverRequests.deleteProject(project);
+      const isPasswordValid = await serverRequests.authenticateUser(user.email, password.trim());
       if (isPasswordValid.error) return isPasswordValid;
-      if (isPasswordValid) console.log('Is Valid', isPasswordValid);
-      else console.log('NOT VALID PASSWORD');
+      else if (isPasswordValid.valid === 'true') {
+        await serverRequests.deleteProject(project);
+        return true;
+      }
+      else if (isPasswordValid.valid === 'false') return false;
     }
     catch (err) {
       console.error('Error deleting project from server!', err);
