@@ -1,22 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import LottieView from 'lottie-react-native';
+import {Button, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {capitalizeFirstLetter, isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
+import useAnimationsHook from '../../shared/ui/useAnimations';
 import {
   clearedStatusMessages,
   setBackupOverwriteModalVisible,
   setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
+import styles from './project.styles';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 
@@ -25,11 +31,17 @@ const ProjectList = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
+  const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
   const [projectsArr, setProjectsArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [selectedProjectToDelete, setSelectedProjectToDelete] = useState(null);
+  const [passwordInputVal, setPasswordTextInputVal] = useState('');
 
+  const useAnimations = useAnimationsHook();
+  const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
   const useImport = useImportHook();
@@ -46,8 +58,46 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
+    setDeletingProjectStatus('');
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
+
+  const closeModal = () => {
+    setIsDeleteConformationModalVisible(false);
+    setErrorMessage('');
+  };
+
+  const deleteProject = async () => {
+    setDeletingProjectStatus('');
+    setDeletingProjectStatus('deleting');
+    if (props.source === 'device') {
+      useDevice.deleteProjectOnDevice(selectedProjectToDelete.fileName);
+      setProjectsArr(await useProject.getAllDeviceProjects());
+      setDeletingProjectStatus('complete');
+      setTimeout(() => setIsDeleteConformationModalVisible(false), 1500);
+    }
+    else {
+      const res = await useProject.deleteProject(selectedProjectToDelete, passwordInputVal);
+      if (res.error) {
+        setDeletingProjectStatus('');
+        setErrorMessage('Password cannot be empty');
+      }
+      else if (res === true) {
+        console.log('Server project deleted!');
+        // toast.show(`${selectedProjectToDelete.name} has been deleted successfully!`, {type: 'success'});
+        setProjectsArr(await useProject.getAllServerProjects());
+        // setIsButtonDisplayed(false);
+        setDeletingProjectStatus('complete');
+        setTimeout(() => setIsDeleteConformationModalVisible(false), 1500);
+      }
+      else if (res === false) {
+        console.log('NOT A VALID PASSWORD');
+        setDeletingProjectStatus('');
+        setErrorMessage('Incorrect Password! Please re-enter.');
+      }
+      setPasswordTextInputVal('');
+    }
+  };
 
   const handleStateChange = async (state) => {
     state === 'active'
@@ -77,6 +127,11 @@ const ProjectList = (props) => {
       setProjectsArr(projectsResponse);
       setLoading(false);
     }
+  };
+
+  const initializeDelete = (project) => {
+    setSelectedProjectToDelete(project);
+    setIsDeleteConformationModalVisible(true);
   };
 
   const selectProject = async (project) => {
@@ -109,6 +164,53 @@ const ProjectList = (props) => {
     }
   };
 
+  const renderDeleteProjectModal = () => {
+    const projectName = props.source === 'device' ? selectedProjectToDelete?.fileName : selectedProjectToDelete?.name;
+    return (
+      <DeleteConformationDialogBox
+        title={`Delete from ${capitalizeFirstLetter(props.source)}`}
+        visible={isDeleteConformationModalVisible}
+        cancel={() => closeModal()}
+        delete={() => deletingProjectStatus !== 'complete' && deleteProject(projectName)}
+        deleteDisabled={props.source === 'server' && isEmpty(passwordInputVal) || deletingProjectStatus !== ''}
+        cancelDisabled={deletingProjectStatus !== ''}
+      >
+        {deletingProjectStatus === '' ? <View>
+            <View style={{}}>
+              <Text style={commonStyles.dialogContentImportantText}>Are you sure you want to delete{'\n' + projectName}?
+              </Text>
+              <Text style={styles.dialogConfirmText}>This will
+                <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
+                everything in this project including Spots, images, and all other data!
+              </Text>
+            </View>
+            {props.source === 'server' && (
+              <View style={{paddingTop: 10}}>
+                <Input
+                  value={passwordInputVal}
+                  placeholder={'Enter Password'}
+                  autoCapitalize={'none'}
+                  onChangeText={val => setPasswordTextInputVal(val)}
+                  errorMessage={errorMessage}
+                />
+              </View>
+            )}
+          </View>
+          : (
+            // <View>
+            <LottieView
+              style={{width: 200, height: 200}}
+              source={useAnimations.getAnimationType(
+                deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete')}
+              autoPlay
+              loop={deletingProjectStatus === 'deleteProject'}
+            />
+            // </View>
+          )}
+      </DeleteConformationDialogBox>
+    );
+  };
+
   const renderErrorMessage = () => {
     return (
       <View>
@@ -122,6 +224,7 @@ const ProjectList = (props) => {
       <ListItem
         key={props.source === 'device' ? item.id : item.id}
         onPress={() => selectProject(item)}
+        onLongPress={() => initializeDelete(item)}
         containerStyle={commonStyles.listItem}
         disabled={!isOnline.isConnected && props.source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
@@ -137,28 +240,30 @@ const ProjectList = (props) => {
   };
 
   const renderProjectsList = () => {
-    if (!isEmpty(projectsArr) && !isEmpty(userData)) {
+    if (!isEmpty(userData)) {
       return (
-        <FlatList
-          keyExtractor={item => item.id.toString()}
-          data={Object.values(projectsArr.projects)}
-          renderItem={({item}) => renderProjectItem(item)}
-          ItemSeparatorComponent={FlatListItemSeparator}
-        />
-      );
-    }
-    else {
-      return (
-        <React.Fragment>
-          {props.source === 'server' && (
-            <Button
-              title={'Retry'}
-              onPress={() => getAllProjects()}
-              buttonStyle={{width: 80, alignSelf: 'center'}}
-            />
-          )}
-          {isError && renderErrorMessage()}
-        </React.Fragment>
+        <View style={{flex: 1}}>
+          <Text style={{margin: 10, textAlign: 'center'}}>Long press to delete project</Text>
+          <FlatList
+            keyExtractor={item => item.id.toString()}
+            data={projectsArr.projects}
+            renderItem={({item}) => renderProjectItem(item)}
+            ItemSeparatorComponent={FlatListItemSeparator}
+            ListEmptyComponent={
+              <View>
+                {props.source === 'server' ? (
+                    <Button
+                      title={'Retry'}
+                      onPress={() => getAllProjects()}
+                      buttonStyle={{width: 80, alignSelf: 'center'}}
+                    />
+                  )
+                  : <ListEmptyText text={'No Projects Available'}/>
+                }
+                {isError && renderErrorMessage()}
+              </View>
+            }/>
+        </View>
       );
     }
   };
@@ -170,6 +275,7 @@ const ProjectList = (props) => {
       </View>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
+      {renderDeleteProjectModal()}
     </React.Fragment>
   );
 };

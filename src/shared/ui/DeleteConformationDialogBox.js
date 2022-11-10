@@ -27,15 +27,14 @@ const deleteConformation = (props) => {
       }
       footer={
         <DialogFooter>
-          <DialogButton text={'Delete'} onPress={props.delete}/>
-          <DialogButton text={'Cancel'} onPress={props.cancel}/>
+          <DialogButton text={'Delete'} onPress={props.delete} disabled={props.deleteDisabled}/>
+          <DialogButton text={'Cancel'} onPress={props.cancel} disabled={props.cancelDisabled}/>
         </DialogFooter>
       }
     >
       <DialogContent style={styles.dialogContent}>
         {props.children}
       </DialogContent>
-
     </Dialog>
   );
 };

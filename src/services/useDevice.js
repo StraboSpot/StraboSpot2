@@ -63,6 +63,19 @@ const useDevice = () => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
+  const deleteProjectOnDevice = (file) => {
+    try {
+      console.log(file);
+      RNFS.unlink(APP_DIRECTORIES.BACKUP_DIR + file).then(
+        () => console.log(`Deleted ${file}`),
+      );
+      return 'Deleted';
+    }
+    catch (err) {
+      console.error('Error deleting project:', err);
+    }
+  };
+
   const doesDeviceDirectoryExist = async (directory) => {
     try {
       let checkDirSuccess = await RNFS.exists(directory);
@@ -157,6 +170,7 @@ const useDevice = () => {
     copyFiles: copyFiles,
     createProjectDirectories: createProjectDirectories,
     deleteOfflineMap: deleteOfflineMap,
+    deleteProjectOnDevice: deleteProjectOnDevice,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,

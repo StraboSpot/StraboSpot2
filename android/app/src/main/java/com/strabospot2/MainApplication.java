@@ -1,6 +1,7 @@
 package com.strabospot2;
 
 import com.rumax.reactnative.pdfviewer.PDFViewPackage;
+import com.rnfs.RNFSPackage;
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           new PDFViewPackage();
+          new RNFSPackage();
           return packages;
         }
         @Override

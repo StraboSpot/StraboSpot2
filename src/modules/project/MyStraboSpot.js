@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
+import RNFS from 'react-native-fs';
 
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
@@ -24,6 +25,7 @@ const MyStraboSpot = (props) => {
       async function dirExists() {
         const exists = await useDevice.doesDeviceBackupDirExist();
         console.log('Backup Directory Exists: ', exists);
+        console.log('Backup Directory Path: ', RNFS);
       }
 
       dirExists().catch('Error Checking If Backup Dir Exists');

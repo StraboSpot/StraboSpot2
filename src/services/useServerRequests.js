@@ -36,13 +36,7 @@ const useServerRequests = (props) => {
         ),
       },
     ));
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.log('RESPONSE TEXT', errorText);
-      Alert.alert('Server Error!', 'The server is temporarily unable to service your request due to'
-        + ' maintenance downtime or capacity\n' + 'problems. Please try again later.');
-    }
-    else return await response.json();
+    return handleResponse(response);
   };
 
   const request = async (method, urlPart, login, ...otherParams) => {
@@ -103,6 +97,26 @@ const useServerRequests = (props) => {
     catch (err) {
       console.error('Error Posting', err);
       Alert.alert('Error', `${err.toString()}`);
+    }
+  };
+
+  const deleteProject = async (project) => {
+    try {
+      const response = await fetch(
+        baseUrl + '/project/' + project.id,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Basic ' + user.encoded_login,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error deleting project in useServerRequests', err);
     }
   };
 
@@ -184,6 +198,11 @@ const useServerRequests = (props) => {
       const responseJSON = await response.json();
       if (responseJSON.error) return Promise.reject(responseJSON.error);
       return Promise.reject('The requested URL was not found on this server.');
+    }
+    else if (response.status === 400) {
+      const res = await response.json();
+      console.log(res);
+      return res;
     }
     else {
       try {
@@ -328,6 +347,7 @@ const useServerRequests = (props) => {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
     deleteProfile: deleteProfile,
+    deleteProject: deleteProject,
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     downloadImage: downloadImage,
     getMyProjects: getMyProjects,
