@@ -1,63 +1,73 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
-import LottieView from 'lottie-react-native';
-import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/deviceAndAPI.constants';
 import useUploadHook from '../../../services/useUpload';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 import Spacer from '../../../shared/ui/Spacer';
-import useAnimationsHook from '../../../shared/ui/useAnimations';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
-import {setUploadModalVisible} from '../home.slice';
+import {setProgressModalVisible, setUploadModalVisible} from '../home.slice';
 
 const UploadModal = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.project.databaseEndpoint);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
-  const isImageTransferring = useSelector(state => state.project.isImageTransferring);
-  const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
-  const statusMessages = useSelector(state => state.home.statusMessages);
+  // const isImageTransferring = useSelector(state => state.project.isImageTransferring);
+  // const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
+  // const selectedProject = useSelector(state => state.project.selectedProject);
+  // const statusMessages = useSelector(state => state.home.statusMessages);
+
+  // const useDownload = useDownloadHook();
   const useUpload = useUploadHook();
   const [useProject] = useProjectHook();
 
-  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
+  // const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
+
+  // const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   // const [imageUpload, setImageUpload] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [response, setResponse] = useState('');
   const [uploadComplete, setUploadComplete] = useState(false);
 
-  const useAnimations = useAnimationsHook();
+  // useEffect(() => {
+  //   if (isUploadModalVisible) renderUploadModal();
+  //
+  // }, [isUploadModalVisible]);
 
-  const handleCompletePress = () => {
-    setIsProgressModalVisible(false);
-    setUploadComplete(false);
-  };
+  // const handleCompletePress = async () => {
+  //   const project = selectedProject.project;
+  //   dispatch(setSelectedProject({project: '', source: ''}));
+  //   dispatch(setUploadModalVisible(false));
+  //   setUploadComplete(false);
+  //   if (selectedProject.source === 'server') {
+  //     console.log('Downloading Project');
+  //     await useDownload.initializeDownload(project);
+  //     console.log('Download Complete!');
+  //   }
+  // };
 
-  const renderUploadProgressModal = async () => {
+  const renderUploadModal = async () => {
     dispatch(setUploadModalVisible(false));
-    setIsProgressModalVisible(true);
+    dispatch(setProgressModalVisible(true));
     const uploadStatus = await useUpload.initializeUpload();
     console.log('DATASET UPLOAD COMPLETE!', uploadStatus);
     setUploadComplete(uploadStatus);
   };
 
-
-  const renderUploadingAnimation = (type) => {
-    return (<>
-      <LottieView
-        source={useAnimations.getAnimationType(type)}
-        autoPlay
-        loop={type === 'uploading'}
-      />
-    </>);
-  };
+  // const renderUploadingAnimation = (type) => {
+  //   return (<>
+  //     <LottieView
+  //       source={useAnimations.getAnimationType(type)}
+  //       autoPlay
+  //       loop={type === 'uploading'}
+  //     />
+  //   </>);
+  // };
 
   return (<>
     <UploadDialogBox
@@ -65,7 +75,7 @@ const UploadModal = () => {
       visible={isUploadModalVisible}
       cancel={() => dispatch(setUploadModalVisible(false))}
       buttonText={'Upload'}
-      onPress={async () => renderUploadProgressModal()}
+      onPress={async () => renderUploadModal()}
     >
       <View>
         <View>
@@ -84,28 +94,9 @@ const UploadModal = () => {
         </Text>
       </View>
     </UploadDialogBox>
-    <ProgressModal
-      closeProgressModal={() => setIsProgressModalVisible(false)}
-      dialogTitle={'UPLOADING...'}
-      isProgressModalVisible={isProgressModalVisible}
-      onPressComplete={() => handleCompletePress()}
-      showButton={uploadComplete}
-      animation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
-    >
-
-      <View style={{flex: 1}}>
-        <Text>{statusMessages}</Text>
-        {isImageTransferring && <View style={{paddingTop: 10}}>
-          <ProgressBar
-            progress={projectTransferProgress}
-            width={250}
-            height={15}
-            borderRadius={20}
-          />
-          <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
-        </View>}
-      </View>
-    </ProgressModal>
+    {/*<UploadProgressModal*/}
+    {/*  isProgressModalVisible={isProgressModalVisible}*/}
+    {/*/>*/}
   </>);
 };
 

@@ -45,6 +45,7 @@ import InfoModal from './home-modals/InfoModal';
 import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
 import StatusModal from './home-modals/StatusModal';
 import UploadModal from './home-modals/UploadModal';
+import UploadProgressModal from './home-modals/UploadProgressModal';
 import WarningModal from './home-modals/WarningModal';
 import {MODAL_KEYS, MODALS} from './home.constants';
 import {
@@ -651,6 +652,7 @@ const Home = () => {
       <ErrorModal/>
       <StatusModal openUrl={openStraboSpotURL}/>
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
+      <UploadProgressModal/>
       <WarningModal/>
       {/*------------------------*/}
       {isHomeLoading && <LoadingSpinner/>}
