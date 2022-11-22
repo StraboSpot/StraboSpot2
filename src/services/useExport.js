@@ -42,18 +42,69 @@ const useExport = () => {
 
   const exportData = async (directory, data, filename) => {
     await useDevice.doesDeviceDirectoryExist(directory);
-    const res = await useDevice.writeFileToDevice(directory, filename, data);
-
-    console.log(res);
+    await useDevice.writeFileToDevice(directory, filename, data);
   };
+
+  // const requestWriteDirectoryPermission = async () => {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  //       {
+  //         title: 'Need permission to read Downloads Folder',
+  //         message:
+  //           'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
+  //         buttonNeutral: 'Ask Me Later',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       },
+  //     );
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       console.log('You can read the folder');
+  //     }
+  //     else {
+  //       console.log('Folder read permission denied');
+  //     }
+  //   }
+  //   catch (err) {
+  //     console.warn(err);
+  //   }
+  // };
 
   const gatherDataForBackup = async (filename) => {
     try {
       dispatch(addedStatusMessage('Exporting Project Data...'));
       console.log(dataForExport);
+
+      // console.log('Directory :', APP_DIRECTORIES.BACKUP_DIR + filename);
       await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport,
         'data.json');
       console.log('Finished Exporting Project Data', dataForExport);
+      // if (Platform.OS === 'android') {
+      //   const exists = await useDevice.doesDeviceDirectoryExist(
+      //     APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      //   if (exists) {
+      //     await requestWriteDirectoryPermission();
+      //     // console.log(APP_DIRECTORIES.BACKUP_DIR + filename);
+      //     // await RNFS.writeFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename, JSON.stringify(dataForExport), 'utf8');
+      //     // console.log('FILES WRITTEN SUCCESSFULLY TO DOWNLOADS STORAGE!');
+      //     // console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
+      //     // const dataFile = '/data.json';
+      //     // console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + dataFile);
+      //     // const response = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + filename + dataFile);
+      //     // console.log(JSON.parse(response));
+      //
+      //     // const file1 = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
+      //     // console.log('FILE', file1);
+      //     // const file1 = await RNFS.readFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '/data.json');
+      //     // console.log('FILE1', file1);
+      //     console.log('Directory :', APP_DIRECTORIES.BACKUP_DIR + filename);
+      //     await RNFS.copyFile(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json',
+      //       APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
+      //     console.log('Project Backed Up to Android');
+      //     const file2 = await RNFS.readFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
+      //     console.log('FILE', JSON.parse(file2));
+      //   }
+      // }
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished Exporting Project Data'));
     }

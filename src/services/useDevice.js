@@ -160,10 +160,16 @@ const useDevice = () => {
     else throw Error('Offline maps directory does not exist!');
   };
 
-  const writeFileToDevice = (path, filename, data) => {
-    return RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8')
-      .then(() => 'FILES WRITTEN SUCCESSFULLY!')
-      .catch(err => console.error('Write Error!', err.message));
+  const writeFileToDevice = async (path, filename, data) => {
+    try {
+      console.log('Write Started');
+      await RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8');
+      console.log('FILES WRITTEN SUCCESSFULLY TO INTERNAL STORAGE!');
+      console.log(path + '/' + filename);
+    }
+    catch (err) {
+      console.error('Write Error!', err.message);
+    }
   };
 
   return {
