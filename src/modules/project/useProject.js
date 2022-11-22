@@ -15,8 +15,8 @@ import {
   setBackupOverwriteModalVisible,
   setErrorMessagesModalVisible,
   setLoadingStatus,
+  setProgressModalVisible,
   setStatusMessagesModalVisible,
-  setUploadModalVisible,
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
@@ -233,7 +233,7 @@ const useProject = () => {
     try {
       console.log('User wants to:', action);
       dispatch(setBackupOverwriteModalVisible(false));
-      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setUploadModalVisible(true));
+      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setProgressModalVisible(true));
       else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
       else if (action === ProjectActions.OVERWRITE) {
         if (selectedProject.source === 'device') {

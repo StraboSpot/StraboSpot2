@@ -15,6 +15,7 @@ import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialo
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
+import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
 import useAnimationsHook from '../../shared/ui/useAnimations';
 import {
   clearedStatusMessages,
@@ -28,10 +29,13 @@ import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
+  const endPoint = useSelector(state => state.project.databaseEndpoint);
+  const isInitialProjectLoadModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
+  const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
   const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
   const [projectsArr, setProjectsArr] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -134,7 +138,18 @@ const ProjectList = (props) => {
     setIsDeleteConformationModalVisible(true);
   };
 
-  const selectProject = async (project) => {
+  const initializeProjectOptions = (project) => {
+    // const projectName;
+    dispatch(setSelectedProject({project: project, source: props.source}));
+    if (isInitialProjectLoadModalVisible) {
+      dispatch(setSelectedProject({project: '', source: ''}));
+      const res = loadSelectedProject(project);
+      console.log('Done loading project', res);
+    }
+    else setIsProjectOptionsModalVisible(true);
+  };
+
+  const loadSelectedProject = async (project) => {
     console.log('Selected Project:', project);
     if (project?.fileName?.includes('.zip')) {
       const unzippedFile = await useImport.unzipBackupFile(project.fileName);
@@ -162,6 +177,19 @@ const ProjectList = (props) => {
         await useDownload.initializeDownload(project);
       }
     }
+  };
+
+  const renderProjectOptionsModal = () => {
+    return (
+      <ProjectOptionsDialogBox
+        currentProject={currentProject}
+        endpoint={endPoint}
+        visible={isProjectOptionsModalVisible}
+        onBackdropPress={() => setIsProjectOptionsModalVisible(false)}
+        close={() => setIsProjectOptionsModalVisible(false)}
+      >
+      </ProjectOptionsDialogBox>
+    );
   };
 
   const renderDeleteProjectModal = () => {
@@ -223,8 +251,7 @@ const ProjectList = (props) => {
     return (
       <ListItem
         key={props.source === 'device' ? item.id : item.id}
-        onPress={() => selectProject(item)}
-        onLongPress={() => initializeDelete(item)}
+        onPress={() => initializeProjectOptions(item)}
         containerStyle={commonStyles.listItem}
         disabled={!isOnline.isConnected && props.source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
@@ -243,7 +270,6 @@ const ProjectList = (props) => {
     if (!isEmpty(userData)) {
       return (
         <View style={{flex: 1}}>
-          <Text style={{margin: 10, textAlign: 'center'}}>Long press to delete project</Text>
           <FlatList
             keyExtractor={item => item.id.toString()}
             data={projectsArr.projects}
@@ -276,6 +302,7 @@ const ProjectList = (props) => {
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
       {renderDeleteProjectModal()}
+      {!isEmpty(currentProject) && renderProjectOptionsModal()}
     </React.Fragment>
   );
 };
