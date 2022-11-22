@@ -5,7 +5,7 @@ import moment from 'moment/moment';
 import {Button, CheckBox, Dialog, Input} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {setBackupModalVisible} from '../../../../modules/home/home.slice';
+import {setBackupModalVisible, setProgressModalVisible} from '../../../../modules/home/home.slice';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import projectStyles from '../../../../modules/project/project.styles';
 import useProjectHook from '../../../../modules/project/useProject';
@@ -57,12 +57,16 @@ const ProjectOptionsDialogBox = (props) => {
       await saveProject();
       console.log('Project Saved!');
     }
+    if (action === OVERWRITE) {
+      await useProject.switchProject(OVERWRITE);
+      console.log('Project overwritten!');
+    }
     else {
       props.close();
       setAction('');
       setChecked(1);
-      await useProject.switchProject(action);
-      console.log('Project Overwritten or Uploaded!');
+      dispatch(setProgressModalVisible(true));
+      // console.log('Project Overwritten or Uploaded!');
     }
   };
 

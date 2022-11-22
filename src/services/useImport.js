@@ -1,5 +1,3 @@
-import {PermissionsAndroid} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {batch, useDispatch, useSelector} from 'react-redux';
@@ -275,34 +273,34 @@ const useImport = () => {
     }
   };
 
-  const requestReadDirectoryPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Need permission to read Downloads Folder',
-          message:
-            'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can read the folder');
-      }
-      else {
-        console.log('Folder read permission denied');
-      }
-    }
-    catch (err) {
-      console.warn(err);
-    }
-  };
+  // const requestReadDirectoryPermission = async () => {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+  //       {
+  //         title: 'Need permission to read Downloads Folder',
+  //         message:
+  //           'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
+  //         buttonNeutral: 'Ask Me Later',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       },
+  //     );
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       console.log('You can read the folder');
+  //     }
+  //     else {
+  //       console.log('Folder read permission denied');
+  //     }
+  //   }
+  //   catch (err) {
+  //     console.warn(err);
+  //   }
+  // };
 
   const readDeviceJSONFile = async (fileName) => {
     try {
-      await requestReadDirectoryPermission();
+      // await requestReadDirectoryPermission();
       const dataFile = '/data.json';
       console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
       const response = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
