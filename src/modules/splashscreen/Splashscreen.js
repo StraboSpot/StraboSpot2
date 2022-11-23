@@ -12,6 +12,7 @@ const Splashscreen = (props) => {
 
   const fontSize = getFontSizeByWindowWidth(windowDimensions, 40);
   const titleStyles = [splashscreenStyles.title, {fontSize}];
+  const screenSizeTitle = windowDimensions.width <= 900 ? '(Phone)' : '';
 
 
   return (
@@ -29,7 +30,9 @@ const Splashscreen = (props) => {
         </View>
         {props.children}
       </View>
-      <Text style={splashscreenStyles.version}>v{VERSION_NUMBER}</Text>
+      <Text style={splashscreenStyles.version}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
+      <Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},
+        W: {windowDimensions.width} </Text>
     </ImageBackground>
   );
 };
