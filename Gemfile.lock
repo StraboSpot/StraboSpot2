@@ -277,6 +277,7 @@ GEM
     zeitwerk (2.6.0)
 
 PLATFORMS
+  ruby
   x86_64-darwin-21
 
 DEPENDENCIES
@@ -287,7 +288,7 @@ DEPENDENCIES
   fastlane-plugin-load_json
 
 RUBY VERSION
-   ruby 2.6.8p205
+   ruby 2.7.5p203
 
 BUNDLED WITH
    2.3.11
