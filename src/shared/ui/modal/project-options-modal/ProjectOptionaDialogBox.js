@@ -58,6 +58,7 @@ const ProjectOptionsDialogBox = (props) => {
       console.log('Project Saved!');
     }
     if (action === OVERWRITE) {
+      props.close();
       await useProject.switchProject(OVERWRITE);
       console.log('Project overwritten!');
     }

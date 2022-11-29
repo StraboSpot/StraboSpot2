@@ -22,7 +22,6 @@ const UploadProgressModal = (props) => {
   const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
-
   const [uploadComplete, setUploadComplete] = useState(false);
 
   const useAnimations = useAnimationsHook();
@@ -47,9 +46,6 @@ const UploadProgressModal = (props) => {
   };
 
   const renderUploadProgressModal = async () => {
-    console.log('RENDER UPLOAD');
-    // dispatch(setUploadModalVisible(false));
-    // setIsProgressModalVisible(true);
     const uploadStatus = await useUpload.initializeUpload();
     console.log('DATASET UPLOAD COMPLETE!', uploadStatus);
     setUploadComplete(uploadStatus);
