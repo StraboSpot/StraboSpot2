@@ -1,57 +1,21 @@
-import 'react-native-gesture-handler';
 import React from 'react';
-
-import * as NetInfo from '@react-native-community/netinfo';
-import * as Sentry from '@sentry/react-native';
-import {Provider} from 'react-redux';
-import {persistStore} from 'redux-persist';
-import {PersistGate} from 'redux-persist/integration/react';
-
-import Routes from './src/routes/Routes';
-import {RELEASE_NAME} from './src/shared/app.constants';
-import Loading from './src/shared/ui/Loading';
-import Toast from './src/shared/ui/Toast';
-import store from './src/store/ConfigureStore';
-import config from './src/utils/config';
-
-Sentry.init({
-  dsn: config.get('Error_reporting_DSN'),
-  enableNative: true,
-  debug: __DEV__,
-  release: RELEASE_NAME,
-  dist: RELEASE_NAME,
-  autoSessionTracking: true,
-  environment: __DEV__ ? 'development' : 'production',
-  deactivateStacktraceMerging: true,
-});
-
-NetInfo.configure({
-  // reachabilityUrl: 'https://clients3.google.com/generate_204',
-  // reachabilityTest: async (response) => {
-  //   console.log('Response Status', response.status);
-  //   return response.status === 204;
-  // },
-  // reachabilityLongTimeout: 5 * 1000, // 60s
-  // reachabilityShortTimeout: 5 * 1000, // 5s
-  // reachabilityRequestTimeout: 15 * 1000, // 15s
-  shouldFetchWiFiSSID: true,
-});
+import {
+  SafeAreaView,
+  StatusBar,
+  Text,
+  View,
+  Platform
+} from 'react-native';
 
 const App = () => {
-  const persistor = persistStore(store);
-  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
-
+  console.log(Platform.OS);
   return (
-    <Toast>
-      <Provider store={store}>
-        <PersistGate loading={<Loading/>} persistor={persistor}>
-          {/*<Sentry.TouchEventBoundary>*/}
-          <Routes/>
-          {/*</Sentry.TouchEventBoundary>*/}
-        </PersistGate>
-      </Provider>
-    </Toast>
+    <SafeAreaView>
+      <StatusBar barStyle='dark-content' />
+      <View style={{alignItems: 'center'}}>
+        <Text style={{fontSize: 24}}>React Native Web App Example!</Text>
+      </View>
+    </SafeAreaView>
   );
 };
-
-export default Sentry.wrap(App);
+export default App;
