@@ -54,6 +54,10 @@ const useProject = () => {
     return Promise.resolve();
   };
 
+  const checkUserAuthorization = async (password) => {
+    return await serverRequests.authenticateUser(user.email, password.trim());
+  };
+
   const checkValidDateTime = (spot) => {
     if (!spot.properties.date || !spot.properties.time) {
       let date = spot.properties.date || spot.properties.time;
@@ -102,19 +106,8 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
-  const deleteProject = async (project, password) => {
-    try {
-      const isPasswordValid = await serverRequests.authenticateUser(user.email, password.trim());
-      if (isPasswordValid.error) return isPasswordValid;
-      else if (isPasswordValid.valid === 'true') {
-        await serverRequests.deleteProject(project);
-        return true;
-      }
-      else if (isPasswordValid.valid === 'false') return false;
-    }
-    catch (err) {
-      console.error('Error deleting project from server!', err);
-    }
+  const deleteProject = async (project) => {
+    await serverRequests.deleteProject(project);
   };
 
   const destroyDataset = async (id) => {
@@ -259,6 +252,7 @@ const useProject = () => {
 
   const projectHelpers = {
     addDataset: addDataset,
+    checkUserAuthorization: checkUserAuthorization,
     checkValidDateTime: checkValidDateTime,
     createDataset: createDataset,
     createProject: createProject,

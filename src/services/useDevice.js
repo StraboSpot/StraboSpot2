@@ -63,17 +63,10 @@ const useDevice = () => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
-  const deleteProjectOnDevice = (file) => {
-    try {
-      console.log(file);
-      RNFS.unlink(APP_DIRECTORIES.BACKUP_DIR + file).then(
-        () => console.log(`Deleted ${file}`),
-      );
-      return 'Deleted';
-    }
-    catch (err) {
-      console.error('Error deleting project:', err);
-    }
+  const deleteProjectOnDevice = async (file) => {
+    console.log(file);
+    await RNFS.unlink(APP_DIRECTORIES.BACKUP_DIR + file);
+    return 'Deleted';
   };
 
   const doesDeviceDirectoryExist = async (directory) => {
@@ -162,7 +155,6 @@ const useDevice = () => {
 
   const writeFileToDevice = async (path, filename, data) => {
     try {
-      console.log('Write Started');
       await RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8');
       console.log('FILES WRITTEN SUCCESSFULLY TO INTERNAL STORAGE!');
       console.log(path + '/' + filename);

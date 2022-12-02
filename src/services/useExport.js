@@ -45,6 +45,30 @@ const useExport = () => {
     await useDevice.writeFileToDevice(directory, filename, data);
   };
 
+  // For Android only.
+  const exportToDownloadsFolder = async (localFileName, filename) => {
+    // await RNFS.copyFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json',
+    //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
+    // console.log('Project Backed Up to Android');
+    console.log(localFileName);
+    const file2 = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
+    console.log('FILE', JSON.parse(file2));
+    const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '/data.json');
+    console.log('Exists', exists);
+    await useDevice.makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '(copy)');
+    console.log('Directory is made!');
+    // await useDevice.writeFileToDevice(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename, 'data.json', JSON.parse(file2));
+    try {
+      console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
+      const res = await RNFS.writeFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '(copy)/data.json', file2);
+      console.log('RES', res);
+    }
+    catch (err) {
+      console.error('ERROR', err);
+      // handle error- filename name must be unique.
+    }
+  };
+
   // const requestWriteDirectoryPermission = async () => {
   //   try {
   //     const granted = await PermissionsAndroid.request(
@@ -273,6 +297,7 @@ const useExport = () => {
 
   return {
     backupProjectToDevice: backupProjectToDevice,
+    exportToDownloadsFolder: exportToDownloadsFolder,
     initializeBackup: initializeBackup,
   };
 };
