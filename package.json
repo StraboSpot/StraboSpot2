@@ -51,7 +51,7 @@
     "react-native-flatlist-slider": "1.0.6",
     "react-native-flipper": "0.161.0",
     "react-native-fs": "2.20.0",
-    "react-native-gesture-handler": "2.5.0",
+    "react-native-gesture-handler": "2.8.0",
     "react-native-get-random-values": "1.8.0",
     "react-native-image-picker": "4.8.4",
     "react-native-image-resizer": "1.4.5",
@@ -83,11 +83,12 @@
     "@babel/core": "^7.12.9",
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@babel/runtime": "7.12.5",
-    "babel-jest": "26.6.3",
+    "babel-jest": "^26.6.3",
     "babel-loader": "9.1.0",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-react-native-web": "0.18.10",
     "babel-plugin-transform-remove-console": "6.9.4",
+    "babel-polyfill": "^6.26.0",
     "eslint": "8.20.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.6.1",
@@ -95,7 +96,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-native": "4.0.0",
     "html-webpack-plugin": "5.5.0",
-    "jest": "26.6.3",
+    "jest": "^26.6.3",
     "metro-react-native-babel-preset": "0.70.3",
     "react-test-renderer": "18.0.0",
     "url-loader": "4.1.1",
@@ -104,6 +105,6 @@
     "webpack-dev-server": "4.11.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native-web"
   }
 }

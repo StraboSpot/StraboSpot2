@@ -44,10 +44,10 @@ const imageLoaderConfiguration = {
 };
 
 module.exports = {
-  entry: [
-    // 'babel-polyfill',
-    path.join(appDirectory, 'index.web.js')
-  ],
+entry: [
+    'babel-polyfill',
+    path.join(appDirectory, 'index.web.js'),
+],
   output: {
     path: path.resolve(appDirectory, 'dist'),
     publicPath: '/',
