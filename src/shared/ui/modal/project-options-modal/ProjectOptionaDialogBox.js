@@ -33,6 +33,8 @@ const ProjectOptionsDialogBox = (props) => {
   const [exportFileName, setExportFileName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
+  const [includeImages, setIncludeImages] = useState(false);
+  const [includeMapTiles, setIncludeMapTiles] = useState(false);
   const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [isOverwriteModalVisible, setIsOverwriteModalVisible] = useState(false);
   const [passwordInputVal, setPasswordTextInputVal] = useState('');
@@ -44,6 +46,11 @@ const ProjectOptionsDialogBox = (props) => {
   const useExport = useExportHook();
   const [useProject] = useProjectHook();
   const toast = useToast();
+
+  useEffect(() => {
+    console.log('Images Included:', includeImages);
+    console.log('Maps Included:', includeMapTiles);
+  }, [includeImages, includeMapTiles]);
 
   useEffect(() => {
     if (!isEmpty(currentProjectName)) {
@@ -105,12 +112,13 @@ const ProjectOptionsDialogBox = (props) => {
     }
   };
 
-
   const exportProject = async () => {
     try {
       console.log('FileName', exportFileName);
-      await useExport.exportToDownloadsFolder(selectedProject.project.fileName, exportFileName);
+      await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, exportFileName, includeImages,
+        includeMapTiles);
       console.log('Project has been exported to Downloads folder!');
+      toast.show('Project has been exported to Downloads folder!');
       props.close();
       setChecked(1);
     }
@@ -224,6 +232,28 @@ const ProjectOptionsDialogBox = (props) => {
                 onChangeText={text => setExportFileName(text)}
                 style={commonStyles.dialogInputContainer}
               />
+              <View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <CheckBox
+                    checked={includeImages}
+                    onIconPress={() => setIncludeImages(!includeImages)}
+                    containerStyle={{padding: 0}}
+                  />
+                  <Text>Include Images?</Text>
+                </View>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                  <CheckBox
+                    checked={includeMapTiles}
+                    onIconPress={() => setIncludeMapTiles(!includeMapTiles)}
+                    containerStyle={{padding: 0}}
+                  />
+                  <Text>Include Map Tiles?</Text>
+                </View>
+              </View>
+
             </View>
             <View>
               <Button
