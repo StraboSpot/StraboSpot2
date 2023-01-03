@@ -1,3 +1,7 @@
+import {useState} from 'react';
+import {PermissionsAndroid} from 'react-native';
+
+import moment from 'moment';
 import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -46,22 +50,33 @@ const useExport = () => {
   };
 
   // For Android only.
-  const exportToDownloadsFolder = async (localFileName, filename) => {
-    // await RNFS.copyFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json',
-    //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
-    // console.log('Project Backed Up to Android');
+  const exportJSONToDownloadsFolder = async (localFileName, filename, includeImages, includeMapTiles) => {
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
+    const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
+    const filePath = APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json';
+    const destinationDir = APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + ` (exported- ${dateAndTime})`;
+    await requestWriteDirectoryPermission();
     console.log(localFileName);
-    const file2 = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
-    console.log('FILE', JSON.parse(file2));
-    const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '/data.json');
+    const file = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
+    const exportedJSON = JSON.parse(file);
+    const exists = await RNFS.exists(`${destinationDir}/data.json`);
     console.log('Exists', exists);
-    await useDevice.makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '(copy)');
+    await RNFS.mkdir(destinationDir);
     console.log('Directory is made!');
-    // await useDevice.writeFileToDevice(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename, 'data.json', JSON.parse(file2));
     try {
       console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
-      const res = await RNFS.writeFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '(copy)/data.json', file2);
-      console.log('RES', res);
+      await RNFS.copyFile(filePath, `${destinationDir}/data.json`);
+      console.log('Files Copied');
+      if (includeImages) {
+        await gatherImagesForDistribution(exportedJSON, filename + ` (exported- ${dateAndTime})`,
+          includeImages);
+      }
+      if (includeMapTiles) {
+        await gatherMapsForDistribution(exportedJSON,
+          filename + ` (exported- ${dateAndTime})`, includeMapTiles);
+      }
+      console.log('All Done Exporting');
+      // dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
       console.error('ERROR', err);
@@ -69,66 +84,14 @@ const useExport = () => {
     }
   };
 
-  // const requestWriteDirectoryPermission = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-  //       {
-  //         title: 'Need permission to read Downloads Folder',
-  //         message:
-  //           'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
-  //         buttonNeutral: 'Ask Me Later',
-  //         buttonNegative: 'Cancel',
-  //         buttonPositive: 'OK',
-  //       },
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       console.log('You can read the folder');
-  //     }
-  //     else {
-  //       console.log('Folder read permission denied');
-  //     }
-  //   }
-  //   catch (err) {
-  //     console.warn(err);
-  //   }
-  // };
-
   const gatherDataForBackup = async (filename) => {
     try {
       dispatch(addedStatusMessage('Exporting Project Data...'));
       console.log(dataForExport);
 
-      // console.log('Directory :', APP_DIRECTORIES.BACKUP_DIR + filename);
       await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport,
         'data.json');
       console.log('Finished Exporting Project Data', dataForExport);
-      // if (Platform.OS === 'android') {
-      //   const exists = await useDevice.doesDeviceDirectoryExist(
-      //     APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      //   if (exists) {
-      //     await requestWriteDirectoryPermission();
-      //     // console.log(APP_DIRECTORIES.BACKUP_DIR + filename);
-      //     // await RNFS.writeFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename, JSON.stringify(dataForExport), 'utf8');
-      //     // console.log('FILES WRITTEN SUCCESSFULLY TO DOWNLOADS STORAGE!');
-      //     // console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
-      //     // const dataFile = '/data.json';
-      //     // console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + dataFile);
-      //     // const response = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + filename + dataFile);
-      //     // console.log(JSON.parse(response));
-      //
-      //     // const file1 = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
-      //     // console.log('FILE', file1);
-      //     // const file1 = await RNFS.readFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '/data.json');
-      //     // console.log('FILE1', file1);
-      //     console.log('Directory :', APP_DIRECTORIES.BACKUP_DIR + filename);
-      //     await RNFS.copyFile(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json',
-      //       APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
-      //     console.log('Project Backed Up to Android');
-      //     const file2 = await RNFS.readFile(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
-      //     console.log('FILE', JSON.parse(file2));
-      //   }
-      // }
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished Exporting Project Data'));
     }
@@ -139,11 +102,12 @@ const useExport = () => {
     }
   };
 
-  const gatherImagesForDistribution = async (data, fileName) => {
+  const gatherImagesForDistribution = async (data, fileName, isBeingExported) => {
     try {
+      const deviceDir = isBeingExported ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
       await useDevice.doesDeviceDirectoryExist(
-        APP_DIRECTORIES.BACKUP_DIR + fileName + '/Images');
+        deviceDir + fileName + '/Images');
       dispatch(addedStatusMessage('Exporting Images...'));
       if (data.spotsDb) {
         console.log('Spots Exist!');
@@ -153,7 +117,7 @@ const useExport = () => {
               console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
               await Promise.all(
                 spot.properties.images.map(async (image) => {
-                  await moveDistributedImage(image.id, fileName);
+                  await moveDistributedImage(image.id, fileName, deviceDir);
                   console.log('Moved file:', image.id);
                 }),
               );
@@ -171,25 +135,26 @@ const useExport = () => {
       }
     }
     catch (err) {
-      console.error('Error Backing Up Images!');
+      console.error('Error Backing Up Images!', err);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Error Exporting Images!' + err));
     }
   };
 
 
-  const gatherMapsForDistribution = async (data, fileName) => {
+  const gatherMapsForDistribution = async (data, fileName, isBeingExported) => {
     try {
       const maps = data.mapNamesDb;
+      const deviceDir = isBeingExported ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       let promises = [];
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
         await useDevice.doesDeviceDirectoryExist(
-          APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps');
+          deviceDir + fileName + '/maps');
         await Promise.all(
           Object.values(maps).map(async (map) => {
-            const mapId = await moveDistributedMap(map.mapId, fileName);
+            const mapId = await moveDistributedMap(map.mapId, fileName, deviceDir);
             console.log('Moved map:', mapId);
             promises.push(mapId);
             console.log(promises);
@@ -257,12 +222,12 @@ const useExport = () => {
     }
   };
 
-  const moveDistributedImage = async (image_id, fileName) => {
+  const moveDistributedImage = async (image_id, fileName, directory) => {
     try {
       const imageExists = await useDevice.doesDeviceFileExist(image_id, '.jpg');
       if (imageExists) {
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
-          APP_DIRECTORIES.BACKUP_DIR + fileName + '/Images/' + image_id + '.jpg');
+          directory + fileName + '/Images/' + image_id + '.jpg');
         imageSuccess++;
       }
     }
@@ -272,14 +237,14 @@ const useExport = () => {
     }
   };
 
-  const moveDistributedMap = async (mapId, fileName) => {
+  const moveDistributedMap = async (mapId, fileName, directory) => {
     console.log('Moving Map:', mapId);
     return RNFS.exists(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
       .then((exists) => {
         if (exists) {
           console.log(mapId + '.zip exists?', exists);
           return RNFS.copyFile(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
-            APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps/' + mapId.toString() + '.zip').then(
+            directory + fileName + '/maps/' + mapId.toString() + '.zip').then(
             () => {
               console.log('Map Copied.');
               return Promise.resolve(mapId);
@@ -295,9 +260,34 @@ const useExport = () => {
       });
   };
 
+  const requestWriteDirectoryPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Need permission to read Downloads Folder',
+          message:
+            'StraboSpot2 needs permission to access your Downloads Folder to save backups,',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can read the folder');
+      }
+      else {
+        console.log('Folder read permission denied');
+      }
+    }
+    catch (err) {
+      console.warn(err);
+    }
+  };
+
   return {
     backupProjectToDevice: backupProjectToDevice,
-    exportToDownloadsFolder: exportToDownloadsFolder,
+    exportJSONToDownloadsFolder: exportJSONToDownloadsFolder,
     initializeBackup: initializeBackup,
   };
 };

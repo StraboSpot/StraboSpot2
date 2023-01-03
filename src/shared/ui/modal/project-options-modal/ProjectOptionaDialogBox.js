@@ -33,8 +33,8 @@ const ProjectOptionsDialogBox = (props) => {
   const [exportFileName, setExportFileName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
-  const [includeImages, setIncludeImages] = useState(false);
-  const [includeMapTiles, setIncludeMapTiles] = useState(false);
+  const [includeImages, setIncludeImages] = useState(true);
+  const [includeMapTiles, setIncludeMapTiles] = useState(true);
   const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [isOverwriteModalVisible, setIsOverwriteModalVisible] = useState(false);
   const [passwordInputVal, setPasswordTextInputVal] = useState('');
@@ -121,6 +121,8 @@ const ProjectOptionsDialogBox = (props) => {
       toast.show('Project has been exported to Downloads folder!');
       props.close();
       setChecked(1);
+      setIncludeMapTiles(true);
+      setIncludeImages(true);
     }
     catch (err) {
       console.error('Error exporting project!', err);
@@ -154,6 +156,8 @@ const ProjectOptionsDialogBox = (props) => {
   const onClose = () => {
     setChecked(1);
     setAction('');
+    setIncludeMapTiles(true);
+    setIncludeImages(true);
     props.close();
   };
 
