@@ -3,6 +3,7 @@ import {Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-n
 
 import * as NetInfo from '@react-native-community/netinfo';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 
 NetInfo.configure({
@@ -21,6 +22,13 @@ const App = () => {
   console.log(Platform.OS);
 
   if (Platform.OS === 'web') console.log(navigator.onLine ? 'online' : 'offline');
+
+  launchCamera({}, (response) => {
+    console.log('launchCamera response:', response);
+  });
+  launchImageLibrary({}, async (response) => {
+    console.log('launchImageLibrary response:', response);
+  });
 
   const styles = StyleSheet.create({
     ball: {

@@ -9,12 +9,14 @@ const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   '@react-native-community/netinfo',
+  'react-native',
   'react-native-gesture-handler',
+  'react-native-image-picker',
   'react-native-reanimated',
 ].map(moduleName => path.resolve(appDirectory, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
-  test: /\.(js|jsx)$/,
+  test: /\.(jsx?|tsx?)$/,
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
     path.resolve(appDirectory, 'index.web.js'), // Entry to your application
@@ -54,27 +56,13 @@ module.exports = {
     filename: 'bundle.web.js',
   },
   resolve: {
-    extensions: [
-      '.web.js',
-      '.js',
-      '.web.ts',
-      '.ts',
-      '.web.jsx',
-      '.jsx',
-      '.web.tsx',
-      '.tsx',
-      '.css',
-      '.json',
-    ],
+    extensions: ['.web.js', '.js', '.web.ts', '.ts', '.web.jsx', '.jsx', '.web.tsx', '.tsx', '.css', '.json'],
     alias: {
       'react-native$': 'react-native-web',
     },
   },
   module: {
-    rules: [
-      babelLoaderConfiguration,
-      imageLoaderConfiguration,
-    ],
+    rules: [babelLoaderConfiguration, imageLoaderConfiguration],
   },
   plugins: [
     new HtmlWebpackPlugin({template: path.join(__dirname, 'index.html')}),
