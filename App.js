@@ -1,18 +1,26 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  Text,
-  View,
-  Platform,
-  StyleSheet
-} from 'react-native';
+import {Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 
-import {GestureDetector, Gesture} from 'react-native-gesture-handler';
+import * as NetInfo from '@react-native-community/netinfo';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+
+NetInfo.configure({
+  // reachabilityUrl: 'https://clients3.google.com/generate_204',
+  // reachabilityTest: async (response) => {
+  //   console.log('Response Status', response.status);
+  //   return response.status === 204;
+  // },
+  // reachabilityLongTimeout: 5 * 1000, // 60s
+  // reachabilityShortTimeout: 5 * 1000, // 5s
+  // reachabilityRequestTimeout: 15 * 1000, // 15s
+  shouldFetchWiFiSSID: true,
+});
 
 const App = () => {
   console.log(Platform.OS);
+
+  if (Platform.OS === 'web') console.log(navigator.onLine ? 'online' : 'offline');
 
   const styles = StyleSheet.create({
     ball: {
@@ -25,19 +33,19 @@ const App = () => {
   });
 
   const isPressed = useSharedValue(false);
-  const offset = useSharedValue({ x: 0, y: 0 });
+  const offset = useSharedValue({x: 0, y: 0});
   const animatedStyles = useAnimatedStyle(() => {
     return {
       transform: [
-        { translateX: offset.value.x },
-        { translateY: offset.value.y },
-        { scale: withSpring(isPressed.value ? 1.2 : 1) },
+        {translateX: offset.value.x},
+        {translateY: offset.value.y},
+        {scale: withSpring(isPressed.value ? 1.2 : 1)},
       ],
       backgroundColor: isPressed.value ? 'yellow' : 'blue',
     };
   });
 
-  const start = useSharedValue({ x: 0, y: 0 });
+  const start = useSharedValue({x: 0, y: 0});
   const gesture = Gesture.Pan()
     .onBegin(() => {
       isPressed.value = true;
@@ -60,16 +68,16 @@ const App = () => {
 
   return (
     <SafeAreaView>
-      <StatusBar barStyle='dark-content' />
+      <StatusBar barStyle={'dark-content'}/>
       <View style={{alignItems: 'center'}}>
         <Text style={{fontSize: 24}}>React Native Web App Example!e</Text>
         <Animated.Image
           source={require('./src/assets/images/noimage.jpg')}
-          resizeMode='contain'
-          style={{ width: 100, height: 200 }}
+          resizeMode={'contain'}
+          style={{width: 100, height: 200}}
         />
         <GestureDetector gesture={gesture}>
-          <Animated.View style={[styles.ball, animatedStyles]} />
+          <Animated.View style={[styles.ball, animatedStyles]}/>
         </GestureDetector>
       </View>
     </SafeAreaView>

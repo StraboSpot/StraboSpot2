@@ -8,6 +8,7 @@ const appDirectory = path.resolve(__dirname);
 const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
+  '@react-native-community/netinfo',
   'react-native-gesture-handler',
   'react-native-reanimated',
 ].map(moduleName => path.resolve(appDirectory, `node_modules/${moduleName}`));
