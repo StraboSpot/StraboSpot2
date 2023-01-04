@@ -6,22 +6,21 @@ const webpack = require('webpack');
 
 const appDirectory = path.resolve(__dirname);
 const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
-// const compileNodeModules = [
-//   // Add every react-native package that needs compiling
-//   'react-native-gesture-handler',
-//   'react-native-reanimated',
-// ].map(moduleName => path.resolve(appDirectory, `node_modules/${moduleName}`));
+const compileNodeModules = [
+  // Add every react-native package that needs compiling
+  'react-native-gesture-handler',
+  'react-native-reanimated',
+].map(moduleName => path.resolve(appDirectory, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
   test: /\.(js|jsx)$/,
   // Add every directory that needs to be compiled by Babel during the build.
-  // include: [
-  //   path.resolve(__dirname, 'index.web.js'), // Entry to your application
-  //   path.resolve(__dirname, 'App.js'), // Change this to your main App file
-  //   path.resolve(__dirname, 'src'),
-  //   path.resolve(__dirname, 'component'),
-  //   ...compileNodeModules,
-  // ],
+  include: [
+    path.resolve(appDirectory, 'index.web.js'), // Entry to your application
+    path.resolve(appDirectory, 'App.js'), // Change this to your main App file
+    path.resolve(appDirectory, 'src'),
+    ...compileNodeModules,
+  ],
   use: {
     loader: 'babel-loader',
     options: {
@@ -44,10 +43,10 @@ const imageLoaderConfiguration = {
 };
 
 module.exports = {
-entry: [
+  entry: [
     'babel-polyfill',
     path.join(appDirectory, 'index.web.js'),
-],
+  ],
   output: {
     path: path.resolve(appDirectory, 'dist'),
     publicPath: '/',
@@ -77,15 +76,10 @@ entry: [
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'index.html'),
-    }),
+    new HtmlWebpackPlugin({template: path.join(__dirname, 'index.html')}),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin({
-      // See: <https://github.com/necolas/react-native-web/issues/349>
-      __DEV__: JSON.stringify(true),
-    }),
-    new webpack.EnvironmentPlugin({ JEST_WORKER_ID: null }),
-    new webpack.DefinePlugin({ process: { env: {} } })
+    new webpack.DefinePlugin({__DEV__: JSON.stringify(true)}),  // See: <https://github.com/necolas/react-native-web/issues/349>
+    new webpack.EnvironmentPlugin({JEST_WORKER_ID: null}),
+    new webpack.DefinePlugin({process: {env: {}}}),
   ],
 };
