@@ -2,9 +2,24 @@ import React from 'react';
 import {Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
+import * as Sentry from '@sentry/react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+
+import {RELEASE_NAME} from './src/shared/app.constants';
+import config from './src/utils/config';
+
+Sentry.init({
+  dsn: config.get('Error_reporting_DSN'),
+  enableNative: Platform.OS !== 'web',
+  debug: __DEV__,
+  release: RELEASE_NAME,
+  dist: RELEASE_NAME,
+  autoSessionTracking: true,
+  environment: __DEV__ ? 'development' : 'production',
+  deactivateStacktraceMerging: true,
+});
 
 NetInfo.configure({
   // reachabilityUrl: 'https://clients3.google.com/generate_204',
@@ -23,12 +38,12 @@ const App = () => {
 
   if (Platform.OS === 'web') console.log(navigator.onLine ? 'online' : 'offline');
 
-  launchCamera({}, (response) => {
-    console.log('launchCamera response:', response);
-  });
-  launchImageLibrary({}, async (response) => {
-    console.log('launchImageLibrary response:', response);
-  });
+  // launchCamera({}, (response) => {
+  //   console.log('launchCamera response:', response);
+  // });
+  // launchImageLibrary({}, async (response) => {
+  //   console.log('launchImageLibrary response:', response);
+  // });
 
   const styles = StyleSheet.create({
     ball: {
@@ -78,7 +93,7 @@ const App = () => {
     <SafeAreaView>
       <StatusBar barStyle={'dark-content'}/>
       <View style={{alignItems: 'center'}}>
-        <Text style={{fontSize: 24}}>React Native Web App Example!e</Text>
+        <Text style={{fontSize: 24}}>React Native Web App Example!</Text>
         <Animated.Image
           source={require('./src/assets/images/noimage.jpg')}
           resizeMode={'contain'}

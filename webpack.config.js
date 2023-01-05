@@ -9,19 +9,20 @@ const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   '@react-native-community/netinfo',
+  '@sentry/react-native',
   'react-native',
   'react-native-gesture-handler',
   'react-native-image-picker',
   'react-native-reanimated',
-].map(moduleName => path.resolve(appDirectory, `node_modules/${moduleName}`));
+].map(moduleName => path.resolve(__dirname, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
   test: /\.(jsx?|tsx?)$/,
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
-    path.resolve(appDirectory, 'index.web.js'), // Entry to your application
-    path.resolve(appDirectory, 'App.js'), // Change this to your main App file
-    path.resolve(appDirectory, 'src'),
+    path.resolve(__dirname, 'index.web.js'), // Entry to your application
+    path.resolve(__dirname, 'App.js'), // Change this to your main App file
+    path.resolve(__dirname, 'src'),
     ...compileNodeModules,
   ],
   use: {
@@ -48,13 +49,15 @@ const imageLoaderConfiguration = {
 module.exports = {
   entry: [
     'babel-polyfill',
+    './polyfills-web.js',
     path.join(appDirectory, 'index.web.js'),
   ],
   output: {
-    path: path.resolve(appDirectory, 'dist'),
+    path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: 'bundle.web.js',
   },
+  devtool: 'source-map',
   resolve: {
     extensions: ['.web.js', '.js', '.web.ts', '.ts', '.web.jsx', '.jsx', '.web.tsx', '.tsx', '.css', '.json'],
     alias: {
