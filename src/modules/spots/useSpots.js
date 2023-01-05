@@ -4,7 +4,7 @@ import {Alert} from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import {getNewCopyId, getNewId, isEmpty, isEqual} from '../../shared/Helpers';
+import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
 import {setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {
@@ -76,46 +76,11 @@ const useSpots = () => {
       lng,
       altitude,
       gps_accuracy,
+      orientation_data,
       spot_radius,
       ...properties
     } = selectedSpot.properties;
     copiedSpot.properties = properties;
-    if (properties.orientation_data) {
-      const orientation_data = properties.orientation_data.map((measurement) => {
-        let {
-          id: measurementId,
-          strike,
-          dip_direction,
-          dip,
-          trend,
-          plunge,
-          rake,
-          rake_calculated,
-          ...measurementRest
-        } = measurement;
-        if (measurementRest.associated_orientation) {
-          const associated_orientation = measurementRest.associated_orientation.map((assocMeasurement) => {
-            let {
-              id: measurementIdA,
-              strike: strikeA,
-              dip_direction: dipDirectionA,
-              dip: dipA,
-              trend: trendA,
-              plunge: plungeA,
-              rake: rakeA,
-              rake_calculated: rakeCalculatedA,
-              ...assocMeasurementRest
-            } = assocMeasurement;
-            return {...assocMeasurementRest, id: getNewCopyId()};
-          });
-          if (associated_orientation) {
-            return {...measurementRest, id: getNewCopyId(), associated_orientation: associated_orientation};
-          }
-        }
-        else return {...measurementRest, id: getNewCopyId()};
-      });
-      if (orientation_data) copiedSpot.properties.orientation_data = orientation_data;
-    }
     const newSpot = await createSpot(copiedSpot);
     dispatch(setSelectedSpot(newSpot));
     console.log('Spot Copied. New Spot', newSpot);
