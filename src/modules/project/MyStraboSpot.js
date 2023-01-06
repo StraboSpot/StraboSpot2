@@ -77,7 +77,7 @@ const MyStraboSpot = (props) => {
         case 'new':
           return (
             <View style={{flex: 1}}>
-              <NewProjectForm/>
+              <NewProjectForm source={'new'}/>
             </View>
           );
       }

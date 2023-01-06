@@ -55,44 +55,9 @@ const ProjectOptionsDialogBox = (props) => {
   useEffect(() => {
     if (!isEmpty(currentProjectName)) {
       setBackupFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProjectName);
-      setExportFileName(selectedProject.project.fileName);
+      setExportFileName(selectedProject?.project?.fileName);
     }
   }, [checked]);
-
-  const authorizeAndDeleteProject = async (projectName) => {
-    try {
-      console.log('Authorizing User');
-      setProjectNameToToDelete(projectName);
-      const isValid = await useProject.checkUserAuthorization(passwordInputVal);
-      console.log('IsValid', isValid);
-      if (isValid.valid === 'true') {
-        setDeletingProjectStatus('');
-        setDeletingProjectStatus('deleting');
-        setIsProgressModalVisible(true);
-        props.close();
-        await useProject.deleteProject(selectedProject.project);
-        console.log('Project Deleted From Server!');
-        props.projectDeleted(true);
-        setChecked(1);
-        setDeletingProjectStatus('complete');
-      }
-      else if (isValid.valid === 'false') {
-        setDeletingProjectStatus('');
-        setErrorMessage('Incorrect Password! Please re-enter.');
-      }
-      else if (isValid.error) {
-        setErrorMessage(isValid.error);
-      }
-    }
-    catch (err) {
-      console.error('Error deleting project from server!', err);
-      props.projectDeleted(false);
-      setErrorMessage('Could not find project on the server');
-      setChecked(3);
-      props.open();
-      setIsProgressModalVisible(false);
-    }
-  };
 
   const deleteProjectFromLocalStorage = async () => {
     try {
@@ -105,7 +70,7 @@ const ProjectOptionsDialogBox = (props) => {
       props.projectDeleted(true);
     }
     catch (err) {
-      console.error('Error deleting project! OH NOOOOO', err);
+      console.error('Error deleting project!', err);
       setDeleteErrorMessage(err.toString());
       toast.show(`${selectedProject.project.fileName} does not exist!`, {type: 'danger'});
       setChecked(3);
@@ -290,46 +255,25 @@ const ProjectOptionsDialogBox = (props) => {
   };
 
   const renderDeleteView = () => {
-    const message = selectedProject.source === 'server'
-      ? <Text style={commonStyles.dialogConfirmText}>This will
-        <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
-        everything for this project on the server including Spots, images, and all other data!
-      </Text>
-      : <Text style={commonStyles.dialogConfirmText}>This will
-        <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
-        the backed up version of this project LOCALLY including Spots, images, and all other data!
-      </Text>;
-
-    const projectName = selectedProject.source === 'device' ? selectedProject?.fileName : selectedProject?.project.name;
+    const projectName = selectedProject?.fileName;
     return (
       <View>
-        <View style={{}}>
+        <View>
           <Text style={commonStyles.dialogContentImportantText}>Are you sure you want to
             delete{'\n' + projectName}?
           </Text>
-          {message}
+          <Text style={commonStyles.dialogConfirmText}>This will
+            <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
+            the backed up version of this project LOCALLY including Spots, images, and all other data!
+          </Text>
         </View>
-        {selectedProject.source === 'server' && <View style={{paddingTop: 10}}>
-          <Input
-            value={passwordInputVal}
-            placeholder={'Enter Password'}
-            secureTextEntry
-            autoCapitalize={'none'}
-            onChangeText={val => setPasswordTextInputVal(val)}
-            errorMessage={errorMessage}
-            onBlur={() => setErrorMessage('')}
-          />
-        </View>}
         <Button
           title={'DELETE'}
           titleStyle={projectOptionsModalStyle.deleteButtonText}
           buttonStyle={projectOptionsModalStyle.deleteButtonContainer}
           type={'clear'}
-          onPress={() => selectedProject.source === 'server'
-            ? authorizeAndDeleteProject(projectName)
-            : deleteProjectFromLocalStorage(projectName)}
+          onPress={() => deleteProjectFromLocalStorage(projectName)}
         />
-        {/*<Text style={projectOptionsModalStyle.errorText}>{deleteErrorMessage}</Text>*/}
       </View>
     );
   };
@@ -375,7 +319,7 @@ const ProjectOptionsDialogBox = (props) => {
         <View>
           <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
           <Text style={commonStyles.dialogContentImportantText}>
-            {props.endpoint.isSelected ? props.endpoint.url : STRABO_APIS.DB}
+            {props.endpoint?.isSelected ? props.endpoint.url : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>
@@ -396,8 +340,11 @@ const ProjectOptionsDialogBox = (props) => {
   };
 
   const radioButtonArr = ['Load Project', 'Delete', 'Export'];
-  const showExportChoice = selectedProject.source === 'device' && Platform.OS === 'android' ? radioButtonArr : radioButtonArr.slice(
-    0, 2);
+  const showExportChoice = selectedProject.source === 'device' && Platform.OS === 'android';
+  const header = selectedProject.source === 'device' ? 'Project Options for:' : selectedProject.source === 'server'
+    ? 'Selected Server Project:' : null;
+  const projectName = `${selectedProject.source === 'server' ? selectedProject.project.name : selectedProject.source === 'server'
+    ? selectedProject.project.fileName : 'New'}`;
   return (
     <View>
       <Dialog
@@ -406,12 +353,12 @@ const ProjectOptionsDialogBox = (props) => {
         useNativeDriver={true}
       >
         <Dialog.Button title={'Close'} containerStyle={{alignItems: 'flex-end'}} onPress={() => onClose()}/>
-        <Dialog.Title titleStyle={{textAlign: 'center'}} title={'Project Options for:'}/>
+        <Dialog.Title titleStyle={{textAlign: 'center'}} title={header}/>
         <Dialog.Title
           titleStyle={{textAlign: 'center'}}
-          title={`${selectedProject.source === 'server' ? selectedProject.project.name : selectedProject.project.fileName}`}
+          title={projectName}
         />
-        {showExportChoice.map((l, i) => (
+        {showExportChoice && radioButtonArr.map((l, i) => (
           <CheckBox
             key={i}
             title={l}

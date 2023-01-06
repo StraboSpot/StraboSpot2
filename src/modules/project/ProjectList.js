@@ -149,7 +149,6 @@ const ProjectList = (props) => {
         currentProject={currentProject}
         endpoint={endPoint}
         visible={isProjectOptionsModalVisible}
-        onBackdropPress={() => setIsProjectOptionsModalVisible(false)}
         close={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
         projectDeleted={value => reloadingList(value)}

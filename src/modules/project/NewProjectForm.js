@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {FlatList} from 'react-native';
 
 import {Formik} from 'formik';
@@ -6,16 +6,19 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
 import {Form, useFormHook} from '../form';
-import {setBackupOverwriteModalVisible, setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
+import {setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 
 const NewProjectForm = (props) => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+  const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
 
   const [useForm] = useFormHook();
   const [useProject] = useProjectHook();
@@ -23,10 +26,9 @@ const NewProjectForm = (props) => {
   const formRef = useRef(null);
 
   useEffect(() => {
-    console.log('UE NewProjectForm []');
-    if (!isEmpty(currentProject)) {
-      dispatch(setBackupOverwriteModalVisible(true));
-    }
+    console.log('UE NewProjectForm []', props);
+    dispatch(setSelectedProject({project: '', source: props.source}));
+    !isEmpty(currentProject) && setIsProjectOptionsModalVisible(true);
   }, []);
 
   const initialValues = {
@@ -48,6 +50,18 @@ const NewProjectForm = (props) => {
         initialStatus={{formName: formName}}
         enableReinitialize={false}
       />
+    );
+  };
+
+  const renderProjectOptionsModal = () => {
+    return (
+      <ProjectOptionsDialogBox
+        currentProject={currentProject}
+        visible={isProjectOptionsModalVisible}
+        close={() => setIsProjectOptionsModalVisible(false)}
+        open={() => setIsProjectOptionsModalVisible(true)}
+      >
+      </ProjectOptionsDialogBox>
     );
   };
 
@@ -80,6 +94,7 @@ const NewProjectForm = (props) => {
         type={'clear'}
         onPress={() => saveForm()}
       />
+      {renderProjectOptionsModal()}
     </React.Fragment>
   );
 };
