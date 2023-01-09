@@ -167,14 +167,14 @@ const ProjectOptionsDialogBox = (props) => {
                 current project ({currentProjectName})?</Text>
             </View>
             <View style={{padding: 10}}>
-              <Button
+              {selectedProject.source !== 'new' && <Button
                 title={'Overwrite'}
                 type={'outline'}
                 containerStyle={{padding: 2.5}}
                 onPress={() => setAction(OVERWRITE)}
-              />
+              />}
               <Button
-                title={'Save'}
+                title={'Save to Device'}
                 type={'outline'}
                 containerStyle={{padding: 2.5}}
                 onPress={() => setAction(BACKUP_TO_DEVICE)}
@@ -344,7 +344,7 @@ const ProjectOptionsDialogBox = (props) => {
   const header = selectedProject.source === 'device' ? 'Project Options for:' : selectedProject.source === 'server'
     ? 'Selected Server Project:' : null;
   const projectName = `${selectedProject.source === 'server' ? selectedProject.project.name : selectedProject.source === 'server'
-    ? selectedProject.project.fileName : 'New'}`;
+    ? selectedProject.project.fileName : 'New Project'}`;
   return (
     <View>
       <Dialog
@@ -358,6 +358,9 @@ const ProjectOptionsDialogBox = (props) => {
           titleStyle={{textAlign: 'center'}}
           title={projectName}
         />
+        {selectedProject.source === 'new'
+          && <Text style={{textAlign: 'center', color: 'red'}}>Starting a new project will overwrite the current
+            project. Press Close if that is ok.</Text>}
         {showExportChoice && radioButtonArr.map((l, i) => (
           <CheckBox
             key={i}
