@@ -255,7 +255,7 @@ const ProjectOptionsDialogBox = (props) => {
   };
 
   const renderDeleteView = () => {
-    const projectName = selectedProject?.fileName;
+    const projectName = selectedProject?.project.fileName;
     return (
       <View>
         <View>
@@ -317,15 +317,15 @@ const ProjectOptionsDialogBox = (props) => {
     return (
       <View>
         <View>
-          <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
+          <Text style={commonStyles.dialogContentImportantText}>Uploading {'\n'}{!isEmpty(
+            props.currentProject) && props.currentProject.description.project_name} {'\n'}to:</Text>
           <Text style={commonStyles.dialogContentImportantText}>
             {props.endpoint?.isSelected ? props.endpoint.url : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>
         <Text>
-          <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
-            props.currentProject) && props.currentProject.description.project_name} </Text>
+          <Text style={commonStyles.dialogContentImportantText}> </Text>
           project properties and datasets will be uploaded and will
           <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
           for this project:
@@ -340,10 +340,12 @@ const ProjectOptionsDialogBox = (props) => {
   };
 
   const radioButtonArr = ['Load Project', 'Delete', 'Export'];
-  const showExportChoice = selectedProject.source === 'device' && Platform.OS === 'android';
-  const header = selectedProject.source === 'device' ? 'Project Options for:' : selectedProject.source === 'server'
+  const displayedButtons = selectedProject.source === 'device' && Platform.OS === 'ios' ? radioButtonArr.slice(0,
+    2) : radioButtonArr;
+  const showExportChoice = selectedProject.source === 'device';
+  const header = selectedProject.source === 'device' ? 'Selected Device Project:' : selectedProject.source === 'server'
     ? 'Selected Server Project:' : null;
-  const projectName = `${selectedProject.source === 'server' ? selectedProject.project.name : selectedProject.source === 'server'
+  const projectName = `${selectedProject.source === 'server' ? selectedProject.project.name : selectedProject.source === 'device'
     ? selectedProject.project.fileName : 'New Project'}`;
   return (
     <View>
@@ -361,7 +363,7 @@ const ProjectOptionsDialogBox = (props) => {
         {selectedProject.source === 'new'
           && <Text style={{textAlign: 'center', color: 'red'}}>Starting a new project will overwrite the current
             project. Press Close if that is ok.</Text>}
-        {showExportChoice && radioButtonArr.map((l, i) => (
+        {showExportChoice && displayedButtons.map((l, i) => (
           <CheckBox
             key={i}
             title={l}
