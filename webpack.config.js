@@ -8,6 +8,8 @@ const appDirectory = path.resolve(__dirname);
 const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
+  '@StraboSpot/react-native-sketch-canvas',
+  '@react-native',
   '@react-native-community/netinfo',
   '@rnmapbox/maps',
   '@sentry/react-native',
@@ -63,6 +65,7 @@ module.exports = {
     extensions: ['.web.js', '.js', '.web.ts', '.ts', '.web.jsx', '.jsx', '.web.tsx', '.tsx', '.css', '.json'],
     alias: {
       'react-native$': 'react-native-web',
+      '../Utilities/Platform': 'react-native-web/dist/exports/Platform',
     },
   },
   module: {

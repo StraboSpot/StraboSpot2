@@ -4,10 +4,16 @@ import {Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-n
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import {Provider} from 'react-redux';
+import {persistStore} from 'redux-persist';
+import {PersistGate} from 'redux-persist/integration/react';
 
+// import Routes from './src/routes/Routes';
 import {RELEASE_NAME} from './src/shared/app.constants';
+import Loading from './src/shared/ui/Loading';
+import Toast from './src/shared/ui/Toast';
+// import store from './src/store/ConfigureStore';
 import config from './src/utils/config';
 
 Sentry.init({
@@ -89,20 +95,32 @@ const App = () => {
       isPressed.value = false;
     });
 
+  // const persistor = persistStore(store);
+  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
+
   return (
     <SafeAreaView>
-      <StatusBar barStyle={'dark-content'}/>
-      <View style={{alignItems: 'center'}}>
-        <Text style={{fontSize: 24}}>React Native Web App Example!</Text>
-        <Animated.Image
-          source={require('./src/assets/images/noimage.jpg')}
-          resizeMode={'contain'}
-          style={{width: 100, height: 200}}
-        />
-        <GestureDetector gesture={gesture}>
-          <Animated.View style={[styles.ball, animatedStyles]}/>
-        </GestureDetector>
-      </View>
+      <Toast>
+        {/*<Provider store={store}>*/}
+        {/*  <PersistGate loading={<Loading/>} persistor={persistor}>*/}
+            {/*<Sentry.TouchEventBoundary>*/}
+            <StatusBar barStyle={'dark-content'}/>
+            <View style={{alignItems: 'center'}}>
+              <Text style={{fontSize: 24}}>React Native Web App Example!</Text>
+              <Animated.Image
+                source={require('./src/assets/images/noimage.jpg')}
+                resizeMode={'contain'}
+                style={{width: 100, height: 200}}
+              />
+              <GestureDetector gesture={gesture}>
+                <Animated.View style={[styles.ball, animatedStyles]}/>
+              </GestureDetector>
+            </View>
+            {/*<Routes/>*/}
+            {/*</Sentry.TouchEventBoundary>*/}
+        {/*  </PersistGate>*/}
+        {/*</Provider>*/}
+      </Toast>
     </SafeAreaView>
   );
 };
