@@ -24,7 +24,7 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './deviceAndAPI.constants';
+import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 
 const useImport = () => {

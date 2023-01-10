@@ -6,7 +6,7 @@ import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
+import {STRABO_APIS} from '../../services/urls.constants';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
 import {

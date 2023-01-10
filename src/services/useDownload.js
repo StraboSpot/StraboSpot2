@@ -24,7 +24,8 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES, STRABO_APIS} from './deviceAndAPI.constants';
+import {APP_DIRECTORIES} from './directories.constants';
+import {STRABO_APIS} from './urls.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 

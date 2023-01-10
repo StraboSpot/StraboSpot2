@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 
 const devicePath = RNFS.DocumentDirectoryPath;
 // const androidBackupPath = RNFS.ExternalStorageDirectoryPath; //Android Only
-const account = '/account';
+
 // const appDirectoryForDistributedBackups = Platform.OS === 'ios' ? devicePath + /ProjectBackups/ : androidBackupPath + '/StraboSpot2/ProjectBackups/';
 const appDirectoryForDistributedBackups = devicePath + '/ProjectBackups/';
 const appDirectory = devicePath + '/StraboSpot';
@@ -12,15 +12,6 @@ const tilesDirectory = devicePath + '/StraboSpotTiles';
 const tileCacheDirectory = tilesDirectory + '/TileCache/';
 const tileTempDirectory = tilesDirectory + '/TileTemp/';
 const zipsDirectory = tilesDirectory + '/TileZips/';
-
-const straboSpotAPI = 'https://strabospot.org';
-const tilehost = 'https://tiles.strabospot.org';
-const straboDB = straboSpotAPI + '/db';
-const myMapsGeotiff = straboSpotAPI + '/geotiff';
-const myMapsBbox = myMapsGeotiff + '/bbox/';
-const myMapsTiles = myMapsGeotiff + '/tiles/';
-const myMapsCheck = straboSpotAPI + '/strabo_mymaps_check/';
-const tileCount = tilehost + '/zipcount';
 
 export const APP_DIRECTORIES = {
   ROOT_PATH: devicePath,
@@ -34,13 +25,3 @@ export const APP_DIRECTORIES = {
   TILE_ZIP: zipsDirectory,
 };
 
-export const STRABO_APIS = {
-  ACCOUNT: account,
-  STRABO: straboSpotAPI,
-  TILE_HOST: tilehost,
-  DB: straboDB,
-  MY_MAPS_BBOX: myMapsBbox,
-  MY_MAPS_TILES: myMapsTiles,
-  MY_MAPS_CHECK: myMapsCheck,
-  TILE_COUNT: tileCount,
-};

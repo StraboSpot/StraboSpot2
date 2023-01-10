@@ -5,7 +5,7 @@ import LottieView from 'lottie-react-native';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {STRABO_APIS} from '../../../services/deviceAndAPI.constants';
+import {STRABO_APIS} from '../../../services/urls.constants';
 import useUploadHook from '../../../services/useUpload';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';

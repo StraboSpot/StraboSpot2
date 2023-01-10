@@ -15,7 +15,7 @@ import {
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './deviceAndAPI.constants';
+import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 
 const useUpload = () => {

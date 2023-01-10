@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from '../modules/project/projects.slice';
-import {STRABO_APIS} from './deviceAndAPI.constants';
+import {STRABO_APIS} from './urls.constants';
 
 const useServerRequests = (props) => {
   const dispatch = useDispatch();

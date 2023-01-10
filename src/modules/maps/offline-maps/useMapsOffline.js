@@ -5,7 +5,8 @@ import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES, STRABO_APIS} from '../../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../../services/directories.constants';
+import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';

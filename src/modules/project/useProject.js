@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 import {useToast} from 'react-native-toast-notifications';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';

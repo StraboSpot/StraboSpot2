@@ -1,6 +1,6 @@
 import {Dimensions} from 'react-native';
 
-import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
+import {STRABO_APIS} from '../../services/urls.constants';
 
 const {width, height} = Dimensions.get('window');
 
