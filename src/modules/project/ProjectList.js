@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {AppState, FlatList, Text, View} from 'react-native';
+import {AppState, FlatList, Platform, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,6 +13,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   clearedStatusMessages,
   setBackupOverwriteModalVisible,
@@ -31,7 +32,7 @@ const ProjectList = (props) => {
   const dispatch = useDispatch();
   const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
-  const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
+  const [externalStorageProjects, setExternalStorageProjects] = useState([]); //For Android Downloads folder/
   const [projectsArr, setProjectsArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -55,14 +56,8 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
-    setDeletingProjectStatus('');
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
-
-  const closeModal = () => {
-    setIsDeleteConformationModalVisible(false);
-    setErrorMessage('');
-  };
 
   const handleStateChange = async (state) => {
     state === 'active'
@@ -76,7 +71,15 @@ const ProjectList = (props) => {
     if (props.source === 'server') {
       projectsResponse = await useProject.getAllServerProjects();
     }
-    else if (props.source === 'device') projectsResponse = await useProject.getAllDeviceProjects();
+    else if (props.source === 'device') {
+      projectsResponse = await useProject.getAllDeviceProjects();
+      if (Platform.OS === 'android') {
+        const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
+        console.log(exists);
+        const externalStorageProjectsResponse = await useProject.getAllExternalStorageProjects();
+        console.log('Exported Projects', externalStorageProjectsResponse);
+      }
+    }
     if (!projectsResponse) {
       if (props.source === 'device') {
         dispatch(doesBackupDirectoryExist(false));
@@ -184,10 +187,15 @@ const ProjectList = (props) => {
     );
   };
 
+  const renderExternalProjectsItem = () => {
+
+  };
+
   const renderProjectsList = () => {
     if (!isEmpty(userData)) {
       return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 2}}>
+          <SectionDivider dividerText={'Device Projects'}/>
           <FlatList
             keyExtractor={item => item.id.toString()}
             data={projectsArr.projects}
@@ -212,15 +220,25 @@ const ProjectList = (props) => {
     }
   };
 
-  return (
-    <React.Fragment>
-      <View style={{alignSelf: 'center'}}>
-        {/*<SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>*/}
+  const renderProjectListAndroidsDownloads = () => {
+    return (
+      <View style={{flex: 2}}>
+        <SectionDivider dividerText={'Download Folder Projects'}/>
+        <FlatList
+          data={externalStorageProjects}
+          renderItem={({item}) => renderExternalProjectsItem(item)}
+        />
       </View>
+    );
+  };
+
+  return (
+    <View style={{flex: 1}}>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
+      {Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}
       {!isEmpty(currentProject) && renderProjectOptionsModal()}
-    </React.Fragment>
+    </View>
   );
 };
 

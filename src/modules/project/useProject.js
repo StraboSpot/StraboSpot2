@@ -188,6 +188,10 @@ const useProject = () => {
     return Promise.resolve(deviceProject);
   };
 
+  const getAllExternalStorageProjects = () => {
+
+  }
+
   const getAllServerProjects = async () => {
     try {
       return await serverRequests.getMyProjects(user.encoded_login);
@@ -262,6 +266,7 @@ const useProject = () => {
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
+    getAllExternalStorageProjects: getAllExternalStorageProjects,
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     makeDatasetCurrent: makeDatasetCurrent,

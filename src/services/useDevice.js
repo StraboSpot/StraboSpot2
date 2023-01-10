@@ -1,4 +1,4 @@
-import {Linking} from 'react-native';
+import {Linking, Platform} from 'react-native';
 
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
@@ -91,7 +91,8 @@ const useDevice = () => {
     return imageExists;
   };
 
-  const doesDeviceBackupDirExist = async (subDirectory) => {
+  const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
+    if (isExternal && Platform.OS === 'android') return await RNFS(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
     if (subDirectory !== undefined) return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     else {
       const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
