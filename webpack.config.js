@@ -9,6 +9,7 @@ const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   '@react-native-community/netinfo',
+  '@rnmapbox/maps',
   '@sentry/react-native',
   'react-native',
   'react-native-gesture-handler',
