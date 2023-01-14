@@ -4,6 +4,7 @@ import {Platform, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import RNFS from 'react-native-fs';
 
+import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
@@ -21,15 +22,30 @@ const MyStraboSpot = (props) => {
 
     useEffect(() => {
       console.log('UE MyStraboSpot []');
+      checkBackupDir();
 
-      async function dirExists() {
+    }, []);
+
+    const checkBackupDir = async () => {
+      try {
         const exists = await useDevice.doesDeviceBackupDirExist();
         console.log('Backup Directory Exists: ', exists);
         console.log('Backup Directory Path: ', RNFS);
+        if (Platform.OS === 'android') {
+          await checkAndroidDownloadDir();
+        }
+        console.log('ALL DONE');
       }
+      catch (err) {
+        console.error('Error Checking If Backup Dir Exists', err);
+      }
+    };
 
-      dirExists().catch('Error Checking If Backup Dir Exists');
-    }, []);
+    const checkAndroidDownloadDir = async () => {
+      const exists = await useDevice.doesDeviceBackupDirExist(undefined, true);
+      if (!exists) await useDevice.makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+
+    };
 
     const renderSectionView = () => {
       switch (showSection) {
@@ -41,6 +57,7 @@ const MyStraboSpot = (props) => {
               <ProjectTypesButtons
                 onLoadProjectsFromServer={() => setShowSection('serverProjects')}
                 onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
+                onLoadProjectsFromDownloads={() => setShowSection('exportedProjects')}
                 onStartNewProject={() => setShowSection('new')}/>
             </View>
           );
@@ -72,6 +89,12 @@ const MyStraboSpot = (props) => {
                   }}
                 />}
               </View>
+            </View>
+          );
+        case 'exportedProjects':
+          return (
+            <View style={{flex: 1}}>
+              <ProjectList source={'exports'}/>
             </View>
           );
         case 'new':

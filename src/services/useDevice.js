@@ -1,14 +1,15 @@
 import {Linking, Platform} from 'react-native';
 
+import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
-import {doesBackupDirectoryExist} from '../modules/project/projects.slice';
+import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import {APP_DIRECTORIES} from './deviceAndAPI.constants';
 
 
-const useDevice = () => {
+const useDevice = (props) => {
   const dispatch = useDispatch();
 
   const copyFiles = async (source, target) => {
@@ -22,13 +23,13 @@ const useDevice = () => {
   };
 
   const createProjectDirectories = async () => {
-    await RNFS.mkdir(APP_DIRECTORIES.APP_DIR);
+    await makeDirectory(APP_DIRECTORIES.APP_DIR);
     console.log('App Directory Created');
-    await RNFS.mkdir(APP_DIRECTORIES.BACKUP_DIR);
+    await makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
     console.log('Backup Directory Created');
-    await RNFS.mkdir(APP_DIRECTORIES.TILES_DIRECTORY);
+    await makeDirectory(APP_DIRECTORIES.TILES_DIRECTORY);
     console.log('Tiles Directory Created');
-    await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE);
+    await makeDirectory(APP_DIRECTORIES.TILE_CACHE);
     console.log('Tile Cache Directory Created');
   };
 
@@ -92,12 +93,31 @@ const useDevice = () => {
   };
 
   const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
-    if (isExternal && Platform.OS === 'android') return await RNFS(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-    if (subDirectory !== undefined) return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+    if (isExternal && Platform.OS === 'android') {
+      console.log('Checking Downloads dir', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      dispatch(doesDownloadsDirectoryExist(exists));
+    }
+    if (subDirectory !== undefined && !isExternal) return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     else {
       const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
       dispatch(doesBackupDirectoryExist(exists));
       return exists;
+    }
+  };
+
+  const getExternalProject = async () => {
+    try {
+      const res = await DocumentPicker.pick({allowMultiSelection: true});
+      console.log('External Document', res);
+      const json = await RNFS.readFile(res[0].uri);
+      console.log('JSON', JSON.parse(json));
+      return JSON.parse(json);
+      // const files = await RNFS.readdir(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      // console.log(files);
+    }
+    catch (err) {
+      console.error('Error getting external project', err);
     }
   };
 
@@ -119,11 +139,18 @@ const useDevice = () => {
 
   const makeDirectory = (directory) => {
     return RNFS.mkdir(directory)
-      .then(() => 'DIRECTORY HAS BEEN CREATED')
+      .then(() => `DIRECTORY ${directory} HAS BEEN CREATED`)
       .catch((err) => {
         console.error('Unable to create directory', directory, 'ERROR:', err);
         throw Error;
       });
+  };
+
+  const readDirectory = async (directory) => {
+    let files = [];
+    files = await RNFS.readdir(directory);
+    console.log('Directory files', files);
+    return files;
   };
 
   const readDirectoryForMapTiles = async (mapId) => {
@@ -173,8 +200,10 @@ const useDevice = () => {
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,
+    getExternalProject: getExternalProject,
     openURL: openURL,
     makeDirectory: makeDirectory,
+    readDirectory: readDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMapFiles: readDirectoryForMapFiles,
     writeFileToDevice: writeFileToDevice,

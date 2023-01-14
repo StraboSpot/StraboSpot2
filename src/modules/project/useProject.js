@@ -3,6 +3,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';
@@ -45,6 +46,7 @@ const useProject = () => {
   const [serverRequests] = useServerRequests();
   const toast = useToast();
   const useDownload = useDownloadHook();
+  const useDevice = useDeviceHook();
   const useImport = useImportHook();
 
   const addDataset = async (name) => {
@@ -167,30 +169,40 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const getAllDeviceProjects = async () => {
-    const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
-      console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
-      if (res) {
-        return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
-          console.log('Files on device', files);
-          let id = 0;
-          if (!isEmpty(files)) {
-            const deviceFiles = files.map((file) => {
-              return {id: id++, fileName: file};
-            });
-            return Promise.resolve({projects: deviceFiles});
-          }
-          else return Promise.resolve([]);
-        });
-      }
-      else return res;
-    });
-    return Promise.resolve(deviceProject);
+  const getAllDeviceProjects = async (directory) => {
+    // const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
+    //   console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
+    //   if (res) {
+    //     return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
+    //       console.log('Files on device', files);
+    //       let id = 0;
+    //       if (!isEmpty(files)) {
+    //         const deviceFiles = files.map((file) => {
+    //           return {id: id++, fileName: file};
+    //         });
+    //         return Promise.resolve({projects: deviceFiles});
+    //       }
+    //       else return Promise.resolve([]);
+    //     });
+    //   }
+    //   else return res;
+    // });
+    // return Promise.resolve(deviceProject);
+    let id = 0;
+    const exists = await useDevice.doesDeviceBackupDirExist(undefined, true);
+    if (exists) {
+      const res = await useDevice.readDirectory(directory);
+      const deviceFiles = res.map((file) => {
+        return {id: id++, fileName: file};
+      });
+      return {projects: deviceFiles};
+    }
+    else console.log('Does not exist');
   };
 
   const getAllExternalStorageProjects = () => {
 
-  }
+  };
 
   const getAllServerProjects = async () => {
     try {

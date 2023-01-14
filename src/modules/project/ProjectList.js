@@ -4,6 +4,8 @@ import {AppState, FlatList, Platform, Text, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
@@ -40,6 +42,8 @@ const ProjectList = (props) => {
   const [selectedProjectToDelete, setSelectedProjectToDelete] = useState(null);
   const [passwordInputVal, setPasswordTextInputVal] = useState('');
 
+
+  const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
   const useImport = useImportHook();
@@ -56,6 +60,7 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
+    if (props.source === 'exports') getExternalAndroidProject().then(console.log('OK got external Android projects'));
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
 
@@ -72,14 +77,18 @@ const ProjectList = (props) => {
       projectsResponse = await useProject.getAllServerProjects();
     }
     else if (props.source === 'device') {
-      projectsResponse = await useProject.getAllDeviceProjects();
-      if (Platform.OS === 'android') {
-        const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
-        console.log(exists);
-        const externalStorageProjectsResponse = await useProject.getAllExternalStorageProjects();
-        console.log('Exported Projects', externalStorageProjectsResponse);
-      }
+      projectsResponse = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
+      console.log('Device Files', projectsResponse);
     }
+    // if (Platform.OS === 'android' && props.source === 'exports') {
+    //   // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
+    //   // console.log(exists);
+    //   // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
+    //   //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+    //   const externalStorageProjectsResponse = await useDevice.getExternalProject();
+    //   // setProjectsArr(externalStorageProjectsResponse);
+    //   console.log('Exported Projects', externalStorageProjectsResponse);
+    // }
     if (!projectsResponse) {
       if (props.source === 'device') {
         dispatch(doesBackupDirectoryExist(false));
@@ -94,6 +103,18 @@ const ProjectList = (props) => {
       console.log('List of Projects:', projectsResponse);
       setProjectsArr(projectsResponse);
       setLoading(false);
+    }
+  };
+
+  const getExternalAndroidProject = async () => {
+    if (Platform.OS === 'android' && props.source === 'exports') {
+      // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
+      // console.log(exists);
+      // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
+      //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      const externalStorageProjectsResponse = await useDevice.getExternalProject();
+      // setProjectsArr(externalStorageProjectsResponse);
+      console.log('Exported Projects', externalStorageProjectsResponse);
     }
   };
 
@@ -179,7 +200,7 @@ const ProjectList = (props) => {
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
-            {props.source === 'device' ? item.fileName : item.name}
+            {props.source === 'server' ? item.name : item.fileName}
           </ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron/>
@@ -187,15 +208,11 @@ const ProjectList = (props) => {
     );
   };
 
-  const renderExternalProjectsItem = () => {
-
-  };
-
   const renderProjectsList = () => {
     if (!isEmpty(userData)) {
       return (
         <View style={{flex: 2}}>
-          <SectionDivider dividerText={'Device Projects'}/>
+          <SectionDivider dividerText={props.source === 'device' ? 'Saved Projects' : 'Projects to Import  '}/>
           <FlatList
             keyExtractor={item => item.id.toString()}
             data={projectsArr.projects}
@@ -220,23 +237,23 @@ const ProjectList = (props) => {
     }
   };
 
-  const renderProjectListAndroidsDownloads = () => {
-    return (
-      <View style={{flex: 2}}>
-        <SectionDivider dividerText={'Download Folder Projects'}/>
-        <FlatList
-          data={externalStorageProjects}
-          renderItem={({item}) => renderExternalProjectsItem(item)}
-        />
-      </View>
-    );
-  };
+  // const renderProjectListAndroidsDownloads = () => {
+  //   return (
+  //     <View style={{flex: 2}}>
+  //       <SectionDivider dividerText={'Download Folder Projects'}/>
+  //       <FlatList
+  //         data={externalStorageProjects}
+  //         renderItem={({item}) => renderExternalProjectsItem(item)}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   return (
     <View style={{flex: 1}}>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
-      {Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}
+      {/*{Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}*/}
       {!isEmpty(currentProject) && renderProjectOptionsModal()}
     </View>
   );
