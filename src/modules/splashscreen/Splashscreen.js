@@ -31,8 +31,8 @@ const Splashscreen = (props) => {
         {props.children}
       </View>
       <Text style={splashscreenStyles.version}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
-      <Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},
-        W: {windowDimensions.width} </Text>
+      {/*<Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},*/}
+      {/*  W: {windowDimensions.width} </Text>*/}
     </ImageBackground>
   );
 };
