@@ -243,7 +243,10 @@ const ProjectList = (props) => {
     if (!isEmpty(userData)) {
       return (
         <View style={{flex: 1}}>
-          <Text style={{margin: 10, textAlign: 'center'}}>Long press to delete project</Text>
+          <Text style={{
+            margin: 10,
+            textAlign: 'center',
+          }}>{props.source === 'device' ? 'Long press to delete project' : 'To delete a project visit www.StraboSpot.org'}</Text>
           <FlatList
             keyExtractor={item => item.id.toString()}
             data={projectsArr.projects}
