@@ -224,7 +224,7 @@ const ProjectList = (props) => {
       <ListItem
         key={props.source === 'device' ? item.id : item.id}
         onPress={() => selectProject(item)}
-        onLongPress={() => initializeDelete(item)}
+        onLongPress={() => props.source === 'device' && initializeDelete(item)}
         containerStyle={commonStyles.listItem}
         disabled={!isOnline.isConnected && props.source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
