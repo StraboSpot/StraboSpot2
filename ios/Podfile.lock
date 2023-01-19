@@ -74,7 +74,7 @@ PODS:
   - glog (0.3.5)
   - hermes-engine (0.69.0)
   - libevent (2.1.12)
-  - lottie-ios (3.4.3)
+  - lottie-ios (3.4.4)
   - lottie-react-native (5.1.4):
     - lottie-ios (~> 3.4.0)
     - React-Core
@@ -725,7 +725,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
+  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: f98dec9f199b7b51db586fe0140f509fabd5cc54
   FBReactNativeSpec: 56c4cf7cce9f95fd386001dba21437b7d6b33993
   Flipper: 62fd5d6f93d2d7b732ed77197f2910bd9395cbca
@@ -738,10 +738,10 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: 30acf6817ffbbe8cdadbcadb5711b82aef0c3883
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 476ee3e89abb49e07f822b48323c51c57124b572
+  glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   hermes-engine: 03851318b18b534b671ea435fad2202154135c72
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 9ae750cdc7820fecbd3c2f0cfc493038208fcdc4
+  lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
   MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
@@ -792,7 +792,7 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
-  RNReanimated: 44fc7bfc7f2c63ba76e93f8ceaaecdd59dce902f
+  RNReanimated: 2cf7451318bb9cc430abeec8d67693f9cf4e039c
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
   RNSentry: 49ac40f818ad2bb65f3578d400e2474767e12a5b
