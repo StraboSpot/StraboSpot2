@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import {setLoadingStatus} from '../home/home.slice';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
@@ -31,14 +32,16 @@ const ImagesViewPage = () => {
   }, [images]);
 
   const getImagesFromCameraRoll = async () => {
-    useImages.getImagesFromCameraRoll().then((res) => {
-      console.log(res);
-      toast.show(`${res} image saved!`,
-        {
-          type: 'success',
-          duration: 1000,
-        });
-    });
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
+    const res = await useImages.getImagesFromCameraRoll();
+    console.log(res);
+    dispatch(setLoadingStatus({view: 'home', bool: false}));
+    toast.show(`${res} image saved!`,
+      {
+        type: 'success',
+        duration: 1500,
+      });
+    console.log(res);
   };
 
   const getImageThumbnailURIs = async () => {
