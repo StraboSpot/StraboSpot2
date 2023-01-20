@@ -653,7 +653,7 @@ const Home = () => {
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
       <WarningModal/>
       {/*------------------------*/}
-      {isHomeLoading && <LoadingSpinner/>}
+      <LoadingSpinner isLoading={isHomeLoading}/>
       {renderNotebookPanel()}
       {MainMenu}
       {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
