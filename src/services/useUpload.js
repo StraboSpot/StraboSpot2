@@ -191,14 +191,6 @@ const useUpload = () => {
     console.log(datasetName + ': Looking for Images to Upload in Spots...', spots);
     dispatch(addedStatusMessage('Looking for images to upload in spots...'));
 
-    await Promise.all(
-      imagesFound.map(async (image) => {
-        await shouldUploadImage(image);
-      }),
-    );
-    if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
-    await deleteTempImagesFolder();
-
     // Check if image is already on server and push image into either array imagesOnServer or imagesToUpload
     const shouldUploadImage = async (imageProps) => {
       try {
@@ -302,6 +294,17 @@ const useUpload = () => {
     };
     // Gather all the images in spots.
     spots.forEach(spot => spot?.properties?.images?.forEach(image => imagesFound.push(image)));
+    console.log('SPOT IMAGES', imagesFound);
+
+    await Promise.all((res, rej) => {
+        imagesFound.map(async (image) => {
+          await shouldUploadImage(image);
+          // console.log('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
+        }), res('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
+      },
+    );
+    if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
+    await deleteTempImagesFolder();
   };
 
   const uploadProfile = async (userValues) => {
