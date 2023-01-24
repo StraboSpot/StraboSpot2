@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
@@ -46,11 +47,13 @@ const App = () => {
   const [isUpdateNeeded, setIsUpdateNeeded] = useState(false);
 
   useEffect(() => {
-    console.log(VersionCheck.getPackageName());        // com.reactnative.app
-    console.log(VersionCheck.getCurrentBuildNumber()); // 10
-    console.log(VersionCheck.getCurrentVersion());     // 0.1.1
-    VersionCheck.getStoreUrl({appID: 1555903455}).then(storeUrl => console.log('Store URL', storeUrl));
-    VersionCheck.needUpdate({currentVersion: version}).then(update => setIsUpdateNeeded(update?.isNeeded));
+    if (Platform.OS === 'ios') {
+      console.log(VersionCheck.getPackageName());        // com.reactnative.app
+      console.log(VersionCheck.getCurrentBuildNumber()); // 10
+      console.log(VersionCheck.getCurrentVersion());     // 0.1.1
+      VersionCheck.getStoreUrl({appID: 1555903455}).then(storeUrl => console.log('Store URL', storeUrl));
+      VersionCheck.needUpdate({currentVersion: version}).then(update => setIsUpdateNeeded(update?.isNeeded));
+    }
   }, []);
 
   return (
