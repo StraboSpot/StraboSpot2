@@ -301,7 +301,8 @@ const useImages = () => {
         });
       }
       catch (e) {
-        reject();
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+        reject(e);
       }
     });
   };
