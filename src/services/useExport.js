@@ -38,7 +38,7 @@ const useExport = () => {
 
   const backupProjectToDevice = async (exportedFileName) => {
     await gatherDataForBackup(exportedFileName);
-    // await gatherOtherMapsForDistribution(exportedFileName);
+    await gatherOtherMapsForDistribution(exportedFileName);
     await gatherMapsForDistribution(dataForExport, exportedFileName);
     await gatherImagesForDistribution(dataForExport, exportedFileName);
     console.log('Images Resolve Message:');

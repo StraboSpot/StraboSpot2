@@ -655,7 +655,7 @@ const Home = () => {
       <UploadProgressModal/>
       <WarningModal/>
       {/*------------------------*/}
-      {isHomeLoading && <LoadingSpinner/>}
+      <LoadingSpinner isLoading={isHomeLoading}/>
       {renderNotebookPanel()}
       {MainMenu}
       {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}

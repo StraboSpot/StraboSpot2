@@ -1,12 +1,15 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
+import VersionCheck from 'react-native-version-check';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
+import {version} from './package.json';
 import Routes from './src/routes/Routes';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
@@ -41,12 +44,24 @@ const App = () => {
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
+  const [isUpdateNeeded, setIsUpdateNeeded] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      console.log(VersionCheck.getPackageName());        // com.reactnative.app
+      console.log(VersionCheck.getCurrentBuildNumber()); // 10
+      console.log(VersionCheck.getCurrentVersion());     // 0.1.1
+      VersionCheck.getStoreUrl({appID: 1555903455}).then(storeUrl => console.log('Store URL', storeUrl));
+      VersionCheck.needUpdate({currentVersion: version}).then(update => setIsUpdateNeeded(update?.isNeeded));
+    }
+  }, []);
+
   return (
     <Toast>
       <Provider store={store}>
         <PersistGate loading={<Loading/>} persistor={persistor}>
           {/*<Sentry.TouchEventBoundary>*/}
-          <Routes/>
+          <Routes updateNeeded={isUpdateNeeded}/>
           {/*</Sentry.TouchEventBoundary>*/}
         </PersistGate>
       </Provider>

@@ -48,7 +48,7 @@ const useUpload = () => {
     }
     catch (err) {
       dispatch(addedStatusMessage(`Upload Failed!\n\n ${err}`));
-      console.error('Upload Failed!', err.toString());
+      console.error('Upload Failed!', err);
       return true;
     }
   };
@@ -75,7 +75,7 @@ const useUpload = () => {
       console.error(dataset.name + ': Error Uploading Dataset Properties...', err);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`Uploading Dataset Properties!\n ${err}`));
-      throw Error;
+      throw Error(err);
     }
   };
 
@@ -176,57 +176,20 @@ const useUpload = () => {
         Alert.alert('Fixed Spot in Another Dataset Error',
           'Spot removed from ' + dataset.name + '. Please try uploading again.');
       }
-      throw Error;
+      throw Error(err);
     }
   };
 
+
   const uploadImages = async (spots, datasetName) => {
+    let imagesFound = [];
     let imagesOnServer = [];
     let imagesToUpload = [];
     let imagesUploadedCount = 0;
     let imagesUploadFailedCount = 0;
-    let iSpotLoop = 0;
-    let iImagesLoop = 0;
 
     console.log(datasetName + ': Looking for Images to Upload in Spots...', spots);
     dispatch(addedStatusMessage('Looking for images to upload in spots...'));
-
-    const areMoreImages = (spot) => {
-      return spot.properties && spot.properties.images && iImagesLoop < spot.properties.images.length;
-    };
-
-    const areMoreSpots = () => {
-      return iSpotLoop + 1 < spots.length;
-    };
-
-    // Synchronously loop through spots and images finding images to upload
-    const makeNextSpotRequest = async (spot) => {
-      if (areMoreImages(spot)) {
-        await shouldUploadImage(spot.properties.images[iImagesLoop]);
-        await makeNextSpotRequest(spots[iSpotLoop]);
-      }
-      else if (areMoreSpots()) {
-        iSpotLoop++;
-        iImagesLoop = 0;
-        await makeNextSpotRequest(spots[iSpotLoop]);
-      }
-      else {
-        if (imagesToUpload.length === 0) {
-          let msgText = 'There are no NEW images to upload.';
-          if (imagesOnServer.length === 0) msgText = 'There are no images in spots.';
-          console.log(msgText);
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage(msgText));
-        }
-        else {
-          const msgText = `Found ${imagesToUpload.length} image${(imagesToUpload.length === 1 ? '' : 's')} to upload.`;
-          console.log(msgText, imagesToUpload);
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage(msgText));
-        }
-        if (imagesOnServer.length > 0) console.log(datasetName + ': Images Already on Server', imagesOnServer);
-      }
-    };
 
     // Check if image is already on server and push image into either array imagesOnServer or imagesToUpload
     const shouldUploadImage = async (imageProps) => {
@@ -241,9 +204,9 @@ const useUpload = () => {
         else imagesOnServer.push(imageProps);
       }
       catch (err) {
+        console.error('Error at shouldUploadImage()', err);
         imagesToUpload.push(imageProps);
       }
-      iImagesLoop++;
     };
 
     // Start uploading image by getting the image file, downsizing the image and then uploading
@@ -330,7 +293,17 @@ const useUpload = () => {
         console.error(datasetName + ': Error Deleting Temp Images Folder.');
       }
     };
-    if (spots.length > 0) await makeNextSpotRequest(spots[0]);
+    // Gather all the images in spots.
+    spots.forEach(spot => spot?.properties?.images?.forEach(image => imagesFound.push(image)));
+    console.log('SPOT IMAGES', imagesFound);
+
+    await Promise.all((res, rej) => {
+        imagesFound.map(async (image) => {
+          await shouldUploadImage(image);
+          // console.log('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
+        }), res('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
+      },
+    );
     if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
     await deleteTempImagesFolder();
   };

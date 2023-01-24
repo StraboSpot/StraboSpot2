@@ -16,6 +16,7 @@ import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 import com.strabospot2.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import io.xogus.reactnative.versioncheck.RNVersionCheckPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
           new PDFViewPackage();
           new RNFSPackage();
+          new RNVersionCheckPackage();
           return packages;
         }
         @Override
