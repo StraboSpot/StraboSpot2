@@ -33,7 +33,17 @@ const babelLoaderConfiguration = {
     options: {
       cacheDirectory: true,
       presets,
-      plugins,
+      plugins: [
+        'react-native-web',
+        [
+          'module-resolver',
+          {
+            alias: {
+              '^react-native$': 'react-native-web',
+            },
+          },
+        ],
+        ...plugins],
     },
   },
 };

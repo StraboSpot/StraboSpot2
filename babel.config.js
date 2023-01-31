@@ -6,12 +6,6 @@ module.exports = {
     },
   },
   plugins: [
-    'react-native-web',
-    ['module-resolver', {
-      alias: {
-        '^react-native$': 'react-native-web',
-      },
-    }],
     '@babel/plugin-proposal-export-namespace-from',
     'react-native-reanimated/plugin',
   ],
