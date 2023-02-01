@@ -1,6 +1,7 @@
 import {Animated, Dimensions, Easing, findNodeHandle, PixelRatio, Platform, UIManager} from 'react-native';
 
 import 'react-native-get-random-values';
+import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
 const {height: windowHeight} = Dimensions.get('window');
@@ -148,6 +149,12 @@ export const getFontSizeByWindowWidth = (window, fontSize) => {
 function getOrientation(window) {
   return window.width < window.height ? 'portrait' : 'landscape';
 }
+
+export const getTimeStamp = () => {
+  const time = moment(new Date()).format('YYYY-MM-DD_hmma');
+  console.log(time);
+  return time;
+};
 
 // Truncate the decimal part of a number to 5 digits and return as a string
 export const truncDecimal = (num) => {
