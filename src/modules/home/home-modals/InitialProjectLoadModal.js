@@ -1,15 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Icon} from 'react-native-elements';
 import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../../services/deviceAndAPI.constants';
+import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';
+import useImagesHook from '../../images/useImages';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
 import NewProject from '../../project/NewProjectForm';
@@ -24,9 +28,6 @@ import {setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
-  const welcomeTitle = 'Welcome to StraboSpot';
-  const serverTitle = 'Projects on Server';
-  const deviceTitle = 'Projects on Device';
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
@@ -37,7 +38,12 @@ const InitialProjectLoadModal = (props) => {
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
   const [source, setSource] = useState('');
+  const [importedProjectData, setImportedProjectData] = useState({});
+  const [importedImageFiles, setImportedImageFiles] = useState([]);
 
+  const [useImages] = useImagesHook();
+  const useDevice = useDeviceHook();
+  const toast = useToast();
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
@@ -48,7 +54,7 @@ const InitialProjectLoadModal = (props) => {
 
   useEffect(() => {
     console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
-    dispatch(setStatusMessageModalTitle(welcomeTitle));
+    dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
   }, [isOnline]);
 
   const goBack = () => {
@@ -58,7 +64,7 @@ const InitialProjectLoadModal = (props) => {
       dispatch(clearedSpots());
       setVisibleInitialSection(source === 'device' ? 'deviceProjects' : 'serverProjects');
       dispatch(setStatusMessageModalTitle(source === 'device'
-        ? deviceTitle : source === 'server' ? serverTitle : welcomeTitle));
+        ? 'Projects on Device' : source === 'server' ? 'Projects on Server' : 'Welcome to StraboSpot'));
     }
     else if (visibleProjectSection === 'currentDatasetSelection') {
       setVisibleProjectSection('activeDatasetsList');
@@ -68,7 +74,7 @@ const InitialProjectLoadModal = (props) => {
   const goBackToMain = () => {
     if (visibleInitialSection !== 'none') {
       setVisibleInitialSection('none');
-      dispatch(setStatusMessageModalTitle(welcomeTitle));
+      dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
     }
   };
 
@@ -78,9 +84,46 @@ const InitialProjectLoadModal = (props) => {
         <ProjectTypesButtons
           onLoadProjectsFromServer={() => handleOnPress('serverProjects')}
           onLoadProjectsFromDevice={() => handleOnPress('deviceProjects')}
+          onLoadProjectsFromDownloads={() => handleOnPress('exportedProjects')}
           onStartNewProject={() => handleOnPress('project')}/>
       </View>
     );
+  };
+
+  const getExportedAndroidProject = async () => {
+    try {
+      const res = await useDevice.getExternalProjectData();
+      console.log('EXTERNAL PROJECT', res);
+      if (!isEmpty(res)) {
+        dispatch(setStatusMessageModalTitle('Import Project'));
+        setImportedProjectData(res);
+        setVisibleInitialSection('importData');
+      }
+    }
+    catch (err) {
+      if (err.code === 'DOCUMENT_PICKER_CANCELED') {
+        console.warn(err.message);
+        toast.show(err.message);
+      }
+      else {
+        console.error('Error picking document!');
+      }
+    }
+
+  };
+
+  const getImageFiles = async () => {
+    let imageJSONArr = [];
+    const images = await useDevice.getExternalImageFiles();
+    console.log('Images', images);
+    images.map(async (image) => {
+      await useImages.getImageFromImport(image);
+      // const imageJSON = await useImages.getImageFromImport(image.uri);
+      // console.log('IMAGE JSON', imageJSON);
+      // imageJSONArr.push(imageJSON);
+      // console.log(imageJSONArr);
+    });
+    // setImportedImageFiles(images);
   };
 
   const handleOnPress = (type) => {
@@ -95,13 +138,16 @@ const InitialProjectLoadModal = (props) => {
         setVisibleInitialSection('deviceProjects');
         dispatch(setStatusMessageModalTitle('Projects on Device'));
         break;
+      case 'exportedProjects':
+        getExportedAndroidProject().catch(err => console.error('Error getting exported project', err));
+        break;
       case 'project':
         setVisibleInitialSection('project');
         dispatch(setStatusMessageModalTitle('Start New Project'));
         break;
       default:
         setVisibleInitialSection('none');
-        dispatch(setStatusMessageModalTitle(welcomeTitle));
+        dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
     }
 
 
@@ -114,9 +160,6 @@ const InitialProjectLoadModal = (props) => {
           <Button
             onPress={() => goBack()}
             type={'clear'}
-            title={'Back'}
-            // buttonStyle={[commonStyles.standardButton]}
-            // titleStyle={commonStyles.standardButtonText}
           />
           <Button
             onPress={() => props.closeModal()}
@@ -171,7 +214,6 @@ const InitialProjectLoadModal = (props) => {
           <Button
             onPress={() => goBack()}
             type={'clear'}
-            title={'Back'}
             // buttonStyle={[commonStyles.standardButton]}
             titleStyle={commonStyles.standardButtonText}
           />
@@ -200,7 +242,6 @@ const InitialProjectLoadModal = (props) => {
           <View style={{alignContent: 'center', marginTop: 10}}>
             <Button
               onPress={() => goBackToMain()}
-              title={'Back'}
               type={'clear'}
               icon={
                 <Icon
@@ -234,7 +275,6 @@ const InitialProjectLoadModal = (props) => {
         <View style={{alignContent: 'center', marginTop: 10}}>
           <Button
             onPress={() => goBackToMain()}
-            title={'Back'}
             type={'clear'}
             icon={
               <Icon
@@ -258,6 +298,82 @@ const InitialProjectLoadModal = (props) => {
     }
   };
 
+  const renderImagesToImport = () => {
+
+    return (
+      <View style={{}}>
+        <Button
+          onPress={() => goBackToMain()}
+          type={'clear'}
+          // title={'Back'}
+          titleStyle={commonStyles.standardButtonText}
+          containerStyle={{alignItems: 'flex-start'}}
+          icon={
+            <Icon
+              name={'ios-arrow-back'}
+              type={'ionicon'}
+              color={'black'}
+              iconStyle={projectStyles.buttons}
+              size={25}
+            />
+          }
+        />
+        <View style={{alignItems: 'flex-start'}}>
+          <Text style={{}}>Import Project Images</Text>
+        </View>
+        <Button
+          title={'Save Images to Device'}
+          type={'clear'}
+          onPress={() => verifyFileExistence('images')}
+        />
+      </View>
+    );
+  };
+
+  const renderProjectToImport = () => {
+    const spotCount = Object.values(importedProjectData?.spotsDb).length;
+    const datasetCount = Object.values(importedProjectData?.projectDb?.datasets).length;
+    return (
+      <View style={{padding: 10}}>
+        <Button
+          onPress={() => goBackToMain()}
+          type={'clear'}
+          // title={'Back'}
+          titleStyle={commonStyles.standardButtonText}
+          containerStyle={{alignItems: 'flex-start'}}
+          icon={
+            <Icon
+              name={'ios-arrow-back'}
+              type={'ionicon'}
+              color={'black'}
+              iconStyle={projectStyles.buttons}
+              size={25}
+            />
+          }
+        />
+        <View style={{alignItems: 'center'}}>
+          {/*<View style={{alignItems: 'flex-start', margin: 10}}>*/}
+          <Text style={{}}>Selected Project to
+            Import: {importedProjectData?.projectDb?.project?.description?.project_name}</Text>
+          <Text style={{}}>Total Datasets: {datasetCount}</Text>
+          <Text style={{textAlign: 'center'}}>Total Spots: {spotCount}</Text>
+          <Button
+            title={'Get Images'}
+            type={'clear'}
+            onPress={() => getImageFiles()}
+          />
+          <Text>Selected Images: {!isEmpty(importedImageFiles) ? importedImageFiles.length : 0}</Text>
+        </View>
+        <Button
+          title={'Save to Device'}
+          type={'clear'}
+          containerStyle={{marginTop: 20}}
+          onPress={() => verifyFileExistence('data')}
+        />
+      </View>
+    );
+  };
+
   const renderSectionView = () => {
     switch (visibleInitialSection) {
       case 'serverProjects':
@@ -272,6 +388,14 @@ const InitialProjectLoadModal = (props) => {
         return (
           renderStartNewProject()
         );
+      case 'importData':
+        return (
+          renderProjectToImport()
+        );
+      case 'importImages':
+        return (
+          renderImagesToImport()
+        );
       default:
         return (
           renderProjectTypesButtons()
@@ -284,7 +408,6 @@ const InitialProjectLoadModal = (props) => {
       <React.Fragment>
         <Button
           onPress={() => goBackToMain()}
-          title={'Back'}
           type={'clear'}
           icon={
             <Icon
@@ -330,6 +453,52 @@ const InitialProjectLoadModal = (props) => {
         </View>
       </View>
     );
+  };
+
+  const saveToDevice = async (fileName) => {
+    try {
+      await useDevice.writeFileToDevice(APP_DIRECTORIES.BACKUP_DIR + fileName, 'data.json', importedProjectData);
+      console.log('Get Images?');
+      setVisibleInitialSection('importImages');
+    }
+    catch (err) {
+      console.error('Error Writing Project Data', err);
+      setVisibleInitialSection('');
+      // Alert.alert('Error:', 'There is an issue writing the project data \n' + err.toString());
+    }
+
+  };
+
+  const verifyFileExistence = async (dataType) => {
+    if (dataType === 'data') {
+      // const time = getTimeStamp();
+      const fileName = `${importedProjectData.projectDb.project.description.project_name}`;
+      const fileExists = await useDevice.doesBackupFileExist(fileName);
+      if (fileExists) {
+        console.log('File already exits!');
+        Alert.alert('File Exists', 'A file with the name ' + fileName + ' exists already.  Saving'
+          + ' this will overwrite the current one.',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => goBackToMain(),
+              style: 'cancel',
+            },
+            {
+              text: 'Continue',
+              onPress: async () => saveToDevice(fileName),
+              style: 'cancel',
+            },
+          ]);
+      }
+      else {
+        await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR + fileName);
+        await saveToDevice(fileName);
+      }
+    }
+    else if (dataType === 'images') {
+
+    }
   };
 
   const displayFirstName = () => {
