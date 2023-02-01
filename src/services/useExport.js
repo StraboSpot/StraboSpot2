@@ -1,4 +1,3 @@
-import {useState} from 'react';
 import {PermissionsAndroid} from 'react-native';
 
 import moment from 'moment';
@@ -54,7 +53,7 @@ const useExport = () => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
     const filePath = APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json';
-    const destinationDir = APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + ` (exported- ${dateAndTime})`;
+    const destinationDir = APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + `(exported-${dateAndTime})`;
     await requestWriteDirectoryPermission();
     console.log(localFileName);
     const file = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
@@ -68,12 +67,12 @@ const useExport = () => {
       await RNFS.copyFile(filePath, `${destinationDir}/data.json`);
       console.log('Files Copied');
       if (includeImages) {
-        await gatherImagesForDistribution(exportedJSON, filename + ` (exported- ${dateAndTime})`,
+        await gatherImagesForDistribution(exportedJSON, filename + `(exported-${dateAndTime})`,
           includeImages);
       }
       if (includeMapTiles) {
         await gatherMapsForDistribution(exportedJSON,
-          filename + ` (exported- ${dateAndTime})`, includeMapTiles);
+          filename + `(exported-${dateAndTime})`, includeMapTiles);
       }
       console.log('All Done Exporting');
       // dispatch(setLoadingStatus({view: 'home', bool: false}));
