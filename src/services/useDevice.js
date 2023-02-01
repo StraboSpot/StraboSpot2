@@ -25,8 +25,14 @@ const useDevice = (props) => {
   const createProjectDirectories = async () => {
     await makeDirectory(APP_DIRECTORIES.APP_DIR);
     console.log('App Directory Created');
+    await makeDirectory(APP_DIRECTORIES.IMAGES);
+    console.log('Images Directory Created');
     await makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
     console.log('Backup Directory Created');
+    if (Platform.OS === 'android') {
+      await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      console.log('Android Downloads/StraboSpot/Backups directory created');
+    }
     await makeDirectory(APP_DIRECTORIES.TILES_DIRECTORY);
     console.log('Tiles Directory Created');
     await makeDirectory(APP_DIRECTORIES.TILE_CACHE);
@@ -70,6 +76,11 @@ const useDevice = (props) => {
     return 'Deleted';
   };
 
+  const doesBackupFileExist = (filename) => {
+    const exists = RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
+    return exists;
+  };
+
   const doesDeviceDirectoryExist = async (directory) => {
     try {
       let checkDirSuccess = await RNFS.exists(directory);
@@ -96,29 +107,36 @@ const useDevice = (props) => {
     if (isExternal && Platform.OS === 'android') {
       console.log('Checking Downloads dir', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
       const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      console.log('External Directory exists?:', exists);
+      // !exists && await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
       dispatch(doesDownloadsDirectoryExist(exists));
     }
     if (subDirectory !== undefined && !isExternal) return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     else {
       const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
+      console.log('Backup Directory exists?:', exists);
       dispatch(doesBackupDirectoryExist(exists));
       return exists;
     }
   };
 
-  const getExternalProject = async () => {
-    try {
-      const res = await DocumentPicker.pick({allowMultiSelection: true});
-      console.log('External Document', res);
-      const json = await RNFS.readFile(res[0].uri);
-      console.log('JSON', JSON.parse(json));
-      return JSON.parse(json);
-      // const files = await RNFS.readdir(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      // console.log(files);
-    }
-    catch (err) {
-      console.error('Error getting external project', err);
-    }
+  const getExternalProjectData = async () => {
+    // try {
+    const res = await DocumentPicker.pick({type: 'application/json'});
+    console.log('External Document', res);
+    const json = await RNFS.readFile(res[0].uri);
+    const jsonParsed = JSON.parse(json);
+    return jsonParsed;
+    // }
+    // catch (err) {
+    //   console.error('Error getting external project', err);
+    // }
+  };
+
+  const getExternalImageFiles = async () => {
+    const imageFiles = await DocumentPicker.pick(
+      {type: DocumentPicker.types.images, allowMultiSelection: true, copyTo: 'cachesDirectory'});
+    return imageFiles;
   };
 
   const openURL = async (url) => {
@@ -137,13 +155,13 @@ const useDevice = (props) => {
     }
   };
 
-  const makeDirectory = (directory) => {
-    return RNFS.mkdir(directory)
-      .then(() => `DIRECTORY ${directory} HAS BEEN CREATED`)
-      .catch((err) => {
-        console.error('Unable to create directory', directory, 'ERROR:', err);
-        throw Error;
-      });
+  const makeDirectory = async (directory) => {
+    try {
+      return await RNFS.mkdir(directory);
+    }
+    catch (err) {
+      console.error('Unable to create directory', directory, 'ERROR:', err);
+    }
   };
 
   const readDirectory = async (directory) => {
@@ -189,6 +207,8 @@ const useDevice = (props) => {
     }
     catch (err) {
       console.error('Write Error!', err.message);
+      // Alert.alert('Error:', 'There is an issue writing the project data \n' + err.toString());
+      throw Error(err);
     }
   };
 
@@ -197,10 +217,12 @@ const useDevice = (props) => {
     createProjectDirectories: createProjectDirectories,
     deleteOfflineMap: deleteOfflineMap,
     deleteProjectOnDevice: deleteProjectOnDevice,
+    doesBackupFileExist: doesBackupFileExist,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,
-    getExternalProject: getExternalProject,
+    getExternalProjectData: getExternalProjectData,
+    getExternalImageFiles: getExternalImageFiles,
     openURL: openURL,
     makeDirectory: makeDirectory,
     readDirectory: readDirectory,
