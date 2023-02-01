@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Platform, Text, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {Button, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
@@ -33,6 +33,7 @@ const ProjectList = (props) => {
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
+  const [isImportOverlayVisible, setIsImportOverlayVisible] = useState(false);
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
   const [externalStorageProjects, setExternalStorageProjects] = useState([]); //For Android Downloads folder/
   const [projectsArr, setProjectsArr] = useState([]);
@@ -60,7 +61,10 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
-    if (props.source === 'exports') getExternalAndroidProject().then(console.log('OK got external Android projects'));
+    if (Platform.OS === 'android' && props.source === 'exports') {
+      getExternalAndroidProject().then(console.log('OK got'
+        + ' external Android projects'));
+    }
     getAllProjects().then(() => console.log('OK got projects'));
   }, [props.source]);
 
@@ -107,21 +111,23 @@ const ProjectList = (props) => {
   };
 
   const getExternalAndroidProject = async () => {
-    if (Platform.OS === 'android' && props.source === 'exports') {
-      // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
-      // console.log(exists);
-      // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
-      //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      const externalStorageProjectsResponse = await useDevice.getExternalProject();
-      // setProjectsArr(externalStorageProjectsResponse);
-      console.log('Exported Projects', externalStorageProjectsResponse);
-    }
+    // setIsImportOverlayVisible(true);
+    // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
+    // console.log(exists);
+    // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
+    //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+    const externalStorageProjectsResponse = await useDevice.getExternalProject();
+    // setProjectsArr(externalStorageProjectsResponse);
+    console.log('Exported Projects', externalStorageProjectsResponse);
   };
 
   const reloadingList = async (isDeleted) => {
     if (isDeleted) {
       if (props.source === 'server') setProjectsArr(await useProject.getAllServerProjects());
-      else if (props.source === 'device') setProjectsArr(await useProject.getAllDeviceProjects());
+      else if (props.source === 'device') {
+        const newArr = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
+        setProjectsArr(newArr);
+      }
     }
     else console.log('Project was not deleted.');
   };
@@ -248,6 +254,19 @@ const ProjectList = (props) => {
   //     </View>
   //   );
   // };
+  //
+  // const renderImportOverlay = () => {
+  //   return (
+  //     <Overlay
+  //       isVisible={isImportOverlayVisible}
+  //       onBackdropPress={() => setIsImportOverlayVisible(false)}
+  //     >
+  //       <View style={{width: 300, height: 300}}>
+  //
+  //       </View>
+  //     </Overlay>
+  //   );
+  // };
 
   return (
     <View style={{flex: 1}}>
@@ -255,6 +274,7 @@ const ProjectList = (props) => {
       {renderProjectsList()}
       {/*{Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}*/}
       {!isEmpty(currentProject) && renderProjectOptionsModal()}
+      {/*{renderImportOverlay()}*/}
     </View>
   );
 };

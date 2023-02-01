@@ -47,6 +47,11 @@ const MyStraboSpot = (props) => {
 
     };
 
+    const getExportedAndroidProject = async () => {
+      const res = await useDevice.getExternalProject()
+      console.log(res)
+    }
+
     const renderSectionView = () => {
       switch (showSection) {
         case 'none':
@@ -92,11 +97,8 @@ const MyStraboSpot = (props) => {
             </View>
           );
         case 'exportedProjects':
-          return (
-            <View style={{flex: 1}}>
-              <ProjectList source={'exports'}/>
-            </View>
-          );
+          getExportedAndroidProject()
+          break;
         case 'new':
           return (
             <View style={{flex: 1}}>

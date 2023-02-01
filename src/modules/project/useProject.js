@@ -189,7 +189,7 @@ const useProject = () => {
     // });
     // return Promise.resolve(deviceProject);
     let id = 0;
-    const exists = await useDevice.doesDeviceBackupDirExist(undefined, true);
+    const exists = await useDevice.doesDeviceBackupDirExist(undefined);
     if (exists) {
       const res = await useDevice.readDirectory(directory);
       const deviceFiles = res.map((file) => {

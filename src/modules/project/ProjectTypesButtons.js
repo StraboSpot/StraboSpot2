@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -13,7 +13,7 @@ import {isEmpty} from '../../shared/Helpers';
 const ProjectTypesButtons = (props) => {
   const user = useSelector(state => state.user);
   const deviceBackUpDirectoryExists = useSelector(state => state.project.deviceBackUpDirectoryExists);
-  const downloadsDirectory = useSelector(state => state.project.downloadsDirectory);
+  const downloadsDirectoryExists = useSelector(state => state.project.downloadsDirectory);
 
   const [backupFiles, setBackupFiles] = useState([]);
   const [exportedFiles, setExportedFiles] = useState([]);
@@ -22,10 +22,11 @@ const ProjectTypesButtons = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectTypesButtons []');
-    doesBackupDirExist().catch(err => console.error('Error Checking if backup dir exists', err));
+    checkForFiles().catch(err => console.error('Error Checking if backup dir exists', err));
   }, []);
 
-  const doesBackupDirExist = async () => {
+  const checkForFiles = async () => {
+    console.log('Checking Backup Directories');
     const backupDirExists = await useDevice.doesDeviceBackupDirExist();
     const downloadsDirExists = await useDevice.doesDeviceBackupDirExist(undefined, true);
     if (backupDirExists) {
@@ -34,7 +35,6 @@ const ProjectTypesButtons = (props) => {
     }
     if (downloadsDirExists) {
       const exportFiles = await useDevice.readDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      console.log(exportFiles);
       setExportedFiles(exportFiles);
     }
   };
@@ -55,20 +55,25 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromServer()}
       />}
-      {deviceBackUpDirectoryExists && !isEmpty(backupFiles) && <Button
-        title={'Projects From Device'}
+      {deviceBackUpDirectoryExists && <Button
+        title={`Projects From Device (${backupFiles.length})`}
         containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromDevice()}
       />}
-      {Platform.OS === 'android' && downloadsDirectory && !isEmpty(exportedFiles) && <Button
-        title={'Projects to Import'}
-        containerStyle={commonStyles.standardButtonContainer}
-        buttonStyle={commonStyles.standardButton}
-        titleStyle={commonStyles.standardButtonText}
-        onPress={() => props.onLoadProjectsFromDownloads()}
-      />}
+      {Platform.OS === 'android' && downloadsDirectoryExists
+        && <View>
+          <Button
+            title={`Projects to Import (${exportedFiles.length})`}
+            containerStyle={commonStyles.standardButtonContainer}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={() => props.onLoadProjectsFromDownloads()}
+          />
+          <Text>When importing, select the data.json file before selecting any images or maps</Text>
+        </View>
+      }
     </View>
   );
 };
