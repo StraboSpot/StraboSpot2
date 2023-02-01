@@ -126,6 +126,13 @@ const Home = () => {
   const mapComponentRef = useRef(null);
 
   useEffect(() => {
+    if (Platform.OS === 'android') {
+      useImages.requestCameraPermission().then(
+        res => console.log('Permission Status:', res));
+    }
+  }, []);
+
+  useEffect(() => {
     console.log('UE Home [selectedProject]', selectedProject);
   }, [selectedProject]);
 
