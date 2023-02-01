@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Platform, Text, View} from 'react-native';
 
-import {Button, ListItem, Overlay} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
