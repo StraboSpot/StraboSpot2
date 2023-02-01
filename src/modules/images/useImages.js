@@ -1,4 +1,4 @@
-import {Alert, Image, Platform} from 'react-native';
+import {Alert, Image, PermissionsAndroid, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
@@ -145,6 +145,20 @@ const useImages = () => {
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
+  const getImageFromImport = async (image) => {
+    const exists = await RNFS.exists(APP_DIRECTORIES.IMAGES);
+    console.log('EXISTS', exists);
+    const imagesInDirBefore = await RNFS.readDir(APP_DIRECTORIES.IMAGES);
+    console.log('images in app directory', imagesInDirBefore);
+    const source = image.fileCopyUri;
+    const dest = APP_DIRECTORIES.IMAGES + image.name;
+    console.log('source:', source, 'dest', dest);
+    await RNFS.moveFile(source, dest);
+    const imagesInDir = await RNFS.readDir(APP_DIRECTORIES.IMAGES);
+    console.log('images in app directory', imagesInDir);
+    // return imageRes;
+  };
+
   const getImagesFromCameraRoll = async () => {
     return new Promise((res, rej) => {
       try {
@@ -237,7 +251,7 @@ const useImages = () => {
     let imageURI = getLocalImageURI(imageId);
     try {
       await RNFS.mkdir(APP_DIRECTORIES.IMAGES);
-      await RNFS.copyFile(tempImageURI, imageURI);
+      await RNFS.copyFile(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
       console.log(imageCount, 'File saved to:', imageURI);
       // imageCount++;
       return {
@@ -283,8 +297,35 @@ const useImages = () => {
     else console.error('Error setting image height and width');
   };
 
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'StraboSpot needs access to your camera '
+            + 'so you can take pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      }
+      else {
+        console.log('Camera permission denied');
+      }
+    }
+    catch (err) {
+      console.warn(err);
+    }
+  };
+
   // Called from Notebook Panel Footer and opens camera only
   const takePicture = async () => {
+    console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
     return new Promise((resolve, reject) => {
       try {
         launchCamera({saveToPhotos: true}, async (response) => {
@@ -313,10 +354,12 @@ const useImages = () => {
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getLocalImageURI: getLocalImageURI,
+    getImageFromImport: getImageFromImport,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageThumbnailURIs: getImageThumbnailURIs,
     launchCameraFromNotebook: launchCameraFromNotebook,
+    requestCameraPermission: requestCameraPermission,
     saveFile: saveFile,
     setAnnotation: setAnnotation,
     setImageHeightAndWidth: setImageHeightAndWidth,
