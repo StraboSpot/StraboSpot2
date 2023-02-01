@@ -7,7 +7,7 @@ import {Button, CheckBox, Dialog, Input} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {setProgressModalVisible} from '../../../../modules/home/home.slice';
+import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/home/home.slice';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import projectStyles from '../../../../modules/project/project.styles';
 import useProjectHook from '../../../../modules/project/useProject';
@@ -24,7 +24,7 @@ import projectOptionsModalStyle from './projectOptionsModal.style';
 const ProjectOptionsDialogBox = (props) => {
   const dispatch = useDispatch();
   const selectedProject = useSelector(state => state.project.selectedProject);
-  const currentProjectName = useSelector(state => state.project.project.description.project_name);
+  const currentProjectName = useSelector(state => state.project.project?.description?.project_name);
 
   const [checked, setChecked] = useState(1);
   const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
@@ -80,11 +80,12 @@ const ProjectOptionsDialogBox = (props) => {
   const exportProject = async () => {
     try {
       console.log('FileName', exportFileName);
+      props.close();
       await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, exportFileName, includeImages,
         includeMapTiles);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
       toast.show('Project has been exported to Downloads folder!');
-      props.close();
       setChecked(1);
       setIncludeMapTiles(true);
       setIncludeImages(true);
