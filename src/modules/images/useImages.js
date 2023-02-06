@@ -145,7 +145,7 @@ const useImages = () => {
     return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
   };
 
-  const getImageFromImport = async (image) => {
+  const saveImageFromDownloadsDir = async (image) => {
     const exists = await RNFS.exists(APP_DIRECTORIES.IMAGES);
     console.log('EXISTS', exists);
     const imagesInDirBefore = await RNFS.readDir(APP_DIRECTORIES.IMAGES);
@@ -354,7 +354,7 @@ const useImages = () => {
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getLocalImageURI: getLocalImageURI,
-    getImageFromImport: getImageFromImport,
+    saveImageFromDownloadsDir: saveImageFromDownloadsDir,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageThumbnailURIs: getImageThumbnailURIs,

@@ -213,6 +213,8 @@ const useImport = () => {
   };
 
   const loadProjectFromDevice = async (selectedProject) => {
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
     console.log('SELECTED PROJECT', selectedProject);
