@@ -3,10 +3,12 @@ import {Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import RNFS from 'react-native-fs';
+import {useToast} from 'react-native-toast-notifications';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import Spacer from '../../shared/ui/Spacer';
 import UserProfile from '../user/UserProfile';
@@ -18,8 +20,10 @@ import ProjectTypesButtons from './ProjectTypesButtons';
 
 const MyStraboSpot = (props) => {
     const [showSection, setShowSection] = useState('none');
-
+    const [importedProjectData, setImportedProjectData] = useState({});
+    const [importedImageFiles, setImportedImageFiles] = useState([]);
     const useDevice = useDeviceHook();
+    const toast = useToast();
 
     useEffect(() => {
       console.log('UE MyStraboSpot []');
@@ -49,9 +53,25 @@ const MyStraboSpot = (props) => {
     };
 
     const getExportedAndroidProject = async () => {
-      const res = await useDevice.getExternalProject()
-      console.log(res)
-    }
+      try {
+        const res = await useDevice.getExternalProjectData();
+        console.log('EXTERNAL PROJECT', res);
+        if (!isEmpty(res)) {
+          // dispatch(setStatusMessageModalTitle('Import Project'));
+          setImportedProjectData(res);
+          setShowSection('importData');
+        }
+      }
+      catch (err) {
+        if (err.code === 'DOCUMENT_PICKER_CANCELED') {
+          console.warn(err.message);
+          toast.show(err.message);
+        }
+        else {
+          console.error('Error picking document!');
+        }
+      }
+    };
 
     const renderSectionView = () => {
       switch (showSection) {
