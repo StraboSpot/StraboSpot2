@@ -11,6 +11,7 @@ import {BLUE} from '../../shared/styles.constants';
 import Spacer from '../../shared/ui/Spacer';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
+import ImportProjectAndroid from './ImportProjectAndroid';
 import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
@@ -62,7 +63,7 @@ const MyStraboSpot = (props) => {
               <ProjectTypesButtons
                 onLoadProjectsFromServer={() => setShowSection('serverProjects')}
                 onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
-                onLoadProjectsFromDownloads={() => setShowSection('exportedProjects')}
+                onLoadProjectsFromDownloads={() => getExportedAndroidProject()}
                 onStartNewProject={() => setShowSection('new')}/>
             </View>
           );
@@ -96,9 +97,13 @@ const MyStraboSpot = (props) => {
               </View>
             </View>
           );
-        case 'exportedProjects':
-          getExportedAndroidProject()
-          break;
+        case 'importData':
+          return (
+            <ImportProjectAndroid
+              importedProject={importedProjectData}
+              visibleSection={section => setShowSection(section)}
+            />
+          );
         case 'new':
           return (
             <View style={{flex: 1}}>
