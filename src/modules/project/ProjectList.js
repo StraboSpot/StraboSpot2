@@ -66,6 +66,12 @@ const ProjectList = (props) => {
         + ' external Android projects'));
     }
     getAllProjects().then(() => console.log('OK got projects'));
+    console.log('Project Options Modal Visible', isProjectOptionsModalVisible);
+    return () => {
+      setIsProjectOptionsModalVisible(false);
+      console.log('Project Options Modal Visible (in return)', isProjectOptionsModalVisible);
+
+    };
   }, [props.source]);
 
   const handleStateChange = async (state) => {
@@ -158,8 +164,8 @@ const ProjectList = (props) => {
       console.log('Getting project...');
       if (!isEmpty(project)) useProject.destroyOldProject();
       if (props.source === 'device') {
-        dispatch(clearedStatusMessages());
-        dispatch(setStatusMessagesModalVisible(true));
+        // dispatch(clearedStatusMessages());
+        // dispatch(setStatusMessagesModalVisible(true));
         const res = await useImport.loadProjectFromDevice(project);
         dispatch(setStatusMessageModalTitle(res.project.description.project_name));
         console.log('Done loading project', res);
@@ -273,7 +279,7 @@ const ProjectList = (props) => {
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
       {/*{Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}*/}
-      {!isEmpty(currentProject) && renderProjectOptionsModal()}
+      {renderProjectOptionsModal()}
       {/*{renderImportOverlay()}*/}
     </View>
   );

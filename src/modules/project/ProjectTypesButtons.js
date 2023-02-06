@@ -62,6 +62,8 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromDevice()}
       />}
+      <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>When importing, select the data.json file
+        before selecting any images or maps.</Text>
       {Platform.OS === 'android' && downloadsDirectoryExists
         && <View>
           <Button
@@ -71,7 +73,6 @@ const ProjectTypesButtons = (props) => {
             titleStyle={commonStyles.standardButtonText}
             onPress={() => props.onLoadProjectsFromDownloads()}
           />
-          <Text>When importing, select the data.json file before selecting any images or maps</Text>
         </View>
       }
     </View>
