@@ -111,7 +111,16 @@ const useDevice = (props) => {
       // !exists && await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
       dispatch(doesDownloadsDirectoryExist(exists));
     }
-    if (subDirectory !== undefined && !isExternal) return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+    if (subDirectory !== undefined) {
+      if (isExternal) {
+        console.log('SUBDIR isExternal', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
+        return await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
+      }
+      else {
+        console.log('SUBDIR', subDirectory);
+        return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+      }
+    }
     else {
       const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
       console.log('Backup Directory exists?:', exists);
@@ -122,7 +131,7 @@ const useDevice = (props) => {
 
   const getExternalProjectData = async () => {
     // try {
-    const res = await DocumentPicker.pick({type: 'application/json'});
+    const res = await DocumentPicker.pick({type: 'application/json', copyTo: 'cachesDirectory'});
     console.log('External Document', res);
     const json = await RNFS.readFile(res[0].uri);
     const jsonParsed = JSON.parse(json);
@@ -137,6 +146,11 @@ const useDevice = (props) => {
     const imageFiles = await DocumentPicker.pick(
       {type: DocumentPicker.types.images, allowMultiSelection: true, copyTo: 'cachesDirectory'});
     return imageFiles;
+  };
+
+  const getExternalMapTiles = async () => {
+    const mapZippedFile = await DocumentPicker.pick({type: DocumentPicker.types.zip, copyTo: 'cachesDirectory'});
+    console.log('MAP Folder', mapZippedFile);
   };
 
   const openURL = async (url) => {
@@ -223,6 +237,7 @@ const useDevice = (props) => {
     doesDeviceFileExist: doesDeviceFileExist,
     getExternalProjectData: getExternalProjectData,
     getExternalImageFiles: getExternalImageFiles,
+    getExternalMapTiles: getExternalMapTiles,
     openURL: openURL,
     makeDirectory: makeDirectory,
     readDirectory: readDirectory,
