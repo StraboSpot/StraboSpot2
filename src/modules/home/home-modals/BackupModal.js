@@ -25,7 +25,7 @@ const BackupModal = () => {
     if (!isEmpty(currentProject)) {
       setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
     }
-  }, [currentProject, user]);
+  }, [currentProject, isBackModalVisible]);
 
   const fileName = exportFileName.replace(/\s/g, '');
 
