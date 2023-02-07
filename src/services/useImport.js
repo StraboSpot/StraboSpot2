@@ -224,7 +224,7 @@ const useImport = () => {
     if (dirExists) {
       const dataFile = await readDeviceJSONFile(selectedProject.fileName);
       const {projectDb, spotsDb} = dataFile;
-      console.log(dirExists);
+      console.log('DataFile', dataFile);
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       dispatch(addedDatasets(projectDb.datasets));
