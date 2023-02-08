@@ -942,7 +942,7 @@
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "StraboSpot 2";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1051,7 +1051,7 @@
 				INFOPLIST_FILE = StraboSpot2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "StraboSpot 2";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
 				MARKETING_VERSION = 1.35.3;
 				OTHER_LDFLAGS = (
