@@ -28,14 +28,16 @@ const ProjectTypesButtons = (props) => {
   const checkForFiles = async () => {
     console.log('Checking Backup Directories');
     const backupDirExists = await useDevice.doesDeviceBackupDirExist();
-    const downloadsDirExists = await useDevice.doesDeviceBackupDirExist(undefined, true);
+    if (Platform.OS === 'android') {
+      const downloadsDirExists = await useDevice.doesDeviceBackupDirExist(undefined, true);
+      if (downloadsDirExists) {
+        const exportFiles = await useDevice.readDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+        setExportedFiles(exportFiles);
+      }
+    }
     if (backupDirExists) {
       const files = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR);
       setBackupFiles(files);
-    }
-    if (downloadsDirExists) {
-      const exportFiles = await useDevice.readDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      setExportedFiles(exportFiles);
     }
   };
 
