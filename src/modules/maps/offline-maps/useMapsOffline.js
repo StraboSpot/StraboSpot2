@@ -363,7 +363,12 @@ const useMapsOffline = () => {
           const isMapInRedux = Object.keys(offlineMaps).includes(file);
           console.log(isMapInRedux);
           if (isMapInRedux) {
-            await updateMapTileCount(file);
+            console.log('Offline Map', offlineMaps[file]);
+            const mapId = offlineMaps[file].id;
+            const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+            const tileCountLength = tileCount.length;
+            console.log('tileCount', tileCount);
+            dispatch(setOfflineMap(offlineMaps[file].count = tileCountLength));
           }
           else await addMapFromDeviceToRedux(file);
         });
