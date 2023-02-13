@@ -2,14 +2,14 @@ import {createSlice} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
-import {PRIMARY_PAGES} from '../page/page.constants';
 
 const initialNotebookState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
   isSamplesModalVisible: false,
   compassMeasurementTypes: [COMPASS_TOGGLE_BUTTONS.PLANAR],
-  notebookPagesOn: PRIMARY_PAGES.map(p => p.key),
+  notebookPagesOn: ['geologic_unit', 'notes', 'orientation_data', 'images', 'tags', 'samples'],
+  // notebookPagesOn: PRIMARY_PAGES.map(p => p.key),  // This worked in Native but not Web
 };
 
 const notebookSlice = createSlice({
