@@ -28,11 +28,15 @@ const ProjectTypesButtons = (props) => {
   const checkForFiles = async () => {
     console.log('Checking Backup Directories');
     const backupDirExists = await useDevice.doesDeviceBackupDirExist();
+    console.log('PLATFORM', Platform.OS);
     if (Platform.OS === 'android') {
       const downloadsDirExists = await useDevice.doesDeviceBackupDirExist(undefined, true);
+      console.log('DOWNLOADS DIR EXISTS:', downloadsDirExists);
       if (downloadsDirExists) {
-        const exportFiles = await useDevice.readDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-        setExportedFiles(exportFiles);
+        if (Platform.OS === 'android') {
+          const exportFiles = await useDevice.readDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+          setExportedFiles(exportFiles);
+        }
       }
     }
     if (backupDirExists) {
@@ -58,7 +62,7 @@ const ProjectTypesButtons = (props) => {
         onPress={() => props.onLoadProjectsFromServer()}
       />}
       {deviceBackUpDirectoryExists && <Button
-        title={`Projects From Device (${backupFiles.length})`}
+        title={'Projects From Device'}
         containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
@@ -69,7 +73,7 @@ const ProjectTypesButtons = (props) => {
           <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>When importing, select the data.json file
             before selecting any images or maps.</Text>
           <Button
-            title={`Projects to Import (${exportedFiles.length})`}
+            title={'Import Project'}
             containerStyle={commonStyles.standardButtonContainer}
             buttonStyle={commonStyles.standardButton}
             titleStyle={commonStyles.standardButtonText}

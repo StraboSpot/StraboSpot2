@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {Alert, Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import RNFS from 'react-native-fs';
@@ -20,7 +20,7 @@ import ProjectTypesButtons from './ProjectTypesButtons';
 
 const MyStraboSpot = (props) => {
     const [showSection, setShowSection] = useState('none');
-    const [importedProjectData, setImportedProjectData] = useState({});
+    const [importedProject, setImportedProject] = useState({});
     const [importedImageFiles, setImportedImageFiles] = useState([]);
     const useDevice = useDeviceHook();
     const toast = useToast();
@@ -58,7 +58,7 @@ const MyStraboSpot = (props) => {
         console.log('EXTERNAL PROJECT', res);
         if (!isEmpty(res)) {
           // dispatch(setStatusMessageModalTitle('Import Project'));
-          setImportedProjectData(res);
+          setImportedProject(res);
           setShowSection('importData');
         }
       }
@@ -68,7 +68,8 @@ const MyStraboSpot = (props) => {
           toast.show(err.message);
         }
         else {
-          console.error('Error picking document!');
+          console.error('Error picking document!', err);
+          Alert.alert('ERROR', err.toString());
         }
       }
     };
@@ -120,7 +121,7 @@ const MyStraboSpot = (props) => {
         case 'importData':
           return (
             <ImportProjectAndroid
-              importedProject={importedProjectData}
+              importedProject={importedProject}
               visibleSection={section => setShowSection(section)}
             />
           );
@@ -132,6 +133,42 @@ const MyStraboSpot = (props) => {
           );
       }
     };
+
+    // const readDirectory = async () => {
+    //   try {
+    //     RNFS.readDir(APP_DIRECTORIES.EXPORT_FILES_ANDROID)
+    //       .then((res) => {
+    //         console.log('RES', res);
+    //         res.map(async (x) => {
+    //           console.log('File', x);
+    //           // console.log('DIR', APP_DIRECTORIES.EXPORT_FILES_ANDROID + x.name);
+    //           if (x.name.includes('.zip')) {
+    //             console.log('Zip file', x.path);
+    //           }
+    //           else {
+    //             console.log('Path', x.path);
+    //             // console.log('data', await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + '/' + x.name + '/data.json'));
+    //             // console.log('maps', await RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR + '/' + x.name + '/maps'));
+    //             // console.log('images', await RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR + '/' + x.name + '/Images'));
+    //           }
+    //
+    //           // console.log('IMAGES', await RNFS.readFile(APP_DIRECTORIES.EXPORT_FILES_ANDROID + x + '/data.json'));
+    //           // await RNFS.unlink(x.path);
+    //           // console.log('deleted', x);
+    //
+    //           // const file = await RNFS.readFile(x.path + '/data.json');
+    //           // console.log(file);
+    //         });
+    //       });
+    //     // .finally(async () => {
+    //     //   const y = await RNFS.readDir(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+    //     //   console.log('FILES', y);
+    //     // });
+    //   }
+    //   catch (err) {
+    //     console.error('ERROR Reading', err);
+    //   }
+    // };
 
     return (
       <React.Fragment>
@@ -152,6 +189,13 @@ const MyStraboSpot = (props) => {
           )}
         </View>
         {renderSectionView()}
+        {/*<Button*/}
+        {/*  title={'Read Dir'}*/}
+        {/*  onPress={() => readDirectory()}*/}
+        {/*  type={'clear'}*/}
+        {/*  containerStyle={{alignItems: 'flex-start'}}*/}
+        {/*  titleStyle={commonStyles.standardButtonText}*/}
+        {/*/>*/}
       </React.Fragment>
     );
   }

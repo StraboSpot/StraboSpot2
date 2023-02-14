@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {AppState, FlatList, Platform, Text, View} from 'react-native';
+import {AppState, FlatList, Text, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -61,10 +61,6 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
-    if (Platform.OS === 'android' && props.source === 'exports') {
-      getExternalAndroidProject().then(console.log('OK got'
-        + ' external Android projects'));
-    }
     getAllProjects().then(() => console.log('OK got projects'));
     console.log('Project Options Modal Visible', isProjectOptionsModalVisible);
     return () => {
@@ -114,17 +110,6 @@ const ProjectList = (props) => {
       setProjectsArr(projectsResponse);
       setLoading(false);
     }
-  };
-
-  const getExternalAndroidProject = async () => {
-    // setIsImportOverlayVisible(true);
-    // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
-    // console.log(exists);
-    // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
-    //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-    const externalStorageProjectsResponse = await useDevice.getExternalProject();
-    // setProjectsArr(externalStorageProjectsResponse);
-    console.log('Exported Projects', externalStorageProjectsResponse);
   };
 
   const reloadingList = async (isDeleted) => {

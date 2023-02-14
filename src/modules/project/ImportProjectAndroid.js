@@ -7,13 +7,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
-import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import projectStyles from './project.styles';
 
 const ImportProjectAndroid = (props) => {
@@ -22,44 +18,12 @@ const ImportProjectAndroid = (props) => {
 
   const [importedProjectData, setImportedProjectData] = useState({});
   const [importedImageFiles, setImportedImageFiles] = useState([]);
+  const [importedMapFiles, setImportedMapFiles] = useState([]);
   const [importComplete, setImportComplete] = useState(false);
-
-  // const dispatch = useDispatch();
-  // const spotCount = Object.values(importedProjectData?.spotsDb).length;
-  // const datasetCount = Object.values(importedProjectData?.projectDb?.datasets).length;
 
   const useDevice = useDeviceHook();
   const [useImages] = useImagesHook();
-  const useImport = useImportHook();
   const toast = useToast();
-
-  const getImageFiles = async () => {
-    try {
-      const images = await useDevice.getExternalImageFiles();
-      console.log('Images', images);
-      setImportedImageFiles(images);
-    }
-    catch (err) {
-      console.error('Error getting imag files from import', err);
-      if (err.code === 'DOCUMENT_PICKER_CANCELED') toast.show(err.message);
-    }
-  };
-
-  const getMapTiles = () => {
-
-  };
-
-  const loadProject = async () => {
-    try {
-      dispatch(setProjectLoadSelectionModalVisible(false));
-      await useImport.loadProjectFromDevice(
-        {fileName: props.importedProject.projectDb.project.description.project_name});
-      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-    }
-    catch (err) {
-      console.error('Error loading imported project.', err);
-    }
-  };
 
   const renderImportComplete = () => {
     return (
@@ -95,19 +59,16 @@ const ImportProjectAndroid = (props) => {
     );
   };
 
-  const saveToDevice = async (fileName) => {
+  const saveToDevice = async () => {
     try {
-      await useDevice.writeFileToDevice(APP_DIRECTORIES.BACKUP_DIR + fileName, 'data.json', props.importedProject);
-      console.log('Saving Images...');
-      importedImageFiles.map(async (image) => {
-        await useImages.saveImageFromDownloadsDir(image);
-        console.log(`image ${image.name} saved to app folder`);
-      });
-      console.log('All Images Saved!');
-      // setVisibleInitialSection('importImages');
-      toast.show('Data and Images Have Been Saved!');
-      // props.visibleSection('importComplete');
-      setImportComplete(true);
+      const project = props.importedProject;
+      const exists = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+      if (exists) {
+        const path = await useDevice.unZipAndCopyImportedData(project);
+        console.log('Unzipped and saved file to', path);
+        toast.show('Data and Images Have Been Saved!');
+        setImportComplete(true);
+      }
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
@@ -120,7 +81,7 @@ const ImportProjectAndroid = (props) => {
   const verifyFileExistence = async (dataType) => {
     if (dataType === 'data') {
       // const time = getTimeStamp();
-      const fileName = props.importedProject.projectDb.project.description.project_name;
+      const fileName = props.importedProject.name.replace('.zip', '');
       const fileExists = await useDevice.doesBackupFileExist(fileName);
       if (fileExists) {
         console.log('File already exits!');
@@ -129,19 +90,18 @@ const ImportProjectAndroid = (props) => {
           [
             {
               text: 'Cancel',
-              onPress: () => props.goBackToMain(),
               style: 'cancel',
             },
             {
               text: 'Continue',
-              onPress: async () => saveToDevice(fileName),
+              onPress: async () => saveToDevice(),
               style: 'cancel',
             },
           ]);
       }
       else {
         await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR + fileName);
-        await saveToDevice(fileName);
+        await saveToDevice();
       }
     }
   };
@@ -173,28 +133,10 @@ const ImportProjectAndroid = (props) => {
       {importComplete ? renderImportComplete()
         : (
           <View style={{alignItems: 'center'}}>
-            {/*<View style={{alignItems: 'flex-start', margin: 10}}>*/}
             <Text style={{fontWeight: 'bold'}}>Selected Project to Import:</Text>
-            <Text>{props.importedProject?.projectDb?.project?.description?.project_name}</Text>
-            <View style={{padding: 10, alignItems: 'center'}}>
-              <Text style={{}}>Total Datasets: {Object.values(props.importedProject?.projectDb.datasets).length}</Text>
-              <Text style={{}}>Total Spots: {Object.values(props.importedProject?.spotsDb).length}</Text>
-            </View>
-            <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>In My Files hold down on one image to select
-              multiple.</Text>
+            <Text>{props.importedProject.name}</Text>
             <Button
-              title={'Get Images'}
-              type={'clear'}
-              onPress={() => getImageFiles()}
-            />
-            {!isEmpty(importedImageFiles) && <Text>Selected Images: {importedImageFiles.length}</Text>}
-            <Button
-              title={'Get Map Tiles?'}
-              type={'clear'}
-              onPress={() => getMapTiles()}
-            />
-            <Button
-              title={'Save'}
+              title={'Unzip and Save'}
               type={'clear'}
               containerStyle={{marginTop: 20}}
               onPress={() => verifyFileExistence('data')}
