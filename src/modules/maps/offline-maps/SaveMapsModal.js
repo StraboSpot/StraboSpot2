@@ -2,9 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Platform, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
-import {Button} from 'react-native-elements';
+import {Button, Overlay} from 'react-native-elements';
 import RNFS from 'react-native-fs';
-import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -16,6 +15,7 @@ import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
+import homeStyles from '../../home/home.style';
 import {MAP_PROVIDERS} from '../maps.constants';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
@@ -227,35 +227,30 @@ const SaveMapsModal = (props) => {
   };
 
   return (
-    <Dialog
-      dialogTitle={
-        <View style={styles.dialogTitleContainer}>
-          <View style={styles.dialogTitle}>
-            <Text style={{fontSize: 25}}>{currentMapName}</Text>
-          </View>
-          <View style={styles.closeButton}>
-            <Button
-              title={'Close'}
-              titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
-              type={'clear'}
-              onPress={props.close}
-            />
-          </View>
-        </View>
-      }
-      onDismiss={() => {
+    <Overlay
+      animationType={'slide'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, commonStyles.dialogBox, {height: Platform.OS === 'ios' ? 400 : 275}]}
+      onBackdropPress={() => {
         setShowMainMenu(true);
         setShowComplete(false);
       }}
-      height={Platform.OS === 'ios' ? 400 : 275}
-      visible={props.visible}
-      dialogStyle={commonStyles.dialogBox}
-      dialogAnimation={new SlideAnimation({
-        slideFrom: 'top',
-      })}
     >
-      <DialogContent
-        style={commonStyles.dialogContent}>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitleContainer]}>
+        <View style={styles.dialogTitle}>
+          <Text style={[homeStyles.dialogTitleText]}>{currentMapName}</Text>
+        </View>
+        <View style={styles.closeButton}>
+          <Button
+            title={'Close'}
+            titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
+            type={'clear'}
+            onPress={props.close}
+          />
+        </View>
+      </View>
+
+      <View style={commonStyles.dialogContent}>
         <View style={styles.saveModalContainer}>
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
@@ -361,8 +356,8 @@ const SaveMapsModal = (props) => {
             </View>
           </View>
         </View>
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

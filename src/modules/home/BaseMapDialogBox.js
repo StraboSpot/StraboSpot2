@@ -1,9 +1,7 @@
 import React from 'react';
-import {FlatList, Switch, View} from 'react-native';
+import {FlatList, Switch, Text, View} from 'react-native';
 
-import {Icon, ListItem} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {ScaleAnimation} from 'react-native-popup-dialog/src';
+import {Icon, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -16,10 +14,7 @@ import {BASEMAPS} from '../maps/maps.constants';
 import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import styles from './dialog.styles';
-
-const slideAnimation = new ScaleAnimation({
-  useNativeDriver: true,
-});
+import homeStyles from './home.style';
 
 const BaseMapDialog = (props) => {
 
@@ -188,27 +183,23 @@ const BaseMapDialog = (props) => {
   };
 
   return (
-    <Dialog
-      dialogAnimation={slideAnimation}
-      dialogStyle={styles.dialogBox}
-      visible={props.visible}
-      dialogTitle={
-        <DialogTitle
-          title={'Map Layers'}
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-        />}
-      onTouchOutside={props.onTouchOutside}
+    <Overlay
+      animationType={'slide'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      onBackdropPress={props.onTouchOutside}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <DialogContent>
-        <View>
-          {renderDefaultBasemapsList()}
-          {renderCustomBasemapsList()}
-          {renderCustomMapOverlaysList()}
-          <View/>
-        </View>
-      </DialogContent>
-    </Dialog>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>Map Layers</Text>
+      </View>
+      <View>
+        {renderDefaultBasemapsList()}
+        {renderCustomBasemapsList()}
+        {renderCustomMapOverlaysList()}
+        <View/>
+      </View>
+    </Overlay>
   );
 };
 

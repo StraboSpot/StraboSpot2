@@ -1,11 +1,10 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Alert, Platform, View} from 'react-native';
+import {Alert, Platform, Text, View} from 'react-native';
 
 import Logger from '@rnmapbox/maps/javascript/utils/Logger';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import {Button} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
@@ -16,6 +15,7 @@ import {
   setErrorMessagesModalVisible,
   setModalVisible,
 } from '../home/home.slice';
+import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import {
   addedSpot,
@@ -1241,17 +1241,17 @@ const Map = React.forwardRef((props, ref) => {
     };
 
     return (
-      <Dialog
-        dialogTitle={<DialogTitle title={'Select a Geometry Type'}/>}
-        onDismiss={() => {
+      <Overlay
+        animationType={'slide'}
+        overlayStyle={homeStyles.dialogBox}
+        isVisible={showSetInCurrentViewModal}
+        onBackdropPress={() => {
         }}
-        visible={showSetInCurrentViewModal}
-        dialogStyle={{borderRadius: 30}}
-        dialogAnimation={new SlideAnimation({
-          slideFrom: 'top',
-        })}
       >
-        <DialogContent>
+        <View style={homeStyles.dialogTitleContainer}>
+          <Text style={homeStyles.dialogTitleText}>Select a Geometry Type</Text>
+        </View>
+        <View>
           {buttons.map(button =>
             <Button
               title={button}
@@ -1260,8 +1260,8 @@ const Map = React.forwardRef((props, ref) => {
               key={button}
             />,
           )}
-        </DialogContent>
-      </Dialog>
+        </View>
+      </Overlay>
     );
   };
 

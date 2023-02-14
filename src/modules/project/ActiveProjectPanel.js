@@ -73,11 +73,9 @@ const ActiveProjectPanel = () => {
         dialogTitleStyle={commonStyles.dialogError}
         dialogTitle={'Warning!'}
       >
-        <View style={[commonStyles.dialogContent]}>
-          <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>
-            This will overwrite anything that has not been uploaded to the server
-          </Text>
-        </View>
+        <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>
+          This will overwrite anything that has not been uploaded to the server
+        </Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
           <Button
             title={'OK'}

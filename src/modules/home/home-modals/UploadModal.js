@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
 import LottieView from 'lottie-react-native';
+import {Button, Overlay} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -12,9 +13,9 @@ import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 import Spacer from '../../../shared/ui/Spacer';
 import useAnimationsHook from '../../../shared/ui/useAnimations';
-import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
 import {setUploadModalVisible} from '../home.slice';
+import homeStyles from '../home.style';
 
 const UploadModal = () => {
   const dispatch = useDispatch();
@@ -60,13 +61,21 @@ const UploadModal = () => {
   };
 
   return (<>
-    <UploadDialogBox
-      dialogTitle={'OVERWRITE WARNING!'}
-      visible={isUploadModalVisible}
-      cancel={() => dispatch(setUploadModalVisible(false))}
-      buttonText={'Upload'}
-      onPress={async () => renderUploadProgressModal()}
+    <Overlay
+      isVisible={isUploadModalVisible}
+      overlayStyle={homeStyles.dialogBox}
     >
+      <View style={homeStyles.dialogTitleContainer}>
+        <Text style={homeStyles.dialogTitleText}>OVERWRITE WARNING!</Text>
+      </View>
+      <Button
+        title={'Upload'}
+        onPress={async () => renderUploadProgressModal()}
+      />
+      <Button
+        title={'Cancel'}
+        onPress={() => dispatch(setUploadModalVisible(false))}
+      />
       <View>
         <View>
           <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
@@ -83,7 +92,7 @@ const UploadModal = () => {
           for this project:
         </Text>
       </View>
-    </UploadDialogBox>
+    </Overlay>
     <ProgressModal
       closeProgressModal={() => setIsProgressModalVisible(false)}
       dialogTitle={'UPLOADING...'}
@@ -92,7 +101,6 @@ const UploadModal = () => {
       showButton={uploadComplete}
       animation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
     >
-
       <View style={{flex: 1}}>
         <Text>{statusMessages}</Text>
         {isImageTransferring && <View style={{paddingTop: 10}}>

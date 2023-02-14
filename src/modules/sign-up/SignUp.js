@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Animated, Keyboard, Text, TextInput, useWindowDimensions, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
@@ -267,7 +266,6 @@ const SignUp = (props) => {
         visible={statusDialog}
         dialogTitle={statusDialogTitle}
         onTouchOutside={() => setStatusDialog(false)}
-        dialogAnimation={new SlideAnimation({slideFrom: 'bottom'})}
       >
         <Text>{statusMessage}</Text>
       </StatusDialog>
