@@ -8,7 +8,6 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
-import useImportHook from '../../../services/useImport';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
@@ -305,6 +304,7 @@ const InitialProjectLoadModal = (props) => {
           <ImportProjectAndroid
             visibleSection={section => setVisibleInitialSection(section)}
             goBackToMain={() => goBackToMain()}
+            source={source => setSource(source)}
             importedProject={importedProjectData}
           />
         );

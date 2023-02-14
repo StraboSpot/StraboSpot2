@@ -70,8 +70,12 @@ const ImportProjectAndroid = (props) => {
         </View>
         <View style={{alignItems: 'center'}}>
           <Button
-            title={'Load Project?'}
-            onPress={() => loadProject()}
+            title={'Go to saved projects'}
+            // onPress={() => loadProject()}
+            onPress={() => {
+              props.source && props.source('device');
+              props.visibleSection('deviceProjects');
+            }}
             type={'clear'}
             containerStyle={{alignItems: 'flex-start'}}
             titleStyle={commonStyles.standardButtonText}
