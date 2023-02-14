@@ -1,7 +1,6 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Alert, View} from 'react-native';
+import {Alert, Platform, View} from 'react-native';
 
-import MapboxGL from '@rnmapbox/maps';
 import Logger from '@rnmapbox/maps/javascript/utils/Logger';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
@@ -10,7 +9,6 @@ import Dialog, {DialogContent, DialogTitle, SlideAnimation} from 'react-native-p
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
-import config from '../../utils/config';
 import {MODAL_KEYS} from '../home/home.constants';
 import {
   addedStatusMessage,
@@ -27,7 +25,7 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {MapLayer1, MapLayer2} from './Basemaps';
+import {MapLayer} from './Basemaps';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {
   clearedStratSection,
@@ -44,9 +42,6 @@ import useMapSymbology from './symbology/useMapSymbology';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
-
-MapboxGL.setWellKnownTileServer('Mapbox');
-MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -264,7 +259,8 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const createDefaultGeomContinued = async () => {
-    const centerCoords = await mapRef.current.getCenter();
+    let centerCoords = await mapRef.current.getCenter();
+    if (Platform.OS === 'web') centerCoords = [centerCoords.lng, centerCoords.lat];
     if (centerCoords) {
       let defaultFeature = turf.point(centerCoords);
       if (defaultGeomType === 'LineString' || defaultGeomType === 'Polygon') {
@@ -310,6 +306,7 @@ const Map = React.forwardRef((props, ref) => {
     }
     else if (mapRef && mapRef.current) {
       newCenter = await mapRef.current.getCenter();
+      if (Platform.OS === 'web') newCenter = [newCenter.lng, newCenter.lat];
       newZoom = await mapRef.current.getZoom();
     }
     useMapView.setMapView(newCenter, newZoom);
@@ -1345,9 +1342,7 @@ const Map = React.forwardRef((props, ref) => {
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {/* Switch identical layers to force basemap raster re-render based on mapToggle value*/}
-      {mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}
-      {mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}
+      {mapProps.basemap && <MapLayer {...mapProps}/>}
       {renderSetInCurrentViewModal()}
     </View>
   );

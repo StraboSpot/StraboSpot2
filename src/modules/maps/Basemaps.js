@@ -8,6 +8,7 @@ import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import ScaleBarAndZoom from '../../shared/ui/Scalebar';
+import config from '../../utils/config';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
@@ -27,7 +28,10 @@ import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
 
-function Basemap(props) {
+MapboxGL.setWellKnownTileServer('Mapbox');
+MapboxGL.setAccessToken(config.get('mapbox_access_token'));
+
+const Basemap = (props) => {
   const center = useSelector(state => state.map.center || [LONGITUDE, LATITUDE]);
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -476,12 +480,7 @@ function Basemap(props) {
   );
 }
 
-export const MapLayer1 = React.forwardRef((props, ref) => (
+export const MapLayer = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
-MapLayer1.displayName = 'MapLayer1';
-
-export const MapLayer2 = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-MapLayer2.displayName = 'MapLayer2';
+MapLayer.displayName = 'MapLayer';
