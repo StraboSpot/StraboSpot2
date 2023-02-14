@@ -1,7 +1,7 @@
 import {PermissionsAndroid} from 'react-native';
 
-import moment from 'moment';
 import RNFS from 'react-native-fs';
+import {zip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -49,33 +49,34 @@ const useExport = () => {
   };
 
   // For Android only.
-  const exportJSONToDownloadsFolder = async (localFileName, filename, includeImages, includeMapTiles) => {
+  const exportJSONToDownloadsFolder = async (localFileName, filename, isBeingExported) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
-    const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
-    const filePath = APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json';
-    const destinationDir = APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + `(exported-${dateAndTime})`;
+    await useDevice.makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename);
+
+    // Make temp directory for the export files to be zipped up.
+    console.log('Directory made:', APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+
+    // const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
+    const source = APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json';
+    const destination = APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename;
     await requestWriteDirectoryPermission();
     console.log(localFileName);
+
     const file = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
     const exportedJSON = JSON.parse(file);
-    const exists = await RNFS.exists(`${destinationDir}/data.json`);
-    console.log('Exists', exists);
-    await RNFS.mkdir(destinationDir);
-    console.log('Directory is made!');
     try {
-      console.log(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename);
-      await RNFS.copyFile(filePath, `${destinationDir}/data.json`);
+      await RNFS.copyFile(source, `${destination}/data.json`);
       console.log('Files Copied');
-      if (includeImages) {
-        await gatherImagesForDistribution(exportedJSON, filename + `(exported-${dateAndTime})`,
-          includeImages);
-      }
-      if (includeMapTiles) {
-        await gatherMapsForDistribution(exportedJSON,
-          filename + `(exported-${dateAndTime})`, includeMapTiles);
-      }
+      // console.log('ANDROID', await RNFS.readFile(destination + '/data.json'));
+      await gatherImagesForDistribution(exportedJSON, filename, isBeingExported);
+      console.log('Images copied to:', destination);
+      await gatherMapsForDistribution(exportedJSON, filename, isBeingExported);
+      console.log('Map tiles copied to:', destination);
+
+      const path = await zip(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename,
+        APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '.zip');
+      console.log(`zip completed at ${path}`);
       console.log('All Done Exporting');
-      // dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
       console.error('ERROR', err);
@@ -103,7 +104,7 @@ const useExport = () => {
 
   const gatherImagesForDistribution = async (data, fileName, isBeingExported) => {
     try {
-      const deviceDir = isBeingExported ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
+      const deviceDir = isBeingExported ? APP_DIRECTORIES.EXPORT_FILES_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
       await useDevice.doesDeviceDirectoryExist(
         deviceDir + fileName + '/Images');
@@ -144,7 +145,7 @@ const useExport = () => {
   const gatherMapsForDistribution = async (data, fileName, isBeingExported) => {
     try {
       const maps = data.mapNamesDb;
-      const deviceDir = isBeingExported ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
+      const deviceDir = isBeingExported ? APP_DIRECTORIES.EXPORT_FILES_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       let promises = [];
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {

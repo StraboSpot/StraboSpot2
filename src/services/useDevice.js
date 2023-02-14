@@ -1,7 +1,8 @@
-import {Linking, Platform} from 'react-native';
+import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import {unzip} from 'react-native-zip-archive';
 import {useDispatch} from 'react-redux';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
@@ -17,7 +18,7 @@ const useDevice = (props) => {
       await RNFS.copyFile(source, target);
     }
     catch (err) {
-      console.error('Error Copying Image Files to Backup');
+      console.error('Error Copying Image Files to Backup', err);
       throw Error(err);
     }
   };
@@ -114,11 +115,13 @@ const useDevice = (props) => {
     if (subDirectory !== undefined) {
       if (isExternal) {
         console.log('SUBDIR isExternal', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
-        return await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
+        const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
+        return exists;
       }
       else {
-        console.log('SUBDIR', subDirectory);
-        return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+        const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+        console.log(APP_DIRECTORIES.BACKUP_DIR + subDirectory + ' Exists:' + exists);
+        return exists;
       }
     }
     else {
@@ -131,26 +134,9 @@ const useDevice = (props) => {
 
   const getExternalProjectData = async () => {
     // try {
-    const res = await DocumentPicker.pick({type: 'application/json', copyTo: 'cachesDirectory'});
+    const res = await DocumentPicker.pick({type: [DocumentPicker.types.zip], copyTo: 'cachesDirectory'});
     console.log('External Document', res);
-    const json = await RNFS.readFile(res[0].uri);
-    const jsonParsed = JSON.parse(json);
-    return jsonParsed;
-    // }
-    // catch (err) {
-    //   console.error('Error getting external project', err);
-    // }
-  };
-
-  const getExternalImageFiles = async () => {
-    const imageFiles = await DocumentPicker.pick(
-      {type: DocumentPicker.types.images, allowMultiSelection: true, copyTo: 'cachesDirectory'});
-    return imageFiles;
-  };
-
-  const getExternalMapTiles = async () => {
-    const mapZippedFile = await DocumentPicker.pick({type: DocumentPicker.types.zip, copyTo: 'cachesDirectory'});
-    console.log('MAP Folder', mapZippedFile);
+    return res[0];
   };
 
   const openURL = async (url) => {
@@ -213,6 +199,52 @@ const useDevice = (props) => {
     else throw Error('Offline maps directory does not exist!');
   };
 
+  const requestReadDirectoryPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: 'Need permission to read Downloads Folder',
+          message:
+            'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can read the folder');
+      }
+      else {
+        console.log('Folder read permission denied');
+      }
+    }
+    catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const unZipAndCopyImportedData = async (zipFile) => {
+    try {
+      const fileName = zipFile.name.replace('.zip', '');
+      // const file = zipFile.name.replace(' ', '_');
+      const source = APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+      console.log(source);
+      const dest = APP_DIRECTORIES.BACKUP_DIR + fileName;
+
+      await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
+      console.log('Files copied to export folder!');
+
+      const unzippedFilePath = await unzip(source, dest);
+      return unzippedFilePath;
+    }
+    catch (err) {
+      console.error('Error unzipping imported file', err);
+      throw Error(err);
+    }
+
+  };
+
   const writeFileToDevice = async (path, filename, data) => {
     try {
       await RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8');
@@ -236,13 +268,13 @@ const useDevice = (props) => {
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceFileExist: doesDeviceFileExist,
     getExternalProjectData: getExternalProjectData,
-    getExternalImageFiles: getExternalImageFiles,
-    getExternalMapTiles: getExternalMapTiles,
     openURL: openURL,
     makeDirectory: makeDirectory,
     readDirectory: readDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMapFiles: readDirectoryForMapFiles,
+    requestReadDirectoryPermission: requestReadDirectoryPermission,
+    unZipAndCopyImportedData: unZipAndCopyImportedData,
     writeFileToDevice: writeFileToDevice,
   };
 };

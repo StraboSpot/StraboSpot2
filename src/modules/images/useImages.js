@@ -148,8 +148,6 @@ const useImages = () => {
   const saveImageFromDownloadsDir = async (image) => {
     const exists = await RNFS.exists(APP_DIRECTORIES.IMAGES);
     console.log('EXISTS', exists);
-    const imagesInDirBefore = await RNFS.readDir(APP_DIRECTORIES.IMAGES);
-    console.log('images in app directory', imagesInDirBefore);
     const source = image.fileCopyUri;
     const dest = APP_DIRECTORIES.IMAGES + image.name;
     console.log('source:', source, 'dest', dest);

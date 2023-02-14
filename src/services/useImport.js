@@ -295,19 +295,6 @@ const useImport = () => {
         dispatch(setErrorMessagesModalVisible(true));
       });
     }
-    // const dataFile = '/data.json';
-    // console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-    // return await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile).then(
-    //   (response) => {
-    //     return Promise.resolve(JSON.parse(response));
-    //   }, () => {
-    //     batch(() => {
-    //       dispatch(setStatusMessagesModalVisible(false));
-    //       dispatch(clearedStatusMessages());
-    //       dispatch(addedStatusMessage('Project Not Found'));
-    //       dispatch(setErrorMessagesModalVisible(true));
-    //     });
-    //   });
   };
 
   return {

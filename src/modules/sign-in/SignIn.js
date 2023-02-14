@@ -44,6 +44,8 @@ const SignIn = (props) => {
   useEffect(() => {
     console.log('UE SignIn []');
     useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
+    useDevice.requestReadDirectoryPermission().catch(err => console.error('Error getting permissions', err));
+
   }, []);
 
   useEffect(() => {

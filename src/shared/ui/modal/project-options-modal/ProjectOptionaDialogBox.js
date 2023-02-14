@@ -81,8 +81,7 @@ const ProjectOptionsDialogBox = (props) => {
     try {
       console.log('FileName', exportFileName);
       props.close();
-      await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, exportFileName, includeImages,
-        includeMapTiles);
+      await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
       toast.show('Project has been exported to Downloads folder!');
@@ -150,7 +149,8 @@ const ProjectOptionsDialogBox = (props) => {
       return (
         <View>
           <Text style={commonStyles.dialogText}>
-            <Text> Project will be EXPORTED to the Downloads folder in the My Files App.</Text>
+            <Text> Al project data, images, and offline maps will be EXPORTED as a .ZIP file to the Downloads folder in
+              the My Files App.</Text>
           </Text>
         </View>
       );
@@ -202,28 +202,6 @@ const ProjectOptionsDialogBox = (props) => {
                 onChangeText={text => setExportFileName(text)}
                 style={commonStyles.dialogInputContainer}
               />
-              <View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <CheckBox
-                    checked={includeImages}
-                    onIconPress={() => setIncludeImages(!includeImages)}
-                    containerStyle={{padding: 0}}
-                  />
-                  <Text>Include Images?</Text>
-                </View>
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                  <CheckBox
-                    checked={includeMapTiles}
-                    onIconPress={() => setIncludeMapTiles(!includeMapTiles)}
-                    containerStyle={{padding: 0}}
-                  />
-                  <Text>Include Map Tiles?</Text>
-                </View>
-              </View>
-
             </View>
             <View>
               <Button

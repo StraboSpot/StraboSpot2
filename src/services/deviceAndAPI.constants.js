@@ -1,7 +1,8 @@
 import RNFS from 'react-native-fs';
 
 const devicePath = RNFS.DocumentDirectoryPath;
-const androidBackupPath = RNFS.DownloadDirectoryPath + '/StraboSpot2/Backups/'; //Android Only
+const androidDownloadsPath = RNFS.DownloadDirectoryPath + '/StraboSpot2/Backups/'; //Android Only
+const androidExportPath = devicePath + '/AndroidExportFiles/';
 const account = '/account';
 // const appDirectoryForDistributedBackups = Platform.OS === 'ios' ? devicePath + /ProjectBackups/ : androidBackupPath + '/StraboSpot2/ProjectBackups/';
 const appDirectoryForDistributedBackups = devicePath + '/ProjectBackups/';
@@ -26,7 +27,8 @@ export const APP_DIRECTORIES = {
   ROOT_PATH: devicePath,
   APP_DIR: appDirectory,
   BACKUP_DIR: appDirectoryForDistributedBackups,
-  DOWNLOAD_DIR_ANDROID: androidBackupPath,
+  DOWNLOAD_DIR_ANDROID: androidDownloadsPath,
+  EXPORT_FILES_ANDROID: androidExportPath,
   SHARED_DOCUMENTS_PATH_IOS: sharedDocumentsPathIOS,
   IMAGES: imagesDirectory,
   TILE_CACHE: tileCacheDirectory,
