@@ -17,6 +17,7 @@ const compileNodeModules = [
   'react-native-gesture-handler',
   'react-native-image-picker',
   'react-native-reanimated',
+  'react-native-vector-icons'
 ].map(moduleName => path.resolve(__dirname, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
@@ -59,6 +60,19 @@ const imageLoaderConfiguration = {
   },
 };
 
+const ttfLoaderConfiguration = {
+  test: /\.ttf$/,
+  loader: 'url-loader', // or directly file-loader
+  include: [
+    path.resolve(appDirectory, 'node_modules/react-native-vector-icons'),
+  ],
+};
+
+const cssLoaderConfiguration = {
+  test: /\.css$/i,
+  use: ['style-loader', 'css-loader']
+}
+
 module.exports = {
   entry: [
     'babel-polyfill',
@@ -79,7 +93,7 @@ module.exports = {
     },
   },
   module: {
-    rules: [babelLoaderConfiguration, imageLoaderConfiguration],
+    rules: [babelLoaderConfiguration, imageLoaderConfiguration, ttfLoaderConfiguration, cssLoaderConfiguration],
   },
   plugins: [
     new HtmlWebpackPlugin({template: path.join(__dirname, 'index.html')}),
