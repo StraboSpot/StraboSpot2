@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, Overlay} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {DotIndicator} from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -9,6 +9,7 @@ import useDownloadHook from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
 import commonStyles from '../../../shared/common.styles';
 import {BLUE} from '../../../shared/styles.constants';
+import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedProject} from '../../project/projects.slice';
@@ -43,13 +44,11 @@ const StatusModal = (props) => {
   };
 
   return (
-    <Overlay
-      overlayStyle={homeStyles.dialogBox}
-      isVisible={isStatusMessagesModalVisible}
+    <StatusDialogBox
+      dialogTitle={'Status'}
+      style={commonStyles.dialogTitleSuccess}
+      visible={isStatusMessagesModalVisible}
     >
-      <View style={[homeStyles.dialogTitleContainer, commonStyles.dialogTitleSuccess]}>
-        <Text style={homeStyles.dialogTitleText}>Status</Text>
-      </View>
       <View style={{minHeight: 100}}>
         <View style={{paddingTop: 15}}>
           <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
@@ -99,7 +98,7 @@ const StatusModal = (props) => {
           </View>
         </View>
       </View>
-    </Overlay>
+    </StatusDialogBox>
   );
 };
 

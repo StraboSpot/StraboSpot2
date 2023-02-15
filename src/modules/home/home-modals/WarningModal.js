@@ -1,12 +1,13 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text} from 'react-native';
 
-import {Button, Overlay} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
+import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import {setWarningModalVisible} from '../home.slice';
-import homeStyles from '../home.style';
+
 
 const WarningModal = () => {
   const dispatch = useDispatch();
@@ -18,22 +19,19 @@ const WarningModal = () => {
   };
 
   return (
-    <Overlay
-      overlayStyle={[homeStyles.dialogBox]}
-      isVisible={isWarningModalVisible}
+    <StatusDialogBox
+      dialogTitle={'Warning!'}
+      style={commonStyles.dialogWarning}
+      visible={isWarningModalVisible}
     >
-      <View style={[homeStyles.dialogTitleContainer, commonStyles.dialogWarning]}>
-        <Text style={homeStyles.dialogTitleText}>Warning!</Text>
-      </View>
       <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
       <Button
         title={'OK'}
         type={'clear'}
         onPress={closeErrorModal}
       />
-    </Overlay>
+    </StatusDialogBox>
   );
 };
 
 export default WarningModal;
-

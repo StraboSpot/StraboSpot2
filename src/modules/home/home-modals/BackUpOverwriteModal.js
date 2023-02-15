@@ -67,7 +67,7 @@ const BackUpOverwriteModal = (props) => {
         title={'Overwrite Project'}
         buttonStyle={styles.dialogButton}
         titleStyle={styles.dialogButtonText}
-        onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
+        onPress={() => props.onPress(ProjectActions.OVERWRITE)}
       />
       <Button
         title={'CANCEL'}
