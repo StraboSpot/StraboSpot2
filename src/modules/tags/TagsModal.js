@@ -195,11 +195,7 @@ const TagsModal = (props) => {
             type={'outline'}
             onPress={addTag}
           />
-          <TagDetailModal
-            isVisible={isDetailModalVisible}
-            closeModal={closeTagDetailModal}
-            type={modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
-          />
+
         </View>
       )}
       <View style={modalStyle.textContainer}>
@@ -216,6 +212,11 @@ const TagsModal = (props) => {
             disabled={isEmpty(checkedTagsTemp)}
           />
         )}
+      <TagDetailModal
+        isVisible={isDetailModalVisible}
+        closeModal={closeTagDetailModal}
+        type={modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
+      />
     </React.Fragment>
   );
 };
