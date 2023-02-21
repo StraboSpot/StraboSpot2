@@ -154,14 +154,16 @@ const Home = () => {
 
   useEffect(() => {
     console.log('UE Home [modalVisible]', modalVisible);
-    console.log('Home Keyboard Listeners Added');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
-    return function cleanup() {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome).remove();
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome).remove();
-      console.log('Home Keyboard Listeners Removed');
-    };
+    if (Platform.OS === 'ios') {
+      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
+      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
+      console.log('Keyboard listeners added to HOME');
+      return function cleanup() {
+        Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome).remove();
+        Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome).remove();
+        console.log('Home Keyboard Listeners Removed');
+      };
+    }
   }, [modalVisible]);
 
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
@@ -582,7 +584,7 @@ const Home = () => {
   };
 
   return (
-    <View style={homeStyles.container}>
+    <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
       <Map
         mapComponentRef={mapComponentRef}
         mapMode={mapMode}
@@ -661,7 +663,7 @@ const Home = () => {
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {isOfflineMapModalVisible && renderSaveMapsModal()}
-    </View>
+    </Animated.View>
   );
 };
 

@@ -1,24 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, Keyboard, Text, TextInput, useWindowDimensions, View} from 'react-native';
+import React, {useState} from 'react';
+import {Text, TextInput, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {SlideAnimation} from 'react-native-popup-dialog';
 import {useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
-import * as Helpers from '../../shared/Helpers';
 import {validate} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
 import Splashscreen from '../splashscreen/Splashscreen';
 import styles from './signUp.styles';
 
-const {State: TextInputState} = TextInput;
-
-
 const SignUp = (props) => {
-  const {height, width} = useWindowDimensions();
-
   const initialState = {
     firstName: {
       value: '',
@@ -71,37 +65,7 @@ const SignUp = (props) => {
   const [statusDialog, setStatusDialog] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
   const [statusDialogTitle, setStatusDialogTitle] = useState(null);
-  const [textInputAnimate] = useState(new Animated.Value(0));
   const [userData, setUserData] = useState(initialState);
-
-  useEffect(() => {
-    console.log('UE SignUp []');
-    console.log('Home Keyboard Listeners Added');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp);
-    return function cleanup() {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignUp).remove();
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignUp).remove();
-      console.log('Home Keyboard Listeners Removed');
-    };
-  }, []);
-
-  useEffect(() => {
-    // console.log('UE SignUp [isOnline]', isOnline);
-    // if (isOnline === null) {
-    //   NetInfo.fetch().then(state => {
-    //     dispatch(setOnlineStatus(state));
-    //   })
-    //     .catch(err => {
-    //       throw (err);
-    //     });
-    // }
-    console.log('IsConnected in SignUp', isOnline);
-  }, [isOnline]);
-
-  const handleKeyboardDidShowSignUp = event => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
-
-  const handleKeyboardDidHideSignUp = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const onChangeText = (key, value) => {
     let connectedValue = {};

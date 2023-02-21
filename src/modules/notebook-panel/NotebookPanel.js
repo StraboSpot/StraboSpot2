@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, FlatList, Keyboard, TextInput, View} from 'react-native';
+import {Animated, FlatList, TextInput, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import * as Helpers from '../../shared/Helpers';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -37,28 +36,9 @@ const NotebookPanel = (props) => {
   const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    console.log('UE NotebookPanel [isNotebookPanelVisible]', isNotebookPanelVisible);
-    if (isNotebookPanelVisible) {
-      console.log('NB Keyboard Listeners Added');
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook);
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook);
-    }
-    return function cleanup() {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowNotebook).remove();
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideNotebook).remove();
-      console.log('NB Keyboard Listeners Removed');
-    };
-  }, [isNotebookPanelVisible]);
-
-  useEffect(() => {
     console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);
     dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
-
-  const handleKeyboardDidShowNotebook = event => Helpers.handleKeyboardDidShow(event, TextInputState,
-    textInputAnimate);
-
-  const handleKeyboardDidHideNotebook = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const openPage = (key) => {
     dispatch(setNotebookPageVisible(key));
@@ -75,18 +55,16 @@ const NotebookPanel = (props) => {
     if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
     return (
       <React.Fragment>
-        <Animated.View style={{flex: 1, transform: [{translateY: textInputAnimate}]}}>
-          <View style={notebookStyles.headerContainer}>
-            <NotebookHeader
-              closeNotebookPanel={props.closeNotebookPanel}
-              createDefaultGeom={props.createDefaultGeom}
-              zoomToSpot={props.zoomToSpot}
-            />
-          </View>
-          <View style={{...notebookStyles.centerContainer}}>
-            <Page {...pageProps}/>
-          </View>
-        </Animated.View>
+        <View style={notebookStyles.headerContainer}>
+          <NotebookHeader
+            closeNotebookPanel={props.closeNotebookPanel}
+            createDefaultGeom={props.createDefaultGeom}
+            zoomToSpot={props.zoomToSpot}
+          />
+        </View>
+        <View style={{...notebookStyles.centerContainer}}>
+          <Page {...pageProps}/>
+        </View>
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter openPage={openPage}/>
         </View>
