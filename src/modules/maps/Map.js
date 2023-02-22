@@ -259,7 +259,8 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const createDefaultGeomContinued = async () => {
-    let centerCoords = await mapRef.current.getCenter();
+    let centerCoords = Platform.OS === 'web' ? await mapRef.current.getCenter().toArray()
+      : await mapRef.current.getCenter();
     if (Platform.OS === 'web') centerCoords = [centerCoords.lng, centerCoords.lat];
     if (centerCoords) {
       let defaultFeature = turf.point(centerCoords);
@@ -305,8 +306,7 @@ const Map = React.forwardRef((props, ref) => {
       newZoom = 12;
     }
     else if (mapRef && mapRef.current) {
-      newCenter = await mapRef.current.getCenter();
-      if (Platform.OS === 'web') newCenter = [newCenter.lng, newCenter.lat];
+      newCenter = Platform.OS === 'web' ? await mapRef.current.getCenter().toArray() : await mapRef.current.getCenter();
       newZoom = await mapRef.current.getZoom();
     }
     useMapView.setMapView(newCenter, newZoom);
@@ -800,7 +800,8 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const getExtentString = async () => {
-    const mapBounds = await mapRef.current.getVisibleBounds();
+    const mapBounds = Platform.OS === 'web' ? await mapRef.current.getBounds().toArray()
+      : await mapRef.current.getVisibleBounds();
 
     let right = mapBounds[0][0];
     let top = mapBounds[0][1];
@@ -1269,7 +1270,8 @@ const Map = React.forwardRef((props, ref) => {
   const spotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
       console.log('Updating spots in map extent...');
-      const mapBounds = await mapRef.current.getVisibleBounds();
+      const mapBounds = Platform.OS === 'web' ? await mapRef.current.getBounds().toArray()
+        : await mapRef.current.getVisibleBounds();
       let right = mapBounds[0][0];
       let top = mapBounds[0][1];
       let left = mapBounds[1][0];

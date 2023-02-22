@@ -611,16 +611,18 @@ const useMaps = (mapRef) => {
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
     if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))
       || spotsToZoomTo.every(s => isOnStratSection(s))) {
-      if (camera) {
+      if (camera || Platform.OS === 'web') {
         try {
           if (spotsToZoomTo.length === 1) {
             const centroid = turf.centroid(spotsToZoomTo[0]);
-            camera.flyTo(turf.getCoord(centroid));
+            if (Platform.OS === 'web') map.flyTo({center: turf.getCoord(centroid)});
+            else camera.flyTo(turf.getCoord(centroid));
           }
           else if (spotsToZoomTo.length > 1) {
             const features = turf.featureCollection(spotsToZoomTo);
             const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
-            camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
+            if (Platform.OS === 'web') map.fitBounds([[maxX, minY], [minX, maxY]], {padding: 100, duration: 2500});
+            else camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
           }
         }
         catch (err) {
