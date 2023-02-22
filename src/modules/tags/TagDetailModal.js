@@ -11,6 +11,7 @@ import {useTagsHook} from '../tags';
 
 const platform = Platform.OS === 'ios' ? 'window' : 'screen';
 const dimensions = Dimensions.get(platform);
+
 const TagDetailModal = (props) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
@@ -72,7 +73,7 @@ const TagDetailModal = (props) => {
         padding: 0,
       }}
     >
-      <View>
+      <View style={{maxHeight: '100%'}}>
         {renderCancelSaveButtons()}
         <FlatList
           ListHeaderComponent={
