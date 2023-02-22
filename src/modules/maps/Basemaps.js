@@ -66,16 +66,6 @@ const Basemap = (props) => {
     return useImages.doesImageExistOnDevice(props.imageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
-  // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
-  // doesn't work for colors by tags and more complex styling
-  const addSymbology = (features) => {
-    return features.map((feature) => {
-      const symbology = useMapSymbology.getSymbology(feature);
-      if (!isEmpty(symbology)) feature.properties.symbology = symbology;
-      return feature;
-    });
-  };
-
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
     console.log('Getting initial map center...');
@@ -244,7 +234,7 @@ const Basemap = (props) => {
         {/* Colored Halo Around Points Layer */}
         <MapboxGL.ShapeSource
           id={'shapeSource'}
-          shape={turf.featureCollection(addSymbology(props.spotsNotSelected))}
+          shape={turf.featureCollection(useMapSymbology.addSymbology(props.spotsNotSelected))}
         >
           <MapboxGL.CircleLayer
             id={'pointLayerColorHalo'}
@@ -263,7 +253,7 @@ const Basemap = (props) => {
         />
         <MapboxGL.ShapeSource
           id={'spotsNotSelectedSource'}
-          shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
+          shape={turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
         >
           {/* Polygon Not Selected */}
           <MapboxGL.FillLayer
@@ -337,7 +327,7 @@ const Basemap = (props) => {
         {/* Selected Features Layer */}
         <MapboxGL.ShapeSource
           id={'spotsSelectedSource'}
-          shape={turf.featureCollection(addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected)))}
+          shape={turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected)))}
         >
           {/* Polygon Selected */}
           <MapboxGL.FillLayer
@@ -404,7 +394,7 @@ const Basemap = (props) => {
         {/* Halo Around Selected Point Feature Layer */}
         <MapboxGL.ShapeSource
           id={'pointSpotsSelectedSource'}
-          shape={turf.featureCollection(addSymbology(props.spotsSelected))}
+          shape={turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected))}
         >
           <MapboxGL.CircleLayer
             id={'pointLayerSelectedHalo'}

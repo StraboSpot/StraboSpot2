@@ -17,6 +17,16 @@ const useMapSymbology = () => {
     dotDashed: [5, 2, 0.5, 2],
   };
 
+  // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
+  // doesn't work for colors by tags and more complex styling
+  const addSymbology = (features) => {
+    return features.map((feature) => {
+      const symbology = getSymbology(feature);
+      if (!isEmpty(symbology)) feature.properties.symbology = symbology;
+      return feature;
+    });
+  };
+
   // Get the rotation of the symbol, either strike, trend or failing both, 0
   const getIconRotation = () => {
     return [
@@ -442,6 +452,7 @@ const useMapSymbology = () => {
   };
 
   return [{
+    addSymbology: addSymbology,
     getMapSymbology: getMapSymbology,
     getLinesFilteredByPattern: getLinesFilteredByPattern,
     getSymbology: getSymbology,
