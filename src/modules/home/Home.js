@@ -94,7 +94,7 @@ const Home = () => {
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
-  const selectedProject = useSelector(state => state.home.selectedProject);
+  const selectedProject = useSelector(state => state.project.project);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
