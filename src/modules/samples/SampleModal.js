@@ -8,13 +8,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
 import {updatedProject} from '../project/projects.slice';
-import {editedSpotProperties} from '../spots/spots.slice';
+import {useSpotsHook} from '../spots';
+import {addedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const SampleModal = (props) => {
     const dispatch = useDispatch();
@@ -24,6 +24,8 @@ const SampleModal = (props) => {
 
     const [useMaps] = useMapsHook();
     const [useForm] = useFormHook();
+    const [useSpots] = useSpotsHook();
+
 
     const [namePrefix, setNamePrefix] = useState(null);
     const [startingNumber, setStartingNumber] = useState(null);
@@ -52,7 +54,11 @@ const SampleModal = (props) => {
     useEffect(() => {
       console.log('UE SampleModal [spot]', spot);
       setNamePrefix(preferences.sample_prefix || 'Unnamed');
-      setStartingNumber(preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
+
+
+      setStartingNumber(
+        preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || getAllSamplesCount());
+      // preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
     }, [spot]);
 
     const confirmLeavePage = () => {
@@ -73,6 +79,12 @@ const SampleModal = (props) => {
           {cancelable: false},
         );
       }
+    };
+
+    const getAllSamplesCount = async () => {
+      const count = await useSpots.getAllSpotSamplesCount();
+      console.log('SAMPLE COUNT', count);
+      setStartingNumber(count);
     };
 
     const onOrientedButtonPress = (i) => {
@@ -136,27 +148,34 @@ const SampleModal = (props) => {
     };
 
     const saveForm = async (currentForm) => {
-      if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
-        console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
-        await props.goToCurrentLocation();
-      }
       let newSample = currentForm.values;
       newSample.id = getNewId();
-      const samples = spot.properties?.samples ? [...spot.properties.samples, newSample] : [newSample];
-      dispatch(editedSpotProperties({field: 'samples', value: samples}));
-
-      const updatedPreferences = {
-        ...preferences,
-        sample_prefix: namePrefix,
-        starting_sample_number: startingNumber + 1,
-      };
-      dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+      if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
+        let pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+        pointSetAtCurrentLocation = {
+          ...pointSetAtCurrentLocation,
+          properties: {...pointSetAtCurrentLocation.properties, samples: [newSample]},
+        };
+        console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+        dispatch(addedSpot(pointSetAtCurrentLocation));
+        await props.goToCurrentLocation();
+      }
+      else {
+        const samples = spot.properties?.samples ? [...spot.properties.samples, newSample] : [newSample];
+        dispatch(editedSpotProperties({field: 'samples', value: samples}));
+        const updatedPreferences = {
+          ...preferences,
+          sample_prefix: namePrefix,
+          starting_sample_number: startingNumber + 1,
+        };
+        dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+      }
       await currentForm.resetForm();
     };
 
+
     if (Platform.OS === 'android') return renderSamplesModal();
-    else return <DragAnimation>{renderSamplesModal()}</DragAnimation>;
+    else return renderSamplesModal();
   }
 ;
 

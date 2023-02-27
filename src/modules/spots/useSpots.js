@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
+import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {
@@ -27,6 +28,7 @@ const useSpots = () => {
   const dispatch = useDispatch();
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const datasets = useSelector(state => state.project.datasets);
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project.preferences) || {};
   const tags = useSelector(state => state.project.project.tags || []);
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
@@ -102,11 +104,18 @@ const useSpots = () => {
       const defaultName = preferences.spot_prefix || 'Unnamed';
       const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
       newSpot.properties.name = defaultName + defaultNumber;
-      const updatedPreferences = {
+      let updatedPreferences = {
         ...preferences,
         spot_prefix: defaultName,
         starting_number_for_spot: defaultNumber + 1,
       };
+      if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
+        updatedPreferences = {
+          ...updatedPreferences,
+          sample_prefix: preferences.sample_prefix || 'Unnamed',
+          starting_sample_number: (preferences.starting_sample_number || 1) + 1,
+        };
+      }
       dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
     }
 
@@ -184,6 +193,36 @@ const useSpots = () => {
       });
     });
     return JSON.parse(JSON.stringify(allFeatures)).slice(0, 25);
+  };
+
+  const getAllSpotSamplesCount = async () => {
+    let spotsObjArr = [];
+    let samplesArr = [];
+    //get all datasets with spots
+    await Promise.all(Object.values(datasets).filter((dataset) => {
+        if (!isEmpty(dataset.spotIds)) {
+          dataset.spotIds.map(async (spotId) => {
+            const spotObj = await getSpotById(spotId);
+            if (!isEmpty(spotObj?.properties?.samples)) {
+              spotObj.properties.samples.map((sample) => {
+                samplesArr.push(sample);
+                console.log(1);
+              });
+              console.log(2);
+            }
+            console.log(3);
+          });
+          console.log(4);
+        }
+      }),
+    );
+    console.log(5);
+    console.log('SamplesArr', samplesArr.length);
+    return samplesArr.length;
+
+    //filter out spots with samples in separate array
+
+    //get the length of the array
   };
 
   const getImageBasemaps = () => {
@@ -349,6 +388,7 @@ const useSpots = () => {
     deleteSpot: deleteSpot,
     getActiveSpotsObj: getActiveSpotsObj,
     getAllFeaturesFromSpot: getAllFeaturesFromSpot,
+    getAllSpotSamplesCount: getAllSpotSamplesCount,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
     getMappableSpots: getMappableSpots,
