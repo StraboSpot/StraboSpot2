@@ -33,6 +33,15 @@ const ShortcutMenu = (props) => {
       <View style={shortcutMenuStyles.textContainer}>
         <Text style={shortcutMenuStyles.textStyle}>Shortcuts will create a NEW spot</Text>
       </View>
+      <ListItem containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>All</ListItem.Title>
+        </ListItem.Content>
+        <Switch
+          onChange={() => props.toggleSwitch('all')}
+          value={props.shortcutSwitchPosition['all']}
+        />
+      </ListItem>
       <FlatList
         keyExtractor={item => item.toString()}
         data={SHORTCUT_MODALS}

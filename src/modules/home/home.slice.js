@@ -27,6 +27,7 @@ const initialHomeState = {
   isUploadModalVisible: false,
   isUploadProgressModalVisible: false,
   shortcutSwitchPosition: {
+    all: false,
     tag: false,
     measurement: false,
     sample: false,
@@ -102,7 +103,19 @@ const homeSlice = createSlice({
       state.statusMessageModalTitle = action.payload;
     },
     shortcutSwitchPosition(state, action) {
-      state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
+      if (action.payload.switchName === 'all') {
+        console.log('ALL IS SWITCHED');
+        state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
+        console.log(Object.keys(state.shortcutSwitchPosition));
+        if (state.shortcutSwitchPosition[action.payload.switchName]) {
+          Object.keys(state.shortcutSwitchPosition).forEach(key => state.shortcutSwitchPosition[key] = true);
+        }
+        else Object.keys(state.shortcutSwitchPosition).forEach(key => state.shortcutSwitchPosition[key] = false);
+      }
+      else {
+        state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
+        state.shortcutSwitchPosition.all = false;
+      }
     },
     setUploadModalVisible(state, action) {
       state.isUploadModalVisible = action.payload;
