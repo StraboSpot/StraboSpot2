@@ -53,9 +53,8 @@ const Basemap = (props) => {
       console.log('Initializing Basemap...');
       mapRef.current = new mapboxgl.Map({
         container: mapContainer.current,
-        // style: !props.imageBasemap && !props.stratSection && props.basemap,
-        center: center,
-        zoom: zoom,
+        center: initialCenter,
+        zoom: initialZoom,
       });
     }
     // Clean up on unmount
@@ -64,68 +63,32 @@ const Basemap = (props) => {
 
   useEffect(() => {
     console.log('UE Basemap - Changed props.basemap', props.basemap);
-    if (mapRef.current) mapRef.current.setStyle(props.basemap);
+
+    const setStyle = async () => {
+      if (mapRef.current) {
+        console.log('Setting style...');
+        await mapRef.current.setStyle(props.basemap);
+        console.log('Set style.');
+        loadLayers();
+      }
+    };
+
+    if (!props.imageBasemap && !props.stratSection) setStyle();
   }, [props.basemap]);
 
   useEffect(() => {
     if (mapRef.current) {
       if (!isEmpty(props.spotsNotSelected) || !isEmpty(props.spotsSelected)) {
         mapRef.current.on('load', () => {
-            console.log('A load event occurred.');
-
-            // Load an image from an external URL.
-            // mapRef.current.loadImage(
-            //   symbols.default_point, (error, image) => {
-            //     if (error) throw error;
-
-            // Add the image to the map style.
-            // if (!mapRef.current.hasImage('point')) mapRef.current.addImage('point', image);
-            // if (mapRef.current.hasImage('point')) console.log('Added Image: point');
-
-            // Add a data source containing one point feature.
-            if (mapRef.current.getSource('spotsNotSelectedSource')) {
-              if (mapRef.current.getLayer('pointLayerNotSelected')) {
-                mapRef.current.removeLayer('pointLayerNotSelected');
-              }
-              mapRef.current.removeSource('spotsNotSelectedSource');
-            }
-            mapRef.current.addSource('spotsNotSelectedSource', {
-              type: 'geojson',
-              // tolerance: 0,
-              // buffer: 0,
-              data: turf.featureCollection(
-                useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))),
-            });
-            if (mapRef.current.getSource('spotsNotSelectedSource')) {
-              console.log('Added Source: spotsNotSelectedSource');
-            }
-
-            // Add a layer to use the image to represent the data.
-            // if (mapRef.current.getLayer('points')) mapRef.current.removeLayer('points');
-            mapRef.current.addLayer({
-              id: 'pointLayerNotSelected',
-              type: 'symbol',
-              source: 'spotsNotSelectedSource', // reference the data source
-              filter: ['==', ['geometry-type'], 'Point'],
-              layout: {
-                'icon-image': 'point', // reference the image
-                'icon-size': 0.35,
-                'icon-padding': 0,
-                // 'symbol-spacing': 0,
-                'icon-allow-overlap': true,     // Need to be able to stack symbols at same location
-                'icon-ignore-placement': true,  // Need to be able to stack symbols at same location
-              },
-            });
-            if (mapRef.current.getLayer('pointLayerNotSelected')) console.log('Added Layer: pointLayerNotSelected');
-          },
-        );
-        // });
+          console.log('A load event occurred.');
+          loadLayers();
+        });
       }
 
       // Add the image to the map style.
       const loadImage = (id) => {
         mapRef.current.loadImage(
-          symbols.default_point, (error, image) => {
+          symbols[id], (error, image) => {
             if (error) throw error;
             if (!mapRef.current.hasImage(id)) mapRef.current.addImage(id, image);
             if (mapRef.current.hasImage(id)) console.log('Added Image:', id);
@@ -136,10 +99,6 @@ const Basemap = (props) => {
         const id = e.id; // id of the missing image
         console.log(id, e);
         loadImage(id);
-      });
-
-      mapRef.current.on('render', () => {
-        console.log('A render event occurred.');
       });
 
       mapRef.current.on('moveend', async () => {
@@ -153,6 +112,34 @@ const Basemap = (props) => {
       });
     }
   }, [props.spotsNotSelected]);
+
+  const loadLayers = () => {
+    console.log('Loading layers...');
+
+    // Remove Source and Layers: Spots Not Selected and Point Not Selected
+    if (mapRef.current.getSource('spotsNotSelectedSource')) {
+      if (mapRef.current.getLayer('pointLayerNotSelected')) mapRef.current.removeLayer('pointLayerNotSelected');
+      mapRef.current.removeSource('spotsNotSelectedSource');
+    }
+
+    // Add Source: Spots Not Selected
+    mapRef.current.addSource('spotsNotSelectedSource', {
+      type: 'geojson',
+      data: turf.featureCollection(
+        useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))),
+    });
+    if (mapRef.current.getSource('spotsNotSelectedSource')) console.log('Added Source: spotsNotSelectedSource');
+
+    // Add Layer: Point Not Selected
+    mapRef.current.addLayer({
+      id: 'pointLayerNotSelected',
+      type: 'symbol',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'Point'],
+      layout: useMapSymbology.getMapSymbology().point,
+    });
+    if (mapRef.current.getLayer('pointLayerNotSelected')) console.log('Added Layer: pointLayerNotSelected');
+  };
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {

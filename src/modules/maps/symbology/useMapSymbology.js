@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
@@ -340,7 +342,7 @@ const useMapSymbology = () => {
       iconAllowOverlap: true,     // Need to be able to stack symbols at same location
       iconIgnorePlacement: true,  // Need to be able to stack symbols at same location
       iconSize: 0.35,
-      symbolSpacing: 0,
+      // symbolSpacing: 0,
     },
     pointColorHalo: {
       circleRadius: 17,
@@ -448,6 +450,35 @@ const useMapSymbology = () => {
   };
 
   const getMapSymbology = () => {
+    // Map of properties for native to web
+    const propertiesMap = {
+      iconAllowOverlap: 'icon-allow-overlap',
+      iconIgnorePlacement: 'icon-ignore-placement',
+      iconImage: 'icon-image',
+      iconRotate: 'icon-rotate',
+      iconSize: 'icon-size',
+      symbolSpacing: 'symbol-spacing',
+      textAnchor: 'text-anchor',
+      textField: 'text-field',
+      textIgnorePlacement: 'text-ignore-placement',
+      textOffset: 'text-offset',
+    };
+
+    // Map property names to those used for web
+    if (Platform.OS === 'web') {
+      const temp = Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+        ...acc,
+        ...{
+          [key]: Object.entries(value).reduce((acc2, [property, style]) => ({
+              ...acc2,
+              ...{[propertiesMap[property]]: style},
+            }),
+            {}),
+        },
+      }), {});
+      console.log('temp', temp);
+      return temp;
+    }
     return mapStyles;
   };
 
