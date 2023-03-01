@@ -116,9 +116,15 @@ const Basemap = (props) => {
   const loadLayers = () => {
     console.log('Loading layers...');
 
-    // Remove Source and Layers: Spots Not Selected and Point Not Selected
+    // Remove Source and Layers Before Adding Them
     if (mapRef.current.getSource('spotsNotSelectedSource')) {
-      if (mapRef.current.getLayer('pointLayerNotSelected')) mapRef.current.removeLayer('pointLayerNotSelected');
+      const layerIds = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected', 'polygonLayerNotSelectedBorder',
+        'polygonLabelLayerNotSelected', 'lineLayerNotSelected','lineLayerNotSelectedDotted',
+        'lineLayerNotSelectedDashed','lineLayerNotSelectedDotDashed','lineLabelLayerNotSelected',
+        'pointLayerNotSelected'];
+      layerIds.forEach((layerId)=>{
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+      });
       mapRef.current.removeSource('spotsNotSelectedSource');
     }
 
@@ -130,6 +136,75 @@ const Basemap = (props) => {
     });
     if (mapRef.current.getSource('spotsNotSelectedSource')) console.log('Added Source: spotsNotSelectedSource');
 
+    // Add Layer: Polygon Not Selected
+    mapRef.current.addLayer({
+      id: 'polygonLayerNotSelected',
+      type: 'fill',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: ['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]],
+      paint: useMapSymbology.getMapSymbology().polygon,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLayerWithPatternNotSelected',
+      type: 'fill',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: ['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]],
+      paint: useMapSymbology.getMapSymbology().polygonWithPattern,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLayerNotSelectedBorder',
+      type: 'line',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'Polygon'],
+      paint: useMapSymbology.getMapSymbology().line,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLabelLayerNotSelected',
+      type: 'symbol',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'Polygon'],
+      layout: useMapSymbology.getMapSymbology().polygonLabel,
+    });
+
+    // Add Layer: Line Not Selected
+    // Need 4 different lines for the different types of line dashes since
+    // lineDasharray is not suppported with data-driven styling
+    mapRef.current.addLayer({
+      id: 'lineLayerNotSelected',
+      type: 'line',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('solid'),
+      paint: useMapSymbology.getMapSymbology().line,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerNotSelectedDotted',
+      type: 'line',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('dotted'),
+      paint: useMapSymbology.getMapSymbology().lineDotted,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerNotSelectedDashed',
+      type: 'line',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('dashed'),
+      paint: useMapSymbology.getMapSymbology().lineDashed,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerNotSelectedDotDashed',
+      type: 'line',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('dotDashed'),
+      paint: useMapSymbology.getMapSymbology().lineDotDashed,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLabelLayerNotSelected',
+      type: 'symbol',
+      source: 'spotsNotSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'LineString'],
+      layout: useMapSymbology.getMapSymbology().lineLabel,
+    });
+
     // Add Layer: Point Not Selected
     mapRef.current.addLayer({
       id: 'pointLayerNotSelected',
@@ -138,7 +213,6 @@ const Basemap = (props) => {
       filter: ['==', ['geometry-type'], 'Point'],
       layout: useMapSymbology.getMapSymbology().point,
     });
-    if (mapRef.current.getLayer('pointLayerNotSelected')) console.log('Added Layer: pointLayerNotSelected');
   };
 
   // Evaluate and return appropriate center coordinates
