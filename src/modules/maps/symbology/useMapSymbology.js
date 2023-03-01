@@ -452,11 +452,24 @@ const useMapSymbology = () => {
   const getMapSymbology = () => {
     // Map of properties for native to web
     const propertiesMap = {
+      circleColor: 'circle-color',
+      circleOpacity: 'circle-opacity',
+      circleRadius: 'circle-radius',
+      circleStrokeColor: 'circle-stroke-color',
+      circleStrokeWidth: 'circle-stroke-width',
+      fillColor: 'fill-color',
+      fillOpacity: 'fill-opacity',
+      fillOutlineColor: 'fill-outline-color',
+      fillPattern: 'fill-pattern',
       iconAllowOverlap: 'icon-allow-overlap',
       iconIgnorePlacement: 'icon-ignore-placement',
       iconImage: 'icon-image',
       iconRotate: 'icon-rotate',
       iconSize: 'icon-size',
+      lineColor: 'line-color',
+      lineDasharray: 'line-dasharray',
+      lineWidth: 'line-width',
+      symbolPlacement: 'symbol-placement',
       symbolSpacing: 'symbol-spacing',
       textAnchor: 'text-anchor',
       textField: 'text-field',
@@ -466,7 +479,7 @@ const useMapSymbology = () => {
 
     // Map property names to those used for web
     if (Platform.OS === 'web') {
-      const temp = Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
         ...acc,
         ...{
           [key]: Object.entries(value).reduce((acc2, [property, style]) => ({
@@ -476,8 +489,6 @@ const useMapSymbology = () => {
             {}),
         },
       }), {});
-      console.log('temp', temp);
-      return temp;
     }
     return mapStyles;
   };
