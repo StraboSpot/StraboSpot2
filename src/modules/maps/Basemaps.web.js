@@ -42,8 +42,6 @@ const Basemap = (props) => {
 
   const mapContainer = useRef(null);
 
-  console.log('symbols', symbols);
-
   useEffect(() => {
     console.log('UE Basemap', mapRef, props.basemap);
     setInitialCenter(getCenterCoordinates());
@@ -74,67 +72,79 @@ const Basemap = (props) => {
     };
 
     if (!props.imageBasemap && !props.stratSection) setStyle();
-  }, [props.basemap]);
+  }, [props.basemap, props.spotsNotSelected, props.spotsSelected]);
 
   useEffect(() => {
-    if (mapRef.current) {
-      if (!isEmpty(props.spotsNotSelected) || !isEmpty(props.spotsSelected)) {
-        mapRef.current.on('load', () => {
-          console.log('A load event occurred.');
-          loadLayers();
+    // Add the image to the map style.
+    const loadImage = (id) => {
+      mapRef.current.loadImage(
+        symbols[id], (error, image) => {
+          if (error) throw error;
+          if (!mapRef.current.hasImage(id)) mapRef.current.addImage(id, image);
+          if (mapRef.current.hasImage(id)) console.log('Added Image:', id);
         });
+    };
+
+    mapRef.current?.on('styleimagemissing', (e) => {
+      const id = e.id; // id of the missing image
+      console.log(id, e);
+      loadImage(id);
+    });
+
+    mapRef.current?.on('moveend', async () => {
+      console.log('A moveend event occurred.');
+      props.spotsInMapExtent();
+      if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
+        const newCenter = mapRef.current.getCenter().toArray();
+        const newZoom = mapRef.current.getZoom();
+        useMapView.setMapView(newCenter, newZoom);
       }
+    });
 
-      // Add the image to the map style.
-      const loadImage = (id) => {
-        mapRef.current.loadImage(
-          symbols[id], (error, image) => {
-            if (error) throw error;
-            if (!mapRef.current.hasImage(id)) mapRef.current.addImage(id, image);
-            if (mapRef.current.hasImage(id)) console.log('Added Image:', id);
-          });
-      };
+    mapRef.current?.on('click', props.onMapPress);
+  }, []);
 
-      mapRef.current.on('styleimagemissing', (e) => {
-        const id = e.id; // id of the missing image
-        console.log(id, e);
-        loadImage(id);
-      });
-
-      mapRef.current.on('moveend', async () => {
-        console.log('A moveend event occurred.');
-        props.spotsInMapExtent();
-        if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
-          const newCenter = await mapRef.current.getCenter().toArray();
-          const newZoom = await mapRef.current.getZoom();
-          useMapView.setMapView(newCenter, newZoom);
-        }
-      });
-    }
-  }, [props.spotsNotSelected]);
-
-  const loadLayers = () => {
-    console.log('Loading layers...');
-
-    // Remove Source and Layers Before Adding Them
+  // Remove Source and Layers Before Adding Them
+  const cleanLayers = () => {
     if (mapRef.current.getSource('spotsNotSelectedSource')) {
       const layerIds = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected', 'polygonLayerNotSelectedBorder',
-        'polygonLabelLayerNotSelected', 'lineLayerNotSelected','lineLayerNotSelectedDotted',
-        'lineLayerNotSelectedDashed','lineLayerNotSelectedDotDashed','lineLabelLayerNotSelected',
+        'polygonLabelLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
+        'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'lineLabelLayerNotSelected',
         'pointLayerNotSelected'];
-      layerIds.forEach((layerId)=>{
+      layerIds.forEach((layerId) => {
         if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
       });
       mapRef.current.removeSource('spotsNotSelectedSource');
     }
+    if (mapRef.current.getSource('spotsSelectedSource')) {
+      const layerIds = ['polygonLayerSelected', 'polygonLayerWithPatternSelected', 'polygonLayerSelectedBorder',
+        'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+        'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected',
+        'pointLayerSelectedHalo'];
+      layerIds.forEach((layerId) => {
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+      });
+      mapRef.current.removeSource('spotsSelectedSource');
+    }
+    if (mapRef.current.getSource('pointSpotsSelectedSource')) {
+      const layerIds = ['pointLayerSelectedHalo'];
+      layerIds.forEach((layerId) => {
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+      });
+      mapRef.current.removeSource('pointSpotsSelectedSource');
+    }
+    console.log('Finished cleaning layers.')
+  };
+
+  // Add Features Layers (Not Selected Spots)
+  const addFeaturesLayers = () => {
+    console.log('Adding features layers (not selected spots)...');
 
     // Add Source: Spots Not Selected
     mapRef.current.addSource('spotsNotSelectedSource', {
       type: 'geojson',
-      data: turf.featureCollection(
-        useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))),
+      data: turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))),
     });
-    if (mapRef.current.getSource('spotsNotSelectedSource')) console.log('Added Source: spotsNotSelectedSource');
 
     // Add Layer: Polygon Not Selected
     mapRef.current.addLayer({
@@ -213,6 +223,116 @@ const Basemap = (props) => {
       filter: ['==', ['geometry-type'], 'Point'],
       layout: useMapSymbology.getMapSymbology().point,
     });
+    if (mapRef.current.getLayer('pointLayerNotSelected')) console.log('Added Layer: pointLayerNotSelected');
+
+    console.log('Finished adding features layers (not selected spots)')
+  };
+
+  // Add Selected Features Layers (Selected Spots)
+  const addFeaturesLayersSelected = () => {
+    console.log('Adding selected features layers (selected spots)...');
+
+    // Add Source: Spots Not Selected
+    mapRef.current.addSource('spotsSelectedSource', {
+      type: 'geojson',
+      data: turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))),
+    });
+
+    // Add Layer: Polygon Selected
+    mapRef.current.addLayer({
+      id: 'polygonLayerSelected',
+      type: 'fill',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: ['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]],
+      paint: useMapSymbology.getMapSymbology().polygonSelected,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLayerWithPatternSelected',
+      type: 'fill',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: ['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]],
+      paint: useMapSymbology.getMapSymbology().polygonWithPatternSelected,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLayerSelectedBorder',
+      type: 'line',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'Polygon'],
+      paint: useMapSymbology.getMapSymbology().line,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLabelLayerSelected',
+      type: 'symbol',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'Polygon'],
+      layout: useMapSymbology.getMapSymbology().polygonLabel,
+    });
+
+    // Add Layer: Line Selected
+    // Need 4 different lines for the different types of line dashes since
+    // lineDasharray is not suppported with data-driven styling
+    mapRef.current.addLayer({
+      id: 'lineLayerSelected',
+      type: 'line',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('solid'),
+      paint: useMapSymbology.getMapSymbology().lineSelected,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerSelectedDotted',
+      type: 'line',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('dotted'),
+      paint: useMapSymbology.getMapSymbology().lineSelectedDotted,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerSelectedDashed',
+      type: 'line',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('dashed'),
+      paint: useMapSymbology.getMapSymbology().lineSelectedDashed,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerSelectedDotDashed',
+      type: 'line',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: useMapSymbology.getLinesFilteredByPattern('dotDashed'),
+      paint: useMapSymbology.getMapSymbology().lineSelectedDotDashed,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLabelLayerSelected',
+      type: 'symbol',
+      source: 'spotsSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'LineString'],
+      layout: useMapSymbology.getMapSymbology().lineLabel,
+    });
+
+    mapRef.current.addSource('pointSpotsSelectedSource', {
+      type: 'geojson',
+      data: turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)),
+    });
+
+    // Add Layer: Point Selected (Halo Around Selected Point)
+    mapRef.current.addLayer({
+      id: 'pointLayerSelectedHalo',
+      type: 'circle',
+      source: 'pointSpotsSelectedSource', // reference the data source
+      filter: ['==', ['geometry-type'], 'Point'],
+      paint: useMapSymbology.getMapSymbology().pointSelected,
+    });
+    if (mapRef.current.getLayer('pointLayerSelectedHalo')) console.log('Added Layer: pointLayerSelectedHalo');
+
+    console.log('Finished adding selected features layers (selected spots)')
+  };
+
+  const loadLayers = () => {
+    console.log('Loading layers...');
+
+    cleanLayers();
+    addFeaturesLayers();
+    addFeaturesLayersSelected();
+
+    console.log('Finished loading layers.');
   };
 
   // Evaluate and return appropriate center coordinates
