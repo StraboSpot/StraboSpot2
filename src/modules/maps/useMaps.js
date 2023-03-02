@@ -273,7 +273,8 @@ const useMaps = (mapRef) => {
       }
       else {
         const eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
-        screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
+        screenCoords = Platform.OS === 'web' ? mapRef.current.project(eachFeature.geometry.coordinates)
+          : await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
         eachFeature.geometry.coordinates = screenCoords;
         distances[i] = turf.distance(dummyFeature, eachFeature);
       }
@@ -305,10 +306,19 @@ const useMaps = (mapRef) => {
   // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
   const getFeatureInRect = async (screenPointX, screenPointY, layers) => {
     const r = 30; // half the width (in pixels?) of bounding box to create
-    const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
-    const featureCollectionInRect = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
-    const featuresInRect = featureCollectionInRect.features;
+    const bbox = Platform.OS === 'web' ? [[screenPointX - r, screenPointY - r],[screenPointX + r, screenPointY + r]]
+      : [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
+    const featureCollectionInRect = Platform.OS === 'web' ?  mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
+      : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    let featuresInRect = Platform.OS === 'web' ? featureCollectionInRect : featureCollectionInRect.features;
     let featureFound = {};
+    if (Platform.OS === 'web') {
+      featuresInRect = featuresInRect.reduce((acc, feat) => {
+        const ids = acc.map(f => f.properties.id);
+        if (ids.includes(feat.properties.id)) return acc;
+        else return [...acc, feat];
+      }, []);
+    }
     if (featuresInRect.length > 1) {
       const distances = await getDistancesFromSpot(screenPointX, screenPointY, featuresInRect);
       const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(distances);
@@ -378,7 +388,7 @@ const useMaps = (mapRef) => {
     // console.log('mapMode in getSpotAtPress', props.mapMode);
     const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
       'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
-      'polygonLayerWithPatternNotSelected', 'pointLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+      'polygonLayerWithPatternNotSelected', 'pointLayerSelectedHalo', 'lineLayerSelected', 'lineLayerSelectedDotted',
       'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected', 'polygonLayerWithPatternSelected'];
     let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
     if (!isEmpty(spotFound)) {

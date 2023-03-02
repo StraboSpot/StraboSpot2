@@ -448,7 +448,8 @@ const Map = React.forwardRef((props, ref) => {
       // Select/Unselect a feature
       if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
-        const {screenPointX, screenPointY} = e.properties;
+        const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
+          : [e.properties.screenPointX, e.properties.screenPointY]
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         else if (stratSection) {
@@ -460,10 +461,10 @@ const Map = React.forwardRef((props, ref) => {
       else if (isDrawFeatureModeOn()) {
         console.log('Drawing', props.mapMode, '...');
         let feature = {};
-        const newCoord = turf.getCoord(e);
+        const newCoord = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
         // Draw a point for the last coordinate touched
         // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
-        const lastVertexPlaced = turf.point(e.geometry.coordinates);
+        const lastVertexPlaced = turf.point(newCoord);
         // Draw a point (if set point to current location not working)
         if (props.mapMode === MAP_MODES.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
         else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
@@ -502,7 +503,8 @@ const Map = React.forwardRef((props, ref) => {
       // Edit a Spot
       else if (props.mapMode === MAP_MODES.EDIT) {
         // Select/Unselect new vertex to edit
-        const {screenPointX, screenPointY} = e.properties;
+        const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
+          : [e.properties.screenPointX, e.properties.screenPointY]
         console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
         console.log('Selecting feature to edit...');
 
