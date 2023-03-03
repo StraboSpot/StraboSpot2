@@ -47,7 +47,8 @@ const Documentation = () => {
   const viewOnlineHelp = async (path) => {
     try {
       const canOpen = await Linking.canOpenURL(path);
-      canOpen && await Linking.openURL(path);
+      if (canOpen) await Linking.openURL(path);
+      else Alert.alert('Uh Oh!', `Can not open the url ${path}`);
     }
     catch (err) {
       console.error('Can\t open URL', err);

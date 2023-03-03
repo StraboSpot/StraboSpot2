@@ -4,7 +4,8 @@ import 'react-native-get-random-values';
 import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
-const {height: windowHeight} = Dimensions.get('window');
+const platform = Platform.OS === 'ios' ? 'window' : 'screen';
+const {height: windowHeight} = Dimensions.get(platform);
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
@@ -167,7 +168,7 @@ export const handleKeyboardDidHide = (textInputAnimate) => {
     textInputAnimate,
     {
       toValue: 0,
-      duration: 200,
+      duration: 100,
       useNativeDriver: true,
     },
   ).start();
@@ -198,7 +199,7 @@ export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) =
           textInputAnimate,
           {
             toValue: gap,
-            duration: 200,
+            duration: 100,
             useNativeDriver: true,
           },
         ).start();

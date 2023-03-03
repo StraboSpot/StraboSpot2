@@ -10,7 +10,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
-import * as Helpers from '../../shared/Helpers';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 import WarningModal from '../home/home-modals/WarningModal';
@@ -24,8 +23,6 @@ import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
-const {State: TextInputState} = TextInput;
-
 const SignIn = (props) => {
 
   const dispatch = useDispatch();
@@ -35,7 +32,6 @@ const SignIn = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  const [textInputAnimate] = useState(new Animated.Value(0));
 
   const useDevice = useDeviceHook();
   const navigation = useNavigation();
@@ -48,22 +44,6 @@ const SignIn = (props) => {
       .catch(err => console.error('Error getting permissions', err));
 
   }, []);
-
-  useEffect(() => {
-    console.log('UE SignIn []');
-    console.log('Home Keyboard Listeners Added');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignIn);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignIn);
-    return function cleanup() {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowSignIn).remove();
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideSignIn).remove();
-      console.log('Home Keyboard Listeners Removed');
-    };
-  }, []);
-
-  const handleKeyboardDidShowSignIn = event => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
-
-  const handleKeyboardDidHideSignIn = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
@@ -175,7 +155,7 @@ const SignIn = (props) => {
 
   return (
     <Splashscreen>
-      <Animated.View style={[{transform: [{translateY: textInputAnimate}]}]}>
+      <View>
         <View style={styles.signInContainer}>
           <TextInput
             style={styles.input}
@@ -201,7 +181,7 @@ const SignIn = (props) => {
           />
           {renderButtons()}
         </View>
-      </Animated.View>
+      </View>
       <WarningModal/>
       <Loading isLoading={isLoading}/>
     </Splashscreen>

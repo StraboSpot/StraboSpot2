@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, Keyboard, TextInput} from 'react-native';
+import React, {useState} from 'react';
+import {Animated, TextInput, View} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux';
 import compassStyles from '../../../modules/compass/compass.styles';
 import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
 import commonStyles from '../../common.styles';
-import * as Helpers from '../../Helpers';
 import {isEmpty} from '../../Helpers';
 import modalStyle from './modal.style';
 import ModalHeader from './ModalHeader';
@@ -20,20 +19,6 @@ const Modal = (props) => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [textInputAnimate] = useState(new Animated.Value(0));
-
-  useEffect(() => {
-    console.log('UE Modal []');
-    Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
-    return function cleanup() {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow).remove();
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide).remove();
-    };
-  }, []);
-
-  const handleKeyboardDidShow = event => Helpers.handleKeyboardDidShow(event, TextInputState, textInputAnimate);
-
-  const handleKeyboardDidHide = () => Helpers.handleKeyboardDidHide(textInputAnimate);
 
   const renderModalBottom = () => {
     const shortcutModal = SHORTCUT_MODALS.find(m => m.key === modalVisible);
@@ -82,14 +67,11 @@ const Modal = (props) => {
     );
   }
   return (
-    <Animated.View
-      style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style,
-        {transform: [{translateY: textInputAnimate}]}]}
-    >
+    <View style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}>
       <ModalHeader {...props}/>
       {props.children}
       {!isEmpty(selectedSpot) && renderModalBottom()}
-    </Animated.View>
+    </View>
   );
 };
 

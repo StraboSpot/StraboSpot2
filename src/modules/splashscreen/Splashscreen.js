@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageBackground, Platform, Text, useWindowDimensions, View} from 'react-native';
+import {ImageBackground, KeyboardAvoidingView, Platform, Text, useWindowDimensions, View} from 'react-native';
 
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatus from '../../services/ConnectionStatus';
@@ -16,24 +16,29 @@ const Splashscreen = (props) => {
 
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/splashscreen-1.jpeg')}
-      style={splashscreenStyles.backgroundImage}
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={splashscreenStyles.wifiIndicatorContainer}>
-        {Platform.OS === 'ios' && <BatteryInfo/>}
-        <ConnectionStatus/>
-      </View>
-      <View style={splashscreenStyles.contentContainer}>
-        <View style={splashscreenStyles.titleContainer}>
-          <Text style={titleStyles}>StraboSpot 2</Text>
+      <ImageBackground
+        source={require('../../assets/images/splashscreen-1.jpeg')}
+        style={splashscreenStyles.backgroundImage}
+      >
+        <View style={splashscreenStyles.wifiIndicatorContainer}>
+          {Platform.OS === 'ios' && <BatteryInfo/>}
+          <ConnectionStatus/>
         </View>
-        {props.children}
-      </View>
-      <Text style={splashscreenStyles.version}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
-      {/*<Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},*/}
-      {/*  W: {windowDimensions.width} </Text>*/}
-    </ImageBackground>
+        <View style={splashscreenStyles.contentContainer}>
+          <View style={splashscreenStyles.titleContainer}>
+            <Text style={titleStyles}>StraboSpot 2</Text>
+          </View>
+          {props.children}
+        </View>
+        <Text style={splashscreenStyles.version}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
+        {/*<Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},*/}
+        {/*  W: {windowDimensions.width} </Text>*/}
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 };
 

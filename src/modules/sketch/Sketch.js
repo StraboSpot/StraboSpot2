@@ -46,10 +46,9 @@ const Sketch = (props) => {
       if (success) {
         const savedSketch = await useImages.saveFile({'path': path});
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
-        Alert.alert(modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH
-            ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`
-            : `Sketch saved to ${selectedSpot.properties.name}!`,
-          null,
+        Alert.alert(
+          'Sketch Saved!',
+          `Sketch saved to ${selectedSpot.properties.name}.`,
           [{
             text: 'OK', onPress: () => {
               dispatch(setModalVisible({modal: null}));

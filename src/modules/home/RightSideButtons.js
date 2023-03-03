@@ -120,9 +120,12 @@ const RightSideButtons = (props) => {
           }
           break;
         }
-        case 'sketch':
-          navigation.navigate('Sketch')
+        case 'sketch': {
+          const point = await useMaps.setPointAtCurrentLocation();
+          if (point) navigation.navigate('Sketch');
+          props.openNotebookPanel();
           break;
+        }
         default:
           if (modalVisible === key) await dispatch(setModalVisible({modal: null}));
           else await dispatch(setModalVisible({modal: key}));
