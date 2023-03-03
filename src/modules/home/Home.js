@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatus from '../../services/ConnectionStatus';
 import useDeviceHook from '../../services/useDevice';
+import useExportHook from '../../services/useExport';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -49,6 +50,7 @@ import UploadProgressModal from './home-modals/UploadProgressModal';
 import WarningModal from './home-modals/WarningModal';
 import {MODAL_KEYS, MODALS} from './home.constants';
 import {
+  clearedStatusMessages,
   setImageModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
@@ -71,6 +73,7 @@ const Home = () => {
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
 
+  const useExport = useExportHook();
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -95,7 +98,8 @@ const Home = () => {
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
-  const selectedProject = useSelector(state => state.home.selectedProject);
+  const selectedProject = useSelector(state => state.project.selectedProject);
+  const statusMessages = useSelector(state => state.home.statusMessages);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
@@ -323,6 +327,15 @@ const Home = () => {
       console.error('Error at endDraw()', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
+  };
+
+  const exportProject = async () => {
+    dispatch(clearedStatusMessages());
+    console.log('Exporting Project');
+    await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, selectedProject.project.fileName,
+      true);
+    dispatch(setLoadingStatus({view: 'modal', bool: false}));
+    console.log(`Project ${selectedProject.project.fileName} has been exported!`);
   };
 
   const goToCurrentLocation = async () => {
@@ -657,7 +670,10 @@ const Home = () => {
         closeModal={() => closeInitialProjectLoadModal()}
       />
       <ErrorModal/>
-      <StatusModal openUrl={openStraboSpotURL}/>
+      <StatusModal
+        openUrl={openStraboSpotURL}
+        exportProject={() => exportProject()}
+      />
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
       <UploadProgressModal/>
       <WarningModal/>

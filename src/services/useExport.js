@@ -12,6 +12,7 @@ import {
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
+import {setSelectedProject} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './deviceAndAPI.constants';
 import useDeviceHook from './useDevice';
@@ -19,6 +20,7 @@ import useDeviceHook from './useDevice';
 const useExport = () => {
   const dispatch = useDispatch();
   const dbs = useSelector(state => state);
+  const selectedProject = useSelector(state => state.project.selectedProject);
 
   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
   let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
@@ -50,7 +52,8 @@ const useExport = () => {
 
   // For Android only.
   const exportJSONToDownloadsFolder = async (localFileName, filename, isBeingExported) => {
-    dispatch(setLoadingStatus({view: 'home', bool: true}));
+    dispatch(clearedStatusMessages());
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
     await useDevice.makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename);
 
     // Make temp directory for the export files to be zipped up.
@@ -145,6 +148,7 @@ const useExport = () => {
   const gatherMapsForDistribution = async (data, fileName, isBeingExported) => {
     try {
       const maps = data.mapNamesDb;
+      const mapCount = Object.values(maps).length;
       const deviceDir = isBeingExported ? APP_DIRECTORIES.EXPORT_FILES_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       let promises = [];
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
@@ -162,7 +166,7 @@ const useExport = () => {
         );
         console.log('Promised Finished');
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage('Finished Exporting Offline Maps.'));
+        dispatch(addedStatusMessage(`Finished Exporting ${mapCount} Offline Map${mapCount > 1 ? 's' : ''}.`));
       }
       else {
         dispatch(removedLastStatusMessage());
@@ -201,6 +205,12 @@ const useExport = () => {
 
   const initializeBackup = async (fileName) => {
     try {
+      dispatch(setSelectedProject({
+        ...selectedProject,
+        project: {
+          fileName: fileName,
+        },
+      }));
       dispatch(setBackupModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Backing up Project to Device...'));
