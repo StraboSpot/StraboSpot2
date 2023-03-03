@@ -13,6 +13,7 @@ const initialProjectState = {
     isSelected: false,
   },
   deviceBackUpDirectoryExists: false,
+  downloadsDirectory: false, //Android Only
   isTestingMode: false,
   selectedProject: {
     project: '',
@@ -144,6 +145,9 @@ const projectSlice = createSlice({
     doesBackupDirectoryExist(state, action) {
       state.deviceBackUpDirectoryExists = action.payload;
     },
+    doesDownloadsDirectoryExist(state, action) {
+      state.downloadsDirectory = action.payload;
+    },
     setIsImageTransferring(state, action) {
       state.isImageTransferring = action.payload;
     },
@@ -242,6 +246,7 @@ export const {
   deletedSpotIdFromDatasets,
   deletedSpotIdFromTags,
   doesBackupDirectoryExist,
+  doesDownloadsDirectoryExist,
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,

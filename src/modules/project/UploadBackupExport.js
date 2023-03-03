@@ -28,7 +28,7 @@ const UploadBackAndExport = () => {
 
   const useDevice = useDeviceHook();
 
-  const checkforActiveDatasets = () => {
+  const checkForActiveDatasets = () => {
     if (activeDatasets.length > 0) {
       dispatch(setSelectedProject({source: '', project: ''}));
       dispatch(setBackupModalVisible(true));
@@ -70,7 +70,7 @@ const UploadBackAndExport = () => {
           title={'Backup project to device'}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
-          onPress={() => checkforActiveDatasets()}
+          onPress={() => checkForActiveDatasets()}
         />
         {Platform.OS === 'ios'
           && (

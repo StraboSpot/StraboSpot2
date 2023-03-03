@@ -1,5 +1,3 @@
-import {PermissionsAndroid} from 'react-native';
-
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {batch, useDispatch, useSelector} from 'react-redux';
@@ -37,21 +35,22 @@ const useImport = () => {
 
   const useDevice = useDeviceHook();
 
-  const copyZipMapsForDistribution = async (fileName) => {
+  const copyZipMapsForDistribution = async (fileName, isExternal) => {
     try {
+      const sourceDir = isExternal ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       const checkDirSuccess = await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
       console.log('Found map zips folder', checkDirSuccess);
       if (checkDirSuccess) {
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
         const fileEntries = await RNFS.readdir(
-          APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps');
-
+          sourceDir + fileName + '/maps');
+        console.log(sourceDir + ' files' + fileEntries);
         if (fileEntries) {
           dispatch(addedStatusMessage('Importing maps...'));
           await Promise.all(
             fileEntries.map(async (fileEntry) => {
-              const source = APP_DIRECTORIES.BACKUP_DIR + fileName + '/maps/' + fileEntry;
+              const source = sourceDir + fileName + '/maps/' + fileEntry;
               const dest = APP_DIRECTORIES.TILE_ZIP + fileEntry;
               await RNFS.copyFile(source, dest).then(() => {
                 console.log(`File ${fileEntry} Copied`);
@@ -77,7 +76,7 @@ const useImport = () => {
     }
   };
 
-  const checkForMaps = async (dataFile, selectedProject) => {
+  const checkForMaps = async (dataFile, selectedProject, isExternal) => {
     let progress;
     const {mapNamesDb, otherMapsDb} = dataFile;
     dispatch(addedStatusMessage('Checking for maps to import...'));
@@ -92,7 +91,7 @@ const useImport = () => {
     }
     dispatch(addedStatusMessage('Checking for map tiles to import...'));
     if (!isEmpty(mapNamesDb)) {
-      const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName);
+      const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName, isExternal);
       if (mapsFolderExists) {
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage('Finished importing maps.'));
@@ -214,7 +213,9 @@ const useImport = () => {
     );
   };
 
-  const loadProjectFromDevice = async (selectedProject) => {
+  const loadProjectFromDevice = async (selectedProject, isExternal) => {
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
     console.log('SELECTED PROJECT', selectedProject);
@@ -224,7 +225,7 @@ const useImport = () => {
     if (dirExists) {
       const dataFile = await readDeviceJSONFile(selectedProject.fileName);
       const {projectDb, spotsDb} = dataFile;
-      console.log(dirExists);
+      console.log('DataFile', dataFile);
       dispatch(addedSpotsFromDevice(spotsDb));
       dispatch(addedProject(projectDb.project));
       dispatch(addedDatasets(projectDb.datasets));
@@ -234,7 +235,7 @@ const useImport = () => {
       }
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
-      await checkForMaps(dataFile, selectedProject);
+      await checkForMaps(dataFile, selectedProject, isExternal);
       dispatch(addedStatusMessage('Importing image files...'));
       await copyImages(selectedProject.fileName);
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -275,34 +276,10 @@ const useImport = () => {
     }
   };
 
-  const requestReadDirectoryPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Need permission to read Downloads Folder',
-          message:
-            'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can read the folder');
-      }
-      else {
-        console.log('Folder read permission denied');
-      }
-    }
-    catch (err) {
-      console.warn(err);
-    }
-  };
 
   const readDeviceJSONFile = async (fileName) => {
     try {
-      await requestReadDirectoryPermission();
+      // await requestReadDirectoryPermission();
       const dataFile = '/data.json';
       console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
       const response = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
@@ -318,19 +295,6 @@ const useImport = () => {
         dispatch(setErrorMessagesModalVisible(true));
       });
     }
-    // const dataFile = '/data.json';
-    // console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-    // return await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile).then(
-    //   (response) => {
-    //     return Promise.resolve(JSON.parse(response));
-    //   }, () => {
-    //     batch(() => {
-    //       dispatch(setStatusMessagesModalVisible(false));
-    //       dispatch(clearedStatusMessages());
-    //       dispatch(addedStatusMessage('Project Not Found'));
-    //       dispatch(setErrorMessagesModalVisible(true));
-    //     });
-    //   });
   };
 
   return {

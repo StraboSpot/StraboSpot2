@@ -74,7 +74,7 @@ PODS:
   - glog (0.3.5)
   - hermes-engine (0.69.0)
   - libevent (2.1.12)
-  - lottie-ios (3.4.4)
+  - lottie-ios (3.4.3)
   - lottie-react-native (5.1.4):
     - lottie-ios (~> 3.4.0)
     - React-Core
@@ -746,7 +746,7 @@ SPEC CHECKSUMS:
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   hermes-engine: 03851318b18b534b671ea435fad2202154135c72
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
+  lottie-ios: 9ae750cdc7820fecbd3c2f0cfc493038208fcdc4
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
   MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
@@ -814,4 +814,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 71920561fb530cd81c0aec9d6f8f35db9862ebb4
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

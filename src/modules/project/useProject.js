@@ -3,6 +3,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequests from '../../services/useServerRequests';
@@ -15,8 +16,8 @@ import {
   setBackupOverwriteModalVisible,
   setErrorMessagesModalVisible,
   setLoadingStatus,
+  setProgressModalVisible,
   setStatusMessagesModalVisible,
-  setUploadModalVisible,
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
@@ -45,6 +46,7 @@ const useProject = () => {
   const [serverRequests] = useServerRequests();
   const toast = useToast();
   const useDownload = useDownloadHook();
+  const useDevice = useDeviceHook();
   const useImport = useImportHook();
 
   const addDataset = async (name) => {
@@ -52,6 +54,10 @@ const useProject = () => {
     await dispatch(addedDataset(datasetObj));
     console.log('Added datasets', datasets);
     return Promise.resolve();
+  };
+
+  const checkUserAuthorization = async (password) => {
+    return await serverRequests.authenticateUser(user.email, password.trim());
   };
 
   const checkValidDateTime = (spot) => {
@@ -102,19 +108,8 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
-  const deleteProject = async (project, password) => {
-    try {
-      const isPasswordValid = await serverRequests.authenticateUser(user.email, password.trim());
-      if (isPasswordValid.error) return isPasswordValid;
-      else if (isPasswordValid.valid === 'true') {
-        await serverRequests.deleteProject(project);
-        return true;
-      }
-      else if (isPasswordValid.valid === 'false') return false;
-    }
-    catch (err) {
-      console.error('Error deleting project from server!', err);
-    }
+  const deleteProject = async (project) => {
+    await serverRequests.deleteProject(project);
   };
 
   const destroyDataset = async (id) => {
@@ -174,25 +169,39 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const getAllDeviceProjects = async () => {
-    const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
-      console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
-      if (res) {
-        return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
-          console.log('Files on device', files);
-          let id = 0;
-          if (!isEmpty(files)) {
-            const deviceFiles = files.map((file) => {
-              return {id: id++, fileName: file};
-            });
-            return Promise.resolve({projects: deviceFiles});
-          }
-          else return Promise.resolve([]);
-        });
-      }
-      else return res;
-    });
-    return Promise.resolve(deviceProject);
+  const getAllDeviceProjects = async (directory) => {
+    // const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
+    //   console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
+    //   if (res) {
+    //     return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
+    //       console.log('Files on device', files);
+    //       let id = 0;
+    //       if (!isEmpty(files)) {
+    //         const deviceFiles = files.map((file) => {
+    //           return {id: id++, fileName: file};
+    //         });
+    //         return Promise.resolve({projects: deviceFiles});
+    //       }
+    //       else return Promise.resolve([]);
+    //     });
+    //   }
+    //   else return res;
+    // });
+    // return Promise.resolve(deviceProject);
+    let id = 0;
+    const exists = await useDevice.doesDeviceBackupDirExist(undefined);
+    if (exists) {
+      const res = await useDevice.readDirectory(directory);
+      const deviceFiles = res.map((file) => {
+        return {id: id++, fileName: file};
+      });
+      return {projects: deviceFiles};
+    }
+    else console.log('Does not exist');
+  };
+
+  const getAllExternalStorageProjects = () => {
+
   };
 
   const getAllServerProjects = async () => {
@@ -233,7 +242,7 @@ const useProject = () => {
     try {
       console.log('User wants to:', action);
       dispatch(setBackupOverwriteModalVisible(false));
-      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setUploadModalVisible(true));
+      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setProgressModalVisible(true));
       else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
       else if (action === ProjectActions.OVERWRITE) {
         if (selectedProject.source === 'device') {
@@ -259,6 +268,7 @@ const useProject = () => {
 
   const projectHelpers = {
     addDataset: addDataset,
+    checkUserAuthorization: checkUserAuthorization,
     checkValidDateTime: checkValidDateTime,
     createDataset: createDataset,
     createProject: createProject,
@@ -268,6 +278,7 @@ const useProject = () => {
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
+    getAllExternalStorageProjects: getAllExternalStorageProjects,
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     makeDatasetCurrent: makeDatasetCurrent,

@@ -1,38 +1,41 @@
 import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Text, View} from 'react-native';
 
-import LottieView from 'lottie-react-native';
-import {Button, Input, ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
-import {capitalizeFirstLetter, isEmpty} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
-import useAnimationsHook from '../../shared/ui/useAnimations';
+import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   clearedStatusMessages,
   setBackupOverwriteModalVisible,
   setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
-import styles from './project.styles';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
+  const endPoint = useSelector(state => state.project.databaseEndpoint);
+  const isInitialProjectLoadModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isOnline = useSelector(state => state.home.isOnline);
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
-  const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
+  const [isImportOverlayVisible, setIsImportOverlayVisible] = useState(false);
+  const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
+  const [externalStorageProjects, setExternalStorageProjects] = useState([]); //For Android Downloads folder/
   const [projectsArr, setProjectsArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -40,7 +43,7 @@ const ProjectList = (props) => {
   const [selectedProjectToDelete, setSelectedProjectToDelete] = useState(null);
   const [passwordInputVal, setPasswordTextInputVal] = useState('');
 
-  const useAnimations = useAnimationsHook();
+
   const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
@@ -58,46 +61,14 @@ const ProjectList = (props) => {
 
   useEffect(() => {
     console.log('UE ProjectList [props.source]', props.source);
-    setDeletingProjectStatus('');
     getAllProjects().then(() => console.log('OK got projects'));
+    console.log('Project Options Modal Visible', isProjectOptionsModalVisible);
+    return () => {
+      setIsProjectOptionsModalVisible(false);
+      console.log('Project Options Modal Visible (in return)', isProjectOptionsModalVisible);
+
+    };
   }, [props.source]);
-
-  const closeModal = () => {
-    setIsDeleteConformationModalVisible(false);
-    setErrorMessage('');
-  };
-
-  const deleteProject = async () => {
-    setDeletingProjectStatus('');
-    setDeletingProjectStatus('deleting');
-    if (props.source === 'device') {
-      useDevice.deleteProjectOnDevice(selectedProjectToDelete.fileName);
-      setProjectsArr(await useProject.getAllDeviceProjects());
-      setDeletingProjectStatus('complete');
-      setTimeout(() => setIsDeleteConformationModalVisible(false), 1500);
-    }
-    else {
-      const res = await useProject.deleteProject(selectedProjectToDelete, passwordInputVal);
-      if (res.error) {
-        setDeletingProjectStatus('');
-        setErrorMessage('Password cannot be empty');
-      }
-      else if (res === true) {
-        console.log('Server project deleted!');
-        // toast.show(`${selectedProjectToDelete.name} has been deleted successfully!`, {type: 'success'});
-        setProjectsArr(await useProject.getAllServerProjects());
-        // setIsButtonDisplayed(false);
-        setDeletingProjectStatus('complete');
-        setTimeout(() => setIsDeleteConformationModalVisible(false), 1500);
-      }
-      else if (res === false) {
-        console.log('NOT A VALID PASSWORD');
-        setDeletingProjectStatus('');
-        setErrorMessage('Incorrect Password! Please re-enter.');
-      }
-      setPasswordTextInputVal('');
-    }
-  };
 
   const handleStateChange = async (state) => {
     state === 'active'
@@ -111,7 +82,19 @@ const ProjectList = (props) => {
     if (props.source === 'server') {
       projectsResponse = await useProject.getAllServerProjects();
     }
-    else if (props.source === 'device') projectsResponse = await useProject.getAllDeviceProjects();
+    else if (props.source === 'device') {
+      projectsResponse = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
+      console.log('Device Files', projectsResponse);
+    }
+    // if (Platform.OS === 'android' && props.source === 'exports') {
+    //   // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
+    //   // console.log(exists);
+    //   // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
+    //   //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+    //   const externalStorageProjectsResponse = await useDevice.getExternalProject();
+    //   // setProjectsArr(externalStorageProjectsResponse);
+    //   console.log('Exported Projects', externalStorageProjectsResponse);
+    // }
     if (!projectsResponse) {
       if (props.source === 'device') {
         dispatch(doesBackupDirectoryExist(false));
@@ -129,12 +112,29 @@ const ProjectList = (props) => {
     }
   };
 
-  const initializeDelete = (project) => {
-    setSelectedProjectToDelete(project);
-    setIsDeleteConformationModalVisible(true);
+  const reloadingList = async (isDeleted) => {
+    if (isDeleted) {
+      if (props.source === 'server') setProjectsArr(await useProject.getAllServerProjects());
+      else if (props.source === 'device') {
+        const newArr = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
+        setProjectsArr(newArr);
+      }
+    }
+    else console.log('Project was not deleted.');
   };
 
-  const selectProject = async (project) => {
+  const initializeProjectOptions = (project) => {
+    // const projectName;
+    dispatch(setSelectedProject({project: project, source: props.source}));
+    if (isInitialProjectLoadModalVisible) {
+      dispatch(setSelectedProject({project: '', source: ''}));
+      const res = loadSelectedProject(project);
+      console.log('Done loading project', res);
+    }
+    else setIsProjectOptionsModalVisible(true);
+  };
+
+  const loadSelectedProject = async (project) => {
     console.log('Selected Project:', project);
     if (project?.fileName?.includes('.zip')) {
       const unzippedFile = await useImport.unzipBackupFile(project.fileName);
@@ -149,8 +149,8 @@ const ProjectList = (props) => {
       console.log('Getting project...');
       if (!isEmpty(project)) useProject.destroyOldProject();
       if (props.source === 'device') {
-        dispatch(clearedStatusMessages());
-        dispatch(setStatusMessagesModalVisible(true));
+        // dispatch(clearedStatusMessages());
+        // dispatch(setStatusMessagesModalVisible(true));
         const res = await useImport.loadProjectFromDevice(project);
         dispatch(setStatusMessageModalTitle(res.project.description.project_name));
         console.log('Done loading project', res);
@@ -164,50 +164,17 @@ const ProjectList = (props) => {
     }
   };
 
-  const renderDeleteProjectModal = () => {
-    const projectName = props.source === 'device' ? selectedProjectToDelete?.fileName : selectedProjectToDelete?.name;
+  const renderProjectOptionsModal = () => {
     return (
-      <DeleteConformationDialogBox
-        title={`Delete from ${capitalizeFirstLetter(props.source)}`}
-        visible={isDeleteConformationModalVisible}
-        cancel={() => closeModal()}
-        delete={() => deletingProjectStatus !== 'complete' && deleteProject(projectName)}
-        deleteDisabled={props.source === 'server' && isEmpty(passwordInputVal) || deletingProjectStatus !== ''}
-        cancelDisabled={deletingProjectStatus !== ''}
+      <ProjectOptionsDialogBox
+        currentProject={currentProject}
+        endpoint={endPoint}
+        visible={isProjectOptionsModalVisible}
+        close={() => setIsProjectOptionsModalVisible(false)}
+        open={() => setIsProjectOptionsModalVisible(true)}
+        projectDeleted={value => reloadingList(value)}
       >
-        {deletingProjectStatus === '' ? <View>
-            <View style={{}}>
-              <Text style={commonStyles.dialogContentImportantText}>Are you sure you want to delete{'\n' + projectName}?
-              </Text>
-              <Text style={styles.dialogConfirmText}>This will
-                <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
-                everything in this project including Spots, images, and all other data!
-              </Text>
-            </View>
-            {props.source === 'server' && (
-              <View style={{paddingTop: 10}}>
-                <Input
-                  value={passwordInputVal}
-                  placeholder={'Enter Password'}
-                  autoCapitalize={'none'}
-                  onChangeText={val => setPasswordTextInputVal(val)}
-                  errorMessage={errorMessage}
-                />
-              </View>
-            )}
-          </View>
-          : (
-            // <View>
-            <LottieView
-              style={{width: 200, height: 200}}
-              source={useAnimations.getAnimationType(
-                deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete')}
-              autoPlay
-              loop={deletingProjectStatus === 'deleteProject'}
-            />
-            // </View>
-          )}
-      </DeleteConformationDialogBox>
+      </ProjectOptionsDialogBox>
     );
   };
 
@@ -223,15 +190,14 @@ const ProjectList = (props) => {
     return (
       <ListItem
         key={props.source === 'device' ? item.id : item.id}
-        onPress={() => selectProject(item)}
-        onLongPress={() => props.source === 'device' && initializeDelete(item)}
+        onPress={() => initializeProjectOptions(item)}
         containerStyle={commonStyles.listItem}
         disabled={!isOnline.isConnected && props.source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
-            {props.source === 'device' ? item.fileName : item.name}
+            {props.source === 'server' ? item.name : item.fileName}
           </ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron/>
@@ -242,11 +208,8 @@ const ProjectList = (props) => {
   const renderProjectsList = () => {
     if (!isEmpty(userData)) {
       return (
-        <View style={{flex: 1}}>
-          <Text style={{
-            margin: 10,
-            textAlign: 'center',
-          }}>{props.source === 'device' ? 'Long press to delete project' : 'To delete a project visit www.StraboSpot.org'}</Text>
+        <View style={{flex: 2}}>
+          <SectionDivider dividerText={props.source === 'device' ? 'Saved Projects' : 'Projects to Import  '}/>
           <FlatList
             keyExtractor={item => item.id.toString()}
             data={projectsArr.projects}
@@ -271,15 +234,39 @@ const ProjectList = (props) => {
     }
   };
 
+  // const renderProjectListAndroidsDownloads = () => {
+  //   return (
+  //     <View style={{flex: 2}}>
+  //       <SectionDivider dividerText={'Download Folder Projects'}/>
+  //       <FlatList
+  //         data={externalStorageProjects}
+  //         renderItem={({item}) => renderExternalProjectsItem(item)}
+  //       />
+  //     </View>
+  //   );
+  // };
+  //
+  // const renderImportOverlay = () => {
+  //   return (
+  //     <Overlay
+  //       isVisible={isImportOverlayVisible}
+  //       onBackdropPress={() => setIsImportOverlayVisible(false)}
+  //     >
+  //       <View style={{width: 300, height: 300}}>
+  //
+  //       </View>
+  //     </Overlay>
+  //   );
+  // };
+
   return (
-    <React.Fragment>
-      <View style={{alignSelf: 'center'}}>
-        {/*<SectionDivider dividerText={props.source === 'server' ? 'Projects on Server' : 'Projects on Local Device'}/>*/}
-      </View>
+    <View style={{flex: 1}}>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
-      {renderDeleteProjectModal()}
-    </React.Fragment>
+      {/*{Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}*/}
+      {renderProjectOptionsModal()}
+      {/*{renderImportOverlay()}*/}
+    </View>
   );
 };
 

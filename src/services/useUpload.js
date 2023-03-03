@@ -81,7 +81,7 @@ const useUpload = () => {
 
   // Synchronously Upload Datasets
   const uploadDatasets = async () => {
-    console.clear();
+    // console.clear();
     let currentRequest = 0;
     const datasets = Object.values(projectDatasets);
 
@@ -268,7 +268,8 @@ const useUpload = () => {
         formdata.append('image_file', {uri: resizedImage.uri, name: 'image.jpg', type: 'image/jpeg'});
         formdata.append('id', imageId);
         formdata.append('modified_timestamp', Date.now());
-        await useServerRequests.uploadImage(formdata, user.encoded_login);
+        const res = await useServerRequests.uploadImage(formdata, user.encoded_login);
+        console.log('Image Upload Res', res);
         console.log(datasetName + ': Finished Uploading Image', imageId);
         dispatch(updatedProjectTransferProgress(0));
         dispatch(clearedStatusMessages());

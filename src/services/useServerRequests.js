@@ -302,7 +302,7 @@ const useServerRequests = (props) => {
         reject(false);
       });
       xhr.open('POST', baseUrl + '/image');
-      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
       xhr.send(formdata);
     });

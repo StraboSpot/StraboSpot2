@@ -16,27 +16,27 @@ const BackupModal = () => {
   const currentProject = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
   const isBackModalVisible = useSelector(state => state.home.isBackupModalVisible);
-  const [exportFileName, setExportFileName] = useState('');
+  const [backupFileName, setBackupFileName] = useState('');
 
   const useExport = useExportHook();
 
   useEffect(() => {
     console.log('UE BackupModal [currentProject, user]', currentProject, user);
-    if (!isEmpty(currentProject)) {
-      setExportFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
+    if (!isEmpty(currentProject) && isBackModalVisible) {
+      setBackupFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
     }
   }, [currentProject, isBackModalVisible]);
 
-  const fileName = exportFileName.replace(/\s/g, '');
+  const fileName = backupFileName.replace(/\s/g, '');
 
   return (
     <UploadDialogBox
       dialogTitle={'Confirm or Change Folder Name'}
       visible={isBackModalVisible}
       cancel={() => dispatch(setBackupModalVisible(false))}
-      onPress={() => useExport.initializeBackup(exportFileName)}
+      onPress={() => useExport.initializeBackup(backupFileName)}
       buttonText={'Backup'}
-      disabled={exportFileName === ''}
+      disabled={backupFileName === ''}
     >
       <View>
         <View>
@@ -52,7 +52,7 @@ const BackupModal = () => {
         <View style={projectStyles.dialogContent}>
           <TextInput
             value={fileName}
-            onChangeText={text => setExportFileName(text)}
+            onChangeText={text => setBackupFileName(text)}
             style={commonStyles.dialogInputContainer}
           />
         </View>

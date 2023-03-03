@@ -40,12 +40,12 @@ const UserProfile = (props) => {
     }, 200);
   };
 
-  const doLogOut = () => {
-    if (isEmpty(userData.name)) {
+  const doLogOut = (type) => {
+    if (type === 'signIn') {
       dispatch(setMainMenuPanelVisible(false));
       navigation.navigate('SignIn');
     }
-    else {
+    else if (type === 'clear') {
       setIsLogoutModalVisible(false);
       setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
         dispatch(setMainMenuPanelVisible(false));
@@ -93,12 +93,22 @@ const UserProfile = (props) => {
     return (
       <View>
         <Button
-          onPress={() => isEmpty(userData.name) ? doLogOut() : setIsLogoutModalVisible(true)}
+          onPress={() => isEmpty(userData.name) ? doLogOut('signIn') : setIsLogoutModalVisible(true)}
           title={isEmpty(userData.name) ? 'Sign In' : 'Log out'}
           containerStyle={commonStyles.standardButtonContainer}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
+        {isEmpty(userData.name)
+          && (
+            <Button
+              onPress={() => doLogOut('clear')}
+              title={isEmpty(userData.name) && 'Clear and Return to Sign In'}
+              containerStyle={commonStyles.standardButtonContainer}
+              buttonStyle={commonStyles.standardButton}
+              titleStyle={commonStyles.standardButtonText}
+            />
+          )}
       </View>
     );
   };
@@ -121,7 +131,7 @@ const UserProfile = (props) => {
           onPress={() => openUploadAndBackupPage()}/>
         <Button title={'Logout'}
                 titleStyle={commonStyles.dialogContentImportantText}
-                onPress={() => doLogOut()}
+                onPress={() => doLogOut('clear')}
                 type={'clear'}
                 containerStyle={commonStyles.buttonContainer}/>
         <Button

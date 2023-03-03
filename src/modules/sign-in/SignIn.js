@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, TextInput, View} from 'react-native';
+import {Alert, Animated, Keyboard, Platform, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
@@ -40,6 +40,9 @@ const SignIn = (props) => {
   useEffect(() => {
     console.log('UE SignIn []');
     useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
+    Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
+      .catch(err => console.error('Error getting permissions', err));
+
   }, []);
 
   const guestSignIn = async () => {

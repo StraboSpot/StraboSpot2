@@ -19,6 +19,7 @@ const initialHomeState = {
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
   isWarningMessagesModalVisible: false,
+  isProgressModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
   isOfflineMapModalVisible: false,
   isInfoModalVisible: false,
@@ -87,6 +88,9 @@ const homeSlice = createSlice({
     setOnlineStatus(state, action) {
       state.isOnline = action.payload;
     },
+    setProgressModalVisible(state, action) {
+      state.isProgressModalVisible = action.payload;
+    },
     setProjectLoadComplete(state, action) {
       state.isProjectLoadComplete = action.payload;
     },
@@ -141,6 +145,7 @@ export const {
   setModalVisible,
   setOfflineMapsModalVisible,
   setOnlineStatus,
+  setProgressModalVisible,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
   // setSignedInStatus,
