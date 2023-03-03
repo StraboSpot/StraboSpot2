@@ -50,6 +50,7 @@ import UploadProgressModal from './home-modals/UploadProgressModal';
 import WarningModal from './home-modals/WarningModal';
 import {MODAL_KEYS, MODALS} from './home.constants';
 import {
+  addedStatusMessage,
   clearedStatusMessages,
   setImageModalVisible,
   setLoadingStatus,
@@ -334,8 +335,11 @@ const Home = () => {
   const exportProject = async () => {
     dispatch(clearedStatusMessages());
     console.log('Exporting Project');
+    dispatch(addedStatusMessage(`Exporting ${selectedProject.project.fileName}!`));
     await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, selectedProject.project.fileName,
       true);
+    dispatch(addedStatusMessage(
+      `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
     console.log(`Project ${selectedProject.project.fileName} has been exported!`);
   };

@@ -52,7 +52,6 @@ const useExport = () => {
 
   // For Android only.
   const exportJSONToDownloadsFolder = async (localFileName, filename, isBeingExported) => {
-    dispatch(clearedStatusMessages());
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     await useDevice.makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename);
 
@@ -70,6 +69,7 @@ const useExport = () => {
     try {
       await RNFS.copyFile(source, `${destination}/data.json`);
       console.log('Files Copied');
+      dispatch(removedLastStatusMessage());
       // console.log('ANDROID', await RNFS.readFile(destination + '/data.json'));
       await gatherImagesForDistribution(exportedJSON, filename, isBeingExported);
       console.log('Images copied to:', destination);
