@@ -67,12 +67,30 @@ const Basemap = (props) => {
         console.log('Setting style...');
         await mapRef.current.setStyle(props.basemap);
         console.log('Set style.');
-        loadLayers();
+        addLayers();
       }
     };
 
     if (!props.imageBasemap && !props.stratSection) setStyle();
-  }, [props.basemap, props.spotsNotSelected, props.spotsSelected]);
+  }, [props.basemap]);
+
+  useEffect(() => {
+    if (mapRef.current.getSource('spotsNotSelectedSource')) {
+      mapRef.current.getSource('spotsNotSelectedSource').setData(
+        turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))));
+    }
+  }, [props.spotsNotSelected]);
+
+  useEffect(() => {
+    if (mapRef.current.getSource('spotsSelectedSource')) {
+      mapRef.current.getSource('spotsSelectedSource').setData(
+        turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))));
+    }
+    if (mapRef.current.getSource('pointSpotsSelectedSource')) {
+      mapRef.current.getSource('pointSpotsSelectedSource').setData(
+        turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)));
+    }
+  }, [props.spotsSelected]);
 
   useEffect(() => {
     // Add the image to the map style.
@@ -104,8 +122,9 @@ const Basemap = (props) => {
     mapRef.current?.on('click', props.onMapPress);
   }, []);
 
-  // Remove Source and Layers Before Adding Them
-  const cleanLayers = () => {
+  // Add Features Layers (Not Selected Spots)
+  const addFeaturesLayers = () => {
+    // Clean the Layers (Remove the Source and Layers)
     if (mapRef.current.getSource('spotsNotSelectedSource')) {
       const layerIds = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected', 'polygonLayerNotSelectedBorder',
         'polygonLabelLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
@@ -116,28 +135,7 @@ const Basemap = (props) => {
       });
       mapRef.current.removeSource('spotsNotSelectedSource');
     }
-    if (mapRef.current.getSource('spotsSelectedSource')) {
-      const layerIds = ['polygonLayerSelected', 'polygonLayerWithPatternSelected', 'polygonLayerSelectedBorder',
-        'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
-        'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected',
-        'pointLayerSelectedHalo'];
-      layerIds.forEach((layerId) => {
-        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
-      });
-      mapRef.current.removeSource('spotsSelectedSource');
-    }
-    if (mapRef.current.getSource('pointSpotsSelectedSource')) {
-      const layerIds = ['pointLayerSelectedHalo'];
-      layerIds.forEach((layerId) => {
-        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
-      });
-      mapRef.current.removeSource('pointSpotsSelectedSource');
-    }
-    console.log('Finished cleaning layers.')
-  };
 
-  // Add Features Layers (Not Selected Spots)
-  const addFeaturesLayers = () => {
     console.log('Adding features layers (not selected spots)...');
 
     // Add Source: Spots Not Selected
@@ -225,11 +223,30 @@ const Basemap = (props) => {
     });
     if (mapRef.current.getLayer('pointLayerNotSelected')) console.log('Added Layer: pointLayerNotSelected');
 
-    console.log('Finished adding features layers (not selected spots)')
+    console.log('Finished adding features layers (not selected spots).');
   };
 
   // Add Selected Features Layers (Selected Spots)
   const addFeaturesLayersSelected = () => {
+    // Clean the Layers (Remove the Sources and Layers)
+    if (mapRef.current.getSource('spotsSelectedSource')) {
+      const layerIds = ['polygonLayerSelected', 'polygonLayerWithPatternSelected', 'polygonLayerSelectedBorder',
+        'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+        'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected',
+        'pointLayerSelectedHalo'];
+      layerIds.forEach((layerId) => {
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+      });
+      mapRef.current.removeSource('spotsSelectedSource');
+    }
+    if (mapRef.current.getSource('pointSpotsSelectedSource')) {
+      const layerIds = ['pointLayerSelectedHalo'];
+      layerIds.forEach((layerId) => {
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+      });
+      mapRef.current.removeSource('pointSpotsSelectedSource');
+    }
+
     console.log('Adding selected features layers (selected spots)...');
 
     // Add Source: Spots Not Selected
@@ -322,13 +339,12 @@ const Basemap = (props) => {
     });
     if (mapRef.current.getLayer('pointLayerSelectedHalo')) console.log('Added Layer: pointLayerSelectedHalo');
 
-    console.log('Finished adding selected features layers (selected spots)')
+    console.log('Finished adding selected features layers (selected spots).');
   };
 
-  const loadLayers = () => {
+  const addLayers = () => {
     console.log('Loading layers...');
 
-    cleanLayers();
     addFeaturesLayers();
     addFeaturesLayersSelected();
 
