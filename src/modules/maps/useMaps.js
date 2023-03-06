@@ -275,6 +275,7 @@ const useMaps = (mapRef) => {
         const eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
         screenCoords = Platform.OS === 'web' ? mapRef.current.project(eachFeature.geometry.coordinates)
           : await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
+        if (Platform.OS === 'web') screenCoords = [screenCoords.x, screenCoords.y];
         eachFeature.geometry.coordinates = screenCoords;
         distances[i] = turf.distance(dummyFeature, eachFeature);
       }
