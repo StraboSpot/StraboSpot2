@@ -77,6 +77,7 @@ const Map = React.forwardRef((props, ref) => {
       || props.mapMode === MAP_MODES.DRAW.POLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
       || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE);
   };
+
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
     spotEditing: {},
@@ -449,7 +450,7 @@ const Map = React.forwardRef((props, ref) => {
       if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
-          : [e.properties.screenPointX, e.properties.screenPointY]
+          : [e.properties.screenPointX, e.properties.screenPointY];
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         else if (stratSection) {
@@ -504,7 +505,7 @@ const Map = React.forwardRef((props, ref) => {
       else if (props.mapMode === MAP_MODES.EDIT) {
         // Select/Unselect new vertex to edit
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
-          : [e.properties.screenPointX, e.properties.screenPointY]
+          : [e.properties.screenPointX, e.properties.screenPointY];
         console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
         console.log('Selecting feature to edit...');
 

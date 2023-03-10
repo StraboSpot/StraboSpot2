@@ -28,6 +28,7 @@ mapboxgl.accessToken = config.get('mapbox_access_token');
 const Basemap = (props) => {
   const center = useSelector(state => state.map.center || [LONGITUDE, LATITUDE]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const spots = useSelector(state => state.spot.spots);
   const zoom = useSelector(state => state.map.zoom || ZOOM);
 
   const {mapRef} = props.forwardedRef;
@@ -36,9 +37,9 @@ const Basemap = (props) => {
   const [useMapSymbology] = useMapSymbologyHook();
   const useMapView = useMapViewHook();
 
-  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [initialCenter, setInitialCenter] = useState(center);
   const [initialZoom, setInitialZoom] = useState(zoom);
+  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
 
   const mapContainer = useRef(null);
 
@@ -55,9 +56,41 @@ const Basemap = (props) => {
         zoom: initialZoom,
       });
     }
+
+    const loadImage = (id) => {
+      mapRef.current.loadImage(
+        symbols[id], (error, image) => {
+          if (error) throw error;
+          if (!mapRef.current.hasImage(id)) mapRef.current.addImage(id, image);
+          // if (mapRef.current.hasImage(id)) console.log('Added Image:', id);
+        });
+    };
+
+    // Add the image to the map style.
+    mapRef.current?.on('styleimagemissing', (e) => {
+      const id = e.id; // id of the missing image
+      console.log(id, e);
+      loadImage(id);
+    });
+
     // Clean up on unmount
     return () => mapRef.current.remove();
   }, []);
+
+  useEffect(() => {
+    console.log('UE Basemap - Changed [spots]', spots);
+    mapRef.current?.on('click', props.onMapPress);
+
+    mapRef.current?.on('moveend', async () => {
+      console.log('A moveend event occurred.');
+      props.spotsInMapExtent();
+      if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
+        const newCenter = mapRef.current.getCenter().toArray();
+        const newZoom = mapRef.current.getZoom();
+        useMapView.setMapView(newCenter, newZoom);
+      }
+    });
+  }, [spots]);
 
   useEffect(() => {
     console.log('UE Basemap - Changed props.basemap', props.basemap);
@@ -75,9 +108,13 @@ const Basemap = (props) => {
   }, [props.basemap]);
 
   useEffect(() => {
+    console.log('UE Basemap - Changed [props.spotsNotSelected, props.spotsSelected]', props.spotsNotSelected,
+      props.spotsSelected);
+
     if (mapRef.current.getSource('spotsNotSelectedSource')) {
       mapRef.current.getSource('spotsNotSelectedSource').setData(
         turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))));
+      console.log('Updated spotsNotSelectedSource.');
     }
   }, [props.spotsNotSelected]);
 
@@ -85,42 +122,14 @@ const Basemap = (props) => {
     if (mapRef.current.getSource('spotsSelectedSource')) {
       mapRef.current.getSource('spotsSelectedSource').setData(
         turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))));
+      console.log('Updated spotsSelectedSource.');
     }
     if (mapRef.current.getSource('pointSpotsSelectedSource')) {
       mapRef.current.getSource('pointSpotsSelectedSource').setData(
         turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)));
+      console.log('Updated pointSpotsSelectedSource.');
     }
   }, [props.spotsSelected]);
-
-  useEffect(() => {
-    // Add the image to the map style.
-    const loadImage = (id) => {
-      mapRef.current.loadImage(
-        symbols[id], (error, image) => {
-          if (error) throw error;
-          if (!mapRef.current.hasImage(id)) mapRef.current.addImage(id, image);
-          if (mapRef.current.hasImage(id)) console.log('Added Image:', id);
-        });
-    };
-
-    mapRef.current?.on('styleimagemissing', (e) => {
-      const id = e.id; // id of the missing image
-      console.log(id, e);
-      loadImage(id);
-    });
-
-    mapRef.current?.on('moveend', async () => {
-      console.log('A moveend event occurred.');
-      props.spotsInMapExtent();
-      if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
-        const newCenter = mapRef.current.getCenter().toArray();
-        const newZoom = mapRef.current.getZoom();
-        useMapView.setMapView(newCenter, newZoom);
-      }
-    });
-
-    mapRef.current?.on('click', props.onMapPress);
-  }, []);
 
   // Add Features Layers (Not Selected Spots)
   const addFeaturesLayers = () => {
@@ -136,7 +145,7 @@ const Basemap = (props) => {
       mapRef.current.removeSource('spotsNotSelectedSource');
     }
 
-    console.log('Adding features layers (not selected spots)...');
+    console.log('Adding features layers (not selected spots)...', props.spotsNotSelected);
 
     // Add Source: Spots Not Selected
     mapRef.current.addSource('spotsNotSelectedSource', {
@@ -247,7 +256,7 @@ const Basemap = (props) => {
       mapRef.current.removeSource('pointSpotsSelectedSource');
     }
 
-    console.log('Adding selected features layers (selected spots)...');
+    console.log('Adding selected features layers (selected spots)...', props.spotsSelected);
 
     // Add Source: Spots Not Selected
     mapRef.current.addSource('spotsSelectedSource', {
