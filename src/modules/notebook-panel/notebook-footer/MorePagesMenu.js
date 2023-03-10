@@ -35,9 +35,10 @@ const MorePagesMenu = (props) => {
   const renderMenuItem = (page, isShowBottomDivider) => {
     return (
       <ListItem
-        containerStyle={footerStyles.morePagesListItem}
-        onPress={() => switchPage(page.key)}
         bottomDivider={isShowBottomDivider}
+        containerStyle={footerStyles.morePagesListItem}
+        key={page.key}
+        onPress={() => switchPage(page.key)}
       >
         <ListItem.Content style={{flexDirection: 'row'}}>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
