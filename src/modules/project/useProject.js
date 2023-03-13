@@ -217,6 +217,20 @@ const useProject = () => {
     return selectedDatasetId ? datasets[selectedDatasetId] : 'Unknown';
   };
 
+  const getDatasetFromSpotId = (spotId) => {
+    let datasetIdFound;
+    for (const dataset of Object.values(datasets)) {
+      const spotIdFound = dataset.spotIds.find(id => id === spotId);
+      if (spotIdFound) {
+        datasetIdFound = dataset.id;
+        break;
+      }
+    }
+    console.log('HERE IS THE DATASET', datasetIdFound);
+    if (!datasetIdFound) console.error('Dataset not found');
+    return datasetIdFound;
+  };
+
   const makeDatasetCurrent = (datasetId) => {
     const datasetName = datasets[datasetId].name;
     toast.show(`Selected Dataset has been switched to ${datasetName}!`, {type: 'warning', animationType: 'slide-in'});
@@ -281,6 +295,7 @@ const useProject = () => {
     getAllExternalStorageProjects: getAllExternalStorageProjects,
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
+    getDatasetFromSpotId: getDatasetFromSpotId,
     makeDatasetCurrent: makeDatasetCurrent,
     initializeNewProject: initializeNewProject,
     setSwitchValue: setSwitchValue,

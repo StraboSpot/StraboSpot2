@@ -213,6 +213,32 @@ const projectSlice = createSlice({
     updatedDatasets(state, action) {
       state.datasets = action.payload;
     },
+    updatedModifiedTimestamps(state, action) {
+      const timestamp = Date.now();
+      console.log('Previous Dataset Timestamp', state.datasets[action.payload.id].modified_timestamp);
+      console.log('Previous Project Timestamp', state.project.modified_timestamp);
+      state.datasets[action.payload.id].modified_timestamp = timestamp;
+      state.project.modified_timestamp = timestamp;
+      console.log('NEW Dataset Timestamp', state.datasets[action.payload.id].modified_timestamp);
+      console.log('NEW Project Timestamp', state.project.modified_timestamp);
+    },
+    updatedModifiedTimestampsBySpotId(state, action) {
+      let datasetIdFound;
+      for (const dataset of Object.values(state.datasets)) {
+        const spotIdFound = dataset.spotIds.find(id => id === action.payload);
+        if (spotIdFound) {
+          datasetIdFound = dataset.id;
+          break;
+        }
+      }
+      const timestamp = Date.now();
+      console.log('Previous Dataset Timestamp', state.datasets[datasetIdFound].modified_timestamp);
+      console.log('Previous Project Timestamp', state.project.modified_timestamp);
+      state.datasets[datasetIdFound].modified_timestamp = timestamp;
+      state.project.modified_timestamp = timestamp;
+      console.log('NEW Dataset Timestamp', state.datasets[datasetIdFound].modified_timestamp);
+      console.log('NEW Project Timestamp', state.project.modified_timestamp);
+    },
     updatedProject(state, action) {
       const {field, value} = action.payload;
       if (field === 'description') state.project.description = value;
@@ -260,6 +286,8 @@ export const {
   setUseTemplate,
   updatedDatasetProperties,
   updatedDatasets,
+  updatedModifiedTimestamps,
+  updatedModifiedTimestampsBySpotId,
   updatedProject,
   updatedProjectTransferProgress,
 } = projectSlice.actions;

@@ -12,7 +12,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {updatedProject} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotId, updatedProject} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
 import {addedSpot, editedSpotProperties} from '../spots/spots.slice';
 
@@ -163,6 +163,7 @@ const SampleModal = (props) => {
       else {
         const samples = spot.properties?.samples ? [...spot.properties.samples, newSample] : [newSample];
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
+        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
         const updatedPreferences = {
           ...preferences,
           sample_prefix: namePrefix,

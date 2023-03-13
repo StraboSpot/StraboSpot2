@@ -11,6 +11,7 @@ import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
+import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {
   editedSpotImage,
   editedSpotImages,
@@ -23,6 +24,8 @@ const useImages = () => {
   const navigation = useNavigation();
 
   const [useHome] = useHomeHook();
+  // const [useSpots] = useSpotsHook();
+
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -43,12 +46,14 @@ const useImages = () => {
       const allOtherImages = imagesDataCopy.filter(item => imageId !== item.id);
       dispatch(setSelectedSpot(spotWithImage));
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
+      dispatch(updatedModifiedTimestampsBySpotId(selectedSpot.properties.id));
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
+    else Alert.alert(`There was an error deleting image ${imageId}`);
   };
 
   // Check to see if image is on the local device
@@ -275,6 +280,7 @@ const useImages = () => {
       console.log(updatedImages);
       updatedImages.push(imageCopy);
       dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
+      dispatch(updatedModifiedTimestampsBySpotId(selectedSpot.properties.id));
     }
     if (!imageCopy.annotated) dispatch(setCurrentImageBasemap(undefined));
   };

@@ -15,6 +15,7 @@ import {setModalVisible} from '../home/home.slice';
 import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import usePetrologyHook from './usePetrology';
@@ -65,6 +66,7 @@ const MineralsPage = (props) => {
       const updatedPet = spot.properties?.pet ? {...spot.properties.pet, minerals: updatedMinerals}
         : {minerals: updatedMinerals};
       dispatch(editedSpotProperties({field: 'pet', value: updatedPet}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
       preFormRef.current.resetForm();
     }
   };

@@ -11,7 +11,11 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, TextInputField, useFormHook} from '../form';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
-import {addedSpotsIdsToDataset, deletedSpotIdFromDataset} from '../project/projects.slice';
+import {
+  addedSpotsIdsToDataset,
+  deletedSpotIdFromDataset,
+  updatedModifiedTimestampsBySpotId,
+} from '../project/projects.slice';
 import {addedSpot} from '../spots/spots.slice';
 
 const Metadata = () => {
@@ -157,6 +161,7 @@ const Metadata = () => {
       const editedSpotProperties = useForm.showErrors(metadataFormRef.current);
       console.log('Saving form data to Spot ...');
       dispatch(addedSpot({...spot, properties: editedSpotProperties}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
       return Promise.resolve();
     }
     catch (e) {

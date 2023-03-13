@@ -12,6 +12,7 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
+import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {FABRIC_TYPES} from './fabric.constants';
 import FaultRockFabric from './FaultRockFabric';
@@ -157,6 +158,7 @@ const AddFabricModal = (props) => {
       let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
       editedFabricsData.push({...editedFabricData, id: getNewId()});
       dispatch(editedSpotProperties({field: groupKey, value: editedFabricsData}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
     }
     catch (err) {
       console.log('Error submitting form', err);

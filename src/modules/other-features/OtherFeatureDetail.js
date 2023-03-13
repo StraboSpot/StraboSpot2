@@ -12,7 +12,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {formStyles, SelectInputField, TextInputField, useFormHook} from '../form';
 import {DEFAULT_GEOLOGIC_TYPES} from '../project/project.constants';
-import {addedCustomFeatureTypes} from '../project/projects.slice';
+import {addedCustomFeatureTypes, updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 
@@ -70,6 +70,7 @@ const OtherFeatureDetail = (props) => {
       useTags.deleteFeatureTags([props.selectedFeature]);
       otherFeatures = otherFeatures.filter(feature => feature.id !== props.selectedFeature.id);
       dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
     }
     props.hideFeatureDetail();
   };
@@ -253,6 +254,7 @@ const OtherFeatureDetail = (props) => {
     feature.description = description;
     otherFeatures.push(feature);
     dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
+    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
     return true;
   };
 

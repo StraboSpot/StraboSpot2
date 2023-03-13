@@ -10,11 +10,13 @@ import {
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
+import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
 const useExternalData = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+
   let CSVObject = {};
 
   const CSVPicker = async () => {
@@ -68,6 +70,7 @@ const useExternalData = () => {
     const filteredArr = CSVcopy.filter(table => table.id !== tableToDelete.id);
     console.log(filteredArr);
     dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
+    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
   };
 
   const deleteUrl = (urlToDelete) => {
@@ -76,6 +79,7 @@ const useExternalData = () => {
     const filteredArr = urlCopy.filter(url => url !== urlToDelete);
     console.log(filteredArr);
     dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
+    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
   };
 
   const saveCSV = () => {
@@ -88,6 +92,7 @@ const useExternalData = () => {
       editedData.tables.push(CSVObject);
       console.log(editedData);
       dispatch(editedSpotProperties({field: 'data', value: editedData}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
     }
     catch (err) {
       console.error('Error saving .CSV file');
@@ -98,6 +103,7 @@ const useExternalData = () => {
     const urlArrCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
     urlArrCopy.splice(urlToEdit.index, 1, urlToEdit.url);
     dispatch(editedSpotProperties({field: 'data', value: {urls: urlArrCopy}}));
+    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
   };
 
   const saveURL = (protocol, url) => {
@@ -112,6 +118,7 @@ const useExternalData = () => {
         if (!editedData?.urls) editedData.urls = [];
         editedData.urls.push(fullURL.toLowerCase());
         dispatch(editedSpotProperties({field: 'data', value: editedData}));
+        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
       }
       else {
         dispatch(clearedStatusMessages());

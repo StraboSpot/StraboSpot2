@@ -381,6 +381,16 @@ const useSpots = () => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
   };
 
+  const saveSpot = () => {
+
+  };
+
+  // const saveSpotProperties = (field, value) => {
+  //   dispatch(editedSpotProperties({field: field, value: value}));
+  //   const datasetId = useProject.getDatasetFromSpotId(selectedSpot.properties.id);
+  //   if (!isEmpty(datasetId)) dispatch(updatedModifiedTimestamps({id: datasetId}));
+  // };
+
   return [{
     checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
@@ -407,6 +417,8 @@ const useSpots = () => {
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
     isStratInterval: isStratInterval,
+    saveSpot: saveSpot,
+    // saveSpotProperties: saveSpotProperties,
   }];
 };
 

@@ -12,6 +12,7 @@ import useMapsHook from '../maps/useMaps';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 import NoteForm from './NoteForm';
@@ -19,6 +20,7 @@ import NoteForm from './NoteForm';
 const Notes = (props) => {
   const dispatch = useDispatch();
   const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes || null);
+  const spot = useSelector(state => state.spot.selectedSpot);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const templates = useSelector(state => state.project.project?.templates) || {};
 
@@ -61,6 +63,7 @@ const Notes = (props) => {
       }
       await currentForm.submitForm();
       dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
       dispatch(setSelectedSpotNotesTimestamp());
       await currentForm.resetForm();
       if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));

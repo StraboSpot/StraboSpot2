@@ -14,6 +14,7 @@ import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {INTERPRETATIONS_SUBPAGES, LITHOLOGY_SUBPAGES, STRUCTURE_SUBPAGES} from './sed.constants';
 
@@ -50,6 +51,7 @@ const BasicSedPage = (props) => {
       attribute = {...attribute, id: getNewUUID()};
       editedSedData[props.page.key].splice(i, 1, attribute);
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
     }
     batch(() => {
       setIsDetailView(true);

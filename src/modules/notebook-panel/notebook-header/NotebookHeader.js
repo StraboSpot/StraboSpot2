@@ -11,6 +11,7 @@ import IconButton from '../../../shared/ui/IconButton';
 import {LABEL_DICTIONARY} from '../../form';
 import useMapsHook from '../../maps/useMaps';
 import {PAGE_KEYS} from '../../page/page.constants';
+import {updatedModifiedTimestampsBySpotId} from '../../project/projects.slice';
 import {addedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
@@ -101,6 +102,7 @@ const NotebookHeader = (props) => {
 
   const onSpotEdit = (field, value) => {
     dispatch(editedSpotProperties({field: field, value: value}));
+    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
   };
 
   const renderCoordsText = () => {
