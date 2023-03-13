@@ -229,6 +229,7 @@ android {
             keyPassword 'android'
         }
     }
+    namespace 'com.strabospot2'
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
