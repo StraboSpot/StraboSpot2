@@ -1305,8 +1305,14 @@ const Map = React.forwardRef((props, ref) => {
     const animationDuration = duration;
     if (bbox) {
       const bboxArr = bbox.split(',');
-      cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
-        100, animationDuration || 1500);
+      if (Platform.OS === 'web') {
+        mapRef.current?.fitBounds([[Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])]],
+          {padding: 100, duration: animationDuration || 1500});
+      }
+      else {
+        cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
+          100, animationDuration || 1500);
+      }
     }
     else {
       console.error('Error: not able to get Custom Map bbox coords...');
