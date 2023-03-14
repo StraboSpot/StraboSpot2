@@ -845,10 +845,13 @@ const Map = React.forwardRef((props, ref) => {
 
   // Fly the map to the current location
   const goToCurrentLocation = async () => {
-    if (cameraRef.current) {
+    if (cameraRef.current || Platform.OS === 'web') {
       console.log('%cFlying to location', 'color: red');
       const currentLocation = await useMaps.getCurrentLocation();
-      await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
+      if (Platform.OS === 'web') {
+        mapRef.current.flyTo({center: [currentLocation.longitude, currentLocation.latitude], maxDuration: 2500});
+      }
+      else await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
     }
     else throw 'Error Getting Map Camera';
   };
