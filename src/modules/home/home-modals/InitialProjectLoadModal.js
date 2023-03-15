@@ -203,7 +203,7 @@ const InitialProjectLoadModal = (props) => {
               type={'clear'}
               icon={
                 <Icon
-                  name={'ios-arrow-back'}
+                  name={'arrow-back'}
                   type={'ionicon'}
                   color={'black'}
                   iconStyle={projectStyles.buttons}
@@ -237,7 +237,7 @@ const InitialProjectLoadModal = (props) => {
             type={'clear'}
             icon={
               <Icon
-                name={'ios-arrow-back'}
+                name={'arrow-back'}
                 type={'ionicon'}
                 color={'black'}
                 iconStyle={projectStyles.buttons}
@@ -287,7 +287,7 @@ const InitialProjectLoadModal = (props) => {
           type={'clear'}
           icon={
             <Icon
-              name={'ios-arrow-back'}
+              name={'arrow-back'}
               type={'ionicon'}
               color={'black'}
               iconStyle={projectStyles.buttons}

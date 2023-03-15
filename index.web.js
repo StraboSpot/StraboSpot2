@@ -2,6 +2,7 @@ import {AppRegistry} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/Fonts/FontAwesome.ttf';
 import Ionicons from 'react-native-vector-icons/Fonts/Ionicons.ttf';
+import MaterialCommunityIcons from 'react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf';
 import MaterialIcons from 'react-native-vector-icons/Fonts/MaterialIcons.ttf';
 
 import App from './App';
@@ -14,6 +15,10 @@ const IconsStyles = `
 @font-face {
   src: url(${MaterialIcons});
   font-family: MaterialIcons;
+}
+@font-face {
+  src: url(${MaterialCommunityIcons});
+  font-family: MaterialCommunityIcons;
 }
 @font-face {
   src: url(${FontAwesome});

@@ -15,7 +15,7 @@ const MainMenuPanelHeader = (props) => {
     <View style={styles.mainMenuHeaderContainer}>
       {pageVisible && !isSideMenuVisible && (
         <Icon
-          name={'ios-arrow-back'}
+          name={'arrow-back'}
           type={'ionicon'}
           iconStyle={styles.buttons}
           onPress={() => props.onPress()}
