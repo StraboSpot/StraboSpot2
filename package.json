@@ -10,13 +10,17 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.33.0 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.33.0",
+    "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.38.1 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.38.1",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'",
-    "build:android": "react-native bundle --entry-file='index.js' --bundle-output='android/app/src/main/assets/index.android.bundle' --assets-dest android/app/src/main/res  --dev=false --platform='android'",
+    "build:android": "react-native bundle --entry-file='index.js' --bundle-output='android/app/src/main/assets/index.android.bundle' --dev=false --platform='android'",
     "bump-patch": "npm version patch --no-git-tag-version && bundle exec fastlane bump",
     "bump-minor": "npm version minor --no-git-tag-version && bundle exec fastlane bump",
     "bump-major": "npm version major --no-git-tag-version && bundle exec fastlane bump",
     "deploy-beta": "bundle exec fastlane beta"
+  },
+  "scriptComments": {
+    "build:android": "Must be run with every build for android before deploying to PlatStore. Removed the --assets flag because of duplicates.",
+    "deploy:android": "1. run build:android && cd android && ./gradlew bundleRelease (creates a .aab file in app/build/outputs/bundle/release)"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.17.7",

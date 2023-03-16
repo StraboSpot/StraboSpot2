@@ -26,6 +26,7 @@ buildscript {
 //                             implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-localization-v9:0.14.0'
 //                             implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-markerview-v9:0.4.0'
 //                         }
+          kotlin_version = '1.6.10'
     }
     repositories {
         google()
@@ -35,6 +36,7 @@ buildscript {
         classpath('com.android.tools.build:gradle:7.3.0')
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("de.undercouch:gradle-download-task:5.0.1")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
