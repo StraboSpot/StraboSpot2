@@ -14,6 +14,7 @@ import {Form, useFormHook} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
 import usePageHoook from './usePage';
@@ -143,10 +144,12 @@ const Overview = (props) => {
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
         const traceValues = {...formValues, 'trace_feature': true};
         dispatch(editedSpotProperties({field: 'trace', value: traceValues}));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
       else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiPolygon'
         || spot.geometry.type === 'GeometryCollection') {
         dispatch(editedSpotProperties({field: 'surface_feature', value: formValues}));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
       return Promise.resolve();
     }
@@ -174,6 +177,7 @@ const Overview = (props) => {
         let field = 'surface_feature';
         if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') field = 'trace';
         dispatch(editedSpotProperties({field: field, value: {}}));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
     };
 

@@ -15,11 +15,12 @@ import {
   deletedSpotIdFromTags,
   setActiveDatasets,
   setSelectedDataset,
+  updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
-import {addedSpot, deletedSpot, setSelectedSpot} from './spots.slice';
+import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = () => {
   const [useProject] = useProjectHook();
@@ -133,7 +134,8 @@ const useSpots = () => {
       useTags.addSpotsToTags(continuousTaggingList, [newSpot]);
     }
     console.log('Creating new Spot:', newSpot);
-    await dispatch(addedSpot(newSpot));
+    await dispatch(editedOrCreatedSpot(newSpot));
+    dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
     // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
     let currentDataset = datasets[selectedDatasetId];
     if (isEmpty(currentDataset)) {
@@ -381,6 +383,10 @@ const useSpots = () => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
   };
 
+  const saveSpot = () => {
+
+  };
+
   return [{
     checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
@@ -407,6 +413,8 @@ const useSpots = () => {
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
     isStratInterval: isStratInterval,
+    saveSpot: saveSpot,
+    // saveSpotProperties: saveSpotProperties,
   }];
 };
 

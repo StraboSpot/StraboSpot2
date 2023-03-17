@@ -266,7 +266,10 @@ export const isEmpty = (value) => {
 };
 
 export const isEqual = (a, b) => {
-  return lodashIsEqual(a, b);
+
+  const isEqual = lodashIsEqual(a, b);
+  console.log(isEqual)
+  return isEqual;
 };
 
 // Convert a string to title case and properly handles (s) in a word by keeping the s lowercase

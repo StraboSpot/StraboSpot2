@@ -11,6 +11,7 @@ import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
   editedSpotImage,
   editedSpotImages,
@@ -23,6 +24,8 @@ const useImages = () => {
   const navigation = useNavigation();
 
   const [useHome] = useHomeHook();
+  // const [useSpots] = useSpotsHook();
+
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -43,12 +46,14 @@ const useImages = () => {
       const allOtherImages = imagesDataCopy.filter(item => imageId !== item.id);
       dispatch(setSelectedSpot(spotWithImage));
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
+      dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await RNFS.exists(localImageFile);
       if (fileExists) await RNFS.unlink(localImageFile);
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
+    else Alert.alert(`There was an error deleting image ${imageId}`);
   };
 
   // Check to see if image is on the local device
@@ -82,6 +87,7 @@ const useImages = () => {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
           dispatch(editedSpotImages(newImages));
+          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         }
         else Alert.alert('No Photos To Save', 'Please try again...');
         useHome.toggleLoading(false);
@@ -177,6 +183,7 @@ const useImages = () => {
                 const savedPhoto = await saveFile(resizedImage);
                 console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
                 dispatch(editedSpotImages([savedPhoto]));
+                dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
               }),
             );
             res(imageCount);
@@ -275,6 +282,7 @@ const useImages = () => {
       console.log(updatedImages);
       updatedImages.push(imageCopy);
       dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
+      dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
     }
     if (!imageCopy.annotated) dispatch(setCurrentImageBasemap(undefined));
   };
@@ -286,7 +294,8 @@ const useImages = () => {
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
         const updatedImage = {...image, ...imageSize};
-        dispatch(editedSpotImage(updatedImage));
+        const spot = dispatch(editedSpotImage(updatedImage));
+        console.log(spot);
         if (currentImageBasemap.id === updatedImage.id) {
           dispatch(setCurrentImageBasemap(updatedImage));
         }

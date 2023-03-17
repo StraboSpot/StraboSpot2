@@ -19,10 +19,11 @@ import {
   setModalVisible,
 } from '../home/home.slice';
 import useImagesHook from '../images/useImages';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
-  addedSpot,
-  addedSpots,
   clearedSelectedSpots,
+  editedOrCreatedSpot,
+  editedSpots,
   setIntersectedSpotsForTagging,
   setSelectedSpot,
 } from '../spots/spots.slice';
@@ -282,7 +283,8 @@ const Map = React.forwardRef((props, ref) => {
         ...selectedSpot,
         geometry: defaultFeature.geometry,
       };
-      dispatch(addedSpot(selectedSpotCopy));
+      dispatch(editedOrCreatedSpot(selectedSpotCopy));
+      dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpotCopy.properties.id]));
 
       // Set new geometry ready for editing, set the active vertex to first index of the geometry.
       startEditing(selectedSpotCopy, turf.explode(selectedSpotCopy).features[0], 0);
@@ -971,7 +973,11 @@ const Map = React.forwardRef((props, ref) => {
       setDisplayedSpots([editingModeData.spotEditing]);
       await dispatch(setSelectedSpot(editingModeData.spotEditing));
     }
-    if (!isEmpty(editingModeData.spotsEdited)) dispatch(addedSpots(editingModeData.spotsEdited));
+    if (!isEmpty(editingModeData.spotsEdited)) {
+      dispatch(editedSpots(editingModeData.spotsEdited));
+      const spotIds = editingModeData.spotsEdited.map(s => s.properties.id);
+      dispatch(updatedModifiedTimestampsBySpotsIds(spotIds));
+    }
     clearEditing();
   };
 

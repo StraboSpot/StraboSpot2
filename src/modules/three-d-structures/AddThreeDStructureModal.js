@@ -12,6 +12,7 @@ import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import AddFault from './AddFault';
 import AddOther from './AddOther';
@@ -178,6 +179,7 @@ const AddThreeDStructureModal = (props) => {
         : [];
       edited3DStructuresData.push({...edited3DStructureData, id: getNewId()});
       dispatch(editedSpotProperties({field: groupKey, value: edited3DStructuresData}));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     }
     catch (err) {
       console.log('Error submitting form', err);

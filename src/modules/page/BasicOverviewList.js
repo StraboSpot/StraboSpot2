@@ -7,6 +7,7 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import BasicListItem from './BasicListItem';
 import {PAGE_KEYS, PET_PAGES, SED_PAGES} from './page.constants';
@@ -44,6 +45,7 @@ const BasicOverviewList = (props) => {
     else if (props.page.key === PAGE_KEYS.BEDDING) editedSedData[props.page.key].beds.splice(i, 1, item);
     else editedSedData[props.page.key].splice(i, 1, item);
     dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     dispatch(setSelectedAttributes([item]));
   };
 

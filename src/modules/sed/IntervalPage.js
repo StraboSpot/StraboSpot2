@@ -10,6 +10,7 @@ import {Form, useFormHook} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties} from '../spots/spots.slice';
 
@@ -39,6 +40,7 @@ const IntervalPage = (props) => {
       editedSedData.character = spot.properties?.sed?.interval_type;
       delete spot.properties?.sed?.interval_type;
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     }
     return () => confirmLeavePage();
   }, []);
