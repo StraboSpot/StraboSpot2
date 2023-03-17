@@ -1,6 +1,6 @@
 import {createSlice, current} from '@reduxjs/toolkit';
 
-import {isEmpty, isEqual} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 
 const initialSpotState = {
   intersectedSpotsForTagging: [],
@@ -14,36 +14,12 @@ const spotSlice = createSlice({
   name: 'spot',
   initialState: initialSpotState,
   reducers: {
-    addedSpot(state, action) {
-      const modifiedSpot = {
-        ...action.payload,
-        properties: {...action.payload.properties, modified_timestamp: Date.now()},
-      };
-      state.spots = {...state.spots, [modifiedSpot.properties.id]: modifiedSpot};
-      console.log('UPDATED Spot:', modifiedSpot, 'in Existing Spots:', state.spots);
-      if (isEmpty(state.selectedSpot)) {
-        state.selectedSpot = modifiedSpot;
-        console.log('ADDED NEW Selected Spot:', state.selectedSpot);
-      }
-      else if (state.selectedSpot.properties.id === modifiedSpot.properties.id) {
-        state.selectedSpot = modifiedSpot;
-        console.log('UPDATED Selected Spot:', state.selectedSpot);
-      }
-    },
-    addedSpots(state, action) {
-      const spotsWithTimestamp = action.payload.map(s => (
-        {...s, properties: {...s.properties, modified_timestamp: Date.now()}}
-      ));
-      const spots = Object.assign({}, ...spotsWithTimestamp.map(spot => ({[spot.properties.id]: spot})));
-      state.spots = {...state.spots, ...spots};
-      console.log('UPDATED Spots:', state.spots, 'in Existing Spots:', current(state));
-      if (!isEmpty(state.selectedSpot) && Object.keys(spots).includes(state.selectedSpot.properties.id)) {
-        state.selectedSpot = spots[state.selectedSpot.properties.id];
-        console.log('UPDATED Selected Spot:', state.selectedSpot);
-      }
-    },
     addedSpotsFromDevice(state, action) {
       state.spots = action.payload;
+    },
+    addedSpotsFromServer(state, action) {
+      state.spots = Object.assign({}, ...action.payload.map(spot => ({[spot.properties.id]: spot})));
+      console.log('ADDED Spots:', state.spots, 'in Existing Spots:', current(state));
     },
     clearedSelectedSpots(state) {
       state.selectedSpot = {};
@@ -61,6 +37,22 @@ const spotSlice = createSlice({
       state.spots = remainingSpots;
       state.recentViews = state.recentViews.filter(id => id !== action.payload);
     },
+    editedOrCreatedSpot(state, action) {
+      const modifiedSpot = {
+        ...action.payload,
+        properties: {...action.payload.properties, modified_timestamp: Date.now()},
+      };
+      state.spots = {...state.spots, [modifiedSpot.properties.id]: modifiedSpot};
+      console.log('UPDATED Spot:', modifiedSpot, 'in Existing Spots:', state.spots);
+      if (isEmpty(state.selectedSpot)) {
+        state.selectedSpot = modifiedSpot;
+        console.log('ADDED NEW Selected Spot:', state.selectedSpot);
+      }
+      else if (state.selectedSpot.properties.id === modifiedSpot.properties.id) {
+        state.selectedSpot = modifiedSpot;
+        console.log('UPDATED Selected Spot:', state.selectedSpot);
+      }
+    },
     editedSpotImage(state, action) {
       const foundSpot = Object.values(state.spots).find((spot) => {
         return spot.properties.images && spot.properties.images.find(image => image.id === action.payload.id);
@@ -69,7 +61,7 @@ const spotSlice = createSlice({
         const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.payload.id);
         imagesFiltered.push(action.payload);
         foundSpot.properties.images = imagesFiltered;
-        const selectedSpotCopy = state.selectedSpot && state.selectedSpot.properties.id === foundSpot.properties.id
+        const selectedSpotCopy = state.selectedSpot?.properties.id === foundSpot.properties.id
           ? foundSpot : state.selectedSpot;
         console.log('Edit Image for selectedSpot', selectedSpotCopy);
         state.selectedSpot = selectedSpotCopy;
@@ -89,15 +81,21 @@ const spotSlice = createSlice({
     },
     editedSpotProperties(state, action) {
       const {field, value} = action.payload;
-      if (!isEmpty(value) && !isEqual(value, state.selectedSpot.properties[field])) {
-        state.selectedSpot.properties[field] = value;
-        state.selectedSpot.properties.modified_timestamp = Date.now();
-      }
-      else if (isEmpty(value)) {
-        delete state.selectedSpot.properties[field];
-        state.selectedSpot.properties.modified_timestamp = Date.now();
-      }
+      state.selectedSpot.properties[field] = value;
+      state.selectedSpot.properties.modified_timestamp = Date.now();
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
+    },
+    editedSpots(state, action) {
+      const spotsWithTimestamp = action.payload.map(s => (
+        {...s, properties: {...s.properties, modified_timestamp: Date.now()}}
+      ));
+      const spots = Object.assign({}, ...spotsWithTimestamp.map(spot => ({[spot.properties.id]: spot})));
+      state.spots = {...state.spots, ...spots};
+      console.log('UPDATED Spots:', state.spots, 'in Existing Spots:', current(state));
+      if (!isEmpty(state.selectedSpot) && Object.keys(spots).includes(state.selectedSpot.properties.id)) {
+        state.selectedSpot = spots[state.selectedSpot.properties.id];
+        console.log('UPDATED Selected Spot:', state.selectedSpot);
+      }
     },
     setIntersectedSpotsForTagging(state, action) {
       state.intersectedSpotsForTagging = action.payload;
@@ -123,15 +121,16 @@ const spotSlice = createSlice({
 });
 
 export const {
-  addedSpot,
-  addedSpots,
   addedSpotsFromDevice,
+  addedSpotsFromServer,
   clearedSelectedSpots,
   clearedSpots,
   deletedSpot,
+  editedOrCreatedSpot,
   editedSpotImage,
   editedSpotImages,
   editedSpotProperties,
+  editedSpots,
   setIntersectedSpotsForTagging,
   setSelectedAttributes,
   setSelectedSpot,

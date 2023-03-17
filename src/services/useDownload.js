@@ -22,7 +22,7 @@ import {
   setSelectedDataset,
   updatedDatasets,
 } from '../modules/project/projects.slice';
-import {addedSpots, clearedSpots} from '../modules/spots/spots.slice';
+import {addedSpotsFromServer, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES, STRABO_APIS} from './deviceAndAPI.constants';
 import useDeviceHook from './useDevice';
@@ -85,7 +85,7 @@ const useDownload = () => {
       if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
         const spotsOnServer = downloadDatasetInfo.features;
         console.log(dataset.name, ':', 'Spots Downloaded', spotsOnServer);
-        dispatch(addedSpots(spotsOnServer));
+        dispatch(addedSpotsFromServer(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
         dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
         await gatherNeededImages(spotsOnServer, dataset);

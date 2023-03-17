@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import styles from './images.styles';
 
@@ -46,7 +46,7 @@ const ImagePropertiesModal = (props) => {
       images[i] = {...formValues, annotated: annotated};
       dispatch(setSelectedAttributes([images[i]]));
       dispatch(editedSpotProperties({field: 'images', value: images}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       props.close();
       return Promise.resolve();
     }

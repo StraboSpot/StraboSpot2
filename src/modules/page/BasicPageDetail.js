@@ -11,7 +11,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import NoteForm from '../notes/NoteForm';
 import usePetrologyHook from '../petrology/usePetrology';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -89,7 +89,7 @@ const BasicPageDetail = (props) => {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     }
     dispatch(setSelectedAttributes([]));
     props.closeDetailView();
@@ -182,7 +182,7 @@ const BasicPageDetail = (props) => {
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
       editedPageData.push(editedFeatureData);
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     }
     catch (err) {
       console.log('Error saving', pageKey, err);

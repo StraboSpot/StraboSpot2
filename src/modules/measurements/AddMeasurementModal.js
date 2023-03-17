@@ -21,7 +21,7 @@ import {Form, formStyles, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import useMapsHook from '../maps/useMaps';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 import AddLine from './AddLine';
@@ -447,7 +447,7 @@ const AddMeasurementModal = (props) => {
         }
         console.log('editedMeasurementData', editedMeasurementsData);
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
-        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
       else {
         if (isSelectedAttitude) {
@@ -458,7 +458,7 @@ const AddMeasurementModal = (props) => {
         console.log('editedMeasurementData', editedMeasurementData);
         console.log('Saving Measurement data to Spot ...', editedMeasurementsData);
         dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
-        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
       if (isSelectedAttitude) {
         dispatch(setSelectedAttributes([editedMeasurementData]));

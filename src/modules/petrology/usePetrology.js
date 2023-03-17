@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import {
   ABBREVIATIONS_WITH_LABELS,
@@ -32,7 +32,7 @@ const usePetrology = () => {
       if (isEmpty(editedPetData[key])) delete editedPetData[key];
     }
     dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
-    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
   };
 
   const getAbbrevFromFullMineralName = (name) => {
@@ -97,7 +97,7 @@ const usePetrology = () => {
       if (editedFeatureData.rock_type && (key === PAGE_KEYS.ROCK_TYPE_IGNEOUS
         || key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC || key === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE)) {
         dispatch(editedSpotProperties({field: 'pet', value: editedFeatureData}));
-        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
       else {
         let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
@@ -105,7 +105,7 @@ const usePetrology = () => {
         editedPetData[key] = editedPetData[key].filter(type => type.id !== editedFeatureData.id);
         editedPetData[key].push(editedFeatureData);
         dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
-        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       }
       // await formCurrent.resetForm();
     }
@@ -121,7 +121,7 @@ const usePetrology = () => {
     activeTemplates.forEach(t => editedPetData[key].push({...t.values, id: getNewId()}));
     console.log('editedPetData', editedPetData);
     dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
-    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
   };
 
   return {

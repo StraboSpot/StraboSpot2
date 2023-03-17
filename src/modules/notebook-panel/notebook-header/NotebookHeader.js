@@ -11,8 +11,8 @@ import IconButton from '../../../shared/ui/IconButton';
 import {LABEL_DICTIONARY} from '../../form';
 import useMapsHook from '../../maps/useMaps';
 import {PAGE_KEYS} from '../../page/page.constants';
-import {updatedModifiedTimestampsBySpotId} from '../../project/projects.slice';
-import {addedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
+import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
 import headerStyles from './notebookHeader.styles';
@@ -102,7 +102,7 @@ const NotebookHeader = (props) => {
 
   const onSpotEdit = (field, value) => {
     dispatch(editedSpotProperties({field: field, value: value}));
-    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
   };
 
   const renderCoordsText = () => {
@@ -149,7 +149,8 @@ const NotebookHeader = (props) => {
     editedSpot.geometry = turf.point([currentLocation.longitude, currentLocation.latitude]).geometry;
     if (currentLocation.altitude) editedSpot.properties.altitude = currentLocation.altitude;
     if (currentLocation.accuracy) editedSpot.properties.gps_accuracy = currentLocation.accuracy;
-    dispatch(addedSpot(editedSpot));
+    dispatch(editedOrCreatedSpot(editedSpot));
+    dispatch(updatedModifiedTimestampsBySpotsIds([editedSpot.properties.id]));
     dispatch(setSelectedSpot(editedSpot));
   };
 

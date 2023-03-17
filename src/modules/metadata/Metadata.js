@@ -14,9 +14,9 @@ import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {
   addedSpotsIdsToDataset,
   deletedSpotIdFromDataset,
-  updatedModifiedTimestampsBySpotId,
+  updatedModifiedTimestampsBySpotsIds,
 } from '../project/projects.slice';
-import {addedSpot} from '../spots/spots.slice';
+import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Metadata = () => {
   const [useForm] = useFormHook();
@@ -160,8 +160,8 @@ const Metadata = () => {
       await metadataFormRef.current.submitForm();
       const editedSpotProperties = useForm.showErrors(metadataFormRef.current);
       console.log('Saving form data to Spot ...');
-      dispatch(addedSpot({...spot, properties: editedSpotProperties}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(editedOrCreatedSpot({...spot, properties: editedSpotProperties}));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       return Promise.resolve();
     }
     catch (e) {

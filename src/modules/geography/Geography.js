@@ -14,7 +14,8 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
 import useMapsHooks from '../maps/useMaps';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
-import {addedSpot} from '../spots/spots.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Geography = () => {
   const [useForm] = useFormHook();
@@ -328,7 +329,8 @@ const Geography = () => {
         }
       }
       const editedSpot = {geometry: geometry, properties: {...geographyProperties}, type: spot.type};
-      dispatch(addedSpot(editedSpot));
+      dispatch(editedOrCreatedSpot(editedSpot));
+      dispatch(updatedModifiedTimestampsBySpotsIds([editedSpot.properties.id]));
       return Promise.resolve();
     }
     catch (e) {

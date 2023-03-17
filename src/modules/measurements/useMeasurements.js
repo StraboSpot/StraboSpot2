@@ -7,7 +7,7 @@ import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {useFormHook} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 
@@ -84,7 +84,7 @@ const useMeasurements = () => {
       const orientations = !spot.properties.orientation_data ? [newOrientation]
         : [...spot.properties.orientation_data, newOrientation];
       dispatch(editedSpotProperties({field: 'orientation_data', value: orientations}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
 
       if (compassMeasurements.manual) {
         dispatch(setSelectedAttributes([newOrientation]));
@@ -137,7 +137,7 @@ const useMeasurements = () => {
       updatedOrientationData = removeMeasurementFromObj(updatedOrientationData, measurementToDelete);
     });
     dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));
-    dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     dispatch(setSelectedAttributes([]));
   };
 

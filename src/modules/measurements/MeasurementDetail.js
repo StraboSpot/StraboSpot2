@@ -16,7 +16,7 @@ import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/com
 import {Form, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
@@ -446,7 +446,7 @@ const MeasurementDetail = (props) => {
       });
       dispatch(setSelectedAttributes(editedSelectedMeasurements));
       dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       await formCurrent.resetForm();
       console.log('Finished saving form data to Spot');
     }

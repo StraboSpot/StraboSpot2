@@ -12,9 +12,9 @@ import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
-import {updatedModifiedTimestampsBySpotId, updatedProject} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
-import {addedSpot, editedSpotProperties} from '../spots/spots.slice';
+import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const SampleModal = (props) => {
     const dispatch = useDispatch();
@@ -157,13 +157,14 @@ const SampleModal = (props) => {
           properties: {...pointSetAtCurrentLocation.properties, samples: [newSample]},
         };
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
-        dispatch(addedSpot(pointSetAtCurrentLocation));
+        dispatch(editedOrCreatedSpot(pointSetAtCurrentLocation));
+        dispatch(updatedModifiedTimestampsBySpotsIds([pointSetAtCurrentLocation.properties.id]));
         await props.goToCurrentLocation();
       }
       else {
         const samples = spot.properties?.samples ? [...spot.properties.samples, newSample] : [newSample];
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
-        dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
         const updatedPreferences = {
           ...preferences,
           sample_prefix: namePrefix,

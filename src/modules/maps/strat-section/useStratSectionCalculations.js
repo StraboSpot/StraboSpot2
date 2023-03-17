@@ -3,8 +3,9 @@ import {Alert} from 'react-native';
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
 import useSedValidationHook from '../../sed/useSedValidation';
-import {addedSpot, addedSpots} from '../../spots/spots.slice';
+import {editedOrCreatedSpot, editedSpots} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 
@@ -237,7 +238,8 @@ const useStratSectionCalculations = () => {
       });
     }
     console.log('interval w new geom:', targetIntervalModified);
-    dispatch(addedSpot(targetIntervalModified));
+    dispatch(editedOrCreatedSpot(targetIntervalModified));
+    dispatch(updatedModifiedTimestampsBySpotsIds([targetIntervalModified.properties.id]));
     targetIntervalExtent = turf.bbox(targetIntervalModified);
     moveSpotsUpOrDownByPixels(targetIntervalModified.properties.strat_section_id, targetIntervalExtent[1],
       targetIntervalHeight, targetIntervalModified.properties.id);
@@ -254,7 +256,7 @@ const useStratSectionCalculations = () => {
       if (extent[1] >= cutoff) movedSpots.push(moveSpotByPixels(spot, pixels));
     });
     console.log('Dispatching', movedSpots);
-    dispatch(addedSpots(movedSpots));
+    dispatch(editedSpots(movedSpots));
   };
 
   const recalculateIntervalGeometry = (spot) => {
@@ -263,7 +265,8 @@ const useStratSectionCalculations = () => {
     const updatedGeometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
     const editedSpot = {...spot, geometry: updatedGeometry};
     console.log('Spot after geometry recalculation', editedSpot);
-    dispatch(addedSpot(editedSpot));
+    dispatch(editedOrCreatedSpot(editedSpot));
+    dispatch(updatedModifiedTimestampsBySpotsIds([editedSpot.properties.id]));
     console.log('Dispatching', editedSpot);
     return editedSpot;
   };

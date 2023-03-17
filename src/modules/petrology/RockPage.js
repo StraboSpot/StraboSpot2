@@ -18,7 +18,7 @@ import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {updatedModifiedTimestampsBySpotId} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
@@ -94,7 +94,7 @@ const RockPage = (props) => {
       rock = {...rock, id: getNewUUID()};
       editedSedData[pageKey].splice(i, 1, rock);
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     }
     batch(() => {
       setIsDetailView(true);
@@ -127,7 +127,7 @@ const RockPage = (props) => {
         updatedPetData[pageKey] = [...rockData[pageKey] || [], ...copyDataWithNewIds];
       }
       dispatch(editedSpotProperties({field: groupKey, value: updatedPetData}));
-      dispatch(updatedModifiedTimestampsBySpotId(spot.properties.id));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     };
 
     if (!isEmpty(spotToCopy)) {
