@@ -276,7 +276,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedStratColumn_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: StratSectionPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.INTERVAL,
     label: 'Interval',
@@ -285,7 +284,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedInterval_pressed.png'),
     overview_component: IntervalOverview,
     page_component: IntervalPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.LITHOLOGIES,
     label: 'Lithologies',
@@ -294,7 +292,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedLithologies_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: BasicSedPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.BEDDING,
     label: 'Bedding',
@@ -303,7 +300,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedBedding_pressed.png'),
     page_component: BeddingPage,
     overview_component: BasicOverviewList,
-    testing: true,
   }, {
     key: PAGE_KEYS.STRUCTURES,
     label: 'Structures',
@@ -312,7 +308,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedStructure_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: BasicSedPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.DIAGENESIS,
     label: 'Diagenesis',
@@ -321,7 +316,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedDiagenesis_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: BasicSedPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.FOSSILS,
     label: 'Fossils',
@@ -330,7 +324,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedFossil_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: BasicSedPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.INTERPRETATIONS,
     label: 'Interpretations',
@@ -339,7 +332,6 @@ export const SED_PAGES = [
     icon_pressed_src: require('../../assets/icons/SedInterpretation_pressed.png'),
     overview_component: BasicOverviewList,
     page_component: BasicSedPage,
-    testing: true,
   },
 ];
 

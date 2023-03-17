@@ -46,7 +46,7 @@ const StratSectionsList = () => {
         data={spotsWithStratSection}
         renderItem={({item}) => renderStratSectionItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Image Basemaps in Active Datasets'}/>}
+        ListEmptyComponent={<ListEmptyText text={'No Strat Sections in Active Datasets'}/>}
       />
     </View>
   );
