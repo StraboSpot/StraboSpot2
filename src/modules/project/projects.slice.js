@@ -135,11 +135,11 @@ const projectSlice = createSlice({
     deletedSpotIdFromDatasets(state, action) {
       const spotId = action.payload;
       const timestamp = Date.now();
-      const updatedDatatsets = Object.entries(state.datasets).reduce((acc, [datasetId, dataset]) => {
+      const updatedDatasets = Object.entries(state.datasets).reduce((acc, [datasetId, dataset]) => {
         const remainingSpotIds = dataset.spotIds?.filter(id => id !== spotId) || [];
         return {...acc, [datasetId]: {...dataset, modified_timestamp: timestamp, spotIds: remainingSpotIds}};
       }, {});
-      state.datasets = updatedDatatsets;
+      state.datasets = updatedDatasets;
       state.project.modified_timestamp = timestamp;
     },
     doesBackupDirectoryExist(state, action) {

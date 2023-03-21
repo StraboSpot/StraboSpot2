@@ -15,7 +15,6 @@ import {
   deletedSpotIdFromTags,
   setActiveDatasets,
   setSelectedDataset,
-  updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
@@ -135,8 +134,7 @@ const useSpots = () => {
     }
     console.log('Creating new Spot:', newSpot);
     await dispatch(editedOrCreatedSpot(newSpot));
-    dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
-    // const currentDataset = Object.values(datasets).find(dataset => dataset.current);
+    // dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id])); // Timestamps gets updated in addedSpotsIdsToDataset below
     let currentDataset = datasets[selectedDatasetId];
     if (isEmpty(currentDataset)) {
       Alert.alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
@@ -198,7 +196,7 @@ const useSpots = () => {
   };
 
   const getAllSpotSamplesCount = async () => {
-    let spotsObjArr = [];
+    // let spotsObjArr = [];
     let samplesArr = [];
     //get all datasets with spots
     await Promise.all(Object.values(datasets).filter((dataset) => {
