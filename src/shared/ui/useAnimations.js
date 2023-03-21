@@ -10,6 +10,8 @@ const useAnimations = () => {
         return Assets.lottieFiles.uploadingComplete;
       case 'deleteProject' :
         return Assets.lottieFiles.fileDelete;
+      case 'error' :
+        return Assets.lottieFiles.error;
     }
   };
 
