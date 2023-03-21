@@ -18,7 +18,7 @@ const spotSlice = createSlice({
       state.spots = action.payload;
     },
     addedSpotsFromServer(state, action) {
-      state.spots = Object.assign({}, ...action.payload.map(spot => ({[spot.properties.id]: spot})));
+      state.spots = Object.assign({}, ...action.payload.map(spot => ({...state.spots, [spot.properties.id]: spot})));
       console.log('ADDED Spots:', state.spots, 'in Existing Spots:', current(state));
     },
     clearedSelectedSpots(state) {
