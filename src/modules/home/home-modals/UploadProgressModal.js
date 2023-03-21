@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import LottieView from 'lottie-react-native';
+import {Icon} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -23,6 +24,8 @@ const UploadProgressModal = (props) => {
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [error, setError] = useState(false);
+  const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
 
   const useAnimations = useAnimationsHook();
   const useDownload = useDownloadHook();
@@ -37,18 +40,34 @@ const UploadProgressModal = (props) => {
     dispatch(setSelectedProject({project: '', source: ''}));
     dispatch(setProgressModalVisible(false));
     setUploadComplete(false);
+    setError(false);
     if (selectedProject.source === 'server' && !isEmpty(project)) {
       console.log('Downloading Project');
       await useDownload.initializeDownload(project);
       console.log('Download Complete!');
       setUploadComplete(false);
+      setError(false);
     }
   };
 
+  const renderList = (dataset) => {
+    return (
+      <Text style={{textAlign: 'left'}}>{dataset.name}</Text>
+    );
+  };
+
   const renderUploadProgressModal = async () => {
-    const uploadStatus = await useUpload.initializeUpload();
-    console.log('DATASET UPLOAD COMPLETE!', uploadStatus);
-    setUploadComplete(uploadStatus);
+    try {
+      const uploadStatusObj = await useUpload.initializeUpload();
+      const {status, datasets} = uploadStatusObj;
+      console.log('DATASET UPLOAD COMPLETE!', status);
+      setUploadComplete(status);
+      setDatasetsNotUploaded(datasets);
+    }
+    catch (err) {
+      console.error('Error in renderUploadProgressModal', err);
+      setError(true);
+    }
   };
 
   const renderUploadingAnimation = (type) => {
@@ -61,6 +80,30 @@ const UploadProgressModal = (props) => {
     </>);
   };
 
+  const renderDatasetsNotUploaded = () => {
+    return (
+      <View>
+        <View style={{alignItems: 'center'}}>
+          <Icon
+            name={'warning-outline'}
+            type={'ionicon'}
+            color={'orange'}
+            containerStyle={{paddingTop: 15}}
+          />
+          <Text style={{marginBottom: 15, textAlign: 'left'}}>The following datasets not uploaded because there is a
+            newer
+            version
+            on the server:</Text>
+          <FlatList
+            data={datasetsNotUploaded}
+            renderItem={({item}) => renderList(item)}
+            ListEmptyComponent={<Text>All datasets were uploaded.</Text>}
+          />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <ProgressModal
       buttonText={selectedProject.source !== '' && 'Continue'}
@@ -68,8 +111,8 @@ const UploadProgressModal = (props) => {
       dialogTitle={'UPLOADING...'}
       isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}
-      showButton={uploadComplete}
-      animation={renderUploadingAnimation(!uploadComplete ? 'uploading' : 'complete')}
+      showButton={uploadComplete || error}
+      animation={renderUploadingAnimation(error ? 'error' : !uploadComplete ? 'uploading' : 'complete')}
     >
       <View style={{flex: 1}}>
         <Text>{statusMessages}</Text>
@@ -82,6 +125,7 @@ const UploadProgressModal = (props) => {
           />
           <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
         </View>}
+        {uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}
       </View>
     </ProgressModal>
   );
