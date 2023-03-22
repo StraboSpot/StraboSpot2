@@ -11,7 +11,7 @@ const ProgressModal = (props) => {
   return (
     <Dialog
       visible={props.isProgressModalVisible}
-      maxHeight={Platform.OS === 'ios' ? 400 : 275}
+      maxHeight={Platform.OS === 'ios' ? 700 : 275}
       dialogStyle={{...commonStyles.dialogBox, width: 300}}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
@@ -34,12 +34,15 @@ const ProgressModal = (props) => {
         </View>
       }
     >
-      <DialogContent style={{...commonStyles.dialogContent}}>
+      <DialogContent style={{...commonStyles.dialogContent, flex: 1}}>
         {props.children}
       </DialogContent>
-      <DialogContent style={{height: 150, marginBottom: 20}}>
+      <DialogContent style={{height: 150, marginBottom: 10, flex: 1}}>
         {props.animation}
       </DialogContent>
+      {props.showInfo && <DialogContent style={{flex: 1}}>
+        {props.info}
+      </DialogContent>}
     </Dialog>
   );
 };
