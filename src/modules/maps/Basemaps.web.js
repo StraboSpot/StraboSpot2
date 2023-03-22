@@ -27,6 +27,7 @@ mapboxgl.accessToken = config.get('mapbox_access_token');
 
 const Basemap = (props) => {
   const center = useSelector(state => state.map.center || [LONGITUDE, LATITUDE]);
+  const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
   const zoom = useSelector(state => state.map.zoom || ZOOM);
@@ -106,6 +107,16 @@ const Basemap = (props) => {
 
     if (!props.imageBasemap && !props.stratSection) setStyle();
   }, [props.basemap]);
+
+  useEffect(() => {
+    console.log('UE Basemap - Changed [customMaps]', customMaps);
+
+    const waiting = () => {
+      if (!mapRef.current.loaded()) setTimeout(waiting, 200);
+      else addCustomMapsLayers();
+    };
+    waiting();
+  }, [customMaps]);
 
   useEffect(() => {
     console.log('UE Basemap - Changed [props.spotsNotSelected, props.spotsSelected]', props.spotsNotSelected,
@@ -351,11 +362,47 @@ const Basemap = (props) => {
     console.log('Finished adding selected features layers (selected spots).');
   };
 
+  const addCustomMapsLayers = () => {
+    Object.values(customMaps).forEach((customMap) => {
+      const layerId = customMap.id + 'Layer';
+      const sourceId = customMap.id + 'Source';
+
+      // Clean the Layers (Remove the Sources and Layers)
+      if (mapRef.current.getSource(sourceId)) {
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+        mapRef.current.removeSource(sourceId);
+      }
+
+      if (customMap.overlay && customMap.isViewable) {
+        console.log('Adding custom map layer...', customMap);
+
+        // Add Source: Custom Map
+        mapRef.current.addSource(sourceId, {
+          type: 'raster',
+          tiles: [useMaps.buildTileUrl(customMap)],
+        });
+
+        // Add Layer: Custom Map
+        mapRef.current.addLayer({
+          id: layerId,
+          type: 'raster',
+          source: sourceId, // reference the data source
+          paint: {
+            'raster-opacity': customMap.opacity && typeof (customMap.opacity) === 'number'
+            && customMap.opacity >= 0 && customMap.opacity <= 1 ? customMap.opacity : 1,
+          },
+        });
+        if (mapRef.current.getLayer(layerId)) console.log('Added Layer:', layerId);
+      }
+    });
+  };
+
   const addLayers = () => {
     console.log('Loading layers...');
 
     addFeaturesLayers();
     addFeaturesLayersSelected();
+    addCustomMapsLayers();
 
     console.log('Finished loading layers.');
   };

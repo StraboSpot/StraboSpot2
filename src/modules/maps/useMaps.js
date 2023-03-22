@@ -598,7 +598,7 @@ const useMaps = (mapRef) => {
   };
 
   const setCustomMapSwitchValue = (value, map) => {
-    console.log('value', value, 'id', map.mapId);
+    console.log('Custom Map Switch Value:', value, 'Map Id:', map.id);
     const customMapsCopy = JSON.parse(JSON.stringify(customMaps));
     let mapKey = map.id;
     if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
