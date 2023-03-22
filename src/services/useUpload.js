@@ -305,12 +305,20 @@ const useUpload = () => {
     spots.forEach(spot => spot?.properties?.images?.forEach(image => imagesFound.push(image)));
     console.log('SPOT IMAGES', imagesFound);
 
-    await Promise.all((res, rej) => {
-        imagesFound.map(async (image) => {
-          await shouldUploadImage(image);
-          // console.log('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
-        }), res('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
-      },
+    // await Promise.all((res, rej) => {
+    //     imagesFound.map(async (image) => {
+    //       await shouldUploadImage(image);
+    //       // console.log('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
+    //     }), res('Images on Server', imagesOnServer, ' Images to upload', imagesToUpload);
+    //   },
+    // );
+    // if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
+    // await deleteTempImagesFolder();
+    await Promise.all(
+      imagesFound.map(async (image) => {
+        console.log('SHOULD UPLOAD IMAGE', image);
+        await shouldUploadImage(image);
+      }),
     );
     if (imagesToUpload.length > 0) await startUploadingImage(imagesToUpload[0]);
     await deleteTempImagesFolder();
