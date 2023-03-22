@@ -90,10 +90,8 @@ const UploadProgressModal = (props) => {
             color={'orange'}
             containerStyle={{paddingTop: 15}}
           />
-          <Text style={{marginBottom: 15, textAlign: 'left'}}>The following datasets not uploaded because there is a
-            newer
-            version
-            on the server:</Text>
+          <Text style={{marginBottom: 15, textAlign: 'left'}}>The following datasets did not upload because the version
+            on the server is the same or newer:</Text>
           <FlatList
             data={datasetsNotUploaded}
             renderItem={({item}) => renderList(item)}
@@ -112,11 +110,14 @@ const UploadProgressModal = (props) => {
       isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}
       showButton={uploadComplete || error}
+      showInfo={uploadComplete}
       animation={renderUploadingAnimation(error ? 'error' : !uploadComplete ? 'uploading' : 'complete')}
+      info={renderDatasetsNotUploaded()}
     >
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, maxHeight: 400}}>
         <Text>{statusMessages}</Text>
         {isImageTransferring && <View style={{paddingTop: 10}}>
+          <Text>Uploading image...</Text>
           <ProgressBar
             progress={projectTransferProgress}
             width={250}
@@ -125,7 +126,7 @@ const UploadProgressModal = (props) => {
           />
           <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
         </View>}
-        {uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}
+        {/*{uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}*/}
       </View>
     </ProgressModal>
   );
