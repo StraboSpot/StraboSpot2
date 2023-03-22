@@ -49,8 +49,10 @@ const ManageCustomMaps = (props) => {
           type={'ionicon'}
           color={PRIMARY_ACCENT_COLOR}
           onPress={async () => {
-            const baseMap = await useMaps.setBasemap(item.id);
-            baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+            let customMapWithBbox;
+            if (item.overlay)  customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
+            else customMapWithBbox = await useMaps.setBasemap(item.id);
+            customMapWithBbox.bbox && setTimeout(() => props.zoomToCustomMap(customMapWithBbox.bbox), 1000);
           }}
         />
         <ListItem.Chevron/>
