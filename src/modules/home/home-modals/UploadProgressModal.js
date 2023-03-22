@@ -114,8 +114,10 @@ const UploadProgressModal = (props) => {
       animation={renderUploadingAnimation(error ? 'error' : !uploadComplete ? 'uploading' : 'complete')}
       info={renderDatasetsNotUploaded()}
     >
-      <View style={{flex: 1, maxHeight: 400}}>
-        <Text>{statusMessages}</Text>
+      <View style={{flex: 1}}>
+        <View style={{}}>
+          <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+        </View>
         {isImageTransferring && <View style={{paddingTop: 10}}>
           <Text>Uploading image...</Text>
           <ProgressBar

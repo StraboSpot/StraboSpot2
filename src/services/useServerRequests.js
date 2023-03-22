@@ -196,7 +196,8 @@ const useServerRequests = (props) => {
     }
     else if (response.status === 404) {
       const responseJSON = await response.json();
-      if (responseJSON.error) return Promise.reject(responseJSON.error);
+      const errorMessage = responseJSON.error || responseJSON.Error;
+      if (errorMessage) return Promise.reject(errorMessage);
       return Promise.reject('The requested URL was not found on this server.');
     }
     else if (response.status === 400) {
