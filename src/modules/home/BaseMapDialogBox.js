@@ -148,7 +148,7 @@ const BaseMapDialog = (props) => {
   const renderMapOverlayItem = customMap => (
     <ListItem
       containerStyle={styles.dialogContent}
-      key={customMap.id}
+      key={customMap.id + 'Overlay'}
       // onPress={async () => {
       //   const baseMap = await useMaps.setBasemap(customMap.id);
       //   props.close();

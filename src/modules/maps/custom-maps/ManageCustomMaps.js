@@ -33,7 +33,6 @@ const ManageCustomMaps = (props) => {
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
-        key={item.id}
         onPress={() => useMaps.customMapDetails(item)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
@@ -64,7 +63,7 @@ const ManageCustomMaps = (props) => {
       />
       <SectionDivider dividerText={'Current Custom Maps'}/>
       <FlatList
-        keyExtractor={item => item.toString()}
+        keyExtractor={(item, index) => item.id?.toString() || index.toString()}
         data={Object.values(customMaps)}
         renderItem={({item}) => renderCustomMapListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
