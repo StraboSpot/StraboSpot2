@@ -70,7 +70,7 @@ const Basemap = (props) => {
     // Add the image to the map style.
     mapRef.current?.on('styleimagemissing', (e) => {
       const id = e.id; // id of the missing image
-      console.log(id, e);
+      // console.log(id, e);
       loadImage(id);
     });
 
@@ -96,12 +96,22 @@ const Basemap = (props) => {
   useEffect(() => {
     console.log('UE Basemap - Changed props.basemap', props.basemap);
 
-    const setStyle = async () => {
+    const setStyle = () => {
       if (mapRef.current) {
         console.log('Setting style...');
-        await mapRef.current.setStyle(props.basemap);
-        console.log('Set style.');
-        addLayers();
+        mapRef.current.setStyle(props.basemap, true);
+
+        mapRef.current?.once('styledata', () => {
+          console.log('A styledata event occurred.');
+          const waiting = () => {
+            if (!mapRef.current.isStyleLoaded()) setTimeout(waiting, 200);
+            else {
+              console.log('Finished setting style.');
+              addLayers();
+            }
+          };
+          waiting();
+        });
       }
     };
 
@@ -119,27 +129,35 @@ const Basemap = (props) => {
   }, [customMaps]);
 
   useEffect(() => {
-    console.log('UE Basemap - Changed [props.spotsNotSelected, props.spotsSelected]', props.spotsNotSelected,
-      props.spotsSelected);
+    console.log('UE Basemap - Changed [props.spotsNotSelected]', props.spotsNotSelected);
 
-    if (mapRef.current.getSource('spotsNotSelectedSource')) {
-      mapRef.current.getSource('spotsNotSelectedSource').setData(
-        turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))));
-      console.log('Updated spotsNotSelectedSource.');
-    }
+    const waiting = () => {
+      if (!mapRef.current.getSource('spotsNotSelectedSource')) setTimeout(waiting, 200);
+      else {
+        mapRef.current.getSource('spotsNotSelectedSource').setData(
+          turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))));
+        console.log('Updated spotsNotSelectedSource.');
+      }
+    };
+    waiting();
   }, [props.spotsNotSelected]);
 
   useEffect(() => {
-    if (mapRef.current.getSource('spotsSelectedSource')) {
-      mapRef.current.getSource('spotsSelectedSource').setData(
-        turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))));
-      console.log('Updated spotsSelectedSource.');
-    }
-    if (mapRef.current.getSource('pointSpotsSelectedSource')) {
-      mapRef.current.getSource('pointSpotsSelectedSource').setData(
-        turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)));
-      console.log('Updated pointSpotsSelectedSource.');
-    }
+    console.log('UE Basemap - Changed [props.spotsSelected]', props.spotsSelected);
+
+    const waiting = () => {
+      if (!mapRef.current.getSource('spotsSelectedSource')
+        || !mapRef.current.getSource('pointSpotsSelectedSource')) setTimeout(waiting, 200);
+      else {
+        mapRef.current.getSource('spotsSelectedSource').setData(
+          turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))));
+        console.log('Updated spotsSelectedSource.');
+        mapRef.current.getSource('pointSpotsSelectedSource').setData(
+          turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)));
+        console.log('Updated pointSpotsSelectedSource.');
+      }
+    };
+    waiting();
   }, [props.spotsSelected]);
 
   // Add Features Layers (Not Selected Spots)
