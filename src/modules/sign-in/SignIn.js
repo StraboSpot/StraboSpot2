@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, Keyboard, Platform, TextInput, View} from 'react-native';
+import {Alert, Platform, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
@@ -159,7 +159,7 @@ const SignIn = (props) => {
         <View style={styles.signInContainer}>
           <TextInput
             style={styles.input}
-            placeholder={'Username'}
+            placeholder={'Email'}
             autoCapitalize={'none'}
             autoCorrect={false}
             placeholderTextColor={'#6a777e'}
