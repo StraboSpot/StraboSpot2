@@ -11,7 +11,7 @@ const ProgressModal = (props) => {
   return (
     <Dialog
       visible={props.isProgressModalVisible}
-      maxHeight={Platform.OS === 'ios' ? 700 : 275}
+      maxHeight={Platform.OS === 'ios' ? 400 : 275}
       dialogStyle={{...commonStyles.dialogBox, width: 300}}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',

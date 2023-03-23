@@ -42,16 +42,21 @@ const projectSlice = createSlice({
       state.datasets = action.payload;
     },
     addedNeededImagesToDataset(state, action) {
-      const {datasetId, images} = action.payload;
+      const {datasetId, images, modified_timestamp} = action.payload;
+      let datasetTimestamp = modified_timestamp;
       const timestamp = Date.now();
       const imagesInDataset = state.datasets[datasetId].images
         ? {...state.datasets[datasetId].images, ...images}
         : images;
+      if (!datasetTimestamp) {
+        console.log('Modified Timestamp:', datasetTimestamp);
+        datasetTimestamp = timestamp;
+        state.project.modified_timestamp = timestamp;
+      }
       state.datasets = {
         ...state.datasets,
-        [datasetId]: {...state.datasets[datasetId], modified_timestamp: timestamp, images: imagesInDataset},
+        [datasetId]: {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, images: imagesInDataset},
       };
-      state.project.modified_timestamp = timestamp;
     },
     addedProject(state, action) {
       if (!action.payload.description) action.payload.description = {};
@@ -66,15 +71,20 @@ const projectSlice = createSlice({
       state.project = action.payload;
     },
     addedSpotsIdsToDataset(state, action) {
-      const {datasetId, spotIds} = action.payload;
+      const {datasetId, spotIds, modified_timestamp} = action.payload;
+      let datasetTimestamp = modified_timestamp;
       const timestamp = Date.now();
       const spotIdsInDataset = state.datasets[datasetId].spotIds
         ? [...state.datasets[action.payload.datasetId].spotIds, ...spotIds]
         : spotIds;
       const spotIdsUnique = [...new Set(spotIdsInDataset)];
-      const dataset = {...state.datasets[datasetId], modified_timestamp: timestamp, spotIds: spotIdsUnique};
+      if (!datasetTimestamp) {
+        console.log('Modified Timestamp:', datasetTimestamp);
+        datasetTimestamp = timestamp;
+        state.project.modified_timestamp = timestamp;
+      }
+      const dataset = {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, spotIds: spotIdsUnique};
       state.datasets = {...state.datasets, [datasetId]: dataset};
-      state.project.modified_timestamp = timestamp;
     },
     addedTagToSelectedSpot(state, action) {
       state.addTagToSelectedSpot = action.payload;

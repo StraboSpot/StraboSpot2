@@ -47,7 +47,7 @@ const useUpload = () => {
       return {status: uploadStatus, datasets: datasetsNotUploaded};
     }
     catch (err) {
-      dispatch(addedStatusMessage(`Upload Failed!\n\n ${err}`));
+      dispatch(addedStatusMessage(`\nUpload Failed!\n\n ${err}`));
       console.error('Upload Failed!', err);
       throw Error(err);
     }
@@ -78,7 +78,7 @@ const useUpload = () => {
     }
     catch (err) {
       console.error(dataset.name + ': Error Uploading Dataset Properties...', err);
-      dispatch(addedStatusMessage(`Uploading Dataset Properties!\n ${err}`));
+      // dispatch(addedStatusMessage(`Error Uploading Dataset Properties!\n ${err}`));
       throw Error(err);
     }
   };
@@ -303,7 +303,7 @@ const useUpload = () => {
     // Gather all the images in spots.
     spots.forEach(spot => spot?.properties?.images?.forEach(image => imagesFound.push(image)));
     console.log('SPOT IMAGES', imagesFound);
-    
+
     await Promise.all(
       imagesFound.map(async (image) => {
         console.log('SHOULD UPLOAD IMAGE', image);

@@ -87,7 +87,8 @@ const useDownload = () => {
         console.log(dataset.name, ':', 'Spots Downloaded', spotsOnServer);
         dispatch(addedSpotsFromServer(spotsOnServer));
         const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
-        dispatch(addedSpotsIdsToDataset({datasetId: dataset.id, spotIds: spotIds}));
+        dispatch(addedSpotsIdsToDataset(
+          {datasetId: dataset.id, spotIds: spotIds, modified_timestamp: dataset.modified_timestamp}));
         await gatherNeededImages(spotsOnServer, dataset);
       }
       console.log(dataset.name, ':', 'downloadDatasetInfo', downloadDatasetInfo);
@@ -106,7 +107,8 @@ const useDownload = () => {
       const spotImages = await useImages.gatherNeededImages(spotsOnServer);
       console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of',
         spotImages?.imageIds.length);
-      dispatch(addedNeededImagesToDataset({datasetId: dataset.id, images: spotImages}));
+      dispatch(addedNeededImagesToDataset(
+        {datasetId: dataset.id, images: spotImages, modified_timestamp: dataset.modified_timestamp}));
     }
     catch (err) {
       console.error(dataset.name, ':', 'Error Gathering Images. Error:', err);
@@ -247,12 +249,16 @@ const useDownload = () => {
           const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
           console.log(neededDatasetImagesUpdated);
           dispatch(setLoadingStatus({view: 'modal', bool: false}));
-          dispatch(addedNeededImagesToDataset({datasetId: dataset.id, images: neededDatasetImagesUpdated}));
+          dispatch(addedNeededImagesToDataset({
+            datasetId: dataset.id,
+            images: neededDatasetImagesUpdated,
+            modified_timestamp: dataset.modified_timestamp,
+          }));
           dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
         }
       }
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Needed images have been downloaded for this dataset'));
+      // dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
