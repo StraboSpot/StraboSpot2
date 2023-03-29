@@ -23,7 +23,7 @@ const useServerRequests = (props) => {
 
   const authenticateUser = async (username, password) => {
     const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
-    let response = await timeoutPromise(30000, fetch(authenticationBaseUrl + '/userAuthenticate',
+    let response = await timeoutPromise(60000, fetch(authenticationBaseUrl + '/userAuthenticate',
       {
         method: 'POST',
         headers: {
@@ -41,7 +41,7 @@ const useServerRequests = (props) => {
 
   const request = async (method, urlPart, login, ...otherParams) => {
     try {
-      const response = await timeoutPromise(10000, fetch(baseUrl + urlPart, {
+      const response = await timeoutPromise(60000, fetch(baseUrl + urlPart, {
         method: method,
         headers: {
           'Authorization': 'Basic ' + login + '/',
@@ -182,7 +182,7 @@ const useServerRequests = (props) => {
   };
 
   const getMapTilesFromHost = async (zipUrl) => {
-    const response = await timeoutPromise(30000, fetch(zipUrl));
+    const response = await timeoutPromise(60000, fetch(zipUrl));
     return await response.json();
   };
 
@@ -332,7 +332,7 @@ const useServerRequests = (props) => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const response = await timeoutPromise(30000, fetch(tilehost + '/asyncstatus/' + zipId));
+      const response = await timeoutPromise(60000, fetch(tilehost + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
