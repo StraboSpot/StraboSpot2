@@ -44,6 +44,15 @@ const Basemap = (props) => {
 
   const mapContainer = useRef(null);
 
+  const layerIdsNotSelected = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected', 'polygonLayerNotSelectedBorder',
+    'polygonLabelLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
+    'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'lineLabelLayerNotSelected',
+    'pointLayerNotSelected'];
+  const layerIdsSelected = ['polygonLayerSelected', 'polygonLayerWithPatternSelected', 'polygonLayerSelectedBorder',
+    'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+    'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected',
+    'pointLayerSelectedHalo'];
+
   useEffect(() => {
     console.log('UE Basemap', mapRef, props.basemap);
     setInitialCenter(getCenterCoordinates());
@@ -72,6 +81,14 @@ const Basemap = (props) => {
       const id = e.id; // id of the missing image
       // console.log(id, e);
       loadImage(id);
+    });
+
+    mapRef.current?.on('mouseenter', [...layerIdsNotSelected, ...layerIdsSelected], (event) => {
+      if (event.features?.length > 0) mapRef.current.getCanvas().style.cursor = 'pointer';
+    });
+
+    mapRef.current?.on('mouseleave', [...layerIdsNotSelected, ...layerIdsSelected], () => {
+      mapRef.current.getCanvas().style.cursor = '';
     });
 
     // Clean up on unmount
@@ -164,11 +181,7 @@ const Basemap = (props) => {
   const addFeaturesLayers = () => {
     // Clean the Layers (Remove the Source and Layers)
     if (mapRef.current.getSource('spotsNotSelectedSource')) {
-      const layerIds = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected', 'polygonLayerNotSelectedBorder',
-        'polygonLabelLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
-        'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'lineLabelLayerNotSelected',
-        'pointLayerNotSelected'];
-      layerIds.forEach((layerId) => {
+      layerIdsNotSelected.forEach((layerId) => {
         if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
       });
       mapRef.current.removeSource('spotsNotSelectedSource');
@@ -268,11 +281,7 @@ const Basemap = (props) => {
   const addFeaturesLayersSelected = () => {
     // Clean the Layers (Remove the Sources and Layers)
     if (mapRef.current.getSource('spotsSelectedSource')) {
-      const layerIds = ['polygonLayerSelected', 'polygonLayerWithPatternSelected', 'polygonLayerSelectedBorder',
-        'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
-        'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected',
-        'pointLayerSelectedHalo'];
-      layerIds.forEach((layerId) => {
+      layerIdsSelected.forEach((layerId) => {
         if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
       });
       mapRef.current.removeSource('spotsSelectedSource');
