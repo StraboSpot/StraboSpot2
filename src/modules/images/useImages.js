@@ -61,7 +61,9 @@ const useImages = () => {
     try {
       const imageURI = getLocalImageURI(imageId);
       console.log('Looking on device for image at URI:', imageURI, '...');
-      return await RNFS.exists(imageURI);
+      const exists = await RNFS.exists(imageURI);
+      // console.log(`Image ${imageURI} Exists exists: ${exists}!!`);
+      return exists;
     }
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
@@ -182,7 +184,7 @@ const useImages = () => {
                 const resizedImage = await resizeImageIfNecessary(image);
                 const savedPhoto = await saveFile(resizedImage);
                 console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-                dispatch(editedSpotImages([savedPhoto]));
+                await dispatch(editedSpotImages([savedPhoto]));
                 dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
               }),
             );
