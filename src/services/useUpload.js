@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
@@ -37,13 +37,7 @@ const useUpload = () => {
     try {
       await uploadProject();
       const uploadStatus = await uploadDatasets();
-      if (uploadStatus) {
-        console.log('Upload Complete');
-        batch(() => {
-          dispatch(addedStatusMessage('\nUpload Complete!'));
-          KeepAwake.deactivate();
-        });
-      }
+      KeepAwake.deactivate();
       return {status: uploadStatus, datasets: datasetsNotUploaded};
     }
     catch (err) {
@@ -95,16 +89,17 @@ const useUpload = () => {
         currentRequest++;
         if (currentRequest < datasets.length) await makeNextDatasetRequest();
         else {
-          const msgText = `Finished uploading ${datasets.length} Dataset ${(datasets.length === 1 ? '!' : 's!')}\n`;
+          const msgText = `Finished uploading ${datasets.length} Dataset${(datasets.length === 1 ? '!' : 's!')}\n`;
           console.log(msgText);
-          dispatch(removedLastStatusMessage());
+          // dispatch(removedLastStatusMessage());
+          dispatch(clearedStatusMessages());
           dispatch(addedStatusMessage(msgText));
         }
       };
 
       if (Object.values(projectDatasets).length === 0) {
         console.log('No Datasets Found.');
-        dispatch(addedStatusMessage('No Datasets Found.'));
+        throw Error('No Datasets Found.');
       }
       else if (currentRequest < Object.values(projectDatasets).length) {
         const msgText = '\nFound ' + Object.values(projectDatasets).length + ' Dataset' + (Object.values(
@@ -114,7 +109,7 @@ const useUpload = () => {
         dispatch(addedStatusMessage(msgText));
         await makeNextDatasetRequest();
         console.log('Completed Uploading Datasets!');
-        return true;
+        return 'complete';
       }
     }
     catch (err) {
