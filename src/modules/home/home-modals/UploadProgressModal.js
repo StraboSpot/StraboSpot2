@@ -24,7 +24,7 @@ const UploadProgressModal = (props) => {
   const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const [uploadComplete, setUploadComplete] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState('');
   const [error, setError] = useState(false);
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
 
