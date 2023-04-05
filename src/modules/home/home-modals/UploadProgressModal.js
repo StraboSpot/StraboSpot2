@@ -7,12 +7,13 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../../services/useDownload';
+import useImportHook from '../../../services/useImport';
 import useUploadHook from '../../../services/useUpload';
 import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 import useAnimationsHook from '../../../shared/ui/useAnimations';
 import {setSelectedProject} from '../../project/projects.slice';
-import {setProgressModalVisible} from '../home.slice';
+import {addedStatusMessage, setProgressModalVisible} from '../home.slice';
 
 
 const UploadProgressModal = (props) => {
@@ -29,6 +30,7 @@ const UploadProgressModal = (props) => {
 
   const useAnimations = useAnimationsHook();
   const useDownload = useDownloadHook();
+  const useImport = useImportHook();
   const useUpload = useUploadHook();
 
   useEffect(() => {
@@ -36,18 +38,27 @@ const UploadProgressModal = (props) => {
   }, [isProgressModalVisible]);
 
   const handleCompletePress = async () => {
-    const project = selectedProject.project;
-    dispatch(setSelectedProject({project: '', source: ''}));
-    dispatch(setProgressModalVisible(false));
-    setUploadComplete(false);
-    setError(false);
-    if (selectedProject.source === 'server' && !isEmpty(project)) {
-      console.log('Downloading Project');
-      await useDownload.initializeDownload(project);
-      console.log('Download Complete!');
+    try {
+      const project = selectedProject.project;
+      dispatch(setSelectedProject({project: '', source: ''}));
+      dispatch(setProgressModalVisible(false));
+      if (selectedProject.source === 'server' && !isEmpty(project)) {
+        console.log('Downloading Project');
+        await useDownload.initializeDownload(project);
+        console.log('Download Complete!');
+
+      }
+      else if (selectedProject.source === 'device' && !isEmpty(project)) {
+        console.log(`Loading ${project.fileName} project from device.`);
+        await useImport.loadProjectFromDevice(project, false);
+        console.log(`${project.fileName} has been imported.`);
+      }
       setUploadComplete(false);
       setDatasetsNotUploaded([]);
       setError(false);
+    }
+    catch (err) {
+      console.error('Error loading or downloading project', err);
     }
   };
 
