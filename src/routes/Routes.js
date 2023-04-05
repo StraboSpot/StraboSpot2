@@ -13,7 +13,7 @@ import SignUp from '../modules/sign-up/SignUp';
 import Sketch from '../modules/sketch/Sketch';
 import {isEmpty} from '../shared/Helpers';
 
-const Routes = () => {
+const Routes = ({updateNeeded}) => {
 
   const dispatch = useDispatch();
   const netInfo = useNetInfo();
@@ -33,6 +33,7 @@ const Routes = () => {
 
   useEffect(() => {
     console.log('UE Routes []');
+    console.log('Is Update Needed?', updateNeeded);
     if (netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
       dispatch(setOnlineStatus(netInfo));
     }
