@@ -46,6 +46,7 @@ const UploadProgressModal = (props) => {
       await useDownload.initializeDownload(project);
       console.log('Download Complete!');
       setUploadComplete(false);
+      setDatasetsNotUploaded([]);
       setError(false);
     }
   };
@@ -60,9 +61,9 @@ const UploadProgressModal = (props) => {
     try {
       const uploadStatusObj = await useUpload.initializeUpload();
       const {status, datasets} = uploadStatusObj;
-      console.log('DATASET UPLOAD COMPLETE!', status);
       setUploadComplete(status);
       setDatasetsNotUploaded(datasets);
+      dispatch(addedStatusMessage('\nUpload Complete!'));
     }
     catch (err) {
       console.error('Error in renderUploadProgressModal', err);
@@ -109,27 +110,36 @@ const UploadProgressModal = (props) => {
       dialogTitle={'UPLOADING...'}
       isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}
-      showButton={uploadComplete || error}
-      showInfo={uploadComplete}
-      animation={renderUploadingAnimation(error ? 'error' : !uploadComplete ? 'uploading' : 'complete')}
+      showButton={uploadComplete === 'complete' || error}
+      showInfo={!isEmpty(datasetsNotUploaded)}
+      animation={renderUploadingAnimation(
+        error ? 'error' : uploadComplete === 'complete' ? 'complete' : 'uploading')}
       info={renderDatasetsNotUploaded()}
     >
-      <View style={{flex: 1}}>
-        <View style={{}}>
-          <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+      {!error ? (
+          <View style={{flex: 1}}>
+            <View style={{}}>
+              <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+            </View>
+            {isImageTransferring && <View style={{paddingTop: 10}}>
+              <Text>Uploading image...</Text>
+              <ProgressBar
+                progress={projectTransferProgress}
+                width={250}
+                height={15}
+                borderRadius={20}
+              />
+              <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
+            </View>}
+            {/*{uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}*/}
+          </View>
+        )
+        : <View style={{flex: 1}}>
+          <View style={{}}>
+            <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+          </View>
         </View>
-        {isImageTransferring && <View style={{paddingTop: 10}}>
-          <Text>Uploading image...</Text>
-          <ProgressBar
-            progress={projectTransferProgress}
-            width={250}
-            height={15}
-            borderRadius={20}
-          />
-          <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
-        </View>}
-        {/*{uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}*/}
-      </View>
+      }
     </ProgressModal>
   );
 };
