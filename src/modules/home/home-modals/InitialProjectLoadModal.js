@@ -11,6 +11,7 @@ import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
+import LoadingSpinner from '../../../shared/ui/Loading';
 import Spacer from '../../../shared/ui/Spacer';
 import useImagesHook from '../../images/useImages';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
@@ -24,7 +25,7 @@ import ProjectTypesButtons from '../../project/ProjectTypesButtons';
 import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
-import {setStatusMessageModalTitle} from '../home.slice';
+import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
@@ -40,6 +41,7 @@ const InitialProjectLoadModal = (props) => {
   const [source, setSource] = useState('');
   const [importedProjectData, setImportedProjectData] = useState({});
   const [importedImageFiles, setImportedImageFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [useImages] = useImagesHook();
   const useDevice = useDeviceHook();
@@ -94,15 +96,19 @@ const InitialProjectLoadModal = (props) => {
 
   const getExportedAndroidProject = async () => {
     try {
+      dispatch(setLoadingStatus({bool: true, view: 'home'}));
       const res = await useDevice.getExternalProjectData();
       console.log('EXTERNAL PROJECT', res);
+      dispatch(setLoadingStatus({bool: false, view: 'home'}));
       if (!isEmpty(res)) {
         dispatch(setStatusMessageModalTitle('Import Project'));
         setImportedProjectData(res);
         setVisibleInitialSection('importData');
+        dispatch(setLoadingStatus({bool: false, view: 'home'}));
       }
     }
     catch (err) {
+      setIsLoading(false);
       if (err.code === 'DOCUMENT_PICKER_CANCELED') {
         console.warn(err.message);
         toast.show(err.message);
@@ -393,6 +399,14 @@ const InitialProjectLoadModal = (props) => {
         <DialogContent>
           {visibleInitialSection === 'none' && renderUserProfile()}
           {renderSectionView()}
+          <View style={{
+            backgroundColor: 'red',
+            position: 'absolute',
+            top: '50%',
+            left: '55%',
+          }}>
+            <LoadingSpinner isLoading={isLoading}/>
+          </View>
         </DialogContent>
       </Dialog>
     </React.Fragment>

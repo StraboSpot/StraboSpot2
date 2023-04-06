@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
-import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import {setLoadingStatus, setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import projectStyles from './project.styles';
 
@@ -68,10 +68,12 @@ const ImportProjectAndroid = (props) => {
         console.log('Unzipped and saved file to', path);
         toast.show('Data and Images Have Been Saved!');
         setImportComplete(true);
+        dispatch(setLoadingStatus({bool: false, view: 'home'}));
       }
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
+      dispatch(setLoadingStatus({bool: false, view: 'home'}));
       // props.visibleSection('');
       setImportComplete(false);
       // Alert.alert('Error:', 'There is an issue writing the project data \n' + err.toString());
@@ -79,12 +81,14 @@ const ImportProjectAndroid = (props) => {
   };
 
   const verifyFileExistence = async (dataType) => {
+    dispatch(setLoadingStatus({bool: true, view: 'home'}));
     if (dataType === 'data') {
       // const time = getTimeStamp();
       const fileName = props.importedProject.name.replace('.zip', '');
       const fileExists = await useDevice.doesBackupFileExist(fileName);
       if (fileExists) {
         console.log('File already exits!');
+        dispatch(setLoadingStatus({bool: false, view: 'home'}));
         Alert.alert('File Exists', 'A file with the name ' + fileName + ' exists already.  Saving'
           + ' this will overwrite the current one.',
           [

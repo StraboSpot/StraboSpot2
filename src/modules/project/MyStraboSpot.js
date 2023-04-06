@@ -4,6 +4,7 @@ import {Alert, Platform, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import RNFS from 'react-native-fs';
 import {useToast} from 'react-native-toast-notifications';
+import {useDispatch} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
@@ -11,6 +12,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import Spacer from '../../shared/ui/Spacer';
+import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
 import ActiveProjectList from './ActiveProjectList';
 import ImportProjectAndroid from './ImportProjectAndroid';
@@ -22,6 +24,7 @@ const MyStraboSpot = (props) => {
     const [showSection, setShowSection] = useState('none');
     const [importedProject, setImportedProject] = useState({});
     const [importedImageFiles, setImportedImageFiles] = useState([]);
+    const dispatch = useDispatch();
     const useDevice = useDeviceHook();
     const toast = useToast();
 
@@ -54,15 +57,18 @@ const MyStraboSpot = (props) => {
 
     const getExportedAndroidProject = async () => {
       try {
+        dispatch(setLoadingStatus({bool: true, view: 'home'}));
         const res = await useDevice.getExternalProjectData();
         console.log('EXTERNAL PROJECT', res);
         if (!isEmpty(res)) {
           // dispatch(setStatusMessageModalTitle('Import Project'));
           setImportedProject(res);
           setShowSection('importData');
+          dispatch(setLoadingStatus({bool: false, view: 'home'}));
         }
       }
       catch (err) {
+        dispatch(setLoadingStatus({bool: false, view: 'home'}));
         if (err.code === 'DOCUMENT_PICKER_CANCELED') {
           console.warn(err.message);
           toast.show(err.message);
