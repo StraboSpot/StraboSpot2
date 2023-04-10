@@ -29,6 +29,7 @@ const useImport = () => {
   let fileCount = 0;
   let neededTiles = 0;
   let notNeededTiles = 0;
+  let mapFailures = 0;
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
@@ -176,23 +177,33 @@ const useImport = () => {
   };
 
   const moveFiles = async (dataFile, zipId) => {
-    console.log(dataFile.mapNamesDb);
-    await Promise.all(
-      Object.values(dataFile.mapNamesDb).map(async (map) => {
-        const checkSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
-        if (checkSuccess) {
-          console.log('dir exists');
-          const files = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP);
-          const zipId = files.find(zipId => zipId === map.mapId);
-          if (zipId) {
-            const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles');
-            await moveTile(fileEntries, zipId, map);
+    try {
+      console.log(dataFile.mapNamesDb);
+      await Promise.all(
+        Object.values(dataFile.mapNamesDb).map(async (map) => {
+          const checkSuccess = await useDevice.doesDeviceDirectoryExist(
+            APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
+          if (checkSuccess) {
+            console.log('dir exists');
+            const files = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP);
+            const zipId = files.find(zipId => zipId === map.mapId);
+            if (zipId) {
+              const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles');
+              await moveTile(fileEntries, zipId, map);
+            }
+            else {
+              mapFailures++;
+              console.log('Map file not found', mapFailures);
+            }
           }
-          else console.log('Map file not found');
-        }
-      }),
-    );
-    return {fileCount: fileCount, neededTiles: neededTiles, notNeededTiles: notNeededTiles};
+        }),
+      );
+      console.log('Move Files Promise Complete!!!');
+      return {fileCount: fileCount, neededTiles: neededTiles, notNeededTiles: notNeededTiles, mapFailures: mapFailures};
+    }
+    catch (err) {
+      console.error('Error in moveFiles()', err);
+    }
   };
 
   const moveTile = async (tileArray, zipId, map) => {
@@ -235,9 +246,9 @@ const useImport = () => {
       }
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
-      await checkForMaps(dataFile, selectedProject, isExternal);
       dispatch(addedStatusMessage('Importing image files...'));
       await copyImages(selectedProject.fileName);
+      await checkForMaps(dataFile, selectedProject, isExternal);
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(setSelectedProject({project: '', source: ''}));
       return Promise.resolve({project: dataFile.projectDb.project});
