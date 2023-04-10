@@ -7,7 +7,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import Loading from '../../shared/ui/Loading';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
@@ -86,8 +85,12 @@ const ImageGallery = (props) => {
           style={imageStyles.thumbnail}
           onPress={() => handleImagePressed(image)}
           source={{uri: imageThumbnails[image.id]}}
-          PlaceholderContent={<Loading style={{backgroundColor: 'transparent'}} size={20}/>}
-          placeholderStyle={{backgroundColor: 'transparent'}}
+          PlaceholderContent={
+            <Image
+              style={imageStyles.thumbnail}
+              source={require('../../assets/images/noimage.jpg')}
+            />}
+          placeholderStyle={{backgroundColor: 'grey'}}
         />
       </View>
     );
