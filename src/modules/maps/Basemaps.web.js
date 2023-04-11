@@ -13,6 +13,7 @@ import {
   GEO_LAT_LNG_PROJECTION,
   LATITUDE,
   LONGITUDE,
+  MAP_MODES,
   PIXEL_PROJECTION,
   STRAT_SECTION_CENTER,
   ZOOM,
@@ -44,14 +45,16 @@ const Basemap = (props) => {
 
   const mapContainer = useRef(null);
 
-  const layerIdsNotSelected = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected', 'polygonLayerNotSelectedBorder',
-    'polygonLabelLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
-    'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'lineLabelLayerNotSelected',
-    'pointLayerNotSelected'];
-  const layerIdsSelected = ['polygonLayerSelected', 'polygonLayerWithPatternSelected', 'polygonLayerSelectedBorder',
-    'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
-    'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected',
-    'pointLayerSelectedHalo'];
+  const mapMode = useRef();
+  const drawFeatures = useRef();
+
+  const layerIdsNotSelected = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected',
+    'polygonLayerNotSelectedBorder', 'polygonLabelLayerNotSelected', 'lineLayerNotSelected',
+    'lineLayerNotSelectedDotted', 'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed',
+    'lineLabelLayerNotSelected', 'pointLayerNotSelected'];
+  const layerIdsSelected = ['polygonLayerSelected', 'polygonLayerWithPatternSelected',
+    'polygonLayerSelectedBorder', 'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+    'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
 
   useEffect(() => {
     console.log('UE Basemap', mapRef, props.basemap);
@@ -83,21 +86,41 @@ const Basemap = (props) => {
       loadImage(id);
     });
 
-    mapRef.current?.on('mouseenter', [...layerIdsNotSelected, ...layerIdsSelected], (event) => {
-      if (event.features?.length > 0) mapRef.current.getCanvas().style.cursor = 'pointer';
-    });
-
-    mapRef.current?.on('mouseleave', [...layerIdsNotSelected, ...layerIdsSelected], () => {
-      mapRef.current.getCanvas().style.cursor = '';
-    });
-
     // Clean up on unmount
     return () => mapRef.current.remove();
   }, []);
 
   useEffect(() => {
+    console.log('UE Basemap - Changed [props.mapMode]', props.mapMode);
+
+    if (useMaps.isDrawMode(props.mapMode)) mapRef.current.getCanvas().style.cursor = 'pointer';
+
+    mapRef.current?.on('mouseenter', [...layerIdsNotSelected, ...layerIdsSelected], (event) => {
+      if (props.mapMode === MAP_MODES.VIEW && event.features?.length > 0) {
+        mapRef.current.getCanvas().style.cursor = 'pointer';
+      }
+    });
+
+    mapRef.current?.on('mouseleave', [...layerIdsNotSelected, ...layerIdsSelected], () => {
+      if (props.mapMode === MAP_MODES.VIEW) mapRef.current.getCanvas().style.cursor = '';
+      else if (useMaps.isDrawMode(props.mapMode)) mapRef.current.getCanvas().style.cursor = 'pointer';
+    });
+  }, [props.mapMode]);
+
+  useEffect(() => {
+    console.log('UE Basemap - Changed [props.mapMode, props.drawFeatures]', props.mapMode, props.drawFeatures);
+
+    mapMode.current = props.mapMode;
+    drawFeatures.current = props.drawFeatures;
+
+    mapRef.current?.on('click', (e) => {
+      console.log('Set new onMapPress', props.mapMode, mapMode.current);
+      props.onMapPress(e, mapMode.current, drawFeatures.current);
+    });
+  }, [props.mapMode, props.drawFeatures]);
+
+  useEffect(() => {
     console.log('UE Basemap - Changed [spots]', spots);
-    mapRef.current?.on('click', props.onMapPress);
 
     mapRef.current?.on('moveend', async () => {
       console.log('A moveend event occurred.');
@@ -139,9 +162,12 @@ const Basemap = (props) => {
     console.log('UE Basemap - Changed [customMaps]', customMaps);
 
     const waiting = () => {
-      if (!mapRef.current.loaded()) setTimeout(waiting, 200);
-      else addCustomMapsLayers();
+      if (mapRef.current) {
+        if (!mapRef.current.loaded()) setTimeout(waiting, 200);
+        else addCustomMapsLayers();
+      }
     };
+
     waiting();
   }, [customMaps]);
 
@@ -149,13 +175,18 @@ const Basemap = (props) => {
     console.log('UE Basemap - Changed [props.spotsNotSelected]', props.spotsNotSelected);
 
     const waiting = () => {
-      if (!mapRef.current.getSource('spotsNotSelectedSource')) setTimeout(waiting, 200);
-      else {
-        mapRef.current.getSource('spotsNotSelectedSource').setData(
-          turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))));
-        console.log('Updated spotsNotSelectedSource.');
+      if (mapRef.current) {
+        if (!mapRef.current.isStyleLoaded() || !mapRef.current.getSource('spotsNotSelectedSource')) {
+          setTimeout(waiting, 200);
+        }
+        else {
+          mapRef.current?.getSource('spotsNotSelectedSource').setData(
+            turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected))));
+          console.log('Updated spotsNotSelectedSource.');
+        }
       }
     };
+
     waiting();
   }, [props.spotsNotSelected]);
 
@@ -163,19 +194,40 @@ const Basemap = (props) => {
     console.log('UE Basemap - Changed [props.spotsSelected]', props.spotsSelected);
 
     const waiting = () => {
-      if (!mapRef.current.getSource('spotsSelectedSource')
-        || !mapRef.current.getSource('pointSpotsSelectedSource')) setTimeout(waiting, 200);
-      else {
-        mapRef.current.getSource('spotsSelectedSource').setData(
-          turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))));
-        console.log('Updated spotsSelectedSource.');
-        mapRef.current.getSource('pointSpotsSelectedSource').setData(
-          turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)));
-        console.log('Updated pointSpotsSelectedSource.');
+      if (mapRef.current) {
+        if (!mapRef.current.isStyleLoaded() || !mapRef.current.getSource('spotsSelectedSource')
+          || !mapRef.current.getSource('pointSpotsSelectedSource')) setTimeout(waiting, 200);
+        else {
+          mapRef.current.getSource('spotsSelectedSource').setData(
+            turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected))));
+          console.log('Updated spotsSelectedSource.');
+          mapRef.current.getSource('pointSpotsSelectedSource').setData(
+            turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected)));
+          console.log('Updated pointSpotsSelectedSource.');
+        }
       }
     };
+
     waiting();
   }, [props.spotsSelected]);
+
+  useEffect(() => {
+    console.log('UE Basemap - Changed [props.drawFeatures]', props.drawFeatures);
+
+    const waiting = () => {
+      if (mapRef.current) {
+        if (!mapRef.current.isStyleLoaded() || !mapRef.current.getSource('drawFeatures')) {
+          setTimeout(waiting, 200);
+        }
+        else {
+          mapRef.current.getSource('drawFeatures').setData(turf.featureCollection(props.drawFeatures));
+          console.log('Updated drawFeatures.');
+        }
+      }
+    };
+
+    waiting();
+  }, [props.drawFeatures]);
 
   // Add Features Layers (Not Selected Spots)
   const addFeaturesLayers = () => {
@@ -424,12 +476,57 @@ const Basemap = (props) => {
     });
   };
 
+  const addDrawLayers = () => {
+    // Clean the Layers (Remove the Source and Layers)
+    if (mapRef.current.getSource('drawFeatures')) {
+      const layerIds = ['pointLayerDraw', 'lineLayerDraw', 'polygonLayerDraw'];
+      layerIds.forEach((layerId) => {
+        if (mapRef.current.getLayer(layerId)) mapRef.current.removeLayer(layerId);
+      });
+      mapRef.current.removeSource('drawFeatures');
+    }
+
+    console.log('Adding draw layers ...', props.drawFeatures);
+
+    // Add Source: Draw Features
+    mapRef.current.addSource('drawFeatures', {
+      type: 'geojson',
+      data: turf.featureCollection(props.drawFeatures),
+    });
+
+    // Add Layers
+    mapRef.current.addLayer({
+      id: 'pointLayerDraw',
+      type: 'circle',
+      source: 'drawFeatures', // reference the data source
+      filter: ['==', ['geometry-type'], 'Point'],
+      paint: useMapSymbology.getMapSymbology().pointDraw,
+    });
+    mapRef.current.addLayer({
+      id: 'lineLayerDraw',
+      type: 'line',
+      source: 'drawFeatures', // reference the data source
+      filter: ['==', ['geometry-type'], 'LineString'],
+      paint: useMapSymbology.getMapSymbology().lineDraw,
+    });
+    mapRef.current.addLayer({
+      id: 'polygonLayerDraw',
+      type: 'fill',
+      source: 'drawFeatures', // reference the data source
+      filter: ['==', ['geometry-type'], 'Polygon'],
+      paint: useMapSymbology.getMapSymbology().polygonDraw,
+    });
+
+    console.log('Finished adding draw layers.');
+  };
+
   const addLayers = () => {
     console.log('Loading layers...');
 
+    addCustomMapsLayers();
     addFeaturesLayers();
     addFeaturesLayersSelected();
-    addCustomMapsLayers();
+    addDrawLayers();
 
     console.log('Finished loading layers.');
   };
