@@ -90,7 +90,7 @@ const MyStraboSpot = (props) => {
               <ProjectTypesButtons
                 onLoadProjectsFromServer={() => setShowSection('serverProjects')}
                 onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
-                onLoadProjectsFromDownloads={() => getExportedAndroidProject()}
+                onLoadProjectsFromDownloadsFolder={() => getExportedAndroidProject()}
                 onStartNewProject={() => setShowSection('new')}/>
             </View>
           );

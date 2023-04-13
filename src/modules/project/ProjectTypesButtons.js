@@ -77,7 +77,7 @@ const ProjectTypesButtons = (props) => {
             containerStyle={commonStyles.standardButtonContainer}
             buttonStyle={commonStyles.standardButton}
             titleStyle={commonStyles.standardButtonText}
-            onPress={() => props.onLoadProjectsFromDownloads()}
+            onPress={() => props.onLoadProjectsFromDownloadsFolder()}
           />
         </View>
       }

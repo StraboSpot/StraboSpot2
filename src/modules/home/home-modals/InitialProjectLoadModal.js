@@ -88,7 +88,7 @@ const InitialProjectLoadModal = (props) => {
         <ProjectTypesButtons
           onLoadProjectsFromServer={() => handleOnPress('serverProjects')}
           onLoadProjectsFromDevice={() => handleOnPress('deviceProjects')}
-          onLoadProjectsFromDownloads={() => handleOnPress('exportedProjects')}
+          onLoadProjectsFromDownloadsFolder={() => handleOnPress('exportedProjects')}
           onStartNewProject={() => handleOnPress('project')}/>
       </View>
     );
