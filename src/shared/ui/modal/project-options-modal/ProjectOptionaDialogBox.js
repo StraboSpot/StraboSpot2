@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, Text, TextInput, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import LottieView from 'lottie-react-native';
 import moment from 'moment/moment';
@@ -55,7 +55,7 @@ const ProjectOptionsDialogBox = (props) => {
   useEffect(() => {
     if (!isEmpty(currentProjectName)) {
       setBackupFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProjectName);
-      setExportFileName(selectedProject?.project?.fileName);
+      setExportFileName(`${selectedProject?.project?.fileName}_(EXP-${moment(new Date()).format('YYYY-MM-DD_hmma')})`);
     }
   }, [checked]);
 
@@ -81,6 +81,7 @@ const ProjectOptionsDialogBox = (props) => {
     try {
       console.log('FileName', exportFileName);
       props.close();
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
@@ -91,6 +92,8 @@ const ProjectOptionsDialogBox = (props) => {
     }
     catch (err) {
       console.error('Error exporting project!', err);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      toast.show('EXPORT FAILED!! \nProject has to have a unique name!');
     }
   };
 
@@ -196,12 +199,7 @@ const ProjectOptionsDialogBox = (props) => {
           <View>
             {renderExportMessage()}
             <View style={projectStyles.dialogContent}>
-              <TextInput
-                // defaultValue={selectedProject.project.fileName}
-                value={exportFileName}
-                onChangeText={text => setExportFileName(text)}
-                style={commonStyles.dialogInputContainer}
-              />
+              <Text>Project will be exported as: {exportFileName}</Text>
             </View>
             <View>
               <Button

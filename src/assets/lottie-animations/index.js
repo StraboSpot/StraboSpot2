@@ -1,6 +1,7 @@
 const lottieAssets = {
   lottieFiles: {
     fileDelete: require('./delete.json'),
+    loadingFile: require('./137626-loading-file.json'),
     uploading: require('./uploading.json'),
     uploadingComplete: require('./check-ok-done.json'),
     error: require('./error.json'),
