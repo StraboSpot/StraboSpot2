@@ -66,25 +66,19 @@ const useExport = () => {
 
     const file = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
     const exportedJSON = JSON.parse(file);
-    try {
-      await RNFS.copyFile(source, `${destination}/data.json`);
-      console.log('Files Copied');
-      dispatch(removedLastStatusMessage());
-      // console.log('ANDROID', await RNFS.readFile(destination + '/data.json'));
-      await gatherImagesForDistribution(exportedJSON, filename, isBeingExported);
-      console.log('Images copied to:', destination);
-      await gatherMapsForDistribution(exportedJSON, filename, isBeingExported);
-      console.log('Map tiles copied to:', destination);
+    await RNFS.copyFile(source, `${destination}/data.json`);
+    console.log('Files Copied');
+    dispatch(removedLastStatusMessage());
+    // console.log('ANDROID', await RNFS.readFile(destination + '/data.json'));
+    await gatherImagesForDistribution(exportedJSON, filename, isBeingExported);
+    console.log('Images copied to:', destination);
+    await gatherMapsForDistribution(exportedJSON, filename, isBeingExported);
+    console.log('Map tiles copied to:', destination);
 
-      const path = await zip(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename,
-        APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '.zip');
-      console.log(`zip completed at ${path}`);
-      console.log('All Done Exporting');
-    }
-    catch (err) {
-      console.error('ERROR', err);
-      // handle error- filename name must be unique.
-    }
+    const path = await zip(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename,
+      APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '.zip');
+    console.log(`zip completed at ${path}`);
+    console.log('All Done Exporting');
   };
 
   const gatherDataForBackup = async (filename) => {
