@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Alert, Text, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
@@ -8,21 +8,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
-import {setLoadingStatus, setProjectLoadSelectionModalVisible} from '../home/home.slice';
-import useImagesHook from '../images/useImages';
+import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import projectStyles from './project.styles';
 
 const ImportProjectAndroid = (props) => {
   const dispatch = useDispatch();
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
-  const [importedProjectData, setImportedProjectData] = useState({});
-  const [importedImageFiles, setImportedImageFiles] = useState([]);
-  const [importedMapFiles, setImportedMapFiles] = useState([]);
-  const [importComplete, setImportComplete] = useState(false);
-
   const useDevice = useDeviceHook();
-  const [useImages] = useImagesHook();
   const toast = useToast();
 
   const renderImportComplete = () => {
@@ -60,35 +53,32 @@ const ImportProjectAndroid = (props) => {
   };
 
   const saveToDevice = async () => {
-    try {
+    try {// dispatch(setLoadingStatus({bool: true, view: 'modal'}));
+      props?.setLoading(true);
       const project = props.importedProject;
       const exists = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
       if (exists) {
         const path = await useDevice.unZipAndCopyImportedData(project);
+        props?.setImportComplete(true);
         console.log('Unzipped and saved file to', path);
         toast.show('Data and Images Have Been Saved!');
-        setImportComplete(true);
-        dispatch(setLoadingStatus({bool: false, view: 'home'}));
+        props?.setLoading(false);
       }
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
-      dispatch(setLoadingStatus({bool: false, view: 'home'}));
-      // props.visibleSection('');
-      setImportComplete(false);
-      // Alert.alert('Error:', 'There is an issue writing the project data \n' + err.toString());
+      props?.setLoading(false);
+      props?.setImportComplete(false);
+      throw Error();
     }
   };
 
   const verifyFileExistence = async (dataType) => {
-    dispatch(setLoadingStatus({bool: true, view: 'home'}));
     if (dataType === 'data') {
-      // const time = getTimeStamp();
       const fileName = props.importedProject.name.replace('.zip', '');
       const fileExists = await useDevice.doesBackupFileExist(fileName);
       if (fileExists) {
         console.log('File already exits!');
-        dispatch(setLoadingStatus({bool: false, view: 'home'}));
         Alert.alert('File Exists', 'A file with the name ' + fileName + ' exists already.  Saving'
           + ' this will overwrite the current one.',
           [
@@ -98,7 +88,7 @@ const ImportProjectAndroid = (props) => {
             },
             {
               text: 'Continue',
-              onPress: async () => saveToDevice(),
+              onPress: () => saveToDevice(),
               style: 'cancel',
             },
           ]);
@@ -134,7 +124,7 @@ const ImportProjectAndroid = (props) => {
       }
 
 
-      {importComplete ? renderImportComplete()
+      {props.importComplete ? renderImportComplete()
         : (
           <View style={{alignItems: 'center'}}>
             <Text style={{fontWeight: 'bold'}}>Selected Project to Import:</Text>

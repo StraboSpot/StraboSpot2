@@ -24,6 +24,7 @@ const MyStraboSpot = (props) => {
     const [showSection, setShowSection] = useState('none');
     const [importedProject, setImportedProject] = useState({});
     const [importedImageFiles, setImportedImageFiles] = useState([]);
+    const [importComplete] = useState(false);
     const dispatch = useDispatch();
     const useDevice = useDeviceHook();
     const toast = useToast();
@@ -80,6 +81,12 @@ const MyStraboSpot = (props) => {
       }
     };
 
+    const handleImportComplete = (value) => {
+      console.log('ImportComplete value', value);
+      dispatch(setLoadingStatus({bool: false, view: 'home'}));
+      setShowSection('deviceProjects');
+    };
+
     const renderSectionView = () => {
       switch (showSection) {
         case 'none':
@@ -129,6 +136,9 @@ const MyStraboSpot = (props) => {
             <ImportProjectAndroid
               importedProject={importedProject}
               visibleSection={section => setShowSection(section)}
+              setImportComplete={handleImportComplete}
+              importComplete={importComplete}
+              setLoading={value => dispatch(setLoadingStatus({bool: value, view: 'home'}))}
             />
           );
         case 'new':

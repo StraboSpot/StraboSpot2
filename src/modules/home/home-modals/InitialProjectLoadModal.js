@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 import {Avatar, Button, Icon} from 'react-native-elements';
 import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useToast} from 'react-native-toast-notifications';
@@ -11,8 +12,8 @@ import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import LoadingSpinner from '../../../shared/ui/Loading';
 import Spacer from '../../../shared/ui/Spacer';
+import useAnimationsHook from '../../../shared/ui/useAnimations';
 import useImagesHook from '../../images/useImages';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
@@ -29,20 +30,31 @@ import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
+
+  const displayFirstName = () => {
+    if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
+    else return 'Guest';
+  };
+
+
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
+  const isLoading = useSelector(state => state.home.loading.modal);
   const selectedProject = useSelector(state => state.project.project);
   const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const [displayName] = useState(displayFirstName);
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
   const [source, setSource] = useState('');
   const [importedProjectData, setImportedProjectData] = useState({});
   const [importedImageFiles, setImportedImageFiles] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [importComplete, setImportComplete] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
+  const useAnimations = useAnimationsHook();
   const [useImages] = useImagesHook();
   const useDevice = useDeviceHook();
   const toast = useToast();
@@ -78,6 +90,7 @@ const InitialProjectLoadModal = (props) => {
     if (visibleInitialSection !== 'none') {
       setVisibleInitialSection('none');
       setImportedImageFiles([]);
+      setImportComplete(false);
       dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
     }
   };
@@ -96,19 +109,19 @@ const InitialProjectLoadModal = (props) => {
 
   const getExportedAndroidProject = async () => {
     try {
-      dispatch(setLoadingStatus({bool: true, view: 'home'}));
+      dispatch(setLoadingStatus({bool: true, view: 'modal'}));
       const res = await useDevice.getExternalProjectData();
       console.log('EXTERNAL PROJECT', res);
-      dispatch(setLoadingStatus({bool: false, view: 'home'}));
+      dispatch(setLoadingStatus({bool: false, view: 'modal'}));
       if (!isEmpty(res)) {
         dispatch(setStatusMessageModalTitle('Import Project'));
         setImportedProjectData(res);
         setVisibleInitialSection('importData');
-        dispatch(setLoadingStatus({bool: false, view: 'home'}));
+        dispatch(setLoadingStatus({bool: false, view: 'modal'}));
       }
     }
     catch (err) {
-      setIsLoading(false);
+      dispatch(setLoadingStatus({bool: false, view: 'modal'}));
       if (err.code === 'DOCUMENT_PICKER_CANCELED') {
         console.warn(err.message);
         toast.show(err.message);
@@ -291,6 +304,19 @@ const InitialProjectLoadModal = (props) => {
     }
   };
 
+  const renderLoadingView = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        <LottieView
+          style={{width: 150, height: 150}}
+          source={useAnimations.getAnimationType('loadingFile')}
+          autoPlay
+          loop={isLoading}
+        />
+      </View>
+    );
+  };
+
   const renderSectionView = () => {
     switch (visibleInitialSection) {
       case 'serverProjects':
@@ -312,6 +338,9 @@ const InitialProjectLoadModal = (props) => {
             goBackToMain={() => goBackToMain()}
             source={source => setSource(source)}
             importedProject={importedProjectData}
+            setImportComplete={value => setImportComplete(value)}
+            importComplete={importComplete}
+            setLoading={value => dispatch(setLoadingStatus({bool: value, view: 'modal'}))}
           />
         );
       default:
@@ -356,7 +385,7 @@ const InitialProjectLoadModal = (props) => {
           size={80} rounded
         />}
         <View>
-          <Text style={{fontSize: 22}}>Hello, {firstName}!</Text>
+          <Text style={{fontSize: 22}}>Hello, {displayName}!</Text>
           <Button
             title={user.name ? `Not ${user.name}?` : 'Sign in?'}
             type={'clear'}
@@ -372,13 +401,6 @@ const InitialProjectLoadModal = (props) => {
       </View>
     );
   };
-
-  const displayFirstName = () => {
-    if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
-    else return 'Guest';
-  };
-
-  const firstName = displayFirstName();
 
   return (
     <React.Fragment>
@@ -398,14 +420,13 @@ const InitialProjectLoadModal = (props) => {
       >
         <DialogContent>
           {visibleInitialSection === 'none' && renderUserProfile()}
-          {renderSectionView()}
+          {isLoading ? renderLoadingView() : renderSectionView()}
           <View style={{
             backgroundColor: 'red',
             position: 'absolute',
             top: '50%',
             left: '55%',
           }}>
-            <LoadingSpinner isLoading={isLoading}/>
           </View>
         </DialogContent>
       </Dialog>
