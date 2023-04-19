@@ -108,6 +108,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+  sliderLabel: {
+    fontSize: themes.SMALL_TEXT_SIZE,
+    // marginRight: 10,
+  },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
   },
