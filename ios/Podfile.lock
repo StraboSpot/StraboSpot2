@@ -340,7 +340,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.4.1):
     - React-Core
-  - react-native-slider (4.2.4):
+  - react-native-slider (4.4.2):
     - React-Core
   - react-native-version-check (3.4.6):
     - React-Core
@@ -426,7 +426,7 @@ PODS:
     - React-Core
   - RNPDF (0.14.0):
     - React
-  - RNReanimated (2.9.1):
+  - RNReanimated (2.13.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -776,7 +776,7 @@ SPEC CHECKSUMS:
   react-native-mapbox-gl: 955d2c064b56ef058b9cc0fbbf6cf743b05c928e
   react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
-  react-native-slider: cecabb58ecffad671d2ad3ccc58c7f4d2d029e95
+  react-native-slider: 33b8d190b59d4f67a541061bb91775d53d617d9d
   react-native-version-check: dc483031cdf65d9e947aea2d6a41142d010c7e59
   React-perflogger: aa48956d87bae67fc847acc196fae97928b96cd3
   React-RCTActionSheet: 4eaab2b885130ce9a88c8fdac5f1992315da80f6
@@ -798,7 +798,7 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
-  RNReanimated: 2cf7451318bb9cc430abeec8d67693f9cf4e039c
+  RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
   RNSentry: 49ac40f818ad2bb65f3578d400e2474767e12a5b
