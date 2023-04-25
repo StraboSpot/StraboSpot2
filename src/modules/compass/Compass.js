@@ -93,7 +93,7 @@ const Compass = (props) => {
   }, [compassMeasurements]);
 
   const addAttributeMeasurement = (data) => {
-    const sliderQuality = sliderValue === 6 ? {} : {quality: sliderValue.toString()};
+    const sliderQuality = {quality: sliderValue.toString()};
     props.setAttributeMeasurements({...data, ...sliderQuality});
     props.closeCompass();
   };
