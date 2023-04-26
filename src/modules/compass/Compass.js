@@ -20,6 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
 import Slider from '../../shared/ui/Slider';
+import uiStyles from '../../shared/ui/ui.styles';
 import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
@@ -51,7 +52,7 @@ const Compass = (props) => {
     quality: null,
   });
   const [sliderValue, setSliderValue] = useState((props?.formValues?.quality
-    && parseInt(props.formValues.quality)) || 5);
+    && parseInt(props.formValues.quality)) || 6);
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [buttonSound, setButtonSound] = useState(null);
@@ -92,7 +93,8 @@ const Compass = (props) => {
   }, [compassMeasurements]);
 
   const addAttributeMeasurement = (data) => {
-    props.setAttributeMeasurements({...data, quality: sliderValue.toString()});
+    const sliderQuality = {quality: sliderValue.toString()};
+    props.setAttributeMeasurements({...data, ...sliderQuality});
     props.closeCompass();
   };
 
@@ -112,14 +114,15 @@ const Compass = (props) => {
           else console.log('compass sound failed due to audio decoding errors');
         });
         const unixTimestamp = Date.now();
+        const sliderQuality = sliderValue === 6 ? {} : {quality: sliderValue.toString()};
         console.log('Compass measurements', compassData, sliderValue);
         if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
         else if (props.setMeasurements) {
-          props.setMeasurements({...compassData, quality: sliderValue.toString(), unix_timestamp: unixTimestamp});
+          props.setMeasurements({...compassData, ...sliderQuality, unix_timestamp: unixTimestamp});
         }
         else {
           dispatch(setCompassMeasurements(compassData.quality ? compassData
-            : {...compassData, quality: sliderValue.toString()}));
+            : {...compassData, ...sliderQuality}));
         }
       }
       else dispatch(setCompassMeasurements({...compassData, manual: true}));
@@ -282,9 +285,10 @@ const Compass = (props) => {
           onSlidingComplete={value => setSliderValue(value)}
           value={sliderValue}
           step={1}
-          maximumValue={5}
+          maximumValue={6}
           minimumValue={1}
-          labels={['Low', 'High']}
+          labels={['Low', '', '', '', 'High', 'N/R']}
+          labelStyle={uiStyles.sliderLabel}
         />
       </View>
     </React.Fragment>

@@ -32,7 +32,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
             const choices = useForm.getChoices(props.formName);
             const qualityChoices = useForm.getChoicesByKey(survey, choices, foldFieldKey);
             const choiceNum = Math.round(parseInt(compassData[compassFieldKey], 10) / 5 * qualityChoices.length);
-            renamedCompassData[foldFieldKey] = qualityChoices.reverse()[choiceNum - 1].name;
+            renamedCompassData[foldFieldKey] = qualityChoices.reverse()[choiceNum - 1]?.name;
           }
           else renamedCompassData[foldFieldKey] = compassData[compassFieldKey];
         }
