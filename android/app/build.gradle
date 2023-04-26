@@ -141,8 +141,8 @@ android {
         applicationId "com.strabospot2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 35
-        versionName "1.40.0"
+        versionCode 36
+        versionName "1.41.0"
          buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
                 if (isNewArchitectureEnabled()) {
                     // We configure the NDK build only if you decide to opt-in for the New Architecture.
