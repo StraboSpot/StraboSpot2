@@ -20,7 +20,7 @@ const StatusModal = (props) => {
   const dispatch = useDispatch();
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isModalLoading = useSelector(state => state.home.loading.modal);
-  const selectedProject = useSelector(state => state.project.selectedProject || {});
+  const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const useImport = useImportHook();

@@ -18,7 +18,7 @@ import NoteForm from './NoteForm';
 
 const Notes = (props) => {
   const dispatch = useDispatch();
-  const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes || null);
+  const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes) || null;
   const modalVisible = useSelector(state => state.home.modalVisible);
   const templates = useSelector(state => state.project.project?.templates) || {};
 

@@ -28,7 +28,7 @@ const useSpots = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const datasets = useSelector(state => state.project.datasets);
   const preferences = useSelector(state => state.project.project.preferences) || {};
-  const tags = useSelector(state => state.project.project.tags || []);
+  const tags = useSelector(state => state.project.project.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);

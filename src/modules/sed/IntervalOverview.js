@@ -9,8 +9,8 @@ import useSedHook from './useSed';
 
 const IntervalOverview = (props) => {
   const dispatch = useDispatch();
-  const character = useSelector(state => state.spot.selectedSpot.properties.sed?.character || '');
-  const interval = useSelector(state => state.spot.selectedSpot.properties.sed?.interval || {});
+  const character = useSelector(state => state.spot.selectedSpot.properties.sed?.character) || '';
+  const interval = useSelector(state => state.spot.selectedSpot.properties.sed?.interval) || {};
 
   const useSed = useSedHook();
 

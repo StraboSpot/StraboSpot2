@@ -32,10 +32,10 @@ MapboxGL.setWellKnownTileServer('Mapbox');
 MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Basemap = (props) => {
-  const center = useSelector(state => state.map.center || [LONGITUDE, LATITUDE]);
+  const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const zoom = useSelector(state => state.map.zoom || ZOOM);
+  const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();

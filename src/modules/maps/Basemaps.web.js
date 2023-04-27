@@ -27,11 +27,11 @@ import useMapViewHook from './useMapView';
 mapboxgl.accessToken = config.get('mapbox_access_token');
 
 const Basemap = (props) => {
-  const center = useSelector(state => state.map.center || [LONGITUDE, LATITUDE]);
+  const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-  const zoom = useSelector(state => state.map.zoom || ZOOM);
+  const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef} = props.forwardedRef;
 

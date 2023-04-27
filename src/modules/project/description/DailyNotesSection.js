@@ -14,7 +14,7 @@ import {setModalValues, setModalVisible} from '../../home/home.slice';
 const DailyNotesSection = () => {
   const dispatch = useDispatch();
 
-  const dailyNotes = useSelector(state => state.project.project?.description?.daily_setup || []);
+  const dailyNotes = useSelector(state => state.project.project?.description?.daily_setup) || [];
 
   const addDailyNote = () => {
     dispatch(setModalValues({}));
