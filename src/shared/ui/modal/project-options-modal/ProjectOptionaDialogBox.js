@@ -11,7 +11,7 @@ import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/hom
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import projectStyles from '../../../../modules/project/project.styles';
 import useProjectHook from '../../../../modules/project/useProject';
-import {STRABO_APIS} from '../../../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES, STRABO_APIS} from '../../../../services/deviceAndAPI.constants';
 import useDeviceHook from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
 import commonStyles from '../../../common.styles';
@@ -65,7 +65,7 @@ const ProjectOptionsDialogBox = (props) => {
       setProgressModalVisible(true);
       props.close();
       setChecked(1);
-      await useDevice.deleteProjectOnDevice(selectedProject.project.fileName);
+      await useDevice.deleteProjectOnDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
       setDeletingProjectStatus('complete');
       props.projectDeleted(true);
     }
@@ -82,7 +82,7 @@ const ProjectOptionsDialogBox = (props) => {
       console.log('FileName', exportFileName);
       props.close();
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, exportFileName, true);
+      await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
       toast.show('Project has been exported to Downloads folder!');
@@ -144,7 +144,8 @@ const ProjectOptionsDialogBox = (props) => {
     if (Platform.OS === 'ios') {
       return (
         <View>
-          <Text>On iOS this must be done through the Files App by moving the project.</Text>
+          <Text>All project data, images, and offline maps will be EXPORTED as a .ZIP file to the Distribution folder in
+            the My Files App &gt; StraboSpot2 &gt; ProjectBackups &gt; Distribution.</Text>
         </View>
       );
     }
@@ -152,7 +153,7 @@ const ProjectOptionsDialogBox = (props) => {
       return (
         <View>
           <Text style={commonStyles.dialogText}>
-            <Text> Al project data, images, and offline maps will be EXPORTED as a .ZIP file to the Downloads folder in
+            <Text> All project data, images, and offline maps will be EXPORTED as a .ZIP file to the Downloads folder in
               the My Files App.</Text>
           </Text>
         </View>
@@ -317,8 +318,8 @@ const ProjectOptionsDialogBox = (props) => {
   };
 
   const radioButtonArr = ['Load Project', 'Delete', 'Export'];
-  const displayedButtons = selectedProject.source === 'device' && Platform.OS === 'ios' ? radioButtonArr.slice(0,
-    2) : radioButtonArr;
+  // const displayedButtons = selectedProject.source === 'device' && Platform.OS === 'ios' ? radioButtonArr.slice(0,
+  //   2) : radioButtonArr;
   const showExportChoice = selectedProject.source === 'device';
   const header = selectedProject.source === 'device' ? 'Selected Device Project:' : selectedProject.source === 'server'
     ? 'Selected Server Project:' : null;
@@ -328,7 +329,7 @@ const ProjectOptionsDialogBox = (props) => {
     <View>
       <Dialog
         overlayStyle={projectOptionsModalStyle.modalContainer}
-        visible={props.visible}
+        isVisible={props.visible}
         useNativeDriver={true}
       >
         <Dialog.Button title={'Close'} containerStyle={{alignItems: 'flex-end'}} onPress={() => onClose()}/>
@@ -340,7 +341,7 @@ const ProjectOptionsDialogBox = (props) => {
         {selectedProject.source === 'new'
           && <Text style={{textAlign: 'center', color: 'red'}}>Starting a new project will overwrite the current
             project. Press Close if that is ok.</Text>}
-        {showExportChoice && displayedButtons.map((l, i) => (
+        {showExportChoice && radioButtonArr.map((l, i) => (
           <CheckBox
             key={i}
             title={l}
@@ -370,7 +371,7 @@ const ProjectOptionsDialogBox = (props) => {
         </View>}
       </Dialog>
       <Dialog
-        visible={isProgressModalVisible}
+        isVisible={isProgressModalVisible}
         overlayStyle={projectOptionsModalStyle.modalContainer}
         useNativeDriver={true}
 

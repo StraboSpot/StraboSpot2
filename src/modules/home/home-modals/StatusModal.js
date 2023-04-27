@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {DotIndicator} from 'react-native-indicators';
@@ -82,7 +82,7 @@ const StatusModal = (props) => {
                     )}
 
                   </View>
-                  {Platform.OS === 'android' && statusMessages.includes('Project Backup Complete!') && (
+                  {statusMessages.includes('Project Backup Complete!') && (
                     <Button
                       title={'Export Project?'}
                       containerStyle={{padding: 10}}

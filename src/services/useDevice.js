@@ -71,9 +71,9 @@ const useDevice = (props) => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
-  const deleteProjectOnDevice = async (file) => {
-    console.log(file);
-    await RNFS.unlink(APP_DIRECTORIES.BACKUP_DIR + file);
+  const deleteProjectOnDevice = async (dir, file) => {
+    console.log(dir + file);
+    await RNFS.unlink(dir + file);
     return 'Deleted';
   };
 

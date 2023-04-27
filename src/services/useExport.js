@@ -1,4 +1,4 @@
-import {PermissionsAndroid} from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 
 import RNFS from 'react-native-fs';
 import {zip} from 'react-native-zip-archive';
@@ -22,6 +22,7 @@ const useExport = () => {
   const dbs = useSelector(state => state);
   const selectedProject = useSelector(state => state.project.selectedProject);
 
+  const appExportDirectory = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.EXPORT_FILES_ANDROID;
   const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
   let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
 
@@ -51,32 +52,35 @@ const useExport = () => {
   };
 
   // For Android only.
-  const exportJSONToDownloadsFolder = async (localFileName, filename, isBeingExported) => {
+  const zipAndExportProjectFolder = async (localFileName, filename, isBeingExported) => {
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    await useDevice.makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename);
+    await useDevice.makeDirectory(appExportDirectory + filename);
 
     // Make temp directory for the export files to be zipped up.
-    console.log('Directory made:', APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+    console.log('Directory made:', appExportDirectory);
 
     // const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
     const source = APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json';
-    const destination = APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename;
-    await requestWriteDirectoryPermission();
+    const destination = appExportDirectory + filename;
+    Platform.OS === 'android' && await requestWriteDirectoryPermission();
     console.log(localFileName);
 
     const file = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
     const exportedJSON = JSON.parse(file);
     await RNFS.copyFile(source, `${destination}/data.json`);
-    console.log('Files Copied');
+    console.log('Files Copied', exportedJSON);
     dispatch(removedLastStatusMessage());
-    // console.log('ANDROID', await RNFS.readFile(destination + '/data.json'));
+    console.log('DEST', await RNFS.readFile(destination + '/data.json'));
     await gatherImagesForDistribution(exportedJSON, filename, isBeingExported);
     console.log('Images copied to:', destination);
     await gatherMapsForDistribution(exportedJSON, filename, isBeingExported);
     console.log('Map tiles copied to:', destination);
-
-    const path = await zip(APP_DIRECTORIES.EXPORT_FILES_ANDROID + filename,
-      APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + filename + '.zip');
+    await gatherOtherMapsForDistribution(filename, isBeingExported);
+    const zipPath = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID;
+    const path = await zip(appExportDirectory + filename,
+      zipPath + filename + '.zip');
+    const deleteTempFolder = useDevice.deleteProjectOnDevice(appExportDirectory, filename);
+    console.log('Folder', deleteTempFolder);
     console.log(`zip completed at ${path}`);
     console.log('All Done Exporting');
   };
@@ -101,7 +105,7 @@ const useExport = () => {
 
   const gatherImagesForDistribution = async (data, fileName, isBeingExported) => {
     try {
-      const deviceDir = isBeingExported ? APP_DIRECTORIES.EXPORT_FILES_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
+      const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
       await useDevice.doesDeviceDirectoryExist(
         deviceDir + fileName + '/Images');
@@ -143,7 +147,7 @@ const useExport = () => {
     try {
       const maps = data.mapNamesDb;
       const mapCount = Object.values(maps).length;
-      const deviceDir = isBeingExported ? APP_DIRECTORIES.EXPORT_FILES_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
+      const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       let promises = [];
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
@@ -174,12 +178,13 @@ const useExport = () => {
     }
   };
 
-  const gatherOtherMapsForDistribution = async (exportedFileName) => {
+  const gatherOtherMapsForDistribution = async (exportedFileName, isBeingExported) => {
     try {
       console.log(configDb);
+      const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
-        await exportData(APP_DIRECTORIES.BACKUP_DIR + exportedFileName, configDb.other_maps,
+        await exportData(deviceDir + exportedFileName, configDb.other_maps,
           '/other_maps.json');
         console.log('Other Maps Exported');
         dispatch(removedLastStatusMessage());
@@ -291,7 +296,7 @@ const useExport = () => {
 
   return {
     backupProjectToDevice: backupProjectToDevice,
-    exportJSONToDownloadsFolder: exportJSONToDownloadsFolder,
+    zipAndExportProjectFolder: zipAndExportProjectFolder,
     initializeBackup: initializeBackup,
   };
 };

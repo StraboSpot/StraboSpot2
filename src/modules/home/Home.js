@@ -336,7 +336,7 @@ const Home = () => {
     dispatch(clearedStatusMessages());
     console.log('Exporting Project');
     dispatch(addedStatusMessage(`Exporting ${selectedProject.project.fileName}!`));
-    await useExport.exportJSONToDownloadsFolder(selectedProject.project.fileName, selectedProject.project.fileName,
+    await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, selectedProject.project.fileName,
       true);
     dispatch(addedStatusMessage(
       `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`));
