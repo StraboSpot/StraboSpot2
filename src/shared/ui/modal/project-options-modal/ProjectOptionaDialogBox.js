@@ -85,7 +85,7 @@ const ProjectOptionsDialogBox = (props) => {
       await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
-      toast.show('Project has been exported to Downloads folder!');
+      toast.show('Project has been exported!');
       setChecked(1);
       setIncludeMapTiles(true);
       setIncludeImages(true);

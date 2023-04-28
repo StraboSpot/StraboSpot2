@@ -333,13 +333,14 @@ const Home = () => {
   };
 
   const exportProject = async () => {
+    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${selectedProject.project.fileName}) has been exported!`
+      : `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`;
     dispatch(clearedStatusMessages());
     console.log('Exporting Project');
     dispatch(addedStatusMessage(`Exporting ${selectedProject.project.fileName}!`));
     await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, selectedProject.project.fileName,
       true);
-    dispatch(addedStatusMessage(
-      `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`));
+    dispatch(addedStatusMessage(exportCompleteMessage));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
     console.log(`Project ${selectedProject.project.fileName} has been exported!`);
   };
