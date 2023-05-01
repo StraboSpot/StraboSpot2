@@ -6,7 +6,10 @@ import Slider from '@react-native-community/slider';
 import * as themes from '../styles.constants';
 import styles from './ui.styles';
 
-const slider = (props) => {
+const Slider = (props) => {
+  console.log('Rendering Slider...');
+  console.log('Slider props:', props);
+
   return (
     <React.Fragment>
       <View style={styles.sliderContainer}>
@@ -41,4 +44,4 @@ const slider = (props) => {
   );
 };
 
-export default slider;
+export default Slider;
