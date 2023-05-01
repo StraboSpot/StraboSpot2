@@ -9,7 +9,7 @@ import {isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import Slider from '../../../shared/ui/Slider';
+import Slider from '../../../shared/ui/SliderBar';
 import {formStyles} from '../../form';
 import {
   addedStatusMessage,

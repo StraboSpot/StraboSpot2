@@ -19,7 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
-import Slider from '../../shared/ui/Slider';
+import Slider from '../../shared/ui/SliderBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';

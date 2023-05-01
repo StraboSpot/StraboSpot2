@@ -6,7 +6,7 @@ import Slider from '@react-native-community/slider';
 import * as themes from '../styles.constants';
 import styles from './ui.styles';
 
-const Slider = (props) => {
+const SliderBar = (props) => {
   console.log('Rendering Slider...');
   console.log('Slider props:', props);
 
@@ -44,4 +44,4 @@ const Slider = (props) => {
   );
 };
 
-export default Slider;
+export default SliderBar;

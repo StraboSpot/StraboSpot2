@@ -5,7 +5,7 @@ import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import {SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
-import Slider from '../../shared/ui/Slider';
+import Slider from '../../shared/ui/SliderBar';
 import {useFormHook} from '../form';
 
 const FormSlider = (props) => {
