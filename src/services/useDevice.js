@@ -34,6 +34,10 @@ const useDevice = (props) => {
       await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
       console.log('Android Downloads/StraboSpot/Backups directory created');
     }
+    if (Platform.OS === 'ios') {
+      await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_IOS);
+      console.log('Distribution directory created for iOS');
+    }
     await makeDirectory(APP_DIRECTORIES.TILES_DIRECTORY);
     console.log('Tiles Directory Created');
     await makeDirectory(APP_DIRECTORIES.TILE_CACHE);
