@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import Loading from '../../shared/ui/Loading';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
@@ -29,6 +30,7 @@ const ImageGallery = (props) => {
   const spots = useSelector(state => state.spot.spots);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
@@ -38,18 +40,23 @@ const ImageGallery = (props) => {
 
   const getImageThumbnailURIs = async () => {
     try {
+      setIsLoading(true);
       const spotsWithImages = useSpots.getSpotsWithImages();
+      console.log('Getting Image URI Thumbnails!');
       const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
+      console.log('Image URI Thumbnails are done!');
       setImageThumbnails(imageThumbnailURIsTemp);
       setIsError(false);
+      setIsLoading(false);
     }
     catch (err) {
       console.error('Error in getImageThumbnailURIs', err);
       setIsError(true);
+      setIsLoading(false);
     }
   };
 
-  const handleImagePressed = (image) => {
+  const handleImagePressed = async (image) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     useImages.doesImageExistOnDevice(image.id)
       .then((doesExist) => {
@@ -155,6 +162,7 @@ const ImageGallery = (props) => {
       {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
         : !isError ? renderSpotsWithImages()
           : renderError()}
+      <Loading isLoading={isLoading}/>
     </React.Fragment>
   );
 };
