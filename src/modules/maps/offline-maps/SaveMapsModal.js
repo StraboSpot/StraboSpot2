@@ -14,17 +14,26 @@ import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../../home/home.slice';
+// import ProgressBar from '../../../shared/ui/ProgressBar';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  removedLastStatusMessage,
+  setOfflineMapsModalVisible,
+} from '../../home/home.slice';
 import {MAP_PROVIDERS} from '../maps.constants';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
-const SaveMapsModal = (props) => {
+const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
+  console.log('Rendering SaveMapsModal...');
+
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();
   const [useServerRequests] = useServerRequestHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
 
@@ -60,8 +69,8 @@ const SaveMapsModal = (props) => {
 
   useEffect(() => {
     console.log('UE SaveMapsModal [props.map]', props.map);
-    if (props.map) {
-      props.map.getCurrentZoom().then((zoom) => {
+    if (getCurrentZoom) {
+      getCurrentZoom().then((zoom) => {
         let initialZoom = [];
         let currentZoom = Math.round(zoom);
         setDownloadZoom(Math.round(zoom));
@@ -74,11 +83,12 @@ const SaveMapsModal = (props) => {
         setZoomLevels(initialZoom);
       });
 
-      props.map.getExtentString().then((ex) => {
+      getExtentString().then((ex) => {
+        console.log('Extent String', ex);
         setExtentString(ex);
       });
     }
-  }, [props.map]);
+  }, [getCurrentZoom]);
 
   useEffect(() => {
     console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
@@ -213,11 +223,23 @@ const SaveMapsModal = (props) => {
   };
 
   const updateCount = async () => {
-    props.map.getTileCount(downloadZoom).then((tileCount) => {
-      console.log('downloadZoom from updateCount: ', downloadZoom);
-      setTileCount(tileCount);
-      setIsLoadingCircle(false);
-      console.log('return_from_mapview_getTileCount: ', tileCount);
+    getTileCount(downloadZoom).then((tileCount) => {
+      if (tileCount.count) {
+        console.log('downloadZoom from updateCount: ', downloadZoom);
+        console.log('downloadZoom tileCount: ', tileCount.count);
+        setTileCount(tileCount.count);
+        setIsLoadingCircle(false);
+        console.log('return_from_mapview_getTileCount: ', tileCount.count);
+      }
+      else if (tileCount.message) {
+        setShowMainMenu(false);
+        if (tileCount.message.includes('Invalid extent')) {
+          console.error(tileCount.message);
+          setErrorMessage('\n\nPlease zoom to level 5 or greater to get a more accurate tiles with features.');
+        }
+        setIsError(true);
+        setIsLoadingCircle(false);
+      }
     });
   };
 
@@ -237,7 +259,7 @@ const SaveMapsModal = (props) => {
               title={'Close'}
               titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
               type={'clear'}
-              onPress={props.close}
+              onPress={() => dispatch(setOfflineMapsModalVisible(false))}
             />
           </View>
         </View>
@@ -247,14 +269,13 @@ const SaveMapsModal = (props) => {
         setShowComplete(false);
       }}
       height={Platform.OS === 'ios' ? 400 : 275}
-      visible={props.visible}
+      visible={isOfflineMapModalVisible}
       dialogStyle={commonStyles.dialogBox}
       dialogAnimation={new SlideAnimation({
         slideFrom: 'top',
       })}
     >
-      <DialogContent
-        style={commonStyles.dialogContent}>
+      <DialogContent style={commonStyles.dialogContent}>
         <View style={styles.saveModalContainer}>
           <View style={{flex: 1}}>
             <View style={{flex: 1}}>
