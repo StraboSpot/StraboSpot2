@@ -13,6 +13,7 @@
     "upload-sourcemaps": "sentry-cli releases files org.StraboSpot2-1.39.0 upload-sourcemaps ./main.jsbundle ./main.jsbundle.map --dist org.StraboSpot2-1.39.0",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./main.jsbundle' --sourcemap-output='./main.jsbundle.map'  --dev=false --platform='ios'",
     "build:android": "react-native bundle --entry-file='index.js' --bundle-output='android/app/src/main/assets/index.android.bundle' --minify true --dev=false --platform='android'",
+    "deploy:android": "cd android && ./gradlew bundleRelease",
     "bump-patch": "npm version patch --no-git-tag-version && bundle exec fastlane bump",
     "bump-minor": "npm version minor --no-git-tag-version && bundle exec fastlane bump",
     "bump-major": "npm version major --no-git-tag-version && bundle exec fastlane bump",
