@@ -29,8 +29,8 @@ const SliderBar = (props) => {
       </View>
       {!props.isHideLabels && (
         <View style={props.rotateLabels ? {...styles.sliderTextContainer, paddingTop: 10, paddingBottom: 10}
-          : {...styles.sliderTextContainer}}>
-          {props.labels.map((label) => {
+          : [styles.sliderTextContainer, props.sliderTextContainer]}>
+          {props.labels?.map((label) => {
             return (
               <Text
                 style={[props.rotateLabels && {transform: [{rotate: '290deg'}], marginLeft: -12}, props.labelStyle]}>

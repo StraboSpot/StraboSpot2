@@ -68,7 +68,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   }, []);
 
   useEffect(() => {
-    console.log('UE SaveMapsModal [props.map]', props.map);
+    console.log('UE SaveMapsModal [map Props]');
     if (getCurrentZoom) {
       getCurrentZoom().then((zoom) => {
         let initialZoom = [];
@@ -145,7 +145,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
           console.log('DOWNLOAD HAS BEGUN! JobId: ' + jobId);
         },
         progress: (res) => {
-          console.log(((res.bytesWritten / res.contentLength) * 100).toFixed(2));
+          console.log('Download Zip Progress', ((res.bytesWritten / res.contentLength) * 100).toFixed(2));
           setPercentDone(res.bytesWritten / res.contentLength);
         },
         discretionary: true,
@@ -277,108 +277,104 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     >
       <DialogContent style={commonStyles.dialogContent}>
         <View style={styles.saveModalContainer}>
-          <View style={{flex: 1}}>
-            <View style={{flex: 1}}>
-              {showMainMenu && (
-                <View style={{marginTop: 20}}>
-                  <Text style={{textAlign: 'center'}}>
-                    Select max zoom level to download:
-                  </Text>
-                </View>
-              )}
+          {showMainMenu && (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text>
+                Select max zoom level to download:
+              </Text>
             </View>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              {showMainMenu && (
-                <Picker
-                  mode={'dropdown'}
-                  prompt={'Select a zoom level'}
-                  onValueChange={value => updatePicker(value)}
-                  selectedValue={downloadZoom}
-                  style={Platform.OS === 'ios' ? styles.pickerIOS : styles.pickerAndroid}
-                >
-                  {zoomLevels.map((zoom) => {
-                    return (
-                      <Picker.Item
-                        style={{width: 100}}
-                        key={zoom}
-                        value={zoom}
-                        label={zoom.toString()}
-                      />
-                    );
-                  })}
-                </Picker>
-              )}
-              {showLoadingBar && (
-                <View style={{height: 40, justifyContent: 'center', flexDirection: 'row'}}>
-                  {isLoadingWave
-                    ? (
-                      <View style={{paddingBottom: 35}}>
-                        <ActivityIndicator size={'large'} color={themes.BLACK}/>
-                      </View>
-                    ) : (
-                      <View>
-                        <ProgressBar progress={percentDone} width={200}/>
-                        <Text style={{textAlign: 'right', paddingTop: 5}}>
-                          {toNumberFixedValue(percentDone, 0)}
-                        </Text>
-                      </View>
-                    )
-                  }
-                </View>
-              )}
-              {showLoadingMenu && (
-                <View style={commonStyles.alignItemsCenter}>
-                  <Text style={{fontSize: 15}}>{statusMessages}</Text>
-                  {statusMessages.includes('Installing tiles...') && !statusMessages.includes(
-                    'Downloading Tiles...') && (
-                    <View style={commonStyles.alignItemsCenter}>
-                      <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
-                      <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
+          )}
+          <View style={{flex: 3, justifyContent: 'center', alignItems: 'center'}}>
+            {showMainMenu && (
+              <Picker
+                mode={'dropdown'}
+                prompt={'Select a zoom level'}
+                onValueChange={value => updatePicker(value)}
+                selectedValue={downloadZoom}
+                style={Platform.OS === 'ios' ? styles.pickerIOS : styles.pickerAndroid}
+              >
+                {zoomLevels.map((zoom) => {
+                  return (
+                    <Picker.Item
+                      style={{width: 100}}
+                      key={zoom}
+                      value={zoom}
+                      label={zoom.toString()}
+                    />
+                  );
+                })}
+              </Picker>
+            )}
+            {showLoadingBar && (
+              <View style={{height: 40, alignItems: 'center'}}>
+                {isLoadingWave
+                  ? (
+                    <View style={{paddingBottom: 35}}>
+                      <ActivityIndicator size={'large'} color={themes.BLACK}/>
                     </View>
+                  ) : (
+                    <View>
+                      <ProgressBar progress={percentDone} width={200}/>
+                      <Text style={{textAlign: 'right', paddingTop: 5}}>
+                        {toNumberFixedValue(percentDone, 0)}
+                      </Text>
+                    </View>
+                  )
+                }
+              </View>
+            )}
+            {showLoadingMenu && (
+              <View style={commonStyles.alignItemsCenter}>
+                <Text style={{fontSize: 15}}>{statusMessages}</Text>
+                {statusMessages.includes('Installing tiles...') && !statusMessages.includes(
+                  'Downloading Tiles...') && (
+                  <View style={commonStyles.alignItemsCenter}>
+                    <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
+                    <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
+                  </View>
+                )}
+              </View>
+            )}
+            {isError && (
+              <View style={commonStyles.alignItemsCenter}>
+                <Text style={{fontSize: 20, textAlign: 'center'}}>Something Went Wrong!</Text>
+                <Text style={{fontSize: 20, paddingTop: 30, textAlign: 'center'}}>{errorMessage}</Text>
+              </View>
+            )}
+            {showComplete && (
+              <View style={commonStyles.alignItemsCenter}>
+                <Text style={{fontSize: 20, padding: 10}}>Success!</Text>
+              </View>
+            )}
+            {showComplete && (
+              <View style={commonStyles.alignItemsCenter}>
+                <Text>Your map has been successfully downloaded to this device.</Text>
+              </View>
+            )}
+          </View>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            {showMainMenu && (
+              <View>
+                {isLoadingCircle
+                  ? <ActivityIndicator size={'large'} color={themes.BLACK}/>
+                  : (
+                    <Button
+                      onPress={() => saveMap()}
+                      type={'clear'}
+                      title={`Download ${tileCount} Tiles`}
+                    />
                   )}
-                </View>
-              )}
-              {isError && (
-                <View style={commonStyles.alignItemsCenter}>
-                  <Text style={{fontSize: 20, textAlign: 'center'}}>Something Went Wrong!</Text>
-                  <Text style={{fontSize: 20, paddingTop: 30, textAlign: 'center'}}>{errorMessage}</Text>
-                </View>
-              )}
-              {showComplete && (
-                <View style={commonStyles.alignItemsCenter}>
-                  <Text style={{fontSize: 20, padding: 10}}>Success!</Text>
-                </View>
-              )}
-              {showComplete && (
-                <View style={commonStyles.alignItemsCenter}>
-                  <Text>Your map has been successfully downloaded to this device.</Text>
-                </View>
-              )}
-            </View>
-            <View style={{flex: 1, justifyContent: 'center'}}>
-              {showMainMenu && (
-                <View>
-                  {isLoadingCircle
-                    ? <ActivityIndicator size={'large'} color={themes.BLACK}/>
-                    : (
-                      <Button
-                        onPress={() => saveMap()}
-                        type={'clear'}
-                        title={`Download ${tileCount} Tiles`}
-                      />
-                    )}
-                </View>
-              )
-              }
-              {isError && (
-                <Button
-                  onPress={props.close}
-                  type={'clear'}
-                  buttonStyle={styles.button}
-                  title={'Close'}
-                />
-              )}
-            </View>
+              </View>
+            )
+            }
+            {isError && (
+              <Button
+                onPress={() => dispatch(setOfflineMapsModalVisible(false))}
+                type={'clear'}
+                buttonStyle={styles.button}
+                title={'Close'}
+              />
+            )}
           </View>
         </View>
       </DialogContent>
