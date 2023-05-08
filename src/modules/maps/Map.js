@@ -828,7 +828,7 @@ const Map = React.forwardRef((props, ref) => {
       const tileCountApiCall = await fetch(useMaps.getExtentAndZoomCall(extentString, zoomLevel));
       const tileCountThisScope = await tileCountApiCall.json();
       console.log('got count from server: ', tileCountThisScope);
-      return tileCountThisScope.count;
+      return tileCountThisScope;
     }
     catch (err) {
       console.error(err);
