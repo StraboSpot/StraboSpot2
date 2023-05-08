@@ -100,7 +100,6 @@ const Home = () => {
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedProject = useSelector(state => state.project.selectedProject);
-  const statusMessages = useSelector(state => state.home.statusMessages);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
@@ -241,18 +240,18 @@ const Home = () => {
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
-        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) setPointAtCurrentLocation();
+        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await setPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');
         break;
       case 'endDraw':
-        endDraw();
+        await endDraw();
         break;
       case 'cancelEdits':
-        cancelEdits();
+        await cancelEdits();
         break;
       case 'saveEdits':
-        saveEdits();
+        await saveEdits();
         break;
       case 'toggleUserLocation':
         if (value) goToCurrentLocation().catch(console.error);
@@ -428,16 +427,6 @@ const Home = () => {
           />
         </View>}
       </View>
-    );
-  };
-
-  const renderSaveMapsModal = () => {
-    return (
-      <SaveMapsModal
-        visible={isOfflineMapModalVisible}
-        close={() => dispatch(setOfflineMapsModalVisible(false))}
-        map={mapComponentRef.current}
-      />
     );
   };
 
@@ -692,7 +681,7 @@ const Home = () => {
       {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
-      {isOfflineMapModalVisible && renderSaveMapsModal()}
+      {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
     </Animated.View>
   );
 };
