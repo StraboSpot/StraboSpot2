@@ -114,6 +114,8 @@ fastlane/.env.secret
 # Bundle artifact
 *.jsbundle
 main.jsbundle.map
+index.android.bundle
+index.android.bundle.map
 
 # Ruby / CocoaPods
 /ios/Pods/
