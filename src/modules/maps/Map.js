@@ -645,13 +645,13 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   // Identify the vertex which has to be updated
-  const getVertexIndexInSpotToEdit = (vertex) => {
+  const getVertexIndexInSpotToEdit = (vertex, drawFeatures = mapPropsMutable.drawFeatures) => {
     if (isEmpty(vertex)) {
       return {};
     }
     let indexOfCoordinatesToUpdate = [];
-    for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++) {
-      if (mapPropsMutable.drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId) {
+    for (let index = 0; index < drawFeatures.length; index++) {
+      if (drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId) {
         indexOfCoordinatesToUpdate.push(index);
       }
     }
@@ -1009,14 +1009,14 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   // Handle a long press on the map by making the point or vertex at the point "selected"
-  const onMapLongPress = async (e) => {
+  const onMapLongPress = async (e, mapMode = props.mapMode, drawFeatures = mapPropsMutable.drawFeatures) => {
     console.log('Map long press detected:', e);
     const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
       : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
         : [e.properties.screenPointX, e.properties.screenPointY];
     const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
     const mappedSpots = useMaps.getAllMappedSpots();
-    if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
+    if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
       let closestVertexDetails = {};
       let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
         [...mapPropsMutable.drawFeatures]);
@@ -1028,7 +1028,7 @@ const Map = React.forwardRef((props, ref) => {
         startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
       }
     }
-    else if (props.mapMode === MAP_MODES.EDIT) {
+    else if (mapMode === MAP_MODES.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
       else if (!isEmpty(editingModeData.spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
@@ -1068,7 +1068,7 @@ const Map = React.forwardRef((props, ref) => {
             else {
               console.log('Deleting selected vertex...');
               const coords = turf.getCoords(spotEditingCopy);
-              const indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexSelected);
+              const indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexSelected, drawFeatures);
               let isModified = false;
               if (turf.getType(spotEditingCopy) === 'LineString' && coords.length > 2) {
                 for (let i = 0; i < coords.length; i++) {

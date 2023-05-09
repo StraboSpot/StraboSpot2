@@ -27,6 +27,9 @@ import useMapViewHook from './useMapView';
 mapboxgl.accessToken = config.get('mapbox_access_token');
 
 const Basemap = (props) => {
+  console.log('Rendering Basemap...');
+  console.log('Basemap props:', props);
+
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -67,6 +70,7 @@ const Basemap = (props) => {
         container: mapContainer.current,
         center: initialCenter,
         zoom: initialZoom,
+        doubleClickZoom: false,
       });
     }
 
@@ -91,9 +95,20 @@ const Basemap = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log('UE Basemap - Changed [props.allowMapViewMove]', props.allowMapViewMove);
+    const handlers = ['boxZoom', 'dragRotate', 'dragPan'];
+    handlers.forEach((handler) => {
+      if (props.allowMapViewMove) mapRef.current?.[handler].enable();
+      else mapRef.current?.[handler].disable();
+    });
+  }, [props.allowMapViewMove]);
+
+  useEffect(() => {
     console.log('UE Basemap - Changed [props.mapMode]', props.mapMode);
 
-    if (useMaps.isDrawMode(props.mapMode)) mapRef.current.getCanvas().style.cursor = 'pointer';
+    if (useMaps.isDrawMode(props.mapMode) || props.mapMode === MAP_MODES.EDIT) {
+      mapRef.current.getCanvas().style.cursor = 'pointer';
+    }
 
     mapRef.current?.on('mouseenter', [...layerIdsNotSelected, ...layerIdsSelected], (event) => {
       if (props.mapMode === MAP_MODES.VIEW && event.features?.length > 0) {
@@ -103,7 +118,9 @@ const Basemap = (props) => {
 
     mapRef.current?.on('mouseleave', [...layerIdsNotSelected, ...layerIdsSelected], () => {
       if (props.mapMode === MAP_MODES.VIEW) mapRef.current.getCanvas().style.cursor = '';
-      else if (useMaps.isDrawMode(props.mapMode)) mapRef.current.getCanvas().style.cursor = 'pointer';
+      else if (useMaps.isDrawMode(props.mapMode)  || props.mapMode === MAP_MODES.EDIT) {
+        mapRef.current.getCanvas().style.cursor = 'pointer';
+      }
     });
   }, [props.mapMode]);
 
@@ -116,6 +133,11 @@ const Basemap = (props) => {
     mapRef.current?.on('click', (e) => {
       console.log('Set new onMapPress', props.mapMode, mapMode.current);
       props.onMapPress(e, mapMode.current, drawFeatures.current);
+    });
+
+    mapRef.current?.on('dblclick', (e) => {
+      console.log('Set new onMapPress', props.mapMode, mapMode.current);
+      props.onMapLongPress(e, mapMode.current, drawFeatures.current);
     });
   }, [props.mapMode, props.drawFeatures]);
 
@@ -228,6 +250,24 @@ const Basemap = (props) => {
 
     waiting();
   }, [props.drawFeatures]);
+
+  useEffect(() => {
+    console.log('UE Basemap - Changed [props.editFeatureVertex]', props.editFeatureVertex);
+
+    const waiting = () => {
+      if (mapRef.current) {
+        if (!mapRef.current.isStyleLoaded() || !mapRef.current.getSource('editFeatureVertex')) {
+          setTimeout(waiting, 200);
+        }
+        else {
+          mapRef.current.getSource('editFeatureVertex').setData(turf.featureCollection(props.editFeatureVertex));
+          console.log('Updated editFeatureVertex.');
+        }
+      }
+    };
+
+    waiting();
+  }, [props.editFeatureVertex]);
 
   // Add Features Layers (Not Selected Spots)
   const addFeaturesLayers = () => {
@@ -520,6 +560,33 @@ const Basemap = (props) => {
     console.log('Finished adding draw layers.');
   };
 
+  const addEditLayer = () => {
+    // Clean the Layer (Remove the Source and Layer)
+    if (mapRef.current.getSource('editFeatureVertex')) {
+        if (mapRef.current.getLayer('pointLayerEdit')) mapRef.current.removeLayer('pointLayerEdit');
+      mapRef.current.removeSource('editFeatureVertex');
+    }
+
+    console.log('Adding edit layer ...', props.editFeatureVertex);
+
+    // Add Source: Edit Feature Vertex
+    mapRef.current.addSource('editFeatureVertex', {
+      type: 'geojson',
+      data: turf.featureCollection(props.editFeatureVertex),
+    });
+
+    // Add Layer
+    mapRef.current.addLayer({
+      id: 'pointLayerEdit',
+      type: 'circle',
+      source: 'editFeatureVertex', // reference the data source
+      filter: ['==', ['geometry-type'], 'Point'],
+      paint: useMapSymbology.getMapSymbology().pointEdit,
+    });
+
+    console.log('Finished adding edit layer.');
+  };
+
   const addLayers = () => {
     console.log('Loading layers...');
 
@@ -527,6 +594,7 @@ const Basemap = (props) => {
     addFeaturesLayers();
     addFeaturesLayersSelected();
     addDrawLayers();
+    addEditLayer();
 
     console.log('Finished loading layers.');
   };

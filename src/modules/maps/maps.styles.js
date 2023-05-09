@@ -12,7 +12,6 @@ const mapStyles = StyleSheet.create({
   },
   // --- MapPoint Style ---
   vertexEditPoint: {
-    backgroundColor: 'orange',
     borderRadius: circleRadius,
     borderWidth: 2,
     borderColor: 'white',
