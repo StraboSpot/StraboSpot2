@@ -23,6 +23,9 @@ import {setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
+  console.log('Rendering InitialProjectLoadModal...');
+  console.log('InitialProjectLoadModal props:', props);
+
   const welcomeTitle = 'Welcome to StraboSpot';
   const serverTitle = 'Projects on Server';
   const deviceTitle = 'Projects on Device';
@@ -40,6 +43,7 @@ const InitialProjectLoadModal = (props) => {
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
+    console.log('UE InitialProjectLoadModal []')
     return () => {
       setVisibleInitialSection('none');
     };
