@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {Platform} from 'react-native';
+import {PixelRatio, Platform} from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
@@ -275,6 +275,10 @@ const useMaps = (mapRef) => {
         screenCoords = Platform.OS === 'web' ? mapRef.current.project(eachFeature.geometry.coordinates)
           : await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
         if (Platform.OS === 'web') screenCoords = [screenCoords.x, screenCoords.y];
+        else if (Platform.OS === 'android') {
+          const pixelRatio = PixelRatio.get();
+          screenCoords = [screenCoords[0] / pixelRatio, screenCoords[1] / pixelRatio];
+        }
         eachFeature.geometry.coordinates = screenCoords;
         distances[i] = turf.distance(dummyFeature, eachFeature);
       }

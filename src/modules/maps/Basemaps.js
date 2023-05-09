@@ -32,6 +32,9 @@ MapboxGL.setWellKnownTileServer('Mapbox');
 MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Basemap = (props) => {
+  console.log('Rendering Basemap...');
+  console.log('Basemap props:', props);
+
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -108,8 +111,8 @@ const Basemap = (props) => {
   };
 
   // Update spots in extent and saved view (center and zoom)
-  const onRegionDidChange = async () => {
-    console.log('Event onRegionDidChange');
+  const onMapIdle = async () => {
+    console.log('Event onMapIdle');
     props.spotsInMapExtent();
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
       const newCenter = await mapRef.current.getCenter();
@@ -119,8 +122,8 @@ const Basemap = (props) => {
   };
 
   // Update scale bar and zoom text
-  const onRegionIsChanging = async () => {
-    console.log('Event onRegionIsChanging');
+  const onCameraChanged = async () => {
+    console.log('Event onCameraChanged');
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
       const newZoom = await mapRef.current.getZoom();
       setZoomText(newZoom);
@@ -152,8 +155,8 @@ const Basemap = (props) => {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onRegionDidChange={onRegionDidChange}    // Update spots in extent and saved view (center and zoom)
-        onRegionIsChanging={onRegionIsChanging}  // Update scale bar and zoom text
+        onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
+        onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
       >
 
         {/* Blue dot for user location */}
@@ -278,7 +281,7 @@ const Basemap = (props) => {
 
           {/* Line Not Selected */}
           {/* Need 4 different lines for the different types of line dashes since
-           lineDasharray is not suppported with data-driven styling*/}
+           lineDasharray is not supported with data-driven styling*/}
           <MapboxGL.LineLayer
             id={'lineLayerNotSelected'}
             filter={useMapSymbology.getLinesFilteredByPattern('solid')}
