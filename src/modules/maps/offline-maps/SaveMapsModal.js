@@ -268,7 +268,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
         setShowMainMenu(true);
         setShowComplete(false);
       }}
-      height={Platform.OS === 'ios' ? 400 : 275}
+      height={Platform.OS === 'ios' ? 400 : 325}
       visible={isOfflineMapModalVisible}
       dialogStyle={commonStyles.dialogBox}
       dialogAnimation={new SlideAnimation({
