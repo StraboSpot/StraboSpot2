@@ -8,6 +8,7 @@ import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
 import Routes from './src/routes/Routes';
+import InternetStatus from './src/services/InternetStatus';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
@@ -38,6 +39,7 @@ NetInfo.configure({
 });
 
 const App = () => {
+  console.log('Rendering App...');
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
@@ -48,6 +50,7 @@ const App = () => {
         <Provider store={store}>
           <PersistGate loading={<Loading/>} persistor={persistor}>
             {/*<Sentry.TouchEventBoundary>*/}
+            <InternetStatus/>
             <Routes/>
             {/*</Sentry.TouchEventBoundary>*/}
           </PersistGate>
@@ -56,4 +59,5 @@ const App = () => {
     </SafeAreaView>
   );
 };
+
 export default Sentry.wrap(App);
