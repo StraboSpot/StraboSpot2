@@ -522,8 +522,7 @@ const Map = React.forwardRef((props, ref) => {
           let isVertexIdentifiedAtSpotPress = false;
           if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
           else {
-            let vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
-              [...drawFeatures]);
+            let vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
             if (!isEmpty(vertexSelected)) {
               // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
               // we can calculate a vertex on the spot found that is closest to the press.
@@ -1018,8 +1017,7 @@ const Map = React.forwardRef((props, ref) => {
     const mappedSpots = useMaps.getAllMappedSpots();
     if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
       let closestVertexDetails = {};
-      let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
-        [...mapPropsMutable.drawFeatures]);
+      let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
       if (isEmpty(closestVertexToSelect)) {
         // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
         closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
@@ -1033,8 +1031,7 @@ const Map = React.forwardRef((props, ref) => {
       else if (!isEmpty(editingModeData.spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
-          const vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
-            [...mapPropsMutable.drawFeatures]);
+          const vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
             let vertexAdded = {};
             if (isEmpty(vertexSelected)) {
