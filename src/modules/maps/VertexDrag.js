@@ -1,95 +1,70 @@
-import React, {useState} from 'react';
-import {Dimensions, Platform} from 'react-native';
+import React from 'react';
 
-import {PanGestureHandler, State} from 'react-native-gesture-handler';
-import AnimatedPoint from 'react-native-reanimated';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import Animated, {useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {setVertexEndCoords} from './maps.slice';
 import mapStyles from './maps.styles';
 
-const {cond, eq, add, call, set, Value, event} = AnimatedPoint;
-// eslint-disable-next-line no-unused-vars
-const {height, width} = Dimensions.get('window');
-
 const VertexDrag = () => {
-  const selectedVertexOffsetY = Platform.OS === 'ios' ? 10 : -14;
-  // const selectedVertexOffsetY = Platform.OS === 'ios' ? 10 : -38;  //The -38 is for an android phone
+  console.log('Rendering VertexDrag...');
 
   const dispatch = useDispatch();
-  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords); // See note at bottom.
-  const [dragX, setDragX] = useState(new Value(0));
-  const [dragY, setDragY] = useState(new Value(0));
-  const [offsetX, setOffsetX] = useState(new Value(0));
-  const [offsetY, setOffsetY] = useState(new Value(0));
-  const [gestureState, setGestureState] = useState(new Value(-1));
-  const addX = add(offsetX, dragX);
-  const addY = add(offsetY, dragY);
-  const transX = cond(
-    eq(gestureState, State.ACTIVE),
-    addX, [
-      set(offsetX, addX),
-    ],
-  );
-  const transY = cond(
-    eq(gestureState, State.ACTIVE),
-    addY, [
-      set(offsetY, addY),
-    ],
-  );
+  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
-  const onGestureEvent = event([
-    {
-      nativeEvent: {
-        translationX: dragX,
-        translationY: dragY,
-        state: gestureState,
-      },
-    },
-  ]);
-
-  const onDrop = (coords) => {
-    // console.log(`You are at x: ${coords[0]} and y: ${coords[1]}!`);
-    let endCoords = [vertexStartCoords[0] + coords[0], vertexStartCoords[1] + coords[1]];
-    console.log('x from comp', coords[0], 'y from comp', coords[1], 'endCoords:', endCoords);
-    dispatch(setVertexEndCoords(endCoords));
+  const selectedVertexOffset = 10;
+  const vertexStartCoordsObj = {
+    x: vertexStartCoords[0] - selectedVertexOffset,
+    y: vertexStartCoords[1] - selectedVertexOffset,
   };
+  const isPressed = useSharedValue(false);
+  const offset = useSharedValue(vertexStartCoordsObj);
+  const start = useSharedValue(vertexStartCoordsObj);
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {translateX: offset.value.x},
+        {translateY: offset.value.y},
+      ],
+      backgroundColor: isPressed.value ? 'yellow' : 'orange',
+    };
+  });
+
+  const gesture = Gesture.Pan()
+    .onBegin(() => {
+      isPressed.value = true;
+      // console.log('Start Coords:', vertexStartCoords);
+    })
+    .onUpdate((e) => {
+      offset.value = {
+        x: e.translationX + start.value.x,
+        y: e.translationY + start.value.y,
+      };
+      // console.log('onUpdate coords [', offset.value.x, ',', offset.value.y, ']');
+    })
+    .onEnd(() => {
+      start.value = {
+        x: offset.value.x + selectedVertexOffset,
+        y: offset.value.y + selectedVertexOffset,
+      };
+      let endCoords = [start.value.x, start.value.y];
+      // console.log('End Coords:', endCoords);
+      dispatch(setVertexEndCoords(endCoords));
+    })
+    .onFinalize(() => {
+      // console.log('onFinalize');
+      isPressed.value = false;
+    });
 
   return (
     <React.Fragment>
-      <AnimatedPoint.Code>
-        {() =>
-          cond(
-            // eq(gestureState, State.ACTIVE),
-            eq(gestureState, State.END),
-            call([transX, transY], onDrop),
-          )
-        }
-      </AnimatedPoint.Code>
-      <PanGestureHandler
-        maxPointers={1}
-        onGestureEvent={onGestureEvent}
-        onHandlerStateChange={onGestureEvent}
-      >
-        <AnimatedPoint.View
-          style={[
-            mapStyles.vertexEditPoint,
-            {
-              bottom: vertexStartCoords ? height - vertexStartCoords[1] - selectedVertexOffsetY : 0,
-              left: vertexStartCoords ? vertexStartCoords[0] - 10 : 0,
-            },
-            {
-              transform: [
-                {translateX: transX},
-                {translateY: transY},
-              ],
-            },
-          ]}
-        />
-      </PanGestureHandler>
+      <GestureDetector gesture={gesture}>
+        <Animated.View style={[mapStyles.vertexEditPoint, animatedStyles]}/>
+      </GestureDetector>
     </React.Fragment>
   );
 };
 
-// TODO evaluate the need for connect(default dispatchProps)
-export default connect()(VertexDrag);
+export default VertexDrag;
