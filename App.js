@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, SafeAreaView} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
