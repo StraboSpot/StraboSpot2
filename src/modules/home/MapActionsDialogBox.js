@@ -1,14 +1,12 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
-import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {ScaleAnimation} from 'react-native-popup-dialog/src';
+import {Overlay, Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 // Styles
 import styles from './dialog.styles';
-
-const slideAnimation = new ScaleAnimation({useNativeDriver: true});
+import homeStyles from './home.style';
 
 const MapActionsDialog = (props) => {
 
@@ -16,67 +14,72 @@ const MapActionsDialog = (props) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   return (
-    <Dialog
-      dialogAnimation={slideAnimation}
-      dialogStyle={styles.dialogBox}
-      visible={props.visible}
-      dialogTitle={
-        <DialogTitle
-          title={'Map Actions'}
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-        />}
-      onTouchOutside={props.onTouchOutside}
+    <Overlay
+      animationType={'slide'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      onBackdropPress={props.onTouchOutside}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <DialogContent>
-        <DialogButton
-          text={'Zoom to Extent of Spots'}
-          textStyle={styles.dialogText}
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>Map Actions</Text>
+      </View>
+      <View>
+        <Button
           onPress={() => props.onPress('zoom')}
+          title={'Zoom to Extent of Spots'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
         />
-        {/*<DialogButton*/}
-        {/*  text='Zoom to Offline Map'*/}
-        {/*  textStyle={styles.dialogText}*/}
-        {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
-        {/*/>*/}
+        <Button
+          onPress={() => props.onPress('zoomToOfflineMap')}
+          title='Zoom to Offline Map'
+          titleStyle={styles.dialogText}
+          type={'clear'}
+        />
         {isOnline.isInternetReachable && (
-          <DialogButton
-            style={styles.dialogContent}
-            text={'Save Map for Offline Use'}
-            textStyle={styles.dialogText}
+          <Button
             onPress={() => props.onPress('saveMap')}
+            style={styles.dialogContent}
+            title={'Save Map for Offline Use'}
+            titleStyle={styles.dialogText}
+            type={'clear'}
           />
         )}
-        <DialogButton
-          style={styles.dialogContent}
-          text={'Add Tag(s) to Spot(s)'}
-          textStyle={styles.dialogText}
+        <Button
           onPress={() => props.onPress('addTag')}
+          style={styles.dialogContent}
+          title={'Add Tag(s) to Spot(s)'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
         />
         {Platform.OS === 'ios' && (
-          <DialogButton
-            style={styles.dialogContent}
-            text={'Lasso Spots for Stereonet'}
-            textStyle={styles.dialogText}
+          <Button
             onPress={() => props.onPress('stereonet')}
+            style={styles.dialogContent}
+            title={'Lasso Spots for Stereonet'}
+            titleStyle={styles.dialogText}
+            type={'clear'}
           />
         )}
-        <DialogButton
-          style={styles.dialogContent}
-          text={'Measure Distance'}
-          textStyle={styles.dialogText}
+        <Button
           onPress={() => props.onPress('mapMeasurement')}
+          style={styles.dialogContent}
+          title={'Measure Distance'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
         />
         {stratSection && (
-          <DialogButton
-            style={styles.dialogContent}
-            text={'Strat Section Settings'}
-            textStyle={styles.dialogText}
+          <Button
             onPress={() => props.onPress('stratSection')}
+            style={styles.dialogContent}
+            title={'Strat Section Settings'}
+            titleStyle={styles.dialogText}
+            type={'clear'}
           />
         )}
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

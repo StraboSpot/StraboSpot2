@@ -68,6 +68,8 @@ import useHomeHook from './useHome';
 const {State: TextInputState} = TextInput;
 
 const Home = () => {
+  console.log('Rendering Home...');
+
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
@@ -99,7 +101,7 @@ const Home = () => {
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
-  const selectedProject = useSelector(state => state.project.selectedProject);
+  const selectedProject = useSelector(state => state.project.project);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
@@ -178,6 +180,20 @@ const Home = () => {
     }
   }, [modalVisible]);
 
+   useEffect(() => {
+     console.log('UE Home [projectLoadComplete]', projectLoadComplete);
+    if (projectLoadComplete) {
+       mapComponentRef.current.zoomToSpotsExtent();
+       dispatch(setProjectLoadComplete(false));
+      // toggles off whenever new project is loaded successfully to trigger the same for next project load.
+    }
+   }, [projectLoadComplete]);
+
+  useEffect(() => {
+    console.log('UE Home [mapMode]', mapMode);
+    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
+  }, [mapMode]);
+
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
     homeTextInputAnimate);
 
@@ -199,20 +215,6 @@ const Home = () => {
     }, []);
     setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
   };
-
-  useEffect(() => {
-    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
-    if (projectLoadComplete) {
-      mapComponentRef.current.zoomToSpotsExtent();
-      dispatch(setProjectLoadComplete(false));
-      // toggles off whenever new project is loaded successfully to trigger the same for next project load.
-    }
-  }, [projectLoadComplete]);
-
-  useEffect(() => {
-    console.log('UE Home [mapMode]', mapMode);
-    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
-  }, [mapMode]);
 
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();

@@ -1,6 +1,5 @@
-import 'react-native-gesture-handler';
-import React, {useEffect, useState} from 'react';
-import {Platform} from 'react-native';
+import React, {useEffect} from 'react';
+import {Platform, SafeAreaView} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
@@ -11,6 +10,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {version} from './package.json';
 import Routes from './src/routes/Routes';
+import InternetStatus from './src/services/InternetStatus';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
@@ -19,7 +19,7 @@ import config from './src/utils/config';
 
 Sentry.init({
   dsn: config.get('Error_reporting_DSN'),
-  enableNative: true,
+  enableNative: Platform.OS !== 'web',
   debug: __DEV__,
   release: RELEASE_NAME,
   dist: RELEASE_NAME,
@@ -41,6 +41,7 @@ NetInfo.configure({
 });
 
 const App = () => {
+  console.log('Rendering App...');
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
@@ -56,16 +57,20 @@ const App = () => {
     }
   }, []);
 
+  // In SafeAreaView adding style={{flex: 1}} fixed the white screen on start
   return (
-    <Toast>
-      <Provider store={store}>
-        <PersistGate loading={<Loading/>} persistor={persistor}>
-          {/*<Sentry.TouchEventBoundary>*/}
-          <Routes updateNeeded={isUpdateNeeded}/>
-          {/*</Sentry.TouchEventBoundary>*/}
-        </PersistGate>
-      </Provider>
-    </Toast>
+    <SafeAreaView style={{flex: 1}}>
+      <Toast>
+        <Provider store={store}>
+          <PersistGate loading={<Loading/>} persistor={persistor}>
+            {/*<Sentry.TouchEventBoundary>*/}
+            <InternetStatus/>
+            <Routes updateNeeded={isUpdateNeeded}/>
+            {/*</Sentry.TouchEventBoundary>*/}
+          </PersistGate>
+        </Provider>
+      </Toast>
+    </SafeAreaView>
   );
 };
 

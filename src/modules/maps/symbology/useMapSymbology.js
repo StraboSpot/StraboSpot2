@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
@@ -15,6 +17,16 @@ const useMapSymbology = () => {
     dotted: [0.5, 2],
     dashed: [5, 2],
     dotDashed: [5, 2, 0.5, 2],
+  };
+
+  // Add symbology to properties of map features (not to Spots themselves) since data-driven styling
+  // doesn't work for colors by tags and more complex styling
+  const addSymbology = (features) => {
+    return features.map((feature) => {
+      const symbology = getSymbology(feature);
+      if (!isEmpty(symbology)) feature.properties.symbology = symbology;
+      return feature;
+    });
   };
 
   // Get the rotation of the symbol, either strike, trend or failing both, 0
@@ -330,7 +342,7 @@ const useMapSymbology = () => {
       iconAllowOverlap: true,     // Need to be able to stack symbols at same location
       iconIgnorePlacement: true,  // Need to be able to stack symbols at same location
       iconSize: 0.35,
-      symbolSpacing: 0,
+      // symbolSpacing: 0,
     },
     pointColorHalo: {
       circleRadius: 17,
@@ -438,10 +450,51 @@ const useMapSymbology = () => {
   };
 
   const getMapSymbology = () => {
+    // Map of properties for native to web
+    const propertiesMap = {
+      circleColor: 'circle-color',
+      circleOpacity: 'circle-opacity',
+      circleRadius: 'circle-radius',
+      circleStrokeColor: 'circle-stroke-color',
+      circleStrokeWidth: 'circle-stroke-width',
+      fillColor: 'fill-color',
+      fillOpacity: 'fill-opacity',
+      fillOutlineColor: 'fill-outline-color',
+      fillPattern: 'fill-pattern',
+      iconAllowOverlap: 'icon-allow-overlap',
+      iconIgnorePlacement: 'icon-ignore-placement',
+      iconImage: 'icon-image',
+      iconRotate: 'icon-rotate',
+      iconSize: 'icon-size',
+      lineColor: 'line-color',
+      lineDasharray: 'line-dasharray',
+      lineWidth: 'line-width',
+      symbolPlacement: 'symbol-placement',
+      symbolSpacing: 'symbol-spacing',
+      textAnchor: 'text-anchor',
+      textField: 'text-field',
+      textIgnorePlacement: 'text-ignore-placement',
+      textOffset: 'text-offset',
+    };
+
+    // Map property names to those used for web
+    if (Platform.OS === 'web') {
+      return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+        ...acc,
+        ...{
+          [key]: Object.entries(value).reduce((acc2, [property, style]) => ({
+              ...acc2,
+              ...{[propertiesMap[property]]: style},
+            }),
+            {}),
+        },
+      }), {});
+    }
     return mapStyles;
   };
 
   return [{
+    addSymbology: addSymbology,
     getMapSymbology: getMapSymbology,
     getLinesFilteredByPattern: getLinesFilteredByPattern,
     getSymbology: getSymbology,

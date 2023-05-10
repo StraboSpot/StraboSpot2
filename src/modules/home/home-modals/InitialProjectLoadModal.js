@@ -3,9 +3,8 @@ import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import {Avatar, Button, Icon} from 'react-native-elements';
-import {Dialog, DialogContent, DialogTitle, SlideAnimation} from 'react-native-popup-dialog';
 import {useToast} from 'react-native-toast-notifications';
+import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
@@ -30,12 +29,13 @@ import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
+  console.log('Rendering InitialProjectLoadModal...');
+  console.log('InitialProjectLoadModal props:', props);
 
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
     else return 'Guest';
   };
-
 
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
@@ -61,6 +61,7 @@ const InitialProjectLoadModal = (props) => {
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
+    console.log('UE InitialProjectLoadModal []')
     return () => {
       setVisibleInitialSection('none');
     };
@@ -251,7 +252,7 @@ const InitialProjectLoadModal = (props) => {
               type={'clear'}
               icon={
                 <Icon
-                  name={'ios-arrow-back'}
+                  name={'arrow-back'}
                   type={'ionicon'}
                   color={'black'}
                   iconStyle={projectStyles.buttons}
@@ -284,7 +285,7 @@ const InitialProjectLoadModal = (props) => {
             type={'clear'}
             icon={
               <Icon
-                name={'ios-arrow-back'}
+                name={'arrow-back'}
                 type={'ionicon'}
                 color={'black'}
                 iconStyle={projectStyles.buttons}
@@ -358,7 +359,7 @@ const InitialProjectLoadModal = (props) => {
           type={'clear'}
           icon={
             <Icon
-              name={'ios-arrow-back'}
+              name={'arrow-back'}
               type={'ionicon'}
               color={'black'}
               iconStyle={projectStyles.buttons}
@@ -404,32 +405,17 @@ const InitialProjectLoadModal = (props) => {
 
   return (
     <React.Fragment>
-      <Dialog
-        dialogStyle={homeStyles.dialogBox}
-        visible={props.visible}
-        dialogAnimation={new SlideAnimation({
-          slideFrom: 'top',
-        })}
-        dialogTitle={
-          <DialogTitle
-            title={statusMessageModalTitle}
-            style={homeStyles.dialogTitleContainer}
-            textStyle={homeStyles.dialogTitleText}
-          />
-        }
+      <Overlay
+        animationType={'slide'}
+        isVisible={props.visible}
+        overlayStyle={homeStyles.dialogBox}
       >
-        <DialogContent>
-          {visibleInitialSection === 'none' && renderUserProfile()}
-          {isLoading ? renderLoadingView() : renderSectionView()}
-          <View style={{
-            backgroundColor: 'red',
-            position: 'absolute',
-            top: '50%',
-            left: '55%',
-          }}>
-          </View>
-        </DialogContent>
-      </Dialog>
+        <View style={homeStyles.dialogTitleContainer}>
+          <Text style={homeStyles.dialogTitleText}>{statusMessageModalTitle}</Text>
+        </View>
+        {visibleInitialSection === 'none' && renderUserProfile()}
+        {isLoading ? renderLoadingView() : renderSectionView()}
+      </Overlay>
     </React.Fragment>
   );
 };

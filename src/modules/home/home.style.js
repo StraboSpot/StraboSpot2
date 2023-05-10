@@ -5,6 +5,7 @@ import * as themes from '../../shared/styles.constants';
 const homeStyles = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: 'hidden',
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -14,9 +15,17 @@ const homeStyles = StyleSheet.create({
   },
   dialogTitleContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    height: 60,
+    marginLeft: -10,
+    marginRight: -10,
+    marginTop: -10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    justifyContent: 'center',
   },
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    color: themes.PRIMARY_TEXT_COLOR,
     fontWeight: 'bold',
     textAlign: 'center',
   },

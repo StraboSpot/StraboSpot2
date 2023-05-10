@@ -19,7 +19,7 @@ const useTags = () => {
   const dispatch = useDispatch();
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const projectTags = useSelector(state => state.project.project.tags || []);
+  const projectTags = useSelector(state => state.project.project.tags) || [];
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);

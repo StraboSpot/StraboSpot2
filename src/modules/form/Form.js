@@ -141,7 +141,7 @@ const Form = (props) => {
     <View>
       <FlatList
         listKey={JSON.stringify(survey)}
-        keyExtractor={item => item.name}
+        keyExtractor={(item, index) => index.toString()}
         data={Object.values(survey.filter(item => useForm.isRelevant(item, props.values)))}
         renderItem={({item}) => renderField(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

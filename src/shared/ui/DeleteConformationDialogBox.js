@@ -1,42 +1,38 @@
 import React from 'react';
+import {Text, View} from 'react-native';
 
-import Dialog, {
-  DialogButton,
-  DialogContent,
-  DialogFooter,
-  DialogTitle,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 
+import homeStyles from '../../modules/home/home.style';
 import styles from '../../shared/common.styles';
 
-const deleteConformation = (props) => {
+const DeleteConformationDialogBox = (props) => {
   return (
-    <Dialog
-      dialogStyle={[styles.dialogBox, {position: 'absolute', top: '25%'}]}
-      width={300}
-      visible={props.visible}
-      dialogAnimation={new FadeAnimation({animationDuration: 300, useNativeDriver: true})}
-      useNativeDriver={true}
-      dialogTitle={
-        <DialogTitle
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-          title={props.title}
-        />
-      }
-      footer={
-        <DialogFooter>
-          <DialogButton text={'Delete'} onPress={props.delete} disabled={props.deleteDisabled}/>
-          <DialogButton text={'Cancel'} onPress={props.cancel} disabled={props.cancelDisabled}/>
-        </DialogFooter>
-      }
+    <Overlay
+      animationType={'fade'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, styles.dialogBox, {position: 'absolute', top: '25%'}]}
     >
-      <DialogContent style={styles.dialogContent}>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{props.title}</Text>
+      </View>
+      <View style={styles.dialogContent}>
         {props.children}
-      </DialogContent>
-    </Dialog>
+      </View>
+      <Button
+        title={'Delete'}
+        type={'clear'}
+        onPress={props.delete}
+        disabled={props.deleteDisabled}
+      />
+      <Button
+        title={'OK'}
+        type={'Cancel'}
+        onPress={props.cancel}
+        disabled={props.cancelDisabled}
+      />
+    </Overlay>
   );
 };
 
-export default deleteConformation;
+export default DeleteConformationDialogBox;

@@ -33,7 +33,6 @@ const ManageCustomMaps = (props) => {
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
-        key={item.id}
         onPress={() => useMaps.customMapDetails(item)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
@@ -46,8 +45,10 @@ const ManageCustomMaps = (props) => {
           type={'ionicon'}
           color={PRIMARY_ACCENT_COLOR}
           onPress={async () => {
-            const baseMap = await useMaps.setBasemap(item.id);
-            baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+            let customMapWithBbox;
+            if (item.overlay)  customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
+            else customMapWithBbox = await useMaps.setBasemap(item.id);
+            customMapWithBbox.bbox && setTimeout(() => props.zoomToCustomMap(customMapWithBbox.bbox), 1000);
           }}
         />
         <ListItem.Chevron/>
@@ -64,7 +65,7 @@ const ManageCustomMaps = (props) => {
       />
       <SectionDivider dividerText={'Current Custom Maps'}/>
       <FlatList
-        keyExtractor={item => item.toString()}
+        keyExtractor={(item, index) => item.id?.toString() || index.toString()}
         data={Object.values(customMaps)}
         renderItem={({item}) => renderCustomMapListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

@@ -21,7 +21,7 @@ import {TagDetailModal, useTagsHook} from '../tags';
 const Tags = (props) => {
   const [useTags] = useTagsHook();
   const dispatch = useDispatch();
-  const tags = useSelector(state => state.project.project.tags || []);
+  const tags = useSelector(state => state.project.project.tags) || [];
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
   const [selectedIndex, setSelectedIndex] = useState(0);

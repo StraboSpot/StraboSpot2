@@ -13,7 +13,7 @@ const dialogStyles = StyleSheet.create({
   },
   dialogBox: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 30,
+    borderRadius: 20,
   },
   dialogContent: {
     marginTop: 15,
