@@ -202,20 +202,6 @@ const Home = () => {
     setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
   };
 
-  useEffect(() => {
-    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
-    if (projectLoadComplete) {
-      mapComponentRef.current.zoomToSpotsExtent();
-      dispatch(setProjectLoadComplete(false));
-      // toggles off whenever new project is loaded successfully to trigger the same for next project load.
-    }
-  }, [projectLoadComplete]);
-
-  useEffect(() => {
-    console.log('UE Home [mapMode]', mapMode);
-    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
-  }, [mapMode]);
-
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
