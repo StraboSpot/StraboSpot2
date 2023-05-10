@@ -203,6 +203,10 @@ const useDevice = (props) => {
     else throw Error('Offline maps directory does not exist!');
   };
 
+  const readFile = async (source) => {
+    return await RNFS.readFile(source);
+  };
+
   const requestReadDirectoryPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -277,6 +281,7 @@ const useDevice = (props) => {
     readDirectory: readDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMapFiles: readDirectoryForMapFiles,
+    readFile: readFile,
     requestReadDirectoryPermission: requestReadDirectoryPermission,
     unZipAndCopyImportedData: unZipAndCopyImportedData,
     writeFileToDevice: writeFileToDevice,

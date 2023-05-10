@@ -1,7 +1,7 @@
 import DocumentPicker from 'react-native-document-picker';
-import RNFS from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import {csvToArray, getNewUUID, urlValidator} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -16,6 +16,8 @@ import {editedSpotProperties} from '../spots/spots.slice';
 const useExternalData = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+
+  const useDevice = useDeviceHook();
 
   let CSVObject = {};
 
@@ -34,7 +36,7 @@ const useExternalData = () => {
         },
       );
       const id = getNewUUID();
-      const CSVData = await RNFS.readFile(res.uri);
+      const CSVData = await useDevice.readFile(res.uri);
       const csvToArrayRes = csvToArray(CSVData);
       CSVObject = {
         id: id,

@@ -293,7 +293,7 @@ const useImport = () => {
       // await requestReadDirectoryPermission();
       const dataFile = '/data.json';
       console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-      const response = await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+      const response = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
       console.log(JSON.parse(response));
       return JSON.parse(response);
     }
