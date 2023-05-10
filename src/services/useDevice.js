@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
-import {APP_DIRECTORIES} from './deviceAndAPI.constants';
+import {APP_DIRECTORIES} from './directories.constants';
 
 
 const useDevice = (props) => {

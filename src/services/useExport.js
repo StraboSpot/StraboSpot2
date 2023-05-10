@@ -14,7 +14,7 @@ import {
 } from '../modules/home/home.slice';
 import {setSelectedProject} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './deviceAndAPI.constants';
+import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 
 const useExport = () => {

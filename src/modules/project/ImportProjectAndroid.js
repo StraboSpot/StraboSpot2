@@ -5,7 +5,7 @@ import {Button, Icon} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';

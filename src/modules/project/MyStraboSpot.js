@@ -6,7 +6,7 @@ import RNFS from 'react-native-fs';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';

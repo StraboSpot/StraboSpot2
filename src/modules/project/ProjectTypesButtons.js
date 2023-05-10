@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 // Styles
-import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';

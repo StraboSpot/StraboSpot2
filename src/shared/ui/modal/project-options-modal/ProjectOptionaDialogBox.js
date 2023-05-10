@@ -11,7 +11,8 @@ import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/hom
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import projectStyles from '../../../../modules/project/project.styles';
 import useProjectHook from '../../../../modules/project/useProject';
-import {APP_DIRECTORIES, STRABO_APIS} from '../../../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../../../services/directories.constants';
+import {STRABO_APIS} from '../../../../services/urls.constants';
 import useDeviceHook from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
 import commonStyles from '../../../common.styles';

@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {STRABO_APIS} from '../../../services/deviceAndAPI.constants';
+import {STRABO_APIS} from '../../../services/urls.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';

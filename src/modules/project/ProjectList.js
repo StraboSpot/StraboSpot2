@@ -4,7 +4,7 @@ import {AppState, FlatList, Text, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from '../../services/deviceAndAPI.constants';
+import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';

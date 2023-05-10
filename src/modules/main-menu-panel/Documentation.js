@@ -5,7 +5,7 @@ import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import PDFView from 'react-native-view-pdf';
 import {useSelector} from 'react-redux';
 
-import {STRABO_APIS} from '../../services/deviceAndAPI.constants';
+import {STRABO_APIS} from '../../services/urls.constants';
 import commonStyles from '../../shared/common.styles';
 import {BLACK, BLUE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
