@@ -25,7 +25,7 @@ import ProjectTypesButtons from '../../project/ProjectTypesButtons';
 import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
-import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
+import {setLoadingStatus, setStatusMessageModalTitle, setProjectLoadSelectionModalVisible} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
@@ -59,19 +59,7 @@ const InitialProjectLoadModal = (props) => {
   const useDevice = useDeviceHook();
   const toast = useToast();
   const useUserProfile = useUserProfileHook();
-
-  useEffect(() => {
-    console.log('UE InitialProjectLoadModal []')
-    return () => {
-      setVisibleInitialSection('none');
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
-    dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
-  }, [isOnline]);
-
+  
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
       dispatch(clearedProject());
@@ -308,6 +296,7 @@ const InitialProjectLoadModal = (props) => {
   const renderLoadingView = () => {
     return (
       <View style={{alignItems: 'center'}}>
+        <Text>LOADING...</Text>
         <LottieView
           style={{width: 150, height: 150}}
           source={useAnimations.getAnimationType('loadingFile')}
@@ -392,9 +381,8 @@ const InitialProjectLoadModal = (props) => {
             type={'clear'}
             titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
             onPress={() => {
+              dispatch(setProjectLoadSelectionModalVisible(false));
               if (user.name) dispatch({type: REDUX.CLEAR_STORE});
-              // dispatch(setSignedInStatus(false));
-              setVisibleInitialSection('none');
               navigation.navigate('SignIn');
             }}
           />
