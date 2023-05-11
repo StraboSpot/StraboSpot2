@@ -215,6 +215,7 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Datasets Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setStatusMessagesModalVisible(false));
     }
     catch (err) {
       console.error('Error Initializing Download.', err);
