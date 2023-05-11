@@ -28,12 +28,12 @@ import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
 
-MapboxGL.setWellKnownTileServer('Mapbox');
+MapboxGL.setWellKnownTileServer('mapbox');
 MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Basemap = (props) => {
-  console.log('Rendering Basemap...');
-  console.log('Basemap props:', props);
+  // console.log('Rendering Basemap...');
+  // console.log('Basemap props:', props);
 
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
@@ -255,7 +255,8 @@ const Basemap = (props) => {
         />
         <MapboxGL.ShapeSource
           id={'spotsNotSelectedSource'}
-          shape={turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
+          shape={turf.featureCollection(
+            useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
         >
           {/* Polygon Not Selected */}
           <MapboxGL.FillLayer
@@ -444,7 +445,7 @@ const Basemap = (props) => {
       </MapboxGL.MapView>
     </View>
   );
-}
+};
 
 export const MapLayer = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
