@@ -101,7 +101,7 @@ const Home = () => {
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
-  const selectedProject = useSelector(state => state.project.project);
+  const selectedProject = useSelector(state => state.project.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
@@ -180,14 +180,14 @@ const Home = () => {
     }
   }, [modalVisible]);
 
-   useEffect(() => {
-     console.log('UE Home [projectLoadComplete]', projectLoadComplete);
+  useEffect(() => {
+    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
-       mapComponentRef.current.zoomToSpotsExtent();
-       dispatch(setProjectLoadComplete(false));
+      mapComponentRef.current.zoomToSpotsExtent();
+      dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
-   }, [projectLoadComplete]);
+  }, [projectLoadComplete]);
 
   useEffect(() => {
     console.log('UE Home [mapMode]', mapMode);
