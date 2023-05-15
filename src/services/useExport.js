@@ -1,6 +1,5 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 
-import RNFS from 'react-native-fs';
 import {zip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -40,8 +39,11 @@ const useExport = () => {
 
   const backupProjectToDevice = async (exportedFileName) => {
     await gatherDataForBackup(exportedFileName);
+    console.log('Finished Exporting Project Data');
     await gatherOtherMapsForDistribution(exportedFileName);
+    console.log('Other Maps Exported');
     await gatherMapsForDistribution(dataForExport, exportedFileName);
+    console.log('Maps tiles have been exported.');
     await gatherImagesForDistribution(dataForExport, exportedFileName);
     console.log('Images Resolve Message:');
   };
@@ -67,7 +69,7 @@ const useExport = () => {
 
     const file = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
     const exportedJSON = JSON.parse(file);
-    await RNFS.copyFile(source, `${destination}/data.json`);
+    await useDevice.copyFiles(source, `${destination}/data.json`);
     console.log('Files Copied', exportedJSON);
     dispatch(removedLastStatusMessage());
     console.log('DEST', await useDevice.readFile(destination + '/data.json'));
@@ -92,7 +94,6 @@ const useExport = () => {
 
       await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport,
         'data.json');
-      console.log('Finished Exporting Project Data', dataForExport);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished Exporting Project Data'));
     }
@@ -152,8 +153,7 @@ const useExport = () => {
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
-        await useDevice.doesDeviceDirectoryExist(
-          deviceDir + fileName + '/maps');
+        await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
         await Promise.all(
           Object.values(maps).map(async (map) => {
             const mapId = await moveDistributedMap(map.mapId, fileName, deviceDir);
@@ -162,7 +162,6 @@ const useExport = () => {
             console.log(promises);
           }),
         );
-        console.log('Promised Finished');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Finished Exporting ${mapCount} Offline Map${mapCount > 1 ? 's' : ''}.`));
       }
@@ -186,7 +185,6 @@ const useExport = () => {
       if (!isEmpty(configDb.other_maps)) {
         await exportData(deviceDir + exportedFileName, configDb.other_maps,
           '/other_maps.json');
-        console.log('Other Maps Exported');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage('Finished Exporting Custom Maps.'));
       }
@@ -233,7 +231,7 @@ const useExport = () => {
 
   const moveDistributedImage = async (image_id, fileName, directory) => {
     try {
-      const imageExists = await useDevice.doesDeviceFileExist(image_id, '.jpg');
+      const imageExists = await useDevice.doesDeviceFileExist(APP_DIRECTORIES.IMAGES, image_id, '.jpg');
       if (imageExists) {
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
           directory + fileName + '/Images/' + image_id + '.jpg');
@@ -248,11 +246,11 @@ const useExport = () => {
 
   const moveDistributedMap = async (mapId, fileName, directory) => {
     console.log('Moving Map:', mapId);
-    return RNFS.exists(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
+    return useDevice.doesDeviceFileExist(APP_DIRECTORIES.TILE_ZIP, mapId, '.zip')
       .then((exists) => {
         if (exists) {
           console.log(mapId + '.zip exists?', exists);
-          return RNFS.copyFile(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
+          return useDevice.copyFiles(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
             directory + fileName + '/maps/' + mapId.toString() + '.zip').then(
             () => {
               console.log('Map Copied.');
