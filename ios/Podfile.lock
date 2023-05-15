@@ -247,7 +247,7 @@ PODS:
     - React
   - react-native-netinfo (9.3.0):
     - React-Core
-  - react-native-safe-area-context (4.4.1):
+  - react-native-safe-area-context (4.5.2):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
@@ -638,7 +638,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
-  react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
+  react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
   react-native-slider: 33b8d190b59d4f67a541061bb91775d53d617d9d
   react-native-version-check: dc483031cdf65d9e947aea2d6a41142d010c7e59
   React-perflogger: aa48956d87bae67fc847acc196fae97928b96cd3
@@ -675,6 +675,6 @@ SPEC CHECKSUMS:
   Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4
   Yoga: 4935173923cabaa830e195be3e8e4cac045a8f90
 
-PODFILE CHECKSUM: 928e20b809bd2657ecdcd032ea952d110e9cd60f
+PODFILE CHECKSUM: 16ac39eb5bbda7efdb15936ccfcd9e25ef02ace6
 
 COCOAPODS: 1.12.1
