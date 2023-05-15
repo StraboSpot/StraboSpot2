@@ -157,6 +157,7 @@ const Basemap = (props) => {
         zoomEnabled={props.allowMapViewMove}
         onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
         onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
+        scaleBarEnabled={false}
       >
 
         {/* Blue dot for user location */}
