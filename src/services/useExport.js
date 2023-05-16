@@ -81,7 +81,7 @@ const useExport = () => {
     const zipPath = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID;
     const path = await zip(appExportDirectory + filename,
       zipPath + filename + '.zip');
-    const deleteTempFolder = useDevice.deleteProjectOnDevice(appExportDirectory, filename);
+    const deleteTempFolder = useDevice.deleteFromDevice(appExportDirectory, filename);
     console.log('Folder', deleteTempFolder);
     console.log(`zip completed at ${path}`);
     console.log('All Done Exporting');
@@ -231,7 +231,7 @@ const useExport = () => {
 
   const moveDistributedImage = async (image_id, fileName, directory) => {
     try {
-      const imageExists = await useDevice.doesDeviceFileExist(APP_DIRECTORIES.IMAGES, image_id, '.jpg');
+      const imageExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES + image_id + '.jpg');
       if (imageExists) {
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
           directory + fileName + '/Images/' + image_id + '.jpg');
@@ -246,7 +246,7 @@ const useExport = () => {
 
   const moveDistributedMap = async (mapId, fileName, directory) => {
     console.log('Moving Map:', mapId);
-    return useDevice.doesDeviceFileExist(APP_DIRECTORIES.TILE_ZIP, mapId, '.zip')
+    return useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
       .then((exists) => {
         if (exists) {
           console.log(mapId + '.zip exists?', exists);

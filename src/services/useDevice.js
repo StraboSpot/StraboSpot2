@@ -75,9 +75,10 @@ const useDevice = (props) => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
-  const deleteProjectOnDevice = async (dir, file) => {
+  const deleteFromDevice = async (dir, file) => {
     console.log(dir + file);
-    await RNFS.unlink(dir + file);
+    const filepath = file ? dir + file : dir;
+    await RNFS.unlink(filepath);
     return 'Deleted';
   };
 
@@ -102,10 +103,8 @@ const useDevice = (props) => {
     }
   };
 
-  const doesDeviceFileExist = async (id, extension) => {
-    const imageExists = await RNFS.exists(APP_DIRECTORIES.IMAGES + id + extension);
-    console.log('Image Exists:', imageExists);
-    return imageExists;
+  const doesDeviceDirExist = async (dir) => {
+    return await RNFS.exists(dir);
   };
 
   const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
@@ -165,6 +164,15 @@ const useDevice = (props) => {
     }
     catch (err) {
       console.error('Unable to create directory', directory, 'ERROR:', err);
+    }
+  };
+
+  const moveFile = async (source, destination) => {
+    try {
+      await RNFS.moveFile(source, destination);
+    }
+    catch (err) {
+      console.error('Error moving file', err);
     }
   };
 
@@ -270,14 +278,15 @@ const useDevice = (props) => {
     copyFiles: copyFiles,
     createProjectDirectories: createProjectDirectories,
     deleteOfflineMap: deleteOfflineMap,
-    deleteProjectOnDevice: deleteProjectOnDevice,
+    deleteFromDevice: deleteFromDevice,
     doesBackupFileExist: doesBackupFileExist,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
-    doesDeviceFileExist: doesDeviceFileExist,
+    doesDeviceDirExist: doesDeviceDirExist,
     getExternalProjectData: getExternalProjectData,
     openURL: openURL,
     makeDirectory: makeDirectory,
+    moveFile: moveFile,
     readDirectory: readDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMapFiles: readDirectoryForMapFiles,
