@@ -1,5 +1,3 @@
-import {Platform} from 'react-native';
-
 import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
@@ -449,9 +447,9 @@ const useMapSymbology = () => {
     },
   };
 
-  const getMapSymbology = () => {
+  const getPaintSymbology = () => {
     // Map of properties for native to web
-    const propertiesMap = {
+    const paintPropertiesMap = {
       circleColor: 'circle-color',
       circleOpacity: 'circle-opacity',
       circleRadius: 'circle-radius',
@@ -461,14 +459,29 @@ const useMapSymbology = () => {
       fillOpacity: 'fill-opacity',
       fillOutlineColor: 'fill-outline-color',
       fillPattern: 'fill-pattern',
+      lineColor: 'line-color',
+      lineDasharray: 'line-dasharray',
+      lineWidth: 'line-width',
+    };
+   return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      ...acc,
+      ...{
+        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
+            return paintPropertiesMap[property] ? {...acc2, ...{[paintPropertiesMap[property]]: style}} : acc2;
+          },
+          {}),
+      },
+    }), {});
+  };
+
+  const getLayoutSymbology = () => {
+    // Map of properties for native to web
+    const layoutPropertiesMap = {
       iconAllowOverlap: 'icon-allow-overlap',
       iconIgnorePlacement: 'icon-ignore-placement',
       iconImage: 'icon-image',
       iconRotate: 'icon-rotate',
       iconSize: 'icon-size',
-      lineColor: 'line-color',
-      lineDasharray: 'line-dasharray',
-      lineWidth: 'line-width',
       symbolPlacement: 'symbol-placement',
       symbolSpacing: 'symbol-spacing',
       textAnchor: 'text-anchor',
@@ -477,24 +490,23 @@ const useMapSymbology = () => {
       textOffset: 'text-offset',
     };
 
-    // Map property names to those used for web
-    if (Platform.OS === 'web') {
-      return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
-        ...acc,
-        ...{
-          [key]: Object.entries(value).reduce((acc2, [property, style]) => ({
-              ...acc2,
-              ...{[propertiesMap[property]]: style},
-            }),
-            {}),
-        },
-      }), {});
-    }
-    return mapStyles;
+    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      ...acc,
+      ...{
+        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
+            return layoutPropertiesMap[property] ? {...acc2, ...{[layoutPropertiesMap[property]]: style}} : acc2;
+          },
+          {}),
+      },
+    }), {});
   };
+
+  const getMapSymbology = () => mapStyles;
 
   return [{
     addSymbology: addSymbology,
+    getPaintSymbology: getPaintSymbology,
+    getLayoutSymbology: getLayoutSymbology,
     getMapSymbology: getMapSymbology,
     getLinesFilteredByPattern: getLinesFilteredByPattern,
     getSymbology: getSymbology,

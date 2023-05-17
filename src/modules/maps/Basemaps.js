@@ -347,7 +347,7 @@ const Basemap = (props) => {
 
           {/* Line Selected */}
           {/* Need 4 different lines for the different types of line dashes since
-           lineDasharray is not suppported with data-driven styling*/}
+           lineDasharray is not supported with data-driven styling*/}
           <MapboxGL.LineLayer
             id={'lineLayerSelected'}
             filter={useMapSymbology.getLinesFilteredByPattern('solid')}
