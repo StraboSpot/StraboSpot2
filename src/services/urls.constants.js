@@ -2,6 +2,7 @@ const account = '/account';
 const straboSpotAPI = 'https://strabospot.org';
 const tilehost = 'https://tiles.strabospot.org';
 const straboDB = straboSpotAPI + '/db';
+const straboImage = straboSpotAPI + '/db/image/';
 const myMapsGeotiff = straboSpotAPI + '/geotiff';
 const myMapsBbox = myMapsGeotiff + '/bbox/';
 const myMapsTiles = myMapsGeotiff + '/tiles/';
