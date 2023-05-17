@@ -227,7 +227,7 @@ const projectSlice = createSlice({
       let datasetIdsFound = [];
       action.payload.map((spotId) => {
         for (const dataset of Object.values(state.datasets)) {
-          const spotIdFound = dataset.spotIds.find(id => id === spotId);
+          const spotIdFound = dataset.spotIds?.find(id => id === spotId);
           if (spotIdFound && !datasetIdsFound.includes(dataset.id)) {
             datasetIdsFound.push(dataset.id);
             break;
