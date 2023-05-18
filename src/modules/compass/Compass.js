@@ -64,10 +64,14 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    const buttonClick = new Sound('compass_button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (error) console.log('Failed to load sound', error);
-    });
-    setButtonSound(buttonClick);
+    if (Platform !== 'web') {
+      import('react-native-sound').then((module) => {
+        const buttonClick = new module.Sound('compass_button_click.mp3', module.Sound.MAIN_BUNDLE, (error) => {
+          if (error) console.log('Failed to load sound', error);
+        });
+        setButtonSound(buttonClick);
+      });
+    }
   }, []);
 
   useEffect(() => {
