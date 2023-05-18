@@ -3,15 +3,17 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import {APP_DIRECTORIES} from './directories.constants';
+import {STRABO_APIS} from './urls.constants';
 
 
 const useDevice = (props) => {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
 
   const copyFiles = async (source, target) => {
     try {
@@ -134,6 +136,49 @@ const useDevice = (props) => {
       return exists;
     }
   };
+
+  const downloadAndSaveImage = async (imageId) => {
+
+    const begin = (res) => {
+      console.log('BEGIN DOWNLOAD RES', res);
+    };
+    // return request('GET', '/pi/' + imageId, user.encoded_login, {responseType: 'blob'});
+    return RNFS.downloadFile({
+      fromUrl: STRABO_APIS.IMAGE + imageId,
+      toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
+      begin: (begin),
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login,
+        'Accept': 'application/json',
+      },
+    }).promise.then(async (res) => {
+        console.log('Image Info', res, ' JobID:', res.jobId);
+        if (res.statusCode === 200) {
+          console.log(`File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
+        }
+        else if (res.statusCode === 404) {
+          console.log('Image not found!');
+          throw Error(`Image ${imageId} not found!`);
+        }
+
+        // else {
+        //   // imageCount++;
+        //   // imagesFailedCount++;
+        //   // await RNFS.stopDownload(res.jobId);
+        //   // dispatch(removedLastStatusMessage());
+        //   // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
+        //   // console.log('Stopped downloading image:', imageId);
+        //   console.log('Error on', imageId);
+        //   throw Error(`Failed image ${imageId} removed`);
+        //   return deleteFromDevice(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
+        //     console.log(`Failed image ${imageId} removed`);
+        //     throw Error(`Failed image ${imageId} removed`);
+        //   });
+        // }
+      },
+    );
+  };
+
 
   const getExternalProjectData = async () => {
     // try {
@@ -283,6 +328,7 @@ const useDevice = (props) => {
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceDirExist: doesDeviceDirExist,
+    downloadAndSaveImage: downloadAndSaveImage,
     getExternalProjectData: getExternalProjectData,
     openURL: openURL,
     makeDirectory: makeDirectory,
