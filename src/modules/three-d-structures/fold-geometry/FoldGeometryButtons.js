@@ -16,7 +16,13 @@ const FoldGeometryButtons = (props) => {
       if (props.formProps?.values[key]) {
         const iconSource = FOLD_ICONS[key] && FOLD_ICONS[key].PRESSED
           && FOLD_ICONS[key].PRESSED[props.formProps?.values[key]]
-          && <IconButton source={FOLD_ICONS[key].PRESSED[props.formProps?.values[key]]} imageStyle={{margin: -5}}/>;
+          && (
+            <IconButton
+              key={key}
+              source={FOLD_ICONS[key].PRESSED[props.formProps?.values[key]]}
+              imageStyle={{margin: -5}}
+            />
+          );
         if (iconSource) foldGeometryData.push(iconSource);
       }
     });

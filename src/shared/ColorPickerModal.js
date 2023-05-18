@@ -38,8 +38,8 @@ const ColorPickerModal = (props) => {
   return (
     <Overlay
       isVisible={props.isVisible}
-      windowBackgroundColor='rgba(0, 0, 0, .5)'
-      overlayBackgroundColor='blue'
+      windowBackgroundColor="rgba(0, 0, 0, .5)"
+      overlayBackgroundColor="blue"
       overlayStyle={{maxHeight: '90%', width: 350, borderRadius: 20}}
     >
       <View style={{maxHeight: '100%'}}>
@@ -50,11 +50,14 @@ const ColorPickerModal = (props) => {
         <Spacer/>
         {COLOR_CHOICES.map((colorRow) => {
           return (
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}} key={colorRow}>
               {colorRow.map((colorChoice) => {
                 return (
-                  <TouchableOpacity style={{width: 25, height: 25, backgroundColor: colorChoice}}
-                                    onPress={() => setColor(colorChoice)}/>);
+                  <TouchableOpacity
+                    style={{width: 25, height: 25, backgroundColor: colorChoice}}
+                    onPress={() => setColor(colorChoice)}
+                    key={colorChoice}
+                  />);
               })}
             </View>
           );

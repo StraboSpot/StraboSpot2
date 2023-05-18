@@ -19,7 +19,7 @@ const FoldGeometryChoices = (props) => {
     const foldGeometryField = useForm.getRelevantFields(props.survey, key)[0];
     const foldGeometryChoices = useForm.getChoicesByKey(props.survey, props.choices, key);
     return (
-      <View style={{padding: 10}}>
+      <View style={{padding: 10}} key={key}>
         {foldGeometryField.label && (
           <View style={[formStyles.fieldLabelContainer, {paddingLeft: 10}]}>
             <Text style={formStyles.fieldLabel}>{foldGeometryField.label}</Text>
@@ -31,6 +31,7 @@ const FoldGeometryChoices = (props) => {
               FOLD_ICONS[key] && FOLD_ICONS[key].DEFAULT && FOLD_ICONS[key].DEFAULT[c.name] && FOLD_ICONS[key].PRESSED
               && FOLD_ICONS[key].PRESSED[c.name] && (
                 <IconButton
+                  key={c.name}
                   source={props.formProps.values[key] === c.name ? FOLD_ICONS[key].PRESSED[c.name] : FOLD_ICONS[key].DEFAULT[c.name]}
                   imageStyle={{margin: -5}}
                   onPress={() => onGeometryChoiceButtonPress(key, c.name)}
