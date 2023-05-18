@@ -144,7 +144,7 @@ const useImages = () => {
       return {neededImagesIds: neededImagesIds, imageIds: imageIds};
     }
     catch (err) {
-      console.error('Error Gathering Images.');
+      console.error('Error Gathering Images.', err);
     }
   };
 
