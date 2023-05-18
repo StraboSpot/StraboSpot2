@@ -1,4 +1,3 @@
-import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -25,7 +24,6 @@ import {
 import {addedSpotsFromServer, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './directories.constants';
-import {STRABO_APIS} from './urls.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 
@@ -118,44 +116,14 @@ const useDownload = () => {
 
   const downloadAndSaveImagesToDevice = async (imageId) => {
     try {
-      const imageURI = STRABO_APIS.STRABO + '/pi/';
-      return RNFS.downloadFile({
-        fromUrl: imageURI + imageId,
-        toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
-        headers: {
-          'Accept': 'application/json',
-        },
-      }).promise.then(async (res) => {
-          console.log('Image Info', res, ' JobID:', res.jobId);
-          if (res.statusCode === 200) {
-            imageCount++;
-            console.log(imageCount, `File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
-          }
-          else {
-            imageCount++;
-            imagesFailedCount++;
-            await RNFS.stopDownload(res.jobId);
-            // dispatch(removedLastStatusMessage());
-            // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
-            console.log('Stopped downloading image:', imageId);
-            console.log('Error on', imageId);
-            return RNFS.unlink(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
-              console.log(`Failed image ${imageId} removed`);
-            });
-          }
-        }, (rej) => {
-          console.log('rejected Image!!!,', rej);
-        },
-      )
-        .catch((err) => {
-          console.error('ERR in RNFS.downloadFile', err);
-          // RNFS.stopDownload(downloadRes.jobId);
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage('Error Downloading Images!'));
-        });
+      const res = await useDevice.downloadAndSaveImage(imageId);
+      console.log('Image Res', res);
+      imageCount++;
     }
     catch (err) {
       console.error('Error downloading and saving image.', err);
+      imageCount++;
+      imagesFailedCount++;
     }
   };
 
@@ -248,29 +216,27 @@ const useDownload = () => {
             ));
           }),
         );
-        console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length
-          + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length);
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
+          console.log('Downloaded Images: ' + (imageCount - imagesFailedCount) + '/' + neededImageIds.length
+            + '\nFailed Images: ' + imagesFailedCount);
           dispatch(setLoadingStatus({view: 'modal', bool: false}));
           dispatch(addedStatusMessage(
-            'Downloaded Images ' + imageCount + '/' + neededImageIds.length
-            + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
+            'Downloaded Images: ' + (imageCount - imagesFailedCount) + '/' + neededImageIds.length
+            + '\nFailed Images: ' + imagesFailedCount,
           ));
         }
-        else {
-          const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
-          console.log(neededDatasetImagesUpdated);
-          dispatch(setLoadingStatus({view: 'modal', bool: false}));
-          dispatch(addedNeededImagesToDataset({
-            datasetId: dataset.id,
-            images: neededDatasetImagesUpdated,
-            modified_timestamp: dataset.modified_timestamp,
-          }));
-          dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
-        }
+        else dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
+
+        const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
+        console.log(neededDatasetImagesUpdated);
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(addedNeededImagesToDataset({
+          datasetId: dataset.id,
+          images: neededDatasetImagesUpdated,
+          modified_timestamp: dataset.modified_timestamp,
+        }));
       }
-      // dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
