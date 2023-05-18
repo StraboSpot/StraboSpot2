@@ -12,6 +12,7 @@ const tileCount = tilehost + '/zipcount';
 export const STRABO_APIS = {
   ACCOUNT: account,
   STRABO: straboSpotAPI,
+  IMAGE: straboImage,
   TILE_HOST: tilehost,
   DB: straboDB,
   MY_MAPS_BBOX: myMapsBbox,
