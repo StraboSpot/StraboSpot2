@@ -56,7 +56,6 @@
     "react-native-document-picker": "8.1.1",
     "react-native-elements": "3.4.2",
     "react-native-flatlist-slider": "1.0.6",
-    "react-native-flipper": "0.164.0",
     "react-native-fs": "2.20.0",
     "react-native-gesture-handler": "2.5.0",
     "react-native-get-random-values": "1.8.0",
@@ -81,7 +80,6 @@
     "react-native-zip-archive": "6.0.8",
     "react-redux": "8.0.2",
     "redux": "4.2.0",
-    "redux-flipper": "2.0.2",
     "redux-logger": "3.0.6",
     "redux-persist": "6.0.0",
     "uuid": "8.3.2"
