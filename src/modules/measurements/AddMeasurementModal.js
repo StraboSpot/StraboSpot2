@@ -12,6 +12,7 @@ import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.cons
 import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
+import Slider from '../../shared/ui/SliderBar';
 import Spacer from '../../shared/ui/Spacer';
 import uiStyles from '../../shared/ui/ui.styles';
 import Compass from '../compass/Compass';
@@ -49,6 +50,7 @@ const AddMeasurementModal = (props) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
   const [survey, setSurvey] = useState({});
+  const [sliderValue, setSliderValue] = useState(6);
 
   const [useForm] = useFormHook();
   const [useMaps] = useMapsHook();
@@ -249,12 +251,27 @@ const AddMeasurementModal = (props) => {
             )}
             {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
               : (
-                <Compass
-                  setMeasurements={setMeasurements}
-                  formValues={formProps.values}
-                  showCompassDataModal={showCompassMetadataModal}
-                  setCompassRawDataToDisplay={data => showCompassRawDataView && setCompassData(data)}
-                />
+                <View>
+                  <Compass
+                    setMeasurements={setMeasurements}
+                    formValues={formProps.values}
+                    showCompassDataModal={showCompassMetadataModal}
+                    setCompassRawDataToDisplay={data => showCompassRawDataView && setCompassData(data)}
+                    sliderValue={sliderValue}
+                  />
+                  <View style={compassStyles.sliderContainer}>
+                    <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
+                    <Slider
+                      onSlidingComplete={value => setSliderValue(value)}
+                      value={sliderValue}
+                      step={1}
+                      maximumValue={6}
+                      minimumValue={1}
+                      labels={['Low', '', '', '', 'High', 'N/R']}
+                      labelStyle={uiStyles.sliderLabel}
+                    />
+                  </View>
+                </View>
               )}
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
               && getPlanarTemplates(relevantTemplates).length <= 1 && (
