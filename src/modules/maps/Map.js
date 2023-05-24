@@ -103,7 +103,6 @@ const Map = React.forwardRef((props, ref) => {
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
-  const [mapToggle, setMapToggle] = useState(true);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [defaultGeomType, setDefaultGeomType] = useState();
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
@@ -144,7 +143,6 @@ const Map = React.forwardRef((props, ref) => {
         imageBasemap: currentImageBasemap,
         stratSection: currentImageBasemap ? undefined : m.stratSection,
       }));
-      setMapToggle(!mapToggle);
     }
   }, [currentImageBasemap]);
 
@@ -155,7 +153,6 @@ const Map = React.forwardRef((props, ref) => {
       imageBasemap: stratSection ? undefined : m.imageBasemap,
       stratSection: stratSection,
     }));
-    setMapToggle(!mapToggle);
   }, [stratSection]);
 
   useEffect(() => {
@@ -305,7 +302,6 @@ const Map = React.forwardRef((props, ref) => {
       ...m,
       basemap: currentBasemap,
     }));
-    setMapToggle(!mapToggle);
     setIsZoomToCenterOffline(false);
   };
 

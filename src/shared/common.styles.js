@@ -137,6 +137,9 @@ const commonStyles = StyleSheet.create({
     width: 200,
     paddingLeft: 20,
   },
+  imagePlaceholder: {
+    backgroundColor: themes.MEDIUMGREY,
+  },
 });
 
 export default commonStyles;

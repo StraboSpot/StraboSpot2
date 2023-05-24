@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import mapboxgl from 'mapbox-gl';
@@ -12,6 +12,7 @@ import {isEmpty} from '../../shared/Helpers';
 import config from '../../utils/config';
 import useImagesHook from '../images/useImages';
 import {
+  BACKGROUND,
   GEO_LAT_LNG_PROJECTION,
   LATITUDE,
   LONGITUDE,
@@ -84,11 +85,6 @@ const Basemap = (props) => {
     }, [],
   );
 
-  useEffect(() => {
-    console.log('UE Basemap [props.imageBasemap]', props.imageBasemap);
-    if (props.imageBasemap && props.imageBasemap.id) checkImageExistance().catch(console.error);
-  }, [props.imageBasemap]);
-
   if (mapRef.current) {
     // Add the image to the map style.
     mapRef.current?.on('styleimagemissing', (e) => {
@@ -107,10 +103,6 @@ const Basemap = (props) => {
       }
     });
   }
-
-  const checkImageExistance = async () => {
-    return useImages.doesImageExistOnDevice(props.imageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
-  };
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
@@ -195,7 +187,7 @@ const Basemap = (props) => {
         ref={mapRef}
         initialViewState={initialViewState}
         style={{flex: 1}}
-        mapStyle={!props.imageBasemap && !props.stratSection && props.basemap}
+        mapStyle={!props.imageBasemap && !props.stratSection ? props.basemap : BACKGROUND}
         boxZoom={props.allowMapViewMove}
         dragRotate={props.allowMapViewMove}
         dragPan={props.allowMapViewMove}
@@ -235,6 +227,23 @@ const Basemap = (props) => {
             )
           );
         })}
+
+        {/* Image Basemap Layer */}
+        {props.imageBasemap && !isEmpty(props.coordQuad) && (
+          <Source
+            id={'imageBasemap'}
+            type={'image'}
+            coordinates={props.coordQuad}
+            url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(props.imageBasemap.id)
+              : useImages.getLocalImageURI(props.imageBasemap.id)}
+          >
+            <Layer
+              type={'raster'}
+              id={'imageBasemapLayer'}
+              paint={{'raster-opacity': 1}}
+            />
+          </Source>
+        )}
 
         {/* Colored Halo Around Points Layer */}
         <Source
