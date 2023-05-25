@@ -81,7 +81,7 @@ const useDevice = (props) => {
     console.log(dir + file);
     const filepath = file ? dir + file : dir;
     await RNFS.unlink(filepath);
-    return 'Deleted';
+    console.log(`${file ? dir + file : dir} has been DELETED!`);
   };
 
   const doesBackupFileExist = (filename) => {
@@ -138,7 +138,6 @@ const useDevice = (props) => {
   };
 
   const downloadAndSaveImage = async (imageId) => {
-
     const begin = (res) => {
       console.log('BEGIN DOWNLOAD RES', res);
     };
@@ -160,23 +159,19 @@ const useDevice = (props) => {
           console.log('Image not found!');
           throw Error(`Image ${imageId} not found!`);
         }
-
-        // else {
-        //   // imageCount++;
-        //   // imagesFailedCount++;
-        //   // await RNFS.stopDownload(res.jobId);
-        //   // dispatch(removedLastStatusMessage());
-        //   // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
-        //   // console.log('Stopped downloading image:', imageId);
-        //   console.log('Error on', imageId);
-        //   throw Error(`Failed image ${imageId} removed`);
-        //   return deleteFromDevice(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
-        //     console.log(`Failed image ${imageId} removed`);
-        //     throw Error(`Failed image ${imageId} removed`);
-        //   });
-        // }
       },
     );
+  };
+
+  const downloadAndSaveMap = async (downloadOptions) => {
+    const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
+    if (res.statusCode === 200) {
+      console.log(res);
+    }
+    else {
+      console.error('Server Error');
+      throw new Error('Error downloading tiles from ' + downloadOptions.fromUrl);
+    }
   };
 
 
@@ -228,14 +223,14 @@ const useDevice = (props) => {
     return files;
   };
 
-  const readDirectoryForMapTiles = async (mapId) => {
+  const readDirectoryForMapTiles = async (directory, mapId) => {
     try {
       let tiles = [];
       mapId = mapId.includes('/') ? mapId.split('/')[1] : mapId;
-      const exists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+      const exists = await RNFS.exists(directory + mapId + '/tiles');
       console.log('Map tiles cache tiles directory:', exists);
       if (exists) {
-        tiles = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+        tiles = await RNFS.readdir(directory + mapId + '/tiles');
         // console.log('Tiles', tiles);
       }
       return tiles;
@@ -329,6 +324,7 @@ const useDevice = (props) => {
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceDirExist: doesDeviceDirExist,
     downloadAndSaveImage: downloadAndSaveImage,
+    downloadAndSaveMap: downloadAndSaveMap,
     getExternalProjectData: getExternalProjectData,
     openURL: openURL,
     makeDirectory: makeDirectory,
