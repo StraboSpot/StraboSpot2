@@ -3,7 +3,6 @@ import {ActivityIndicator, Platform, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {Button, Overlay} from 'react-native-elements';
-import RNFS from 'react-native-fs';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -14,7 +13,11 @@ import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage, setOfflineMapsModalVisible,
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  removedLastStatusMessage,
+  setOfflineMapsModalVisible,
 } from '../../home/home.slice';
 import homeStyles from '../../home/home.style';
 // import ProgressBar from '../../../shared/ui/ProgressBar';
@@ -152,14 +155,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
       await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       await useMapsOffline.checkTileZipFileExistance();
-      const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
-      if (res.statusCode === 200) {
-        console.log(res);
-      }
-      else {
-        console.error('Server Error');
-        throw new Error('Error downloading tiles from ' + downloadOptions.fromUrl);
-      }
+      const progress = await useDevice.downloadAndSaveMap(downloadOptions);
+      console.log('PROGRESS', progress);
     }
     catch (err) {
       console.error('Server error in downloadZipUrl', err);

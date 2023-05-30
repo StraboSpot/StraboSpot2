@@ -1,6 +1,5 @@
 import {Alert} from 'react-native';
 
-import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,6 +13,7 @@ import {
 } from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
+import useDeviceHook from '../services/useDevice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
@@ -31,6 +31,7 @@ const useUpload = () => {
   const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
+  const useDevice = useDeviceHook();
 
   const initializeUpload = async () => {
     KeepAwake.activate();
@@ -251,7 +252,7 @@ const useUpload = () => {
     const getImageFile = async (imageProps) => {
       try {
         const imageURI = useImages.getLocalImageURI(imageProps.id);
-        const isValidImageURI = await RNFS.exists(imageURI);
+        const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
         if (isValidImageURI) return imageURI;
         throw Error;  // Webstorm giving warning here, but we want this caught locally so that we get the log
       }
@@ -288,8 +289,8 @@ const useUpload = () => {
     // Delete the folder used for downsized images
     const deleteTempImagesFolder = async () => {
       try {
-        let dirExists = await RNFS.exists(tempImagesDownsizedDirectory);
-        if (dirExists) await RNFS.unlink(tempImagesDownsizedDirectory);
+        let dirExists = await useDevice.doesDeviceDirExist(tempImagesDownsizedDirectory);
+        if (dirExists) await useDevice.deleteFromDevice(tempImagesDownsizedDirectory);
       }
       catch {
         console.error(datasetName + ': Error Deleting Temp Images Folder.');
@@ -351,7 +352,7 @@ const useUpload = () => {
           height = max_size;
         }
 
-        await RNFS.mkdir(tempImagesDownsizedDirectory);
+        await useDevice.makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
         let imageSizeText;

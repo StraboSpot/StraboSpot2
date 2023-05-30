@@ -366,7 +366,10 @@ const useMapsOffline = () => {
             const mapId = offlineMaps[file].id;
             const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapId);
             const tileCountLength = tileCount.length;
-            console.log('tileCount', tileCount);
+            // const offlineMapObj = {...offlineMaps[file]};
+            // const tileCountLengthToDispatch = offlineMapObj.count = tileCountLength;
+            // console.log('DISPATCH', offlineMapObj);
+            // dispatch(setOfflineMap(tileCountLengthToDispatch));
             dispatch(setOfflineMap(offlineMaps[file].count = tileCountLength));
           }
           else await addMapFromDeviceToRedux(file);
