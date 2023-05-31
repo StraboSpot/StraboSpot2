@@ -150,42 +150,6 @@ const MyStraboSpot = (props) => {
       }
     };
 
-    // const readDirectory = async () => {
-    //   try {
-    //     RNFS.readDir(APP_DIRECTORIES.EXPORT_FILES_ANDROID)
-    //       .then((res) => {
-    //         console.log('RES', res);
-    //         res.map(async (x) => {
-    //           console.log('File', x);
-    //           // console.log('DIR', APP_DIRECTORIES.EXPORT_FILES_ANDROID + x.name);
-    //           if (x.name.includes('.zip')) {
-    //             console.log('Zip file', x.path);
-    //           }
-    //           else {
-    //             console.log('Path', x.path);
-    //             // console.log('data', await RNFS.readFile(APP_DIRECTORIES.BACKUP_DIR + '/' + x.name + '/data.json'));
-    //             // console.log('maps', await RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR + '/' + x.name + '/maps'));
-    //             // console.log('images', await RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR + '/' + x.name + '/Images'));
-    //           }
-    //
-    //           // console.log('IMAGES', await RNFS.readFile(APP_DIRECTORIES.EXPORT_FILES_ANDROID + x + '/data.json'));
-    //           // await RNFS.unlink(x.path);
-    //           // console.log('deleted', x);
-    //
-    //           // const file = await RNFS.readFile(x.path + '/data.json');
-    //           // console.log(file);
-    //         });
-    //       });
-    //     // .finally(async () => {
-    //     //   const y = await RNFS.readDir(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
-    //     //   console.log('FILES', y);
-    //     // });
-    //   }
-    //   catch (err) {
-    //     console.error('ERROR Reading', err);
-    //   }
-    // };
-
     return (
       <React.Fragment>
         <View style={{alignItems: 'flex-start'}}>
