@@ -153,7 +153,7 @@ const useImages = () => {
     if (Platform.OS === 'web') return STRABO_APIS.PUBLIC_IMAGE + id;
     else {
       const imageURI = APP_DIRECTORIES.IMAGES + id + '.jpg';
-      return Platform.OS === 'ios' ? imageURI : 'file:' + imageURI;
+      return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
     }
   };
 
