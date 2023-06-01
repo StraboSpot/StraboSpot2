@@ -134,7 +134,7 @@ const Basemap = (props) => {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoom}/>
+          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoomText}/>
         </View>
       )}
       <MapboxGL.MapView
@@ -142,6 +142,8 @@ const Basemap = (props) => {
           : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
+        // styleURL={!props.imageBasemap && !props.stratSection ? JSON.stringify(props.basemap) : JSON.stringify(
+        //   BACKGROUND)}
         styleURL={!props.imageBasemap && !props.stratSection && JSON.stringify(props.basemap)}
         animated={true}
         localizeLabels={true}
@@ -198,16 +200,17 @@ const Basemap = (props) => {
           );
         })}
 
-        {/* Image Basemap background Layer */}
-        {props.imageBasemap && (
-          <MapboxGL.VectorSource>
-            <MapboxGL.BackgroundLayer
-              id={'background'}
-              style={{backgroundColor: '#ffffff'}}
-              sourceID={'imageBasemap'}
-            />
-          </MapboxGL.VectorSource>
-        )}
+        {/*/!* Image Basemap background Layer *!/*/}
+        {/*{props.imageBasemap && (*/}
+        {/*  <MapboxGL.VectorSource>*/}
+        {/*    <MapboxGL.BackgroundLayer*/}
+        {/*      existing={false}*/}
+        {/*      id={'background'}*/}
+        {/*      style={{backgroundColor: '#ffffff'}}*/}
+        {/*      sourceID={'imageBasemap'}*/}
+        {/*    />*/}
+        {/*  </MapboxGL.VectorSource>*/}
+        {/*)}*/}
 
         {/* Strat Section background Layer */}
         {props.stratSection && (
@@ -216,7 +219,7 @@ const Basemap = (props) => {
 
         {/* Image Basemap Layer */}
         {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (
-          <MapboxGL.Animated.ImageSource
+          <MapboxGL.ImageSource
             id={'imageBasemap'}
             coordinates={props.coordQuad}
             url={useImages.getLocalImageURI(props.imageBasemap.id)}>
@@ -224,7 +227,7 @@ const Basemap = (props) => {
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}
             />
-          </MapboxGL.Animated.ImageSource>
+          </MapboxGL.ImageSource>
         )}
 
         {/* Sketch Layer */}
