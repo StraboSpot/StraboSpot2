@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import RNFS from 'react-native-fs';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch} from 'react-redux';
 
@@ -39,7 +38,6 @@ const MyStraboSpot = (props) => {
       try {
         const exists = await useDevice.doesDeviceBackupDirExist();
         console.log('Backup Directory Exists: ', exists);
-        console.log('Backup Directory Path: ', RNFS);
         if (Platform.OS === 'android') {
           await checkAndroidDownloadDir();
         }
