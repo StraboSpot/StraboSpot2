@@ -44,32 +44,13 @@ const useImport = () => {
       if (checkDirSuccess) {
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-        const fileEntries = await RNFS.readdir(
-          sourceDir + fileName + '/maps');
-        console.log(sourceDir + ' files' + fileEntries);
-        if (fileEntries) {
+        const zipFile = await RNFS.readdir(sourceDir + fileName + '/maps');
+        console.log(sourceDir + ' zipFile' + zipFile[0]);
+        if (zipFile) {
           dispatch(addedStatusMessage('Importing maps...'));
-          await Promise.all(
-            fileEntries.map(async (fileEntry) => {
-              const source = sourceDir + fileName + '/maps/' + fileEntry;
-              const dest = APP_DIRECTORIES.TILE_ZIP + fileEntry;
-              await RNFS.copyFile(source, dest).then(() => {
-                console.log(`File ${fileEntry} Copied`);
-              })
-                .catch(async (err) => {
-                  console.error('Error copying maps.', err);
-                  await RNFS.unlink(dest);
-                  console.log(`${fileEntry} removed`);
-                  await RNFS.copyFile(source, dest);
-                  console.log(`File ${fileEntry} Copied`);
-                });
-            }),
-          );
+          await unzipFile(sourceDir + fileName + '/maps/' + zipFile[0]);
+          console.log('Offline Maps File Unzipped!');
         }
-        return true;
-      }
-      else {
-        return false;
       }
     }
     catch (err) {
@@ -92,32 +73,22 @@ const useImport = () => {
     }
     dispatch(addedStatusMessage('Checking for map tiles to import...'));
     if (!isEmpty(mapNamesDb)) {
-      const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName, isExternal);
-      if (mapsFolderExists) {
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage('Finished importing maps.'));
-        console.log('Finished importing maps.');
-        await unzipFile(selectedProject.fileName);
-        console.log('Finished unzipping all files');
-        dispatch(addedStatusMessage(`Finished copying and ${'\n'}unzipping all files`));
-        dispatch(addedStatusMessage('Moving Maps...'));
-        progress = await moveFiles(dataFile);
-        console.log('fileCount', progress);
-        // dispatch(addedCustomMapsFromBackup(otherMapsDb));
-        dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
-        dispatch(removedLastStatusMessage());
-        batch(() => {
-          dispatch(addedStatusMessage('---------------------'));
-          dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
-          dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
-          dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
-          dispatch(addedStatusMessage('Finished moving tiles'));
-        });
-      }
-      else {
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage('No map tiles to import.'));
-      }
+      await copyZipMapsForDistribution(selectedProject.fileName, isExternal);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Finished importing maps.'));
+      dispatch(addedStatusMessage(`Finished copying and ${'\n'}unzipping all files`));
+      dispatch(addedStatusMessage('Moving Maps...'));
+      progress = await moveFiles(dataFile);
+      console.log('fileCount', progress);
+      dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
+      dispatch(removedLastStatusMessage());
+      batch(() => {
+        dispatch(addedStatusMessage('---------------------'));
+        dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
+        dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
+        dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+        dispatch(addedStatusMessage('Finished moving tiles'));
+      });
     }
     else {
       dispatch(removedLastStatusMessage());
@@ -134,25 +105,20 @@ const useImport = () => {
     console.log('Destroy batch complete');
   };
 
-  const unzipFile = async () => {
+  const unzipFile = async (filePath) => {
     try {
       const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       console.log(checkDirSuccess);
       if (checkDirSuccess) {
         const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_ZIP);
         console.log(fileEntries);
-        await Promise.all(
-          fileEntries.map(async (file) => {
-            const fileExtension = file.substring(file.lastIndexOf('.') + 1);
-            if (fileExtension === 'zip') {
-              const source = APP_DIRECTORIES.TILE_ZIP + file;
-              const dest = APP_DIRECTORIES.TILE_TEMP;
-              await unzip(source, dest);
-              console.log('unzip completed', file, 'to destination:', dest);
-            }
-            else console.log('its not a zip file');
-          }),
-        );
+        const fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
+        if (fileExtension === 'zip') {
+          const source = filePath;
+          const dest = APP_DIRECTORIES.TILE_TEMP;
+          await unzip(source, dest);
+        }
+        else console.log('its not a zip file');
       }
     }
     catch (err) {
@@ -186,10 +152,10 @@ const useImport = () => {
           if (checkSuccess) {
             console.log('dir exists');
             const files = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP);
-            const zipId = files.find(zipId => zipId === map.mapId);
-            if (zipId) {
-              const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles');
-              await moveTile(fileEntries, zipId, map);
+            const mapId = files.find(id => id === map.id);
+            if (mapId) {
+              const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + mapId + '/tiles');
+              await moveTile(fileEntries, map);
             }
             else {
               mapFailures++;
@@ -206,14 +172,14 @@ const useImport = () => {
     }
   };
 
-  const moveTile = async (tileArray, zipId, map) => {
+  const moveTile = async (tileArray, map) => {
     await Promise.all(
       tileArray.map(async (tile) => {
         fileCount++;
         const fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
         if (!fileExists) {
           await RNFS.moveFile(
-            APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile,
+            APP_DIRECTORIES.TILE_TEMP + map.id + '/tiles/' + tile,
             APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
           neededTiles++;
         }
