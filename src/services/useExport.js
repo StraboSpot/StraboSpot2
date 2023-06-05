@@ -148,21 +148,11 @@ const useExport = () => {
       const maps = data.mapNamesDb;
       const mapCount = Object.values(maps).length;
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
-      let promises = [];
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
-        await useDevice.doesDeviceDirectoryExist(
-          deviceDir + fileName + '/maps');
-        await Promise.all(
-          Object.values(maps).map(async (map) => {
-            const mapId = await moveDistributedMap(map.mapId, fileName, deviceDir);
-            console.log('Moved map:', mapId);
-            promises.push(mapId);
-            console.log(promises);
-          }),
-        );
-        console.log('Promised Finished');
+        await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
+        await zip(APP_DIRECTORIES.TILE_CACHE, deviceDir + fileName + '/maps/OfflineTiles.zip');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Finished Exporting ${mapCount} Offline Map${mapCount > 1 ? 's' : ''}.`));
       }
@@ -172,7 +162,7 @@ const useExport = () => {
       }
     }
     catch (err) {
-      console.error('Error Exporting Offline Maps.');
+      console.error('Error Exporting Offline Maps.', err);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Error Exporting Offline Maps!' + err));
     }
@@ -244,29 +234,6 @@ const useExport = () => {
       imageBackupFailures++;
       console.log('ERROR', err.toString());
     }
-  };
-
-  const moveDistributedMap = async (mapId, fileName, directory) => {
-    console.log('Moving Map:', mapId);
-    return RNFS.exists(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
-      .then((exists) => {
-        if (exists) {
-          console.log(mapId + '.zip exists?', exists);
-          return RNFS.copyFile(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
-            directory + fileName + '/maps/' + mapId.toString() + '.zip').then(
-            () => {
-              console.log('Map Copied.');
-              return Promise.resolve(mapId);
-            });
-        }
-        else {
-          console.log('couldn\'t find map ' + mapId + '.zip');
-          return Promise.resolve();
-        }
-      })
-      .catch((err) => {
-        console.warn('Error moving maps in useExport', err);
-      });
   };
 
   const requestWriteDirectoryPermission = async () => {
