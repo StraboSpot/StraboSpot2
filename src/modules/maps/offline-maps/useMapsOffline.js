@@ -15,7 +15,7 @@ import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slic
 import {DEFAULT_MAPS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import useMapsHook from '../useMaps';
-import {addMapFromDevice, setOfflineMap} from './offlineMaps.slice';
+import {addMapFromDevice, adjustedMapsFromDevice, setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
   let zipUID;
@@ -40,6 +40,21 @@ const useMapsOffline = () => {
   useEffect(() => {
     console.log('UE useMapsOffline [isOnline]', isOnline);
   }, [isOnline]);
+
+  const adjustRedux = async (mapFileNames) => {
+    Alert.alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'
+      + ' StraboSpot. These have be removed automatically.',
+      [{title: 'OK', onPress: value => console.log('Ok pressed', value)}]);
+    let adjustedReduxMaps = {};
+    let foundMap = '';
+    console.log('ADJUST REDUX');
+    Object.values(offlineMaps).map((offlineMap) => {
+      foundMap = mapFileNames.find(map => offlineMap.id === map);
+      if (foundMap) adjustedReduxMaps = {...adjustedReduxMaps, [foundMap]: offlineMaps[foundMap]};
+    });
+    console.log('ADJUSTED MAPS', adjustedReduxMaps);
+    dispatch(adjustedMapsFromDevice(adjustedReduxMaps));
+  };
 
   const addMapFromDeviceToRedux = async (mapId) => {
     const map = await createOfflineMapObject(mapId);
@@ -197,6 +212,8 @@ const useMapsOffline = () => {
       await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
       console.log('unzip completed');
       console.log('move done.');
+      await useDevice.deleteProjectOnDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+      console.log('Zip', zipUID, 'has been deleted.');
     }
     catch (err) {
       console.error('Unzip Error:', err);
@@ -298,7 +315,7 @@ const useMapsOffline = () => {
     // console.log('foo exists: ', tile.name + ' ' + fileExists);
     if (!fileExists) {
       neededTiles++;
-      await RNFS.moveFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile.name,
+      await RNFS.copyFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile.name,
         APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile.name);
       console.log('Tile moved');
     }
@@ -345,10 +362,8 @@ const useMapsOffline = () => {
       console.log(customMap);
       const newOfflineMapsData = await createOfflineMapObject(mapID, customMap);
       console.log(newOfflineMapsData);
-      const mapSavedObject = Object.assign({}, newOfflineMapsData.source === 'mapbox_styles'
-        ? {[newOfflineMapsData.id.split('/')[1]]: newOfflineMapsData} : {[newOfflineMapsData.id]: newOfflineMapsData});
-      await dispatch(setOfflineMap(mapSavedObject));
-      console.log('Map to save to Redux', mapSavedObject);
+      await dispatch(setOfflineMap(newOfflineMapsData));
+      console.log('Map to save to Redux', newOfflineMapsData);
     }
     catch (err) {
       console.error('Error updating map object', err);
