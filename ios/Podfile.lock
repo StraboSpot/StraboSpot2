@@ -12,7 +12,7 @@ PODS:
   - fmt (6.2.1)
   - glog (0.3.5)
   - lottie-ios (3.4.4)
-  - lottie-react-native (5.1.4):
+  - lottie-react-native (5.1.6):
     - lottie-ios (~> 3.4.0)
     - React-Core
   - Mapbox-iOS-SDK (5.9.0):
@@ -343,7 +343,7 @@ PODS:
     - React-Core
   - RNPDF (0.14.0):
     - React
-  - RNReanimated (2.13.0):
+  - RNReanimated (2.17.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -603,7 +603,7 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
-  lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
+  lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
   Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
   MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
   RCT-Folly: 4d8508a426467c48885f1151029bc15fa5d7b3b8
@@ -651,7 +651,7 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
-  RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
+  RNReanimated: c6f8f70e96dd6ca21b65aef9b3e4efe4965db905
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
   RNSentry: 49ac40f818ad2bb65f3578d400e2474767e12a5b
