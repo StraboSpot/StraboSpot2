@@ -52,8 +52,8 @@ const useMaps = (mapRef) => {
 
   const buildStyleURL = (map) => {
     let tileURL;
-    let mapID = map.id;
-    if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + map.id + '/' + map.tilePath;
+    let mapID = map.id.trim();
+    if (map.source === 'map_warper' || map.source === 'strabospot_mymaps') tileURL = map.url[0] + mapID + '/' + map.tilePath;
     else {
       tileURL = map.url[0] + (map.source === 'mapbox_styles' && map.url[0].includes('file://') ? mapID.split(
         '/')[1] : mapID) + map.tilePath + (map.url[0].includes(
@@ -61,11 +61,11 @@ const useMaps = (mapRef) => {
     }
     const customBaseMapStyleURL = {
       source: map.source,
-      id: map.id,
+      id: mapID,
       bbox: map?.bbox,
       version: 8,
       sources: {
-        [map.id]: {
+        [mapID]: {
           type: 'raster',
           tiles: [tileURL],
           tileSize: 256,
@@ -82,9 +82,9 @@ const useMaps = (mapRef) => {
           },
         },
         {
-          id: map.id,
+          id: mapID,
           type: 'raster',
-          source: map.id,
+          source: mapID,
           minzoom: 0,
         },
       ],
@@ -506,7 +506,7 @@ const useMaps = (mapRef) => {
   const isOnStratSection = feature => feature.properties?.strat_section_id;
 
   const saveCustomMap = async (map) => {
-    let mapId = map.id;
+    let mapId = map.id.trim();
     let customMap;
     const providerInfo = getProviderInfo(map.source);
     let bbox = '';
