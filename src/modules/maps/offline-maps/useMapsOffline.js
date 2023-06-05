@@ -373,21 +373,28 @@ const useMapsOffline = () => {
   const getSavedMapsFromDevice = async () => {
     try {
       const files = await useDevice.readDirectoryForMapFiles();
-      console.log('B Map Tiles', files);
-      if (!isEmpty(files)) {
-        files.map(async (file) => {
-          const isMapInRedux = Object.keys(offlineMaps).includes(file);
-          console.log(isMapInRedux);
-          if (isMapInRedux) {
-            console.log('Offline Map', offlineMaps[file]);
-            const mapId = offlineMaps[file].id;
-            const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
-            const tileCountLength = tileCount.length;
-            console.log('tileCount', tileCount);
-            dispatch(setOfflineMap(offlineMaps[file].count = tileCountLength));
-          }
-          else await addMapFromDeviceToRedux(file);
-        });
+      if (files.length === Object.values(offlineMaps).length) {
+        if (!isEmpty(files)) {
+          files.map(async (file) => {
+            const isMapInRedux = Object.keys(offlineMaps).includes(file);
+            console.log(isMapInRedux);
+            if (isMapInRedux) {
+              console.log('Offline Map', offlineMaps[file]);
+              const mapId = offlineMaps[file].id;
+              const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+              const tileCountLength = tileCount.length;
+              console.log('tileCount', tileCount);
+              const newOfflineMapCount = {...offlineMaps[file], count: tileCountLength};
+              console.log('newOfflineMapCount', newOfflineMapCount);
+              dispatch(setOfflineMap(newOfflineMapCount));
+            }
+            else await addMapFromDeviceToRedux(file);
+          });
+        }
+      }
+      else {
+        await adjustRedux(files);
+        console.log('REDUX ADJUSTED');
       }
     }
     catch (err) {
