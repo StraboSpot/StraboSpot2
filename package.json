@@ -1,6 +1,6 @@
 {
   "name": "strabospot2",
-  "version": "1.42.1",
+  "version": "1.42.2",
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
@@ -21,7 +21,7 @@
     "deploy-beta": "bundle exec fastlane beta"
   },
   "scriptComments": {
-    "build:android": "Must be run with every build for android before deploying to PlatStore. Removed the --assets flag because of duplicates.",
+    "build:android": "Must be run with every build for android before deploying to PlayStore. Removed the --assets flag because of duplicates.",
     "deploy:android": "1. run build:android && cd android && ./gradlew bundleRelease (creates a .aab file in app/build/outputs/bundle/release)"
   },
   "dependencies": {

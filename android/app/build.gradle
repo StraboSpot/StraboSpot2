@@ -141,15 +141,15 @@ android {
         applicationId "com.strabospot2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 41
-        versionName "1.42.1"
+        versionCode 44
+        versionName "1.42.2"
          buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
                 if (isNewArchitectureEnabled()) {
                     // We configure the NDK build only if you decide to opt-in for the New Architecture.
                     externalNativeBuild {
                         ndkBuild {
                             arguments "APP_PLATFORM=android-21",
-                                "APP_STL=c++_shared",
+                                "APP_STL=c++_shared",   
                                 "NDK_TOOLCHAIN_VERSION=clang",
                                 "GENERATED_SRC_DIR=$buildDir/generated/source",
                                 "PROJECT_BUILD_DIR=$buildDir",
