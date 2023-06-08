@@ -1,5 +1,5 @@
 // import './wdyr';
-import {AppRegistry, LogBox} from 'react-native';
+import {AppRegistry, LogBox, Platform} from 'react-native';
 
 import App from './App';
 import {name as appName} from './app.json';
@@ -9,6 +9,9 @@ import {name as appName} from './app.json';
 //   dsn: SENTRY_DSN,
 //   enableNative: true,
 // });
+const isWeb = Platform.select({
+  native: 'Battery state `unknown` and monitoring disabled, this is normal for simulators and tvOS.',
+});
 
 LogBox.ignoreLogs([
   'Require cycle:',
@@ -18,6 +21,7 @@ LogBox.ignoreLogs([
   'Sending `zipArchiveProgressEvent` with no listeners registered.',
   'currentlyFocusedField is deprecated and will be removed in a future release. Use currentlyFocusedInput',
   'Mapbox error You\'re calling ',
+  isWeb,
 ]);
 
 AppRegistry.registerComponent(appName, () => App);
