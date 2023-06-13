@@ -984,7 +984,7 @@
 					"\"${PODS_ROOT}/CocoaLibEvent/lib\"",
 					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
 				);
-				MARKETING_VERSION = 1.42.1;
+				MARKETING_VERSION = 1.42.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1029,7 +1029,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks /usr/lib/swift $(inherited)";
-				MARKETING_VERSION = 1.42.1;
+				MARKETING_VERSION = 1.42.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
