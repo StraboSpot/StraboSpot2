@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 
 import {Button} from 'react-native-elements';
-import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
@@ -52,7 +51,7 @@ const Compass = (props) => {
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [buttonSound, setButtonSound] = useState(null);
-  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS === 'android');
+  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
 
   const [useMeasurements] = useMeasurementsHook();
 
@@ -60,10 +59,14 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    const buttonClick = new Sound('compass_button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (error) console.log('Failed to load sound', error);
-    });
-    setButtonSound(buttonClick);
+    if (Platform !== 'web') {
+      import('react-native-sound').then((module) => {
+        const buttonClick = new module.Sound('compass_button_click.mp3', module.Sound.MAIN_BUNDLE, (error) => {
+          if (error) console.log('Failed to load sound', error);
+        });
+        setButtonSound(buttonClick);
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -256,7 +259,7 @@ const Compass = (props) => {
   return (
     <React.Fragment>
       <View style={compassStyles.compassContainer}>
-        {props.setAttributeMeasurements && Platform.OS !== 'android' && (
+        {props.setAttributeMeasurements && Platform.OS === 'ios' && (
           <Button
             buttonStyle={formStyles.formButtonSmall}
             titleProps={formStyles.formButtonTitle}

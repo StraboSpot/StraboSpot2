@@ -15,6 +15,7 @@ const MineralsByRockClass = (props) => {
             <SectionDivider dividerText={'Plutonic'}/>
             {MINERALS_BY_CLASS.plutonic.map(mineral => (
               <Button
+                key={mineral.Name}
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
@@ -26,6 +27,7 @@ const MineralsByRockClass = (props) => {
             <SectionDivider dividerText={'Metamorphic'}/>
             {MINERALS_BY_CLASS.metamorphic.map(mineral => (
               <Button
+                key={mineral.Name}
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
@@ -39,6 +41,7 @@ const MineralsByRockClass = (props) => {
             <SectionDivider dividerText={'Volcanic'}/>
             {MINERALS_BY_CLASS.volcanic.map(mineral => (
               <Button
+                key={mineral.Name}
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
@@ -50,6 +53,7 @@ const MineralsByRockClass = (props) => {
             <SectionDivider dividerText={'Alteration, Ore'}/>
             {MINERALS_BY_CLASS.alteration_ore.map(mineral => (
               <Button
+                key={mineral.Name}
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}

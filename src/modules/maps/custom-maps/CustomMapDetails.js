@@ -35,7 +35,7 @@ const AddCustomMaps = () => {
   const MBAccessToken = useSelector(state => state.user.mapboxToken);
   const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
 
-  const [editableCustomMapData, setEditableCustomMapData] = useState(null);
+  const [editableCustomMapData, setEditableCustomMapData] = useState({});
 
   useEffect(() => {
     console.log('UE AddCustomMaps [customMapToEdit]', customMapToEdit);
@@ -107,7 +107,7 @@ const AddCustomMaps = () => {
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
         </ListItem.Content>
         <ListItem.CheckBox
-          checked={editableCustomMapData && item.source === editableCustomMapData.source}
+          checked={item.source === editableCustomMapData?.source}
           checkedIcon={radioSelected}
           uncheckedIcon={radioUnslected}
           onPress={() => setEditableCustomMapData(e => ({...e, source: item.source}))}
@@ -127,7 +127,7 @@ const AddCustomMaps = () => {
               containerStyle={{paddingHorizontal: 0}}
               inputContainerStyle={{borderBottomWidth: 0}}
               keyboardType={MBKeyboardType}
-              defaultValue={editableCustomMapData.id}
+              value={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Style URL'}
               // onBlur={validate}
@@ -141,7 +141,7 @@ const AddCustomMaps = () => {
               containerStyle={{paddingHorizontal: 0}}
               inputContainerStyle={{borderBottomWidth: 0}}
               keyboardType={MWKeyboardType}
-              defaultValue={editableCustomMapData.id}
+              value={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Map ID'}
               // onBlur={validate}
@@ -154,7 +154,7 @@ const AddCustomMaps = () => {
               inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
               containerStyle={{paddingHorizontal: 0}}
               inputContainerStyle={{borderBottomWidth: 0}}
-              defaultValue={editableCustomMapData.id}
+              value={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
@@ -195,7 +195,7 @@ const AddCustomMaps = () => {
           containerStyle={{paddingHorizontal: 0}}
           inputContainerStyle={{borderBottomWidth: 0}}
           onChangeText={text => setEditableCustomMapData({...editableCustomMapData, title: text})}
-          defaultValue={editableCustomMapData && editableCustomMapData.title}
+          value={editableCustomMapData?.title || ''}
           errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
           errorStyle={customMapStyles.requiredMessage}
         />
@@ -215,11 +215,11 @@ const AddCustomMaps = () => {
             <ListItem.Title style={commonStyles.listItemTitle}>Display as overlay</ListItem.Title>
           </ListItem.Content>
           <Switch
-            value={editableCustomMapData && editableCustomMapData.overlay}
+            value={editableCustomMapData?.overlay}
             onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
           />
         </ListItem>
-        {editableCustomMapData && editableCustomMapData.overlay && (
+        {editableCustomMapData?.overlay && (
           <ListItem containerStyle={commonStyles.listItem}>
             <ListItem.Content>
               <ListItem.Title style={commonStyles.listItemTitle}>Opacity</ListItem.Title>
@@ -267,7 +267,8 @@ const AddCustomMaps = () => {
         {/*  title={'More information'}*/}
         {/*  onPress={() => console.log('More information')}*/}
         {/*/>*/}
-        {renderMapDetails()}
+        {(editableCustomMapData?.source === 'mapbox_styles' || editableCustomMapData?.source === 'map_warper'
+          || editableCustomMapData?.source === 'strabospot_mymaps') && renderMapDetails()}
       </View>
       <View style={{paddingBottom: 20}}>
         <Button

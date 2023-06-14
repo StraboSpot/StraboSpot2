@@ -1,12 +1,12 @@
 import React from 'react';
-import {ScrollView, Switch, View} from 'react-native';
+import {Platform, Pressable, ScrollView, Switch, Text, View} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {Avatar, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
+import homeStyles from '../../home/home.style';
 import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
@@ -35,23 +35,24 @@ const MorePagesMenu = (props) => {
   const renderMenuItem = (page, isShowBottomDivider) => {
     return (
       <ListItem
-        containerStyle={footerStyles.morePagesListItem}
-        onPress={() => switchPage(page.key)}
         bottomDivider={isShowBottomDivider}
+        containerStyle={footerStyles.morePagesListItem}
+        key={page.key}
       >
-        <ListItem.Content style={{flexDirection: 'row'}}>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={{flexDirection: 'row'}}>
-              <Avatar
-                source={page.icon_src}
-                placeholderStyle={{backgroundColor: 'transparent'}}
-                size={20}
-                containerStyle={{alignSelf: 'center'}}
-              />
-              <ListItem.Title style={footerStyles.morePagesListItemTitle}>{page.label}</ListItem.Title>
-            </View>
+        <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Pressable
+            style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}
+            onPress={() => switchPage(page.key)}>
+            <Avatar
+              source={page.icon_src}
+              placeholderStyle={{backgroundColor: 'transparent'}}
+              size={20}
+            />
+            <ListItem.Title style={footerStyles.morePagesListItemTitle}>{page.label}</ListItem.Title>
+          </Pressable>
+          <View style={{paddingLeft: 5, paddingRight: Platform.OS === 'web' ? 10 : 0}}>
             <Switch
-              onChange={() => togglePageSwitch(page.key)}
+              onValueChange={() => togglePageSwitch(page.key)}
               value={notebookPagesOn.includes(page.key)}
             />
           </View>
@@ -61,19 +62,15 @@ const MorePagesMenu = (props) => {
   };
 
   return (
-    <Dialog
-      dialogStyle={footerStyles.morePagesDialog}
-      visible={props.visible}
-      onTouchOutside={props.closeMorePagesMenu}
-      dialogTitle={
-        <DialogTitle
-          title={'More Pages'}
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-        />
-      }
+    <Overlay
+      overlayStyle={footerStyles.morePagesDialog}
+      isVisible={props.visible}
+      onBackdropPress={props.closeMorePagesMenu}
     >
-      <DialogContent style={{flex: 1, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>More Pages</Text>
+      </View>
+      <View style={{flex: 1, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
         <ScrollView>
           {generalPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
           {!isEmpty(petPagesToShow) && (
@@ -95,8 +92,8 @@ const MorePagesMenu = (props) => {
             </React.Fragment>
           )}
         </ScrollView>
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

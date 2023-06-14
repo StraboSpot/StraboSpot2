@@ -40,6 +40,7 @@ const MineralsGlossary = (props) => {
           if (field === 'mindat.org link') {
             return (
               <Button
+                key={activeMineralInfo.Name + 'MindatLink'}
                 title={'Click here for more mineral information on ' + activeMineralInfo.Label + ' from Mindat.org'}
                 type={'clear'}
                 icon={{name: 'globe-outline', type: 'ionicon', color: themes.PRIMARY_ACCENT_COLOR}}
@@ -48,7 +49,14 @@ const MineralsGlossary = (props) => {
               />
             );
           }
-          else if (field !== 'Name') return <Text><Text style={{fontWeight: 'bold'}}>{field}:</Text> {value}</Text>;
+          else if (field !== 'Name') {
+            return (
+              <Text key={activeMineralInfo.Name + field}>
+                <Text style={{fontWeight: 'bold'}}>{field}:</Text>
+                {value}
+              </Text>
+            );
+          }
         })}
       </View>
     );
@@ -58,9 +66,10 @@ const MineralsGlossary = (props) => {
     return (
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
         {glossaryChunked.map(glossaryChunk => (
-          <View style={{flex: 1}}>
+          <View style={{flex: 1}} key={JSON.stringify(glossaryChunk)}>
             {glossaryChunk.map(mineralInfo => (
               <Button
+                key={mineralInfo.Name}
                 title={mineralInfo.Label}
                 type={'clear'}
                 onPress={() => setActiveMineralInfo(mineralInfo)}

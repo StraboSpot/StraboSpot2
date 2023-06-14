@@ -43,7 +43,7 @@ module.exports = {
 
     // Override React Hooks rules
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
-    'react-hooks/exhaustive-deps': 'off', // Checks effect dependencies
+    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
 
     // Turn off rules
     'react/prop-types': 'off',

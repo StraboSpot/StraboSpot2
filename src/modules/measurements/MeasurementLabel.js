@@ -39,7 +39,10 @@ const MeasurementLabel = (props) => {
     <React.Fragment>
       <Text>{getMeasurementText(props.item)} {getTypeText(props.item)}</Text>
       {!props.isDetail && props.item.associated_orientation
-        && props.item.associated_orientation.map(ao => <Text>{'\n'}{getMeasurementText(ao)} {getTypeText(ao)}</Text>)}
+        && props.item.associated_orientation.map((ao) => {
+          return <Text key={JSON.stringify(ao)}>{'\n'}{getMeasurementText(ao)} {getTypeText(ao)}</Text>;
+        })
+      }
     </React.Fragment>
   );
 };

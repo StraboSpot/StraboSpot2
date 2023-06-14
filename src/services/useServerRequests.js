@@ -132,10 +132,6 @@ const useServerRequests = (props) => {
     return baseUrl;
   };
 
-  const downloadImage = (imageId, encodedLogin) => {
-    return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
-  };
-
   const getMyMapsBbox = async (mapId) => {
     const response = await fetch(straboMyMapsApi + mapId);
     return handleResponse(response);
@@ -350,7 +346,6 @@ const useServerRequests = (props) => {
     deleteProfile: deleteProfile,
     deleteProject: deleteProject,
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
-    downloadImage: downloadImage,
     getMyProjects: getMyProjects,
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,

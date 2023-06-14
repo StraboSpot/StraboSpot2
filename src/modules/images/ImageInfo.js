@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, View} from 'react-native';
+import {ActivityIndicator, Alert, Dimensions, Platform, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
+import placeholderImage from '../../assets/images/noimage.jpg';
+import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
@@ -13,12 +15,16 @@ import styles from './images.styles';
 import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
+  console.log('Rendering ImageInfo...');
+
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageProps] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
   const navigation = useNavigation();
+
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     console.log('UE ImageInfo []');
@@ -46,10 +52,20 @@ const ImageInfo = (props) => {
   return (
     <View style={{backgroundColor: 'black'}}>
       <Image
-        source={{uri: useImages.getLocalImageURI(imageProps)}}
+        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageProps)}
+          : {uri: useImages.getLocalImageURI(imageProps)}}
+        style={Platform.OS === 'web' ? {width: Dimensions.get('window').width, height: Dimensions.get('window').height}
+          : {width: '100%', height: '100%'}}
         resizeMode={'contain'}
-        style={{width: '100%', height: '100%'}}
-        PlaceholderContent={<ActivityIndicator/>}
+        PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>
+          : <Image style={styles.thumbnail} source={placeholderImage}/>}
+        placeholderStyle={commonStyles.imagePlaceholder}
+        onError={() => {
+          if (!isImageLoaded) setIsImageLoaded(true);
+        }}
+        onLoadEnd={() => {
+          if (!isImageLoaded) setIsImageLoaded(true);
+        }}
       />
       {isImagePropertiesModalVisible && (
         <ImagePropertiesModal

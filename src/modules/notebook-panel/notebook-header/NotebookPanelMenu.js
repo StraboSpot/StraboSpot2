@@ -1,9 +1,10 @@
 import React from 'react';
-import {Alert} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 
-import Dialog, {DialogButton, DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {Overlay, Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import homeStyles from '../../home/home.style';
 import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
 import useSpotsHook from '../../spots/useSpots';
@@ -42,66 +43,67 @@ const NotebookPanelMenu = (props) => {
   };
 
   return (
-    <Dialog
-      dialogStyle={styles.dialogBox}
-      visible={props.visible}
-      onTouchOutside={props.onTouchOutside}
-      dialogTitle={
-        <DialogTitle
-          title={'Spot Actions'}
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-        />
-      }
+    <Overlay
+      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      isVisible={props.visible}
+      onBackdropPress={props.onTouchOutside}
     >
-      <DialogContent>
-        <DialogButton
-          text={'Copy this Spot'}
-          textStyle={styles.dialogText}
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>Spot Actions</Text>
+      </View>
+      <View>
+        <Button
+          title={'Copy this Spot'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
           onPress={() => {
             useSpots.copySpot().catch(err => console.log('Error copying Spot!', err));
             dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
             props.closeNotebookPanelMenu();
           }}
         />
-        <DialogButton
+        <Button
           style={styles.dialogContent}
-          text={'Zoom to this Spot'}
-          textStyle={styles.dialogText}
+          title={'Zoom to this Spot'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
           onPress={() => {
             props.zoomToSpot();
             props.closeNotebookPanelMenu();
           }}
         />
-        <DialogButton
+        <Button
           style={styles.dialogContent}
-          text={'Delete this Spot'}
-          textStyle={styles.dialogText}
+          title={'Delete this Spot'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
           onPress={() => {
             deleteSelectedSpot();
             props.closeNotebookPanelMenu();
           }}
         />
-        <DialogButton
+        <Button
           style={styles.dialogContent}
-          text={'Show Nesting'}
-          textStyle={styles.dialogText}
+          title={'Show Nesting'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
           onPress={() => {
             dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
             props.closeNotebookPanelMenu();
           }}
         />
-        <DialogButton
+        <Button
           style={styles.dialogContent}
-          text={'Close Notebook'}
-          textStyle={styles.dialogText}
+          title={'Close Notebook'}
+          titleStyle={styles.dialogText}
+          type={'clear'}
           onPress={async () => {
             await props.closeNotebookPanelMenu();
             props.closeNotebookPanel();
           }}
         />
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

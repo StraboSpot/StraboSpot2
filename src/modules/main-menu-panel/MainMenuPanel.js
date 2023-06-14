@@ -7,7 +7,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {shortcutSwitchPosition} from '../home/home.slice';
 import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
-import ImageBaseMaps from '../maps/ImageBasemaps';
+import ImageBasemaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import StratSectionsList from '../maps/strat-section/StratSectionsList';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -30,6 +30,9 @@ import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 
 const MainMenuPanel = (props) => {
+  console.log('Rendering MainMenuPanel...');
+  console.log('MainMenuPanel props:', props);
+
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
@@ -145,7 +148,7 @@ const MainMenuPanel = (props) => {
     case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageBaseMaps/>
+          <ImageBasemaps/>
         </View>
       );
       break;

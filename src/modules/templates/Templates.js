@@ -25,7 +25,7 @@ const Templates = (props) => {
   const [activeTemplatesForKey, setActiveTemplatesForKey] = useState([]);
   const [isShowForm, setIsShowForm] = useState(false);
   const [isShowNameInput, setIsShowNameInput] = useState(false);
-  const [isTemplateInUse, setIsTemplateInUse] = useState(null);
+  const [isTemplateInUse, setIsTemplateInUse] = useState(false);
   const [name, setName] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState({values: {}});
   const [templatesForKey, setTemplatesForKey] = useState([]);

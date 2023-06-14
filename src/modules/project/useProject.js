@@ -1,4 +1,3 @@
-import RNFS from 'react-native-fs';
 import {useToast} from 'react-native-toast-notifications';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
@@ -39,7 +38,7 @@ const useProject = () => {
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const datasets = useSelector(state => state.project.datasets);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
-  const selectedProject = useSelector(state => state.project.selectedProject || {});
+  const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const user = useSelector(state => state.user);
   // const isOnline = useSelector(state => state.home.isOnline);
 
@@ -153,9 +152,9 @@ const useProject = () => {
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) {
-      return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+      return await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     }
-    else return await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
+    else return await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
   };
 
   const getActiveDatasets = () => {
@@ -170,10 +169,10 @@ const useProject = () => {
   };
 
   const getAllDeviceProjects = async (directory) => {
-    // const deviceProject = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
+    // const deviceProject = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
     //   console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
     //   if (res) {
-    //     return RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
+    //     return useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
     //       console.log('Files on device', files);
     //       let id = 0;
     //       if (!isEmpty(files)) {

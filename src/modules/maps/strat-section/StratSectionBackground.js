@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 
@@ -77,6 +77,7 @@ const StratSectionBackground = (props) => {
         console.log('overlayimage coordQuad', coordQuad);
         return (
           <MapboxGL.Animated.ImageSource
+            key={'imageOverlay' + oI.id}
             id={'imageOverlay' + oI.id}
             coordinates={coordQuad}
             url={useImages.getLocalImageURI(image.id)}>

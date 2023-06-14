@@ -1,49 +1,47 @@
 import React from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Dialog, DialogButton, DialogContent, DialogFooter, SlideAnimation} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 
 // import ProgressBar from 'react-native-progress/Bar';
+import homeStyles from '../../../modules/home/home.style';
 import commonStyles from '../../common.styles';
 
 const ProgressModal = (props) => {
 
   return (
-    <Dialog
-      visible={props.isProgressModalVisible}
-      maxHeight={Platform.OS === 'ios' ? 400 : 275}
-      dialogStyle={{...commonStyles.dialogBox, width: 300}}
-      dialogAnimation={new SlideAnimation({
-        slideFrom: 'top',
-      })}
-      dialogTitle={
-        <View style={commonStyles.dialogTitleContainer}>
-          <Text style={{fontSize: 25}}>{props.dialogTitle}</Text>
-        </View>
-      }
-      footer={
-        <View>
-          {props.showButton && <DialogFooter>
-            <DialogButton
-              text={props.buttonText || 'OK'}
-              onPress={props.onPressComplete}
-              textStyle={commonStyles.dialogButtonText}
-              disabled={props.disabled}
-            />
-          </DialogFooter>}
-        </View>
-      }
+    <Overlay
+      isVisible={props.isProgressModalVisible}
+      animationType={'slide'}
+      overlayStyle={[
+        homeStyles.dialogBox,
+        commonStyles.dialogBox,
+        {maxHeight: Platform.OS === 'ios' ? 400 : 275, width: 300},
+      ]}
     >
-      <DialogContent style={{...commonStyles.dialogContent, flex: 1}}>
+      <View style={[homeStyles.dialogTitleContainer, commonStyles.dialogTitleContainer]}>
+        <Text style={[homeStyles.dialogTitleText, {fontSize: 25}]}>{props.dialogTitle}</Text>
+      </View>
+      <View style={{...commonStyles.dialogContent}}>
         {props.children}
-      </DialogContent>
-      <DialogContent style={{height: 150, marginBottom: 10, flex: 1}}>
+      </View>
+      <View style={{height: 150, marginBottom: 20}}>
         {props.animation}
-      </DialogContent>
-      {props.showInfo && <DialogContent style={{flex: 1}}>
-        {props.info}
-      </DialogContent>}
-    </Dialog>
+      </View>
+      {props.showButton && (
+        <Button
+          disabled={props.disabled}
+          onPress={props.onPressComplete}
+          title={props.buttonText || 'OK'}
+          titleStyle={commonStyles.dialogButtonText}
+        />
+      )}
+      {props.showInfo && (
+        <View style={{flex: 1}}>
+          {props.info}
+        </View>
+      )}
+    </Overlay>
   );
 };
 

@@ -12,12 +12,18 @@ PODS:
   - fmt (6.2.1)
   - glog (0.3.5)
   - lottie-ios (3.4.4)
-  - lottie-react-native (5.1.6):
+  - lottie-react-native (5.1.4):
     - lottie-ios (~> 3.4.0)
     - React-Core
-  - Mapbox-iOS-SDK (5.9.0):
-    - MapboxMobileEvents (= 0.10.2)
-  - MapboxMobileEvents (0.10.2)
+  - MapboxCommon (23.4.0)
+  - MapboxCoreMaps (10.12.2):
+    - MapboxCommon (~> 23.4)
+  - MapboxMaps (10.12.2):
+    - MapboxCommon (= 23.4.0)
+    - MapboxCoreMaps (= 10.12.2)
+    - MapboxMobileEvents (= 1.0.10)
+    - Turf (~> 2.0)
+  - MapboxMobileEvents (1.0.10)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -229,34 +235,24 @@ PODS:
     - glog
   - react-native-document-picker (8.1.1):
     - React-Core
-  - react-native-geolocation (2.1.0):
+  - react-native-geolocation (3.0.5):
     - React-Core
   - react-native-get-random-values (1.8.0):
     - React-Core
-  - react-native-image-picker (4.8.4):
+  - react-native-image-picker (4.10.3):
     - React-Core
   - react-native-image-resizer (1.4.5):
     - React-Core
   - react-native-keep-awake (4.0.0):
     - React
-  - react-native-mapbox-gl (8.5.0):
-    - Mapbox-iOS-SDK (~> 5.9.0)
-    - React
-    - React-Core
-    - react-native-mapbox-gl/DynamicLibrary (= 8.5.0)
-    - react-native-mapbox-gl/StaticLibraryFixer (= 8.5.0)
-  - react-native-mapbox-gl/DynamicLibrary (8.5.0):
-    - Mapbox-iOS-SDK (~> 5.9.0)
-    - React
-    - React-Core
-  - react-native-mapbox-gl/StaticLibraryFixer (8.5.0):
-    - Mapbox-iOS-SDK (~> 5.9.0)
-    - React
-    - React-Core
   - react-native-netinfo (9.3.0):
     - React-Core
-  - react-native-safe-area-context (3.4.1):
+  - react-native-safe-area-context (4.5.2):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - ReactCommon/turbomodule/core
   - react-native-slider (4.4.2):
     - React-Core
   - react-native-version-check (3.4.6):
@@ -339,11 +335,22 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.5.0):
+  - RNGestureHandler (2.8.0):
     - React-Core
+  - rnmapbox-maps (10.0.3):
+    - MapboxMaps (~> 10.12.0)
+    - React
+    - React-Core
+    - rnmapbox-maps/DynamicLibrary (= 10.0.3)
+    - Turf
+  - rnmapbox-maps/DynamicLibrary (10.0.3):
+    - MapboxMaps (~> 10.12.0)
+    - React
+    - React-Core
+    - Turf
   - RNPDF (0.14.0):
     - React
-  - RNReanimated (2.17.0):
+  - RNReanimated (2.13.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -370,14 +377,14 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.15.0):
+  - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
   - RNSensors (7.3.5):
     - React-Core
-  - RNSentry (4.1.3):
+  - RNSentry (4.12.0):
     - React-Core
-    - Sentry (= 7.20.0)
+    - Sentry/HybridSDK (= 7.31.3)
   - RNSketchCanvas (0.8.0):
     - React
   - RNSound (0.11.2):
@@ -394,10 +401,9 @@ PODS:
   - RNZipArchive/Core (6.0.8):
     - React-Core
     - SSZipArchive (= 2.2.3)
-  - Sentry (7.20.0):
-    - Sentry/Core (= 7.20.0)
-  - Sentry/Core (7.20.0)
+  - Sentry/HybridSDK (7.31.3)
   - SSZipArchive (2.2.3)
+  - Turf (2.6.1)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -429,7 +435,6 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
-  - "react-native-mapbox-gl (from `../node_modules/@react-native-mapbox-gl/maps`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
@@ -453,6 +458,7 @@ DEPENDENCIES:
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - "rnmapbox-maps (from `../node_modules/@rnmapbox/maps`)"
   - RNPDF (from `../node_modules/react-native-view-pdf`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -468,10 +474,13 @@ SPEC REPOS:
   trunk:
     - fmt
     - lottie-ios
-    - Mapbox-iOS-SDK
+    - MapboxCommon
+    - MapboxCoreMaps
+    - MapboxMaps
     - MapboxMobileEvents
     - Sentry
     - SSZipArchive
+    - Turf
 
 EXTERNAL SOURCES:
   boost:
@@ -526,8 +535,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-resizer"
   react-native-keep-awake:
     :path: "../node_modules/react-native-keep-awake"
-  react-native-mapbox-gl:
-    :path: "../node_modules/@react-native-mapbox-gl/maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -574,6 +581,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  rnmapbox-maps:
+    :path: "../node_modules/@rnmapbox/maps"
   RNPDF:
     :path: "../node_modules/react-native-view-pdf"
   RNReanimated:
@@ -603,9 +612,11 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
-  lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
-  Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
-  MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
+  lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
+  MapboxCommon: 2945d39158111455f353524f3c2ad356bd8d546a
+  MapboxCoreMaps: 8f355514ac5b573967badd9cf8e482561d6e8e2d
+  MapboxMaps: 9e0873d7f8bddf5751791da7be2560b4157f3c95
+  MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   RCT-Folly: 4d8508a426467c48885f1151029bc15fa5d7b3b8
   RCTRequired: eff60a46da0f496a6c76c8f60108c20626860d27
   RCTTypeSafety: 8cc8a45d0e2f93f1b42b5b2bbf23c4143f19935a
@@ -621,14 +632,13 @@ SPEC CHECKSUMS:
   React-jsinspector: 6aced68014b275b7abd073c9598b0affd0e1669c
   React-logger: bcf33ce10afa135158c72635e621ddb94126c610
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
-  react-native-geolocation: 69f4fd37650b8e7fee91816d395e62dd16f5ab8d
+  react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
-  react-native-image-picker: cffb727cf2f59bd5c0408e30b3dbe0b935f88835
+  react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
-  react-native-mapbox-gl: 955d2c064b56ef058b9cc0fbbf6cf743b05c928e
   react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
-  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
+  react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
   react-native-slider: 33b8d190b59d4f67a541061bb91775d53d617d9d
   react-native-version-check: dc483031cdf65d9e947aea2d6a41142d010c7e59
   React-perflogger: aa48956d87bae67fc847acc196fae97928b96cd3
@@ -649,20 +659,22 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 30e6733efc179d1e49d6008ea5fce42cdc9aeeca
   RNDeviceInfo: 0a7c1d2532aa7691f9b9925a27e43af006db4dae
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
+  RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
+  rnmapbox-maps: 8511f8f351fbbfe6309d8d475ee9c80130b8d306
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
-  RNReanimated: c6f8f70e96dd6ca21b65aef9b3e4efe4965db905
-  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
+  RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
-  RNSentry: 49ac40f818ad2bb65f3578d400e2474767e12a5b
+  RNSentry: 4c09f4dd9740cb9b33e94303de5b6d0dbeb0737d
   RNSketchCanvas: 9c28adb5381543ed55cc98ce6de46479cb3cb12c
   RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   RNZipArchive: 3f89b114cfeb89dac027fc5c7afd7e58d3dc4ebf
-  Sentry: 9e8ec837fa37e7b397f19f75542800461b138d0e
+  Sentry: 08884c523575ec0f6690d94ed3ccb0246a1600bf
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
+  Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4
   Yoga: 4935173923cabaa830e195be3e8e4cac045a8f90
 
-PODFILE CHECKSUM: 4492d70c4004515459583e6ecc3af2db1adf58d2
+PODFILE CHECKSUM: aa3f51deab69e82553727721e86d4930e209bd70
 
 COCOAPODS: 1.12.1

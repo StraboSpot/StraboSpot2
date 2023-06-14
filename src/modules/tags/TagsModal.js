@@ -31,7 +31,7 @@ const TagsModal = (props) => {
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
   const selectedFeature = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes || []);
+  const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes) || [];
   const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
   const tags = useSelector(state => state.project.project.tags) || [];
 
