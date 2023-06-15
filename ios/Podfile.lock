@@ -15,12 +15,12 @@ PODS:
   - lottie-react-native (5.1.4):
     - lottie-ios (~> 3.4.0)
     - React-Core
-  - MapboxCommon (23.4.0)
-  - MapboxCoreMaps (10.12.2):
-    - MapboxCommon (~> 23.4)
-  - MapboxMaps (10.12.2):
-    - MapboxCommon (= 23.4.0)
-    - MapboxCoreMaps (= 10.12.2)
+  - MapboxCommon (23.5.0)
+  - MapboxCoreMaps (10.13.1):
+    - MapboxCommon (~> 23.5)
+  - MapboxMaps (10.13.1):
+    - MapboxCommon (= 23.5.0)
+    - MapboxCoreMaps (= 10.13.1)
     - MapboxMobileEvents (= 1.0.10)
     - Turf (~> 2.0)
   - MapboxMobileEvents (1.0.10)
@@ -337,14 +337,14 @@ PODS:
     - React-Core
   - RNGestureHandler (2.8.0):
     - React-Core
-  - rnmapbox-maps (10.0.3):
-    - MapboxMaps (~> 10.12.0)
+  - rnmapbox-maps (10.0.7):
+    - MapboxMaps (~> 10.13.1)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.0.3)
+    - rnmapbox-maps/DynamicLibrary (= 10.0.7)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.0.3):
-    - MapboxMaps (~> 10.12.0)
+  - rnmapbox-maps/DynamicLibrary (10.0.7):
+    - MapboxMaps (~> 10.13.1)
     - React
     - React-Core
     - Turf
@@ -613,9 +613,9 @@ SPEC CHECKSUMS:
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
-  MapboxCommon: 2945d39158111455f353524f3c2ad356bd8d546a
-  MapboxCoreMaps: 8f355514ac5b573967badd9cf8e482561d6e8e2d
-  MapboxMaps: 9e0873d7f8bddf5751791da7be2560b4157f3c95
+  MapboxCommon: fdf7fd31c90b7b607cd9c63e37797f023c01d860
+  MapboxCoreMaps: 24270c7c6b8cb71819fc2f3c549db9620ee4d019
+  MapboxMaps: cb76511b98d3b95c74b0771ed105bc69f30ace6b
   MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   RCT-Folly: 4d8508a426467c48885f1151029bc15fa5d7b3b8
   RCTRequired: eff60a46da0f496a6c76c8f60108c20626860d27
@@ -660,7 +660,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 0a7c1d2532aa7691f9b9925a27e43af006db4dae
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
-  rnmapbox-maps: 8511f8f351fbbfe6309d8d475ee9c80130b8d306
+  rnmapbox-maps: 0b4fcc6855a8b159fecb94b00b82d7ea0558105d
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
   RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
@@ -675,6 +675,6 @@ SPEC CHECKSUMS:
   Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4
   Yoga: 4935173923cabaa830e195be3e8e4cac045a8f90
 
-PODFILE CHECKSUM: aa3f51deab69e82553727721e86d4930e209bd70
+PODFILE CHECKSUM: cb4d5f5cde39396466f632a31b03b01092d9d94f
 
 COCOAPODS: 1.12.1
