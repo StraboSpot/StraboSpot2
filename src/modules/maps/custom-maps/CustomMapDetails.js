@@ -162,6 +162,10 @@ const AddCustomMaps = () => {
             />
           )}
         </View>
+        {!isEmpty(customMapToEdit) && <View style={customMapStyles.mapTypeInfoContainer}>
+          <Text style={customMapStyles.mapTypeInfoText}>Map available from:</Text>
+          <Text style={customMapStyles.mapTypeInfoText}>{customMapToEdit?.url[0]}</Text>
+        </View>}
       </React.Fragment>
     );
   };
@@ -268,10 +272,6 @@ const AddCustomMaps = () => {
         {/*  onPress={() => console.log('More information')}*/}
         {/*/>*/}
         {renderMapDetails()}
-      </View>
-      <View style={customMapStyles.mapTypeInfoContainer}>
-        <Text style={customMapStyles.mapTypeInfoText}>Map available from:</Text>
-        <Text style={customMapStyles.mapTypeInfoText}>{customMapToEdit.url[0]}</Text>
       </View>
       <View style={{paddingBottom: 20}}>
         <Button
