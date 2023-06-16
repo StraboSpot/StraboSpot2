@@ -142,6 +142,12 @@ const useServerRequests = (props) => {
   };
 
   const getMyMapsBbox = async (mapId) => {
+    if (databaseEndpoint.isSelected) {
+      console.log(databaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = databaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
+      const response = await fetch(bboxEndpoint);
+      return handleResponse(response);
+    }
     const response = await fetch(straboMyMapsApi + mapId);
     return handleResponse(response);
   };

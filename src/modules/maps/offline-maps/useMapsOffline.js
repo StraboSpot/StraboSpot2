@@ -272,7 +272,9 @@ const useMapsOffline = () => {
         else if (downloadMap.source === 'strabospot_mymaps') {
           layer = 'strabomymaps';
           id = downloadMap.id;
-          startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
+
+          const myMapsTilehost = customDatabaseEndpoint.isSelected ? useServerRequests.getTilehostUrl() : tilehost;
+          startZipURL = myMapsTilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
         }
       }
       else {
