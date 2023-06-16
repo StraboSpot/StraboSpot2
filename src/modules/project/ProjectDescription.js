@@ -70,7 +70,7 @@ const ProjectDescription = (props) => {
   return (
     <View style={{flex: 1}}>
       <SidePanelHeader
-        title={'Active Project'}
+        title={'Active Project (save changes)'}
         headerTitle={'Project Description'}
         backButton={() => {
           console.log('DIRTY', publicRef.current.dirty);
