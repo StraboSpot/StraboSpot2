@@ -132,6 +132,11 @@ const useServerRequests = (props) => {
     return baseUrl;
   };
 
+  const getTilehostUrl = () => {
+    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/strabotiles');
+    return tilehost;
+  };
+
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
   };
@@ -332,7 +337,10 @@ const useServerRequests = (props) => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const response = await timeoutPromise(60000, fetch(tilehost + '/asyncstatus/' + zipId));
+      const myMapsEndpoint = databaseEndpoint.isSelected ? databaseEndpoint.url.replace('/db',
+        '/strabotiles') : tilehost;
+
+      const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
@@ -356,6 +364,7 @@ const useServerRequests = (props) => {
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
     getDbUrl: getDbUrl,
+    getTilehostUrl: getTilehostUrl,
     getMyMapsBbox: getMyMapsBbox,
     getProfile: getProfile,
     getProject: getProject,

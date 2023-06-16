@@ -9,7 +9,6 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
-import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';
@@ -107,16 +106,6 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     console.log('UE SaveMapsModal [progressStatus]', progressStatus);
   }, [progressStatus]);
 
-  const checkZipStatus = async (zipId) => {
-    try {
-      const status = await useServerRequests.zipURLStatus(zipId);
-      if (status.status !== 'Zip File Ready.') await checkZipStatus(zipId);
-    }
-    catch (err) {
-      console.error('Error checking zip status', err);
-      throw new Error(err);
-    }
-  };
 
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -133,7 +122,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const downloadZip = async (zipUID) => {
     try {
-      const downloadZipURL = STRABO_APIS.TILE_HOST + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
+      const tilehost = useServerRequests.getTilehostUrl();
+      const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,
         toFile: APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip',
@@ -183,7 +173,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Preparing Data...'));
-      await checkZipStatus(zipId);
+      await useMapsOffline.checkZipStatus(zipId);
       setShowLoadingBar(false);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Data ready to download.'));
@@ -203,7 +193,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       console.error('Error saving map', err);
       const editedError = err.toString().replace('Error: Error: Error:', '');
       setIsError(true);
-      setErrorMessage(editedError);
+      setErrorMessage(
+        `${editedError}!\n\n Make sure you are pulling the map from the correct endpoint\n(Home => Miscellaneous => Custom Database Endpoint).`);
       setShowMainMenu(false);
       setShowLoadingMenu(false);
       setShowLoadingBar(false);

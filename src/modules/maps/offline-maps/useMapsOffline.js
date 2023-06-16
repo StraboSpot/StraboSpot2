@@ -26,6 +26,7 @@ const useMapsOffline = () => {
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const user = useSelector(state => state.user);
@@ -61,6 +62,20 @@ const useMapsOffline = () => {
     const mapSavedObject = Object.assign({}, map.source === 'mapbox_styles'
       ? {[map.id.split('/')[1]]: map} : {[map.id]: map});
     dispatch(addMapFromDevice(mapSavedObject));
+  };
+
+  const checkZipStatus = async (zipId) => {
+    // try {
+    const status = await useServerRequests.zipURLStatus(zipId);
+    if (status.status === 'Invalid Map Specified') {
+      throw Error(status.status);
+    }
+    else if (status.status !== 'Zip File Ready.') await checkZipStatus(zipId);
+    // }
+    // catch (err) {
+    //   console.error('Error checking zip status', err);
+    //   throw new Error(err);
+    // }
   };
 
   const createOfflineMapObject = async (mapId, customMap) => {
@@ -435,6 +450,7 @@ const useMapsOffline = () => {
     addMapFromDeviceToRedux: addMapFromDeviceToRedux,
     checkTileZipFileExistance: checkTileZipFileExistance,
     checkIfTileZipFolderExists: checkIfTileZipFolderExists,
+    checkZipStatus: checkZipStatus,
     doUnzip: doUnzip,
     getMapCenterTile: getMapCenterTile,
     getMapName: getMapName,
