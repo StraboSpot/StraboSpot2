@@ -269,6 +269,10 @@ const AddCustomMaps = () => {
         {/*/>*/}
         {renderMapDetails()}
       </View>
+      <View style={customMapStyles.mapTypeInfoContainer}>
+        <Text style={customMapStyles.mapTypeInfoText}>Map available from:</Text>
+        <Text style={customMapStyles.mapTypeInfoText}>{customMapToEdit.url[0]}</Text>
+      </View>
       <View style={{paddingBottom: 20}}>
         <Button
           title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
