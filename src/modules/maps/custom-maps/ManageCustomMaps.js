@@ -17,6 +17,8 @@ const ManageCustomMaps = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const [useMaps] = useMapHook();
 
+  const {isInternetReachable, isConnected} = isOnline;
+
   useEffect(() => {
     console.log('UE ManageCustomMaps [isOnline]', isOnline);
   }, [isOnline]);
@@ -40,9 +42,10 @@ const ManageCustomMaps = (props) => {
           <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
         </ListItem.Content>
         <Icon
-          disabled={!isOnline.isInternetReachable}
+          disabled={!isInternetReachable && !isConnected}
           disabledStyle={{backgroundColor: 'transparent'}}
-          name={isOnline.isInternetReachable ? 'map-outline' : 'cloud-offline'}
+          name={(isInternetReachable && isConnected) || !isInternetReachable && isConnected ? 'map-outline'
+            : !isInternetReachable && !isConnected ? 'cloud-offline' : null}
           type={'ionicon'}
           color={PRIMARY_ACCENT_COLOR}
           onPress={async () => {
