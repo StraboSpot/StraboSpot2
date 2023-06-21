@@ -1,6 +1,7 @@
 import {Dimensions} from 'react-native';
 
 import {STRABO_APIS} from '../../services/urls.constants';
+import config from '../../utils/config';
 
 const {width, height} = Dimensions.get('window');
 
@@ -11,8 +12,14 @@ export const LATITUDE_DELTA = 0.0922;
 export const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export const GEO_LAT_LNG_PROJECTION = 'EPSG:4326';
 export const PIXEL_PROJECTION = 'EPSG:3857';
-export const STRAT_SECTION_CENTER = [0.001, 0.0007];
-export const ZOOM = 14;
+export const ZOOM = 14;               // Default zoom for geographic map
+export const ZOOM_IMAGE = 18;         // Default zoom for image basemaps and strat sections
+
+export const VIEW_STATE_GE0 = {longitude: LONGITUDE, latitude: LATITUDE, zoom: ZOOM};
+export const VIEW_STATE_IMAGE = {longitude: 0, latitude: 0, zoom: ZOOM_IMAGE};
+export const VIEW_STATE_STRAT = {longitude: 0.001, latitude: 0.0007, zoom: ZOOM_IMAGE};
+
+export const MAPBOX_TOKEN = config.get('mapbox_access_token');
 
 export const MAP_MODES = {
   VIEW: 'view',
@@ -154,13 +161,13 @@ console.log('CUSTOMBASEMAPS', BASEMAPS);
 
 export const BACKGROUND = {
   title: 'Background',
-   id: 'background',
+  id: 'background',
   glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
   sources: {},
   layers: [{
     id: 'background',
     type: 'background',
-    paint: {'background-color': '#ffffff'}
+    paint: {'background-color': '#ffffff'},
   }],
   version: 8,
 };

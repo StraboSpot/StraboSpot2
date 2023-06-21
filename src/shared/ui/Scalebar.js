@@ -13,7 +13,7 @@ const ScaleBarAndZoom = (props) => {
     <>
       <RNScalebar
         zoom={props.zoom}
-        latitude={props.center}
+        latitude={props.latitude}
         left={100}
         bottom={0}
       />

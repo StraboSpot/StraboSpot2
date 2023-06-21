@@ -26,18 +26,9 @@ import {
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer} from './Basemaps';
-import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.constants';
-import {
-  clearedStratSection,
-  clearedVertexes,
-  setCurrentImageBasemap,
-  setFreehandFeatureCoords,
-  setSpotsInMapExtent,
-  setStratSection,
-  setVertexStartCoords,
-} from './maps.slice';
+import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
+import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
-import useStratSectionHook from './strat-section/useStratSection';
 import useMapSymbology from './symbology/useMapSymbology';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
@@ -55,9 +46,7 @@ const Map = React.forwardRef((props, ref) => {
   const [useSpots] = useSpotsHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
-  const useStratSection = useStratSectionHook();
 
-  const center = useSelector(state => state.map.center);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customBasemap = useSelector(state => state.map.customMaps);
   const stratSection = useSelector(state => state.map.stratSection);
@@ -73,7 +62,6 @@ const Map = React.forwardRef((props, ref) => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
-  const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -88,15 +76,12 @@ const Map = React.forwardRef((props, ref) => {
   const initialMapPropsMutable = {
     allowMapViewMove: true,
     basemap: currentBasemap,
-    centerCoordinate: center,
     drawFeatures: [],
     editFeatureVertex: [],
     imageBasemap: currentImageBasemap,
     spotsNotSelected: [],
     spotsSelected: [],
-    coordQuad: [],
     showUserLocation: false,
-    zoomToSpot: false,
     freehandSketchMode: false,
     measureFeatures: [],
   };
@@ -125,10 +110,11 @@ const Map = React.forwardRef((props, ref) => {
     mapMode: props.mapMode,
   };
 
+  // Set the initial map view states
   useEffect(() => {
-    console.log('UE Map []');
-    if (!currentImageBasemap) setCurrentLocationAsCenter().catch(err => console.error('Error', err));
-  }, []);
+    console.log('UE Map', 'Setting initial view states...');
+    useMapView.setInitialViewStates();
+  }, [useMapView]);
 
   useEffect(() => {
     console.log('UE Map [currentImageBasemap]', currentImageBasemap);
@@ -136,10 +122,8 @@ const Map = React.forwardRef((props, ref) => {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
     else {
-      const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap, []) : undefined;
       setMapPropsMutable(m => ({
         ...m,
-        coordQuad: calculatedCoordQuad,
         imageBasemap: currentImageBasemap,
         stratSection: currentImageBasemap ? undefined : m.stratSection,
       }));
@@ -157,7 +141,7 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
-    updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
+    updateBasemap().catch(err => console.warn('Error getting center of custom map:', err));
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
@@ -184,7 +168,6 @@ const Map = React.forwardRef((props, ref) => {
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
-    if (!currentImageBasemap && !stratSection && !center) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user, isOnline]);
 
@@ -197,17 +180,6 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
-    // On change of selected spot, reset the zoomToSpot
-    if (mapProps.zoomToSpot) {
-      setMapPropsMutable(m => ({
-        ...m,
-        zoomToSpot: false,
-      }));
-      // On turning off the zoomToSpot, if not on imagebasemap,
-      // zoomToSpot synchronously to current selected spot.
-      // (turning off zoomToSpot, will move the camera to center coordinates, so reset the camera zoom to new selected spot's position.)
-      if (!currentImageBasemap && !stratSection) zoomToSpot();
-    }
     //conditional call to avoid multiple renders during edit mode.
     if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
@@ -258,7 +230,7 @@ const Map = React.forwardRef((props, ref) => {
           defaultFeature = turf.lineString([defaultFeatureCoords[0][0], defaultFeatureCoords[0][2]]);
         }
       }
-      // copy spot for imagebasemaps needs conversion of coordinates.
+      // copy spot for image basemaps needs conversion of coordinates.
       if (currentImageBasemap || stratSection) {
         defaultFeature = useMaps.convertFeatureGeometryToImagePixels(defaultFeature);
       }
@@ -284,20 +256,8 @@ const Map = React.forwardRef((props, ref) => {
     }));
   };
 
-  const updateMapView = async () => {
+  const updateBasemap = async () => {
     console.log('Updating map view from Map.js');
-    let newCenter = JSON.parse(JSON.stringify(center));
-    let newZoom = JSON.parse(JSON.stringify(zoom));
-    if (!isEmpty(currentBasemap) && isZoomToCenterOffline) {
-      newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
-      newZoom = 12;
-    }
-    else if (mapRef && mapRef.current) {
-      newCenter = Platform.OS === 'web' ? await mapRef.current.getCenter().toArray() : await mapRef.current.getCenter();
-      newZoom = await mapRef.current.getZoom();
-    }
-    useMapView.setMapView(newCenter, newZoom);
-
     setMapPropsMutable(m => ({
       ...m,
       basemap: currentBasemap,
@@ -844,13 +804,6 @@ const Map = React.forwardRef((props, ref) => {
     else throw 'Error Getting Map Camera';
   };
 
-  // Get the current location from the device and set it in the state as the map center
-  const setCurrentLocationAsCenter = async () => {
-    console.log('%cFlying to location MAP.JS 829', 'color: red');
-    const currentLocation = await useMaps.getCurrentLocation();
-    useMapView.setMapView([currentLocation.longitude, currentLocation.latitude], await mapRef?.current?.getZoom());
-  };
-
   const endDraw = async () => {
     // console.log('endDraw mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
     let newOrEditedSpot = {};
@@ -1179,56 +1132,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const zoomToSpot = () => {
-    if (selectedSpot && useMaps.isOnGeoMap(selectedSpot)) {
-      // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
-      if (currentImageBasemap || stratSection) {
-        dispatch(setCurrentImageBasemap(undefined));
-        dispatch(clearedStratSection());
-        setMapPropsMutable(m => ({
-          ...m,
-          zoomToSpot: true,
-        }));
-      }
-      // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
-      else useMaps.zoomToSpots([selectedSpot], mapRef.current, cameraRef.current);
-    }
-    else if (!isEmpty(selectedSpot)
-      && (selectedSpot.properties.image_basemap || selectedSpot.properties.strat_section_id)) {
-      // spot selected is on an image basemap or strat section, either if not on imagebasemap
-      // or not on same imagebasemap as the selectedspot's imagebasemap,
-      // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
-      if (selectedSpot.properties.image_basemap
-        && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {
-        const imageBasemapData = useSpots.getImageBasemaps().find((imgBasemap) => {
-          return imgBasemap.id === selectedSpot.properties.image_basemap;
-        });
-        dispatch(setCurrentImageBasemap(imageBasemapData));
-        setMapPropsMutable(m => ({
-          ...m,
-          zoomToSpot: true,
-        }));
-      }
-      else if (selectedSpot.properties.strat_section_id
-        && (!stratSection || stratSection.strat_section_id !== selectedSpot.properties.strat_section_id)) {
-        const stratSectionSettings = useStratSection.getStratSectionSettings(selectedSpot.properties.strat_section_id);
-        if (stratSectionSettings) {
-          dispatch(setStratSection(stratSectionSettings));
-          setMapPropsMutable(m => ({
-            ...m,
-            zoomToSpot: true,
-          }));
-        }
-      }
-      //spot selected is already on the same image basemap or strat section, zoomToSpot in sync mode
-      else {
-        const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
-        const spotInLatLng = useMaps.convertImagePixelsToLatLong(selectedSpotCopy);
-        useMaps.zoomToSpots([spotInLatLng], mapRef.current, cameraRef.current);
-      }
-    }
-    else {
-      // handle other maps
-    }
+    useMaps.zoomToSpot(mapRef.current, cameraRef.current);
   };
 
   // Modal to prompt the user to select a geometry if no geometry has been set

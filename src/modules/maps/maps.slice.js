@@ -1,9 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-import {LATITUDE, LONGITUDE, ZOOM} from './maps.constants';
+import {VIEW_STATE_GE0, VIEW_STATE_IMAGE, VIEW_STATE_STRAT} from './maps.constants';
 
 const initialMapsState = {
-  center: [LONGITUDE, LATITUDE],
   currentBasemap: null,
   currentImageBasemap: undefined,
   customMaps: {},
@@ -18,7 +17,9 @@ const initialMapsState = {
   tagTypeForColor: undefined,
   isShowSpotLabelsOn: true,
   stratSection: undefined,
-  zoom: ZOOM,
+  viewStateGeo: VIEW_STATE_GE0,
+  viewStateImageBasemap: VIEW_STATE_IMAGE,
+  viewStateStratSection: VIEW_STATE_STRAT,
 };
 
 const mapsSlice = createSlice({
@@ -55,9 +56,6 @@ const mapsSlice = createSlice({
       console.log('Map All Symbols Toggled', action.payload);
       state.isAllSymbolsOn = action.payload;
       state.symbolsOn = action.payload ? state.mapSymbols : state.symbolsOn;
-    },
-    setCenter(state, action) {
-      state.center = action.payload;
     },
     setCurrentBasemap(state, action) {
       // const newBasemap = BASEMAPS.find(basemap => basemap.id === action.payload);
@@ -101,8 +99,14 @@ const mapsSlice = createSlice({
       console.log('Set vertex selected start coords: ', action.payload);
       state.vertexStartCoords = action.payload;
     },
-    setZoom(state, action) {
-      state.zoom = action.payload;
+    setViewStateGeo(state, action) {
+      state.viewStateGeo = action.payload;
+    },
+    setViewStateImageBasemap(state, action) {
+      state.viewStateImageBasemap = action.payload;
+    },
+    setViewStateStratSection(state, action) {
+      state.viewStateStratSection = action.payload;
     },
   },
 });
@@ -116,7 +120,6 @@ export const {
   deletedCustomMap,
   selectedCustomMapToEdit,
   setAllSymbolsToggled,
-  setCenter,
   setCurrentBasemap,
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
@@ -128,7 +131,9 @@ export const {
   setTagTypeForColor,
   setVertexEndCoords,
   setVertexStartCoords,
-  setZoom,
+  setViewStateGeo,
+  setViewStateImageBasemap,
+  setViewStateStratSection,
 } = mapsSlice.actions;
 
 export default mapsSlice.reducer;

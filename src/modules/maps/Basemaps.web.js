@@ -1,59 +1,41 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Platform, View} from 'react-native';
 
 import * as turf from '@turf/turf';
-import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import proj4 from 'proj4';
 import Map, {Layer, Source} from 'react-map-gl';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import config from '../../utils/config';
 import useImagesHook from '../images/useImages';
-import {
-  BACKGROUND,
-  GEO_LAT_LNG_PROJECTION,
-  LATITUDE,
-  LONGITUDE,
-  MAP_MODES,
-  PIXEL_PROJECTION,
-  STRAT_SECTION_CENTER,
-  ZOOM,
-} from './maps.constants';
+import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
+import {setViewStateGeo, setViewStateImageBasemap, setViewStateStratSection} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
-import useMapViewHook from './useMapView';
-
-mapboxgl.accessToken = config.get('mapbox_access_token');
-const MAPBOX_TOKEN = config.get('mapbox_access_token');
 
 const Basemap = (props) => {
   console.log('Rendering Basemap...');
   console.log('Basemap props:', props);
 
-  const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
+  const dispatch = useDispatch();
+
   const customMaps = useSelector(state => state.map.customMaps);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const zoom = useSelector(state => state.map.zoom) || ZOOM;
+  const viewStateGeo = useSelector(state => state.map.viewStateGeo);
+  const viewStateImageBasemap = useSelector(state => state.map.viewStateImageBasemap);
+  const viewStateStratSection = useSelector(state => state.map.viewStateStratSection);
 
   const {mapRef} = props.forwardedRef;
-  const [useMapSymbology] = useMapSymbologyHook();
-  const [useImages] = useImagesHook();
-  const [useMaps] = useMapsHook();
-  const useMapView = useMapViewHook();
 
-  const [doesImageExist, setDoesImageExist] = useState(false);
-  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
-  const [zoomText, setZoomText] = useState(zoom);
+  const [useImages] = useImagesHook();
+  const [useMapSymbology] = useMapSymbologyHook();
+  const [useMaps] = useMapsHook(mapRef);
 
   const [cursor, setCursor] = useState('');
-  const [initialCenter, setInitialCenter] = useState(center);
-  const [initialZoom, setInitialZoom] = useState(zoom);
   const [prevMapMode, setPrevMapMode] = useState(props.mapMode);
+  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
 
   const layerIdsNotSelected = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected',
     'polygonLayerNotSelectedBorder', 'polygonLabelLayerNotSelected', 'lineLayerNotSelected',
@@ -63,13 +45,10 @@ const Basemap = (props) => {
     'polygonLayerSelectedBorder', 'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
 
-  const initialViewState = {
-    longitude: initialCenter[0],
-    latitude: initialCenter[1],
-    zoom: initialZoom,
-    bearing: 0,
-    pitch: 0,
-  };
+  const viewState = props.imageBasemap ? viewStateImageBasemap
+    : props.stratSection ? viewStateStratSection
+      : viewStateGeo;
+  const coordQuad = useMaps.getCoordQuad(props.imageBasemap);
 
   if (props.mapMode !== prevMapMode) {
     console.log('MapMode changed from', prevMapMode, 'to', props.mapMode);
@@ -77,13 +56,6 @@ const Basemap = (props) => {
     if (useMaps.isDrawMode(props.mapMode) || props.mapMode === MAP_MODES.EDIT) setCursor('pointer');
     else setCursor('');
   }
-
-  useEffect(() => {
-      console.log('UE Basemap');
-      setInitialCenter(getCenterCoordinates());
-      setInitialZoom(getZoomLevel());
-    }, [],
-  );
 
   if (mapRef.current) {
     // Add the image to the map style.
@@ -104,66 +76,16 @@ const Basemap = (props) => {
     });
   }
 
-  // Evaluate and return appropriate center coordinates
-  const getCenterCoordinates = () => {
-    console.log('Getting initial map center...');
-    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
-      if ((props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id)
-        || (props.stratSection && selectedSpot.properties.strat_section_id === props.stratSection.strat_section_id)) {
-        return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
-      }
-      else if (!selectedSpot.properties.image_basemap && !selectedSpot.properties.strat_section_id) {
-        return turf.centroid(selectedSpot).geometry.coordinates;
-      }
-    }
-    else if (props.imageBasemap) {
-      return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2]);
-    }
-    else if (props.stratSection) return STRAT_SECTION_CENTER;
-    return center;
-  };
-
-  // Get max X and max Y for strat intervals
-  const getStratIntervalsMaxXY = () => {
-    const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
-      feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
-    return intervals.reduce((acc, i) => {
-      const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
-      const xs = coords.flat().map(c => c[0]);
-      const maxX = Math.max(...xs);
-      const ys = coords.flat().map(c => c[1]);
-      const maxY = Math.max(...ys);
-      return [Math.max(acc[0], maxX), Math.max(acc[1], maxY)];
-    }, [0, 0]);
-  };
-
-  const getZoomLevel = () => {
-    console.log('Getting initial zoom...');
-    if (props.imageBasemap) return 14;
-    else if (props.stratSection) return 18;
-    return zoom;
-  };
-
-  // Update spots in extent and saved view (center and zoom)
-  const onMapIdle = async () => {
-    console.log('Event onMapIdle');
+  // Update spots in extent and save view state (center and zoom)
+  const onMove = useCallback((evt) => {
+    console.log('Event onMove');
+    const newViewState = evt.viewState;
+    console.log('Setting new view state...', newViewState);
+    if (props.imageBasemap) dispatch(setViewStateImageBasemap(newViewState));
+    else if (props.stratSection) dispatch(setViewStateStratSection(newViewState));
+    else dispatch(setViewStateGeo(newViewState));
     props.spotsInMapExtent();
-    if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
-      const newCenter = await mapRef.current.getCenter().toArray();
-      const newZoom = await mapRef.current.getZoom();
-      useMapView.setMapView(newCenter, newZoom);
-    }
-  };
-
-  // Update scale bar and zoom text
-  const onCameraChanged = async () => {
-    console.log('Event onCameraChanged');
-    if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
-      const newZoom = await mapRef.current.getZoom();
-      setZoomText(newZoom);
-    }
-  };
+  }, [props.imageBasemap, props.spotsInMapExtent, props.stratSection, dispatch, useMaps]);
 
   const onMouseEnter = () => {
     if (props.mapMode === MAP_MODES.VIEW) setCursor('pointer');
@@ -178,16 +100,16 @@ const Basemap = (props) => {
     <View style={{flex: 1}}>
       {/*{!props.stratSection && !props.imageBasemap && (*/}
       {/*  <View style={homeStyles.zoomAndScaleBarContainer}>*/}
-      {/*    <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoom}/>*/}
+      {/*    <ScaleBarAndZoom basemap={props.basemap} latitude={viewState.latitude} zoom={zoom}/>*/}
       {/*  </View>*/}
       {/*)}*/}
       <Map
+        {...viewState}
         id={props.imageBasemap ? props.imageBasemap.id : props.stratSection ? props.stratSection.strat_section_id
           : props.basemap.id}
         ref={mapRef}
-        initialViewState={initialViewState}
         style={{flex: 1}}
-        mapStyle={!props.imageBasemap && !props.stratSection ? props.basemap : BACKGROUND}
+        mapStyle={props.imageBasemap || props.stratSection ? BACKGROUND : props.basemap}
         boxZoom={props.allowMapViewMove}
         dragRotate={props.allowMapViewMove}
         dragPan={props.allowMapViewMove}
@@ -198,8 +120,7 @@ const Basemap = (props) => {
         onDblClick={props.onMapLongPress}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
-        onIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
-        onMove={onCameraChanged}  // Update scale bar and zoom text
+        onMove={onMove}
         mapboxAccessToken={MAPBOX_TOKEN}
         cursor={cursor}
         interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
@@ -229,11 +150,11 @@ const Basemap = (props) => {
         })}
 
         {/* Image Basemap Layer */}
-        {props.imageBasemap && !isEmpty(props.coordQuad) && (
+        {props.imageBasemap && !isEmpty(coordQuad) && (
           <Source
             id={'imageBasemap'}
             type={'image'}
-            coordinates={props.coordQuad}
+            coordinates={coordQuad}
             url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(props.imageBasemap.id)
               : useImages.getLocalImageURI(props.imageBasemap.id)}
           >
@@ -241,6 +162,7 @@ const Basemap = (props) => {
               type={'raster'}
               id={'imageBasemapLayer'}
               paint={{'raster-opacity': 1}}
+              beforeId={'pointLayerColorHalo'}
             />
           </Source>
         )}
