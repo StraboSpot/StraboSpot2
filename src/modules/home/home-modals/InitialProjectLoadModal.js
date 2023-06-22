@@ -45,7 +45,7 @@ const InitialProjectLoadModal = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const [displayName] = useState(displayFirstName);
+  const [displayName, setDisplayName] = useState('');
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
   const [source, setSource] = useState('');
@@ -61,8 +61,10 @@ const InitialProjectLoadModal = (props) => {
   const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
+    setDisplayName(displayFirstName);
     return () => {
       setVisibleInitialSection('none');
+      setDisplayName('');
     };
   }, []);
 
