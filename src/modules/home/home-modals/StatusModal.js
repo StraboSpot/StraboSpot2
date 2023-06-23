@@ -62,7 +62,7 @@ const StatusModal = (props) => {
               )
               : (
                 <View style={{alignItems: 'center'}}>
-                  {selectedProject.source !== '' && (
+                  {(selectedProject.source === 'Device' || selectedProject.source === 'server') && (
                     <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load project</Text>
                   )}
                   <View style={{flexDirection: 'row'}}>
