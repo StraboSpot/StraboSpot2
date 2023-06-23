@@ -42,20 +42,21 @@ const useMapsOffline = () => {
     console.log('UE useMapsOffline [isOnline]', isOnline);
   }, [isOnline]);
 
-  const adjustRedux = async (mapFileNames) => {
-    Alert.alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'
-      + ' StraboSpot. These have be removed automatically.',
-      [{title: 'OK', onPress: value => console.log('Ok pressed', value)}]);
-    let adjustedReduxMaps = {};
-    let foundMap = '';
-    console.log('ADJUST REDUX');
-    Object.values(offlineMaps).map((offlineMap) => {
-      foundMap = mapFileNames.find(map => offlineMap.id === map);
-      if (foundMap) adjustedReduxMaps = {...adjustedReduxMaps, [foundMap]: offlineMaps[foundMap]};
-    });
-    console.log('ADJUSTED MAPS', adjustedReduxMaps);
-    dispatch(adjustedMapsFromDevice(adjustedReduxMaps));
-  };
+  // const adjustRedux = async (mapFileNames) => {
+  //   Alert.alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'
+  //     + ' StraboSpot. These have be removed automatically.',
+  //     [{title: 'OK', onPress: value => console.log('Ok pressed', value)}]);
+  //   let adjustedReduxMaps = {};
+  //   let foundMap = '';
+  //   console.log('ADJUST REDUX');
+  //   Object.values(offlineMaps).map((offlineMap) => {
+  //     if (isEmpty(offlineMap)) console.log('OFFLINE MAP IS EMPTY');
+  //     foundMap = mapFileNames.find(map => offlineMap.id === map);
+  //     if (foundMap) adjustedReduxMaps = {...adjustedReduxMaps, [foundMap]: offlineMaps[foundMap]};
+  //   });
+  //   console.log('ADJUSTED MAPS', adjustedReduxMaps);
+  //   dispatch(adjustedMapsFromDevice(adjustedReduxMaps));
+  // };
 
   const addMapFromDeviceToRedux = async (mapId) => {
     const map = await createOfflineMapObject(mapId);
@@ -243,6 +244,7 @@ const useMapsOffline = () => {
       let mapKey = currentBasemap.id;
       const layerSource = currentBasemap.source;
       const tilehost = STRABO_APIS.TILE_HOST;
+      const endpointTilehost = customDatabaseEndpoint.isSelected ? useServerRequests.getTilehostUrl() : tilehost;
 
       if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
         //configure advanced URL for custom map types here.
@@ -273,13 +275,12 @@ const useMapsOffline = () => {
           layer = 'strabomymaps';
           id = downloadMap.id;
 
-          const myMapsTilehost = customDatabaseEndpoint.isSelected ? useServerRequests.getTilehostUrl() : tilehost;
-          startZipURL = myMapsTilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
+          startZipURL = endpointTilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom + '&id=' + id;
         }
       }
       else {
         layer = currentBasemap.id;
-        startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom;
+        startZipURL = endpointTilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom;
       }
 
       console.log('startZipURL: ', startZipURL);
@@ -355,12 +356,13 @@ const useMapsOffline = () => {
   const getMapNameFromId = (mapID) => {
     const mapObj = DEFAULT_MAPS.find(mapType => mapType.id === mapID);
     if (!mapObj) {
-      return customMaps[mapID]?.title;
+      const name = customMaps[mapID]?.title ? customMaps[mapID].title : mapID;
+      return name;
     }
     return mapObj.title;
   };
 
-  const updateMapTileCount = async (mapId) => {
+  const updateMapTileCountWhenSaving = async (mapId) => {
     try {
       // let mapName;
       let mapID = mapId ? mapId : currentBasemap.id;
@@ -390,29 +392,28 @@ const useMapsOffline = () => {
   const getSavedMapsFromDevice = async () => {
     try {
       const files = await useDevice.readDirectoryForMapFiles();
-      if (files.length === Object.values(offlineMaps).length) {
-        if (!isEmpty(files)) {
-          files.map(async (file) => {
-            const isMapInRedux = Object.keys(offlineMaps).includes(file);
-            console.log(isMapInRedux);
-            if (isMapInRedux) {
-              console.log('Offline Map', offlineMaps[file]);
-              const mapId = offlineMaps[file].id;
-              const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
-              const tileCountLength = tileCount.length;
-              console.log('tileCount', tileCount);
-              const newOfflineMapCount = {...offlineMaps[file], count: tileCountLength};
-              console.log('newOfflineMapCount', newOfflineMapCount);
-              dispatch(setOfflineMap(newOfflineMapCount));
-            }
-            else await addMapFromDeviceToRedux(file);
-          });
+      // if (files.length === Object.values(offlineMaps).length) {
+      files.map(async (file) => {
+        const isMapInRedux = Object.keys(offlineMaps).includes(file);
+        console.log(isMapInRedux);
+        if (isMapInRedux) {
+          console.log('Offline Map', offlineMaps[file]);
+          const mapId = offlineMaps[file].id;
+          const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+          const tileCountLength = tileCount.length;
+          console.log('tileCount', tileCount);
+          const newOfflineMapCount = {...offlineMaps[file], count: tileCountLength};
+          console.log('newOfflineMapCount', newOfflineMapCount);
+          dispatch(setOfflineMap(newOfflineMapCount));
         }
-      }
-      else {
-        await adjustRedux(files);
-        console.log('REDUX ADJUSTED');
-      }
+        else await addMapFromDeviceToRedux(file);
+        // else await adjustRedux(file);
+      });
+      // }
+      // else {
+      //   await adjustRedux(files);
+      //   console.log('REDUX ADJUSTED');
+      // }
     }
     catch (err) {
       console.log('Error getting saved maps from device', err);
@@ -426,6 +427,8 @@ const useMapsOffline = () => {
     const mapStyleURL = useMaps.buildStyleURL({...map, tilePath: tilePath, url: [url]});
     console.log('tempCurrentBasemap: ', mapStyleURL);
     dispatch(setCurrentBasemap(mapStyleURL));
+    // dispatch(setOfflineMapVisible(true));
+    return mapStyleURL;
   };
 
   const switchToOfflineMap = async (mapId) => {
@@ -463,7 +466,7 @@ const useMapsOffline = () => {
     getSavedMapsFromDevice: getSavedMapsFromDevice,
     saveZipMap: saveZipMap,
     setOfflineMapTiles: setOfflineMapTiles,
-    updateMapTileCount: updateMapTileCount,
+    updateMapTileCountWhenSaving: updateMapTileCountWhenSaving,
     switchToOfflineMap: switchToOfflineMap,
   };
 };

@@ -299,8 +299,10 @@ const useMaps = (mapRef) => {
   };
 
   const getExtentAndZoomCall = (extentString, zoomLevel) => {
-    console.log(STRABO_APIS.TILE_COUNT + '?extent=' + extentString + '&zoom=' + zoomLevel);
-    return STRABO_APIS.TILE_COUNT + '?extent=' + extentString + '&zoom=' + zoomLevel;
+    let url = useServerRequests.getTilehostUrl();
+    url = customDatabaseEndpoint.isSelected ? url + '/zipcount' : STRABO_APIS.TILE_COUNT;
+    console.log(url + '?extent=' + extentString + '&zoom=' + zoomLevel);
+    return url + '?extent=' + extentString + '&zoom=' + zoomLevel;
   };
 
   // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
