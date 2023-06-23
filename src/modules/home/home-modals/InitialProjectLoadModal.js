@@ -382,7 +382,7 @@ const InitialProjectLoadModal = (props) => {
       <View style={{flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
         {user.name && <Avatar
           source={user.image && {uri: user.image}}
-          title={useUserProfile.getUserInitials()}
+          title={useUserProfile.getInitials()}
           titleStyle={userStyles.avatarPlaceholderTitleStyle}
           size={80} rounded
         />}
