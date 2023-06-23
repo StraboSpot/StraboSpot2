@@ -15,7 +15,7 @@ import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slic
 import {DEFAULT_MAPS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import useMapsHook from '../useMaps';
-import {addMapFromDevice, adjustedMapsFromDevice, setOfflineMap} from './offlineMaps.slice';
+import {addMapFromDevice, setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
   let zipUID;
