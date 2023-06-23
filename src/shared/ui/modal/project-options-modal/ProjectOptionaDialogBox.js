@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/home/home.slice';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import projectStyles from '../../../../modules/project/project.styles';
+import {setSelectedProject} from '../../../../modules/project/projects.slice';
 import useProjectHook from '../../../../modules/project/useProject';
 import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
@@ -123,6 +124,7 @@ const ProjectOptionsDialogBox = (props) => {
   };
 
   const onClose = () => {
+    dispatch(setSelectedProject({project: {}, source: ''}));
     setChecked(1);
     setAction('');
     setIncludeMapTiles(true);
