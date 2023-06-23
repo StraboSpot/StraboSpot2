@@ -12,7 +12,8 @@ const slideAnimation = new ScaleAnimation({useNativeDriver: true});
 
 const MapActionsDialog = (props) => {
 
-  const isOnline = useSelector(state => state.home.isOnline);
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const {isInternetReachable, isConnected} = useSelector(state => state.home.isOnline);
   const stratSection = useSelector(state => state.map.stratSection);
 
   return (
@@ -39,7 +40,7 @@ const MapActionsDialog = (props) => {
         {/*  textStyle={styles.dialogText}*/}
         {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
         {/*/>*/}
-        {isOnline.isInternetReachable && (
+        {((isInternetReachable && isConnected) || (!isInternetReachable && isConnected && currentBasemap?.source)) && (
           <DialogButton
             style={styles.dialogContent}
             text={'Save Map for Offline Use'}
