@@ -33,6 +33,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   const [useServerRequests] = useServerRequestHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
@@ -93,19 +94,23 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   useEffect(() => {
     console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
     console.log('extentString is UE', extentString);
-    if (downloadZoom > 0) {
-      setIsLoadingCircle(true);
-      updateCount().then(() => {
-        console.log('TileCount', tileCount);
+    shouldDownload().catch(err => console.error('Error in SaveMapsModal shouldDownload()', err));
 
-      });
-    }
   }, [downloadZoom]);
 
   useEffect(() => {
     console.log('UE SaveMapsModal [progressStatus]', progressStatus);
   }, [progressStatus]);
 
+
+  const shouldDownload = async () => {
+    if (downloadZoom > 0) {
+      setIsLoadingCircle(true);
+      updateCount().then(() => {
+        console.log('TileCount', tileCount);
+      });
+    }
+  };
 
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -182,7 +187,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       await doUnzip(zipId);
       const tileArray = await useMapsOffline.moveFiles(zipId);
       await tileMove(tileArray, zipId);
-      await useMapsOffline.updateMapTileCount();
+      await useMapsOffline.updateMapTileCountWhenSaving();
       console.log('Saved offlineMaps to Redux.');
       setShowMainMenu(false);
       setShowLoadingMenu(false);
@@ -356,6 +361,10 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
                       title={`Download ${tileCount} Tiles`}
                     />
                   )}
+                {databaseEndpoint.isSelected && <Text style={{
+                  ...commonStyles.dialogContentImportantText,
+                  marginTop: 10,
+                }}>URL: {databaseEndpoint.url}</Text>}
               </View>
             )
             }
