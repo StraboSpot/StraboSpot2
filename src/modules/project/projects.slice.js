@@ -9,7 +9,7 @@ const initialProjectState = {
   project: {},
   datasets: {},
   databaseEndpoint: {
-    url: null,
+    url: '',
     isSelected: false,
   },
   deviceBackUpDirectoryExists: false,
