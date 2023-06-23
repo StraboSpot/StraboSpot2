@@ -90,7 +90,13 @@ const rootReducer = (state, action) => {
       },
       notebook: undefined,
       map: undefined,
-      project: undefined,
+      project: {
+        ...state.project,
+        databaseEndpoint: {
+          url: state.project.databaseEndpoint.url,
+          isSelected: state.project.databaseEndpoint.isSelected,
+        },
+      },
       offlineMap: state.offlineMap,
       spot: undefined,
       user: undefined,
