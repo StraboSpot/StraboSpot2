@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty, truncateText} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
 import {setMainMenuPanelVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -59,7 +59,7 @@ const UserProfile = (props) => {
   const renderAvatarImage = () => {
     return (
       <Avatar
-        title={userData.name && userData.name !== '' && useUserProfile.getUserInitials()}
+        title={userData.name && userData.name !== '' && useUserProfile.getInitials()}
         containerStyle={{backgroundColor: 'darkgrey'}}
         titleStyle={userStyles.avatarPlaceholderTitleStyle}
         source={getAvatarSource()}
@@ -78,10 +78,8 @@ const UserProfile = (props) => {
         >
           {renderAvatarImage()}
           <ListItem.Content>
-            <ListItem.Title style={userStyles.avatarLabelName}>{!isEmpty(
-              userData.name) ? userData.name : 'Guest'}</ListItem.Title>
-            <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{!isEmpty(userData.email) && truncateText(
-              userData.email, 16)}</ListItem.Subtitle>
+            <ListItem.Title style={userStyles.avatarLabelName}>{useUserProfile.getName()}</ListItem.Title>
+            <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{useUserProfile.getEmail()}</ListItem.Subtitle>
           </ListItem.Content>
           {!isEmpty(userData.name) && <ListItem.Chevron/>}
         </ListItem>
