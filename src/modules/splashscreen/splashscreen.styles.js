@@ -23,14 +23,6 @@ const splashscreenStyles = StyleSheet.create({
   titleContainer: {
     paddingBottom: 10,
   },
-  version: {
-    textAlign: 'right',
-    fontSize: 16,
-    color: 'white',
-    fontFamily: 'ChalkboardSE-Bold',
-    marginBottom: 10,
-    marginRight: 10,
-  },
   wifiIndicatorContainer: {
     alignItems: 'flex-end',
     position: 'absolute',

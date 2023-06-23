@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   },
   signInContainer: {
     alignItems: 'center',
+    flex: 1,
   },
   version: {
     textAlign: 'center',
@@ -36,6 +37,19 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingRight: 20,
     paddingLeft: 20,
+  },
+  versionNumber: {
+    textAlign: 'right',
+    fontSize: 20,
+    color: 'white',
+    fontFamily: 'ChalkboardSE-Bold',
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  versionContainer: {
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Platform, TextInput, View} from 'react-native';
+import {Alert, Platform, Text, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
+import windowDimensions from 'react-native/Libraries/Components/Touchable/BoundingDimensions';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
+import {VERSION_NUMBER} from '../../shared/app.constants';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 import WarningModal from '../home/home-modals/WarningModal';
@@ -23,6 +25,7 @@ import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 
+const screenSizeTitle = windowDimensions.width <= 900 ? '(Phone)' : '';
 const SignIn = (props) => {
 
   const dispatch = useDispatch();
@@ -155,7 +158,7 @@ const SignIn = (props) => {
 
   return (
     <Splashscreen>
-      <View>
+      <View style={{flex: 1, marginTop: 20}}>
         <View style={styles.signInContainer}>
           <TextInput
             style={styles.input}
@@ -180,6 +183,9 @@ const SignIn = (props) => {
             onSubmitEditing={signIn}
           />
           {renderButtons()}
+          <View style={styles.versionContainer}>
+            <Text style={styles.versionNumber}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
+          </View>
         </View>
       </View>
       <WarningModal/>
