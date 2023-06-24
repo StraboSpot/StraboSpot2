@@ -137,6 +137,11 @@ const useServerRequests = (props) => {
     return tilehost;
   };
 
+  const getImageUrl = () => {
+    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/pi/');
+    return `${STRABO_APIS.STRABO}/pi/`;
+  };
+
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
   };
@@ -313,6 +318,7 @@ const useServerRequests = (props) => {
         console.error('REJECTED UPDATE');
         reject(false);
       });
+
       xhr.open('POST', baseUrl + '/image');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
@@ -370,6 +376,7 @@ const useServerRequests = (props) => {
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
     getDbUrl: getDbUrl,
+    getImageUrl: getImageUrl,
     getTilehostUrl: getTilehostUrl,
     getMyMapsBbox: getMyMapsBbox,
     getProfile: getProfile,

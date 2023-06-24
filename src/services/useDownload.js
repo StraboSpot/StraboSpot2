@@ -25,7 +25,6 @@ import {
 import {addedSpotsFromServer, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 import {APP_DIRECTORIES} from './directories.constants';
-import {STRABO_APIS} from './urls.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 
@@ -118,7 +117,8 @@ const useDownload = () => {
 
   const downloadAndSaveImagesToDevice = async (imageId) => {
     try {
-      const imageURI = STRABO_APIS.STRABO + '/pi/';
+
+      const imageURI = useServerRequests.getImageUrl();
       return RNFS.downloadFile({
         fromUrl: imageURI + imageId,
         toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
