@@ -111,6 +111,11 @@ const commonStyles = StyleSheet.create({
     color: themes.SECONDARY_BACKGROUND_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
+  listItemSubtitle: {
+    fontSize: themes.SMALL_TEXT_SIZE,
+    color: themes.DARKGREY,
+    marginTop: 5,
+  },
   standardButtonContainer: {
     paddingTop: 5,
     paddingBottom: 5,
