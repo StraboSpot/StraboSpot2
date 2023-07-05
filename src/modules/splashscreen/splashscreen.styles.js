@@ -1,7 +1,5 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 
-import * as themes from '../../shared/styles.constants';
-
 const platform = Platform.OS === 'ios' ? 'screen' : 'window';
 const windowWidth = Dimensions.get(platform).width;
 const windowHeight = Dimensions.get(platform).height;
@@ -12,21 +10,15 @@ const splashscreenStyles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    flex: 1,
+    position: 'absolute',
+    top: 175,
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  customEndpointContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  customEndpointText: {
-    color: themes.WHITE,
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    textAlign: 'center',
   },
   title: {
-    // fontFamily: 'Ariel',
     color: 'black',
     textShadowColor: 'white',
     textShadowRadius: 10,

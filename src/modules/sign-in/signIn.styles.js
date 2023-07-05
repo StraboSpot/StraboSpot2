@@ -38,6 +38,16 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
   },
+  customEndpointContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  customEndpointText: {
+    color: themes.WHITE,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   versionNumber: {
     textAlign: 'right',
     fontSize: 20,
