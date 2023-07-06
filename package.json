@@ -31,7 +31,7 @@
     "@react-native-community/geolocation": "2.1.0",
     "@react-native-community/netinfo": "9.3.0",
     "@react-native-community/slider": "4.4.2",
-    "@react-native-mapbox-gl/maps": "github:StraboSpot/rnmaps#5ca344e8",
+    "@react-native-mapbox-gl/maps": "github:rnmapbox/maps#v8",
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/native": "6.0.11",
     "@react-navigation/stack": "6.2.2",
