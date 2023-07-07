@@ -100,7 +100,8 @@ const Sketch = (props) => {
           onSketchSaved={(success, path) => saveSketch(success, path)}
           closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}
           undoComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Undo</Text></View>}
-          clearComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Clear</Text></View>}
+          clearComponent={<View style={{...styles.functionButton, backgroundColor: 'red'}}><Text
+            style={{color: 'white'}}>Clear</Text></View>}
           eraseComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Eraser</Text></View>}
           strokeComponent={color => <View style={[{backgroundColor: color}, styles.strokeColorButton]}/>}
           strokeSelectedComponent={(color, index, changed) => {
