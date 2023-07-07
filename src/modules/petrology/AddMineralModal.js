@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, Platform, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
-import DragAnimation from '../../shared/ui/DragAmination';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import {ChoiceButtons, Form, MainButtons, useFormHook} from '../form';
@@ -217,8 +216,7 @@ const AddMineralModal = (props) => {
     formRef.current?.setFieldValue('id', getNewId());
   };
 
-  if (Platform.OS === 'android') return renderAddMineralModalContent();
-  else return <DragAnimation>{renderAddMineralModalContent()}</DragAnimation>;
+  return renderAddMineralModalContent();
 };
 
 export default AddMineralModal;

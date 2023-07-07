@@ -1,7 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
 
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {TagsModal} from './index';
 
@@ -18,8 +16,7 @@ const TagsShortcutModal = (props) => {
     );
   };
 
-  if (Platform.OS === 'android') return renderTagsShortcutModal();
-  else return <DragAnimation>{renderTagsShortcutModal()}</DragAnimation>;
+  return renderTagsShortcutModal();
 };
 
 export default TagsShortcutModal;

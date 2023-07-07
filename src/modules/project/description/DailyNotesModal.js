@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {Alert, Platform, View} from 'react-native';
+import {Alert, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {Button, Icon, ListItem} from 'react-native-elements';
@@ -7,7 +7,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import DragAnimation from '../../../shared/ui/DragAmination';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import Modal from '../../../shared/ui/modal/Modal';
 import SaveAndCloseButtons from '../../../shared/ui/SaveAndCloseButtons';
@@ -125,8 +124,7 @@ const DailyNotesModal = () => {
     );
   };
 
-  if (Platform.OS === 'android') return renderDailyNotesModal();
-  else return <DragAnimation>{renderDailyNotesModal()}</DragAnimation>;
+  return renderDailyNotesModal();
 };
 
 export default DailyNotesModal;

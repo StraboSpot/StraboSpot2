@@ -9,7 +9,6 @@ import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/SliderBar';
@@ -510,8 +509,7 @@ const AddMeasurementModal = (props) => {
     setShowCompassRawDataView(!value ? value : !showCompassRawDataView);
   };
 
-  if (Platform.OS === 'android') return renderMeasurementModalContent();
-  else return <DragAnimation>{renderMeasurementModalContent()}</DragAnimation>;
+  return renderMeasurementModalContent();
 };
 
 export default AddMeasurementModal;
