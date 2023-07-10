@@ -1,3 +1,4 @@
+import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -116,14 +117,44 @@ const useDownload = () => {
 
   const downloadAndSaveImagesToDevice = async (imageId) => {
     try {
-      const res = await useDevice.downloadAndSaveImage(imageId);
-      console.log('Image Res', res);
-      imageCount++;
+      const imageURI = useServerRequests.getImageUrl();
+      return RNFS.downloadFile({
+        fromUrl: imageURI + imageId,
+        toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
+        headers: {
+          'Accept': 'application/json',
+        },
+      }).promise.then(async (res) => {
+          console.log('Image Info', res, ' JobID:', res.jobId);
+          if (res.statusCode === 200) {
+            imageCount++;
+            console.log(imageCount, `File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
+          }
+          else {
+            imageCount++;
+            imagesFailedCount++;
+            await RNFS.stopDownload(res.jobId);
+            // dispatch(removedLastStatusMessage());
+            // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
+            console.log('Stopped downloading image:', imageId);
+            console.log('Error on', imageId);
+            return RNFS.unlink(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
+              console.log(`Failed image ${imageId} removed`);
+            });
+          }
+        }, (rej) => {
+          console.log('rejected Image!!!,', rej);
+        },
+      )
+        .catch((err) => {
+          console.error('ERR in RNFS.downloadFile', err);
+          // RNFS.stopDownload(downloadRes.jobId);
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage('Error Downloading Images!'));
+        });
     }
     catch (err) {
       console.error('Error downloading and saving image.', err);
-      imageCount++;
-      imagesFailedCount++;
     }
   };
 
@@ -183,7 +214,6 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Datasets Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(setStatusMessagesModalVisible(false));
     }
     catch (err) {
       console.error('Error Initializing Download.', err);
@@ -216,27 +246,29 @@ const useDownload = () => {
             ));
           }),
         );
+        console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length
+          + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length);
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
-          console.log('Downloaded Images: ' + (imageCount - imagesFailedCount) + '/' + neededImageIds.length
-            + '\nFailed Images: ' + imagesFailedCount);
           dispatch(setLoadingStatus({view: 'modal', bool: false}));
           dispatch(addedStatusMessage(
-            'Downloaded Images: ' + (imageCount - imagesFailedCount) + '/' + neededImageIds.length
-            + '\nFailed Images: ' + imagesFailedCount,
+            'Downloaded Images ' + imageCount + '/' + neededImageIds.length
+            + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
           ));
         }
-        else dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
-
-        const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
-        console.log(neededDatasetImagesUpdated);
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(addedNeededImagesToDataset({
-          datasetId: dataset.id,
-          images: neededDatasetImagesUpdated,
-          modified_timestamp: dataset.modified_timestamp,
-        }));
+        else {
+          const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
+          console.log(neededDatasetImagesUpdated);
+          dispatch(setLoadingStatus({view: 'modal', bool: false}));
+          dispatch(addedNeededImagesToDataset({
+            datasetId: dataset.id,
+            images: neededDatasetImagesUpdated,
+            modified_timestamp: dataset.modified_timestamp,
+          }));
+          dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
+        }
       }
+      // dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }

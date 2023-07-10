@@ -3,7 +3,6 @@ import {ImageBackground, KeyboardAvoidingView, Platform, Text, useWindowDimensio
 
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatus from '../../services/ConnectionStatus';
-import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import splashscreenStyles from './splashscreen.styles';
 
@@ -12,8 +11,6 @@ const Splashscreen = (props) => {
 
   const fontSize = getFontSizeByWindowWidth(windowDimensions, 40);
   const titleStyles = [splashscreenStyles.title, {fontSize}];
-  const screenSizeTitle = windowDimensions.width <= 900 ? '(Phone)' : '';
-
 
   return (
     <KeyboardAvoidingView
@@ -34,9 +31,10 @@ const Splashscreen = (props) => {
           </View>
           {props.children}
         </View>
-        <Text style={splashscreenStyles.version}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
-        {/*<Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},*/}
-        {/*  W: {windowDimensions.width} </Text>*/}
+        <View style={{margin: 20}}>
+          {/*<Text style={splashscreenStyles.version}>Dimensions H: {windowDimensions.height},*/}
+          {/*  W: {windowDimensions.width} </Text>*/}
+        </View>
       </ImageBackground>
     </KeyboardAvoidingView>
   );

@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {Alert, Platform, View} from 'react-native';
+import {Alert, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {Button, ListItem} from 'react-native-elements';
@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {NumberInputField, SelectInputField, useFormHook} from '../form';
 import {setStratSection} from '../maps/maps.slice';
@@ -276,8 +275,7 @@ const AddImageOverlayModal = (props) => {
     return errors;
   };
 
-  if (Platform.OS === 'android') return renderAddImageOverlayModal();
-  else return <DragAnimation>{renderAddImageOverlayModal()}</DragAnimation>;
+  return renderAddImageOverlayModal();
 };
 
 export default AddImageOverlayModal;

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, Platform, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
@@ -165,8 +164,7 @@ const AddFabricModal = (props) => {
     }
   };
 
-  if (Platform.OS === 'android') return renderNotebookFabricModalContent();
-  else return <DragAnimation>{renderNotebookFabricModalContent()}</DragAnimation>;
+  return renderNotebookFabricModalContent();
 };
 
 export default AddFabricModal;

@@ -10,26 +10,22 @@ const splashscreenStyles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    flex: 1,
+    position: 'absolute',
+    top: 175,
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    // fontFamily: 'Ariel',
     color: 'black',
     textShadowColor: 'white',
     textShadowRadius: 10,
   },
   titleContainer: {
+    marginTop: 20,
     paddingBottom: 10,
-  },
-  version: {
-    textAlign: 'right',
-    fontSize: 16,
-    color: 'white',
-    fontFamily: 'ChalkboardSE-Bold',
-    marginBottom: 10,
-    marginRight: 10,
   },
   wifiIndicatorContainer: {
     alignItems: 'flex-end',

@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, Platform, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import DragAnimation from '../../shared/ui/DragAmination';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
@@ -132,8 +131,7 @@ const AddReactionTextureModal = (props) => {
     formRef.current?.setFieldValue('id', getNewId());
   };
 
-  if (Platform.OS === 'android') return renderAddReactionTextureModalContent();
-  else return <DragAnimation>{renderAddReactionTextureModalContent()}</DragAnimation>;
+  return renderAddReactionTextureModalContent();
 };
 
 export default AddReactionTextureModal;

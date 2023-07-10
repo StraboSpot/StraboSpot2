@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Icon, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {truncateText} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -21,10 +21,17 @@ const BaseMapDialog = (props) => {
   const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
 
+  const [dialogTitle, setDialogTitle] = useState('Map Layers');
+
   const customMaps = useSelector(state => state.map.customMaps);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const customEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const {isConnected, isInternetReachable} = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+
+  useEffect(() => {
+    if (customEndpoint.isSelected) setDialogTitle(`Map Layers - ${customEndpoint.url}`);
+  }, []);
 
   // const conditions = ['http', 'https'];
   //
@@ -41,7 +48,7 @@ const BaseMapDialog = (props) => {
   const renderDefaultBasemapsList = () => {
     let sectionTitle = 'Default Basemaps';
     let mapsToDisplay = BASEMAPS;
-    if (!isOnline.isInternetReachable) {
+    if (!isInternetReachable && isConnected) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
         return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors'
         || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
@@ -66,22 +73,20 @@ const BaseMapDialog = (props) => {
   };
 
   const renderCustomBasemapsList = () => {
+    let dataArr = [];
     let sectionTitle = 'Custom Basemaps';
     let customMapsToDisplay = Object.values(customMaps).filter(
-      customMap => !customMap.overlay && customMap.source !== 'map_warper');
-    if (!isOnline.isInternetReachable) {
-      customMapsToDisplay = Object.values(offlineMaps).filter((map) => {
-        if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm'
-          && map.id !== 'macrostrat') return offlineMaps[map.id];
-      });
-      sectionTitle = 'Offline Custom Basemaps';
-    }
+      customMap => !customMap.overlay && customMap.url[0].includes('strabospot'));
+    let customMapsToDisplayUsingAltEndpoint = Object.values(customMaps).filter(
+      customMap => !customMap.overlay && customMap.url[0].includes('192.'));
+    dataArr = customEndpoint.isSelected ? customMapsToDisplayUsingAltEndpoint : customMapsToDisplay;
+
     return (
       <View style={{maxHeight: 250}}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id}
-          data={Object.values(customMapsToDisplay)}
+          data={Object.values(dataArr)}
           renderItem={({item}) => renderCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -90,14 +95,34 @@ const BaseMapDialog = (props) => {
     );
   };
 
+  const renderOfflineCustomBasemapList = () => {
+    const customOfflineMapsToDisplay = Object.values(offlineMaps).filter((map) => {
+      if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm'
+        && map.id !== 'macrostrat' && !isEmpty(map)) return offlineMaps[map.id];
+    });
+    const sectionTitle = 'Offline Custom Basemaps';
+    return (
+      <View style={{maxHeight: 250}}>
+        <SectionDivider dividerText={sectionTitle}/>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={Object.values(customOfflineMapsToDisplay)}
+          renderItem={({item}) => renderOfflineCustomMapItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
+        />
+      </View>
+    );
+  };
+
   const renderCustomMapOverlaysList = () => {
-    let sectionTitle = 'Custom Map Overlays';
+    let sectionTitle = 'Custom Overlays';
     let customMapOverlaysToDisplay = Object.values(customMaps).filter(
-      customMap => customMap.overlay && customMap.source !== 'map_warper');
-    if (!isOnline.isInternetReachable) {
-      customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
-      sectionTitle = 'Offline Custom Overlays';
-    }
+      customMap => customMap.overlay);
+    // if (!isInternetReachable && isConnected) {
+    //   customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
+    //   sectionTitle = 'Offline Custom Overlays';
+    // }
     return (
       <View style={{maxHeight: 250}}>
         <SectionDivider dividerText={sectionTitle}/>
@@ -111,33 +136,75 @@ const BaseMapDialog = (props) => {
     );
   };
 
-  const renderCustomMapItem = customMap => (
-    <ListItem
-      containerStyle={styles.dialogContent}
-      key={customMap.id}
-      onPress={() => setBaseMap(customMap)}>
-      <ListItem.Content style={{}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>
-          {customMap.title || customMap.name || truncateText(customMap.id, 16)} -
-          ({customMap.source || customMap.sources['raster-tiles'].type})
-        </ListItem.Title>
-        {!isOnline.isInternetReachable
-          && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
-      </ListItem.Content>
-      {currentBasemap && customMap.id === currentBasemap.id
-        && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
-    </ListItem>
-  );
+  const renderOfflineCustomMapOverlayList = () => {
+    let customMapOverlaysToDisplay = Object.values(customMaps).filter(
+      customMap => customMap.overlay);
+    const offlineCustomMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
+    const sectionTitle = 'Offline Custom Overlays';
+    return (
+      <View style={{maxHeight: 250}}>
+        <SectionDivider dividerText={sectionTitle}/>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={offlineCustomMapOverlaysToDisplay}
+          renderItem={({item}) => renderMapOverlayItem(item)}
+          ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
+        />
+      </View>
+    );
+  };
+
+  const renderCustomMapItem = (customMap) => {
+
+    return (
+      <ListItem
+        containerStyle={styles.dialogContent}
+        key={customMap.id}
+        onPress={() => setBaseMap(customMap)}>
+        <ListItem.Content style={{}}>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
+            ({customMap.source || customMap.sources['raster-tiles'].type})
+          </ListItem.Title>
+          {/*{!isInternetReachable && !isConnected*/}
+          {/*  && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles!!!)</ListItem.Subtitle>}*/}
+        </ListItem.Content>
+        {customMap.id === currentBasemap?.id && currentBasemap.sources[currentBasemap.id].tiles[0].includes('http://')
+          && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+      </ListItem>
+    );
+  };
+
+  const renderOfflineCustomMapItem = (customMap) => {
+
+    return (
+      <ListItem
+        containerStyle={styles.dialogContent}
+        key={customMap.id}
+        onPress={() => setBaseMap(customMap)}>
+        <ListItem.Content style={{}}>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
+            ({customMap.source || customMap.sources['raster-tiles'].type})
+          </ListItem.Title>
+          {/*{!isInternetReachable && !isConnected*/}
+          {/*  && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles!!!)</ListItem.Subtitle>}*/}
+        </ListItem.Content>
+        {customMap.id === currentBasemap?.id && currentBasemap.sources[currentBasemap.id].tiles[0].includes('file:/')
+          && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+      </ListItem>
+    );
+  };
 
   const renderDefaultMapItem = map => (
     <ListItem
       key={map.id}
       containerStyle={styles.dialogContent}
-      onPress={() => isOnline.isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
+      onPress={() => isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
     >
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
-        {!isOnline.isInternetReachable
+        {!isInternetReachable
           && <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>}
       </ListItem.Content>
       {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
@@ -158,7 +225,7 @@ const BaseMapDialog = (props) => {
       <ListItem.Content style={{}}>
         <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
           ({customMap.source})</ListItem.Title>
-        {!isOnline.isInternetReachable
+        {!isInternetReachable
           && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
       </ListItem.Content>
       <Switch
@@ -170,16 +237,35 @@ const BaseMapDialog = (props) => {
   );
 
   const setBaseMap = async (customMap) => {
-    if (isOnline.isInternetReachable) {
-      const baseMap = await useMaps.setBasemap(customMap.id);
+    let baseMap = {};
+    if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
+      if (!customMap.url) {
+        baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
+      }
+      else {
+        baseMap = await useMaps.setBasemap(customMap.id);
+      }
       props.close();
-      setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+      baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {
       await useMapsOffline.setOfflineMapTiles(customMap);
-      offlineMaps[customMap.id].bbox
-      && setTimeout(() => props.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
+      offlineMaps[customMap.id].bbox && setTimeout(() => props.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10),
+        1000);
     }
+  };
+
+  const determineWhatCustomMapListToRender = () => {
+    if (isInternetReachable && isConnected) return [renderCustomBasemapsList(), renderCustomMapOverlaysList(), renderOfflineCustomBasemapList()];
+    else if (!isInternetReachable && isConnected) {
+      return [
+        renderCustomBasemapsList(),
+        renderOfflineCustomBasemapList(),
+        renderCustomMapOverlaysList(),
+        renderOfflineCustomMapOverlayList(),
+      ];
+    }
+    else return [renderOfflineCustomBasemapList(), renderOfflineCustomMapOverlayList()];
   };
 
   return (
@@ -191,12 +277,11 @@ const BaseMapDialog = (props) => {
       backdropStyle={{backgroundColor: 'transparent'}}
     >
       <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>Map Layers</Text>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{dialogTitle}</Text>
       </View>
       <View>
         {renderDefaultBasemapsList()}
-        {renderCustomBasemapsList()}
-        {renderCustomMapOverlaysList()}
+        {determineWhatCustomMapListToRender()}
         <View/>
       </View>
     </Overlay>

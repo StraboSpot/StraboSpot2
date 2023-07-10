@@ -1,7 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
 
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import Notes from './Notes';
 
@@ -15,8 +13,7 @@ const ShortcutNotesModal = (props) => {
     );
   };
 
-  if (Platform.OS === 'android') return renderNotesShortcutModal();
-  else return <DragAnimation>{renderNotesShortcutModal()}</DragAnimation>;
+  return renderNotesShortcutModal();
 };
 
 export default ShortcutNotesModal;

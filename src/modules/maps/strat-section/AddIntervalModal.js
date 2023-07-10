@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Platform} from 'react-native';
+import {Alert, FlatList} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -7,7 +7,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import {deepObjectExtend} from '../../../shared/Helpers';
-import DragAnimation from '../../../shared/ui/DragAmination';
 import Modal from '../../../shared/ui/modal/Modal';
 import {Form, SelectInputField, TextInputField, useFormHook} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
@@ -279,8 +278,7 @@ const AddIntervalModal = () => {
     return errors;
   };
 
-  if (Platform.OS === 'android') return renderAddIntervalModal();
-  else return <DragAnimation>{renderAddIntervalModal()}</DragAnimation>;
+  return renderAddIntervalModal();
 };
 
 export default AddIntervalModal;

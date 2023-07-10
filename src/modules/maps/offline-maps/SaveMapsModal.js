@@ -7,7 +7,6 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
-import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';
@@ -33,6 +32,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   const [useServerRequests] = useServerRequestHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
   const dispatch = useDispatch();
@@ -93,27 +93,21 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   useEffect(() => {
     console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
     console.log('extentString is UE', extentString);
-    if (downloadZoom > 0) {
-      setIsLoadingCircle(true);
-      updateCount().then(() => {
-        console.log('TileCount', tileCount);
+    shouldDownload().catch(err => console.error('Error in SaveMapsModal shouldDownload()', err));
 
-      });
-    }
   }, [downloadZoom]);
 
   useEffect(() => {
     console.log('UE SaveMapsModal [progressStatus]', progressStatus);
   }, [progressStatus]);
 
-  const checkZipStatus = async (zipId) => {
-    try {
-      const status = await useServerRequests.zipURLStatus(zipId);
-      if (status.status !== 'Zip File Ready.') await checkZipStatus(zipId);
-    }
-    catch (err) {
-      console.error('Error checking zip status', err);
-      throw new Error(err);
+
+  const shouldDownload = async () => {
+    if (downloadZoom > 0) {
+      setIsLoadingCircle(true);
+      updateCount().then(() => {
+        console.log('TileCount', tileCount);
+      });
     }
   };
 
@@ -132,7 +126,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const downloadZip = async (zipUID) => {
     try {
-      const downloadZipURL = STRABO_APIS.TILE_HOST + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
+      const tilehost = useServerRequests.getTilehostUrl();
+      const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,
         toFile: APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip',
@@ -176,7 +171,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Preparing Data...'));
-      await checkZipStatus(zipId);
+      await useMapsOffline.checkZipStatus(zipId);
       setShowLoadingBar(false);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Data ready to download.'));
@@ -185,7 +180,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       await doUnzip(zipId);
       const tileArray = await useMapsOffline.moveFiles(zipId);
       await tileMove(tileArray, zipId);
-      await useMapsOffline.updateMapTileCount();
+      await useMapsOffline.updateMapTileCountWhenSaving();
       console.log('Saved offlineMaps to Redux.');
       setShowMainMenu(false);
       setShowLoadingMenu(false);
@@ -196,7 +191,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       console.error('Error saving map', err);
       const editedError = err.toString().replace('Error: Error: Error:', '');
       setIsError(true);
-      setErrorMessage(editedError);
+      setErrorMessage(
+        `${editedError}!\n\n Make sure you are pulling the map from the correct endpoint\n(Home => Miscellaneous => Custom Database Endpoint).`);
       setShowMainMenu(false);
       setShowLoadingMenu(false);
       setShowLoadingBar(false);
@@ -354,6 +350,10 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
                       title={`Download ${tileCount} Tiles`}
                     />
                   )}
+                {databaseEndpoint.isSelected && <Text style={{
+                  ...commonStyles.dialogContentImportantText,
+                  marginTop: 10,
+                }}>URL: {databaseEndpoint.url}</Text>}
               </View>
             )
             }

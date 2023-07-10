@@ -25,7 +25,7 @@ import ProjectTypesButtons from '../../project/ProjectTypesButtons';
 import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
-import {setLoadingStatus, setStatusMessageModalTitle, setProjectLoadSelectionModalVisible} from '../home.slice';
+import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
@@ -45,7 +45,7 @@ const InitialProjectLoadModal = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const [displayName] = useState(displayFirstName);
+  const [displayName, setDisplayName] = useState('');
   const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
   const [source, setSource] = useState('');
@@ -59,7 +59,20 @@ const InitialProjectLoadModal = (props) => {
   const useDevice = useDeviceHook();
   const toast = useToast();
   const useUserProfile = useUserProfileHook();
-  
+
+  useEffect(() => {
+    setDisplayName(displayFirstName);
+    return () => {
+      setVisibleInitialSection('none');
+      setDisplayName('');
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('UE InitialProjectLoadModal [isOnline]', isOnline);
+    dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
+  }, [isOnline]);
+
   const goBack = () => {
     if (visibleProjectSection === 'activeDatasetsList') {
       dispatch(clearedProject());
@@ -296,7 +309,6 @@ const InitialProjectLoadModal = (props) => {
   const renderLoadingView = () => {
     return (
       <View style={{alignItems: 'center'}}>
-        <Text>LOADING...</Text>
         <LottieView
           style={{width: 150, height: 150}}
           source={useAnimations.getAnimationType('loadingFile')}
@@ -370,7 +382,7 @@ const InitialProjectLoadModal = (props) => {
       <View style={{flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
         {user.name && <Avatar
           source={user.image && {uri: user.image}}
-          title={useUserProfile.getUserInitials()}
+          title={useUserProfile.getInitials()}
           titleStyle={userStyles.avatarPlaceholderTitleStyle}
           size={80} rounded
         />}
@@ -381,8 +393,9 @@ const InitialProjectLoadModal = (props) => {
             type={'clear'}
             titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
             onPress={() => {
-              dispatch(setProjectLoadSelectionModalVisible(false));
               if (user.name) dispatch({type: REDUX.CLEAR_STORE});
+              // dispatch(setSignedInStatus(false));
+              setVisibleInitialSection('none');
               navigation.navigate('SignIn');
             }}
           />
@@ -403,6 +416,13 @@ const InitialProjectLoadModal = (props) => {
         </View>
         {visibleInitialSection === 'none' && renderUserProfile()}
         {isLoading ? renderLoadingView() : renderSectionView()}
+        <View style={{
+          backgroundColor: 'red',
+          position: 'absolute',
+          top: '50%',
+          left: '55%',
+        }}>
+        </View>
       </Overlay>
     </React.Fragment>
   );

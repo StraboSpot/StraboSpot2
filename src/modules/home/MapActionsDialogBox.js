@@ -10,7 +10,8 @@ import homeStyles from './home.style';
 
 const MapActionsDialog = (props) => {
 
-  const isOnline = useSelector(state => state.home.isOnline);
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const {isInternetReachable, isConnected} = useSelector(state => state.home.isOnline);
   const stratSection = useSelector(state => state.map.stratSection);
 
   return (
@@ -31,13 +32,13 @@ const MapActionsDialog = (props) => {
           titleStyle={styles.dialogText}
           type={'clear'}
         />
-        <Button
-          onPress={() => props.onPress('zoomToOfflineMap')}
-          title='Zoom to Offline Map'
-          titleStyle={styles.dialogText}
-          type={'clear'}
-        />
-        {isOnline.isInternetReachable && (
+        {/*<Button*/}
+        {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
+        {/*  title='Zoom to Offline Map'*/}
+        {/*  titleStyle={styles.dialogText}*/}
+        {/*  type={'clear'}*/}
+        {/*/>*/}
+        {((isInternetReachable && isConnected) || (!isInternetReachable && isConnected && currentBasemap?.source)) && (
           <Button
             onPress={() => props.onPress('saveMap')}
             style={styles.dialogContent}

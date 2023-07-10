@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Text, View} from 'react-native';
 
+import moment from 'moment';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -187,6 +188,7 @@ const ProjectList = (props) => {
   };
 
   const renderProjectItem = (item) => {
+    const modifiedTimeAndDate = moment.unix(item.modified_timestamp).format('MMMM Do YYYY, h:mm:ss a');
     return (
       <ListItem
         key={props.source === 'device' ? item.id : item.id}
@@ -199,6 +201,7 @@ const ProjectList = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>
             {props.source === 'server' ? item.name : item.fileName}
           </ListItem.Title>
+          <ListItem.Subtitle style={commonStyles.listItemSubtitle}>Updated: {modifiedTimeAndDate}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>

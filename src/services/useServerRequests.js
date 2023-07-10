@@ -132,7 +132,27 @@ const useServerRequests = (props) => {
     return baseUrl;
   };
 
+  const getTilehostUrl = () => {
+    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/strabotiles');
+    return tilehost;
+  };
+
+  const getImageUrl = () => {
+    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/pi/');
+    return `${STRABO_APIS.STRABO}/pi/`;
+  };
+
+  const downloadImage = (imageId, encodedLogin) => {
+    return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
+  };
+
   const getMyMapsBbox = async (mapId) => {
+    if (databaseEndpoint.isSelected) {
+      console.log(databaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = databaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
+      const response = await fetch(bboxEndpoint);
+      return handleResponse(response);
+    }
     const response = await fetch(straboMyMapsApi + mapId);
     return handleResponse(response);
   };
@@ -298,6 +318,7 @@ const useServerRequests = (props) => {
         console.error('REJECTED UPDATE');
         reject(false);
       });
+
       xhr.open('POST', baseUrl + '/image');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
@@ -328,7 +349,10 @@ const useServerRequests = (props) => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const response = await timeoutPromise(60000, fetch(tilehost + '/asyncstatus/' + zipId));
+      const myMapsEndpoint = databaseEndpoint.isSelected ? databaseEndpoint.url.replace('/db',
+        '/strabotiles') : tilehost;
+
+      const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);
       if (responseJson.error) throw Error(responseJson.error);
@@ -346,11 +370,14 @@ const useServerRequests = (props) => {
     deleteProfile: deleteProfile,
     deleteProject: deleteProject,
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
+    downloadImage: downloadImage,
     getMyProjects: getMyProjects,
     getDatasets: getDatasets,
     getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
     getDbUrl: getDbUrl,
+    getImageUrl: getImageUrl,
+    getTilehostUrl: getTilehostUrl,
     getMyMapsBbox: getMyMapsBbox,
     getProfile: getProfile,
     getProject: getProject,

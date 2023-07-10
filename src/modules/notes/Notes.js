@@ -1,11 +1,11 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODAL_KEYS} from '../home/home.constants';
 import useMapsHook from '../maps/useMaps';
@@ -16,6 +16,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 import NoteForm from './NoteForm';
+import noteStyle from './notes.styles';
 
 const Notes = (props) => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const Notes = (props) => {
   const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const [useMaps] = useMapsHook();
+  const toast = useToast();
 
   const formRef = useRef(null);
   const page = PRIMARY_PAGES.find(p => p.key === PAGE_KEYS.NOTES);
@@ -37,21 +39,17 @@ const Notes = (props) => {
       const templatesNotes = templates.notes.active.map(t => t.values.note).join('\n');
       setInitialNotesValues({note: templatesNotes});
     }
-    return () => confirmLeavePage();
+    return () => leavePage();
   }, [templates]);
 
-  const confirmLeavePage = () => {
+  const leavePage = () => {
     if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
-      Alert.alert('Unsaved Changes',
-        'Would you like to save your notes before continuing?',
-        [
-          {text: 'No', style: 'cancel'},
-          {text: 'Yes', onPress: () => saveForm(formCurrent, false)},
-        ],
-        {cancelable: false},
-      );
+      saveForm(formCurrent, false);
+      toast.show('Notes saved', {type: 'success'});
     }
+    else toast.show('No changes.');
+
   };
 
   const saveForm = async (currentForm, pageTransition) => {
@@ -93,17 +91,13 @@ const Notes = (props) => {
         : (
           <React.Fragment>
             {!isShowTemplates && <ReturnToOverviewButton/>}
-            <Templates
-              isShowTemplates={isShowTemplates}
-              setIsShowTemplates={bool => setIsShowTemplates(bool)}
-              page={page}
-            />
-            {!isShowTemplates && (
-              <SaveAndCloseButton
-                cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
-                save={() => saveForm(formRef.current, true)}
+            <View style={noteStyle.noteContainer}>
+              <Templates
+                isShowTemplates={isShowTemplates}
+                setIsShowTemplates={bool => setIsShowTemplates(bool)}
+                page={page}
               />
-            )}
+            </View>
           </React.Fragment>
         )
       }
@@ -121,6 +115,7 @@ const Notes = (props) => {
           )}
         </React.Fragment>
       )}
+      <Text style={noteStyle.messageText}>Notes will save automatically if you navigate away.</Text>
     </View>
   );
 };

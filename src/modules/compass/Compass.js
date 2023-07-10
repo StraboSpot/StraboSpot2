@@ -92,7 +92,7 @@ const Compass = (props) => {
   }, [compassMeasurements]);
 
   const addAttributeMeasurement = (data) => {
-    const sliderQuality = {quality: props.sliderValue.toString()};
+    const sliderQuality = props.sliderValue ? {quality: props.sliderValue.toString()} : 'N/A';
     props.setAttributeMeasurements({...data, ...sliderQuality});
     props.closeCompass();
   };
@@ -113,7 +113,7 @@ const Compass = (props) => {
           else console.log('compass sound failed due to audio decoding errors');
         });
         const unixTimestamp = Date.now();
-        const sliderQuality = props.sliderValue === 6 ? {} : {quality: props.sliderValue.toString()};
+        const sliderQuality = !props.sliderValue || props.sliderValue === 6 ? {} : {quality: props.sliderValue.toString()};
         console.log('Compass measurements', compassData, props.sliderValue);
         if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
         else if (props.setMeasurements) {
@@ -127,7 +127,7 @@ const Compass = (props) => {
       else dispatch(setCompassMeasurements({...compassData, manual: true}));
     }
     catch (e) {
-      console.log('Compass click sound playback failed due to audio decoding errors', e);
+      console.log('Error grabbing compass measurement', e);
     }
   };
 

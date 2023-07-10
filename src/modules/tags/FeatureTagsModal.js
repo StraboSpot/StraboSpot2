@@ -1,9 +1,7 @@
 import React from 'react';
-import {Platform} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import DragAnimation from '../../shared/ui/DragAmination';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
@@ -27,8 +25,7 @@ const FeatureTagsModal = () => {
     );
   };
 
-  if (Platform.OS === 'android') return renderFeatureTagsModal();
-  else return <DragAnimation>{renderFeatureTagsModal()}</DragAnimation>;
+  return renderFeatureTagsModal();
 };
 
 export default FeatureTagsModal;

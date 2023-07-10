@@ -41,6 +41,7 @@ const useMaps = (mapRef) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const stratSection = useSelector(state => state.map.stratSection);
   const customMaps = useSelector(state => state.map.customMaps);
   const dispatch = useDispatch();
@@ -106,7 +107,7 @@ const useMaps = (mapRef) => {
   const buildTileUrl = (basemap) => {
     let tileUrl = basemap.url[0];
     if (basemap.source === 'osm') tileUrl = tileUrl + basemap.tilePath;
-    if (basemap.source === 'map_warper' || basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
+    if (basemap.source === 'strabospot_mymaps') tileUrl = tileUrl + basemap.id + '/' + basemap.tilePath;
     else tileUrl = tileUrl + basemap.id + basemap.tilePath + '?access_token=' + userMapboxToken;
     return tileUrl;
   };
@@ -306,8 +307,10 @@ const useMaps = (mapRef) => {
   };
 
   const getExtentAndZoomCall = (extentString, zoomLevel) => {
-    console.log(STRABO_APIS.TILE_COUNT + '?extent=' + extentString + '&zoom=' + zoomLevel);
-    return STRABO_APIS.TILE_COUNT + '?extent=' + extentString + '&zoom=' + zoomLevel;
+    let url = useServerRequests.getTilehostUrl();
+    url = customDatabaseEndpoint.isSelected ? url + '/zipcount' : STRABO_APIS.TILE_COUNT;
+    console.log(url + '?extent=' + extentString + '&zoom=' + zoomLevel);
+    return url + '?extent=' + extentString + '&zoom=' + zoomLevel;
   };
 
   // Get the nearest feature to a target point within a bounding box from given layers
@@ -512,8 +515,15 @@ const useMaps = (mapRef) => {
   };
 
   const getProviderInfo = (source) => {
-    console.log(MAP_PROVIDERS[source]);
-    return MAP_PROVIDERS[source];
+    let providerInfo = {...MAP_PROVIDERS[source]};
+    if (customDatabaseEndpoint.isSelected) {
+      const serverUrl = customDatabaseEndpoint.url;
+      const lastOccur = serverUrl.lastIndexOf('/');
+      providerInfo.url = [serverUrl.substring(0, lastOccur) + '/geotiff/tiles/'];
+      return providerInfo;
+    }
+    console.log(providerInfo);
+    return providerInfo;
   };
 
   const handleError = (message, err) => {
@@ -565,7 +575,12 @@ const useMaps = (mapRef) => {
     customMap = {...map, ...providerInfo, id: mapId, source: map.source};
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
-    if (map.source === 'strabospot_mymaps') testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
+    if (map.source === 'strabospot_mymaps') {
+      const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
+      testTileUrl = customDatabaseEndpoint.isSelected
+        ? customEndpointTest + map.id
+        : STRABO_APIS.MY_MAPS_CHECK + map.id;
+    }
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);

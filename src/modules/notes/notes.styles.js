@@ -8,6 +8,14 @@ const noteStyle = StyleSheet.create({
     padding: 10,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
   },
+  noteContainer: {
+    marginTop: 10,
+  },
+  messageText: {
+    padding: 15,
+    textAlign: 'center',
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+  },
 });
 
 export default noteStyle;

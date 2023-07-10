@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
-import {truncateText} from '../../../shared/Helpers';
+import {isEmpty, truncateText} from '../../../shared/Helpers';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
@@ -154,7 +154,8 @@ const ManageOfflineMaps = (props) => {
       >
         <ListItem.Content>
           <View style={styles.itemContainer}>
-            <ListItem.Title style={commonStyles.listItemTitle}>{`${truncateText(getTitle(item), 20)}`}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>{`${!isEmpty(item) ? truncateText(getTitle(item),
+              20) : 'No Name'}`}</ListItem.Title>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {
                 item.count === 0
@@ -218,7 +219,7 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        disabled={!isOnline.isInternetReachable || Object.values(offlineMaps).some(
+        disabled={(!isOnline.isInternetReachable && !isOnline.isConnected) || Object.values(offlineMaps).some(
           map => map.isOfflineMapVisible === true)}
         onPress={() => {
           props.closeMainMenuPanel();

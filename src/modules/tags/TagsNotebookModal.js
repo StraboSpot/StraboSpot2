@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import {Platform, View} from 'react-native';
+import {View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
-import DragAnimation from '../../shared/ui/DragAmination';
 import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {MODAL_KEYS} from '../home/home.constants';
@@ -60,8 +59,7 @@ const TagsNotebookModal = (props) => {
   };
   if ((modalVisible === MODAL_KEYS.NOTEBOOK.TAGS || modalVisible === MODAL_KEYS.OTHER.FEATURE_TAGS)
     && !isEmpty(selectedSpot)) {
-    if (Platform.OS === 'android') return renderTagsModalContent();
-    else return <DragAnimation>{renderTagsModalContent()}</DragAnimation>;
+    return renderTagsModalContent();
   }
   else return null;
 };
