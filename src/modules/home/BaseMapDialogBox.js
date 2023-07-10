@@ -58,10 +58,10 @@ const BaseMapDialog = (props) => {
       sectionTitle = 'Offline Default Basemaps';
     }
     return (
-      <View>
+      <View key={'DefaultMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id + 'DefaultMap'}
           data={mapsToDisplay}
           renderItem={({item}) => renderDefaultMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
@@ -82,10 +82,10 @@ const BaseMapDialog = (props) => {
     dataArr = customEndpoint.isSelected ? customMapsToDisplayUsingAltEndpoint : customMapsToDisplay;
 
     return (
-      <View style={{maxHeight: 250}}>
+      <View style={{maxHeight: 250}} key={'CustomMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id + 'CustomMap'}
           data={Object.values(dataArr)}
           renderItem={({item}) => renderCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
@@ -102,10 +102,10 @@ const BaseMapDialog = (props) => {
     });
     const sectionTitle = 'Offline Custom Basemaps';
     return (
-      <View style={{maxHeight: 250}}>
+      <View style={{maxHeight: 250}} key={'OfflineCustomMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id + 'OfflineCustomMap'}
           data={Object.values(customOfflineMapsToDisplay)}
           renderItem={({item}) => renderOfflineCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
@@ -124,10 +124,10 @@ const BaseMapDialog = (props) => {
     //   sectionTitle = 'Offline Custom Overlays';
     // }
     return (
-      <View style={{maxHeight: 250}}>
+      <View style={{maxHeight: 250}} key={'CustomOverlaysList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id + 'CustomOverlay'}
           data={customMapOverlaysToDisplay}
           renderItem={({item}) => renderMapOverlayItem(item)}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -142,10 +142,10 @@ const BaseMapDialog = (props) => {
     const offlineCustomMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
     const sectionTitle = 'Offline Custom Overlays';
     return (
-      <View style={{maxHeight: 250}}>
+      <View style={{maxHeight: 250}} key={'OfflineCustomOverlaysList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id + 'OfflineCustomOverlay'}
           data={offlineCustomMapOverlaysToDisplay}
           renderItem={({item}) => renderMapOverlayItem(item)}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -155,11 +155,10 @@ const BaseMapDialog = (props) => {
   };
 
   const renderCustomMapItem = (customMap) => {
-
     return (
       <ListItem
         containerStyle={styles.dialogContent}
-        key={customMap.id}
+        key={customMap.id + 'CustomMapItem'}
         onPress={() => setBaseMap(customMap)}>
         <ListItem.Content style={{}}>
           <ListItem.Title style={commonStyles.listItemTitle}>
@@ -176,11 +175,10 @@ const BaseMapDialog = (props) => {
   };
 
   const renderOfflineCustomMapItem = (customMap) => {
-
     return (
       <ListItem
         containerStyle={styles.dialogContent}
-        key={customMap.id}
+        key={customMap.id + 'OfflineCustomMapItem'}
         onPress={() => setBaseMap(customMap)}>
         <ListItem.Content style={{}}>
           <ListItem.Title style={commonStyles.listItemTitle}>
@@ -198,7 +196,7 @@ const BaseMapDialog = (props) => {
 
   const renderDefaultMapItem = map => (
     <ListItem
-      key={map.id}
+      key={map.id + 'DefaultMapItem'}
       containerStyle={styles.dialogContent}
       onPress={() => isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
     >
@@ -212,10 +210,10 @@ const BaseMapDialog = (props) => {
     </ListItem>
   );
 
-  const renderMapOverlayItem = customMap => (
+  const renderMapOverlayItem = (customMap, isOffline) => (
     <ListItem
       containerStyle={styles.dialogContent}
-      key={customMap.id + 'Overlay'}
+      key={customMap.id + 'CustomOverlayItem' + (isOffline ? 'Offline' : '')}
       // onPress={async () => {
       //   const baseMap = await useMaps.setBasemap(customMap.id);
       //   props.close();
