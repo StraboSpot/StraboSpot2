@@ -36,7 +36,7 @@ const homeConfig = {
   blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible',
     'isStatusMessagesModalVisible', 'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible',
     'isOfflineMapModalVisible', 'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible',
-    'isProjectLoadComplete'],
+    'isProjectLoadComplete', 'isProgressModalVisible'],
   timeout: null,
 };
 
