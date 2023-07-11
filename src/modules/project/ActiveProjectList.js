@@ -1,4 +1,5 @@
 import React from 'react';
+import {View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,7 +15,7 @@ const ActiveProjectList = () => {
   const project = useSelector(state => state.project.project);
 
   return (
-    <React.Fragment>
+    <View style={{marginBottom: 10, marginTop: 10}}>
       <SectionDivider dividerText={'Active Project'}/>
       <ListItem
         containerStyle={commonStyles.listItem}
@@ -27,7 +28,7 @@ const ActiveProjectList = () => {
         </ListItem.Content>
         <ListItem.Chevron/>
       </ListItem>
-    </React.Fragment>
+    </View>
   );
 };
 
