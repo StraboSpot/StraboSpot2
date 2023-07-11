@@ -1,8 +1,7 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Alert, View} from 'react-native';
 
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import Logger from '@react-native-mapbox-gl/maps/javascript/utils/Logger';
+import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {Button} from 'react-native-elements';
@@ -134,7 +133,7 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map []');
-    Logger.setLogCallback((log) => {
+    MapboxGL.Logger.setLogCallback((log) => {
       const {message} = log;
       // console.log('LOGGER MESSAGE IN MAPS.JS', message);
       if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {

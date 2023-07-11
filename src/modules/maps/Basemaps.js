@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
@@ -114,8 +114,8 @@ function Basemap(props) {
   };
 
   // Update spots in extent and saved view (center and zoom)
-  const onRegionDidChange = async () => {
-    console.log('Event onRegionDidChange');
+  const onMapIdle = async (e) => {
+    console.log('Event onMapIdle', e);
     props.spotsInMapExtent();
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
       const newCenter = await mapRef.current.getCenter();
@@ -125,8 +125,8 @@ function Basemap(props) {
   };
 
   // Update scale bar and zoom text
-  const onRegionIsChanging = async () => {
-    console.log('Event onRegionIsChanging');
+  const onCameraChanged = async (e) => {
+    console.log('Event onCameraChanged', e);
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
       const newZoom = await mapRef.current.getZoom();
       setZoomText(newZoom);
@@ -137,7 +137,7 @@ function Basemap(props) {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoom}/>
+          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoomText}/>
         </View>
       )}
       <MapboxGL.MapView
@@ -158,8 +158,8 @@ function Basemap(props) {
         onLongPress={props.onMapLongPress}
         scrollEnabled={props.allowMapViewMove}
         zoomEnabled={props.allowMapViewMove}
-        onRegionDidChange={onRegionDidChange}    // Update spots in extent and saved view (center and zoom)
-        onRegionIsChanging={onRegionIsChanging}  // Update scale bar and zoom text
+        onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
+        onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
       >
 
         {/* Blue dot for user location */}

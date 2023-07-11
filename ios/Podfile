@@ -4,6 +4,8 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '12.4'
 install! 'cocoapods', :deterministic_uuids => false
 
+$RNMapboxMapsImpl = 'mapbox'
+
 # Force pods to match minimum iOS version for React Native
 # Fixes build issue on Xcode Cloud where some pods
 # Use iOS 12 calls despite being set as iOS 11
@@ -59,7 +61,7 @@ ReactNativeMapboxGLIOSVersion = '~> 6.1'
 #  react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
     __apply_Xcode_14_3_RC_post_install_workaround(installer)
-    $RNMBGL.post_install(installer)
+    $RNMapboxMaps.post_install(installer)
 #       installer.generated_projects.each do |project|
 #         project.targets.each do |target|
 #             target.build_configurations.each do |config|
@@ -89,6 +91,6 @@ pre_install do |installer|
 end
 
 pre_install do |installer|
-    $RNMBGL.pre_install(installer)
+    $RNMapboxMaps.pre_install(installer)
   end
 end
