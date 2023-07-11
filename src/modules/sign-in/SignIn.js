@@ -141,7 +141,7 @@ const SignIn = (props) => {
           <TextInput
             value={customDatabaseEndpoint.url}
             onChangeText={value => dispatch(setDatabaseEndpoint({...customDatabaseEndpoint, url: value}))}
-            autoCapitalize={false}
+            autoCapitalize={'none'}
             placeholder={'i.e. http://192.168.x.xxx'}
             style={{
               textAlign: 'center',
