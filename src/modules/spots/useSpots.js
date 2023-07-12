@@ -1,4 +1,3 @@
-import {useEffect} from 'react';
 import {Alert} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
@@ -37,9 +36,9 @@ const useSpots = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
-  useEffect(() => {
-    console.log('UE useSpots [datasets]', datasets);
-  }, [datasets]);
+  // useEffect(() => {
+  //   console.log('UE useSpots [datasets]', datasets);
+  // }, [datasets]);
 
   const checkIsSafeDelete = (spotToDelete) => {
     // Check if Spot is manually nested - get the first Spot that has this Spot nested manually in spot.properties.nesting

@@ -67,9 +67,8 @@ const ProjectList = (props) => {
     return () => {
       setIsProjectOptionsModalVisible(false);
       console.log('Project Options Modal Visible (in return)', isProjectOptionsModalVisible);
-
     };
-  }, [props.source]);
+  }, []);
 
   const handleStateChange = async (state) => {
     state === 'active'
@@ -211,8 +210,10 @@ const ProjectList = (props) => {
   const renderProjectsList = () => {
     if (!isEmpty(userData)) {
       return (
-        <View style={{flex: 2}}>
-          <SectionDivider dividerText={props.source === 'device' ? 'Saved Projects' : 'Projects to Import  '}/>
+        <View style={{flex: 1}}>
+          <View style={{paddingBottom: 0}}>
+            <SectionDivider dividerText={props.source === 'device' ? 'Saved Projects' : 'Projects to Import'}/>
+          </View>
           <FlatList
             keyExtractor={item => item.id.toString()}
             data={projectsArr.projects}
