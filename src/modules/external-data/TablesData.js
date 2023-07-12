@@ -33,7 +33,7 @@ function TablesData(props) {
       <Overlay
         animationType={'slide'}
         overlayStyle={externalDataStyles.overlayContainer}
-        visible={isTableVisible}
+        isVisible={isTableVisible}
       >
         <View style={externalDataStyles.centeredView}>
           <View style={externalDataStyles.buttonClose}>
