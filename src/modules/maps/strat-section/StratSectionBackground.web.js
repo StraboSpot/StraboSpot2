@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 
-import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
+import {Layer, Source} from 'react-map-gl';
 
 import useImagesHook from '../../images/useImages';
 import useSpotsHook from '../../spots/useSpots';
@@ -67,45 +67,52 @@ const StratSectionBackground = (props) => {
         const coordQuad = useMaps.getCoordQuad(imageCopy, {x: oI.image_origin_x, y: oI.image_origin_y});
         console.log('overlayimage coordQuad', coordQuad);
         return (
-          <MapboxGL.Animated.ImageSource
+          <Source
             key={'imageOverlay' + oI.id}
             id={'imageOverlay' + oI.id}
+            type={'image'}
             coordinates={coordQuad}
             url={useImages.getLocalImageURI(image.id)}>
-            <MapboxGL.RasterLayer
+            <Layer
+              type={'raster'}
               id={'imageOverlayLayer' + oI.id}
               style={{rasterOpacity: oI.image_opacity || 1}}
             />
-          </MapboxGL.Animated.ImageSource>
+          </Source>
         );
       })}
 
       {/* Y Axis Line */}
-      <MapboxGL.ShapeSource
+      <Source
         id={'yAxisSource'}
-        shape={getYAxis()}
+        type={'geojson'}
+        data={getYAxis()}
       >
-        <MapboxGL.LineLayer
+        <Layer
+          type={'line'}
           id={'yAxisLayer'}
           minZoomLevel={1}
         />
-      </MapboxGL.ShapeSource>
+      </Source>
 
       {/* Y Axis Tick Marks */}
-      <MapboxGL.ShapeSource
+      <Source
         id={'yAxisTickMarksSource'}
-        shape={getYAxisTickMarks()}
+        type={'geojson'}
+        data={getYAxisTickMarks()}
       >
-        <MapboxGL.LineLayer
+        <Layer
+          type={'line'}
           id={'yAxisTickMarksLayer'}
           minZoomLevel={1}
         />
-        <MapboxGL.SymbolLayer
+        <Layer
+          type={'symbol'}
           id={'yAxisTickMarksLabelLayer'}
           minZoomLevel={1}
-          style={useMapSymbology.getMapSymbology().yAxisTickMarkLabels}
+          layout={useMapSymbology.getLayoutSymbology().yAxisTickMarkLabels}
         />
-      </MapboxGL.ShapeSource>
+      </Source>
 
       {/* X Axes */}
       <XAxis stratSection={props.stratSection}/>

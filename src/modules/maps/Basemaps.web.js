@@ -3,15 +3,17 @@ import {Platform, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Map, {Layer, Source} from 'react-map-gl';
+import {Map, Layer, Source} from 'react-map-gl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import useImagesHook from '../images/useImages';
+// import FreehandSketch from '../sketch/FreehandSketch';
 import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
 import {setViewStateGeo, setViewStateImageBasemap, setViewStateStratSection} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
+import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
@@ -75,6 +77,20 @@ const Basemap = (props) => {
       }
     });
   }
+
+  // Get max X and max Y for strat intervals
+  const getStratIntervalsMaxXY = () => {
+    const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
+      feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
+    return intervals.reduce((acc, i) => {
+      const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
+      const xs = coords.flat().map(c => c[0]);
+      const maxX = Math.max(...xs);
+      const ys = coords.flat().map(c => c[1]);
+      const maxY = Math.max(...ys);
+      return [Math.max(acc[0], maxX), Math.max(acc[1], maxY)];
+    }, [0, 0]);
+  };
 
   // Update spots in extent and save view state (center and zoom)
   const onMove = useCallback((evt) => {
@@ -149,6 +165,11 @@ const Basemap = (props) => {
           );
         })}
 
+        {/* Strat Section background Layer */}
+        {props.stratSection && (
+          <StratSectionBackground maxXY={getStratIntervalsMaxXY()} stratSection={props.stratSection}/>
+        )}
+
         {/* Image Basemap Layer */}
         {props.imageBasemap && !isEmpty(coordQuad) && (
           <Source
@@ -162,10 +183,18 @@ const Basemap = (props) => {
               type={'raster'}
               id={'imageBasemapLayer'}
               paint={{'raster-opacity': 1}}
-              beforeId={'pointLayerColorHalo'}
+              // beforeId={'pointLayerColorHalo'}
             />
           </Source>
         )}
+
+        {/* Sketch Layer */}
+        {/*{(props.freehandSketchMode)*/}
+        {/*  && (*/}
+        {/*    <FreehandSketch>*/}
+        {/*      <MapboxGL.RasterLayer id={'sketchLayer'}/>*/}
+        {/*    </FreehandSketch>*/}
+        {/*  )}*/}
 
         {/* Colored Halo Around Points Layer */}
         <Source

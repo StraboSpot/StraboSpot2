@@ -142,29 +142,8 @@ const useStratSectionSymbology = () => {
     }
   };
 
-  const getStratStyle = () => {
-    return {
-      xAxisTickMarkLabels: {
-        textField: ['get', 'label'],
-        textAnchor: 'bottom-left',
-        textOffset: [1, 1],
-        textRotate: 45,
-        textIgnorePlacement: true,
-        textSize: 10,
-      },
-      yAxisTickMarkLabels: {
-        textField: ['get', 'label'],
-        textAnchor: 'bottom',
-        textOffset: [-1, 0],
-        textIgnorePlacement: true,
-        textSize: 10,
-      },
-    };
-  };
-
   return {
     getStratIntervalFill: getStratIntervalFill,
-    getStratStyle: getStratStyle,
   };
 };
 

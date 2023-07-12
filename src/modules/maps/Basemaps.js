@@ -10,7 +10,7 @@ import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {BACKGROUND, MAPBOX_TOKEN, ZOOM} from './maps.constants';
+import {BACKGROUND, MAPBOX_TOKEN} from './maps.constants';
 import {setViewStateGeo, setViewStateImageBasemap, setViewStateStratSection} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
@@ -32,7 +32,6 @@ const Basemap = (props) => {
   const viewStateGeo = useSelector(state => state.map.viewStateGeo);
   const viewStateImageBasemap = useSelector(state => state.map.viewStateImageBasemap);
   const viewStateStratSection = useSelector(state => state.map.viewStateStratSection);
-  const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef, cameraRef} = props.forwardedRef;
   const [useMapSymbology] = useMapSymbologyHook();
@@ -41,13 +40,13 @@ const Basemap = (props) => {
 
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
-  const [zoomText, setZoomText] = useState(zoom);
 
   const viewState = props.imageBasemap ? viewStateImageBasemap
     : props.stratSection ? viewStateStratSection
       : viewStateGeo;
-
   console.log('Got view state', viewState);
+
+  const [zoomText, setZoomText] = useState(viewState.zoom);
 
   const coordQuad = useMaps.getCoordQuad(props.imageBasemap);
 
@@ -98,12 +97,9 @@ const Basemap = (props) => {
   };
 
   // Update scale bar and zoom text
-  const onCameraChanged = async () => {
-    console.log('Event onCameraChanged');
-    if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
-      const newZoom = await mapRef.current.getZoom();
-      setZoomText(newZoom);
-    }
+  const onCameraChanged = async ({properties, timestamp}) => {
+    console.log('Event onCameraChanged', properties);
+    setZoomText(properties.zoom);
   };
 
   return (

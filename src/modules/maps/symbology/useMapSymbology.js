@@ -445,6 +445,21 @@ const useMapSymbology = () => {
       lineColor: 'black',
       lineWidth: 3,
     },
+    xAxisTickMarkLabels: {
+      textField: ['get', 'label'],
+      textAnchor: 'bottom-left',
+      textOffset: [1, 1],
+      textRotate: 45,
+      textIgnorePlacement: true,
+      textSize: 10,
+    },
+    yAxisTickMarkLabels: {
+      textField: ['get', 'label'],
+      textAnchor: 'bottom',
+      textOffset: [-1, 0],
+      textIgnorePlacement: true,
+      textSize: 10,
+    },
   };
 
   const getPaintSymbology = () => {
@@ -488,6 +503,8 @@ const useMapSymbology = () => {
       textField: 'text-field',
       textIgnorePlacement: 'text-ignore-placement',
       textOffset: 'text-offset',
+      textRotate: 'text-rotate',
+      textSize: 'text-size',
     };
 
     return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
