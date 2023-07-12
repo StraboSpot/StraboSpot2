@@ -56,6 +56,13 @@ const mainMenuConfig = {
   timeout: null,
 };
 
+const projectConfig = {
+  key: 'project',
+  storage: AsyncStorage,
+  blacklist: ['project', 'datasets'],
+  timeout: null,
+};
+
 const spotsConfig = {
   key: 'spot',
   storage: AsyncStorage,
@@ -73,7 +80,7 @@ const combinedReducers = combineReducers({
   home: persistReducer(homeConfig, homeSlice),
   notebook: persistReducer(notebookConfig, notebookSlice),
   map: mapsSlice,
-  project: projectSlice,
+  project: persistReducer(projectConfig, projectSlice),
   mainMenu: persistReducer(mainMenuConfig, mainMenuSlice),
   offlineMap: offlineMapsSlice,
   spot: persistReducer(spotsConfig, spotsSlice),
@@ -81,29 +88,31 @@ const combinedReducers = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === REDUX.CLEAR_STORE) {
-    state = {
-      compass: undefined,
-      home: {
-        ...state.home,
-        isOnline: state.home.isOnline,
-      },
-      notebook: undefined,
-      map: undefined,
-      project: {
-        ...state.project,
-        databaseEndpoint: {
-          url: state.project.databaseEndpoint.url,
-          isSelected: state.project.databaseEndpoint.isSelected,
+    if (action.type === REDUX.CLEAR_STORE) {
+      state = {
+        compass: undefined,
+        home: {
+          ...state.home,
+          isOnline: state.home.isOnline,
         },
-      },
-      offlineMap: state.offlineMap,
-      spot: undefined,
-      user: undefined,
-    };
+        notebook: undefined,
+        map: undefined,
+        project: {
+          ...state.project,
+          project: {},
+          datasets: {},
+          databaseEndpoint: state.project.databaseEndpoint,
+        },
+        offlineMap: state.offlineMap,
+        spot: undefined,
+        user: undefined,
+      }
+      ;
+    }
+
+    return combinedReducers(state, action);
   }
-  return combinedReducers(state, action);
-};
+;
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
