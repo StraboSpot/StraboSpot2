@@ -67,9 +67,8 @@ const ProjectList = (props) => {
     return () => {
       setIsProjectOptionsModalVisible(false);
       console.log('Project Options Modal Visible (in return)', isProjectOptionsModalVisible);
-
     };
-  }, [props.source]);
+  }, []);
 
   const handleStateChange = async (state) => {
     state === 'active'
