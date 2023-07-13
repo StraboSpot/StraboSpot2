@@ -169,6 +169,7 @@ function Basemap(props) {
         onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
         onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
         onDidFinishLoadingMap={onDidFinishLoadingMap}
+        scaleBarEnabled={false}
       >
 
         {/* Blue dot for user location */}
