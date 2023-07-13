@@ -136,7 +136,7 @@ function Basemap(props) {
 
   // Set flag for when the map has been loaded
   // This is a fix for patterns loading too slowly after v10 update
-  // Note: Check if this bug is fixed in rnmapbox and therefore can be removed
+  // ToDo: Check if this bug is fixed in rnmapbox and therefore can be removed
   const onDidFinishLoadingMap = () => {
     props.stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
   }
