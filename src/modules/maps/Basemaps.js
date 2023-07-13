@@ -40,6 +40,7 @@ function Basemap(props) {
   const useMapView = useMapViewHook();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
+  const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [zoomText, setZoomText] = useState(zoom);
 
@@ -133,6 +134,13 @@ function Basemap(props) {
     }
   };
 
+  // Set flag for when the map has been loaded
+  // This is a fix for patterns loading too slowly after v10 update
+  // Note: Check if this bug is fixed in rnmapbox and therefore can be removed
+  const onDidFinishLoadingMap = () => {
+    props.stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
+  }
+
   return (
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
@@ -160,6 +168,7 @@ function Basemap(props) {
         zoomEnabled={props.allowMapViewMove}
         onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
         onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
+        onDidFinishLoadingMap={onDidFinishLoadingMap}
       >
 
         {/* Blue dot for user location */}
@@ -272,7 +281,8 @@ function Basemap(props) {
             id={'polygonLayerWithPatternNotSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
-            style={useMapSymbology.getMapSymbology().polygonWithPattern}
+            style={{...useMapSymbology.getMapSymbology().polygonWithPattern,
+              visibility: props.stratSection && isStratStyleLoaded ? 'visible' : 'none'}}
           />
           <MapboxGL.LineLayer
             id={'polygonLayerNotSelectedBorder'}
@@ -346,7 +356,8 @@ function Basemap(props) {
             id={'polygonLayerWithPatternSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
-            style={useMapSymbology.getMapSymbology().polygonWithPatternSelected}
+            style={{...useMapSymbology.getMapSymbology().polygonWithPatternSelected,
+              visibility: props.stratSection && isStratStyleLoaded ? 'visible' : 'none'}}
           />
           <MapboxGL.LineLayer
             id={'polygonLayerSelectedBorder'}
