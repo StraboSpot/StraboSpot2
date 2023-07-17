@@ -1,71 +1,58 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
-import {Input} from 'react-native-elements';
-import Dialog, {
-  DialogButton,
-  DialogContent,
-  DialogFooter,
-  DialogTitle,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import {Button, Input, Overlay} from 'react-native-elements';
 
+import homeStyles from '../../modules/home/home.style';
 import styles from '../../shared/common.styles';
+import commonStyles from '../../shared/common.styles';
 
 const TextInputModal = (props) => {
   return (
-    <View>
-      <Dialog
-        dialogStyle={[styles.dialogBox, {top: props.topPosition || '10%'}]}
-        width={300}
-        visible={props.visible}
-        dialogAnimation={new FadeAnimation({
-          animationDuration: 300,
-          useNativeDriver: true,
-        })}
-        onTouchOutside={props.onTouchOutside}
-        useNativeDriver={true}
-        dialogTitle={
-          <DialogTitle
-            style={props.style}
-            textStyle={styles.dialogTitleText}
-            title={props.dialogTitle}/>
-        }
-        footer={
-          <DialogFooter>
-            <DialogButton
-              text={props.buttonText || 'Save'}
-              textStyle={props.buttonTextStyle}
-              onPress={props.onPress}
-            />
-            <DialogButton
-              text={'Cancel'}
-              onPress={props.close}
-            />
-          </DialogFooter>
-        }
-      >
-        <DialogContent style={[styles.dialogContent, props.dialogContent]}>
-          {props.textAboveInput}
-          <Input
-            autoCapitalize={props.autoCapitalize || 'none'}
-            multiline={props.multiline}
-            numberOfLines={5}
-            value={props.value}
-            returnKeyType={'done'}
-            keyboardType={props.keyboardType}
-            inputContainerStyle={{borderColor: 'transparent'}}
-            inputStyle={[styles.textInput, props.textInputStyle]}
-            onChangeText={props.onChangeText}
-            placeholder={props.placeholder || 'Enter text here...'}
-            errorMessage={props.errorMessage}
-            renderErrorMessage={props.renderErrorMessage}
-            onSubmitEditing={props.onSubmitEditing}
-          />
-          {props.children}
-        </DialogContent>
-      </Dialog>
-    </View>
+    <Overlay
+      animationType={'fade'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, styles.dialogBox, {top: props.topPosition || '10%'}]}
+      onBackdropPress={props.onTouchOutside}
+      backdropStyle={{backgroundColor: 'transparent'}}
+    >
+      <View style={[commonStyles.overlayTitleContainer, props.style]}>
+        <Text style={[commonStyles.overlayTitleText, props.overlayTitleText]}>{props.dialogTitle}</Text>
+      </View>
+      <View style={[styles.dialogContent, props.dialogContent]}>
+        {props.textAboveInput}
+        <Input
+          autoCapitalize={props.autoCapitalize || 'none'}
+          multiline={props.multiline}
+          numberOfLines={5}
+          value={props.value}
+          returnKeyType={'done'}
+          keyboardType={props.keyboardType}
+          inputContainerStyle={{borderColor: 'transparent'}}
+          inputStyle={[styles.textInput, props.textInputStyle]}
+          onChangeText={props.onChangeText}
+          placeholder={props.placeholder || 'Enter text here...'}
+          errorMessage={props.errorMessage}
+          renderErrorMessage={props.renderErrorMessage}
+          onSubmitEditing={props.onSubmitEditing}
+        />
+        {props.children}
+      </View>
+      <View style={commonStyles.overlayButtonContainer}>
+        <Button
+          title={props.buttonText || 'Save'}
+          type={'clear'}
+          titleStyle={[commonStyles.overlayButtonText, props.overlayButtonText]}
+          onPress={props.onPress}
+        />
+        <Button
+          title={'Cancel'}
+          type={'clear'}
+          titleStyle={commonStyles.overlayButtonText}
+          onPress={props.close}
+        />
+      </View>
+    </Overlay>
   );
 };
 

@@ -1,9 +1,7 @@
 import React from 'react';
-import {Dimensions, FlatList, Platform, Switch, View} from 'react-native';
+import {Dimensions, FlatList, Platform, Switch, Text, View} from 'react-native';
 
-import {ButtonGroup, ListItem} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {ScaleAnimation} from 'react-native-popup-dialog/src';
+import {ButtonGroup, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
@@ -14,12 +12,9 @@ import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTag
 import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import dialogStyles from './dialog.styles';
+import homeStyles from './home.style';
 
 const deviceHeight = Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen').height;
-
-const scaleAnimation = new ScaleAnimation({
-  useNativeDriver: true,
-});
 
 const MapSymbolsDialog = (props) => {
   const dispatch = useDispatch();
@@ -66,19 +61,17 @@ const MapSymbolsDialog = (props) => {
   };
 
   return (
-    <Dialog
-      dialogAnimation={scaleAnimation}
-      dialogStyle={dialogStyles.dialogBox}
-      visible={props.visible}
-      dialogTitle={
-        <DialogTitle
-          title={'Map Symbols'}
-          style={dialogStyles.dialogTitle}
-          textStyle={dialogStyles.dialogTitleText}
-        />}
-      onTouchOutside={props.onTouchOutside}
+    <Overlay
+      animationType={'slide'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, dialogStyles.dialogBox]}
+      onBackdropPress={props.onTouchOutside}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <DialogContent>
+      <View style={[homeStyles.dialogTitleContainer, dialogStyles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, dialogStyles.dialogTitleText]}>Map Symbols</Text>
+      </View>
+      <View>
         {!isEmpty(mapSymbols) && (
           <View style={{maxHeight: deviceHeight * 0.60}}>
             <FlatList
@@ -117,8 +110,8 @@ const MapSymbolsDialog = (props) => {
             textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
           />
         )}
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

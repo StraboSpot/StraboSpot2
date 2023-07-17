@@ -1,12 +1,12 @@
 import React from 'react';
-import {ScrollView, Switch, View} from 'react-native';
+import {ScrollView, Switch, Text, View} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import {Avatar, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
+import homeStyles from '../../home/home.style';
 import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 import styles from '../notebookPanel.styles';
@@ -62,19 +62,15 @@ const MorePagesMenu = (props) => {
   };
 
   return (
-    <Dialog
-      dialogStyle={footerStyles.morePagesDialog}
-      visible={props.visible}
-      onTouchOutside={props.closeMorePagesMenu}
-      dialogTitle={
-        <DialogTitle
-          title={'More Pages'}
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-        />
-      }
+    <Overlay
+      overlayStyle={footerStyles.morePagesDialog}
+      isVisible={props.visible}
+      onBackdropPress={props.closeMorePagesMenu}
     >
-      <DialogContent style={{flex: 1, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>More Pages</Text>
+      </View>
+      <View style={{flex: 1, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
         <ScrollView>
           {generalPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
           {!isEmpty(petPagesToShow) && (
@@ -96,8 +92,8 @@ const MorePagesMenu = (props) => {
             </React.Fragment>
           )}
         </ScrollView>
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

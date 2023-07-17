@@ -1,12 +1,7 @@
 import React from 'react';
+import {Text, View} from 'react-native';
 
-import Dialog, {
-  DialogButton,
-  DialogContent,
-  DialogFooter,
-  DialogTitle,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import * as ProjectActions from './project.constants';
@@ -14,45 +9,33 @@ import styles from './project.styles';
 
 const UploadDialogBox = (props) => {
   return (
-    <React.Fragment>
-      <Dialog
-        dialogStyle={commonStyles.dialogBox}
-        width={275}
-        visible={props.visible}
-        dialogAnimation={new FadeAnimation({
-          animationDuration: 200,
-          useNativeDriver: true,
-        })}
-        // useNativeDriver={true}
-        footer={
-          <DialogFooter>
-            <DialogButton
-              text={'CANCEL'}
-              onPress={props.cancel}
-              style={styles.dialogButton}
-              textStyle={[styles.dialogButtonText, {color: 'red'}]}
-            />
-            <DialogButton
-              text={props.buttonText || 'OK'}
-              onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
-              style={[styles.dialogButton]}
-              textStyle={props.disabled ? styles.dialogDisabledButtonText : styles.dialogButtonText}
-              disabled={props.disabled}
-            />
-          </DialogFooter>
-        }
-        dialogTitle={
-          <DialogTitle
-            style={styles.dialogTitleContainer}
-            textStyle={styles.dialogTitleText}
-            title={props.dialogTitle}/>
-        }
-      >
-        <DialogContent style={styles.dialogContent}>
-          {props.children}
-        </DialogContent>
-      </Dialog>
-    </React.Fragment>
+    <Overlay
+      animationType={'fade'}
+      overlayStyle={[commonStyles.dialogBox, {width: 275}]}
+      isVisible={props.visible}
+    >
+      <View style={[commonStyles.overlayTitleContainer, styles.dialogTitleContainer]}>
+        <Text style={[commonStyles.overlayTitleText, styles.dialogTitleText]}>{props.dialogTitle}</Text>
+      </View>
+      <View style={styles.dialogContent}>
+        {props.children}
+      </View>
+      <View style={commonStyles.overlayButtonContainer}>
+        <Button
+          title={props.buttonText.toUpperCase() || 'OK'}
+          buttonStyle={styles.dialogButton}
+          titleStyle={props.disabled ? styles.dialogDisabledButtonText : styles.dialogButtonText}
+          disabled={props.disabled}
+          onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
+        />
+        <Button
+          title={'CANCEL'}
+          buttonStyle={styles.dialogButton}
+          titleStyle={[styles.dialogButtonText]}
+          onPress={props.cancel}
+        />
+      </View>
+    </Overlay>
   );
 };
 

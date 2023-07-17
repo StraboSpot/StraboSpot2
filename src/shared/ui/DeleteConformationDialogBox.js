@@ -1,41 +1,39 @@
 import React from 'react';
+import {Text, View} from 'react-native';
 
-import Dialog, {
-  DialogButton,
-  DialogContent,
-  DialogFooter,
-  DialogTitle,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 
-import styles from '../../shared/common.styles';
+import commonStyles from '../../shared/common.styles';
 
 const deleteConformation = (props) => {
   return (
-    <Dialog
-      dialogStyle={[styles.dialogBox, {position: 'absolute', top: '25%'}]}
-      width={300}
-      visible={props.visible}
-      dialogAnimation={new FadeAnimation({animationDuration: 300, useNativeDriver: true})}
-      useNativeDriver={true}
-      dialogTitle={
-        <DialogTitle
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-          title={props.title}
-        />
-      }
-      footer={
-        <DialogFooter>
-          <DialogButton text={'Delete'} onPress={props.delete} disabled={props.deleteDisabled}/>
-          <DialogButton text={'Cancel'} onPress={props.cancel} disabled={props.cancelDisabled}/>
-        </DialogFooter>
-      }
+    <Overlay
+      animationType={'fade'}
+      isVisible={props.isVisible}
+      overlayStyle={commonStyles.dialogBox}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <DialogContent style={styles.dialogContent}>
+      <View style={commonStyles.overlayTitleContainer}>
+        <Text style={{...commonStyles.overlayTitleText, color: 'red'}}>{props.title}</Text>
+      </View>
+      <View style={commonStyles.dialogContent}>
         {props.children}
-      </DialogContent>
-    </Dialog>
+      </View>
+      <View style={commonStyles.overlayButtonContainer}>
+        <Button
+          title={'Delete'}
+          titleStyle={commonStyles.overlayButtonText}
+          type={'clear'}
+          onPress={props.delete}
+        />
+        <Button
+          title={'Cancel'}
+          titleStyle={commonStyles.overlayButtonText}
+          type={'Cancel'}
+          onPress={props.cancel}
+        />
+      </View>
+    </Overlay>
   );
 };
 

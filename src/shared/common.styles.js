@@ -11,6 +11,7 @@ const commonStyles = StyleSheet.create({
   },
   buttonContainer: {
     paddingTop: 10,
+    alignItems: 'center',
   },
   buttonPadding: {
     padding: 10,
@@ -37,6 +38,7 @@ const commonStyles = StyleSheet.create({
     position: 'absolute',
     top: '15%',
     maxHeight: height * 0.90,
+    width: 300,
   },
   dialogContentImportantText: {
     color: 'red',
@@ -63,9 +65,6 @@ const commonStyles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     textAlign: 'center',
-  },
-  dialogTitleSuccess: {
-    backgroundColor: 'green',
   },
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
@@ -115,6 +114,25 @@ const commonStyles = StyleSheet.create({
     fontSize: themes.SMALL_TEXT_SIZE,
     color: themes.DARKGREY,
     marginTop: 5,
+  },
+  overlayButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 20,
+  },
+  overlayButtonText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    color: 'black',
+  },
+  overlayTitleContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  overlayTitleText: {
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
   },
   standardButtonContainer: {
     paddingTop: 5,

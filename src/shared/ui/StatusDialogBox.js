@@ -1,44 +1,36 @@
 import React, {useRef} from 'react';
-import {ScrollView} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 
-import Dialog, {DialogContent, DialogTitle, FadeAnimation} from 'react-native-popup-dialog';
+import {Overlay} from 'react-native-elements';
 
+import homeStyles from '../../modules/home/home.style';
 import styles from '../../shared/common.styles';
+import commonStyles from '../../shared/common.styles';
 
 const StatusDialogBox = (props) => {
   const scrollView = useRef();
 
   return (
     <React.Fragment>
-      <Dialog
-        dialogStyle={styles.dialogBox}
-        width={300}
-        visible={props.visible}
-        dialogAnimation={
-          new FadeAnimation({
-            animationDuration: 300,
-            useNativeDriver: true,
-          })
-        }
-        onTouchOutside={props.onTouchOutside}
-        useNativeDriver={true}
-        dialogTitle={
-          <DialogTitle
-            style={props.style}
-            textStyle={styles.dialogTitleText}
-            title={props.dialogTitle}
-          />
-        }>
+      <Overlay
+        animationType={'fade'}
+        isVisible={props.visible}
+        onBackdropPress={props.onTouchOutside}
+        overlayStyle={homeStyles.dialogBox}
+      >
+        <View style={[commonStyles.overlayTitleContainer, props.style]}>
+          <Text style={[commonStyles.overlayTitleText]}>{props.dialogTitle}</Text>
+        </View>
+
         <ScrollView
           ref={scrollView}
-          onContentSizeChange={() =>
-            scrollView.current.scrollToEnd({animated: true})
-          }>
-          <DialogContent style={[styles.dialogContent, props.dialogContent]}>
+          onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}
+        >
+          <View style={[styles.dialogContent, props.dialogContent]}>
             {props.children}
-          </DialogContent>
+          </View>
         </ScrollView>
-      </Dialog>
+      </Overlay>
     </React.Fragment>
   );
 };

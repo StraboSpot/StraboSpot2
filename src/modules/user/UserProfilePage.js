@@ -82,9 +82,9 @@ const UserProfile = (props) => {
       <TextInputModal
         topPosition={10}
         dialogTitle={'DANGER!'}
+        overlayTitleText={{color: 'red'}}
         buttonText={'DELETE'}
-        buttonTextStyle={{color: 'red'}}
-        style={{backgroundColor: 'red'}}
+        overlayButtonText={{color: 'red'}}
         visible={isDeleteProfileModalVisible}
         onPress={deleteProfile}
         close={() => setDeleteProfileModalVisible(false)}

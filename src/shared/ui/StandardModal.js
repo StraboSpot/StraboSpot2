@@ -1,47 +1,43 @@
 import React from 'react';
+import {Text, View} from 'react-native';
 
-import Dialog, {
-  DialogButton,
-  DialogContent,
-  DialogFooter,
-  DialogTitle,
-  FadeAnimation,
-} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 
+import homeStyles from '../../modules/home/home.style';
 import commonStyles from '../common.styles';
 import styles from './../../modules/project/project.styles';
 
 const StandardModal = (props) => {
   return (
-    <React.Fragment>
-      <Dialog
-        dialogStyle={commonStyles.dialogBox}
-        width={props.width || 275}
-        visible={props.visible}
-        onTouchOutside={props.onTouchOutside}
-        dialogAnimation={new FadeAnimation({
-          animationDuration: 200,
-          useNativeDriver: true,
-        })}
-        useNativeDriver={true}
-        dialogTitle={
-          <DialogTitle
-            style={props.dialogTitleStyle}
-            textStyle={styles.dialogTitleText}
-            title={props.dialogTitle}/>
-        }
-        footer={props.footerButtonsVisible && (
-          <DialogFooter>
-            <DialogButton text={props.rightButtonText || 'OK'} onPress={props.onPress}/>
-            <DialogButton text={props.leftButtonText || 'Cancel'} onPress={props.close}/>
-          </DialogFooter>
-        )}
-      >
-        <DialogContent style={styles.dialogContent}>
-          {props.children}
-        </DialogContent>
-      </Dialog>
-    </React.Fragment>
+    <Overlay
+      animationType={'fade'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, {width: props.width || 275}]}
+      onBackdropPress={props.onTouchOutside}
+    >
+      <View style={commonStyles.overlayTitleContainer}>
+        <Text style={commonStyles.overlayTitleText}>{props.dialogTitle}</Text>
+      </View>
+      <View style={styles.dialogContent}>
+        {props.children}
+      </View>
+      {props.footerButtonsVisible && (
+        <View style={commonStyles.overlayButtonContainer}>
+          <Button
+            title={props.rightButtonText || 'OK'}
+            type={'clear'}
+            titleStyle={commonStyles.overlayButtonText}
+            onPress={props.onPress}
+          />
+          <Button
+            title={props.leftButtonText || 'Cancel'}
+            titleStyle={commonStyles.overlayButtonText}
+            type={'clear'}
+            onPress={props.close}
+          />
+        </View>
+      )}
+    </Overlay>
   );
 };
 

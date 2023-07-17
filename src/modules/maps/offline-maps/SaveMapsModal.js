@@ -2,9 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Platform, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
-import {Button} from 'react-native-elements';
-import RNFS from 'react-native-fs';
-import {Dialog, DialogContent, SlideAnimation} from 'react-native-popup-dialog';
+import {Button, Overlay} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -14,13 +12,14 @@ import useServerRequestHook from '../../../services/useServerRequests';
 import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-// import ProgressBar from '../../../shared/ui/ProgressBar';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
   setOfflineMapsModalVisible,
 } from '../../home/home.slice';
+import homeStyles from '../../home/home.style';
+// import ProgressBar from '../../../shared/ui/ProgressBar';
 import {MAP_PROVIDERS} from '../maps.constants';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
@@ -245,34 +244,30 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   };
 
   return (
-    <Dialog
-      dialogTitle={
-        <View style={styles.dialogTitleContainer}>
-          <View style={styles.dialogTitle}>
-            <Text style={{fontSize: 25}}>{currentMapName}</Text>
-          </View>
-          <View style={styles.closeButton}>
-            <Button
-              title={'Close'}
-              titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
-              type={'clear'}
-              onPress={() => dispatch(setOfflineMapsModalVisible(false))}
-            />
-          </View>
-        </View>
-      }
-      onDismiss={() => {
+    <Overlay
+      animationType={'slide'}
+      isVisible={isOfflineMapModalVisible}
+      overlayStyle={[homeStyles.dialogBox, commonStyles.dialogBox, {height: Platform.OS === 'ios' ? 400 : 275}]}
+      onBackdropPress={() => {
         setShowMainMenu(true);
         setShowComplete(false);
       }}
-      height={Platform.OS === 'ios' ? 400 : 325}
-      visible={isOfflineMapModalVisible}
-      dialogStyle={commonStyles.dialogBox}
-      dialogAnimation={new SlideAnimation({
-        slideFrom: 'top',
-      })}
     >
-      <DialogContent style={commonStyles.dialogContent}>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitleContainer]}>
+        <View style={styles.dialogTitle}>
+          <Text style={[homeStyles.dialogTitleText]}>{currentMapName}</Text>
+        </View>
+        <View style={styles.closeButton}>
+          <Button
+            title={'Close'}
+            titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
+            type={'clear'}
+            onPress={() => dispatch(setOfflineMapsModalVisible(false))}
+          />
+        </View>
+      </View>
+
+      <View style={commonStyles.dialogContent}>
         <View style={styles.saveModalContainer}>
           {showMainMenu && (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -378,8 +373,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
             )}
           </View>
         </View>
-      </DialogContent>
-    </Dialog>
+      </View>
+    </Overlay>
   );
 };
 

@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Switch, View} from 'react-native';
+import {FlatList, Switch, Text, View} from 'react-native';
 
-import {Icon, ListItem} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
-import {ScaleAnimation} from 'react-native-popup-dialog/src';
+import {Icon, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -16,10 +14,7 @@ import {BASEMAPS} from '../maps/maps.constants';
 import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import styles from './dialog.styles';
-
-const slideAnimation = new ScaleAnimation({
-  useNativeDriver: true,
-});
+import homeStyles from './home.style';
 
 const BaseMapDialog = (props) => {
 
@@ -272,26 +267,22 @@ const BaseMapDialog = (props) => {
   };
 
   return (
-    <Dialog
-      dialogAnimation={slideAnimation}
-      dialogStyle={styles.dialogBox}
-      visible={props.visible}
-      dialogTitle={
-        <DialogTitle
-          title={dialogTitle}
-          style={styles.dialogTitle}
-          textStyle={styles.dialogTitleText}
-        />}
-      onTouchOutside={props.onTouchOutside}
+    <Overlay
+      animationType={'slide'}
+      isVisible={props.visible}
+      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      onBackdropPress={props.onTouchOutside}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <DialogContent>
-        <View>
-          {renderDefaultBasemapsList()}
-          {determineWhatCustomMapListToRender()}
-          <View/>
-        </View>
-      </DialogContent>
-    </Dialog>
+      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
+        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{dialogTitle}</Text>
+      </View>
+      <View>
+        {renderDefaultBasemapsList()}
+        {determineWhatCustomMapListToRender()}
+        <View/>
+      </View>
+    </Overlay>
   );
 };
 
