@@ -42,7 +42,7 @@ const AddMeasurementModal = (props) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [compassData, setCompassData] = useState({});
   const [initialValues, setInitialValues] = useState({id: getNewUUID()});
-  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS === 'android');
+  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
   const [isShowTemplates, setIsShowTemplates] = useState(false);
   const [measurementTypeForForm, setMeasurementTypeForForm] = useState(null);
   const [relevantTemplates, setRelevantTemplates] = useState([]);
@@ -239,7 +239,7 @@ const AddMeasurementModal = (props) => {
         )}
         {!isShowTemplates && (
           <React.Fragment>
-            {Platform.OS !== 'android' && (
+            {Platform.OS === 'ios' && (
               <Button
                 buttonStyle={formStyles.formButtonSmall}
                 titleProps={formStyles.formButtonTitle}
