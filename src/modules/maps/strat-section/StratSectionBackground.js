@@ -77,6 +77,7 @@ const StratSectionBackground = (props) => {
         console.log('overlayimage coordQuad', coordQuad);
         return (
           <MapboxGL.Animated.ImageSource
+            key={'imageOverlay' + oI.id}
             id={'imageOverlay' + oI.id}
             coordinates={coordQuad}
             url={useImages.getLocalImageURI(image.id)}>

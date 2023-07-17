@@ -18,6 +18,7 @@ const ChoiceButtons = (props) => {
       {useForm.getChoicesByKey(props.survey, props.choices, props.choiceFieldKey).map((choice) => {
         return (
           <Button
+            key={choice.name}
             containerStyle={formStyles.halfWidthButtonContainer}
             buttonStyle={[buttonStyle, {
               backgroundColor: props.formProps?.values[props.choiceFieldKey]?.includes(choice.name)

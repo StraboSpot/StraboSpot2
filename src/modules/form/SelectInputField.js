@@ -33,7 +33,7 @@ const SelectInputField = (props) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={PRIMARY_ACCENT_COLOR}/>;
     const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
-      <React.Fragment>
+      <React.Fragment key={item.value}>
         <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>

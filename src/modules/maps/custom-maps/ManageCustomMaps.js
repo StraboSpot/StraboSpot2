@@ -67,7 +67,7 @@ const ManageCustomMaps = (props) => {
       />
       <SectionDivider dividerText={'Current Custom Maps'}/>
       <FlatList
-        keyExtractor={item => item.toString()}
+        keyExtractor={(item, index) => item.id?.toString() || index.toString()}
         data={Object.values(customMaps)}
         renderItem={({item}) => renderCustomMapListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}

@@ -74,6 +74,7 @@ const ThreeDStructuresMeasurementsButtons = (props) => {
       {groupFields.map((field) => {
         return (
           <Button
+            key={field.name}
             containerStyle={{flex: 1, padding: 2}}
             buttonStyle={[formStyles.formButtonSmall, {
               height: 60,

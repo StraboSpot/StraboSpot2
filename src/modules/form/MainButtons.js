@@ -30,6 +30,7 @@ const MainButtons = (props) => {
       {props.mainKeys.map((k) => {
         return (
           <Button
+            key={k}
             containerStyle={props.mainKeys.length === 1 ? formStyles.fullWidthButtonContainer : formStyles.halfWidthButtonContainer}
             buttonStyle={[formStyles.formButtonLarge, {
               backgroundColor: props.formProps?.values[k] ? PRIMARY_ACCENT_COLOR : SECONDARY_BACKGROUND_COLOR,
