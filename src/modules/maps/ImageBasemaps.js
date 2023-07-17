@@ -11,7 +11,9 @@ import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {setCurrentImageBasemap} from './maps.slice';
 
-const ImageBaseMaps = () => {
+const ImageBasemaps = () => {
+  console.log('Rendering ImageBasemaps...');
+
   const dispatch = useDispatch();
 
   const [useSpots] = useSpotsHook();
@@ -61,4 +63,4 @@ const ImageBaseMaps = () => {
   );
 };
 
-export default ImageBaseMaps;
+export default ImageBasemaps;
