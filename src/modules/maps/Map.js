@@ -48,6 +48,9 @@ import useMapViewHook from './useMapView';
 MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Map = React.forwardRef((props, ref) => {
+  console.log('Rendering Map...');
+  console.log('Map props:', props);
+
   const dispatch = useDispatch();
 
   const [useImages] = useImagesHook();

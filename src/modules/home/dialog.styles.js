@@ -14,18 +14,19 @@ const styles = StyleSheet.create({
   dialogBox: {
     paddingBottom: 30,
     position: 'absolute',
-    bottom: 10,
-    left: 10,
+    bottom: 50,
+    left: 75,
     width: 300,
     maxHeight: deviceDimensions.height * 0.95,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
   },
   dialogTitle: {
-    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
+    backgroundColor: themes.LIGHTGREY,
+    margin: 10,
+    justifyContent: 'center',
   },
   dialogTitleText: {
-    color: themes.SECONDARY_BACKGROUND_COLOR,
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
   },

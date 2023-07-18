@@ -29,12 +29,13 @@ import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import homeStyles from '../home.style';
 
 const InitialProjectLoadModal = (props) => {
+  console.log('Rendering InitialProjectLoadModal...');
+  console.log('InitialProjectLoadModal props:', props);
 
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
     else return 'Guest';
   };
-
 
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
@@ -252,7 +253,7 @@ const InitialProjectLoadModal = (props) => {
               type={'clear'}
               icon={
                 <Icon
-                  name={'ios-arrow-back'}
+                  name={'arrow-back'}
                   type={'ionicon'}
                   color={'black'}
                   iconStyle={projectStyles.buttons}
@@ -285,7 +286,7 @@ const InitialProjectLoadModal = (props) => {
             type={'clear'}
             icon={
               <Icon
-                name={'ios-arrow-back'}
+                name={'arrow-back'}
                 type={'ionicon'}
                 color={'black'}
                 iconStyle={projectStyles.buttons}
@@ -359,7 +360,7 @@ const InitialProjectLoadModal = (props) => {
           type={'clear'}
           icon={
             <Icon
-              name={'ios-arrow-back'}
+              name={'arrow-back'}
               type={'ionicon'}
               color={'black'}
               iconStyle={projectStyles.buttons}
