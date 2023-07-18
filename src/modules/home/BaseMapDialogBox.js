@@ -73,20 +73,17 @@ const BaseMapDialog = (props) => {
   };
 
   const renderCustomBasemapsList = () => {
-    let dataArr = [];
-    let sectionTitle = 'Custom Basemaps';
-    let customMapsToDisplay = Object.values(customMaps).filter(
-      customMap => !customMap.overlay && customMap.url[0].includes('strabospot'));
-    let customMapsToDisplayUsingAltEndpoint = Object.values(customMaps).filter(
-      customMap => !customMap.overlay && customMap.url[0].includes('192.'));
-    dataArr = customEndpoint.isSelected ? customMapsToDisplayUsingAltEndpoint : customMapsToDisplay;
+    const sectionTitle = 'Custom Basemaps';
+    let customMapsToDisplay = customEndpoint.isSelected
+      ? Object.values(customMaps).filter(customMap => !customMap.overlay && customMap.url[0].includes('192.'))
+      : Object.values(customMaps).filter(customMap => !customMap.overlay && !customMap.url[0].includes('192.'));
 
     return (
       <View style={{maxHeight: 250}} key={'CustomMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id + 'CustomMap'}
-          data={Object.values(dataArr)}
+          data={Object.values(customMapsToDisplay)}
           renderItem={({item}) => renderCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -117,12 +114,10 @@ const BaseMapDialog = (props) => {
 
   const renderCustomMapOverlaysList = () => {
     let sectionTitle = 'Custom Overlays';
-    let customMapOverlaysToDisplay = Object.values(customMaps).filter(
-      customMap => customMap.overlay);
-    // if (!isInternetReachable && isConnected) {
-    //   customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
-    //   sectionTitle = 'Offline Custom Overlays';
-    // }
+    let customMapOverlaysToDisplay = customEndpoint.isSelected
+      ? Object.values(customMaps).filter(customMap => customMap.overlay && customMap.url[0].includes('192.'))
+      : Object.values(customMaps).filter(customMap => customMap.overlay && !customMap.url[0].includes('192.'));
+
     return (
       <View style={{maxHeight: 250}} key={'CustomOverlaysList'}>
         <SectionDivider dividerText={sectionTitle}/>
@@ -159,17 +154,14 @@ const BaseMapDialog = (props) => {
       <ListItem
         containerStyle={styles.dialogContent}
         key={customMap.id + 'CustomMapItem'}
-        onPress={() => setBaseMap(customMap)}>
+        onPress={() => setBasemap(customMap)}>
         <ListItem.Content style={{}}>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
             ({customMap.source || customMap.sources['raster-tiles'].type})
           </ListItem.Title>
-          {/*{!isInternetReachable && !isConnected*/}
-          {/*  && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles!!!)</ListItem.Subtitle>}*/}
         </ListItem.Content>
-        {customMap.id === currentBasemap?.id && currentBasemap.sources[currentBasemap.id].tiles[0].includes('http://')
-          && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        {customMap.id === currentBasemap?.id && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
       </ListItem>
     );
   };
@@ -179,7 +171,7 @@ const BaseMapDialog = (props) => {
       <ListItem
         containerStyle={styles.dialogContent}
         key={customMap.id + 'OfflineCustomMapItem'}
-        onPress={() => setBaseMap(customMap)}>
+        onPress={() => setBasemap(customMap)}>
         <ListItem.Content style={{}}>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
@@ -234,16 +226,11 @@ const BaseMapDialog = (props) => {
     </ListItem>
   );
 
-  const setBaseMap = async (customMap) => {
+  const setBasemap = async (customMap) => {
     let baseMap = {};
     if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
-      if (!customMap.url) {
-        baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
-      }
-      else {
-        baseMap = await useMaps.setBasemap(customMap.id);
-      }
-      props.close();
+      if (!customMap.url) baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
+      else baseMap = await useMaps.setBasemap(customMap.id);
       baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {

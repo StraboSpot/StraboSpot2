@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   dialogTitleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   dialogLargerText: {
     color: themes.PRIMARY_TEXT_COLOR,
