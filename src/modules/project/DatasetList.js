@@ -42,7 +42,6 @@ const DatasetList = () => {
   };
 
   const initializeDeleteDataset = () => {
-    setIsDatasetNameModalVisible(false);
     setIsDeleteConfirmModalVisible(false);
     if (selectedDatasetToEdit && selectedDatasetToEdit.id) {
       useProject.destroyDataset(selectedDatasetToEdit.id).catch(console.log);
@@ -53,6 +52,11 @@ const DatasetList = () => {
   const isDisabled = (id) => {
     return (activeDatasetsIds.length === 1 && activeDatasetsIds[0] === id)
       || (selectedDatasetId && selectedDatasetId === id);
+  };
+
+  const handleDeletePressed = () => {
+    setIsDatasetNameModalVisible(false);
+    setIsDeleteConfirmModalVisible(true);
   };
 
   const renderDatasetListItem = (dataset) => {
@@ -115,7 +119,6 @@ const DatasetList = () => {
       <View style={{backgroundColor: 'red', alignContent: 'flex-start'}}>
         <TextInputModal
           dialogTitle={'Edit or Delete Dataset'}
-          style={styles.dialogTitle}
           visible={isDatasetNameModalVisible}
           onPress={() => saveDataset()}
           close={() => setIsDatasetNameModalVisible(false)}
@@ -128,7 +131,7 @@ const DatasetList = () => {
             type={'clear'}
             disabled={isDisabled(selectedDatasetToEdit.id)}
             buttonStyle={{padding: 0}}
-            onPress={() => setIsDeleteConfirmModalVisible(true)}
+            onPress={handleDeletePressed}
             icon={
               <Icon
                 iconStyle={{paddingRight: 10}}
@@ -155,7 +158,7 @@ const DatasetList = () => {
     return (
       <DeleteConformationDialogBox
         title={'Confirm Delete!'}
-        visible={isDeleteConfirmModalVisible}
+        isVisible={isDeleteConfirmModalVisible}
         cancel={() => setIsDeleteConfirmModalVisible(false)}
         delete={() => initializeDeleteDataset()}
       >
