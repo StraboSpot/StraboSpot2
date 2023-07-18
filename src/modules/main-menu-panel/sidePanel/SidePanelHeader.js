@@ -12,7 +12,7 @@ const SidePanelHeader = (props) => {
       <Button
         icon={
           <Icon
-            name={'ios-arrow-back'}
+            name={'arrow-back'}
             type={'ionicon'}
             color={'black'}
             iconStyle={projectStyles.buttons}
