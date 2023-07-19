@@ -266,9 +266,8 @@ export const isEmpty = (value) => {
 };
 
 export const isEqual = (a, b) => {
-
   const isEqual = lodashIsEqual(a, b);
-  console.log(isEqual)
+  // console.log('isEqual' isEqual);
   return isEqual;
 };
 
@@ -357,5 +356,3 @@ const notEmptyValidator = (val) => {
   console.log(val);
   return val.trim() !== '';
 };
-
-
