@@ -12,6 +12,7 @@ import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
 import {
+  BACKGROUND,
   GEO_LAT_LNG_PROJECTION,
   LATITUDE,
   LONGITUDE,
@@ -143,7 +144,8 @@ function Basemap(props) {
           : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        styleURL={!props.imageBasemap && !props.stratSection && JSON.stringify(props.basemap)}
+        styleURL={props.imageBasemap || props.stratSection ? JSON.stringify(BACKGROUND)
+          : JSON.stringify(props.basemap)}
         animated={true}
         localizeLabels={true}
         logoEnabled={true}
@@ -199,17 +201,6 @@ function Basemap(props) {
             )
           );
         })}
-
-        {/* Image Basemap background Layer */}
-        {props.imageBasemap && (
-          <MapboxGL.VectorSource>
-            <MapboxGL.BackgroundLayer
-              id={'background'}
-              style={{backgroundColor: '#ffffff'}}
-              sourceID={'imageBasemap'}
-            />
-          </MapboxGL.VectorSource>
-        )}
 
         {/* Strat Section background Layer */}
         {props.stratSection && (

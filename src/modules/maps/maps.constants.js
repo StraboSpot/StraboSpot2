@@ -151,3 +151,16 @@ export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map((map) => {
   return {...map, ...MAP_PROVIDERS[map.source]};
 });
 console.log('CUSTOMBASEMAPS', BASEMAPS);
+
+export const BACKGROUND = {
+  title: 'Background',
+  id: 'background',
+  glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+  sources: {},
+  layers: [{
+    id: 'background',
+    type: 'background',
+    paint: {'background-color': '#ffffff'},
+  }],
+  version: 8,
+};

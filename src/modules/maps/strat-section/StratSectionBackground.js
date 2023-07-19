@@ -57,15 +57,6 @@ const StratSectionBackground = (props) => {
   return (
     <React.Fragment>
 
-      {/* Background */}
-      <MapboxGL.VectorSource>
-        <MapboxGL.BackgroundLayer
-          id={'background'}
-          style={{backgroundColor: '#ffffff'}}
-          sourceID={'stratSection'}
-        />
-      </MapboxGL.VectorSource>
-
       {/* Image Overlay Layers */}
       {stratSectionImagesSorted.map((oI) => {
         // const coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
