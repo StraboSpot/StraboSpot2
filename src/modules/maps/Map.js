@@ -175,7 +175,6 @@ const Map = React.forwardRef((props, ref) => {
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
-    if (!currentImageBasemap && !stratSection && !center) setCurrentLocationAsCenter();
     clearVertexes();
   }, [user, isOnline]);
 
@@ -812,13 +811,6 @@ const Map = React.forwardRef((props, ref) => {
       await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
     }
     else throw 'Error Getting Map Camera';
-  };
-
-  // Get the current location from the device and set it in the state as the map center
-  const setCurrentLocationAsCenter = async () => {
-    console.log('%cFlying to location MAP.JS 829', 'color: red');
-    const currentLocation = await useMaps.getCurrentLocation();
-    useMapView.setMapView([currentLocation.longitude, currentLocation.latitude], await mapRef.current.getZoom());
   };
 
   const endDraw = async () => {
