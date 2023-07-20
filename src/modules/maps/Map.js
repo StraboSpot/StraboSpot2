@@ -27,17 +27,8 @@ import {
 import useSpotsHook from '../spots/useSpots';
 import {MapLayer1, MapLayer2} from './Basemaps';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
-import {
-  clearedStratSection,
-  clearedVertexes,
-  setCurrentImageBasemap,
-  setFreehandFeatureCoords,
-  setSpotsInMapExtent,
-  setStratSection,
-  setVertexStartCoords,
-} from './maps.slice';
+import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
-import useStratSectionHook from './strat-section/useStratSection';
 import useMapSymbology from './symbology/useMapSymbology';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
@@ -55,7 +46,6 @@ const Map = React.forwardRef((props, ref) => {
   const [useSpots] = useSpotsHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
-  const useStratSection = useStratSectionHook();
 
   const center = useSelector(state => state.map.center);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -101,7 +91,6 @@ const Map = React.forwardRef((props, ref) => {
     spotsSelected: [],
     coordQuad: [],
     showUserLocation: false,
-    zoomToSpot: false,
     freehandSketchMode: false,
     measureFeatures: [],
   };
@@ -199,17 +188,6 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
-    // On change of selected spot, reset the zoomToSpot
-    if (mapProps.zoomToSpot) {
-      setMapPropsMutable(m => ({
-        ...m,
-        zoomToSpot: false,
-      }));
-      // On turning off the zoomToSpot, if not on imagebasemap,
-      // zoomToSpot synchronously to current selected spot.
-      // (turning off zoomToSpot, will move the camera to center coordinates, so reset the camera zoom to new selected spot's position.)
-      if (!currentImageBasemap && !stratSection) zoomToSpot();
-    }
     //conditional call to avoid multiple renders during edit mode.
     if (props.mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
@@ -1169,56 +1147,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const zoomToSpot = () => {
-    if (selectedSpot && useMaps.isOnGeoMap(selectedSpot)) {
-      // spot selected is on geomap, but currently on imagebasemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
-      if (currentImageBasemap || stratSection) {
-        dispatch(setCurrentImageBasemap(undefined));
-        dispatch(clearedStratSection());
-        setMapPropsMutable(m => ({
-          ...m,
-          zoomToSpot: true,
-        }));
-      }
-      // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
-      else useMaps.zoomToSpots([selectedSpot], mapRef.current, cameraRef.current);
-    }
-    else if (!isEmpty(selectedSpot)
-      && (selectedSpot.properties.image_basemap || selectedSpot.properties.strat_section_id)) {
-      // spot selected is on an image basemap or strat section, either if not on imagebasemap
-      // or not on same imagebasemap as the selectedspot's imagebasemap,
-      // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
-      if (selectedSpot.properties.image_basemap
-        && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {
-        const imageBasemapData = useSpots.getImageBasemaps().find((imgBasemap) => {
-          return imgBasemap.id === selectedSpot.properties.image_basemap;
-        });
-        dispatch(setCurrentImageBasemap(imageBasemapData));
-        setMapPropsMutable(m => ({
-          ...m,
-          zoomToSpot: true,
-        }));
-      }
-      else if (selectedSpot.properties.strat_section_id
-        && (!stratSection || stratSection.strat_section_id !== selectedSpot.properties.strat_section_id)) {
-        const stratSectionSettings = useStratSection.getStratSectionSettings(selectedSpot.properties.strat_section_id);
-        if (stratSectionSettings) {
-          dispatch(setStratSection(stratSectionSettings));
-          setMapPropsMutable(m => ({
-            ...m,
-            zoomToSpot: true,
-          }));
-        }
-      }
-      //spot selected is already on the same image basemap or strat section, zoomToSpot in sync mode
-      else {
-        const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
-        const spotInLatLng = useMaps.convertImagePixelsToLatLong(selectedSpotCopy);
-        useMaps.zoomToSpots([spotInLatLng], mapRef.current, cameraRef.current);
-      }
-    }
-    else {
-      // handle other maps
-    }
+    useMaps.zoomToSpot(mapRef.current, cameraRef.current);
   };
 
   // Modal to prompt the user to select a geometry if no geometry has been set

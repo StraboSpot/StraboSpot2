@@ -24,15 +24,21 @@ import useSpotsHook from '../spots/useSpots';
 import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
 import {
   addedCustomMap,
+  clearedStratSection,
   deletedCustomMap,
   selectedCustomMapToEdit,
   setCurrentBasemap,
+  setCurrentImageBasemap,
   setMapSymbols,
+  setStratSection,
 } from './maps.slice';
+import useStratSectionHook from './strat-section/useStratSection';
 
 const useMaps = (mapRef) => {
   const [useServerRequests] = useServerRequestsHook();
   const [useSpots] = useSpotsHook();
+  const useStratSection = useStratSectionHook();
+
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
@@ -45,6 +51,7 @@ const useMaps = (mapRef) => {
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const userMapboxToken = useSelector(state => state.user.mapboxToken);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
     'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
@@ -637,7 +644,7 @@ const useMaps = (mapRef) => {
   };
 
   const setCustomMapSwitchValue = (value, map) => {
-    console.log('value', value, 'id', map.mapId);
+    console.log('Custom Map Switch Value:', value, 'Map Id:', map.id);
     const customMapsCopy = JSON.parse(JSON.stringify(customMaps));
     let mapKey = map.id;
     if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
@@ -655,6 +662,49 @@ const useMaps = (mapRef) => {
   const viewCustomMap = (map) => {
     console.log('Setting current basemap to a custom basemap...');
     dispatch(setCurrentBasemap(map));
+  };
+
+  const zoomToSpot = (map, camera) => {
+    if (selectedSpot && isOnGeoMap(selectedSpot)) {
+      // spot selected is on geomap, but currently on image basemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
+      if (currentImageBasemap || stratSection) {
+        dispatch(setCurrentImageBasemap(undefined));
+        dispatch(clearedStratSection());
+        // doZoomToSpot = true;
+        // return true;
+      }
+      // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
+      else zoomToSpots([selectedSpot], map, camera);
+    }
+    else if (!isEmpty(selectedSpot)
+      && (selectedSpot.properties.image_basemap || selectedSpot.properties.strat_section_id)) {
+      // spot selected is on an image basemap or strat section, either if not on imagebasemap
+      // or not on same imagebasemap as the selectedspot's imagebasemap,
+      // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
+      if (selectedSpot.properties.image_basemap
+        && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {
+        const imageBasemapData = useSpots.getImageBasemaps().find((imgBasemap) => {
+          return imgBasemap.id === selectedSpot.properties.image_basemap;
+        });
+        dispatch(setCurrentImageBasemap(imageBasemapData));
+      }
+      else if (selectedSpot.properties.strat_section_id
+        && (!stratSection || stratSection.strat_section_id !== selectedSpot.properties.strat_section_id)) {
+        const stratSectionSettings = useStratSection.getStratSectionSettings(selectedSpot.properties.strat_section_id);
+        if (stratSectionSettings) {
+          dispatch(setStratSection(stratSectionSettings));
+        }
+      }
+      //spot selected is already on the same image basemap or strat section, zoomToSpot in sync mode
+      else {
+        const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
+        const spotInLatLng = convertImagePixelsToLatLong(selectedSpotCopy);
+        zoomToSpots([spotInLatLng], map, camera);
+      }
+    }
+    else {
+      // handle other maps
+    }
   };
 
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
@@ -707,6 +757,7 @@ const useMaps = (mapRef) => {
     setPointAtCurrentLocation: setPointAtCurrentLocation,
     setSelectedSpotOnMap: setSelectedSpotOnMap,
     viewCustomMap: viewCustomMap,
+    zoomToSpot: zoomToSpot,
     zoomToSpots: zoomToSpots,
   }];
 };
