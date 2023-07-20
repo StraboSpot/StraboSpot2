@@ -12,8 +12,8 @@ const Loading = (props) => {
       {props.isLoading && <View style={[styles.backdrop, props.style]}>
         {/*<View style={home.loadingContainer}>*/}
         <BallIndicator
-          color={'darkgrey'}
-          count={8}
+          color={props.color || 'darkgrey'}
+          count={props.count || 8}
           size={props.size || 40}
         />
       </View>}

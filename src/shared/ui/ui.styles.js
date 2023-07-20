@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
   offlineIcon: {
     width: 40,
     height: 40,
+    backgroundColor: 'white',
+    borderRadius: 50,
   },
   itemSeparator: {
     height: 1,
