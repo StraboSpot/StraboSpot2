@@ -1,6 +1,7 @@
 import {Dimensions} from 'react-native';
 
 import {STRABO_APIS} from '../../services/urls.constants';
+import config from '../../utils/config';
 
 const {width, height} = Dimensions.get('window');
 
@@ -13,6 +14,8 @@ export const GEO_LAT_LNG_PROJECTION = 'EPSG:4326';
 export const PIXEL_PROJECTION = 'EPSG:3857';
 export const STRAT_SECTION_CENTER = [0.001, 0.0007];
 export const ZOOM = 14;
+
+export const MAPBOX_TOKEN = config.get('mapbox_access_token');
 
 export const MAP_MODES = {
   VIEW: 'view',

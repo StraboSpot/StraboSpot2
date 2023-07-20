@@ -16,6 +16,7 @@ import {
   GEO_LAT_LNG_PROJECTION,
   LATITUDE,
   LONGITUDE,
+  MAPBOX_TOKEN,
   PIXEL_PROJECTION,
   STRAT_SECTION_CENTER,
   ZOOM,
@@ -27,6 +28,9 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
+
+MapboxGL.setWellKnownTileServer('mapbox');
+MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 function Basemap(props) {
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];

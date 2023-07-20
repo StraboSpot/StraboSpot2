@@ -1,14 +1,12 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 
-import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
-import config from '../../utils/config';
 import {MODAL_KEYS} from '../home/home.constants';
 import {
   addedStatusMessage,
@@ -44,8 +42,6 @@ import useMapSymbology from './symbology/useMapSymbology';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
-
-MapboxGL.setAccessToken(config.get('mapbox_access_token'));
 
 const Map = React.forwardRef((props, ref) => {
   console.log('Rendering Map...');
@@ -133,21 +129,6 @@ const Map = React.forwardRef((props, ref) => {
     onMapLongPress: e => onMapLongPress(e),
     spotsInMapExtent: () => spotsInMapExtent(),
   };
-
-  useEffect(() => {
-    console.log('UE Map []');
-    MapboxGL.Logger.setLogCallback((log) => {
-      const {message} = log;
-      // console.log('LOGGER MESSAGE IN MAPS.JS', message);
-      if (message.match(/Requesting.+failed.+MGLNativeNetworkManager/) || message.match(/offline/)) {
-        return true; // true means we've processed the log
-      }
-      // expected warnings - see https://github.com/mapbox/mapbox-gl-native/issues/15341#issuecomment-522889062
-      return message.match('Request failed due to a permanent error: Canceled')
-        || message.match('Request failed due to a permanent error: Socket Closed');
-    });
-    // if (!currentImageBasemap) setCurrentLocationAsCenter().catch(err => console.error('Error', err));
-  }, []);
 
   useEffect(() => {
     console.log('UE Map [currentImageBasemap]', currentImageBasemap);
