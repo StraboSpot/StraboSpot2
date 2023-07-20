@@ -229,6 +229,7 @@ const useMaps = (mapRef) => {
 
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
   const getCoordQuad = (imageBasemapProps, altOrigin) => {
+    if (!imageBasemapProps) return undefined;
     // identify the [lat,lng] corners of the image basemap
     const x = altOrigin && altOrigin.x || 0;
     const y = altOrigin && altOrigin.y || 0;

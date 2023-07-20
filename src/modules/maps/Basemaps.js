@@ -52,6 +52,8 @@ function Basemap(props) {
   const [initialCenter, setInitialCenter] = useState(center);
   const [initialZoom, setInitialZoom] = useState(zoom);
 
+  const coordQuad = useMaps.getCoordQuad(props.imageBasemap);
+
   useEffect(() => {
       console.log('UE Basemap');
       setInitialCenter(getCenterCoordinates());
@@ -134,7 +136,7 @@ function Basemap(props) {
   // ToDo: Check if this bug is fixed in rnmapbox and therefore can be removed
   const onDidFinishLoadingMap = () => {
     props.stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
-  }
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -212,16 +214,16 @@ function Basemap(props) {
         )}
 
         {/* Image Basemap Layer */}
-        {props.imageBasemap && !isEmpty(props.coordQuad) && doesImageExist && (
-          <MapboxGL.Animated.ImageSource
+        {props.imageBasemap && !isEmpty(coordQuad) && doesImageExist && (
+          <MapboxGL.ImageSource
             id={'imageBasemap'}
-            coordinates={props.coordQuad}
+            coordinates={coordQuad}
             url={useImages.getLocalImageURI(props.imageBasemap.id)}>
             <MapboxGL.RasterLayer
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}
             />
-          </MapboxGL.Animated.ImageSource>
+          </MapboxGL.ImageSource>
         )}
 
         {/* Sketch Layer */}
@@ -254,7 +256,8 @@ function Basemap(props) {
         />
         <MapboxGL.ShapeSource
           id={'spotsNotSelectedSource'}
-          shape={turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
+          shape={turf.featureCollection(
+            useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
         >
           {/* Polygon Not Selected */}
           <MapboxGL.FillLayer
@@ -267,8 +270,10 @@ function Basemap(props) {
             id={'polygonLayerWithPatternNotSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
-            style={{...useMapSymbology.getMapSymbology().polygonWithPattern,
-              visibility: props.stratSection && isStratStyleLoaded ? 'visible' : 'none'}}
+            style={{
+              ...useMapSymbology.getMapSymbology().polygonWithPattern,
+              visibility: props.stratSection && isStratStyleLoaded ? 'visible' : 'none',
+            }}
           />
           <MapboxGL.LineLayer
             id={'polygonLayerNotSelectedBorder'}
@@ -285,7 +290,7 @@ function Basemap(props) {
 
           {/* Line Not Selected */}
           {/* Need 4 different lines for the different types of line dashes since
-           lineDasharray is not suppported with data-driven styling*/}
+           lineDasharray is not supported with data-driven styling*/}
           <MapboxGL.LineLayer
             id={'lineLayerNotSelected'}
             minZoomLevel={1}
@@ -342,8 +347,10 @@ function Basemap(props) {
             id={'polygonLayerWithPatternSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
-            style={{...useMapSymbology.getMapSymbology().polygonWithPatternSelected,
-              visibility: props.stratSection && isStratStyleLoaded ? 'visible' : 'none'}}
+            style={{
+              ...useMapSymbology.getMapSymbology().polygonWithPatternSelected,
+              visibility: props.stratSection && isStratStyleLoaded ? 'visible' : 'none',
+            }}
           />
           <MapboxGL.LineLayer
             id={'polygonLayerSelectedBorder'}
@@ -360,7 +367,7 @@ function Basemap(props) {
 
           {/* Line Selected */}
           {/* Need 4 different lines for the different types of line dashes since
-           lineDasharray is not suppported with data-driven styling*/}
+           lineDasharray is not supported with data-driven styling*/}
           <MapboxGL.LineLayer
             id={'lineLayerSelected'}
             minZoomLevel={1}

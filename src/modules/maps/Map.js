@@ -84,7 +84,6 @@ const Map = React.forwardRef((props, ref) => {
     imageBasemap: currentImageBasemap,
     spotsNotSelected: [],
     spotsSelected: [],
-    coordQuad: [],
     showUserLocation: false,
     freehandSketchMode: false,
     measureFeatures: [],
@@ -120,10 +119,8 @@ const Map = React.forwardRef((props, ref) => {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
     else {
-      const calculatedCoordQuad = currentImageBasemap ? useMaps.getCoordQuad(currentImageBasemap, []) : undefined;
       setMapPropsMutable(m => ({
         ...m,
-        coordQuad: calculatedCoordQuad,
         imageBasemap: currentImageBasemap,
         stratSection: currentImageBasemap ? undefined : m.stratSection,
       }));
