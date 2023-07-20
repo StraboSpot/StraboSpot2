@@ -65,11 +65,6 @@ const Map = React.forwardRef((props, ref) => {
   const user = useSelector(state => state.user);
   const zoom = useSelector(state => state.map.zoom);
 
-  const isDrawFeatureModeOn = () => {
-    return (props.mapMode === MAP_MODES.DRAW.POINT || props.mapMode === MAP_MODES.DRAW.LINE
-      || props.mapMode === MAP_MODES.DRAW.POLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
-      || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE);
-  };
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
     spotEditing: {},
@@ -112,7 +107,7 @@ const Map = React.forwardRef((props, ref) => {
     ...mapPropsMutable,
     freehandSketchMode: (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
       || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE),
-    allowMapViewMove: !isDrawFeatureModeOn() && props.mapMode !== MAP_MODES.EDIT,
+    allowMapViewMove: !useMaps.isDrawMode(props.mapMode) && props.mapMode !== MAP_MODES.EDIT,
     ref: {mapRef: mapRef, cameraRef: cameraRef},
     onMapPress: e => onMapPress(e),
     onMapLongPress: e => onMapLongPress(e),
@@ -422,7 +417,7 @@ const Map = React.forwardRef((props, ref) => {
         else clearSelectedSpots();
       }
       // Draw a feature
-      else if (isDrawFeatureModeOn()) {
+      else if (useMaps.isDrawMode(props.mapMode)) {
         console.log('Drawing', props.mapMode, '...');
         let feature = {};
         const newCoord = turf.getCoord(e);

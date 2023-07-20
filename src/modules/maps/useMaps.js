@@ -21,7 +21,7 @@ import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../project/projects.slice';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
+import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_MODES, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
 import {
   addedCustomMap,
   clearedStratSection,
@@ -546,6 +546,8 @@ const useMaps = (mapRef) => {
     else return [explodedFeatures[closestVertexIndex], closestVertexIndex];
   };
 
+  const isDrawMode = mode => Object.values(MAP_MODES.DRAW).includes(mode);
+
   // If feature is mapped on geographical map, not an image basemap or strat section
   const isOnGeoMap = (feature) => {
     if (isEmpty(feature)) return false;
@@ -750,6 +752,7 @@ const useMaps = (mapRef) => {
     getSpotsAsFeatures: getSpotsAsFeatures,
     handleError: handleError,
     identifyClosestVertexOnSpotPress: identifyClosestVertexOnSpotPress,
+    isDrawMode: isDrawMode,
     isOnGeoMap: isOnGeoMap,
     saveCustomMap: saveCustomMap,
     setBasemap: setBasemap,
