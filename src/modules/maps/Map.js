@@ -1,5 +1,5 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import {Alert, PixelRatio, Platform, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
@@ -435,7 +435,8 @@ const Map = React.forwardRef((props, ref) => {
       // Select/Unselect a feature
       if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
-        const {screenPointX, screenPointY} = e.properties;
+        const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+          : [e.properties.screenPointX, e.properties.screenPointY];
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
         else if (stratSection) {
@@ -489,7 +490,8 @@ const Map = React.forwardRef((props, ref) => {
       // Edit a Spot
       else if (props.mapMode === MAP_MODES.EDIT) {
         // Select/Unselect new vertex to edit
-        const {screenPointX, screenPointY} = e.properties;
+        const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+          : [e.properties.screenPointX, e.properties.screenPointY];
         console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
         console.log('Selecting feature to edit...');
 
@@ -516,8 +518,7 @@ const Map = React.forwardRef((props, ref) => {
           let isVertexIdentifiedAtSpotPress = false;
           if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
           else {
-            let vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
-              [...mapPropsMutable.drawFeatures]);
+            let vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
             if (!isEmpty(vertexSelected)) {
               // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
               // we can calculate a vertex on the spot found that is closest to the press.
@@ -600,6 +601,7 @@ const Map = React.forwardRef((props, ref) => {
       editFeatureVertex: [vertex],
       allowMapViewMove: false,
     }));
+    let vertexGeoCoords = vertex.geometry.coordinates;
     if ((currentImageBasemap || stratSection)
       && ((isEmpty(editingModeData.spotEditing) || ((!isEmpty(editingModeData.spotEditing)
         && editingModeData.spotEditing.geometry.type === 'Point')) || (!isEmpty(editingModeData.spotEditing)
@@ -611,15 +613,13 @@ const Map = React.forwardRef((props, ref) => {
 
       // !isEmpty(editingModeData.spotEditing) && editingModeData.spotEditing.properties.name != vertex.properties.name)), this check is required
       // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
-      const coords = vertex.geometry.coordinates;
-      const [lat, lng] = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [coords[0], coords[1]]);
-      const vertexCoordinates = await mapRef.current.getPointInView([lat, lng]);
-      dispatch(setVertexStartCoords(vertexCoordinates));
+      vertexGeoCoords = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, vertexGeoCoords);
     }
-    else {
-      const vertexCoordinates = await mapRef.current.getPointInView(vertex.geometry.coordinates);
-      dispatch(setVertexStartCoords(vertexCoordinates));
+    let vertexScreenCoords = await mapRef.current.getPointInView(vertexGeoCoords);
+    if (Platform.OS === 'android') {
+      vertexScreenCoords = [vertexScreenCoords[0] / PixelRatio.get(), vertexScreenCoords[1] / PixelRatio.get()];
     }
+    dispatch(setVertexStartCoords(vertexScreenCoords));
   };
 
   const clearSelectedVertexToEdit = () => {
@@ -1003,13 +1003,13 @@ const Map = React.forwardRef((props, ref) => {
   // Handle a long press on the map by making the point or vertex at the point "selected"
   const onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
-    const {screenPointX, screenPointY} = e.properties;
+    const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+      : [e.properties.screenPointX, e.properties.screenPointY];
     const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
     const mappedSpots = useMaps.getAllMappedSpots();
     if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
       let closestVertexDetails = {};
-      let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
-        [...mapPropsMutable.drawFeatures]);
+      let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
       if (isEmpty(closestVertexToSelect)) {
         // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
         closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
@@ -1023,8 +1023,7 @@ const Map = React.forwardRef((props, ref) => {
       else if (!isEmpty(editingModeData.spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
-          const vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY,
-            [...mapPropsMutable.drawFeatures]);
+          const vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
             let vertexAdded = {};
             if (isEmpty(vertexSelected)) {

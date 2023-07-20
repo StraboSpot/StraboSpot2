@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {Platform} from 'react-native';
+import {PixelRatio, Platform} from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
@@ -44,8 +44,12 @@ const useMaps = (mapRef) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-  const spots = useSelector(state => state.spot.spots);
   const userMapboxToken = useSelector(state => state.user.mapboxToken);
+
+  const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
+    'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
+    'polygonLayerWithPatternNotSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
+    'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected', 'polygonLayerWithPatternSelected'];
 
   useEffect(() => {
     console.log('UE useMaps [isMainMenuPanelVisible]', isMainMenuPanelVisible);
@@ -274,6 +278,10 @@ const useMaps = (mapRef) => {
       else {
         const eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
         screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
+        if (Platform.OS === 'android') {
+          const pixelRatio = PixelRatio.get();
+          screenCoords = [screenCoords[0] / pixelRatio, screenCoords[1] / pixelRatio];
+        }
         eachFeature.geometry.coordinates = screenCoords;
         distances[i] = turf.distance(dummyFeature, eachFeature);
       }
@@ -281,20 +289,11 @@ const useMaps = (mapRef) => {
     return distances;
   };
 
-  // Get the feature from the draw layer where the screen was pressed
-  const getDrawFeatureAtPress = async (screenPointX, screenPoint, drawFeaturesCopy) => {
-    // console.log('mapMode in getDrawFeatureAtPress', props.mapMode);
-    let drawFeatureFound = await getFeatureInRect(screenPointX, screenPoint, ['pointLayerDraw']);
-    if (!isEmpty(drawFeatureFound)) {
-      console.log('drawFeatureFound', drawFeatureFound, 'mapPropsMutable.drawFeatures', drawFeaturesCopy);
-      // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
-      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp ID
-      drawFeatureFound = drawFeaturesCopy.find(
-        feature => feature.properties.tempEditId === drawFeatureFound.properties.tempEditId);
-      console.log('Got draw feature at press: ', drawFeatureFound, 'in Spot: ',
-        spots[drawFeatureFound.properties.id]);
-    }
-    return Promise.resolve(...[drawFeatureFound]);
+  // Get the nearest draw feature from the draw layer where the screen was pressed
+  const getDrawFeatureAtPress = async (screenPointX, screenPoint) => {
+    const nearestDrawFeature = await getNearestFeatureInBBox([screenPointX, screenPoint], ['pointLayerDraw']);
+    console.log('Got draw feature: ', nearestDrawFeature);
+    return Promise.resolve(nearestDrawFeature);
   };
 
   const getExtentAndZoomCall = (extentString, zoomLevel) => {
@@ -304,21 +303,68 @@ const useMaps = (mapRef) => {
     return url + '?extent=' + extentString + '&zoom=' + zoomLevel;
   };
 
-  // Get the feature within a bounding box from a given layer, returning only the first one if there is more than one
-  const getFeatureInRect = async (screenPointX, screenPointY, layers) => {
-    const r = 30; // half the width (in pixels?) of bounding box to create
-    const bbox = [screenPointY + r, screenPointX + r, screenPointY - r, screenPointX - r];
-    const featureCollectionInRect = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
-    const featuresInRect = featureCollectionInRect.features;
-    let featureFound = {};
-    if (featuresInRect.length > 1) {
-      const distances = await getDistancesFromSpot(screenPointX, screenPointY, featuresInRect);
-      const [distance, indexWithMinimumIndex] = getClosestSpotDistanceAndIndex(distances);
-      featureFound = featuresInRect[indexWithMinimumIndex];
-    }
-    else if (featuresInRect.length === 1) featureFound = featuresInRect[0];
-    else console.log('No feature found where pressed.');
-    return Promise.resolve(featureFound);
+  // Get the nearest feature to a target point within a bounding box from given layers
+  const getNearestFeatureInBBox = async ([x, y], layers) => {
+
+    // Get a bounding box for a point
+    const getBoundingBox = () => {
+      const r = 30;
+      const maxX = x + r;
+      const minX = x - r;
+      const maxY = y + r;
+      const minY = y - r;
+      return [maxY, maxX, minY, minX];
+    };
+
+    // Get all the features in the bounding box
+    // Note: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in
+    // the visible bound of the map for Android so there is a temporary fix in the next code block
+    // ToDo: Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
+    const bbox = getBoundingBox();
+    const nearFeaturesCollection = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    const nearFeatures = nearFeaturesCollection.features;
+    console.log('Near Features:', nearFeatures);
+
+    // Get the target coordinates as a point with geographic coordinates
+    let targetCoordinates = await mapRef.current.getCoordinateFromView([x, y]);
+    const targetPoint = turf.point(targetCoordinates);
+
+    // Get the nearest feature to the target point
+    const {nearestFeature} = nearFeatures.reduce((acc, nearFeature) => {
+      if (nearFeature.geometry.type === 'Point' || nearFeature.geometry.type === 'MultiPoint') {
+        const nearVertices = turf.explode(nearFeature);
+        const nearestVertex = turf.nearestPoint(targetPoint, nearVertices);
+        const distance = nearestVertex.properties.distanceToPoint;
+        // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning everything in the viewport so use this until fixed
+        if (Platform.OS === 'android') {
+          if (distance < .2 && (isEmpty(acc) || distance < acc.distance)) {
+            return {nearestFeature: nearFeature, distance: distance};
+          }
+        }
+        else if (isEmpty(acc) || distance < acc.distance) return {nearestFeature: nearFeature, distance: distance};
+      }
+      else {
+        const nearLines = (nearFeature.geometry.type === 'Polygon' || nearFeature.geometry.type === 'MultiPolygon')
+          ? turf.flatten(turf.polygonToLine(nearFeature))
+          : turf.flatten(nearFeature);
+        const nearestLine = nearLines.features.reduce((acc2, nearLine) => {
+          const nearestPointOnLine = turf.nearestPointOnLine(nearLine, targetPoint);
+          const distance = nearestPointOnLine.properties.dist;
+          // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning everything in the viewport so use this until fixed
+          if (Platform.OS === 'android') {
+            if (distance < .10 && (isEmpty(acc) || distance < acc.distance)) {
+              return {nearestFeature: nearFeature, distance: distance};
+            }
+          }
+          else if (isEmpty(acc) || distance < acc.distance) return {nearestFeature: nearFeature, distance: distance};
+          return acc2;
+        }, {});
+        if (!isEmpty(nearestLine)) return nearestLine;
+      }
+      return acc;
+    }, {});
+    console.log('Got nearest feature: ', nearestFeature);
+    return Promise.resolve(nearestFeature);
   };
 
   const getMeasureFeatures = async (e, measureFeaturesTemp, setDistance) => {
@@ -334,7 +380,7 @@ const useMaps = (mapRef) => {
       },
     };
 
-    const featureAtPoint = await getFeatureInRect(screenPointX, screenPointY, ['measureLayerPoints']);
+    const featureAtPoint = await getNearestFeatureInBBox([screenPointX, screenPointY], ['measureLayerPoints']);
     // console.log('Feature at pressed point:', featureAtPoint);
 
     // Remove the linestring from the group so that we can redraw it based on points collection.
@@ -376,23 +422,12 @@ const useMaps = (mapRef) => {
   };
 
   // Get the Spot where screen was pressed
-  const getSpotAtPress = async (screenPointX, screenPoint) => {
-    // console.log('mapMode in getSpotAtPress', props.mapMode);
-    const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
-      'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
-      'polygonLayerWithPatternNotSelected', 'pointLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
-      'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected', 'polygonLayerWithPatternSelected'];
-    let spotFound = await getFeatureInRect(screenPointX, screenPoint, spotLayers);
-    if (!isEmpty(spotFound)) {
-      // In getFeatureInRect the function queryRenderedFeaturesInRect returns a feature with coordinates
-      // truncated to 5 decimal places so get the matching feature with full coordinates using a temp ID
-      // spotFound = spots[spotFound.properties.id];
-      // spotFound = [...mapProps.spotsNotSelected, ...mapProps.spotsSelected].find(
-      //   spot => spot.properties.id === spotFound.properties.id);
-      spotFound = useSpots.getSpotById(spotFound.properties.id);
-      console.log('Got Spot at press: ', spotFound);
-    }
-    return Promise.resolve(...[spotFound]);
+  const getSpotAtPress = async (screenPointX, screenPointY) => {
+    const nearestFeature = await getNearestFeatureInBBox([screenPointX, screenPointY], spotLayers);
+    const nearestSpot = nearestFeature?.properties?.id ? useSpots.getSpotById(nearestFeature.properties.id)
+      : {};
+    console.log('Got nearest spot: ', nearestSpot);
+    return Promise.resolve(...[nearestSpot]);
   };
 
   // Spots with mulitple measurements become mulitple features, one feature for each measurement
@@ -659,7 +694,7 @@ const useMaps = (mapRef) => {
     getDisplayedSpots: getDisplayedSpots,
     getDrawFeatureAtPress: getDrawFeatureAtPress,
     getExtentAndZoomCall: getExtentAndZoomCall,
-    getFeatureInRect: getFeatureInRect,
+    getNearestFeatureInBBox: getNearestFeatureInBBox,
     getMeasureFeatures: getMeasureFeatures,
     getSpotAtPress: getSpotAtPress,
     getSpotsAsFeatures: getSpotsAsFeatures,
