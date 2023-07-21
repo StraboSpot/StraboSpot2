@@ -6,44 +6,58 @@ const platform = Platform.OS === 'ios' ? 'window' : 'screen';
 const deviceDimensions = Dimensions.get(platform);
 
 const styles = StyleSheet.create({
+  backdropStyles: {
+    backgroundColor: 'transparent',
+  },
   customBaseMapListContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     paddingBottom: 10,
     paddingTop: 10,
   },
-  dialogBox: {
-    paddingBottom: 30,
-    position: 'absolute',
-    bottom: 50,
-    left: 75,
-    width: 300,
-    maxHeight: deviceDimensions.height * 0.95,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-  },
-  dialogTitle: {
+  titleContainer: {
     backgroundColor: themes.LIGHTGREY,
     margin: 10,
-    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: 'lightgrey',
   },
-  dialogTitleText: {
+  titleText: {
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
     color: themes.PRIMARY_TEXT_COLOR,
+    paddingBottom: 10,
+  },
+  titleTextError: {
+    color: 'red',
+  },
+  titleTextWarning: {
+    color: 'yellow',
+    textShadowColor: 'black',
+    textShadowRadius: 2,
+  },
+  statusMessageText: {
+    textAlign: 'center',
   },
   dialogLargerText: {
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
-  dialogContent: {
-    borderTopWidth: 1,
-    borderColor: 'lightgrey',
+  overlayContainer: {
+    paddingBottom: 30,
+    width: 300,
+    maxHeight: deviceDimensions.height * .95,
+    borderRadius: 20,
+  },
+  overlayContent: {
+    marginTop: 10,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   dialogText: {
     color: themes.PRIMARY_TEXT_COLOR,
   },
+
 });
 
 export default styles;

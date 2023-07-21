@@ -4,9 +4,9 @@ import {Text} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../../shared/common.styles';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import {setWarningModalVisible} from '../home.slice';
+import overlayStyles from '../overlay.styles';
 
 
 const WarningModal = () => {
@@ -20,11 +20,11 @@ const WarningModal = () => {
 
   return (
     <StatusDialogBox
-      dialogTitle={'Warning!'}
-      style={commonStyles.dialogWarning}
+      title={'Warning!'}
+      overlayTitleText={overlayStyles.titleTextWarning}
       visible={isWarningModalVisible}
     >
-      <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+      <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
       <Button
         title={'OK'}
         type={'clear'}

@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../../shared/common.styles';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import {setInfoMessagesModalVisible} from '../home.slice';
+import overlayStyles from '../overlay.styles';
 
 
 const InfoModal = () => {
@@ -22,7 +23,7 @@ const InfoModal = () => {
       // onTouchOutside={() => dispatch(setInfoMessagesModalVisible(false))}
     >
       <View style={{margin: 15}}>
-        <Text style={commonStyles.dialogStatusMessageText}>{statusMessages.join('\n')}</Text>
+        <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
       </View>
       <Button
         title={'OK'}
