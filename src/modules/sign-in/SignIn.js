@@ -64,8 +64,8 @@ const SignIn = (props) => {
     });
     if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
-    isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
     await navigation.navigate('HomeScreen');
+    setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
   };
 
   const handleEndpointSwitchValue = (value) => {
