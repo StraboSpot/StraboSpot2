@@ -20,13 +20,13 @@ const Splashscreen = (props) => {
   const loading = useSelector(state => state.home.loading.home);
 
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <ImageBackground
+      source={require('../../assets/images/splashscreen-1.jpeg')}
+      style={splashscreenStyles.backgroundImage}
     >
-      <ImageBackground
-        source={require('../../assets/images/splashscreen-1.jpeg')}
-        style={splashscreenStyles.backgroundImage}
+      <ScrollView
+        automaticallyAdjustKeyboardInsets={true}
+        style={{flex: 1}}
       >
         <View style={splashscreenStyles.wifiIndicatorContainer}>
           {Platform.OS === 'ios' && <BatteryInfo/>}
