@@ -26,7 +26,7 @@ import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
-import homeStyles from '../home.style';
+import overlayStyles from '../overlay.styles';
 
 const InitialProjectLoadModal = (props) => {
   console.log('Rendering InitialProjectLoadModal...');
@@ -395,6 +395,7 @@ const InitialProjectLoadModal = (props) => {
             onPress={() => {
               if (user.name) dispatch({type: REDUX.CLEAR_STORE});
               // dispatch(setSignedInStatus(false));
+              props.closeModal();
               setVisibleInitialSection('none');
               navigation.navigate('SignIn');
             }}
@@ -405,26 +406,18 @@ const InitialProjectLoadModal = (props) => {
   };
 
   return (
-    <React.Fragment>
-      <Overlay
-        animationType={'slide'}
-        isVisible={props.visible}
-        overlayStyle={homeStyles.dialogBox}
-      >
-        <View style={homeStyles.dialogTitleContainer}>
-          <Text style={homeStyles.dialogTitleText}>{statusMessageModalTitle}</Text>
-        </View>
-        {visibleInitialSection === 'none' && renderUserProfile()}
-        {isLoading ? renderLoadingView() : renderSectionView()}
-        <View style={{
-          backgroundColor: 'red',
-          position: 'absolute',
-          top: '50%',
-          left: '55%',
-        }}>
-        </View>
-      </Overlay>
-    </React.Fragment>
+    <Overlay
+      animationType={'slide'}
+      isVisible={props.visible}
+      overlayStyle={overlayStyles.overlayContainer}
+      backdropStyle={overlayStyles.backdropStyles}
+    >
+      <View style={overlayStyles.titleContainer}>
+        <Text style={overlayStyles.titleText}>{statusMessageModalTitle}</Text>
+      </View>
+      {visibleInitialSection === 'none' && renderUserProfile()}
+      {isLoading ? renderLoadingView() : renderSectionView()}
+    </Overlay>
   );
 };
 
