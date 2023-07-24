@@ -41,11 +41,10 @@ const styles = StyleSheet.create({
   customEndpointContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 30,
   },
   customEndpointText: {
     color: themes.WHITE,
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
     marginEnd: 30,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -53,17 +52,15 @@ const styles = StyleSheet.create({
   verifyButtonContainer: {
     paddingLeft: 10,
   },
-  verifyButtonStyle: {
-    borderRadius: 15,
-    // paddingRight: 20,
-    // paddingLeft: 20,
-  },
   verifyContainer: {
     flexDirection: 'row',
     width: 300,
     justifyContent: 'center',
     alignItems: 'center',
     // backgroundColor: 'red',
+  },
+  verifyEndpointIconText: {
+    color: 'white',
   },
   verifyProtocolInputContainer: {
     backgroundColor: 'white',

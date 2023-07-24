@@ -1,16 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Switch, Text} from 'react-native';
+import {Alert, Switch, Text, View} from 'react-native';
 
-import {Field, Formik} from 'formik';
+import {Formik} from 'formik';
 import {Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
-import {TextInputField} from '../form';
-import {setDatabaseEndpoint, setTestingMode} from '../project/projects.slice';
+import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
@@ -41,25 +41,6 @@ const Miscellaneous = () => {
     dispatch(setTestingMode(false));
     setIsTestingModalVisible(false);
     setIsErrorMessage(false);
-  };
-
-  const onMyChange = async (name, value) => {
-    const trimmedValue = value.trim();
-    if (!isEmpty(trimmedValue)) {
-      await formRef.current.setFieldValue(name, trimmedValue);
-      await formRef.current.submitForm();
-      console.log('Saving naming convention preferences to Project ...', formRef.current.values);
-      dispatch(setDatabaseEndpoint({...databaseEndpoint, url: formRef.current.values.database_endpoint}));
-    }
-    else {
-      await formRef.current.setFieldValue(name, trimmedValue);
-      await formRef.current.submitForm();
-      dispatch(setDatabaseEndpoint(formRef.current.values.database_endpoint.databaseEndpoint.url));
-    }
-  };
-
-  const onEndpointSwitchChange = (value) => {
-    dispatch(setDatabaseEndpoint({...databaseEndpoint, isSelected: value}));
   };
 
   const onTestingSwitchChange = (value) => {
@@ -95,40 +76,19 @@ const Miscellaneous = () => {
     console.log(label, ip);
     return (
       Alert.alert('Note:', `If using StraboSpot Offline the URL must be an "http:" URL 
-      and NOT an "https:" URL. 
-      Also, make sure that there is a trailing "/db".`)
+      and NOT an "https:" URL. Also, make sure that there is a trailing "/db".`)
     );
   };
 
   const renderEndpointFieldContent = () => (
-    <React.Fragment>
-      <SectionDivider dividerText={'Custom Database Endpoint'}/>
-      <ListItem containerStyle={commonStyles.listItem}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>Use Custom Endpoint?</ListItem.Title>
-        </ListItem.Content>
-        <Switch
-          value={databaseEndpoint.isSelected}
-          onValueChange={onEndpointSwitchChange}
-        />
-      </ListItem>
-      {databaseEndpoint.isSelected && (
-        <ListItem containerStyle={commonStyles.listItemFormField}>
-          <ListItem.Content>
-            <Field
-              autoCapitalize={'none'}
-              onMyChange={onMyChange}
-              component={TextInputField}
-              key={'database_endpoint'}
-              name={'database_endpoint'}
-              placeholder={'http://'}
-              onShowFieldInfo={renderInfoAlert}
-              keyboardType={'url'}
-            />
-          </ListItem.Content>
-        </ListItem>
-      )}
-    </React.Fragment>
+    <View>
+      <SectionDivider dividerText={'Endpoint'}/>
+      <Text style={{textAlign: 'center'}}>Default Endpoint:</Text>
+      <Text style={{textAlign: 'center', fontWeight: 'bold'}}>https://strabospot.org/db</Text>
+      <Text style={{margin: 15}}>If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
+        and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.</Text>
+      <CustomEndpoint/>
+    </View>
 
   );
 

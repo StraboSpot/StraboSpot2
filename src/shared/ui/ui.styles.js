@@ -31,6 +31,39 @@ const styles = StyleSheet.create({
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
   },
+  customEndpointContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  customEndpointText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    marginEnd: 30,
+    textAlign: 'center',
+  },
+  customEndpointSwitchContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 50,
+  },
+  customEndpointVerifyButtonContainer: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  verifyButtonStyle: {
+    borderRadius: 15,
+    paddingRight: 20,
+    paddingLeft: 20,
+  },
+  customEndpointVerifyIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  customEndpointVerifyInputContainer: {
+    flexDirection: 'row',
+    width: 300,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   imageIcon: {
     width: 65,
     height: 65,

@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Platform, Switch, Text, TextInput, View} from 'react-native';
+import {Alert, Platform, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
-import {Button, Icon, Input} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import WarningModal from '../home/home-modals/WarningModal';
 import {
   addedStatusMessage,
@@ -20,7 +20,6 @@ import {
   setProjectLoadSelectionModalVisible,
   setWarningModalVisible,
 } from '../home/home.slice';
-import {setDatabaseIsSelected, setDatabaseVerify} from '../project/projects.slice';
 import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
@@ -66,18 +65,6 @@ const SignIn = (props) => {
     console.log('Loading user: GUEST');
     await navigation.navigate('HomeScreen');
     setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
-  };
-
-  const handleEndpointSwitchValue = (value) => {
-    dispatch(setDatabaseIsSelected(value));
-  };
-
-  const handleEndpointTextValues = (value, input) => {
-    setErrorMessage('');
-    dispatch(setDatabaseVerify(false));
-    if (input === 'domain') setDomainValue(value);
-    if (input === 'protocol') setProtocolValue(value);
-    if (input === 'path') pathValue(value);
   };
 
   const signIn = async () => {
@@ -147,78 +134,6 @@ const SignIn = (props) => {
     );
   };
 
-  const renderCustomEndpointEntry = () => {
-    return (
-      <View style={signInStyles.customEndpointContainer}>
-        <View style={{alignItems: 'center', flexDirection: 'row', height: 50}}>
-          <Text style={signInStyles.customEndpointText}>Use Custom Endpoint?</Text>
-          <Switch
-            value={isSelected}
-            onValueChange={handleEndpointSwitchValue}
-            trackColor={{true: PRIMARY_ACCENT_COLOR}}
-            ios_backgroundColor={'white'}
-          />
-        </View>
-        {customDatabaseEndpoint.isSelected
-          && (
-            <View style={styles.verifyContainer}>
-              <Input
-                containerStyle={signInStyles.verifyProtocolInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'protocol')}
-                label={'Protocol'}
-                labelStyle={{fontSize: 10}}
-                defaultValue={protocolValue}
-                autoCapitalize={'none'}
-              />
-              <Input
-                containerStyle={signInStyles.verifySchemeInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'domain')}
-                value={domainValue}
-                label={'Host'}
-                labelStyle={{fontSize: 10}}
-                errorMessage={errorMessage}
-                errorStyle={{fontSize: 12, fontWeight: 'bold', textAlign: 'center'}}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-              />
-              <Input
-                containerStyle={signInStyles.verifySubdirectoryInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'path')}
-                label={'Path'}
-                labelStyle={{fontSize: 10}}
-                value={pathValue}
-                editable={false}
-                autoCapitalize={'none'}
-              />
-              {isVerified ? <Icon
-                  reverse
-                  name='checkmark-sharp'
-                  type='ionicon'
-                  size={15}
-                  color='green'
-                />
-                : <Button
-                  title={'Verify'}
-                  disabled={!isOnline.isConnected || isEmpty(domainValue)}
-                  buttonStyle={styles.verifyButtonStyle}
-                  containerStyle={styles.verifyButtonContainer}
-                  onPress={() => verifyEndpoint()}
-                  loading={isLoadingEndpoint}
-                  loadingStyle={{width: 60}}
-                />}
-            </View>
-          )
-        }
-      </View>
-    );
-  };
-
   const getUserImage = async (userProfileImage) => {
     if (userProfileImage) {
       return new Promise((resolve, reject) => {
@@ -251,16 +166,6 @@ const SignIn = (props) => {
     props.navigation.navigate('SignUp');
   };
 
-  const verifyEndpoint = async () => {
-    setIsLoadingEndpoint(true);
-    const isVerified = await serverRequests.verifyEndpoint(protocolValue, domainValue, pathValue);
-    if (isVerified) setIsLoadingEndpoint(false);
-    else {
-      setErrorMessage('Not Reachable');
-      setIsLoadingEndpoint(false);
-    }
-  };
-
   return (
     <Splashscreen>
       <View style={{marginTop: 20}}>
@@ -288,7 +193,11 @@ const SignIn = (props) => {
             onSubmitEditing={signIn}
           />
           {renderButtons()}
-          {renderCustomEndpointEntry()}
+          <CustomEndpoint
+            containerStyles={signInStyles.customEndpointContainer}
+            textStyles={signInStyles.customEndpointText}
+            iconText={signInStyles.verifyEndpointIconText}
+          />
         </View>
       </View>
       <WarningModal/>
