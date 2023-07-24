@@ -19,7 +19,7 @@ import {REDUX} from '../shared/app.constants';
 export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['compass', 'notebook', 'home', 'mainMenu', 'spot'],
+  blacklist: ['compass', 'notebook', 'home', 'mainMenu', 'map', 'spot'],
   timeout: null,
 };
 
@@ -54,6 +54,13 @@ const mainMenuConfig = {
   timeout: null,
 };
 
+const mapConfig = {
+  key: 'map',
+  storage: AsyncStorage,
+  timeout: null,
+  blacklist: ['selectedCustomMapToEdit', 'vertexStartCoords', 'vertexEndCoords', 'freehandFeatureCoords'],
+};
+
 const projectConfig = {
   key: 'project',
   storage: AsyncStorage,
@@ -77,7 +84,7 @@ const combinedReducers = combineReducers({
   compass: persistReducer(compassConfig, compassSlice),
   home: persistReducer(homeConfig, homeSlice),
   notebook: persistReducer(notebookConfig, notebookSlice),
-  map: mapsSlice,
+  map: persistReducer(mapConfig, mapsSlice),
   project: persistReducer(projectConfig, projectSlice),
   mainMenu: persistReducer(mainMenuConfig, mainMenuSlice),
   offlineMap: offlineMapsSlice,
