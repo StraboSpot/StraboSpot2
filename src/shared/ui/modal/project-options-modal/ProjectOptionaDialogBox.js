@@ -66,10 +66,14 @@ const ProjectOptionsDialogBox = (props) => {
       setDeletingProjectStatus('deleting');
       setProgressModalVisible(true);
       props.close();
-      setChecked(1);
-      await useDevice.deleteProjectOnDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
-      setDeletingProjectStatus('complete');
-      props.projectDeleted(true);
+      setDeletingProjectStatus('deleting');
+      setIsProgressModalVisible(true);
+      setTimeout(async () => {
+        setChecked(1);
+        await useDevice.deleteProjectOnDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
+        setDeletingProjectStatus('complete');
+        props.projectDeleted(true);
+      }, 1000);
     }
     catch (err) {
       console.error('Error deleting project!', err);
