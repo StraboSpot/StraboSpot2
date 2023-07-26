@@ -7,6 +7,7 @@ import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import IconButton from '../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../home/home.constants';
 import {
   addedStatusMessage,
@@ -1138,6 +1139,13 @@ const Map = React.forwardRef((props, ref) => {
   const renderSetInCurrentViewModal = () => {
     const buttons = ['Point', 'LineString', 'Polygon'];
 
+    const buttonIcon = (button) => {
+      return button === 'LineString' ? require('../../assets/icons/LineButton.png')
+        : button === 'Point' ? require('../../assets/icons/PointButton.png')
+          : button === 'Polygon' ? require('../../assets/icons/PolygonButton.png')
+            : null;
+    };
+
     const updateDefaultGeomType = (geomType) => {
       setShowSetInCurrentViewModal(false);
       setDefaultGeomType(geomType);
@@ -1157,6 +1165,13 @@ const Map = React.forwardRef((props, ref) => {
         <View>
           {buttons.map(button =>
             <Button
+              icon={
+                <IconButton
+                  style={{paddingRight: 15}}
+                  source={buttonIcon(button)}
+                  onPress={() => updateDefaultGeomType(button)}
+                />
+              }
               title={button}
               type={'outline'}
               onPress={() => updateDefaultGeomType(button)}
