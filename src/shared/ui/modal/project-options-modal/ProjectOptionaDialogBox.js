@@ -63,8 +63,6 @@ const ProjectOptionsDialogBox = (props) => {
 
   const deleteProjectFromLocalStorage = async () => {
     try {
-      setDeletingProjectStatus('deleting');
-      setProgressModalVisible(true);
       props.close();
       setDeletingProjectStatus('deleting');
       setIsProgressModalVisible(true);
