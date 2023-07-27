@@ -265,7 +265,6 @@ const UserProfile = (props) => {
         </View>
         {ImageModal()}
         {deleteProfileModal()}
-        {<TextInputModal/>}
       </Animated.View>
     </View>
   );

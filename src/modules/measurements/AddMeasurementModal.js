@@ -301,7 +301,7 @@ const AddMeasurementModal = (props) => {
               overlayStyle={[{...overlayStyles.overlayContainer}, compassStyles.compassDataModalPosition]}
               onBackdropPress={() => showCompassMetadataModal(false)}
             >
-              {showCompassRawDataView && renderCompassData()}
+              {renderCompassData()}
             </Overlay>
           </React.Fragment>
         )}
