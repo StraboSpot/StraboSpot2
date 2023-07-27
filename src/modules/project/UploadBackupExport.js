@@ -62,7 +62,7 @@ const UploadBackAndExport = () => {
           />
           : (
             <View style={uiStyles.spacer}>
-              <Text style={commonStyles.dialogContentImportantText}>If you are attempting to upload the project,
+              <Text style={overlayStyles.importantText}>If you are attempting to upload the project,
                 check to see if you are logged in
               </Text>
             </View>
