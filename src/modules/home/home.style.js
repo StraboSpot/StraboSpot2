@@ -6,20 +6,6 @@ const homeStyles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  dialogBox: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    width: 300,
-    // maxHeight: '90%',
-  },
-  dialogTitleContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  dialogTitleText: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   mapboxAttributionPosition: {
     left: 165,
     bottom: Platform.OS === 'ios' ? -15 : 7,

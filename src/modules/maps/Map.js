@@ -15,7 +15,7 @@ import {
   setErrorMessagesModalVisible,
   setModalVisible,
 } from '../home/home.slice';
-import homeStyles from '../home/home.style';
+import overlayStyles from '../home/overlay.styles';
 import useImagesHook from '../images/useImages';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
@@ -1154,15 +1154,15 @@ const Map = React.forwardRef((props, ref) => {
     return (
       <Overlay
         animationType={'slide'}
-        overlayStyle={homeStyles.dialogBox}
+        overlayStyle={overlayStyles.overlayContainer}
         isVisible={showSetInCurrentViewModal}
         onBackdropPress={() => {
         }}
       >
-        <View style={homeStyles.dialogTitleContainer}>
-          <Text style={homeStyles.dialogTitleText}>Select a Geometry Type</Text>
+        <View style={overlayStyles.titleContainer}>
+          <Text style={overlayStyles.titleText}>Select a Geometry Type</Text>
         </View>
-        <View>
+        <View style={[overlayStyles.overlayContent, overlayStyles.selectGeometryTypeContent]}>
           {buttons.map(button =>
             <Button
               icon={
@@ -1173,7 +1173,8 @@ const Map = React.forwardRef((props, ref) => {
                 />
               }
               title={button}
-              type={'outline'}
+              buttonStyle={overlayStyles.buttonText}
+              type={'clear'}
               onPress={() => updateDefaultGeomType(button)}
               key={button}
             />,

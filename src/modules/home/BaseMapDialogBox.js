@@ -13,8 +13,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {BASEMAPS} from '../maps/maps.constants';
 import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
-import styles from './dialog.styles';
-import homeStyles from './home.style';
+import overlayStyles from './overlay.styles';
 
 const BaseMapDialog = (props) => {
 
@@ -152,10 +151,9 @@ const BaseMapDialog = (props) => {
   const renderCustomMapItem = (customMap) => {
     return (
       <ListItem
-        containerStyle={styles.dialogContent}
         key={customMap.id + 'CustomMapItem'}
         onPress={() => setBasemap(customMap)}>
-        <ListItem.Content style={{}}>
+        <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
             ({customMap.source || customMap.sources['raster-tiles'].type})
@@ -169,10 +167,9 @@ const BaseMapDialog = (props) => {
   const renderOfflineCustomMapItem = (customMap) => {
     return (
       <ListItem
-        containerStyle={styles.dialogContent}
         key={customMap.id + 'OfflineCustomMapItem'}
         onPress={() => setBasemap(customMap)}>
-        <ListItem.Content style={{}}>
+        <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
             ({customMap.source || customMap.sources['raster-tiles'].type})
@@ -189,7 +186,6 @@ const BaseMapDialog = (props) => {
   const renderDefaultMapItem = map => (
     <ListItem
       key={map.id + 'DefaultMapItem'}
-      containerStyle={styles.dialogContent}
       onPress={() => isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
     >
       <ListItem.Content>
@@ -204,7 +200,7 @@ const BaseMapDialog = (props) => {
 
   const renderMapOverlayItem = (customMap, isOffline) => (
     <ListItem
-      containerStyle={styles.dialogContent}
+      containerStyle={overlayStyles.overlayContent}
       key={customMap.id + 'CustomOverlayItem' + (isOffline ? 'Offline' : '')}
       // onPress={async () => {
       //   const baseMap = await useMaps.setBasemap(customMap.id);
@@ -212,7 +208,7 @@ const BaseMapDialog = (props) => {
       //   setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
       // }}
     >
-      <ListItem.Content style={{}}>
+      <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
           ({customMap.source})</ListItem.Title>
         {!isInternetReachable
@@ -257,12 +253,12 @@ const BaseMapDialog = (props) => {
     <Overlay
       animationType={'slide'}
       isVisible={props.visible}
-      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      overlayStyle={overlayStyles.overlayContainer}
       onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{dialogTitle}</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>
       </View>
       <View>
         {renderDefaultBasemapsList()}

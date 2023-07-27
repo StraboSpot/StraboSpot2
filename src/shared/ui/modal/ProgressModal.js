@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 
 // import ProgressBar from 'react-native-progress/Bar';
-import commonStyles from '../../common.styles';
+import overlayStyles from '../../../modules/home/overlay.styles';
 
 const ProgressModal = (props) => {
 
@@ -12,19 +12,15 @@ const ProgressModal = (props) => {
     <Overlay
       isVisible={props.isProgressModalVisible}
       animationType={'fade'}
-      overlayStyle={[
-        // homeStyles.dialogBox,
-        commonStyles.dialogBox,
-        // {maxHeight: Platform.OS === 'ios' ? 700 : 275, width: 300},
-      ]}
+      overlayStyle={overlayStyles.overlayContainer}
     >
-      <View style={commonStyles.overlayTitleContainer}>
-        <Text style={commonStyles.overlayTitleText}>{props.dialogTitle}</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={overlayStyles.titleText}>{props.dialogTitle}</Text>
       </View>
-      <View style={{...commonStyles.dialogContent}}>
+      <View>
         {props.children}
       </View>
-      <View style={{height: 150, marginBottom: 20}}>
+      <View style={overlayStyles.animationContainer}>
         {props.animation}
       </View>
 
@@ -39,7 +35,7 @@ const ProgressModal = (props) => {
           onPress={props.onPressComplete}
           type={'clear'}
           title={props.buttonText || 'OK'}
-          titleStyle={commonStyles.dialogButtonText}
+          titleStyle={overlayStyles.buttonText}
         />
       )}
     </Overlay>

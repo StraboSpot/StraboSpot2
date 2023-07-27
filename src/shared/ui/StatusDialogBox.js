@@ -3,35 +3,30 @@ import {ScrollView, Text, View} from 'react-native';
 
 import {Overlay} from 'react-native-elements';
 
-import homeStyles from '../../modules/home/home.style';
-import styles from '../../shared/common.styles';
-import commonStyles from '../../shared/common.styles';
+import overlayStyles from '../../modules/home/overlay.styles';
 
 const StatusDialogBox = (props) => {
   const scrollView = useRef();
 
   return (
-    <React.Fragment>
-      <Overlay
-        animationType={'fade'}
-        isVisible={props.visible}
-        onBackdropPress={props.onTouchOutside}
-        overlayStyle={homeStyles.dialogBox}
+    <Overlay
+      animationType={'fade'}
+      isVisible={props.visible}
+      onBackdropPress={props.onTouchOutside}
+      overlayStyle={overlayStyles.overlayContainer}
+    >
+      <View style={[overlayStyles.titleContainer, props.titleContainer]}>
+        <Text style={[overlayStyles.titleText, props.overlayTitleText]}>{props.title}</Text>
+      </View>
+      <ScrollView
+        ref={scrollView}
+        onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}
       >
-        <View style={[commonStyles.overlayTitleContainer, props.style]}>
-          <Text style={[commonStyles.overlayTitleText]}>{props.dialogTitle}</Text>
+        <View style={[overlayStyles.overlayContent, props.overlayContent]}>
+          {props.children}
         </View>
-
-        <ScrollView
-          ref={scrollView}
-          onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}
-        >
-          <View style={[styles.dialogContent, props.dialogContent]}>
-            {props.children}
-          </View>
-        </ScrollView>
-      </Overlay>
-    </React.Fragment>
+      </ScrollView>
+    </Overlay>
   );
 };
 

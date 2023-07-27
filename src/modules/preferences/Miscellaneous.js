@@ -10,6 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
+import overlayStyles from '../home/overlay.styles';
 import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
@@ -59,7 +60,7 @@ const Miscellaneous = () => {
       onPress={verifyPassword}
       close={closeModal}
     >
-      <Text style={commonStyles.dialogContentImportantText}>
+      <Text style={overlayStyles.importantText}>
         Data saved under pages that are in testing may NOT be compatible with future versions of StraboSpot.
       </Text>
       <Input
@@ -75,8 +76,8 @@ const Miscellaneous = () => {
   const renderEndpointFieldContent = () => (
     <View>
       <SectionDivider dividerText={'Endpoint'}/>
-      <Text style={{textAlign: 'center'}}>Default Endpoint:</Text>
-      <Text style={{textAlign: 'center', fontWeight: 'bold'}}>https://strabospot.org/db</Text>
+      <Text style={commonStyles.textAlignCenter}>Default Endpoint:</Text>
+      <Text style={[commonStyles.textAlignCenter, commonStyles.textBold]}>https://strabospot.org/db</Text>
       <Text style={{margin: 15}}>If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
         and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.</Text>
       <CustomEndpoint/>

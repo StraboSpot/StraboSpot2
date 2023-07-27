@@ -5,11 +5,10 @@ import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useExportHook from '../../../services/useExport';
-import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import projectStyles from '../../project/project.styles';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import {setBackupModalVisible} from '../home.slice';
+import overlayStyles from '../overlay.styles';
 
 const BackupModal = () => {
   const dispatch = useDispatch();
@@ -40,20 +39,20 @@ const BackupModal = () => {
     >
       <View>
         <View>
-          <Text style={commonStyles.dialogText}>
-            <Text style={commonStyles.dialogContentImportantText}>ALL</Text>
+          <Text style={overlayStyles.contentText}>
+            <Text style={overlayStyles.importantText}>ALL</Text>
             <Text> datasets, active and inactive, will be
               exported along with the images, and custom maps.</Text>
           </Text>
-          <Text style={commonStyles.dialogText}>If you change the folder name please do not use spaces, special
+          <Text style={overlayStyles.contentText}>If you change the folder name please do not use spaces, special
             characters (except a dash or
             underscore), or add a file extension.</Text>
         </View>
-        <View style={projectStyles.dialogContent}>
+        <View style={overlayStyles.overlayContent}>
           <TextInput
             value={fileName}
             onChangeText={text => setBackupFileName(text)}
-            style={commonStyles.dialogInputContainer}
+            style={overlayStyles.inputContainer}
           />
         </View>
       </View>

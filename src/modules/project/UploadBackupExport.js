@@ -17,6 +17,7 @@ import {
   setErrorMessagesModalVisible,
   setUploadModalVisible,
 } from '../home/home.slice';
+import overlayStyles from '../home/overlay.styles';
 import {setSelectedProject} from './projects.slice';
 
 const UploadBackAndExport = () => {
@@ -75,12 +76,10 @@ const UploadBackAndExport = () => {
         {Platform.OS === 'ios'
           && (
             <View style={{padding: 10}}>
-              <Text style={commonStyles.dialogContentImportantText}>IMPORTANT!</Text>
-              <Text style={{...commonStyles.dialogContentImportantText, margin: 10, lineHeight: 20}}>After backing up,
-                to
-                preserve your data please copy
-                your project backups out of the StraboSpot2/ProjectBackups folder to a different folder in the iOS app
-                Files/On My IPad! If online, you can find detailed instructions
+              <Text style={{...overlayStyles.statusMessageText}}>After backing up,
+                to further preserve your data please copy your project backups out of the StraboSpot2/ProjectBackups
+                folder to a
+                different folder in the iOS app Files/On My IPad! If online, you can find detailed instructions
                 <Text style={{color: BLUE}} onPress={openURL}> here</Text>.
               </Text>
             </View>

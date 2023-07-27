@@ -12,8 +12,8 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import StandardModal from '../../shared/ui/StandardModal';
 import {setProjectLoadComplete} from '../home/home.slice';
+import overlayStyles from '../home/overlay.styles';
 import useProjectHook from '../project/useProject';
-import styles from './project.styles';
 import {updatedDatasetProperties} from './projects.slice';
 
 const DatasetList = () => {
@@ -143,8 +143,8 @@ const DatasetList = () => {
             }
           />
           {isDisabled(selectedDatasetToEdit.id) && (
-            <View>
-              <Text style={[styles.dialogContentImportantText, {paddingTop: 10, textAlign: 'center'}]}>
+            <View style={overlayStyles.overlayContent}>
+              <Text style={overlayStyles.importantText}>
                 {selectedDatasetToEdit.name} can not be deleted while still selected as the current dataset.
               </Text>
             </View>
@@ -164,12 +164,12 @@ const DatasetList = () => {
       >
         <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
           {selectedDatasetToEdit && selectedDatasetToEdit.name
-            && <Text style={styles.dialogContentImportantText}>{'\n' + selectedDatasetToEdit.name}</Text>}
+            && <Text style={{}}>{'\n' + selectedDatasetToEdit.name}</Text>}
           ?
         </Text>
-        <Text style={styles.dialogConfirmText}>
+        <Text style={overlayStyles.statusMessageText}>
           This will
-          <Text style={styles.dialogContentImportantText}> ERASE </Text>
+          <Text style={overlayStyles.importantText}> ERASE </Text>
           everything in this dataset including Spots, images, and all other data!
         </Text>
       </DeleteConformationDialogBox>
@@ -192,8 +192,9 @@ const DatasetList = () => {
         close={() => setMakeIsDatasetCurrentModalVisible(false)}
       >
         <View>
-          <Text style={commonStyles.dialogText}>By selecting &quot;Yes&quot; any new data will be saved into</Text>
-          <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>{selectedDataset.name}.</Text>
+          <Text style={overlayStyles.statusMessageText}>By selecting &quot;Yes&quot; any new data will be saved
+            into</Text>
+          <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>{selectedDataset.name}.</Text>
         </View>
       </StandardModal>
     );

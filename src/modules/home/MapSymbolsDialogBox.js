@@ -11,8 +11,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
 import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
-import dialogStyles from './dialog.styles';
-import homeStyles from './home.style';
+import overlayStyles from './overlay.styles';
 
 const deviceHeight = Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen').height;
 
@@ -33,10 +32,9 @@ const MapSymbolsDialog = (props) => {
     return (
       <ListItem
         key={item}
-        containerStyle={dialogStyles.dialogContent}
         bottomDivider={index < mapSymbols.length - 2}>
         <ListItem.Content>
-          <ListItem.Title style={dialogStyles.dialogText}>{getSymbolTitle(item)}</ListItem.Title>
+          <ListItem.Title>{getSymbolTitle(item)}</ListItem.Title>
         </ListItem.Content>
         <Switch onChange={() => toggleSymbolSelected(item)} value={symbolsOn.includes(item)}/>
       </ListItem>
@@ -64,12 +62,12 @@ const MapSymbolsDialog = (props) => {
     <Overlay
       animationType={'slide'}
       isVisible={props.visible}
-      overlayStyle={[homeStyles.dialogBox, dialogStyles.dialogBox]}
+      overlayStyle={[overlayStyles.overlayContainer]}
       onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[homeStyles.dialogTitleContainer, dialogStyles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, dialogStyles.dialogTitleText]}>Map Symbols</Text>
+      <View style={[overlayStyles.titleContainer]}>
+        <Text style={[overlayStyles.titleText]}>Map Symbols</Text>
       </View>
       <View>
         {!isEmpty(mapSymbols) && (
@@ -82,21 +80,21 @@ const MapSymbolsDialog = (props) => {
             />
           </View>
         )}
-        <ListItem key={'all'} containerStyle={{...dialogStyles.dialogContent, paddingTop: 40}}>
+        <ListItem key={'all'}>
           <ListItem.Content>
-            <ListItem.Title style={dialogStyles.dialogLargerText}>{'All Symbols'}</ListItem.Title>
+            <ListItem.Title>{'All Symbols'}</ListItem.Title>
           </ListItem.Content>
           <Switch onChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
         </ListItem>
-        <ListItem key={'spotLabels'} containerStyle={{...dialogStyles.dialogContent}}>
+        <ListItem key={'spotLabels'}>
           <ListItem.Content>
-            <ListItem.Title style={dialogStyles.dialogLargerText}>{'Symbol Labels'}</ListItem.Title>
+            <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
           </ListItem.Content>
           <Switch onChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
         </ListItem>
-        <ListItem key={'tag_color'} containerStyle={{...dialogStyles.dialogContent}}>
+        <ListItem key={'tag_color'}>
           <ListItem.Content>
-            <ListItem.Title style={dialogStyles.dialogLargerText}>{'Show Tag Color'}</ListItem.Title>
+            <ListItem.Title>{'Show Tag Color'}</ListItem.Title>
           </ListItem.Content>
           <Switch onChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
         </ListItem>

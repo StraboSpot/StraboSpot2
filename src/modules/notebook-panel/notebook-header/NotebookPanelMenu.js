@@ -4,7 +4,7 @@ import {Alert, Text, View} from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import homeStyles from '../../home/home.style';
+import overlayStyles from '../../home/overlay.styles';
 import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
 import useSpotsHook from '../../spots/useSpots';
@@ -44,17 +44,17 @@ const NotebookPanelMenu = (props) => {
 
   return (
     <Overlay
-      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      overlayStyle={[overlayStyles.overlayContainer, styles.dialogBoxPosition]}
       isVisible={props.visible}
       onBackdropPress={props.onTouchOutside}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>Spot Actions</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={overlayStyles.titleText}>Spot Actions</Text>
       </View>
       <View>
         <Button
           title={'Copy this Spot'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
           onPress={() => {
             useSpots.copySpot().catch(err => console.log('Error copying Spot!', err));
@@ -63,9 +63,9 @@ const NotebookPanelMenu = (props) => {
           }}
         />
         <Button
-          style={styles.dialogContent}
+          containerStyle={styles.threeDotMenuButtonContainer}
           title={'Zoom to this Spot'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
           onPress={() => {
             props.zoomToSpot();
@@ -73,9 +73,9 @@ const NotebookPanelMenu = (props) => {
           }}
         />
         <Button
-          style={styles.dialogContent}
+          containerStyle={styles.threeDotMenuButtonContainer}
           title={'Delete this Spot'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
           onPress={() => {
             deleteSelectedSpot();
@@ -83,9 +83,9 @@ const NotebookPanelMenu = (props) => {
           }}
         />
         <Button
-          style={styles.dialogContent}
+          containerStyle={styles.threeDotMenuButtonContainer}
           title={'Show Nesting'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
           onPress={() => {
             dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
@@ -93,9 +93,9 @@ const NotebookPanelMenu = (props) => {
           }}
         />
         <Button
-          style={styles.dialogContent}
+          containerStyle={styles.threeDotMenuButtonContainer}
           title={'Close Notebook'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
           onPress={async () => {
             await props.closeNotebookPanelMenu();

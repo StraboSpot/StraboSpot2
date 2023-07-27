@@ -3,35 +3,35 @@ import {Text, View} from 'react-native';
 
 import {Button, Overlay} from 'react-native-elements';
 
-import commonStyles from '../../shared/common.styles';
+import overlayStyles from '../home/overlay.styles';
 import * as ProjectActions from './project.constants';
-import styles from './project.styles';
 
 const UploadDialogBox = (props) => {
   return (
     <Overlay
       animationType={'fade'}
-      overlayStyle={[commonStyles.dialogBox, {width: 275}]}
+      overlayStyle={overlayStyles.overlayContainer}
+      backdropStyle={overlayStyles.backdropStyles}
       isVisible={props.visible}
     >
-      <View style={[commonStyles.overlayTitleContainer, styles.dialogTitleContainer]}>
-        <Text style={[commonStyles.overlayTitleText, styles.dialogTitleText]}>{props.dialogTitle}</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={overlayStyles.titleText}>{props.dialogTitle}</Text>
       </View>
-      <View style={styles.dialogContent}>
+      <View style={overlayStyles.overlayContent}>
         {props.children}
       </View>
-      <View style={commonStyles.overlayButtonContainer}>
+      <View style={overlayStyles.buttonContainer}>
         <Button
           title={props.buttonText.toUpperCase() || 'OK'}
-          buttonStyle={styles.dialogButton}
-          titleStyle={props.disabled ? styles.dialogDisabledButtonText : styles.dialogButtonText}
+          type={'clear'}
+          titleStyle={props.disabled ? overlayStyles.disabledButtonText : overlayStyles.buttonText}
           disabled={props.disabled}
           onPress={() => props.onPress(ProjectActions.BACKUP_TO_SERVER)}
         />
         <Button
           title={'CANCEL'}
-          buttonStyle={styles.dialogButton}
-          titleStyle={[styles.dialogButtonText]}
+          type={'clear'}
+          titleStyle={overlayStyles.buttonText}
           onPress={props.cancel}
         />
       </View>

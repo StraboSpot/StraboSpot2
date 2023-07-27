@@ -4,10 +4,10 @@ import {FlatList, Switch, Text, View} from 'react-native';
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
+import overlayStyles from '../home/overlay.styles';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
@@ -66,7 +66,7 @@ const ImagesOverview = () => {
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
             {image.title && (
               <Text
-                style={[commonStyles.dialogContent, {textAlign: 'left', textDecorationLine: 'underline'}]}>
+                style={[overlayStyles.overlayContent]}>
                 {truncateText(image.title, 20)}
               </Text>
             )}

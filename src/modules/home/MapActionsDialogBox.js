@@ -5,8 +5,7 @@ import {Button, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 // Styles
-import styles from './dialog.styles';
-import homeStyles from './home.style';
+import overlayStyles from './overlay.styles';
 
 const MapActionsDialog = (props) => {
 
@@ -18,64 +17,59 @@ const MapActionsDialog = (props) => {
     <Overlay
       animationType={'slide'}
       isVisible={props.visible}
-      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      overlayStyle={[overlayStyles.overlayContainer]}
       onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>Map Actions</Text>
+      <View style={[overlayStyles.titleContainer]}>
+        <Text style={[overlayStyles.titleText]}>Map Actions</Text>
       </View>
       <View>
         <Button
           onPress={() => props.onPress('zoom')}
           title={'Zoom to Extent of Spots'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
         />
         {/*<Button*/}
         {/*  onPress={() => props.onPress('zoomToOfflineMap')}*/}
         {/*  title='Zoom to Offline Map'*/}
-        {/*  titleStyle={styles.dialogText}*/}
+        {/*  titleStyle={overlayStyles.dialogText}*/}
         {/*  type={'clear'}*/}
         {/*/>*/}
         {((isInternetReachable && isConnected) || (!isInternetReachable && isConnected && currentBasemap?.source)) && (
           <Button
             onPress={() => props.onPress('saveMap')}
-            style={styles.dialogContent}
             title={'Save Map for Offline Use'}
-            titleStyle={styles.dialogText}
+            titleStyle={overlayStyles.buttonTitle}
             type={'clear'}
           />
         )}
         <Button
           onPress={() => props.onPress('addTag')}
-          style={styles.dialogContent}
           title={'Add Tag(s) to Spot(s)'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
         />
         {Platform.OS === 'ios' && (
           <Button
             onPress={() => props.onPress('stereonet')}
-            style={styles.dialogContent}
             title={'Lasso Spots for Stereonet'}
-            titleStyle={styles.dialogText}
+            titleStyle={overlayStyles.buttonTitle}
             type={'clear'}
           />
         )}
         <Button
           onPress={() => props.onPress('mapMeasurement')}
-          style={styles.dialogContent}
           title={'Measure Distance'}
-          titleStyle={styles.dialogText}
+          titleStyle={overlayStyles.buttonTitle}
           type={'clear'}
         />
         {stratSection && (
           <Button
             onPress={() => props.onPress('stratSection')}
-            style={styles.dialogContent}
             title={'Strat Section Settings'}
-            titleStyle={styles.dialogText}
+            titleStyle={overlayStyles.buttonTitle}
             type={'clear'}
           />
         )}

@@ -3,32 +3,32 @@ import {Text, View} from 'react-native';
 
 import {Button, Overlay} from 'react-native-elements';
 
-import commonStyles from '../../shared/common.styles';
+import overlayStyles from '../../modules/home/overlay.styles';
 
 const deleteConformation = (props) => {
   return (
     <Overlay
       animationType={'fade'}
       isVisible={props.isVisible}
-      overlayStyle={commonStyles.dialogBox}
+      overlayStyle={overlayStyles.overlayContainer}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={commonStyles.overlayTitleContainer}>
-        <Text style={{...commonStyles.overlayTitleText, color: 'red'}}>{props.title}</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={[overlayStyles.titleText, overlayStyles.importantText]}>{props.title}</Text>
       </View>
-      <View style={commonStyles.dialogContent}>
+      <View style={overlayStyles.overlayContent}>
         {props.children}
       </View>
-      <View style={commonStyles.overlayButtonContainer}>
+      <View style={overlayStyles.buttonContainer}>
         <Button
           title={'Delete'}
-          titleStyle={commonStyles.overlayButtonText}
+          titleStyle={overlayStyles.buttonText}
           type={'clear'}
           onPress={props.delete}
         />
         <Button
           title={'Cancel'}
-          titleStyle={commonStyles.overlayButtonText}
+          titleStyle={overlayStyles.buttonText}
           type={'Cancel'}
           onPress={props.cancel}
         />

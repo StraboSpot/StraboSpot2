@@ -16,9 +16,6 @@ const projectOptionsModalStyle = StyleSheet.create({
     padding: 5,
     textAlign: 'center',
   },
-  deleteButtonContainer: {
-    margin: 10,
-  },
   deleteButtonText: {
     color: 'red',
   },

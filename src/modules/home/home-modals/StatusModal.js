@@ -14,7 +14,6 @@ import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedProject} from '../../project/projects.slice';
 import {setStatusMessagesModalVisible} from '../home.slice';
-import homeStyles from '../home.style';
 import overlayStyles from '../overlay.styles';
 
 const StatusModal = (props) => {
@@ -91,7 +90,7 @@ const StatusModal = (props) => {
                 />
               )}
               <Button
-                titleStyle={homeStyles.urlText}
+                titleStyle={overlayStyles.urlText}
                 icon={{
                   name: 'globe-outline',
                   type: 'ionicon',

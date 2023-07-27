@@ -10,11 +10,7 @@ const splashscreenStyles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    position: 'absolute',
-    top: 175,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    paddingTop: 70,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -24,8 +20,21 @@ const splashscreenStyles = StyleSheet.create({
     textShadowRadius: 10,
   },
   titleContainer: {
-    marginTop: 20,
-    paddingBottom: 10,
+    paddingTop: 20,
+    alignItems: 'center',
+  },
+  versionContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  versionNumber: {
+    textAlign: 'right',
+    fontSize: 25,
+    color: 'black',
+    textShadowColor: 'white',
+    textShadowRadius: 10, fontFamily: 'ChalkboardSE-Bold',
+    // marginBottom: 10,
+    marginRight: 10,
   },
   wifiIndicatorContainer: {
     alignItems: 'flex-end',

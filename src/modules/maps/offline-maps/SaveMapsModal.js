@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Platform, Text, View} from 'react-native';
+import {ActivityIndicator, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {Button, Overlay} from 'react-native-elements';
@@ -9,7 +9,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
-import commonStyles from '../../../shared/common.styles';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {
@@ -18,8 +17,8 @@ import {
   removedLastStatusMessage,
   setOfflineMapsModalVisible,
 } from '../../home/home.slice';
-import homeStyles from '../../home/home.style';
 // import ProgressBar from '../../../shared/ui/ProgressBar';
+import overlayStyles from '../../home/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
@@ -247,67 +246,59 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     <Overlay
       animationType={'slide'}
       isVisible={isOfflineMapModalVisible}
-      overlayStyle={[homeStyles.dialogBox, commonStyles.dialogBox, {height: Platform.OS === 'ios' ? 400 : 275}]}
+      backdropStyle={overlayStyles.backdropStyles}
+      overlayStyle={[overlayStyles.overlayContainer, offlineMapsStyles.saveModalContainer]}
       onBackdropPress={() => {
         setShowMainMenu(true);
         setShowComplete(false);
       }}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitleContainer]}>
-        <View style={styles.dialogTitle}>
-          <Text style={[homeStyles.dialogTitleText]}>{currentMapName}</Text>
-        </View>
-        <View style={styles.closeButton}>
-          <Button
-            title={'Close'}
-            titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE}}
-            type={'clear'}
-            onPress={() => dispatch(setOfflineMapsModalVisible(false))}
-          />
-        </View>
+      <Button
+        title={'X'}
+        titleStyle={overlayStyles.buttonTitle}
+        containerStyle={overlayStyles.closeButton}
+        type={'clear'}
+        onPress={() => dispatch(setOfflineMapsModalVisible(false))}
+      />
+      <View style={overlayStyles.titleContainer}>
+        <Text style={[overlayStyles.titleText]}>{currentMapName}</Text>
       </View>
-
-      <View style={commonStyles.dialogContent}>
-        <View style={styles.saveModalContainer}>
-          {showMainMenu && (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text>
-                Select max zoom level to download:
-              </Text>
-            </View>
-          )}
-          <View style={{flex: 3, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={overlayStyles.contentText}>
+        <View>
+          <View style={{}}>
             {showMainMenu && (
-              <Picker
-                mode={'dropdown'}
-                prompt={'Select a zoom level'}
-                onValueChange={value => updatePicker(value)}
-                selectedValue={downloadZoom}
-                style={Platform.OS === 'ios' ? styles.pickerIOS : styles.pickerAndroid}
-              >
-                {zoomLevels.map((zoom) => {
-                  return (
-                    <Picker.Item
-                      style={{width: 100}}
-                      key={zoom}
-                      value={zoom}
-                      label={zoom.toString()}
-                    />
-                  );
-                })}
-              </Picker>
+              <View>
+                <Text style={overlayStyles.contentText}>
+                  Select max zoom level to download:
+                </Text>
+                <Picker
+                  mode={'dropdown'}
+                  prompt={'Select a zoom level'}
+                  onValueChange={value => updatePicker(value)}
+                  selectedValue={downloadZoom}
+                >
+                  {zoomLevels.map((zoom) => {
+                    return (
+                      <Picker.Item
+                        style={{width: 100}}
+                        key={zoom}
+                        value={zoom}
+                        label={zoom.toString()}
+                      />
+                    );
+                  })}
+                </Picker>
+              </View>
             )}
             {showLoadingBar && (
-              <View style={{height: 40, alignItems: 'center'}}>
+              <View style={overlayStyles.overlayContent}>
                 {isLoadingWave
                   ? (
-                    <View style={{paddingBottom: 35}}>
-                      <ActivityIndicator size={'large'} color={themes.BLACK}/>
-                    </View>
+                    <ActivityIndicator size={'large'} color={themes.BLACK}/>
                   ) : (
                     <View>
                       <ProgressBar progress={percentDone} width={200}/>
-                      <Text style={{textAlign: 'right', paddingTop: 5}}>
+                      <Text style={overlayStyles.statusMessageText}>
                         {toNumberFixedValue(percentDone, 0)}
                       </Text>
                     </View>
@@ -316,35 +307,35 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
               </View>
             )}
             {showLoadingMenu && (
-              <View style={commonStyles.alignItemsCenter}>
-                <Text style={{fontSize: 15}}>{statusMessages}</Text>
+              <View style={overlayStyles.overlayContent}>
+                <Text style={overlayStyles.statusMessageText}>{statusMessages}</Text>
                 {statusMessages.includes('Installing tiles...') && !statusMessages.includes(
                   'Downloading Tiles...') && (
-                  <View style={commonStyles.alignItemsCenter}>
-                    <Text style={{fontSize: 15}}>Installing: {tilesToInstall}</Text>
-                    <Text style={{fontSize: 15}}>Already Installed: {installedTiles}</Text>
+                  <View>
+                    <Text style={overlayStyles.contentText}>Installing: {tilesToInstall}</Text>
+                    <Text style={overlayStyles.contentText}>Already Installed: {installedTiles}</Text>
                   </View>
                 )}
               </View>
             )}
             {isError && (
-              <View style={commonStyles.alignItemsCenter}>
-                <Text style={{fontSize: 20, textAlign: 'center'}}>Something Went Wrong!</Text>
-                <Text style={{fontSize: 20, paddingTop: 30, textAlign: 'center'}}>{errorMessage}</Text>
+              <View style={overlayStyles.overlayContent}>
+                <Text style={overlayStyles.titleText}>Something Went Wrong!</Text>
+                <Text style={overlayStyles.contentText}>{errorMessage}</Text>
               </View>
             )}
             {showComplete && (
-              <View style={commonStyles.alignItemsCenter}>
-                <Text style={{fontSize: 20, padding: 10}}>Success!</Text>
-              </View>
-            )}
-            {showComplete && (
-              <View style={commonStyles.alignItemsCenter}>
-                <Text>Your map has been successfully downloaded to this device.</Text>
+              <View style={overlayStyles.overlayContent}>
+                <Text style={overlayStyles.titleText}>Success!</Text>
+                <Text style={overlayStyles.contentText}>Your map has been successfully downloaded to this device.</Text>
+                <View>
+                  <Text style={overlayStyles.contentText}>Installing: {tilesToInstall}</Text>
+                  <Text style={overlayStyles.contentText}>Already Installed: {installedTiles}</Text>
+                </View>
               </View>
             )}
           </View>
-          <View style={{flex: 1, justifyContent: 'center'}}>
+          <View>
             {showMainMenu && (
               <View>
                 {isLoadingCircle
@@ -356,10 +347,12 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
                       title={`Download ${tileCount} Tiles`}
                     />
                   )}
-                {databaseEndpoint.isSelected && <Text style={{
-                  ...commonStyles.dialogContentImportantText,
-                  marginTop: 10,
-                }}>URL: {databaseEndpoint.url}</Text>}
+                {databaseEndpoint.isSelected
+                  && (
+                    <Text style={overlayStyles.contentText}>
+                      URL: {databaseEndpoint.url}
+                    </Text>
+                  )}
               </View>
             )
             }
