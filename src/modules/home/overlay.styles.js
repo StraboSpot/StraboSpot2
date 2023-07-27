@@ -20,12 +20,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: themes.MEDIUM_TEXT_SIZE,
-    color: 'black',
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   buttonTitle: {
     margin: 5,
     color: themes.PRIMARY_TEXT_COLOR,
-    borderBottomWidth: 1,
+    // fontWeight: 'normal',
+    // borderBottomWidth: 1,
   },
   closeButton: {
     alignItems: 'flex-end',
