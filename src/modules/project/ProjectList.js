@@ -17,12 +17,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {
-  clearedStatusMessages,
-  setBackupOverwriteModalVisible,
-  setStatusMessageModalTitle,
-  setStatusMessagesModalVisible,
-} from '../home/home.slice';
+import {setBackupOverwriteModalVisible, setStatusMessageModalTitle} from '../home/home.slice';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 
@@ -155,12 +150,7 @@ const ProjectList = (props) => {
         dispatch(setStatusMessageModalTitle(res.project.description.project_name));
         console.log('Done loading project', res);
       }
-      else {
-        dispatch(setStatusMessageModalTitle(project.name));
-        dispatch(clearedStatusMessages());
-        dispatch(setStatusMessagesModalVisible(true));
-        await useDownload.initializeDownload(project);
-      }
+      else await useDownload.initializeDownload(project);
     }
   };
 
