@@ -10,6 +10,7 @@ const IconButton = (props) => {
       onPress={props.onPress}
       onLongPress={props.onLongPress}
       delayLongPress={1000}
+      style={props.style}
     >
       <Image
         containerStyle={props.containerStyle}

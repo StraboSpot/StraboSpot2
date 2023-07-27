@@ -7,6 +7,7 @@ import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import IconButton from '../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../home/home.constants';
 import {
   addedStatusMessage,
@@ -14,7 +15,7 @@ import {
   setErrorMessagesModalVisible,
   setModalVisible,
 } from '../home/home.slice';
-import homeStyles from '../home/home.style';
+import overlayStyles from '../home/overlay.styles';
 import useImagesHook from '../images/useImages';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
@@ -1139,6 +1140,13 @@ const Map = React.forwardRef((props, ref) => {
   const renderSetInCurrentViewModal = () => {
     const buttons = ['Point', 'LineString', 'Polygon'];
 
+    const buttonIcon = (button) => {
+      return button === 'LineString' ? require('../../assets/icons/LineButton.png')
+        : button === 'Point' ? require('../../assets/icons/PointButton.png')
+          : button === 'Polygon' ? require('../../assets/icons/PolygonButton.png')
+            : null;
+    };
+
     const updateDefaultGeomType = (geomType) => {
       setShowSetInCurrentViewModal(false);
       setDefaultGeomType(geomType);
@@ -1147,19 +1155,27 @@ const Map = React.forwardRef((props, ref) => {
     return (
       <Overlay
         animationType={'slide'}
-        overlayStyle={homeStyles.dialogBox}
+        overlayStyle={overlayStyles.overlayContainer}
         isVisible={showSetInCurrentViewModal}
         onBackdropPress={() => {
         }}
       >
-        <View style={homeStyles.dialogTitleContainer}>
-          <Text style={homeStyles.dialogTitleText}>Select a Geometry Type</Text>
+        <View style={overlayStyles.titleContainer}>
+          <Text style={overlayStyles.titleText}>Select a Geometry Type</Text>
         </View>
-        <View>
+        <View style={[overlayStyles.overlayContent, overlayStyles.selectGeometryTypeContent]}>
           {buttons.map(button =>
             <Button
+              icon={
+                <IconButton
+                  style={{paddingRight: 15}}
+                  source={buttonIcon(button)}
+                  onPress={() => updateDefaultGeomType(button)}
+                />
+              }
               title={button}
-              type={'outline'}
+              buttonStyle={overlayStyles.buttonText}
+              type={'clear'}
               onPress={() => updateDefaultGeomType(button)}
               key={button}
             />,

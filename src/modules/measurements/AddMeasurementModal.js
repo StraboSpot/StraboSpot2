@@ -10,9 +10,7 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
-import modalStyle from '../../shared/ui/modal/modal.style';
 import Slider from '../../shared/ui/SliderBar';
-import Spacer from '../../shared/ui/Spacer';
 import uiStyles from '../../shared/ui/ui.styles';
 import Compass from '../compass/Compass';
 import {setCompassMeasurementTypes} from '../compass/compass.slice';
@@ -20,6 +18,7 @@ import compassStyles from '../compass/compass.styles';
 import {Form, formStyles, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
+import overlayStyles from '../home/overlay.styles';
 import useMapsHook from '../maps/useMaps';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -171,34 +170,31 @@ const AddMeasurementModal = (props) => {
       borderTopRightRadius: 20,
       zIndex: 100,
     }}>
-      <View style={uiStyles.headerContainer}>
-        <Text style={commonStyles.dialogTitleText}>Compass Data</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={overlayStyles.titleText}>Compass Data</Text>
       </View>
       <View>
-        <Text style={{textAlign: 'center', padding: 10, fontSize: 20}}>Matrix Rotation</Text>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{flex: 1}}>
-            <Text style={compassStyles.compassMatrixHeader}>North</Text>
-            <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
-            <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
-            <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={compassStyles.compassMatrixHeader}>West</Text>
-            <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
-            <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
-            <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={compassStyles.compassMatrixHeader}>Up</Text>
-            <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
-            <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
-            <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
-          </View>
+        <Text style={overlayStyles.titleText}>Matrix Rotation</Text>
+        <View>
+          <Text style={compassStyles.compassMatrixHeader}>North</Text>
+          <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
+          <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
+          <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
         </View>
-        <Spacer/>
+        <View>
+          <Text style={compassStyles.compassMatrixHeader}>West</Text>
+          <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
+          <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
+          <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
+        </View>
+        <View>
+          <Text style={compassStyles.compassMatrixHeader}>Up</Text>
+          <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
+          <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
+          <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
+        </View>
       </View>
-      <View style={{alignItems: 'center'}}>
+      <View style={overlayStyles.overlayContent}>
         <Text>Heading: {compassData.heading}</Text>
         <Text>Strike: {compassData.strike}</Text>
         <Text>Dip: {compassData.dip}</Text>
@@ -302,10 +298,10 @@ const AddMeasurementModal = (props) => {
               )}
             <Overlay
               isVisible={showCompassRawDataView}
-              overlayStyle={[{...modalStyle.modalContainer, width: 400}, compassStyles.compassDataModalPosition]}
+              overlayStyle={[{...overlayStyles.overlayContainer}, compassStyles.compassDataModalPosition]}
               onBackdropPress={() => showCompassMetadataModal(false)}
             >
-              {showCompassRawDataView && renderCompassData()}
+              {renderCompassData()}
             </Overlay>
           </React.Fragment>
         )}

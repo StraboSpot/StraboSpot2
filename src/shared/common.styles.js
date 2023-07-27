@@ -9,77 +9,26 @@ const commonStyles = StyleSheet.create({
   alignItemsCenter: {
     alignItems: 'center',
   },
+  textAlignCenter: {
+    textAlign: 'center',
+  },
+  textBold: {
+    fontWeight: themes.TEXT_WEIGHT,
+  },
   buttonContainer: {
     paddingTop: 10,
+    alignItems: 'center',
   },
   buttonPadding: {
     padding: 10,
   },
+  checkboxContainer: {
+    borderWidth: 0,
+    backgroundColor: 'white',
+  },
   viewMapsButtonText: {
     fontSize: themes.SMALL_TEXT_SIZE,
     color: themes.PRIMARY_ACCENT_COLOR,
-  },
-  dialogButtonText: {
-    fontSize: themes.MEDIUM_TEXT_SIZE,
-    color: 'black',
-  },
-  dialogDisabledButtonText: {
-    color: themes.PRIMARY_TEXT_COLOR,
-  },
-  dialogContent: {
-    flex: 1,
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  dialogBox: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    position: 'absolute',
-    top: '15%',
-    maxHeight: height * 0.90,
-  },
-  dialogContentImportantText: {
-    color: 'red',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  dialogInputContainer: {
-    width: 250,
-    height: 40,
-    backgroundColor: 'white',
-  },
-  dialogError: {
-    backgroundColor: 'red',
-  },
-  dialogWarning: {
-    backgroundColor: 'yellow',
-  },
-  dialogTitleContainer: {
-    alignItems: 'center',
-    backgroundColor: 'green',
-    padding: 10,
-  },
-  dialogText: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    textAlign: 'center',
-  },
-  dialogTitleSuccess: {
-    backgroundColor: 'green',
-  },
-  dialogTitleText: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  dialogStatusMessageText: {
-    fontWeight: '400',
-    fontSize: themes.STATUS_MESSAGE_TEXT_SIZE,
-    textAlign: 'center',
-  },
-  dialogConfirmText: {
-    textAlign: 'center',
-    paddingTop: 15,
   },
   iconColor: {
     color: themes.BLUE,

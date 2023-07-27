@@ -40,7 +40,6 @@ import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
-import BackUpOverwriteModal from './home-modals/BackUpOverwriteModal';
 import ErrorModal from './home-modals/ErrorModal';
 import InfoModal from './home-modals/InfoModal';
 import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
@@ -660,7 +659,7 @@ const Home = () => {
       )}
       {/*Modals for Home Page*/}
       <BackupModal/>
-      <BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>
+      {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       <InfoModal/>
       <InitialProjectLoadModal
         openMainMenu={() => toggleHomeDrawerButton()}

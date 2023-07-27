@@ -13,19 +13,22 @@ const MainMenuPanelHeader = (props) => {
 
   return (
     <View style={styles.mainMenuHeaderContainer}>
-      {pageVisible && !isSideMenuVisible && (
-        <Icon
-          name={'arrow-back'}
-          type={'ionicon'}
-          iconStyle={styles.buttons}
-          onPress={() => props.onPress()}
-          size={30}
-        />
-      )}
-      <View style={pageVisible && !isSideMenuVisible ? [{paddingRight: 30}, styles.mainMenuHeaderTextContainer]
-        : styles.mainMenuHeaderTextContainer}>
+      <View style={styles.mainMenuIconContainer}>
+        {pageVisible && !isSideMenuVisible && (
+          <Icon
+            name={'arrow-back'}
+            type={'ionicon'}
+            color={'black'}
+            iconStyle={styles.buttons}
+            onPress={() => props.onPress()}
+            size={30}
+          />
+        )}
+      </View>
+      <View style={styles.mainMenuHeaderTextContainer}>
         <Text style={styles.headerText}>{pageVisible || MAIN_MENU_TITLE}</Text>
       </View>
+      <View style={{flex: 1, paddingBottom: 10}}/>
     </View>
   );
 };

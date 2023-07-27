@@ -6,10 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import homeStyles from '../../home/home.style';
+import overlayStyles from '../../home/overlay.styles';
 import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
-import styles from '../notebookPanel.styles';
 import footerStyles from './notebookFooter.styles';
 
 const MorePagesMenu = (props) => {
@@ -67,8 +66,8 @@ const MorePagesMenu = (props) => {
       isVisible={props.visible}
       onBackdropPress={props.closeMorePagesMenu}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>More Pages</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={overlayStyles.titleText}>More Pages</Text>
       </View>
       <View style={{flex: 1, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
         <ScrollView>

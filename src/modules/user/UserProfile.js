@@ -10,6 +10,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
 import {setMainMenuPanelVisible} from '../home/home.slice';
+import overlayStyles from '../home/overlay.styles';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import userStyles from './user.styles';
@@ -116,26 +117,28 @@ const UserProfile = (props) => {
       <StandardModal
         visible={isLogoutModalVisible}
         dialogTitle={'Log Out?'}
-        dialogTitleStyle={commonStyles.dialogError}>
-        <Text style={commonStyles.dialogConfirmText}>
+      >
+        <Text style={overlayStyles.statusMessageText}>
           Logging out will
-          <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
+          <Text style={overlayStyles.importantText}> ERASE </Text>
           local data. Please make sure you saved changes to the server or device.
         </Text>
-        <Button
-          title={'Backup'}
-          type={'clear'}
-          containerStyle={commonStyles.buttonContainer}
-          onPress={() => openUploadAndBackupPage()}/>
-        <Button title={'Logout'}
-                titleStyle={commonStyles.dialogContentImportantText}
-                onPress={() => doLogOut('clear')}
-                type={'clear'}
-                containerStyle={commonStyles.buttonContainer}/>
+        <View style={overlayStyles.buttonContainer}>
+          <Button
+            title={'Backup'}
+            type={'clear'}
+            onPress={() => openUploadAndBackupPage()}/>
+          <Button
+            title={'Logout'}
+            titleStyle={overlayStyles.importantText}
+            onPress={() => doLogOut('clear')}
+            type={'clear'}
+          />
+        </View>
         <Button
           title={'Cancel'}
           onPress={() => setIsLogoutModalVisible(false)} type={'clear'}
-          containerStyle={commonStyles.buttonContainer}/>
+          containerStyle={overlayStyles.buttonContainer}/>
       </StandardModal>
     );
   };

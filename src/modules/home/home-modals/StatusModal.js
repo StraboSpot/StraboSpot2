@@ -1,20 +1,20 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
+import LottieView from 'lottie-react-native';
 import {Button} from 'react-native-elements';
-import {DotIndicator} from 'react-native-indicators';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
-import commonStyles from '../../../shared/common.styles';
 import {BLUE} from '../../../shared/styles.constants';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
+import useAnimationsHook from '../../../shared/ui/useAnimations';
 import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedProject} from '../../project/projects.slice';
 import {setStatusMessagesModalVisible} from '../home.slice';
-import homeStyles from '../home.style';
+import overlayStyles from '../overlay.styles';
 
 const StatusModal = (props) => {
   const dispatch = useDispatch();
@@ -23,6 +23,7 @@ const StatusModal = (props) => {
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const statusMessages = useSelector(state => state.home.statusMessages);
 
+  const useAnimations = useAnimationsHook();
   const useImport = useImportHook();
   const useDownload = useDownloadHook();
 
@@ -45,67 +46,63 @@ const StatusModal = (props) => {
 
   return (
     <StatusDialogBox
-      dialogTitle={'Status'}
-      style={commonStyles.dialogTitleSuccess}
+      title={'Status'}
       visible={isStatusMessagesModalVisible}
     >
-      <View style={{minHeight: 100}}>
-        <View style={{paddingTop: 15}}>
-          <Text style={{textAlign: 'center'}}>{statusMessages.join('\n')}</Text>
-          <View style={{paddingTop: 20}}>
-            {isModalLoading ? (
-                <DotIndicator
-                  color={'darkgrey'}
-                  count={4}
-                  size={8}
+      <View>
+        <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
+        {isModalLoading ? (
+            <LottieView
+              style={{width: 150, height: 150}}
+              source={useAnimations.getAnimationType('loadingFile')}
+              autoPlay
+              loop={isModalLoading}
+            />
+          )
+          : (
+            <View style={{alignItems: 'center'}}>
+              {(selectedProject.source === 'Device' || selectedProject.source === 'server') && (
+                <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load project</Text>
+              )}
+              <View style={{flexDirection: 'row'}}>
+                <Button
+                  title={selectedProject.source !== '' ? 'Continue' : 'OK'}
+                  type={'clear'}
+                  containerStyle={{padding: 10}}
+                  onPress={() => getProjectFromSource(selectedProject)}
                 />
-              )
-              : (
-                <View style={{alignItems: 'center'}}>
-                  {(selectedProject.source === 'Device' || selectedProject.source === 'server') && (
-                    <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load project</Text>
-                  )}
-                  <View style={{flexDirection: 'row'}}>
-                    <Button
-                      title={selectedProject.source !== '' ? 'Continue' : 'OK'}
-                      type={'clear'}
-                      containerStyle={{padding: 10}}
-                      onPress={() => getProjectFromSource(selectedProject)}
-                    />
-                    {selectedProject.source !== '' && (
-                      <Button
-                        title={'Cancel'}
-                        containerStyle={{padding: 10}}
-                        type={'clear'}
-                        onPress={() => dispatch(setStatusMessagesModalVisible(false))}
-                      />
-                    )}
-
-                  </View>
-                  {statusMessages.includes('Project Backup Complete!') && (
-                    <Button
-                      title={'Export Project?'}
-                      containerStyle={{padding: 10}}
-                      type={'clear'}
-                      onPress={props.exportProject}
-                    />
-                  )}
+                {selectedProject.source !== '' && (
                   <Button
-                    titleStyle={homeStyles.urlText}
-                    icon={{
-                      name: 'globe-outline',
-                      type: 'ionicon',
-                      size: 15,
-                      color: BLUE,
-                    }}
-                    title={'Visit account at StraboSpot.org'}
+                    title={'Cancel'}
+                    containerStyle={{padding: 10}}
                     type={'clear'}
-                    onPress={props.openUrl}/>
-                </View>
-              )
-            }
-          </View>
-        </View>
+                    onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                  />
+                )}
+
+              </View>
+              {statusMessages.includes('Project Backup Complete!') && (
+                <Button
+                  title={'Export Project?'}
+                  containerStyle={{padding: 10}}
+                  type={'clear'}
+                  onPress={props.exportProject}
+                />
+              )}
+              <Button
+                titleStyle={overlayStyles.urlText}
+                icon={{
+                  name: 'globe-outline',
+                  type: 'ionicon',
+                  size: 15,
+                  color: BLUE,
+                }}
+                title={'Visit account at StraboSpot.org'}
+                type={'clear'}
+                onPress={props.openUrl}/>
+            </View>
+          )
+        }
       </View>
     </StatusDialogBox>
   );

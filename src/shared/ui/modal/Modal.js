@@ -59,7 +59,10 @@ const Modal = (props) => {
 
   if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
     return (
-      <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}>
+      <Overlay
+        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT}
+        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}
+      >
         <ModalHeader {...props}/>
         {props.children}
         {!isEmpty(selectedSpot) && isEmpty(selectedAttributes) && renderModalBottom()}

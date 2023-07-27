@@ -167,7 +167,7 @@ const Compass = (props) => {
           <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
           {renderCompassSymbols()}
         </TouchableOpacity>
-        {props.setCompassRawDataToDisplay && isTestingMode && (
+        {props.setCompassRawDataToDisplay && (
           <Button
             containerStyle={{position: 'absolute', bottom: 0, right: 0, width: 75}}
             titleStyle={{fontSize: 10}}

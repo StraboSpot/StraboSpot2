@@ -1,43 +1,49 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Platform, Switch, Text, TextInput, View} from 'react-native';
+import {Alert, Platform, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
-import windowDimensions from 'react-native/Libraries/Components/Touchable/BoundingDimensions';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
-import {VERSION_NUMBER} from '../../shared/app.constants';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
-import Loading from '../../shared/ui/Loading';
+import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import WarningModal from '../home/home-modals/WarningModal';
 import {
   addedStatusMessage,
   clearedStatusMessages,
+  setLoadingStatus,
   setProjectLoadSelectionModalVisible,
   setWarningModalVisible,
 } from '../home/home.slice';
-import {setDatabaseEndpoint} from '../project/projects.slice';
 import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
 import styles from './signIn.styles';
 import signInStyles from './signIn.styles';
 
-const screenSizeTitle = windowDimensions.width <= 900 ? '(Phone)' : '';
 const SignIn = (props) => {
 
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const {protocol, domain, path, isSelected, isVerified} = customDatabaseEndpoint;
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
+  // const [isLoading, setIsLoading] = useState(true);
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+  // const [endpointValue, setEndpointValue] = useState(url);
+  const [protocolValue, setProtocolValue] = useState(protocol);
+  const [domainValue, setDomainValue] = useState(domain);
+  const [pathValue, setPathValue] = useState(path);
 
   const useDevice = useDeviceHook();
   const navigation = useNavigation();
@@ -57,12 +63,12 @@ const SignIn = (props) => {
     });
     if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
-    isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
     await navigation.navigate('HomeScreen');
+    setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
   };
 
   const signIn = async () => {
-    setIsLoading(true);
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
     console.log(`Authenticating ${username} and signing in...`);
     try {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
@@ -76,7 +82,8 @@ const SignIn = (props) => {
           console.log(`${username} is successfully logged in!`);
           isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
           // dispatch(setSignedInStatus(true));
-          setIsLoading(false);
+          // setIsLoading(false);
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
           setUsername('');
           setPassword('');
           navigation.navigate('HomeScreen');
@@ -84,14 +91,14 @@ const SignIn = (props) => {
       }
       else {
         Alert.alert('Login Failure', 'Incorrect username and/or password');
-        setIsLoading(false);
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
         setPassword('');
       }
     }
     catch (err) {
       console.log('error:', err);
       Sentry.captureException(err);
-      setIsLoading(false);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(err));
       dispatch(setWarningModalVisible(true));
@@ -106,7 +113,7 @@ const SignIn = (props) => {
           containerStyle={styles.buttonContainer}
           onPress={() => signIn()}
           buttonStyle={styles.buttonStyle}
-          disabled={username === '' || password === ''}
+          disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
           title={'Sign In'}
         />
         <Button
@@ -123,37 +130,6 @@ const SignIn = (props) => {
           buttonStyle={styles.buttonStyle}
           title={'Continue as Guest'}
         />
-      </View>
-    );
-  };
-
-  const renderCustomEndpointEntry = () => {
-    return (
-      <View style={signInStyles.customEndpointContainer}>
-        <Text style={signInStyles.customEndpointText}>Use Custom Endpoint?</Text>
-        <View style={{alignItems: 'center', flexDirection: 'row', margin: 20, width: 300, height: 50}}>
-          <Switch
-            value={customDatabaseEndpoint.isSelected}
-            onValueChange={value => dispatch(setDatabaseEndpoint({...customDatabaseEndpoint, isSelected: value}))}
-            trackColor={{true: 'blue'}}
-            ios_backgroundColor={'white'}
-          />
-          <TextInput
-            value={customDatabaseEndpoint.url}
-            onChangeText={value => dispatch(setDatabaseEndpoint({...customDatabaseEndpoint, url: value}))}
-            autoCapitalize={'none'}
-            placeholder={'i.e. http://192.168.x.xxx'}
-            style={{
-              textAlign: 'center',
-              height: 40,
-              width: 200,
-              backgroundColor: 'white',
-              marginLeft: 10,
-              borderWidth: 1,
-              borderRadius: 20,
-              padding: 0,
-            }}/>
-        </View>
       </View>
     );
   };
@@ -192,7 +168,7 @@ const SignIn = (props) => {
 
   return (
     <Splashscreen>
-      <View style={{flex: 1, marginTop: 20}}>
+      <View style={{marginTop: 20}}>
         <View style={styles.signInContainer}>
           <TextInput
             style={styles.input}
@@ -217,14 +193,14 @@ const SignIn = (props) => {
             onSubmitEditing={signIn}
           />
           {renderButtons()}
-          {renderCustomEndpointEntry()}
-          <View style={styles.versionContainer}>
-            <Text style={styles.versionNumber}>v{VERSION_NUMBER} {screenSizeTitle}</Text>
-          </View>
+          <CustomEndpoint
+            containerStyles={signInStyles.customEndpointContainer}
+            textStyles={signInStyles.customEndpointText}
+            iconText={signInStyles.verifyEndpointIconText}
+          />
         </View>
       </View>
       <WarningModal/>
-      <Loading isLoading={isLoading}/>
     </Splashscreen>
   );
 };

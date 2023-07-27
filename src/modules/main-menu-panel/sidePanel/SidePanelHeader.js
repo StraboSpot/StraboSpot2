@@ -3,30 +3,29 @@ import {Text, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
 
-import styles from '../mainMenuPanel.styles';
+import projectStyles from '../../project/project.styles';
 import sidePanelStyles from '../sidePanel.styles';
 
 const SidePanelHeader = (props) => {
   return (
     <View style={sidePanelStyles.sidePanelHeaderContainer}>
-      <View style={sidePanelStyles.sidePanelButtonContainer}>
-        <Button
-          icon={
-            <Icon
-              name={'arrow-back'}
-              type={'ionicon'}
-              iconStyle={styles.buttons}
-              size={20}
-            />
-          }
-          title={props.title}
-          type={'clear'}
-          onPress={props.backButton}
-          titleStyle={sidePanelStyles.sidePanelBackText}
-        />
-      </View>
-      <View style={styles.mainMenuHeaderTextContainer}>
-        <Text style={styles.headerText}>{props.headerTitle}</Text>
+      <Button
+        icon={
+          <Icon
+            name={'arrow-back'}
+            type={'ionicon'}
+            iconStyle={projectStyles.buttons}
+            size={20}
+          />
+        }
+        title={props.title}
+        type={'clear'}
+        containerStyle={{flex: 0, padding: 4}}
+        titleStyle={projectStyles.buttonText}
+        onPress={props.backButton}
+      />
+      <View style={projectStyles.headerTextContainer}>
+        <Text style={projectStyles.headerText}>{props.headerTitle}</Text>
       </View>
     </View>
   );

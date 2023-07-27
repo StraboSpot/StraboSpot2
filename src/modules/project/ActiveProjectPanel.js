@@ -11,6 +11,7 @@ import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import StandardModal from '../../shared/ui/StandardModal';
+import overlayStyles from '../home/overlay.styles';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
 import CustomFeatureTypes from './CustomFeatureTypes';
@@ -70,24 +71,23 @@ const ActiveProjectPanel = () => {
     return (
       <StandardModal
         visible={isWarningModalVisible}
-        dialogTitleStyle={commonStyles.dialogError}
         dialogTitle={'Warning!'}
       >
-        <Text style={[commonStyles.standardDescriptionText, {textAlign: 'center'}]}>
-          This will overwrite anything that has not been uploaded to the server
-        </Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
+        <View style={[overlayStyles.overlayContent]}>
+          <Text style={[overlayStyles.statusMessageText, {textAlign: 'center'}]}>
+            This will overwrite anything that has not been uploaded to the server
+          </Text>
+        </View>
+        <View style={overlayStyles.buttonContainer}>
           <Button
             title={'OK'}
+            type={'clear'}
             onPress={() => confirm()}
-            buttonStyle={{paddingLeft: 20, paddingRight: 20}}
-            containerStyle={commonStyles.buttonContainer}
           />
           <Button
             title={'Cancel'}
+            type={'clear'}
             onPress={() => setIsWarningModalVisible(false)}
-            // buttonStyle={commonStyles.dialogButton}
-            containerStyle={commonStyles.buttonContainer}
           />
         </View>
       </StandardModal>
@@ -134,7 +134,7 @@ const ActiveProjectPanel = () => {
                 type={'outline'}
                 onPress={() => setIsWarningModalVisible(true)}
               />
-              <View style={{alignItems: 'center', paddingTop: 10}}>
+              <View style={{alignItems: 'center', paddingTop: 20}}>
                 <Text style={commonStyles.standardDescriptionText}>
                   This will overwrite anything that has not been uploaded to the server
                 </Text>

@@ -331,7 +331,7 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.5.0):
+  - RNGestureHandler (2.8.0):
     - React-Core
   - rnmapbox-maps (10.0.7):
     - MapboxMaps (~> 10.13.1)
@@ -346,7 +346,7 @@ PODS:
     - Turf
   - RNPDF (0.14.0):
     - React
-  - RNReanimated (2.17.0):
+  - RNReanimated (2.13.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -657,10 +657,10 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 30e6733efc179d1e49d6008ea5fce42cdc9aeeca
   RNDeviceInfo: 0a7c1d2532aa7691f9b9925a27e43af006db4dae
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
+  RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   rnmapbox-maps: 0b4fcc6855a8b159fecb94b00b82d7ea0558105d
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
-  RNReanimated: c6f8f70e96dd6ca21b65aef9b3e4efe4965db905
+  RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
   RNSentry: 49ac40f818ad2bb65f3578d400e2474767e12a5b

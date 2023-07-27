@@ -112,7 +112,7 @@ const ImportProjectAndroid = (props) => {
             containerStyle={{alignItems: 'flex-start'}}
             icon={
               <Icon
-                name={'ios-arrow-back'}
+                name={'arrow-back'}
                 type={'ionicon'}
                 color={'black'}
                 iconStyle={projectStyles.buttons}

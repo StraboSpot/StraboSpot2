@@ -3,14 +3,23 @@ import {Alert} from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {updatedProjectTransferProgress} from '../modules/project/projects.slice';
+import {
+  setDatabaseDomain,
+  setDatabasePath,
+  setDatabaseProtocol,
+  setDatabaseVerify,
+  updatedProjectTransferProgress,
+} from '../modules/project/projects.slice';
 import {STRABO_APIS} from './urls.constants';
 
 const useServerRequests = (props) => {
   const dispatch = useDispatch();
   const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
-  const baseUrl = databaseEndpoint.url && databaseEndpoint.isSelected
-    ? databaseEndpoint.url
+
+  const {url, isSelected} = databaseEndpoint;
+
+  const baseUrl = url && isSelected
+    ? url
     : STRABO_APIS.DB;
   const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
@@ -287,6 +296,18 @@ const useServerRequests = (props) => {
     }
   };
 
+  const testEndpoint = async (url) => {
+    try {
+      const res = await timeoutPromise(15000, fetch(url));
+      console.log(res);
+      return res.ok;
+    }
+    catch (err) {
+      console.log('ERROR', err);
+      return false;
+    }
+  };
+
   const updateDataset = (dataset, encodedLogin) => {
     return post('/dataset', encodedLogin, dataset);
   };
@@ -343,6 +364,22 @@ const useServerRequests = (props) => {
     return post('/profile', user.encoded_login, data);
   };
 
+  const verifyEndpoint = async (protocolValue, domainValue, pathValue) => {
+    const isVerified = await testEndpoint(protocolValue + domainValue);
+    if (isVerified) {
+      console.log('VALID');
+      dispatch(setDatabaseProtocol(protocolValue));
+      dispatch(setDatabaseDomain(domainValue));
+      dispatch(setDatabasePath(pathValue));
+      dispatch(setDatabaseVerify(isVerified));
+    }
+    else {
+      console.log('NOT VALID');
+      dispatch(setDatabaseVerify(isVerified));
+    }
+    return isVerified;
+  };
+
   const verifyImageExistence = (imageId, encodedLogin) => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
@@ -385,6 +422,7 @@ const useServerRequests = (props) => {
     getMapTilesFromHost: getMapTilesFromHost,
     registerUser: registerUser,
     testCustomMapUrl: testCustomMapUrl,
+    testEndpoint: testEndpoint,
     timeoutPromise: timeoutPromise,
     updateDataset: updateDataset,
     updateDatasetSpots: updateDatasetSpots,
@@ -392,6 +430,7 @@ const useServerRequests = (props) => {
     updateProject: updateProject,
     uploadImage: uploadImage,
     uploadProfileImage: uploadProfileImage,
+    verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,
     zipURLStatus: zipURLStatus,
   };

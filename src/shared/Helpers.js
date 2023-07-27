@@ -356,5 +356,3 @@ const notEmptyValidator = (val) => {
   console.log(val);
   return val.trim() !== '';
 };
-
-

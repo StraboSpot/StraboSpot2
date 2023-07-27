@@ -4,12 +4,12 @@ import {Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/urls.constants';
-import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
 import {setProgressModalVisible, setUploadModalVisible} from '../home.slice';
+import overlayStyles from '../overlay.styles';
 
 const UploadModal = () => {
   const dispatch = useDispatch();
@@ -36,17 +36,17 @@ const UploadModal = () => {
     >
       <View>
         <View>
-          <Text style={commonStyles.dialogContentImportantText}>Uploading to:</Text>
-          <Text style={commonStyles.dialogContentImportantText}>
+          <Text style={overlayStyles.importantText}>Uploading to:</Text>
+          <Text style={overlayStyles.importantText}>
             {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>
         <Text>
-          <Text style={commonStyles.dialogContentImportantText}>{!isEmpty(
+          <Text style={overlayStyles.importantText}>{!isEmpty(
             currentProject) && currentProject.description.project_name} </Text>
           project properties and datasets will be uploaded and will
-          <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
+          <Text style={overlayStyles.importantText}> OVERWRITE</Text> any data already on the server
           for this project:
         </Text>
       </View>

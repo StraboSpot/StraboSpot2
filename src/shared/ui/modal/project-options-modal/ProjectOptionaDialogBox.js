@@ -8,8 +8,8 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/home/home.slice';
+import overlayStyles from '../../../../modules/home/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
-import projectStyles from '../../../../modules/project/project.styles';
 import {setSelectedProject} from '../../../../modules/project/projects.slice';
 import useProjectHook from '../../../../modules/project/useProject';
 import {APP_DIRECTORIES} from '../../../../services/directories.constants';
@@ -63,13 +63,15 @@ const ProjectOptionsDialogBox = (props) => {
 
   const deleteProjectFromLocalStorage = async () => {
     try {
-      setDeletingProjectStatus('deleting');
-      setProgressModalVisible(true);
       props.close();
-      setChecked(1);
-      await useDevice.deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
-      setDeletingProjectStatus('complete');
-      props.projectDeleted(true);
+      setDeletingProjectStatus('deleting');
+      setIsProgressModalVisible(true);
+      setTimeout(async () => {
+        setChecked(1);
+        await useDevice.deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
+        setDeletingProjectStatus('complete');
+        props.projectDeleted(true);
+      }, 1000);
     }
     catch (err) {
       console.error('Error deleting project!', err);
@@ -155,7 +157,7 @@ const ProjectOptionsDialogBox = (props) => {
     else {
       return (
         <View>
-          <Text style={commonStyles.dialogText}>
+          <Text style={overlayStyles.statusMessageText}>
             <Text> All project data, images, and offline maps will be EXPORTED as a .ZIP file to the Downloads folder in
               the My Files App.</Text>
           </Text>
@@ -170,9 +172,8 @@ const ProjectOptionsDialogBox = (props) => {
         return (
           <View>
             <View style={uiStyles.sectionDivider}>
-              <Text style={{...commonStyles.dialogContentImportantText, color: 'black'}}>What do you want to do with
-                the
-                current project ({currentProjectName})?</Text>
+              <Text style={overlayStyles.statusMessageText}>What do you want to do with
+                the current project ({currentProjectName})?</Text>
             </View>
             <View style={{padding: 10}}>
               {selectedProject.source !== 'new' && <Button
@@ -202,7 +203,7 @@ const ProjectOptionsDialogBox = (props) => {
         return (
           <View>
             {renderExportMessage()}
-            <View style={projectStyles.dialogContent}>
+            <View style={overlayStyles.overlayContent}>
               <Text>Project will be exported as: {exportFileName}</Text>
             </View>
             <View>
@@ -220,16 +221,16 @@ const ProjectOptionsDialogBox = (props) => {
   const renderBackupView = () => {
     return (
       <View>
-        <View style={projectStyles.dialogContent}>
-          <Text style={commonStyles.dialogConfirmText}>Saves current project to local storage.</Text>
-          <Text style={projectOptionsModalStyle.backupViewInputHeaderText}>Dashes and underscores are allowed</Text>
+        <View style={overlayStyles.overlayContent}>
+          <Text style={overlayStyles.statusMessageText}>Saves current project to local storage.</Text>
           <Input
             value={backupFileName.replace(/\s/g, '')}
             onChangeText={text => setBackupFileName(text)}
-            containerStyle={commonStyles.dialogInputContainer}
+            containerStyle={overlayStyles.inputContainer}
             inputStyle={{fontSize: 14}}
             errorMessage={errorMessage}
           />
+          <Text style={projectOptionsModalStyle.backupViewInputHeaderText}>Dashes and underscores are allowed</Text>
         </View>
       </View>
     );
@@ -240,18 +241,18 @@ const ProjectOptionsDialogBox = (props) => {
     return (
       <View>
         <View>
-          <Text style={commonStyles.dialogContentImportantText}>Are you sure you want to
+          <Text style={overlayStyles.importantText}>Are you sure you want to
             delete{'\n' + projectName}?
           </Text>
-          <Text style={commonStyles.dialogConfirmText}>This will
-            <Text style={commonStyles.dialogContentImportantText}> ERASE </Text>
+          <Text style={overlayStyles.statusMessageText}>This will
+            <Text style={overlayStyles.importantText}> ERASE </Text>
             the backed up version of this project LOCALLY including Spots, images, and all other data!
           </Text>
         </View>
         <Button
           title={'DELETE'}
-          titleStyle={projectOptionsModalStyle.deleteButtonText}
-          buttonStyle={projectOptionsModalStyle.deleteButtonContainer}
+          titleStyle={[overlayStyles.buttonText, projectOptionsModalStyle.deleteButtonText]}
+          buttonStyle={overlayStyles.buttonContainer}
           type={'clear'}
           onPress={() => deleteProjectFromLocalStorage(projectName)}
         />
@@ -261,16 +262,18 @@ const ProjectOptionsDialogBox = (props) => {
 
   const renderOverwriteView = () => {
     return (
-      <View>
+      <View style={overlayStyles.overlayContent}>
         <Text>Switching projects will
-          <Text style={{color: 'red'}}> DELETE </Text>
+          <Text style={[overlayStyles.importantText]}> DELETE </Text>
           the local copy of the current project:
         </Text>
-        <Text style={{color: 'red', textTransform: 'uppercase', marginTop: 5, marginBottom: 10, textAlign: 'center'}}>
+        <Text style={[overlayStyles.importantText, overlayStyles.contentText]}>
           {props.currentProject
-          && !isEmpty(props.currentProject.description) ? props.currentProject.description.project_name : 'UN-NAMED'}
+          && !isEmpty(
+            props.currentProject.description) ? props.currentProject.description.project_name.toUpperCase() : 'UN-NAMED'}
         </Text>
-        <Text>Including all datasets and Spots contained within this project. Make sure you have already
+        <Text style={overlayStyles.contentText}>Including all datasets and Spots contained within this project. Make
+          sure you have already
           uploaded the project to the server if you wish to preserve the data. Continue?
         </Text>
       </View>
@@ -298,17 +301,17 @@ const ProjectOptionsDialogBox = (props) => {
     return (
       <View>
         <View>
-          <Text style={commonStyles.dialogContentImportantText}>Uploading {'\n'}{!isEmpty(
+          <Text style={overlayStyles.importantText}>Uploading {'\n'}{!isEmpty(
             props.currentProject) && props.currentProject.description.project_name} {'\n'}to:</Text>
-          <Text style={commonStyles.dialogContentImportantText}>
+          <Text style={overlayStyles.importantText}>
             {props.endpoint?.isSelected ? props.endpoint.url : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>
         <Text>
-          <Text style={commonStyles.dialogContentImportantText}> </Text>
+          <Text style={overlayStyles.importantText}> </Text>
           project properties and datasets will be uploaded and will
-          <Text style={commonStyles.dialogContentImportantText}> OVERWRITE</Text> any data already on the server
+          <Text style={overlayStyles.importantText}> OVERWRITE</Text> any data already on the server
           for this project:
         </Text>
       </View>
@@ -331,24 +334,28 @@ const ProjectOptionsDialogBox = (props) => {
   return (
     <View>
       <Dialog
-        overlayStyle={projectOptionsModalStyle.modalContainer}
+        overlayStyle={overlayStyles.overlayContainer}
         isVisible={props.visible}
         useNativeDriver={true}
       >
-        <Dialog.Button title={'Close'} containerStyle={{alignItems: 'flex-end'}} onPress={() => onClose()}/>
-        <Dialog.Title titleStyle={{textAlign: 'center'}} title={header}/>
+        <Dialog.Button title={'X'} containerStyle={overlayStyles.closeButton} buttonStyle={overlayStyles.buttonText}
+                       onPress={() => onClose()}/>
+        <Dialog.Title titleStyle={overlayStyles.titleText} title={header}/>
         <Dialog.Title
-          titleStyle={{textAlign: 'center'}}
+          titleStyle={overlayStyles.titleText}
           title={projectName}
         />
         {selectedProject.source === 'new'
-          && <Text style={{textAlign: 'center', color: 'red'}}>Starting a new project will overwrite the current
-            project. Press Close if that is ok.</Text>}
+          && (
+            <Text style={overlayStyles.importantText}>Starting a new project will overwrite the current
+              project. Press Close if that is ok.
+            </Text>
+          )}
         {showExportChoice && radioButtonArr.map((l, i) => (
           <CheckBox
             key={i}
             title={l}
-            containerStyle={{backgroundColor: 'white', borderWidth: 0}}
+            containerStyle={commonStyles.checkboxContainer}
             checkedIcon='dot-circle-o'
             uncheckedIcon='circle-o'
             checked={checked === i + 1}
@@ -360,7 +367,7 @@ const ProjectOptionsDialogBox = (props) => {
         <View>
           {renderSectionView()}
         </View>
-        {action !== '' && <View style={projectOptionsModalStyle.sectionViewButtonContainer}>
+        {action !== '' && <View style={overlayStyles.buttonContainer}>
           <Button
             title={'Cancel'}
             type={'clear'}
@@ -375,12 +382,12 @@ const ProjectOptionsDialogBox = (props) => {
       </Dialog>
       <Dialog
         isVisible={isProgressModalVisible}
-        overlayStyle={projectOptionsModalStyle.modalContainer}
+        overlayStyle={overlayStyles.overlayContainer}
         useNativeDriver={true}
 
       >
-        <Dialog.Title titleStyle={{textAlign: 'center'}} title={'Deleting...'}/>
-        <View style={{alignItems: 'center'}}>
+        <Dialog.Title titleStyle={overlayStyles.titleText} title={'Deleting...'}/>
+        <View style={overlayStyles.overlayContent}>
           {deletingProjectStatus !== 'complete'
             ? <Text style={projectOptionsModalStyle.projectNameText}>Deleting {projectNameToDelete}</Text>
             : <Text style={projectOptionsModalStyle.projectNameText}>{projectNameToDelete} has been deleted.</Text>

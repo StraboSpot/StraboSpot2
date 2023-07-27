@@ -79,7 +79,7 @@ const SelectInputField = (props) => {
         <Text style={formStyles.fieldLabel}>{props.label}</Text>
         {props.placeholder && (
           <Icon
-            name={'ios-information-circle-outline'}
+            name={'information-circle-outline'}
             type={'ionicon'}
             color={themes.PRIMARY_ACCENT_COLOR}
             onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}

@@ -9,6 +9,7 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import overlayStyles from '../home/overlay.styles';
 
 const ProjectTypesButtons = (props) => {
   const user = useSelector(state => state.user);
@@ -70,7 +71,8 @@ const ProjectTypesButtons = (props) => {
       />}
       {Platform.OS === 'android' && downloadsDirectoryExists
         && <View>
-          <Text style={{...commonStyles.dialogText, fontWeight: 'bold'}}>When importing, select the data.json file
+          <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>When importing, select the data.json
+            file
             before selecting any images or maps.</Text>
           <Button
             title={'Import Project'}

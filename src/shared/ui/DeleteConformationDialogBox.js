@@ -3,34 +3,36 @@ import {Text, View} from 'react-native';
 
 import {Button, Overlay} from 'react-native-elements';
 
-import homeStyles from '../../modules/home/home.style';
-import styles from '../../shared/common.styles';
+import overlayStyles from '../../modules/home/overlay.styles';
 
 const DeleteConformationDialogBox = (props) => {
   return (
     <Overlay
       animationType={'fade'}
-      isVisible={props.visible}
-      overlayStyle={[homeStyles.dialogBox, styles.dialogBox, {position: 'absolute', top: '25%'}]}
+      isVisible={props.isVisible}
+      overlayStyle={overlayStyles.overlayContainer}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{props.title}</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={[overlayStyles.titleText, overlayStyles.importantText]}>{props.title}</Text>
       </View>
-      <View style={styles.dialogContent}>
+      <View style={overlayStyles.overlayContent}>
         {props.children}
       </View>
-      <Button
-        title={'Delete'}
-        type={'clear'}
-        onPress={props.delete}
-        disabled={props.deleteDisabled}
-      />
-      <Button
-        title={'OK'}
-        type={'Cancel'}
-        onPress={props.cancel}
-        disabled={props.cancelDisabled}
-      />
+      <View style={overlayStyles.buttonContainer}>
+        <Button
+          title={'Delete'}
+          titleStyle={overlayStyles.buttonText}
+          type={'clear'}
+          onPress={props.delete}
+        />
+        <Button
+          title={'Cancel'}
+          titleStyle={overlayStyles.buttonText}
+          type={'Cancel'}
+          onPress={props.cancel}
+        />
+      </View>
     </Overlay>
   );
 };

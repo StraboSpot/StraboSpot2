@@ -13,8 +13,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {BASEMAPS} from '../maps/maps.constants';
 import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
-import styles from './dialog.styles';
-import homeStyles from './home.style';
+import overlayStyles from './overlay.styles';
 
 const BaseMapDialog = (props) => {
 
@@ -48,7 +47,7 @@ const BaseMapDialog = (props) => {
   const renderDefaultBasemapsList = () => {
     let sectionTitle = 'Default Basemaps';
     let mapsToDisplay = BASEMAPS;
-    if (!isInternetReachable && isConnected) {
+    if (!isInternetReachable && !isConnected) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
         return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors'
         || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
@@ -73,20 +72,17 @@ const BaseMapDialog = (props) => {
   };
 
   const renderCustomBasemapsList = () => {
-    let dataArr = [];
-    let sectionTitle = 'Custom Basemaps';
-    let customMapsToDisplay = Object.values(customMaps).filter(
-      customMap => !customMap.overlay && customMap.url[0].includes('strabospot'));
-    let customMapsToDisplayUsingAltEndpoint = Object.values(customMaps).filter(
-      customMap => !customMap.overlay && customMap.url[0].includes('192.'));
-    dataArr = customEndpoint.isSelected ? customMapsToDisplayUsingAltEndpoint : customMapsToDisplay;
+    const sectionTitle = 'Custom Basemaps';
+    let customMapsToDisplay = customEndpoint.isSelected
+      ? Object.values(customMaps).filter(customMap => !customMap.overlay && customMap.url[0].includes('192.'))
+      : Object.values(customMaps).filter(customMap => !customMap.overlay && !customMap.url[0].includes('192.'));
 
     return (
       <View style={{maxHeight: 250}} key={'CustomMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id + 'CustomMap'}
-          data={Object.values(dataArr)}
+          data={Object.values(customMapsToDisplay)}
           renderItem={({item}) => renderCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -117,12 +113,10 @@ const BaseMapDialog = (props) => {
 
   const renderCustomMapOverlaysList = () => {
     let sectionTitle = 'Custom Overlays';
-    let customMapOverlaysToDisplay = Object.values(customMaps).filter(
-      customMap => customMap.overlay);
-    // if (!isInternetReachable && isConnected) {
-    //   customMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
-    //   sectionTitle = 'Offline Custom Overlays';
-    // }
+    let customMapOverlaysToDisplay = customEndpoint.isSelected
+      ? Object.values(customMaps).filter(customMap => customMap.overlay && customMap.url[0].includes('192.'))
+      : Object.values(customMaps).filter(customMap => customMap.overlay && !customMap.url[0].includes('192.'));
+
     return (
       <View style={{maxHeight: 250}} key={'CustomOverlaysList'}>
         <SectionDivider dividerText={sectionTitle}/>
@@ -155,21 +149,18 @@ const BaseMapDialog = (props) => {
   };
 
   const renderCustomMapItem = (customMap) => {
+
     return (
       <ListItem
-        containerStyle={styles.dialogContent}
         key={customMap.id + 'CustomMapItem'}
-        onPress={() => setBaseMap(customMap)}>
-        <ListItem.Content style={{}}>
+        onPress={() => setBasemap(customMap)}>
+        <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
             ({customMap.source || customMap.sources['raster-tiles'].type})
           </ListItem.Title>
-          {/*{!isInternetReachable && !isConnected*/}
-          {/*  && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles!!!)</ListItem.Subtitle>}*/}
         </ListItem.Content>
-        {customMap.id === currentBasemap?.id && currentBasemap.sources[currentBasemap.id].tiles[0].includes('http://')
-          && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        {customMap.id === currentBasemap?.id && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
       </ListItem>
     );
   };
@@ -177,10 +168,9 @@ const BaseMapDialog = (props) => {
   const renderOfflineCustomMapItem = (customMap) => {
     return (
       <ListItem
-        containerStyle={styles.dialogContent}
         key={customMap.id + 'OfflineCustomMapItem'}
-        onPress={() => setBaseMap(customMap)}>
-        <ListItem.Content style={{}}>
+        onPress={() => setBasemap(customMap)}>
+        <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
             ({customMap.source || customMap.sources['raster-tiles'].type})
@@ -197,7 +187,6 @@ const BaseMapDialog = (props) => {
   const renderDefaultMapItem = map => (
     <ListItem
       key={map.id + 'DefaultMapItem'}
-      containerStyle={styles.dialogContent}
       onPress={() => isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
     >
       <ListItem.Content>
@@ -212,7 +201,7 @@ const BaseMapDialog = (props) => {
 
   const renderMapOverlayItem = (customMap, isOffline) => (
     <ListItem
-      containerStyle={styles.dialogContent}
+      containerStyle={overlayStyles.overlayContent}
       key={customMap.id + 'CustomOverlayItem' + (isOffline ? 'Offline' : '')}
       // onPress={async () => {
       //   const baseMap = await useMaps.setBasemap(customMap.id);
@@ -220,7 +209,7 @@ const BaseMapDialog = (props) => {
       //   setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
       // }}
     >
-      <ListItem.Content style={{}}>
+      <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
           ({customMap.source})</ListItem.Title>
         {!isInternetReachable
@@ -234,16 +223,11 @@ const BaseMapDialog = (props) => {
     </ListItem>
   );
 
-  const setBaseMap = async (customMap) => {
+  const setBasemap = async (customMap) => {
     let baseMap = {};
     if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
-      if (!customMap.url) {
-        baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
-      }
-      else {
-        baseMap = await useMaps.setBasemap(customMap.id);
-      }
-      props.close();
+      if (!customMap.url) baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
+      else baseMap = await useMaps.setBasemap(customMap.id);
       baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {
@@ -254,7 +238,7 @@ const BaseMapDialog = (props) => {
   };
 
   const determineWhatCustomMapListToRender = () => {
-    if (isInternetReachable && isConnected) return [renderCustomBasemapsList(), renderCustomMapOverlaysList(), renderOfflineCustomBasemapList()];
+    if (isInternetReachable && isConnected) return [renderCustomBasemapsList(), renderCustomMapOverlaysList()];
     else if (!isInternetReachable && isConnected) {
       return [
         renderCustomBasemapsList(),
@@ -270,12 +254,12 @@ const BaseMapDialog = (props) => {
     <Overlay
       animationType={'slide'}
       isVisible={props.visible}
-      overlayStyle={[homeStyles.dialogBox, styles.dialogBox]}
+      overlayStyle={overlayStyles.overlayContainer}
       onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[homeStyles.dialogTitleContainer, styles.dialogTitle]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{dialogTitle}</Text>
+      <View style={overlayStyles.titleContainer}>
+        <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>
       </View>
       <View>
         {renderDefaultBasemapsList()}

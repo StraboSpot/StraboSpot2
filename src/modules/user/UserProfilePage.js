@@ -18,6 +18,7 @@ import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
+import overlayStyles from '../home/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import userStyles from './user.styles';
@@ -45,7 +46,7 @@ const UserProfile = (props) => {
 
   const deleteModalText
     = <View><Text style={userStyles.deleteProfileText}>Deleting your profile will
-    <Text style={commonStyles.dialogContentImportantText}> PERMANENTLY {'\n'} </Text>
+    <Text style={overlayStyles.importantText}> PERMANENTLY {'\n'} </Text>
     remove any personal info and data saved for user{'\n'}{userData.email}{'\n'} from www.Strabospot.org!
   </Text>
     <Text style={userStyles.deleteProfileText}>Enter password to delete:</Text>
@@ -69,8 +70,8 @@ const UserProfile = (props) => {
         console.log('PROFILE DELETED!', res);
         setDeleteProfileModalVisible(false);
         dispatch({type: REDUX.CLEAR_STORE});
-        toast.show('Profile Successfully Deleted!', {type: 'success', duration: 2000})
-        setTimeout(() => navigation.navigate('SignIn'), 200)
+        toast.show('Profile Successfully Deleted!', {type: 'success', duration: 2000});
+        setTimeout(() => navigation.navigate('SignIn'), 200);
       }
       else setErrorMessage('Wrong password');
     }
@@ -82,9 +83,9 @@ const UserProfile = (props) => {
       <TextInputModal
         topPosition={10}
         dialogTitle={'DANGER!'}
+        overlayTitleText={{color: 'red'}}
         buttonText={'DELETE'}
-        buttonTextStyle={{color: 'red'}}
-        style={{backgroundColor: 'red'}}
+        overlayButtonText={{color: 'red'}}
         visible={isDeleteProfileModalVisible}
         onPress={deleteProfile}
         close={() => setDeleteProfileModalVisible(false)}
@@ -133,7 +134,7 @@ const UserProfile = (props) => {
       if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
       else props.toast('Not connected to internet to upload profile changes', 'noWifi');
     }
-   else toast.show('No changes were made.')
+    else toast.show('No changes were made.');
   };
 
   const saveImage = async () => {
@@ -251,16 +252,19 @@ const UserProfile = (props) => {
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
         </View>
-        <Button
-          title={'DELETE PROFILE'}
-          type={'clear'}
-          onPress={() => setDeleteProfileModalVisible(true)}
-          containerStyle={userStyles.deleteProfileButtonContainer}
-          titleStyle={userStyles.deleteProfileButtonText}
-        />
+        <View style={commonStyles.buttonContainer}>
+          <Text>Need to be online to delete profile.</Text>
+          <Button
+            title={'DELETE PROFILE'}
+            disabled={!isOnline.isInternetReachable}
+            type={'clear'}
+            onPress={() => setDeleteProfileModalVisible(true)}
+            containerStyle={userStyles.deleteProfileButtonContainer}
+            titleStyle={userStyles.deleteProfileButtonText}
+          />
+        </View>
         {ImageModal()}
         {deleteProfileModal()}
-        {<TextInputModal/>}
       </Animated.View>
     </View>
   );

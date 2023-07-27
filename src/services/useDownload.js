@@ -1,11 +1,14 @@
 import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import initialProjectLoadModal from '../modules/home/home-modals/InitialProjectLoadModal';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
   setLoadingStatus,
+  setProjectLoadSelectionModalVisible,
+  setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
@@ -201,19 +204,24 @@ const useDownload = () => {
   const initializeDownload = async (selectedProject) => {
     const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
     batch(() => {
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      if (initialProjectLoadModal) dispatch(setProjectLoadSelectionModalVisible(false));
+      dispatch(setStatusMessageModalTitle(project.name));
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
       dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
     });
     try {
       await downloadProject(selectedProject);
       await downloadDatasets(selectedProject);
       console.log('Download Complete! Spots Downloaded!');
-      dispatch(addedStatusMessage('------------------'));
-      dispatch(addedStatusMessage('Downloading Datasets Complete!'));
-      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      batch(() => {
+        dispatch(addedStatusMessage('------------------'));
+        dispatch(addedStatusMessage('Downloading Datasets Complete!'));
+        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        // dispatch(setStatusMessagesModalVisible(false));
+      });
     }
     catch (err) {
       console.error('Error Initializing Download.', err);

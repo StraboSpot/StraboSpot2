@@ -21,6 +21,8 @@ export const VIEW_STATE_STRAT = {longitude: 0.001, latitude: 0.0007, zoom: ZOOM_
 
 export const MAPBOX_TOKEN = config.get('mapbox_access_token');
 
+export const MAPBOX_TOKEN = config.get('mapbox_access_token');
+
 export const MAP_MODES = {
   VIEW: 'view',
   DRAW: {

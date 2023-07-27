@@ -29,7 +29,7 @@ function DataWrapper(props) {
     return (
       <DeleteConformationDialogBox
         title={`${itemToDelete.type.toUpperCase()} to delete`}
-        visible={isDeleteConfirmModalVisible}
+        isVisible={isDeleteConfirmModalVisible}
         delete={() => deleteSelection()}
         cancel={() => setIsDeleteConfirmModalVisible(false)}
       >

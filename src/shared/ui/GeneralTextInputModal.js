@@ -1,23 +1,23 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, Input, Overlay} from 'react-native-elements';
+import {Input} from 'react-native-elements';
 
-import homeStyles from '../../modules/home/home.style';
-import styles from '../../shared/common.styles';
+import overlayStyles from '../../modules/home/overlay.styles';
 
 const TextInputModal = (props) => {
   return (
     <Overlay
       animationType={'fade'}
       isVisible={props.visible}
-      overlayStyle={[homeStyles.dialogBox, styles.dialogBox, {top: props.topPosition || '10%'}]}
+      overlayStyle={[overlayStyles.overlayContainer]}
       onBackdropPress={props.onTouchOutside}
+      backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[homeStyles.dialogTitleContainer, props.style]}>
-        <Text style={[homeStyles.dialogTitleText, styles.dialogTitleText]}>{props.dialogTitle}</Text>
+      <View style={[overlayStyles.titleContainer, props.style]}>
+        <Text style={[overlayStyles.titleText, props.overlayTitleText]}>{props.dialogTitle}</Text>
       </View>
-      <View style={[styles.dialogContent, props.dialogContent]}>
+      <View>
         {props.textAboveInput}
         <Input
           autoCapitalize={props.autoCapitalize || 'none'}
@@ -26,8 +26,7 @@ const TextInputModal = (props) => {
           value={props.value}
           returnKeyType={'done'}
           keyboardType={props.keyboardType}
-          inputContainerStyle={{borderColor: 'transparent'}}
-          inputStyle={[styles.textInput, props.textInputStyle]}
+          inputContainerStyle={overlayStyles.inputContainer}
           onChangeText={props.onChangeText}
           placeholder={props.placeholder || 'Enter text here...'}
           errorMessage={props.errorMessage}
@@ -36,15 +35,20 @@ const TextInputModal = (props) => {
         />
         {props.children}
       </View>
-      <Button
-        title={props.buttonText || 'Save'}
-        titleStyle={props.buttonTextStyle}
-        onPress={props.onPress}
-      />
-      <Button
-        title={'Cancel'}
-        onPress={props.close}
-      />
+      <View style={overlayStyles.buttonContainer}>
+        <Button
+          title={props.buttonText || 'Save'}
+          type={'clear'}
+          titleStyle={[overlayStyles.buttonText, props.overlayButtonText]}
+          onPress={props.onPress}
+        />
+        <Button
+          title={'Cancel'}
+          type={'clear'}
+          titleStyle={overlayStyles.buttonText}
+          onPress={props.close}
+        />
+      </View>
     </Overlay>
   );
 };

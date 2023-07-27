@@ -28,29 +28,17 @@ const notebookStyles = StyleSheet.create({
     borderTopWidth: 0.5,
     borderTopColor: themes.MEDIUMGREY,
   },
-  dialogBox: {
+  dialogBoxPosition: {
     position: 'absolute',
-    width: 200,
     top: 10,
     right: 10,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    zIndex: 10,
   },
   dialogTitle: {
     backgroundColor: themes.PRIMARY_ACCENT_COLOR,
   },
-  dialogTitleText: {
-    color: themes.SECONDARY_BACKGROUND_COLOR,
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    fontWeight: 'bold',
-  },
-  dialogContent: {
+  threeDotMenuButtonContainer: {
     borderTopWidth: 1,
     borderColor: 'lightgrey',
-  },
-  dialogText: {
-    color: themes.PRIMARY_ACCENT_COLOR,
   },
   traceSurfaceFeatureContainer: {
     flexDirection: 'row',

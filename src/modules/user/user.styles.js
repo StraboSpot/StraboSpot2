@@ -39,10 +39,6 @@ const UserStyles = StyleSheet.create({
     paddingBottom: 20,
     fontWeight: '600',
   },
-  dialogTitleContainer: {
-    alignContent: 'center',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
   imageSelectionModal: {
     borderRadius: 20,
     padding: 20,
