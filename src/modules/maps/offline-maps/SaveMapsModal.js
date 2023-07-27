@@ -3,6 +3,7 @@ import {ActivityIndicator, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {Button, Overlay} from 'react-native-elements';
+import RNFS from 'react-native-fs';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -20,7 +21,7 @@ import {
 // import ProgressBar from '../../../shared/ui/ProgressBar';
 import overlayStyles from '../../home/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
-import styles from './offlineMaps.styles';
+import offlineMapsStyles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
@@ -356,14 +357,6 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
               </View>
             )
             }
-            {isError && (
-              <Button
-                onPress={() => dispatch(setOfflineMapsModalVisible(false))}
-                type={'clear'}
-                buttonStyle={styles.button}
-                title={'Close'}
-              />
-            )}
           </View>
         </View>
       </View>
