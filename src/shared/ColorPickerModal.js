@@ -43,6 +43,13 @@ const ColorPickerModal = (props) => {
       overlayStyle={{maxHeight: '90%', width: 350, borderRadius: 20}}
     >
       <View style={{maxHeight: '100%'}}>
+        <Button
+          title={'X'}
+          titleStyle={overlayStyles.buttonTitle}
+          containerStyle={overlayStyles.closeButton}
+          type={'clear'}
+          onPress={() => props.closeModal()}
+        />
         <View
           style={{flexDirection: 'row', justifyContent: 'center'}}>
           <Text style={commonStyles.dialogTitleText}>Select a Custom Color</Text>

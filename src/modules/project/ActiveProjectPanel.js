@@ -81,15 +81,13 @@ const ActiveProjectPanel = () => {
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
           <Button
             title={'OK'}
+            type={'clear'}
             onPress={() => confirm()}
-            buttonStyle={{paddingLeft: 20, paddingRight: 20}}
-            containerStyle={commonStyles.buttonContainer}
           />
           <Button
             title={'Cancel'}
+            type={'clear'}
             onPress={() => setIsWarningModalVisible(false)}
-            // buttonStyle={commonStyles.dialogButton}
-            containerStyle={commonStyles.buttonContainer}
           />
         </View>
       </StandardModal>

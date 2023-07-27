@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Switch, Text, View} from 'react-native';
+import {Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Input, ListItem} from 'react-native-elements';
@@ -71,14 +71,6 @@ const Miscellaneous = () => {
       />
     </StandardModal>
   );
-
-  const renderInfoAlert = (label, ip) => {
-    console.log(label, ip);
-    return (
-      Alert.alert('Note:', `If using StraboSpot Offline the URL must be an "http:" URL 
-      and NOT an "https:" URL. Also, make sure that there is a trailing "/db".`)
-    );
-  };
 
   const renderEndpointFieldContent = () => (
     <View>
