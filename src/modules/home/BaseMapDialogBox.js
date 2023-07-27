@@ -47,7 +47,7 @@ const BaseMapDialog = (props) => {
   const renderDefaultBasemapsList = () => {
     let sectionTitle = 'Default Basemaps';
     let mapsToDisplay = BASEMAPS;
-    if (!isInternetReachable && isConnected) {
+    if (!isInternetReachable && !isConnected) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
         return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors'
         || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
@@ -237,7 +237,7 @@ const BaseMapDialog = (props) => {
   };
 
   const determineWhatCustomMapListToRender = () => {
-    if (isInternetReachable && isConnected) return [renderCustomBasemapsList(), renderCustomMapOverlaysList(), renderOfflineCustomBasemapList()];
+    if (isInternetReachable && isConnected) return [renderCustomBasemapsList(), renderCustomMapOverlaysList()];
     else if (!isInternetReachable && isConnected) {
       return [
         renderCustomBasemapsList(),
