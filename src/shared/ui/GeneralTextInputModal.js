@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Input} from 'react-native-elements';
+import {Button, Input, Overlay} from 'react-native-elements';
 
 import overlayStyles from '../../modules/home/overlay.styles';
 
