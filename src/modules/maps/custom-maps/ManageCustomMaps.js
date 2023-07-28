@@ -35,6 +35,7 @@ const ManageCustomMaps = (props) => {
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
+        key={item.id}
         onPress={() => useMaps.customMapDetails(item)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
