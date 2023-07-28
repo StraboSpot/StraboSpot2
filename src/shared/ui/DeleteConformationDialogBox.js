@@ -5,7 +5,7 @@ import {Button, Overlay} from 'react-native-elements';
 
 import overlayStyles from '../../modules/home/overlay.styles';
 
-const deleteConformation = (props) => {
+const DeleteConformationDialogBox = (props) => {
   return (
     <Overlay
       animationType={'fade'}
@@ -37,4 +37,4 @@ const deleteConformation = (props) => {
   );
 };
 
-export default deleteConformation;
+export default DeleteConformationDialogBox;
