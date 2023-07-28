@@ -35,7 +35,7 @@ const AddCustomMaps = () => {
   const MBAccessToken = useSelector(state => state.user.mapboxToken);
   const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
 
-  const [editableCustomMapData, setEditableCustomMapData] = useState(null);
+  const [editableCustomMapData, setEditableCustomMapData] = useState({});
 
   useEffect(() => {
     console.log('UE AddCustomMaps [customMapToEdit]', customMapToEdit);
