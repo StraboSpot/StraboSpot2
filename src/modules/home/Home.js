@@ -67,6 +67,8 @@ import useHomeHook from './useHome';
 const {State: TextInputState} = TextInput;
 
 const Home = () => {
+  console.log('Rendering Home...');
+
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
@@ -177,6 +179,20 @@ const Home = () => {
     }
   }, [modalVisible]);
 
+  useEffect(() => {
+    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
+    if (projectLoadComplete) {
+      mapComponentRef.current.zoomToSpotsExtent();
+      dispatch(setProjectLoadComplete(false));
+      // toggles off whenever new project is loaded successfully to trigger the same for next project load.
+    }
+  }, [projectLoadComplete]);
+
+  useEffect(() => {
+    console.log('UE Home [mapMode]', mapMode);
+    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
+  }, [mapMode]);
+
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
     homeTextInputAnimate);
 
@@ -198,20 +214,6 @@ const Home = () => {
     }, []);
     setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
   };
-
-  useEffect(() => {
-    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
-    if (projectLoadComplete) {
-      mapComponentRef.current.zoomToSpotsExtent();
-      dispatch(setProjectLoadComplete(false));
-      // toggles off whenever new project is loaded successfully to trigger the same for next project load.
-    }
-  }, [projectLoadComplete]);
-
-  useEffect(() => {
-    console.log('UE Home [mapMode]', mapMode);
-    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
-  }, [mapMode]);
 
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
