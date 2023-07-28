@@ -4,6 +4,7 @@ import {ActivityIndicator, Alert, FlatList, Platform, Switch, Text, View} from '
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import overlayStyles from '../home/overlay.styles';
