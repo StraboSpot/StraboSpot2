@@ -218,9 +218,10 @@ const useImages = () => {
   const getImageThumbnailURI = (id) => {
     return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
   };
+
   const getImageScreenSizedURI = (id) => {
     const {width, height} = Dimensions.get('window');
-    return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) +'/' + id;
+    return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
   };
 
   const getImageThumbnailURIs = async (spotsWithImages) => {

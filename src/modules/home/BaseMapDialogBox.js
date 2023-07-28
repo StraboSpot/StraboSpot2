@@ -149,7 +149,6 @@ const BaseMapDialog = (props) => {
   };
 
   const renderCustomMapItem = (customMap) => {
-
     return (
       <ListItem
         key={customMap.id + 'CustomMapItem'}
