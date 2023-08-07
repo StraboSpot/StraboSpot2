@@ -226,7 +226,7 @@ const useMapsOffline = () => {
       await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
       console.log('unzip completed');
       console.log('move done.');
-      await useDevice.deleteProjectOnDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+      await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
       console.log('Zip', zipUID, 'has been deleted.');
     }
     catch (err) {
@@ -397,7 +397,7 @@ const useMapsOffline = () => {
         if (isMapInRedux) {
           console.log('Offline Map', offlineMaps[file]);
           const mapId = offlineMaps[file].id;
-          const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+          const tileCount = await useDevice.readDirectory(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
           const tileCountLength = tileCount.length;
           console.log('tileCount', tileCount);
           const newOfflineMapCount = {...offlineMaps[file], count: tileCountLength};

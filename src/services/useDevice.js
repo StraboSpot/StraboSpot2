@@ -8,12 +8,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import {APP_DIRECTORIES} from './directories.constants';
-import {STRABO_APIS} from './urls.constants';
+import useServerRequestsHook from './useServerRequests';
 
 
 const useDevice = (props) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+
+  const [useServerRequests] = useServerRequestsHook();
 
   const copyFiles = async (source, target) => {
     try {
@@ -138,12 +140,13 @@ const useDevice = (props) => {
   };
 
   const downloadAndSaveImage = async (imageId) => {
+    const imageURI = useServerRequests.getImageUrl();
     const begin = (res) => {
       console.log('BEGIN DOWNLOAD RES', res);
     };
     // return request('GET', '/pi/' + imageId, user.encoded_login, {responseType: 'blob'});
     return RNFS.downloadFile({
-      fromUrl: STRABO_APIS.IMAGE + imageId,
+      fromUrl: imageURI + imageId,
       toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
       begin: (begin),
       headers: {
@@ -154,11 +157,15 @@ const useDevice = (props) => {
         console.log('Image Info', res, ' JobID:', res.jobId);
         if (res.statusCode === 200) {
           console.log(`File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
+          return res.statusCode;
         }
         else if (res.statusCode === 404) {
           console.log('Image not found!');
-          throw Error(`Image ${imageId} not found!`);
+          return res.statusCode;
+          // throw Error(`Image ${imageId} not found!`);
         }
+      }, (rej) => {
+        console.log('rejected Image!!!,', rej);
       },
     );
   };
