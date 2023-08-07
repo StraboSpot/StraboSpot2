@@ -3,15 +3,19 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import {APP_DIRECTORIES} from './directories.constants';
+import useServerRequestsHook from './useServerRequests';
 
 
 const useDevice = (props) => {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
+
+  const [useServerRequests] = useServerRequestsHook();
 
   const copyFiles = async (source, target) => {
     try {
@@ -75,10 +79,11 @@ const useDevice = (props) => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
-  const deleteProjectOnDevice = async (dir, file) => {
+  const deleteFromDevice = async (dir, file) => {
     console.log(dir + file);
-    await RNFS.unlink(dir + file);
-    return 'Deleted';
+    const filepath = file ? dir + file : dir;
+    await RNFS.unlink(filepath);
+    console.log(`${file ? dir + file : dir} has been DELETED!`);
   };
 
   const doesBackupFileExist = (filename) => {
@@ -102,10 +107,8 @@ const useDevice = (props) => {
     }
   };
 
-  const doesDeviceFileExist = async (id, extension) => {
-    const imageExists = await RNFS.exists(APP_DIRECTORIES.IMAGES + id + extension);
-    console.log('Image Exists:', imageExists);
-    return imageExists;
+  const doesDeviceDirExist = async (dir) => {
+    return await RNFS.exists(dir);
   };
 
   const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
@@ -135,6 +138,49 @@ const useDevice = (props) => {
       return exists;
     }
   };
+
+  const downloadAndSaveImage = async (imageId) => {
+    const imageURI = useServerRequests.getImageUrl();
+    const begin = (res) => {
+      console.log('BEGIN DOWNLOAD RES', res);
+    };
+    // return request('GET', '/pi/' + imageId, user.encoded_login, {responseType: 'blob'});
+    return RNFS.downloadFile({
+      fromUrl: imageURI + imageId,
+      toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
+      begin: (begin),
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login,
+        'Accept': 'application/json',
+      },
+    }).promise.then(async (res) => {
+        console.log('Image Info', res, ' JobID:', res.jobId);
+        if (res.statusCode === 200) {
+          console.log(`File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
+          return res.statusCode;
+        }
+        else if (res.statusCode === 404) {
+          console.log('Image not found!');
+          return res.statusCode;
+          // throw Error(`Image ${imageId} not found!`);
+        }
+      }, (rej) => {
+        console.log('rejected Image!!!,', rej);
+      },
+    );
+  };
+
+  const downloadAndSaveMap = async (downloadOptions) => {
+    const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
+    if (res.statusCode === 200) {
+      console.log(res);
+    }
+    else {
+      console.error('Server Error');
+      throw new Error('Error downloading tiles from ' + downloadOptions.fromUrl);
+    }
+  };
+
 
   const getExternalProjectData = async () => {
     // try {
@@ -168,6 +214,15 @@ const useDevice = (props) => {
     }
   };
 
+  const moveFile = async (source, destination) => {
+    try {
+      await RNFS.moveFile(source, destination);
+    }
+    catch (err) {
+      console.error('Error moving file', err);
+    }
+  };
+
   const readDirectory = async (directory) => {
     let files = [];
     files = await RNFS.readdir(directory);
@@ -175,14 +230,14 @@ const useDevice = (props) => {
     return files;
   };
 
-  const readDirectoryForMapTiles = async (mapId) => {
+  const readDirectoryForMapTiles = async (directory, mapId) => {
     try {
       let tiles = [];
       mapId = mapId.includes('/') ? mapId.split('/')[1] : mapId;
-      const exists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+      const exists = await RNFS.exists(directory + mapId + '/tiles');
       console.log('Map tiles cache tiles directory:', exists);
       if (exists) {
-        tiles = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+        tiles = await RNFS.readdir(directory + mapId + '/tiles');
         // console.log('Tiles', tiles);
       }
       return tiles;
@@ -270,14 +325,17 @@ const useDevice = (props) => {
     copyFiles: copyFiles,
     createProjectDirectories: createProjectDirectories,
     deleteOfflineMap: deleteOfflineMap,
-    deleteProjectOnDevice: deleteProjectOnDevice,
+    deleteFromDevice: deleteFromDevice,
     doesBackupFileExist: doesBackupFileExist,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
-    doesDeviceFileExist: doesDeviceFileExist,
+    doesDeviceDirExist: doesDeviceDirExist,
+    downloadAndSaveImage: downloadAndSaveImage,
+    downloadAndSaveMap: downloadAndSaveMap,
     getExternalProjectData: getExternalProjectData,
     openURL: openURL,
     makeDirectory: makeDirectory,
+    moveFile: moveFile,
     readDirectory: readDirectory,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMapFiles: readDirectoryForMapFiles,

@@ -1,4 +1,3 @@
-import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
@@ -44,9 +43,9 @@ const useImport = () => {
       if (checkDirSuccess) {
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-        const zipFile = await RNFS.readdir(sourceDir + fileName + '/maps');
-        console.log(sourceDir + ' zipFile' + zipFile[0]);
-        if (zipFile) {
+        const fileEntries = await useDevice.readDirectory(sourceDir + fileName + '/maps');
+        console.log(sourceDir + ' files' + fileEntries);
+        if (fileEntries) {
           dispatch(addedStatusMessage('Importing maps...'));
           await unzipFile(sourceDir + fileName + '/maps/' + zipFile[0]);
           console.log('Offline Maps File Unzipped!');
@@ -110,7 +109,7 @@ const useImport = () => {
       const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       console.log(checkDirSuccess);
       if (checkDirSuccess) {
-        const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_ZIP);
+        const fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_ZIP);
         console.log(fileEntries);
         const fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
         if (fileExtension === 'zip') {
@@ -133,7 +132,7 @@ const useImport = () => {
 
       const unzippedFile = await unzip(source, target);
       console.log('backup file unzipped successfully!');
-      await RNFS.unlink(source);
+      await useDevice.deleteFromDevice(source);
       console.log('.zip file removed successfully!');
       return unzippedFile;
     }
@@ -151,11 +150,11 @@ const useImport = () => {
             APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
           if (checkSuccess) {
             console.log('dir exists');
-            const files = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP);
-            const mapId = files.find(id => id === map.id);
-            if (mapId) {
-              const fileEntries = await RNFS.readdir(APP_DIRECTORIES.TILE_TEMP + mapId + '/tiles');
-              await moveTile(fileEntries, map);
+            const files = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP);
+            const zipId = files.find(zipId => zipId === map.mapId);
+            if (zipId) {
+              const fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles');
+              await moveTile(fileEntries, zipId, map);
             }
             else {
               mapFailures++;
@@ -176,10 +175,10 @@ const useImport = () => {
     await Promise.all(
       tileArray.map(async (tile) => {
         fileCount++;
-        const fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
+        const fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
         if (!fileExists) {
-          await RNFS.moveFile(
-            APP_DIRECTORIES.TILE_TEMP + map.id + '/tiles/' + tile,
+          await useDevice.moveFile(
+            APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile,
             APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
           neededTiles++;
         }
@@ -223,16 +222,16 @@ const useImport = () => {
 
   const copyImages = async (fileName) => {
     try {
-      const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR
+      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
         + fileName + '/Images');
       if (exists) {
-        const imageFiles = await RNFS.readdir(APP_DIRECTORIES.BACKUP_DIR
+        const imageFiles = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR
           + fileName + '/Images');
         console.log(imageFiles);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         if (!isEmpty(imageFiles)) {
           imageFiles.map(async (image) => {
-            await RNFS.copyFile(APP_DIRECTORIES.BACKUP_DIR
+            await useDevice.copyFiles(APP_DIRECTORIES.BACKUP_DIR
               + fileName + '/Images/' + image, APP_DIRECTORIES.IMAGES + image);
           });
           dispatch(removedLastStatusMessage());

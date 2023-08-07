@@ -1,4 +1,3 @@
-import RNFS from 'react-native-fs';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import initialProjectLoadModal from '../modules/home/home-modals/InitialProjectLoadModal';
@@ -118,50 +117,6 @@ const useDownload = () => {
     }
   };
 
-  const downloadAndSaveImagesToDevice = async (imageId) => {
-    try {
-
-      const imageURI = useServerRequests.getImageUrl();
-      return RNFS.downloadFile({
-        fromUrl: imageURI + imageId,
-        toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
-        headers: {
-          'Accept': 'application/json',
-        },
-      }).promise.then(async (res) => {
-          console.log('Image Info', res, ' JobID:', res.jobId);
-          if (res.statusCode === 200) {
-            imageCount++;
-            console.log(imageCount, `File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
-          }
-          else {
-            imageCount++;
-            imagesFailedCount++;
-            await RNFS.stopDownload(res.jobId);
-            // dispatch(removedLastStatusMessage());
-            // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
-            console.log('Stopped downloading image:', imageId);
-            console.log('Error on', imageId);
-            return RNFS.unlink(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
-              console.log(`Failed image ${imageId} removed`);
-            });
-          }
-        }, (rej) => {
-          console.log('rejected Image!!!,', rej);
-        },
-      )
-        .catch((err) => {
-          console.error('ERR in RNFS.downloadFile', err);
-          // RNFS.stopDownload(downloadRes.jobId);
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage('Error Downloading Images!'));
-        });
-    }
-    catch (err) {
-      console.error('Error downloading and saving image.', err);
-    }
-  };
-
   const downloadDatasets = async (project) => {
     try {
       dispatch(addedStatusMessage('Downloading datasets from server...'));
@@ -243,20 +198,28 @@ const useDownload = () => {
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         await Promise.all(
           neededImageIds.map(async (imageId) => {
-            await downloadAndSaveImagesToDevice(imageId);
-            imagesDownloadedCount++;
-            savedImagesCount++;
-            console.log(
-              'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length
-              + ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
-            dispatch(removedLastStatusMessage());
-            dispatch(addedStatusMessage(
-              'NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length,
-            ));
+            // await downloadAndSaveImagesToDevice(imageId);
+            const res = await useDevice.downloadAndSaveImage(imageId);
+            imageCount++;
+            if (res === 200) {
+              imagesDownloadedCount++;
+              savedImagesCount++;
+              console.log(
+                'NEW/MODIFIED Images Downloaded: ' + imagesDownloadedCount + ' of ' + neededImageIds.length
+                + ' NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length);
+              dispatch(removedLastStatusMessage());
+              dispatch(addedStatusMessage(
+                'NEW/MODIFIED Images Saved: ' + savedImagesCount + ' of ' + neededImageIds.length,
+              ));
+            }
+            else {
+              imagesFailedCount++;
+              console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length
+                + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length);
+            }
           }),
         );
-        console.log('Downloaded Images ' + imageCount + '/' + neededImageIds.length
-          + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length);
+
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
           dispatch(setLoadingStatus({view: 'modal', bool: false}));

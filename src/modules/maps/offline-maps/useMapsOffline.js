@@ -1,7 +1,6 @@
 import {useEffect} from 'react';
 import {Alert} from 'react-native';
 
-import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -80,7 +79,7 @@ const useMapsOffline = () => {
   };
 
   const createOfflineMapObject = async (mapId, customMap) => {
-    let tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+    let tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapId);
     tileCount = tileCount.length;
 
     let map = {
@@ -143,7 +142,7 @@ const useMapsOffline = () => {
 
   const getMapCenterTile = async (mapid) => {
     if (APP_DIRECTORIES.ROOT_PATH) {
-      const entries = await useDevice.readDirectoryForMapTiles(mapid);
+      const entries = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapid);
       // loop over tiles to get center tiles
       let maxZoom = 0;
       let xvals = [];
@@ -192,13 +191,12 @@ const useMapsOffline = () => {
 
   const checkTileZipFileExistance = async () => {
     try {
-      let fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
+      let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
       if (fileExists) {
         //delete
-        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
+        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
       }
-      // else await RNFS.mkdir(tileZipsDirectory);
     }
     catch (err) {
       console.error('Error checking if zip file exists', err);
@@ -207,13 +205,13 @@ const useMapsOffline = () => {
 
   const checkIfTileZipFolderExists = async () => {
     try {
-      let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_ZIP);
+      let folderExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP);
       console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
       if (folderExists) {
         //delete
-        await RNFS.unlink(APP_DIRECTORIES.TILE_ZIP + zipUID);
+        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID);
       }
-      else await RNFS.mkdir(APP_DIRECTORIES.TILE_ZIP);
+      else await useDevice.makeDirectory(APP_DIRECTORIES.TILE_ZIP);
     }
     catch (err) {
       console.error('Error checking if zip Tile Temp Directory exists', err);
@@ -309,13 +307,13 @@ const useMapsOffline = () => {
       let result;
       let mapID = currentBasemap.id;
       if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
-      let folderExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapID);
+      let folderExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + mapID);
       if (!folderExists) {
         console.log('FOLDER DOESN\'T EXIST! ', APP_DIRECTORIES.TILE_CACHE + mapID);
-        await RNFS.mkdir(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
+        await useDevice.makeDirectory(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
       }
       //now move files to correct location
-      result = await RNFS.readDir(APP_DIRECTORIES.TILE_TEMP + zipUId + '/tiles');
+      result = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_TEMP, zipUId);
       return result;
     }
     catch (err) {
@@ -329,12 +327,12 @@ const useMapsOffline = () => {
     if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
     let zipId = zipUID ?? zipID;
     fileCount++;
-    let fileExists = await RNFS.exists(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile.name);
+    let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile);
     // console.log('foo exists: ', tile.name + ' ' + fileExists);
     if (!fileExists) {
       neededTiles++;
-      await RNFS.copyFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile.name,
-        APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile.name);
+      await useDevice.moveFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile,
+        APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile);
       console.log('Tile moved');
     }
     else notNeededTiles++;
@@ -399,7 +397,7 @@ const useMapsOffline = () => {
         if (isMapInRedux) {
           console.log('Offline Map', offlineMaps[file]);
           const mapId = offlineMaps[file].id;
-          const tileCount = await RNFS.readDir(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
+          const tileCount = await useDevice.readDirectory(APP_DIRECTORIES.TILE_CACHE + mapId + '/tiles');
           const tileCountLength = tileCount.length;
           console.log('tileCount', tileCount);
           const newOfflineMapCount = {...offlineMaps[file], count: tileCountLength};

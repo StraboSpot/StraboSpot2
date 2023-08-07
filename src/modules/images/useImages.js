@@ -1,12 +1,12 @@
 import {Alert, Image, PermissionsAndroid, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import RNFS from 'react-native-fs';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
+import useDeviceHook from '../../services/useDevice';
 import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
@@ -24,6 +24,7 @@ const useImages = () => {
   const navigation = useNavigation();
 
   const [useHome] = useHomeHook();
+  const useDevice = useDeviceHook();
   // const [useSpots] = useSpotsHook();
 
 
@@ -48,8 +49,8 @@ const useImages = () => {
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
       dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
       const localImageFile = getLocalImageURI(imageId);
-      const fileExists = await RNFS.exists(localImageFile);
-      if (fileExists) await RNFS.unlink(localImageFile);
+      const fileExists = await useDevice.doesDeviceDirExist(localImageFile);
+      if (fileExists) await useDevice.deleteFromDevice(localImageFile);
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
@@ -61,9 +62,8 @@ const useImages = () => {
     try {
       const imageURI = getLocalImageURI(imageId);
       console.log('Looking on device for image at URI:', imageURI, '...');
-      const exists = await RNFS.exists(imageURI);
       // console.log(`Image ${imageURI} Exists exists: ${exists}!!`);
-      return exists;
+      return await useDevice.doesDeviceDirExist(imageURI);
     }
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
@@ -144,7 +144,7 @@ const useImages = () => {
       return {neededImagesIds: neededImagesIds, imageIds: imageIds};
     }
     catch (err) {
-      console.error('Error Gathering Images.');
+      console.error('Error Gathering Images.', err);
     }
   };
 
@@ -154,13 +154,13 @@ const useImages = () => {
   };
 
   const saveImageFromDownloadsDir = async (image) => {
-    const exists = await RNFS.exists(APP_DIRECTORIES.IMAGES);
+    const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
     console.log('EXISTS', exists);
     const source = image.fileCopyUri;
     const dest = APP_DIRECTORIES.IMAGES + image.name;
     console.log('source:', source, 'dest', dest);
-    await RNFS.moveFile(source, dest);
-    const imagesInDir = await RNFS.readDir(APP_DIRECTORIES.IMAGES);
+    await useDevice.moveFile(source, dest);
+    const imagesInDir = await useDevice.readDirectory(APP_DIRECTORIES.IMAGES);
     console.log('images in app directory', imagesInDir);
     // return imageRes;
   };
@@ -217,15 +217,13 @@ const useImages = () => {
       await Promise.all(spotsWithImages.map(async (spot) => {
         await Promise.all(spot.properties.images.map(async (image) => {
           const imageUri = getLocalImageURI(image.id);
-          const exists = await RNFS.exists(imageUri);
+          const exists = await useDevice.doesDeviceDirExist(imageUri);
           if (exists) {
             const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
             const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
             imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
           }
-          else {
-            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
-          }
+          else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
         }));
       }));
       return imageThumbnailURIs;
@@ -257,8 +255,9 @@ const useImages = () => {
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
-      await RNFS.mkdir(APP_DIRECTORIES.IMAGES);
-      await RNFS.copyFile(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
+      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
+      if (!exists) await useDevice.makeDirectory(APP_DIRECTORIES.IMAGES);
+      await useDevice.copyFiles(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
       console.log(imageCount, 'File saved to:', imageURI);
       // imageCount++;
       return {
@@ -292,7 +291,7 @@ const useImages = () => {
   const setImageHeightAndWidth = async (image) => {
     const imageURI = getLocalImageURI(image.id);
     if (imageURI) {
-      const isValidImageURI = await RNFS.exists(imageURI);
+      const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
         const updatedImage = {...image, ...imageSize};

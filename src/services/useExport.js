@@ -1,6 +1,5 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 
-import RNFS from 'react-native-fs';
 import {zip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -67,7 +66,7 @@ const useExport = () => {
 
     const file = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + localFileName + '/data.json');
     const exportedJSON = JSON.parse(file);
-    await RNFS.copyFile(source, `${destination}/data.json`);
+    await useDevice.copyFiles(source, `${destination}/data.json`);
     console.log('Files Copied', exportedJSON);
     dispatch(removedLastStatusMessage());
     console.log('DEST', await useDevice.readFile(destination + '/data.json'));
