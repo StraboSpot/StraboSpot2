@@ -226,7 +226,7 @@ const useMapsOffline = () => {
       await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
       console.log('unzip completed');
       console.log('move done.');
-      await useDevice.deleteProjectOnDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+      await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
       console.log('Zip', zipUID, 'has been deleted.');
     }
     catch (err) {

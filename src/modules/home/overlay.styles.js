@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
   },
   overlayContent: {
     marginTop: 5,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     alignItems: 'center',
   },
   contentText: {
