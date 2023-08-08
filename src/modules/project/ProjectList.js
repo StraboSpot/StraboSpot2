@@ -15,7 +15,7 @@ import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
-import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
+import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {setBackupOverwriteModalVisible, setStatusMessageModalTitle} from '../home/home.slice';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';

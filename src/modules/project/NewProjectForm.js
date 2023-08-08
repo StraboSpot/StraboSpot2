@@ -6,7 +6,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionaDialogBox';
+import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import {Form, useFormHook} from '../form';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
