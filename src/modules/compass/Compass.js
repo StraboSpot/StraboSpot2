@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 
 import {Button} from 'react-native-elements';
-import Sound from 'react-native-sound';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
+import deviceSound from '../../utils/sounds/sound';
 import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
@@ -30,7 +30,6 @@ const Compass = (props) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
-  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const [compassData, setCompassData] = useState({
@@ -52,7 +51,7 @@ const Compass = (props) => {
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [buttonSound, setButtonSound] = useState(null);
-  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS === 'android');
+  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
 
   const [useMeasurements] = useMeasurementsHook();
 
@@ -60,7 +59,7 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    const buttonClick = new Sound('compass_button_click.mp3', Sound.MAIN_BUNDLE, (error) => {
+    const buttonClick = new deviceSound('compass_button_click.mp3', deviceSound.MAIN_BUNDLE, (error) => {
       if (error) console.log('Failed to load sound', error);
     });
     setButtonSound(buttonClick);
@@ -105,10 +104,12 @@ const Compass = (props) => {
   const grabMeasurements = async (isCompassMeasurement) => {
     try {
       if (isCompassMeasurement) {
-        buttonSound.play((success) => {
-          if (success) console.log('successfully finished playing compass sound');
-          else console.log('compass sound failed due to audio decoding errors');
-        });
+        if (buttonSound) {
+          buttonSound.play((success) => {
+            if (success) console.log('successfully finished playing compass sound');
+            else console.log('compass sound failed due to audio decoding errors');
+          });
+        }
         const unixTimestamp = Date.now();
         const sliderQuality = !props.sliderValue || props.sliderValue === 6 ? {} : {quality: props.sliderValue.toString()};
         console.log('Compass measurements', compassData, props.sliderValue);
@@ -256,7 +257,7 @@ const Compass = (props) => {
   return (
     <React.Fragment>
       <View style={compassStyles.compassContainer}>
-        {props.setAttributeMeasurements && Platform.OS !== 'android' && (
+        {props.setAttributeMeasurements && Platform.OS === 'ios' && (
           <Button
             buttonStyle={formStyles.formButtonSmall}
             titleProps={formStyles.formButtonTitle}
