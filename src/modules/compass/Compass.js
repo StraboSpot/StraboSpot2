@@ -16,6 +16,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
+import deviceSound from '../../utils/sounds/sound';
 import {formStyles} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
@@ -29,7 +30,6 @@ const Compass = (props) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
-  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const [compassData, setCompassData] = useState({
@@ -59,14 +59,10 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    if (Platform !== 'web') {
-      import('react-native-sound').then((module) => {
-        const buttonClick = new module.Sound('compass_button_click.mp3', module.Sound.MAIN_BUNDLE, (error) => {
-          if (error) console.log('Failed to load sound', error);
-        });
-        setButtonSound(buttonClick);
-      });
-    }
+    const buttonClick = new deviceSound('compass_button_click.mp3', deviceSound.MAIN_BUNDLE, (error) => {
+      if (error) console.log('Failed to load sound', error);
+    });
+    setButtonSound(buttonClick);
   }, []);
 
   useEffect(() => {
@@ -108,10 +104,12 @@ const Compass = (props) => {
   const grabMeasurements = async (isCompassMeasurement) => {
     try {
       if (isCompassMeasurement) {
-        buttonSound.play((success) => {
-          if (success) console.log('successfully finished playing compass sound');
-          else console.log('compass sound failed due to audio decoding errors');
-        });
+        if (buttonSound) {
+          buttonSound.play((success) => {
+            if (success) console.log('successfully finished playing compass sound');
+            else console.log('compass sound failed due to audio decoding errors');
+          });
+        }
         const unixTimestamp = Date.now();
         const sliderQuality = !props.sliderValue || props.sliderValue === 6 ? {} : {quality: props.sliderValue.toString()};
         console.log('Compass measurements', compassData, props.sliderValue);
