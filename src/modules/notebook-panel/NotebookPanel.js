@@ -20,8 +20,6 @@ import NotebookHeader from './notebook-header/NotebookHeader';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 
-// const {State: TextInputState} = TextInput;
-
 const NotebookPanel = (props) => {
   const dispatch = useDispatch();
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);

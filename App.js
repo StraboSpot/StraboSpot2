@@ -10,7 +10,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {version} from './package.json';
 import Routes from './src/routes/Routes';
-import InternetStatus from './src/services/InternetStatus';
+import ConnectionStatus from './src/services/ConnectionStatus';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
@@ -64,8 +64,8 @@ const App = () => {
         <Provider store={store}>
           <PersistGate loading={<Loading/>} persistor={persistor}>
             {/*<Sentry.TouchEventBoundary>*/}
-            <InternetStatus/>
-            <Routes updateNeeded={isUpdateNeeded}/>
+            <ConnectionStatus/>
+            <Routes/>
             {/*</Sentry.TouchEventBoundary>*/}
           </PersistGate>
         </Provider>
