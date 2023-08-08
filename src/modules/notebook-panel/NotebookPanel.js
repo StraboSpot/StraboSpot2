@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, FlatList, TextInput, View} from 'react-native';
+import {Animated, FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,8 +19,6 @@ import NotebookFooter from './notebook-footer/NotebookFooter';
 import NotebookHeader from './notebook-header/NotebookHeader';
 import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
-
-const {State: TextInputState} = TextInput;
 
 const NotebookPanel = (props) => {
   const dispatch = useDispatch();
