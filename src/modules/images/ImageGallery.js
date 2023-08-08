@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, SectionList, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, SectionList, Text, View} from 'react-native';
 
 import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import Loading from '../../shared/ui/Loading';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
@@ -20,6 +20,9 @@ import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 
 const ImageGallery = (props) => {
+  console.log('Rendering ImageGallery...');
+  console.log('ImageGallery props:', props);
+
   const dispatch = useDispatch();
 
   const [useImages] = useImagesHook();
@@ -30,8 +33,8 @@ const ImageGallery = (props) => {
   const spots = useSelector(state => state.spot.spots);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
 
   useEffect(() => {
     console.log('UE ImageGallery []');
@@ -40,19 +43,17 @@ const ImageGallery = (props) => {
 
   const getImageThumbnailURIs = async () => {
     try {
-      setIsLoading(true);
       const spotsWithImages = useSpots.getSpotsWithImages();
       console.log('Getting Image URI Thumbnails!');
       const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
+      setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
       console.log('Image URI Thumbnails are done!');
       setImageThumbnails(imageThumbnailURIsTemp);
       setIsError(false);
-      setIsLoading(false);
     }
     catch (err) {
       console.error('Error in getImageThumbnailURIs', err);
       setIsError(true);
-      setIsLoading(false);
     }
   };
 
@@ -91,13 +92,16 @@ const ImageGallery = (props) => {
         <Image
           style={imageStyles.thumbnail}
           onPress={() => handleImagePressed(image)}
-          source={{uri: imageThumbnails[image.id]}}
-          PlaceholderContent={
-            <Image
-              style={imageStyles.thumbnail}
-              source={require('../../assets/images/noimage.jpg')}
-            />}
-          placeholderStyle={{backgroundColor: 'grey'}}
+          source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
+          PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
+            : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
+          placeholderStyle={commonStyles.imagePlaceholder}
+          onError={() => {
+            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
+          }}
+          onLoadEnd={() => {
+            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
+          }}
         />
       </View>
     );
@@ -162,7 +166,6 @@ const ImageGallery = (props) => {
       {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
         : !isError ? renderSpotsWithImages()
           : renderError()}
-      <Loading isLoading={isLoading}/>
     </React.Fragment>
   );
 };

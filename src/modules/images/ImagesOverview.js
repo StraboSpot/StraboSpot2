@@ -1,20 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Switch, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Switch, Text, View} from 'react-native';
 
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
+import {clearedSelectedSpots} from '../spots/spots.slice';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 
 const placeholderImage = require('../../assets/images/noimage.jpg');
 
 const ImagesOverview = () => {
+  console.log('Rendering ImagesOverview...');
+
   const [useImages] = useImagesHook();
 
   const dispatch = useDispatch();
@@ -22,6 +25,7 @@ const ImagesOverview = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
+  const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
 
   useEffect(() => {
     console.log('UE ImagesOverview []');
@@ -32,9 +36,8 @@ const ImagesOverview = () => {
     try {
       if (images) {
         const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs([spot]);
-        if (!isEmpty(imageThumbnailURIsTemp)) {
-          setImageThumbnails(imageThumbnailURIsTemp);
-        }
+        setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
+        if (!isEmpty(imageThumbnailURIsTemp)) setImageThumbnails(imageThumbnailURIsTemp);
       }
     }
     catch (err) {
@@ -42,13 +45,17 @@ const ImagesOverview = () => {
     }
   };
 
-  const handlePress = (image) => {
-    if (imageThumbnails[image.id]) useImages.editImage(image);
-    else {
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('The selected image was not found on the device.'));
-      dispatch(setErrorMessagesModalVisible(true));
-    }
+  const handleImageBasemapPressed = (image) => {
+    console.log('Pressed image basemap:', image);
+    useImages.doesImageExistOnDevice(image.id)
+      .then((doesExist) => {
+        if (doesExist) {
+          dispatch(clearedSelectedSpots());
+          dispatch(setCurrentImageBasemap(image));
+        }
+        else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+      })
+      .catch(e => console.error('Image not found', e));
   };
 
   const renderImage = (image) => {
@@ -59,9 +66,16 @@ const ImagesOverview = () => {
             resizeMode={'contain'}
             source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
             style={imageStyles.notebookImage}
-            transition
-            transitionDuration={250}
-            onPress={() => handlePress(image)}
+            PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
+              : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
+            placeholderStyle={commonStyles.imagePlaceholder}
+            onPress={() => useImages.editImage(image)}
+            onError={() => {
+              if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
+            }}
+            onLoadEnd={() => {
+              if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
+            }}
           />
           <View style={{alignSelf: 'flex-start', flexDirection: 'column', flex: 1, paddingLeft: 10}}>
             {image.title && (
@@ -75,7 +89,7 @@ const ImagesOverview = () => {
                 <Button
                   title={'View as Image Basemap'}
                   type={'clear'}
-                  onPress={() => dispatch(setCurrentImageBasemap(image))}
+                  onPress={() => handleImageBasemapPressed(image)}
                 />
               )}
             </View>
