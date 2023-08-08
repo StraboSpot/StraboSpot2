@@ -8,7 +8,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import BatteryInfo from '../../services/BatteryInfo';
-import ConnectionStatus from '../../services/ConnectionStatus';
+import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import * as Helpers from '../../shared/Helpers';
@@ -612,7 +612,7 @@ const Home = () => {
       />
       <View style={uiStyles.iconContainer}>
         {Platform.OS === 'ios' && <BatteryInfo/>}
-        <ConnectionStatus/>
+        <ConnectionStatusIcon/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
       <RightSideButtons

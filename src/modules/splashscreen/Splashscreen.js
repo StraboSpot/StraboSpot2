@@ -4,7 +4,7 @@ import {ImageBackground, Platform, ScrollView, Text, useWindowDimensions, View} 
 import {useSelector} from 'react-redux';
 
 import BatteryInfo from '../../services/BatteryInfo';
-import ConnectionStatus from '../../services/ConnectionStatus';
+import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
@@ -30,7 +30,7 @@ const Splashscreen = (props) => {
       >
         <View style={splashscreenStyles.wifiIndicatorContainer}>
           {Platform.OS === 'ios' && <BatteryInfo/>}
-          <ConnectionStatus/>
+          <ConnectionStatusIcon/>
         </View>
         <View style={splashscreenStyles.contentContainer}>
           <View style={splashscreenStyles.titleContainer}>

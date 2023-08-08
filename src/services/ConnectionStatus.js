@@ -1,33 +1,33 @@
-import React from 'react';
-import {Image, View} from 'react-native';
+import {useEffect} from 'react';
 
-import {useSelector} from 'react-redux';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {useDispatch} from 'react-redux';
 
-import uiStyles from '../shared/ui/ui.styles';
+import {setOnlineStatus} from '../modules/home/home.slice';
 
 const ConnectionStatus = () => {
-  const onlineIcon = require('../assets/icons/ConnectionStatusButton_online.png');
-  const offlineIcon = require('../assets/icons/ConnectionStatusButton_offline.png');
-  const accessPointIcon = require('../assets/icons/ConnectionStatusButton_connected.png');
+  console.log('Rendering ConnectionStatus...');
 
-  const isOnline = useSelector(state => state.home.isOnline);
+  const netInfo = useNetInfo();
+  const dispatch = useDispatch();
 
-  const getNetworkStatusIcon = () => {
-    if (isOnline.isConnected && isOnline.isInternetReachable) return onlineIcon;
-    else if (!isOnline.isConnected && !isOnline.isInternetReachable) return offlineIcon;
-    else return accessPointIcon;
-  };
+  // NetInfo.configure(
+  //   reachabilityUrl: 'https://clients3.google.com/generate_204',
+  //   reachabilityTest: async (response) => {
+  //     // console.log('Response Status', response.status);
+  //     return response.status === 204;
+  //   },
+  //   reachabilityLongTimeout: 5 * 1000, // 60s
+  //   reachabilityShortTimeout: 5 * 1000, // 5s
+  //   reachabilityRequestTimeout: 15 * 1000, // 15s
+  // });
 
-  return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Image
-        source={getNetworkStatusIcon()}
-        style={uiStyles.offlineIcon}
-      />
-      {/*<Text>Is Online: {isOnline?.isInternetReachable?.toString()} </Text>*/}
-      {/*<Text>Is Connected: {isOnline?.isConnected?.toString()}</Text>*/}
-    </View>
-  );
+  useEffect(() => {
+    console.log('UE ConnectionStatus []');
+    if (netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
+      dispatch(setOnlineStatus(netInfo));
+    }
+  }, [netInfo]);
 };
 
 export default ConnectionStatus;

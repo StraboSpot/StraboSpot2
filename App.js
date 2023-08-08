@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 
@@ -11,6 +10,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {version} from './package.json';
 import Routes from './src/routes/Routes';
+import ConnectionStatus from './src/services/ConnectionStatus';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
@@ -41,6 +41,7 @@ NetInfo.configure({
 });
 
 const App = () => {
+  console.log('Rendering App...');
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
@@ -61,7 +62,8 @@ const App = () => {
       <Provider store={store}>
         <PersistGate loading={<Loading/>} persistor={persistor}>
           {/*<Sentry.TouchEventBoundary>*/}
-          <Routes updateNeeded={isUpdateNeeded}/>
+          <ConnectionStatus/>
+          <Routes/>
           {/*</Sentry.TouchEventBoundary>*/}
         </PersistGate>
       </Provider>
