@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import LottieView from 'lottie-react-native';
 import {Icon} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,7 +10,8 @@ import useImportHook from '../../../services/useImport';
 import useUploadHook from '../../../services/useUpload';
 import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
-import useAnimationsHook from '../../../shared/ui/useAnimations';
+// import useAnimationsHook from '../../../shared/ui/useAnimations';
+import LottieAnimation from '../../../utils/animations/LottieAnimations';
 import {setSelectedProject} from '../../project/projects.slice';
 import {addedStatusMessage, setProgressModalVisible} from '../home.slice';
 
@@ -28,7 +28,6 @@ const UploadProgressModal = (props) => {
   const [error, setError] = useState(false);
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
 
-  const useAnimations = useAnimationsHook();
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
   const useUpload = useUploadHook();
@@ -53,7 +52,7 @@ const UploadProgressModal = (props) => {
         await useImport.loadProjectFromDevice(project, false);
         console.log(`${project.fileName} has been imported.`);
       }
-      setUploadComplete(false);
+      setUploadComplete('');
       setDatasetsNotUploaded([]);
       setError(false);
     }
@@ -70,6 +69,7 @@ const UploadProgressModal = (props) => {
 
   const renderUploadProgressModal = async () => {
     try {
+      setUploadComplete('uploading');
       const uploadStatusObj = await useUpload.initializeUpload();
       const {status, datasets} = uploadStatusObj;
       setUploadComplete(status);
@@ -80,16 +80,6 @@ const UploadProgressModal = (props) => {
       console.error('Error in renderUploadProgressModal', err);
       setError(true);
     }
-  };
-
-  const renderUploadingAnimation = (type) => {
-    return (<>
-      <LottieView
-        source={useAnimations.getAnimationType(type)}
-        autoPlay
-        loop={type === 'uploading'}
-      />
-    </>);
   };
 
   const renderDatasetsNotUploaded = () => {
@@ -123,13 +113,17 @@ const UploadProgressModal = (props) => {
       onPressComplete={() => handleCompletePress()}
       showButton={uploadComplete === 'complete' || error}
       showInfo={!isEmpty(datasetsNotUploaded)}
-      animation={renderUploadingAnimation(
-        error ? 'error' : uploadComplete === 'complete' ? 'complete' : 'uploading')}
+      animation={
+        <LottieAnimation
+          type={error ? 'error' : uploadComplete === 'complete' ? 'complete' : 'uploading'}
+          doesLoop={uploadComplete === 'uploading'}
+          show={uploadComplete === 'uploading'}
+        />}
       info={renderDatasetsNotUploaded()}
     >
       {!error ? (
-          <View style={{flex: 1}}>
-            <View style={{}}>
+          <View>
+            <View style={{padding: 10}}>
               <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
             </View>
             {isImageTransferring && <View style={{paddingTop: 10}}>
