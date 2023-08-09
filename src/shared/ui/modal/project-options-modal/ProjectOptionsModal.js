@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import LottieView from 'lottie-react-native';
 import moment from 'moment/moment';
 import {Button, CheckBox, Dialog, Input} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
@@ -16,6 +15,7 @@ import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
 import useDeviceHook from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
+import LottieAnimations from '../../../../utils/animations/LottieAnimations';
 import commonStyles from '../../../common.styles';
 import {isEmpty} from '../../../Helpers';
 import Spacer from '../../Spacer';
@@ -392,15 +392,11 @@ const ProjectOptionsDialogBox = (props) => {
             ? <Text style={projectOptionsModalStyle.projectNameText}>Deleting {projectNameToDelete}</Text>
             : <Text style={projectOptionsModalStyle.projectNameText}>{projectNameToDelete} has been deleted.</Text>
           }
-          {Platform.OS !== 'web' && (
-            <LottieView
-              style={{width: 200, height: 200}}
-              source={useAnimations.getAnimationType(
-                deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete')}
-              autoPlay
-              loop={deletingProjectStatus === 'deleteProject'}
-            />
-          )}
+          <LottieAnimations
+            type={deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete'}
+            doesLoop={deletingProjectStatus === 'deleteProject'}
+            show={deletingProjectStatus === 'deleteProject'}
+          />
         </View>
         {deletingProjectStatus === 'complete' && <Dialog.Button
           title={'Close'}

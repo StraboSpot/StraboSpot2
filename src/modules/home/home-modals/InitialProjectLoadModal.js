@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import LottieView from 'lottie-react-native';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,9 +10,10 @@ import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import SectionDivider from '../../../shared/ui/SectionDivider';
+// import SectionDivider from '../../../shared/ui/SectionDivider';
 import Spacer from '../../../shared/ui/Spacer';
 import useAnimationsHook from '../../../shared/ui/useAnimations';
+// import LottieAnimations from '../../../utils/animations/LottieAnimations';
 import useImagesHook from '../../images/useImages';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
@@ -308,20 +308,21 @@ const InitialProjectLoadModal = (props) => {
     }
   };
 
-  const renderLoadingView = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
-        <SectionDivider dividerText={'Loading Project'}/>
-        <LottieView
-          style={{width: 150, height: 150}}
-          source={useAnimations.getAnimationType('loadingFile')}
-          autoPlay
-          loop={isLoading}
-        />
-        <Text>{statusMessages}</Text>
-      </View>
-    );
-  };
+  // const renderLoadingView = () => {
+  //   return (
+  //     <View style={{alignItems: 'center'}}>
+  //       <SectionDivider dividerText={'Loading Project'}/>
+  //       {/*<LottieView*/}
+  //       {/*  style={{width: 150, height: 150}}*/}
+  //       {/*  source={useAnimations.getAnimationType('loadingFile')}*/}
+  //       {/*  autoPlay*/}
+  //       {/*  loop={isLoading}*/}
+  //       {/*/>*/}
+  //       <LottieAnimations doesLoop={isLoading} show={isLoading} type={'loadingFile'}/>
+  //       <Text>{statusMessages}</Text>
+  //     </View>
+  //   );
+  // };
 
   const renderSectionView = () => {
     switch (visibleInitialSection) {
@@ -420,7 +421,7 @@ const InitialProjectLoadModal = (props) => {
         <Text style={overlayStyles.titleText}>{statusMessageModalTitle}</Text>
       </View>
       {visibleInitialSection === 'none' && renderUserProfile()}
-      {isLoading ? renderLoadingView() : renderSectionView()}
+      {renderSectionView()}
     </Overlay>
   );
 };

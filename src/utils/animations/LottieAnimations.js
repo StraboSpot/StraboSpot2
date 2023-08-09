@@ -11,13 +11,12 @@ const LottieAnimation = ({type, doesLoop}) => {
   const useAnimations = useAnimationsHook();
 
   return (
-    <>
-      <LottieView
-        source={useAnimations.getAnimationType(type)}
-        autoPlay
-        loop={doesLoop}
-      />
-    </>
+    <LottieView
+      style={{width: 150, height: 150}}
+      source={useAnimations.getAnimationType(type)}
+      autoPlay
+      loop={doesLoop}
+    />
   );
 };
 
