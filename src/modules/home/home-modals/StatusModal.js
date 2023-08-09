@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import LottieView from 'lottie-react-native';
 import {Button} from 'react-native-elements';
@@ -51,7 +51,7 @@ const StatusModal = (props) => {
     >
       <View>
         <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
-        {isModalLoading ? (
+        {isModalLoading && Platform.OS !== 'web' ? (
             <LottieView
               style={{width: 150, height: 150}}
               source={useAnimations.getAnimationType('loadingFile')}

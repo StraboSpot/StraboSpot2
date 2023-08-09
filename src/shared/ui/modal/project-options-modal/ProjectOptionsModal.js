@@ -392,13 +392,15 @@ const ProjectOptionsDialogBox = (props) => {
             ? <Text style={projectOptionsModalStyle.projectNameText}>Deleting {projectNameToDelete}</Text>
             : <Text style={projectOptionsModalStyle.projectNameText}>{projectNameToDelete} has been deleted.</Text>
           }
-          <LottieView
-            style={{width: 200, height: 200}}
-            source={useAnimations.getAnimationType(
-              deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete')}
-            autoPlay
-            loop={deletingProjectStatus === 'deleteProject'}
-          />
+          {Platform.OS !== 'web' && (
+            <LottieView
+              style={{width: 200, height: 200}}
+              source={useAnimations.getAnimationType(
+                deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete')}
+              autoPlay
+              loop={deletingProjectStatus === 'deleteProject'}
+            />
+          )}
         </View>
         {deletingProjectStatus === 'complete' && <Dialog.Button
           title={'Close'}
