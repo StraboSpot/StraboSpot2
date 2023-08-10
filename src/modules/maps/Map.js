@@ -947,9 +947,11 @@ const Map = React.forwardRef((props, ref) => {
     }));
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
     // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
-    if (!isEmpty(spotToEdit)) useMaps.setSelectedSpotOnMap(spotToEdit);
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappedSpots);
-    setEditFeatures(spotToEdit);
+    if (!isEmpty(spotToEdit)) {
+      useMaps.setSelectedSpotOnMap(spotToEdit);
+      setEditFeatures(spotToEdit);
+    }
     // while starting to edit the spot, set the vertex active to move immediately, if available
     if (vertexToEdit) {
       if (spotToEdit.geometry.type !== 'Point') {
@@ -966,19 +968,23 @@ const Map = React.forwardRef((props, ref) => {
   // Handle a long press on the map by making the point or vertex at the point "selected"
   const onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
-    const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+    const [screenPointX, screenPointY] = Platform.OS === 'android'
+      ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
       : [e.properties.screenPointX, e.properties.screenPointY];
     const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
     const mappedSpots = useMaps.getAllMappedSpots();
     if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
-      let closestVertexDetails = {};
-      let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
-      if (isEmpty(closestVertexToSelect)) {
-        // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
-        closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
-          editingModeData);
-        closestVertexToSelect = closestVertexDetails[0];
-        startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
+      if (isEmpty(spotToEdit)) startEditing({});
+      else {
+        let closestVertexDetails = {};
+        let closestVertexToSelect = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
+        if (isEmpty(closestVertexToSelect)) {
+          // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
+          closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
+            editingModeData);
+          closestVertexToSelect = closestVertexDetails[0];
+          startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
+        }
       }
     }
     else if (props.mapMode === MAP_MODES.EDIT) {
@@ -1008,13 +1014,21 @@ const Map = React.forwardRef((props, ref) => {
                   vertexIndex: vertexAdded.properties.index + 1,
                 }));
               }
-              else if (turf.getType(spotEditingCopy) === 'Polygon') {
+              else if (turf.getType(spotEditingCopy) === 'Polygon' && !isEmpty(spotToEdit)) {
                 if (currentImageBasemap || stratSection) {
                   spotEditingCopy = useMaps.convertImagePixelsToLatLong(spotEditingCopy);
-                  spotEditingCopy = addVertexToPolygon(spotEditingCopy, e.geometry);
+                  [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, e.geometry);
                   spotEditingCopy = useMaps.convertFeatureGeometryToImagePixels(spotEditingCopy);
+                  setSelectedSpotToEdit(useMaps.convertFeatureGeometryToImagePixels(vertexAdded));
                 }
-                else spotEditingCopy = addVertexToPolygon(spotEditingCopy, e.geometry);
+                else {
+                  [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, e.geometry);
+                  setSelectedSpotToEdit(vertexAdded);
+                }
+                setEditingModeData(d => ({
+                  ...d,
+                  vertexIndex: vertexAdded.properties.index + 1,
+                }));
               }
             }
             else {
@@ -1095,37 +1109,36 @@ const Map = React.forwardRef((props, ref) => {
     else console.log('No Spots to edit. No action taken.');
   };
 
-  // Add a new vertex to a polygon by creating a new feature for each possible place to insert the
-  // new vertex into the feature polygon coordiantes then taking the union of those features
-  const addVertexToPolygon = (polygon, newVertexGeom) => {
+  // Add a new vertex to a polygon
+  const addVertexToPolygon = (polygon, pressedScreenPointGeom) => {
     console.log('Adding vertex to selected polygon feature...');
-    let possiblePolys = [];
-    for (let j = 1; j < polygon.geometry.coordinates[0].length; j++) {
-      let cloned = JSON.parse(JSON.stringify(polygon));
-      cloned.geometry.coordinates[0].splice(j, 0, newVertexGeom.coordinates);
-      possiblePolys.push(cloned);
+
+    // Get all the lines that make up the polygon
+    let lines = [];
+    const coords = turf.getCoords(polygon)[0];
+    for (let i = 0; i < coords.length - 1; i++) {
+      lines.push(turf.lineString([coords[i], coords[i + 1]]));
     }
-    const possiblePolysFC = turf.featureCollection(possiblePolys);
-    const unkinkedPolys = turf.unkinkPolygon(possiblePolysFC).features;
-    let unionedPoly = turf.union(...unkinkedPolys);
-    let features = turf.explode(unionedPoly).features;
-    for (let i = 0; i < features.length; i++) {
-      let eachFeatureGeom = features[i];
-      if (eachFeatureGeom.geometry.coordinates[0] === newVertexGeom.coordinates[0] && eachFeatureGeom.geometry.coordinates[1] === newVertexGeom.coordinates[1]) {
-        setSelectedSpotToEdit(eachFeatureGeom);
-        setEditingModeData(d => ({
-          ...d,
-          vertexIndex: i,
-        }));
-      }
-    }
-    return unionedPoly;
+
+    // Get the nearest point among all lines to the pressed screen point
+    const nearestPointOnLine = lines.reduce((acc, line, i) => {
+      let nearestPointToTest = turf.nearestPointOnLine(line, pressedScreenPointGeom);
+      nearestPointToTest.properties.index = i;
+      return isEmpty(acc) || nearestPointToTest.properties.dist < acc.properties.dist ? nearestPointToTest : acc;
+    }, {});
+
+    // Add the new vertex to the polygon
+    const newPolygon = JSON.parse(JSON.stringify(polygon));
+    newPolygon.geometry.coordinates[0].splice(nearestPointOnLine.properties.index + 1, 0,
+      nearestPointOnLine.geometry.coordinates);
+
+    return [newPolygon, nearestPointOnLine];
   };
 
   // Add a new vertex to a line
-  const addVertexToLine = (line, newVertexGeom) => {
+  const addVertexToLine = (line, pressedScreenPointGeom) => {
     console.log('Adding vertex to selected line feature...');
-    const newPointOnLine = turf.nearestPointOnLine(line, newVertexGeom);
+    const newPointOnLine = turf.nearestPointOnLine(line, pressedScreenPointGeom);
     const i = newPointOnLine.properties.index;
     line.geometry.coordinates.splice(i + 1, 0, newPointOnLine.geometry.coordinates);
     return [line, newPointOnLine];
