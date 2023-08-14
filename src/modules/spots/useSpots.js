@@ -411,7 +411,6 @@ const useSpots = () => {
     getSpotsWithStratSection: getSpotsWithStratSection,
     isStratInterval: isStratInterval,
     saveSpot: saveSpot,
-    // saveSpotProperties: saveSpotProperties,
   }];
 };
 

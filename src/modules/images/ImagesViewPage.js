@@ -78,11 +78,6 @@ const ImagesViewPage = () => {
     ;
   };
 
-  const setAnnotation = async (image, value) => {
-    const updatedImages = await useImages.setAnnotation(image, value);
-    updatedImages && useSpots.saveSpotProperties('image', updatedImages);
-  };
-
   const renderError = () => (
     <View style={{paddingTop: 75}}>
       <Icon name={'alert-circle-outline'} type={'ionicon'} size={100}/>
@@ -126,7 +121,7 @@ const ImagesViewPage = () => {
           <Text style={{fontSize: 14, textAlign: 'left'}}>Image as {'\n'}Basemap?</Text>
           <Switch
             style={{height: 20}}
-            onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
+            onValueChange={isAnnotated => useImages.setAnnotation(image, isAnnotated)}
             value={image.annotated}
           />
         </View>
