@@ -1,0 +1,228 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "text",
+      "name": "field_stop_designation",
+      "label": "Field Stop Designation",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "field_stop_catagory",
+      "label": "Field Stop Catagory",
+      "hint": "Outcrop, trail, overview, roadcut",
+      "required": "true"
+    },
+    {
+      "type": "text",
+      "name": "site_summary_author",
+      "label": "Site Summary Author",
+      "required": "true"
+    },
+    {
+      "type": "text",
+      "name": "suggested_activities",
+      "label": "Suggested Activities",
+      "required": "false"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_cv4ar54",
+      "label": "General Site Information",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "latitude",
+      "label": "Latitude",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "longitude",
+      "label": "Longitude",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "national_emergency_number",
+      "label": "National Emergency Number",
+      "hint": "911 in US",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "backup_emergency_medical_conta",
+      "label": "Backup Emergency Medical Contact",
+      "hint": "Local Fire Department, Green River Fire Department (435-564-3228); Utah Highway Patrol (435-564-3474)",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "nearest_emergency_department",
+      "label": "Nearest Emergency Department",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "go_no_go_criteria",
+      "label": "Go No/Go Criteria",
+      "hint": "Heavy Rain/heavy snow. If Light Rain or heavy rain in previous day-- Scout ahead with one vehicle if in question",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "text",
+      "name": "directions_to_site",
+      "label": "Directions to Site",
+      "hint": "North on Hastings Road (off Highway 19, just east of Green River), approximately 7.7 miles turn off pavement to right/east at \"Tuscher Canyon\" sign, approximately 5.1 miles to farthest stop into canyon.",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_fk9na88",
+      "label": "Parking and Assembly Areas",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "parking_primary",
+      "label": "Parking - Primary",
+      "hint": "Primary- Multiple sites along road as marked on map",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "parking_secondary",
+      "label": "Parking - Secondary",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "assembly_primary",
+      "label": "Assembly - Primary",
+      "hint": "Primary – Next to lead vehicle, off road and away from traffic",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "assembly_secondary",
+      "label": "Assembly - Secondary",
+      "required": "false"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "select_multiple bq2iz93",
+      "name": "personal_protective_equipment",
+      "label": "Personal Protective Equipment (PPE)",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "other_ppe",
+      "label": "Other PPE",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "out_of_bounds_area",
+      "label": "Out of Bounds Area",
+      "hint": "Fences, private property boundaries, cliffs",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "cell_phone_coverage",
+      "label": "Cell Phone Coverage",
+      "hint": "Spotty, none",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "satellite_phone_coverage",
+      "label": "Satellite Phone Coverage",
+      "hint": "Yes or No",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "restroom_facilities",
+      "label": "Restroom Facilities",
+      "hint": "No facilities on site. First stop of morning, facilities available at hotel.",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "wheelchair_access",
+      "label": "Wheelchair Access",
+      "hint": "No – Uneven rocky terrain",
+      "required": "false"
+    },
+    {
+      "type": "image",
+      "name": "photos_of_area_and_objectives",
+      "label": "Photos of Area and Objectives",
+      "hint": "Take pictures and add to summary",
+      "required": "false",
+      "parameters": "max-pixels=1024"
+    },
+    {
+      "type": "file",
+      "name": "map_of_area",
+      "label": "Map of Area",
+      "hint": "Upload any maps or other files related to the summary",
+      "required": "false"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "bq2iz93",
+      "name": "boots",
+      "label": "Boots"
+    },
+    {
+      "list_name": "bq2iz93",
+      "name": "water",
+      "label": "Water"
+    },
+    {
+      "list_name": "bq2iz93",
+      "name": "reflective_vests",
+      "label": "Reflective vests"
+    },
+    {
+      "list_name": "bq2iz93",
+      "name": "hat",
+      "label": "Hat"
+    },
+    {
+      "list_name": "bq2iz93",
+      "name": "sunscreen",
+      "label": "Sunscreen"
+    },
+    {
+      "list_name": "bq2iz93",
+      "name": "walking_stick",
+      "label": "Walking Stick"
+    },
+    {
+      "list_name": "bq2iz93",
+      "name": "other",
+      "label": "Other"
+    }
+  ]
+}
