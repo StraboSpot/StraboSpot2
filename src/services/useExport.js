@@ -18,23 +18,29 @@ import useDeviceHook from './useDevice';
 
 const useExport = () => {
   const dispatch = useDispatch();
-  const dbs = useSelector(state => state);
+  const mapNamesDb = useSelector(state => state.offlineMap.offlineMaps);
+  const otherMapsDb = useSelector(state => state.map.customMaps);
+  const projectDb = useSelector(state => state.project);
   const selectedProject = useSelector(state => state.project.selectedProject);
+  const spotsDb = useSelector(state => state.spot.spots);
+  const userDb = useSelector(state => state.user);
 
   const appExportDirectory = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.EXPORT_FILES_ANDROID;
-  const dbsStateCopy = JSON.parse(JSON.stringify(dbs));
-  let configDb = {user: dbsStateCopy.user, other_maps: dbsStateCopy.map.customMaps};
+
+  const otherMapsDbCopy = JSON.parse(JSON.stringify(otherMapsDb));
+  const userDbCopy = JSON.parse(JSON.stringify(userDb));
+  const configDb = {user: userDbCopy, other_maps: otherMapsDbCopy};
 
   const useDevice = useDeviceHook();
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
   let dataForExport = {
-    mapNamesDb: dbs.offlineMap.offlineMaps,
+    mapNamesDb: mapNamesDb,
     mapTilesDb: {},
-    otherMapsDb: dbs.map.customMaps,
-    projectDb: dbs.project,
-    spotsDb: dbs.spot.spots,
+    otherMapsDb: otherMapsDb,
+    projectDb: projectDb,
+    spotsDb: spotsDb,
   };
 
   const backupProjectToDevice = async (exportedFileName) => {
