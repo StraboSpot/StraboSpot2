@@ -19,7 +19,7 @@ import {Form, formStyles, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
-import useMapsHook from '../maps/useMaps';
+import useLocationHook from '../maps/useLocation';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
@@ -51,7 +51,7 @@ const AddMeasurementModal = (props) => {
   const [sliderValue, setSliderValue] = useState(6);
 
   const [useForm] = useFormHook();
-  const [useMaps] = useMapsHook();
+  const useLocation = useLocationHook();
 
   const formRef = useRef(null);
 
@@ -397,7 +397,7 @@ const AddMeasurementModal = (props) => {
           values: editedMeasurementData.associated_orientation[0],
         });
       }
-      const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await useMaps.setPointAtCurrentLocation()
+      const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await useLocation.setPointAtCurrentLocation()
         : spot;
       let editedMeasurementsData = spotToUpdate.properties.orientation_data
         ? JSON.parse(JSON.stringify(spotToUpdate.properties.orientation_data)) : [];

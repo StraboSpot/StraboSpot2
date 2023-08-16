@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {MODAL_KEYS} from '../home/home.constants';
-import useMapsHook from '../maps/useMaps';
+import useLocationHook from '../maps/useLocation';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
@@ -22,13 +22,14 @@ const Notes = (props) => {
   const dispatch = useDispatch();
   const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes) || null;
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const spot = useSelector(state => state.spot.selectedSpot);
   const templates = useSelector(state => state.project.project?.templates) || {};
 
   const [initialNotesValues, setInitialNotesValues] = useState({note: initialNote});
   const [isShowTemplates, setIsShowTemplates] = useState(false);
 
-  const [useMaps] = useMapsHook();
   const toast = useToast();
+  const useLocation = useLocationHook();
 
   const formRef = useRef(null);
   const page = PRIMARY_PAGES.find(p => p.key === PAGE_KEYS.NOTES);
@@ -55,7 +56,7 @@ const Notes = (props) => {
   const saveForm = async (currentForm, pageTransition) => {
     try {
       if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
-        const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+        const pointSetAtCurrentLocation = await useLocation.setPointAtCurrentLocation();
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
       }
       await currentForm.submitForm();

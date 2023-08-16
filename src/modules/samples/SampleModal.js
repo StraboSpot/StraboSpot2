@@ -11,7 +11,7 @@ import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.cons
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {MODAL_KEYS} from '../home/home.constants';
-import useMapsHook from '../maps/useMaps';
+import useLocationHook from '../maps/useLocation';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
@@ -22,10 +22,9 @@ const SampleModal = (props) => {
     const preferences = useSelector(state => state.project.project.preferences) || {};
     const spot = useSelector(state => state.spot.selectedSpot);
 
-    const [useMaps] = useMapsHook();
     const [useForm] = useFormHook();
     const [useSpots] = useSpotsHook();
-
+    const useLocation = useLocationHook();
 
     const [namePrefix, setNamePrefix] = useState(null);
     const [startingNumber, setStartingNumber] = useState(null);
@@ -151,7 +150,7 @@ const SampleModal = (props) => {
       let newSample = currentForm.values;
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        let pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await useLocation.setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {...pointSetAtCurrentLocation.properties, samples: [newSample]},

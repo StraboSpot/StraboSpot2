@@ -1,7 +1,6 @@
 import {useEffect} from 'react';
 import {PixelRatio, Platform} from 'react-native';
 
-import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,7 +18,6 @@ import {
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../project/projects.slice';
-import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_MODES, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
 import {
@@ -241,24 +239,6 @@ const useMaps = (mapRef) => {
     let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
-  };
-
-  // Get the current location from the device and set it in the state
-  const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 5000, maximumAge: 10000, enableHighAccuracy: true};
-    return (
-      new Promise((resolve, reject) => {
-        Geolocation.getCurrentPosition(
-          (position) => {
-            // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-            console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-            resolve(position.coords);
-          },
-          error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
-          geolocationOptions,
-        );
-      })
-    );
   };
 
   const getDistancesFromSpot = async (screenPointX, screenPointY, featuresInRect) => {
@@ -576,17 +556,6 @@ const useMaps = (mapRef) => {
     else throw (customMap.id);
   };
 
-  // Create a point feature at the current location
-  const setPointAtCurrentLocation = async () => {
-    const currentLocation = await getCurrentLocation();
-    let feature = turf.point([currentLocation.longitude, currentLocation.latitude]);
-    if (currentLocation.altitude) feature.properties.altitude = currentLocation.altitude;
-    if (currentLocation.accuracy) feature.properties.gps_accuracy = currentLocation.accuracy;
-    const newSpot = await useSpots.createSpot(feature);
-    setSelectedSpotOnMap(newSpot);
-    return Promise.resolve(newSpot);
-  };
-
   const setBasemap = async (mapId) => {
     try {
       let newBasemap;
@@ -631,11 +600,6 @@ const useMaps = (mapRef) => {
       dispatch(addedCustomMap({...customMapsCopy[mapKey], isViewable: value}));
       if (!customMapsCopy[mapKey].overlay) viewCustomMap(map);
     }
-  };
-
-  const setSelectedSpotOnMap = (spotToSetAsSelected) => {
-    console.log('Set selected Spot:', spotToSetAsSelected);
-    dispatch(setSelectedSpot(spotToSetAsSelected));
   };
 
   const viewCustomMap = (map) => {
@@ -719,7 +683,6 @@ const useMaps = (mapRef) => {
     deleteMap: deleteMap,
     getAllMappedSpots: getAllMappedSpots,
     getCoordQuad: getCoordQuad,
-    getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     getDrawFeatureAtPress: getDrawFeatureAtPress,
     getExtentAndZoomCall: getExtentAndZoomCall,
@@ -734,8 +697,6 @@ const useMaps = (mapRef) => {
     saveCustomMap: saveCustomMap,
     setBasemap: setBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
-    setPointAtCurrentLocation: setPointAtCurrentLocation,
-    setSelectedSpotOnMap: setSelectedSpotOnMap,
     viewCustomMap: viewCustomMap,
     zoomToSpot: zoomToSpot,
     zoomToSpots: zoomToSpots,

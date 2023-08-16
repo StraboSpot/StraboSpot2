@@ -31,6 +31,7 @@ import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.consta
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapSymbology from './symbology/useMapSymbology';
+import useLocationHook from './useLocation';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
@@ -42,9 +43,10 @@ const Map = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
 
   const [useImages] = useImagesHook();
-  const [useSymbology] = useMapSymbology();
   const [useMapFeatures] = useMapFeaturesHook();
   const [useSpots] = useSpotsHook();
+  const [useSymbology] = useMapSymbology();
+  const useLocation = useLocationHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
 
@@ -408,9 +410,9 @@ const Map = React.forwardRef((props, ref) => {
         const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
           : [e.properties.screenPointX, e.properties.screenPointY];
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
-        if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
+        if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
-          useMaps.setSelectedSpotOnMap(useSpots.getSpotWithThisStratSection(stratSection.strat_section_id));
+          dispatch(setSelectedSpot(useSpots.getSpotWithThisStratSection(stratSection.strat_section_id)));
         }
         else clearSelectedSpots();
       }
@@ -478,7 +480,7 @@ const Map = React.forwardRef((props, ref) => {
         //     If so switch selected vertex to vertex at pressed point
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
-        if (!isEmpty(spotFound)) useMaps.setSelectedSpotOnMap(spotFound);
+        if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         if (isEmpty(editingModeData.spotEditing)) {
           if (isEmpty(spotFound)) console.log('No feature selected.');
           else setSelectedSpotToEdit(spotFound);
@@ -791,16 +793,11 @@ const Map = React.forwardRef((props, ref) => {
     }
   };
 
-  // Create a point feature at the current location
-  const setPointAtCurrentLocation = async () => {
-    await useMaps.setPointAtCurrentLocation();
-  };
-
   // Fly the map to the current location
   const goToCurrentLocation = async () => {
     if (cameraRef.current) {
       console.log('%cFlying to location', 'color: red');
-      const currentLocation = await useMaps.getCurrentLocation();
+      const currentLocation = await useLocation.getCurrentLocation();
       await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
     }
     else throw 'Error Getting Map Camera';
@@ -840,7 +837,7 @@ const Map = React.forwardRef((props, ref) => {
           const symbology = useSymbology.getSymbology(feature);
           feature.properties.symbology = symbology;
           newOrEditedSpot = await useSpots.createSpot(feature);
-          useMaps.setSelectedSpotOnMap(newOrEditedSpot);
+          dispatch(setSelectedSpot(newOrEditedSpot));
           dispatch(setFreehandFeatureCoords(undefined));// reset the freeHandCoordinates
         }
       }
@@ -867,7 +864,7 @@ const Map = React.forwardRef((props, ref) => {
       if (props.isSelectingForTagging) selectSpotsForTagging(newFeature);
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
-        useMaps.setSelectedSpotOnMap(newOrEditedSpot);
+        dispatch(setSelectedSpot(newOrEditedSpot));
       }
       setDrawFeatures([]);
     }
@@ -949,7 +946,7 @@ const Map = React.forwardRef((props, ref) => {
     // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappedSpots);
     if (!isEmpty(spotToEdit)) {
-      useMaps.setSelectedSpotOnMap(spotToEdit);
+      dispatch(setSelectedSpot(spotToEdit));
       setEditFeatures(spotToEdit);
     }
     // while starting to edit the spot, set the vertex active to move immediately, if available
@@ -1263,7 +1260,6 @@ const Map = React.forwardRef((props, ref) => {
       goToCurrentLocation: goToCurrentLocation,
       moveVertex: moveVertex,
       saveEdits: saveEdits,
-      setPointAtCurrentLocation: setPointAtCurrentLocation,
       toggleUserLocation: toggleUserLocation,
       zoomToSpot: zoomToSpot,
       zoomToSpotsExtent: zoomToSpotsExtent,
