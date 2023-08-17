@@ -138,8 +138,8 @@ export const PRIMARY_PAGES = [
   }, {
     key: PAGE_KEYS.SITE_SAFETY,
     label: 'Site Safety Summary',
-    icon_src: require('../../assets/icons/Sample.png'),
-    icon_pressed_src: require('../../assets/icons/Sample_pressed.png'),
+    icon_src: require('../../assets/icons/SiteSafety.png'),
+    icon_pressed_src: require('../../assets/icons/SiteSafety_pressed.png'),
     page_component: SiteSafetyPage,
     testing: true,
   },
