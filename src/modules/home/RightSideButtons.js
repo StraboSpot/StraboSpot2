@@ -11,7 +11,7 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
 import {MAP_MODES} from '../maps/maps.constants';
-import useMapsHook from '../maps/useMaps';
+import useLocationHook from '../maps/useLocation';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import {MODAL_KEYS, SHORTCUT_MODALS} from './home.constants';
@@ -28,7 +28,8 @@ const RightSideButtons = (props) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [useImages] = useImagesHook();
-  const [useMaps] = useMapsHook();
+  const useLocation = useLocationHook();
+
   const navigation = useNavigation();
   const toast = useToast();
 
@@ -108,7 +109,7 @@ const RightSideButtons = (props) => {
       dispatch(clearedSelectedSpots());
       switch (key) {
         case 'photo': {
-          const point = await useMaps.setPointAtCurrentLocation();
+          const point = await useLocation.setPointAtCurrentLocation();
           if (point) {
             console.log('New Spot at current location:', point);
             const imagesSavedLength = await useImages.launchCameraFromNotebook();
@@ -121,7 +122,7 @@ const RightSideButtons = (props) => {
           break;
         }
         case 'sketch': {
-          const point = await useMaps.setPointAtCurrentLocation();
+          const point = await useLocation.setPointAtCurrentLocation();
           if (point) navigation.navigate('Sketch');
           props.openNotebookPanel();
           break;

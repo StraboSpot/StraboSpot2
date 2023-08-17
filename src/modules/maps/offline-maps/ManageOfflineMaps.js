@@ -18,6 +18,7 @@ import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
+  console.log('Rendering ManageOfflineMaps...');
 
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const isOnline = useSelector(state => state.home.isOnline);
@@ -62,10 +63,6 @@ const ManageOfflineMaps = (props) => {
     console.log('UE ManageOfflineMaps [offlineMaps]', offlineMaps);
     setAvailableMaps(offlineMaps);
   }, [offlineMaps]);
-
-  useEffect(() => {
-    console.log('UE ManageOfflineMaps [isOnline]', isOnline);
-  }, [isOnline]);
 
   const confirmDeleteMap = async (map) => {
     console.log(map);
@@ -154,34 +151,34 @@ const ManageOfflineMaps = (props) => {
       >
         <ListItem.Content>
           <View style={styles.itemContainer}>
-            <ListItem.Title style={commonStyles.listItemTitle}>{`${!isEmpty(item) ? truncateText(getTitle(item),
-              20) : 'No Name'}`}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {`${!isEmpty(item) ? truncateText(getTitle(item), 20) : 'No Name'}`}
+            </ListItem.Title>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {
-                item.count === 0
-                && (
-                  <Animated.View style={{transform: [{scale: animatedPulse}]}}>
-                    <Icon
-                      containerStyle={{margin: 5}}
-                      name={'alert'}
-                      type={'material-community'}
-                      size={17}
-                      color={'red'}
-                    />
-                  </Animated.View>
-                )
-              }
+              {item.count === 0 && (
+                <Animated.View style={{transform: [{scale: animatedPulse}]}}>
+                  <Icon
+                    containerStyle={{margin: 5}}
+                    name={'alert'}
+                    type={'material-community'}
+                    size={17}
+                    color={'red'}
+                  />
+                </Animated.View>
+              )}
               <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
             </View>
           </View>
           <View style={styles.itemSubContainer}>
-            {isOnline.isInternetReachable && <Button
-              onPress={() => toggleOfflineMap(item)}
-              disabled={item.count === 0}
-              titleStyle={commonStyles.viewMapsButtonText}
-              type={'clear'}
-              title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
-            />}
+            {isOnline.isInternetReachable && (
+              <Button
+                onPress={() => toggleOfflineMap(item)}
+                disabled={item.count === 0}
+                titleStyle={commonStyles.viewMapsButtonText}
+                type={'clear'}
+                title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
+              />
+            )}
             <View style={{flexDirection: 'row', padding: 0}}>
               <Button
                 onPress={() => confirmDeleteMap(item)}
@@ -219,8 +216,8 @@ const ManageOfflineMaps = (props) => {
     <React.Fragment>
       <Button
         title={'Download tiles of current map'}
-        disabled={(!isOnline.isInternetReachable && !isOnline.isConnected) || Object.values(offlineMaps).some(
-          map => map.isOfflineMapVisible === true)}
+        disabled={(!isOnline.isInternetReachable && !isOnline.isConnected)
+          || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
         onPress={() => {
           props.closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));

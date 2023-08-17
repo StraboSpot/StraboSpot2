@@ -1,7 +1,5 @@
-import {useEffect} from 'react';
 import {PixelRatio, Platform} from 'react-native';
 
-import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,7 +17,6 @@ import {
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../project/projects.slice';
-import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_MODES, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
 import {
@@ -46,7 +43,6 @@ const useMaps = (mapRef) => {
   const customMaps = useSelector(state => state.map.customMaps);
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
-  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isOnline = useSelector(state => state.home.isOnline);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -57,10 +53,6 @@ const useMaps = (mapRef) => {
     'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
     'polygonLayerWithPatternNotSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected', 'polygonLayerWithPatternSelected'];
-
-  useEffect(() => {
-    console.log('UE useMaps [isMainMenuPanelVisible]', isMainMenuPanelVisible);
-  }, [isMainMenuPanelVisible]);
 
   const buildStyleURL = (map) => {
     let tileURL;
@@ -243,24 +235,6 @@ const useMaps = (mapRef) => {
     return coordQuad;
   };
 
-  // Get the current location from the device and set it in the state
-  const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 5000, maximumAge: 10000, enableHighAccuracy: true};
-    return (
-      new Promise((resolve, reject) => {
-        Geolocation.getCurrentPosition(
-          (position) => {
-            // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-            console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-            resolve(position.coords);
-          },
-          error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
-          geolocationOptions,
-        );
-      })
-    );
-  };
-
   const getDistancesFromSpot = async (screenPointX, screenPointY, featuresInRect) => {
     const dummyFeature = {
       'type': 'Feature',
@@ -302,7 +276,8 @@ const useMaps = (mapRef) => {
   // Get the nearest draw feature from the draw layer where the screen was pressed
   const getDrawFeatureAtPress = async (screenPointX, screenPoint) => {
     const nearestDrawFeature = await getNearestFeatureInBBox([screenPointX, screenPoint], ['pointLayerDraw']);
-    console.log('Got draw feature: ', nearestDrawFeature);
+    if (isEmpty(nearestDrawFeature)) console.log('No draw features near press.');
+    else console.log('Got draw feature:', nearestDrawFeature);
     return Promise.resolve(nearestDrawFeature);
   };
 
@@ -313,12 +288,12 @@ const useMaps = (mapRef) => {
     return url + '?extent=' + extentString + '&zoom=' + zoomLevel;
   };
 
-  // Get the nearest feature to a target point within a bounding box from given layers
+  // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
   const getNearestFeatureInBBox = async ([x, y], layers) => {
 
-    // Get a bounding box for a point
+    // Get a bounding box for a pressed point on screen [top, right, bottom, left]
     const getBoundingBox = () => {
-      const r = 30;
+      const r = 15;
       const maxX = x + r;
       const minX = x - r;
       const maxY = y + r;
@@ -327,56 +302,29 @@ const useMaps = (mapRef) => {
     };
 
     // Get all the features in the bounding box
-    // Note: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in
-    // the visible bound of the map for Android so there is a temporary fix in the next code block
-    // ToDo: Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
     const bbox = getBoundingBox();
     const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
       : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
-    const nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
-    console.log('Near Features:', nearFeatures);
+    let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
 
-    // Get the target coordinates as a point with geographic coordinates
-    let targetCoordinates = Platform.OS === 'web' ? mapRef.current.unproject([x, y]).toArray()
-      : await mapRef.current.getCoordinateFromView([x, y]);
-    const targetPoint = turf.point(targetCoordinates);
+    // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in the visible map bounds for
+    //  Android only. Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
+    // Android fix for queryRenderedFeaturesInRect returning all features in view
+    // Create a polygon from the bounding box and get features that intersect it
+    if (Platform.OS === 'android') {
+      const turfBbox = bbox.slice().reverse(); //turf bbox is minX, minY, maxX, maxY
+      const polyBbox = turf.bboxPolygon(turfBbox);
+      const geoPolyBbox = await Promise.all(
+        polyBbox.geometry.coordinates[0].map(async c => await mapRef.current.getCoordinateFromView(c)));
+      const poly = turf.polygon([geoPolyBbox]);
+      nearFeatures = nearFeaturesCollection.features.reduce(
+        (acc, nearFeature) => turf.booleanIntersects(nearFeature, poly) ? [...acc, nearFeature] : acc, []);
+    }
+    if (nearFeatures.length > 0) console.log('Near features:', nearFeatures);
 
-    // Get the nearest feature to the target point
-    const {nearestFeature} = nearFeatures.reduce((acc, nearFeature) => {
-      if (nearFeature.geometry.type === 'Point' || nearFeature.geometry.type === 'MultiPoint') {
-        const nearVertices = turf.explode(nearFeature);
-        const nearestVertex = turf.nearestPoint(targetPoint, nearVertices);
-        const distance = nearestVertex.properties.distanceToPoint;
-        // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning everything in the viewport so use this until fixed
-        if (Platform.OS === 'android') {
-          if (distance < .2 && (isEmpty(acc) || distance < acc.distance)) {
-            return {nearestFeature: nearFeature, distance: distance};
-          }
-        }
-        else if (isEmpty(acc) || distance < acc.distance) return {nearestFeature: nearFeature, distance: distance};
-      }
-      else {
-        const nearLines = (nearFeature.geometry.type === 'Polygon' || nearFeature.geometry.type === 'MultiPolygon')
-          ? turf.flatten(turf.polygonToLine(nearFeature))
-          : turf.flatten(nearFeature);
-        const nearestLine = nearLines.features.reduce((acc2, nearLine) => {
-          const nearestPointOnLine = turf.nearestPointOnLine(nearLine, targetPoint);
-          const distance = nearestPointOnLine.properties.dist;
-          // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning everything in the viewport so use this until fixed
-          if (Platform.OS === 'android') {
-            if (distance < .10 && (isEmpty(acc) || distance < acc.distance)) {
-              return {nearestFeature: nearFeature, distance: distance};
-            }
-          }
-          else if (isEmpty(acc) || distance < acc.distance) return {nearestFeature: nearFeature, distance: distance};
-          return acc2;
-        }, {});
-        if (!isEmpty(nearestLine)) return nearestLine;
-      }
-      return acc;
-    }, {});
-    console.log('Got nearest feature: ', nearestFeature);
-    return Promise.resolve(nearestFeature);
+    // If more than one near feature is found, return a random one (user needs to zoom in if too many features found)
+    const randomIndex = Math.floor(Math.random() * nearFeatures.length);
+    return Promise.resolve(nearFeatures[randomIndex] || []);
   };
 
   const getMeasureFeatures = async (e, measureFeaturesTemp, setDistance) => {
@@ -438,7 +386,8 @@ const useMaps = (mapRef) => {
     const nearestFeature = await getNearestFeatureInBBox([screenPointX, screenPointY], spotLayers);
     const nearestSpot = nearestFeature?.properties?.id ? useSpots.getSpotById(nearestFeature.properties.id)
       : {};
-    console.log('Got nearest spot: ', nearestSpot);
+    if (isEmpty(nearestSpot)) console.log('No spots near press.');
+    else console.log('Got nearest spot:', nearestSpot);
     return Promise.resolve(...[nearestSpot]);
   };
 
@@ -604,17 +553,6 @@ const useMaps = (mapRef) => {
     else throw (customMap.id);
   };
 
-  // Create a point feature at the current location
-  const setPointAtCurrentLocation = async () => {
-    const currentLocation = await getCurrentLocation();
-    let feature = turf.point([currentLocation.longitude, currentLocation.latitude]);
-    if (currentLocation.altitude) feature.properties.altitude = currentLocation.altitude;
-    if (currentLocation.accuracy) feature.properties.gps_accuracy = currentLocation.accuracy;
-    const newSpot = await useSpots.createSpot(feature);
-    setSelectedSpotOnMap(newSpot);
-    return Promise.resolve(newSpot);
-  };
-
   const setBasemap = async (mapId) => {
     try {
       let newBasemap;
@@ -659,11 +597,6 @@ const useMaps = (mapRef) => {
       dispatch(addedCustomMap({...customMapsCopy[mapKey], isViewable: value}));
       if (!customMapsCopy[mapKey].overlay) viewCustomMap(map);
     }
-  };
-
-  const setSelectedSpotOnMap = (spotToSetAsSelected) => {
-    console.log('Set selected Spot:', spotToSetAsSelected);
-    dispatch(setSelectedSpot(spotToSetAsSelected));
   };
 
   const viewCustomMap = (map) => {
@@ -749,7 +682,6 @@ const useMaps = (mapRef) => {
     deleteMap: deleteMap,
     getAllMappedSpots: getAllMappedSpots,
     getCoordQuad: getCoordQuad,
-    getCurrentLocation: getCurrentLocation,
     getDisplayedSpots: getDisplayedSpots,
     getDrawFeatureAtPress: getDrawFeatureAtPress,
     getExtentAndZoomCall: getExtentAndZoomCall,
@@ -764,8 +696,6 @@ const useMaps = (mapRef) => {
     saveCustomMap: saveCustomMap,
     setBasemap: setBasemap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
-    setPointAtCurrentLocation: setPointAtCurrentLocation,
-    setSelectedSpotOnMap: setSelectedSpotOnMap,
     viewCustomMap: viewCustomMap,
     zoomToSpot: zoomToSpot,
     zoomToSpots: zoomToSpots,

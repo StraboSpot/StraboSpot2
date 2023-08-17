@@ -11,8 +11,8 @@ import Modal from '../../../shared/ui/modal/Modal';
 import {Form, SelectInputField, TextInputField, useFormHook} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
 import {updatedProject} from '../../project/projects.slice';
+import {setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
-import useMapsHook from '../useMaps';
 import useStratSectionHook from './useStratSection';
 import useStratSectionCalculationsHook from './useStratSectionCalculations';
 
@@ -25,7 +25,6 @@ const AddIntervalModal = () => {
   const [intervalToCopy, setIntervalToCopy] = useState(null);
 
   const [useForm] = useFormHook();
-  const [useMaps] = useMapsHook();
   const [useSpots] = useSpotsHook();
   const useStratSection = useStratSectionHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
@@ -253,7 +252,7 @@ const AddIntervalModal = () => {
         console.log('Insert after', preFormRef.current.values.intervalToInsertAfter, intervalToInsertAfterObj);
         useStratSectionCalculations.moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
       }
-      useMaps.setSelectedSpotOnMap(newSpot);
+      dispatch(setSelectedSpot(newSpot));
       dispatch(setModalValues({}));
       dispatch(setModalVisible({modal: null}));
       if (preferences.starting_number_for_spot) {

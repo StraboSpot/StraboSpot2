@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import useMapsHook from '../maps/useMaps';
+import useLocationHook from '../maps/useLocation';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
@@ -18,9 +18,9 @@ const Sketch = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
-  const navigation = useNavigation();
   const [useImages] = useImagesHook();
-  const [useMaps] = useMapsHook();
+  const navigation = useNavigation();
+  const useLocation = useLocationHook();
 
   const [imageId, setImageId] = useState(null);
 
@@ -36,7 +36,7 @@ const Sketch = (props) => {
 
   const createSpot = async () => {
     if (modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH) {
-      const pointSetAtCurrentLocation = await useMaps.setPointAtCurrentLocation();
+      const pointSetAtCurrentLocation = await useLocation.setPointAtCurrentLocation();
       console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
     }
   };

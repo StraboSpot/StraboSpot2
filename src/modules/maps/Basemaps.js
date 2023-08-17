@@ -10,17 +10,8 @@ import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
+import {BACKGROUND, MAPBOX_TOKEN} from './maps.constants';
 import {setViewStateGeo, setViewStateImageBasemap, setViewStateStratSection} from './maps.slice';
-import {
-  BACKGROUND,
-  GEO_LAT_LNG_PROJECTION,
-  LATITUDE,
-  LONGITUDE,
-  MAPBOX_TOKEN,
-  PIXEL_PROJECTION,
-  STRAT_SECTION_CENTER,
-  ZOOM,
-} from './maps.constants';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -32,7 +23,7 @@ MapboxGL.setWellKnownTileServer('mapbox');
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const Basemap = (props) => {
-  // console.log('Rendering Basemap...');
+  console.log('Rendering Basemap...');
   // console.log('Basemap props:', props);
 
   const dispatch = useDispatch();

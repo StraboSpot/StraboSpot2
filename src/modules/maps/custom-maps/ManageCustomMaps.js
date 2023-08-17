@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {FlatList} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
@@ -13,15 +13,13 @@ import SectionDivider from '../../../shared/ui/SectionDivider';
 import useMapHook from '../useMaps';
 
 const ManageCustomMaps = (props) => {
+  console.log('Rendering ManageCustomMaps...');
+
   const customMaps = useSelector(state => state.map.customMaps);
   const isOnline = useSelector(state => state.home.isOnline);
   const [useMaps] = useMapHook();
 
   const {isInternetReachable, isConnected} = isOnline;
-
-  useEffect(() => {
-    console.log('UE ManageCustomMaps [isOnline]', isOnline);
-  }, [isOnline]);
 
   const mapTypeName = (source) => {
     let name;
@@ -50,7 +48,7 @@ const ManageCustomMaps = (props) => {
           color={PRIMARY_ACCENT_COLOR}
           onPress={async () => {
             let customMapWithBbox;
-            if (item.overlay)  customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
+            if (item.overlay) customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
             else customMapWithBbox = await useMaps.setBasemap(item.id);
             customMapWithBbox.bbox && setTimeout(() => props.zoomToCustomMap(customMapWithBbox.bbox), 1000);
           }}

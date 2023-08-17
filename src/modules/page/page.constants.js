@@ -34,6 +34,7 @@ import BeddingPage from '../sed/BeddingPage';
 import IntervalOverview from '../sed/IntervalOverview';
 import IntervalPage from '../sed/IntervalPage';
 import StratSectionPage from '../sed/StratSectionPage';
+import SiteSafetyPage from '../site-safety/SiteSafetyPage';
 import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
 import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
@@ -68,6 +69,7 @@ export const PAGE_KEYS = {
   ROCK_TYPE_METAMORPHIC: 'metamorphic',
   ROCK_TYPE_SEDIMENTARY: 'sedimentary',
   SAMPLES: 'samples',
+  SITE_SAFETY: 'site_safety',
   STRAT_SECTION: 'strat_section',
   STRUCTURES: 'structures',
   TAGS: 'tags',
@@ -133,6 +135,13 @@ export const PRIMARY_PAGES = [
     page_component: SamplesPage,
     modal_component: SampleModal,
     action_label: 'Add a Sample',
+  }, {
+    key: PAGE_KEYS.SITE_SAFETY,
+    label: 'Site Safety Summary',
+    icon_src: require('../../assets/icons/SiteSafety.png'),
+    icon_pressed_src: require('../../assets/icons/SiteSafety_pressed.png'),
+    page_component: SiteSafetyPage,
+    testing: true,
   },
 ];
 

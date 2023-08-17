@@ -1,6 +1,4 @@
-import {useEffect} from 'react';
-
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo from '@react-native-community/netinfo';
 import {useDispatch} from 'react-redux';
 
 import {setOnlineStatus} from '../modules/home/home.slice';
@@ -8,7 +6,6 @@ import {setOnlineStatus} from '../modules/home/home.slice';
 const ConnectionStatus = () => {
   console.log('Rendering ConnectionStatus...');
 
-  const netInfo = useNetInfo();
   const dispatch = useDispatch();
 
   // NetInfo.configure(
@@ -22,12 +19,12 @@ const ConnectionStatus = () => {
   //   reachabilityRequestTimeout: 15 * 1000, // 15s
   // });
 
-  useEffect(() => {
-    console.log('UE ConnectionStatus []');
-    if (netInfo.isInternetReachable !== null && netInfo.isConnected !== null) {
-      dispatch(setOnlineStatus(netInfo));
-    }
-  }, [netInfo]);
+  // Subscribe
+  NetInfo.addEventListener((state) => {
+    console.log('Connection type:', state.type);
+    console.log('Is connected?', state.isConnected);
+    if (state.isInternetReachable !== null && state.isConnected !== null) dispatch(setOnlineStatus(state));
+  });
 };
 
 export default ConnectionStatus;

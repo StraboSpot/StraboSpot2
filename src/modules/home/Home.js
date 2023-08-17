@@ -27,7 +27,7 @@ import Map from '../maps/Map';
 import {MAP_MODES} from '../maps/maps.constants';
 import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import useMapsHook from '../maps/useMaps';
+import useLocationHook from '../maps/useLocation';
 import VertexDrag from '../maps/VertexDrag';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
@@ -78,11 +78,11 @@ const Home = () => {
   const useExport = useExportHook();
   const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
-  const [useMaps] = useMapsHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const toast = useToast();
   const useDevice = useDeviceHook();
+  const useLocation = useLocationHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
@@ -136,10 +136,6 @@ const Home = () => {
         res => console.log('Permission Status:', res));
     }
   }, []);
-
-  useEffect(() => {
-    console.log('UE Home [selectedProject]', selectedProject);
-  }, [selectedProject]);
 
   useEffect(() => {
     console.log('UE Home [user]', user);
@@ -492,7 +488,7 @@ const Home = () => {
   const setPointAtCurrentLocation = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useMaps.setPointAtCurrentLocation();
+      await useLocation.setPointAtCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(
         `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,
@@ -661,11 +657,13 @@ const Home = () => {
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       <InfoModal/>
-      <InitialProjectLoadModal
-        openMainMenu={() => toggleHomeDrawerButton()}
-        visible={isProjectLoadSelectionModalVisible}
-        closeModal={() => closeInitialProjectLoadModal()}
-      />
+      {isProjectLoadSelectionModalVisible && (
+        <InitialProjectLoadModal
+          openMainMenu={() => toggleHomeDrawerButton()}
+          visible={isProjectLoadSelectionModalVisible}
+          closeModal={() => closeInitialProjectLoadModal()}
+        />
+      )}
       <ErrorModal/>
       <StatusModal
         openUrl={openStraboSpotURL}

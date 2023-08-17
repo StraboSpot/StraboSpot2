@@ -1,4 +1,3 @@
-import {useEffect} from 'react';
 import {Alert} from 'react-native';
 
 import {unzip} from 'react-native-zip-archive';
@@ -26,7 +25,6 @@ const useMapsOffline = () => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
-  const isOnline = useSelector(state => state.home.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const user = useSelector(state => state.user);
 
@@ -36,10 +34,6 @@ const useMapsOffline = () => {
   const useDevice = useDeviceHook();
   const [useMaps] = useMapsHook();
   const [useServerRequests] = useServerRequesteHook();
-
-  useEffect(() => {
-    console.log('UE useMapsOffline [isOnline]', isOnline);
-  }, [isOnline]);
 
   // const adjustRedux = async (mapFileNames) => {
   //   Alert.alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'

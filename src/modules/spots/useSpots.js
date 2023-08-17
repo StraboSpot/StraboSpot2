@@ -36,10 +36,6 @@ const useSpots = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
-  // useEffect(() => {
-  //   console.log('UE useSpots [datasets]', datasets);
-  // }, [datasets]);
-
   const checkIsSafeDelete = (spotToDelete) => {
     // Check if Spot is manually nested - get the first Spot that has this Spot nested manually in spot.properties.nesting
     const spotWithManualNest = Object.values(spots).find(
@@ -411,7 +407,6 @@ const useSpots = () => {
     getSpotsWithStratSection: getSpotsWithStratSection,
     isStratInterval: isStratInterval,
     saveSpot: saveSpot,
-    // saveSpotProperties: saveSpotProperties,
   }];
 };
 

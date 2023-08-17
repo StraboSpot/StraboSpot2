@@ -123,7 +123,7 @@ const Metadata = () => {
   };
 
   const renderDatasetItem = (dataset) => {
-    const isChecked = dataset.spotIds.includes(spot.properties.id);
+    const isChecked = dataset.spotIds?.includes(spot.properties.id);
     return (
       <ListItem key={dataset.id.toString()} containerStyle={commonStyles.listItem}>
         <ListItem.Content>
