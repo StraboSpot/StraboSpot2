@@ -61,7 +61,7 @@ const Basemap = (props) => {
       console.log('UE Basemap');
       setInitialCenter(getCenterCoordinates());
       setInitialZoom(getZoomLevel());
-    }, [],
+    }, [props.imageBasemap, props.stratSection],
   );
 
   useEffect(() => {
