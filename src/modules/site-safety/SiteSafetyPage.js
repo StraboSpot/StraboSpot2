@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -17,8 +17,6 @@ const SiteSafetyPage = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [useForm] = useFormHook();
-
-  const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const formRef = useRef(null);
   const page = PRIMARY_PAGES.find(p => p.key === PAGE_KEYS.SITE_SAFETY);
@@ -71,7 +69,7 @@ const SiteSafetyPage = () => {
         onSubmit={values => console.log('Submitting form...', values)}
         onReset={() => console.log('Resetting form...')}
         validate={values => useForm.validateForm({formName: formName, values: values})}
-        initialValues={spot.properties.site_safety}
+        initialValues={spot.properties?.site_safety || {}}
         enableReinitialize={true}
         initialStatus={{formName: formName}}
       >
