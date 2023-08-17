@@ -26,6 +26,26 @@ const TagDetailSidePanel = (props) => {
     props.openNotebookPanel(featureType);
   };
 
+  const tagColorButton = () => {
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{marginRight: 5}}>
+          <Text style={{fontSize: 12}}>Tag</Text>
+          <Text style={{fontSize: 12}}>Color</Text>
+        </View>
+        <Icon
+          name={selectedTag.color ? 'square' : 'x-square'}
+          type={selectedTag.color ? 'ionicon' : 'feather'}
+          color={selectedTag.color}
+          // containerStyle={{borderWidth: 1}}
+          size={30}
+          onPress={() => setIsColorPickerModalVisible(true)}
+        />
+      </View>
+    );
+  };
+
+
   return (
     <React.Fragment>
       <View style={{flexDirection: 'row'}}>
@@ -35,25 +55,26 @@ const TagDetailSidePanel = (props) => {
             title={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS
               : MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}
             headerTitle={!isEmpty(selectedTag) && selectedTag.name}
+            rightComponent={tagColorButton()}
           />
         </View>
-        <View style={{
-          width: 100,
-          position: 'absolute',
-          right: 0,
-          top: 10,
-          alignItems: 'center',
-        }}>
-          <Text style={{paddingBottom: 5, paddingTop: 5}}>Tag Color</Text>
-          <Icon
-            name={selectedTag.color ? 'square' : 'x-square'}
-            type={selectedTag.color ? 'ionicon' : 'feather'}
-            color={selectedTag.color}
-            containerStyle={{borderWidth: 1}}
-            size={30}
-            onPress={() => setIsColorPickerModalVisible(true)}
-          />
-        </View>
+        {/*<View style={{*/}
+        {/*  width: 100,*/}
+        {/*  position: 'absolute',*/}
+        {/*  right: 0,*/}
+        {/*  top: 10,*/}
+        {/*  alignItems: 'center',*/}
+        {/*}}>*/}
+        {/*  <Text style={{paddingBottom: 5, paddingTop: 5}}>Tag Color</Text>*/}
+        {/*  <Icon*/}
+        {/*    name={selectedTag.color ? 'square' : 'x-square'}*/}
+        {/*    type={selectedTag.color ? 'ionicon' : 'feather'}*/}
+        {/*    color={selectedTag.color}*/}
+        {/*    containerStyle={{borderWidth: 1}}*/}
+        {/*    size={30}*/}
+        {/*    onPress={() => setIsColorPickerModalVisible(true)}*/}
+        {/*  />*/}
+        {/*</View>*/}
       </View>
 
       <View style={{flex: 1}}>

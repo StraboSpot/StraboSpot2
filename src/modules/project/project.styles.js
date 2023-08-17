@@ -12,15 +12,17 @@ const dialogStyles = StyleSheet.create({
     paddingBottom: 5,
   },
   headerTextContainer: {
-    flex: 0,
-    paddingBottom: 10,
+    // justifyContent: 'center',
+    // backgroundColor: 'red',
+    // flex: 3,
+    // paddingBottom: 10,
     width: '100%',
   },
   headerText: {
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    paddingLeft: 10,
+    // paddingLeft: 10,
   },
 });
 

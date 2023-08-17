@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    // backgroundColor: 'red',
   },
   buttons: {
     color: themes.PRIMARY_ACCENT_COLOR,
@@ -28,8 +29,9 @@ const styles = StyleSheet.create({
     color: themes.PRIMARY_TEXT_COLOR,
   },
   mainMenuHeaderTextContainer: {
-    flex: 1,
-    alignItems: 'center',
+    // flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   mainMenuHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

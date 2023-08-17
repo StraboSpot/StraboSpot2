@@ -1,8 +1,7 @@
 import {Alert, Dimensions, Image, PermissionsAndroid, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
+import {launchCamera} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
@@ -11,6 +10,7 @@ import useDeviceHook from '../../services/useDevice';
 import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
 import useHomeHook from '../home/useHome';
+import useImageEditingHook from '../images/useImageEditing';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
@@ -22,10 +22,17 @@ import {
 } from '../spots/spots.slice';
 
 const useImages = () => {
+  // let height = 4096;
+  // let width = 4096;
+  let quality = 100;
+  let rotation = 0;
+  let type = 'JPEG';
+
   const navigation = useNavigation();
 
   const [useHome] = useHomeHook();
   const useDevice = useDeviceHook();
+  const useImageEditing = useImageEditingHook();
   // const [useSpots] = useSpotsHook();
 
 
@@ -108,6 +115,16 @@ const useImages = () => {
     }
   };
 
+  const listAcceptedFiles = (item) => {
+    console.log('FILES', item);
+    return item.file;
+  };
+
+  const listRejectedFiles = (item) => {
+    console.log('FILES', item);
+    return item.file;
+  };
+
   const getAllImagesIds = (spotsArray) => {
     let imageIds = [];
     spotsArray.filter((spot) => {
@@ -152,8 +169,9 @@ const useImages = () => {
   const getLocalImageURI = (id) => {
     if (Platform.OS === 'web') return STRABO_APIS.PUBLIC_IMAGE + id;
     else {
-      const imageURI = APP_DIRECTORIES.IMAGES + id + '.jpg';
-      return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
+      const imageURI = 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
+      return imageURI;
+      // return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
     }
   };
 
@@ -169,40 +187,40 @@ const useImages = () => {
     // return imageRes;
   };
 
-  const getImagesFromCameraRoll = async () => {
-    return new Promise((res, rej) => {
-      try {
-        const selectionLimitNumber = Platform.OS === 'ios' ? 10 : 0;
-        launchImageLibrary({selectionLimit: selectionLimitNumber}, async (response) => {
-          console.log('RES', response);
-          if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
-          else if (response.errorCode === 'others') {
-            console.error(response.errorMessage('Error Here'));
-            dispatch(setLoadingStatus({view: 'home', bool: false}));
-          }
-          else {
-            let imageAsset = response.assets;
-            await Promise.all(
-              imageAsset.map(async (image) => {
-                imageCount++;
-                const resizedImage = await resizeImageIfNecessary(image);
-                const savedPhoto = await saveFile(resizedImage);
-                console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-                await dispatch(editedSpotImages([savedPhoto]));
-                dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
-              }),
-            );
-            res(imageCount);
-          }
-        });
-      }
-      catch (err) {
-        console.error('Error saving image');
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        rej('Error saving image.');
-      }
-    });
-  };
+  // const getImagesFromCameraRoll = async () => {
+  //   return new Promise((res, rej) => {
+  //     try {
+  //       const selectionLimitNumber = Platform.OS === 'ios' ? 10 : 0;
+  //       launchImageLibrary({selectionLimit: selectionLimitNumber}, async (response) => {
+  //         console.log('RES', response);
+  //         if (response.didCancel) dispatch(setLoadingStatus({view: 'home', bool: false}));
+  //         else if (response.errorCode === 'others') {
+  //           console.error(response.errorMessage('Error Here'));
+  //           dispatch(setLoadingStatus({view: 'home', bool: false}));
+  //         }
+  //         else {
+  //           let imageAsset = response.assets;
+  //           await Promise.all(
+  //             imageAsset.map(async (image) => {
+  //               imageCount++;
+  //               const resizedImage = await resizeImageIfNecessary(image);
+  //               const savedPhoto = await saveFile(resizedImage);
+  //               console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
+  //               await dispatch(editedSpotImages([savedPhoto]));
+  //               dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+  //             }),
+  //           );
+  //           res(imageCount);
+  //         }
+  //       });
+  //     }
+  //     catch (err) {
+  //       console.error('Error saving image');
+  //       dispatch(setLoadingStatus({view: 'home', bool: false}));
+  //       rej('Error saving image.');
+  //     }
+  //   });
+  // };
 
   const getImageHeightAndWidth = (imageURI) => {
     return new Promise((resolve, reject) => {
@@ -226,6 +244,8 @@ const useImages = () => {
 
   const getImageThumbnailURIs = async (spotsWithImages) => {
     try {
+      const height = 200;
+      const width = 200;
       let imageThumbnailURIs = {};
       await Promise.all(spotsWithImages.map(async (spot) => {
         await Promise.all(spot.properties.images.map(async (image) => {
@@ -236,8 +256,16 @@ const useImages = () => {
             const imageUri = getLocalImageURI(image.id);
             const exists = await useDevice.doesDeviceDirExist(imageUri);
             if (exists) {
-              const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
-              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+              const createResizedImageProps = {
+                imageUri,
+                width,
+                height,
+                type,
+                quality,
+                rotation,
+                name: 'thumbnail',
+              };
+              const resizedImage = await useImageEditing.resizeImage(createResizedImageProps);
               imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
             }
             else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
@@ -253,14 +281,19 @@ const useImages = () => {
   };
 
   const resizeImageIfNecessary = async (imageData) => {
-    let height = imageData.height;
-    let width = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
-    let resizedImage, createResizedImageProps;
-    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
-      : [tempImageURI, width, height, 'JPEG', 100, 0];
-    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+    let imageUri;
+    let height = imageData?.height;
+    let width = imageData?.width;
+    if (Platform.OS !== 'web') imageUri = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
+    else imageUri = imageData.url;
+    if (!height || !width) ({height, width} = await getImageHeightAndWidth(imageUri));
+
+    const createResizedImageProps = {imageUri, width, height, type, quality, rotation};
+    const resizedImage = await useImageEditing.resizeImage(createResizedImageProps);
+    // let resizedImage, createResizedImageProps;
+    // createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
+    //   : [tempImageURI, width, height, 'JPEG', 100, 0];
+    // resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
     return resizedImage;
   };
 
@@ -350,7 +383,7 @@ const useImages = () => {
   };
 
   // Called from Notebook Panel Footer and opens camera only
-  const takePicture = async () => {
+  const takePicture = async (name) => {
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
     return new Promise((resolve, reject) => {
       try {
@@ -360,8 +393,16 @@ const useImages = () => {
           else if (response.error) reject();
           else {
             const imageAsset = response.assets[0];
-            const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
-            const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+            const createResizedImageProps = {
+              imageUri: imageAsset.uri,
+              width: imageAsset.width,
+              height: imageAsset.height,
+              type,
+              quality,
+              rotation,
+              name,
+            };
+            const resizedImage = await useImageEditing.resizeImage(createResizedImageProps);
             console.log('resizedImage', resizedImage);
             resolve(saveFile(resizedImage));
           }
@@ -381,13 +422,16 @@ const useImages = () => {
     gatherNeededImages: gatherNeededImages,
     getLocalImageURI: getLocalImageURI,
     saveImageFromDownloadsDir: saveImageFromDownloadsDir,
-    getImagesFromCameraRoll: getImagesFromCameraRoll,
+    // getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,
     getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
     launchCameraFromNotebook: launchCameraFromNotebook,
+    listAcceptedFiles: listAcceptedFiles,
+    listRejectedFiles: listRejectedFiles,
     requestCameraPermission: requestCameraPermission,
+    resizeImageIfNecessary: resizeImageIfNecessary,
     saveFile: saveFile,
     setAnnotation: setAnnotation,
     setImageHeightAndWidth: setImageHeightAndWidth,

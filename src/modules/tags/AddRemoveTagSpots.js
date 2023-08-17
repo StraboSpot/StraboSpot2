@@ -3,7 +3,6 @@ import {View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -28,7 +27,7 @@ const AddRemoveTagSpots = () => {
         title={`${selectedTag.name}`}
         headerTitle={!isEmpty(selectedTag) && `Add/Remove ${selectedTag.name}`}
       />
-      <View style={{...commonStyles.buttonContainer, flex: 1}}>
+      <View style={{flex: 1}}>
         <SpotsList
           onPress={handleSpotChecked}
           isCheckedList={true}

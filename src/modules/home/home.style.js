@@ -5,6 +5,7 @@ import * as themes from '../../shared/styles.constants';
 const homeStyles = StyleSheet.create({
   container: {
     flex: 1,
+    // overflow: Platform.OS === 'web' && 'hidden',
   },
   mapboxAttributionPosition: {
     left: 165,

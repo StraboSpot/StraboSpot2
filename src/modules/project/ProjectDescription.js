@@ -70,12 +70,12 @@ const ProjectDescription = (props) => {
   return (
     <View style={{flex: 1}}>
       <SidePanelHeader
-        title={'Active Project (save changes)'}
+        // title={'Active Project (save changes)'}
         headerTitle={'Project Description'}
         backButton={() => {
           console.log('DIRTY', publicRef.current.dirty);
           if (!publicRef?.current?.dirty && !formRef?.current?.dirty) {
-            props.toastMessage('No Changes Were Made.');
+            // props.toastMessage('No Changes Were Made.');
           }
           else props.toastMessage('Changes Saved!', 'success');
           dispatch(setSidePanelVisible({bool: false}));
@@ -94,7 +94,7 @@ const ProjectDescription = (props) => {
           />
         </View>
         <DailyNotesSection/>
-        <View style={{flex: 1}}>
+        <View style={{flex: 2}}>
           <Formik
             initialValues={project.preferences || {}}
             onSubmit={() => console.log('Submitting form project preferences...')}
@@ -111,11 +111,11 @@ const ProjectDescription = (props) => {
                     value={formProps.values.public}
                     onValueChange={bool => formProps.setFieldValue('public', bool)}/>
                 </ListItem>
-                <View style={{paddingBottom: 15}}>
-                  <Text style={{padding: 10}}>Datasets that are made public can be accessed by anyone at
+                <View style={{padding: 10}}>
+                  <Text>Datasets that are made public can be accessed by anyone at
                     Strabospot.org/search.
                   </Text>
-                  <Text style={{padding: 10, paddingTop: 0}}>Privacy settings are reversible.
+                  <Text style={{marginTop: 10}}>Privacy settings are reversible.
                     Settings will be updated when you upload the project to the server.
                   </Text>
                 </View>

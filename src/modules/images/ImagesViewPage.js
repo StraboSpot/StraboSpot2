@@ -11,18 +11,20 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {setLoadingStatus} from '../home/home.slice';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
+import ImagesImport from './ImagesImport';
+import useImportImagesHook from './useImportImages';
 
 const ImagesViewPage = () => {
   console.log('Rendering ImagesViewPage...');
 
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
+  const useImportImages = useImportImagesHook();
   const [useSpots] = useSpotsHook();
   const toast = useToast();
 
@@ -39,18 +41,18 @@ const ImagesViewPage = () => {
     getImageThumbnailURIs().catch(err => console.error('Error getting thumbnails', err));
   }, [images]);
 
-  const getImagesFromCameraRoll = async () => {
-    dispatch(setLoadingStatus({view: 'home', bool: true}));
-    const res = await useImages.getImagesFromCameraRoll();
-    console.log(res);
-    dispatch(setLoadingStatus({view: 'home', bool: false}));
-    toast.show(`${res} image saved!`,
-      {
-        type: 'success',
-        duration: 1500,
-      });
-    console.log(res);
-  };
+  // const getImagesFromCameraRoll = async () => {
+  //   dispatch(setLoadingStatus({view: 'home', bool: true}));
+  //     const res = await useImages.getImagesFromCameraRoll();
+  //     console.log(res);
+  //     dispatch(setLoadingStatus({view: 'home', bool: false}));
+  //     toast.show(`${res} image saved!`,
+  //       {
+  //         type: 'success',
+  //         duration: 1500,
+  //       });
+  //     console.log(res);
+  // };
 
   const getImageThumbnailURIs = async () => {
     try {
@@ -67,6 +69,25 @@ const ImagesViewPage = () => {
     }
   };
 
+  // const listAcceptedFiles = async (item) => {
+  //   console.log('FILES', item);
+  //   const image = await useImages.listAcceptedFiles(item);
+  //   return (
+  //     <ListItem>
+  //       <Text>{image.path} - {image.size} bytes</Text>
+  //     </ListItem>
+  //   );
+  // };
+  //
+  // const listRejectedFiles = (item) => {
+  //   console.log('FILES', item);
+  //   return (
+  //     <ListItem>
+  //       <Text>{item.file.path} - {item.file.size} bytes</Text>
+  //     </ListItem>
+  //   );
+  // };
+
   const takePhoto = async () => {
     const imagesSavedLength = await useImages.launchCameraFromNotebook();
     imagesSavedLength > 0 && toast.show(
@@ -78,17 +99,32 @@ const ImagesViewPage = () => {
     ;
   };
 
-  const setAnnotation = async (image, value) => {
-    const updatedImages = await useImages.setAnnotation(image, value);
-    updatedImages && useSpots.saveSpotProperties('image', updatedImages);
-  };
-
   const renderError = () => (
     <View style={{paddingTop: 75}}>
       <Icon name={'alert-circle-outline'} type={'ionicon'} size={100}/>
       <Text style={[commonStyles.noValueText, {paddingTop: 50}]}>Problem getting thumbnail images...</Text>
     </View>
   );
+
+  const handleGetImages = async (e) => {
+    let res;
+    if (Platform.OS !== 'web') {
+      res = await useImportImages.getImages();
+      console.log(res);
+      toast.show(`${res} image saved!`,
+        {
+          type: 'success',
+          duration: 1500,
+        });
+    }
+    else {
+      useImportImages.openDialog();
+      console.log('IMAGE FILE FROM WEB', res);
+
+    }
+    // dispatch(setLoadingStatus({view: 'home', bool: false}));
+
+  };
 
   const handleImageBasemapPressed = (image) => {
     console.log('Pressed image basemap:', image);
@@ -132,7 +168,7 @@ const ImagesViewPage = () => {
           <Text style={{fontSize: 14, textAlign: 'left'}}>Image as {'\n'}Basemap?</Text>
           <Switch
             style={{height: 20}}
-            onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
+            onValueChange={isAnnotated => useImages.setAnnotation(image, isAnnotated)}
             value={image.annotated}
           />
         </View>
@@ -153,33 +189,25 @@ const ImagesViewPage = () => {
         <ReturnToOverviewButton/>
         <View style={{alignItems: 'center', flex: 1}}>
           <View style={imageStyles.buttonsContainer}>
-            <ButtonRounded
-              icon={
-                <Icon
-                  name={'camera-outline'}
-                  type={'ionicon'}
-                  iconStyle={imageStyles.icon}
-                  color={commonStyles.iconColor.color}/>
-              }
-              title={'Take'}
-              titleStyle={commonStyles.standardButtonText}
-              buttonStyle={imageStyles.buttonContainer}
-              type={'outline'}
-              onPress={takePhoto}
-            />
-            <ButtonRounded
-              icon={
-                <Icon
-                  name={'images-outline'}
-                  type={'ionicon'}
-                  iconStyle={imageStyles.icon}
-                  color={commonStyles.iconColor.color}/>
-              }
-              title={'Import'}
-              titleStyle={commonStyles.standardButtonText}
-              buttonStyle={imageStyles.buttonContainer}
-              type={'outline'}
-              onPress={() => getImagesFromCameraRoll()}
+            {Platform.OS !== 'web' && (
+              <ButtonRounded
+                icon={
+                  <Icon
+                    name={'camera-outline'}
+                    type={'ionicon'}
+                    iconStyle={imageStyles.icon}
+                    color={commonStyles.iconColor.color}/>
+                }
+                title={'Take'}
+                titleStyle={commonStyles.standardButtonText}
+                buttonStyle={imageStyles.buttonContainer}
+                type={'outline'}
+                onPress={takePhoto}
+              />
+            )}
+            <ImagesImport
+              handleGetImages={() => handleGetImages()}
+              imageFile={imageObj => useImportImages.uploadImages(imageObj)}
             />
             <ButtonRounded
               icon={

@@ -1,33 +1,62 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, Icon} from 'react-native-elements';
+import {Header, Icon} from 'react-native-elements';
 
+import * as themes from '../../../shared/styles.constants';
 import projectStyles from '../../project/project.styles';
-import sidePanelStyles from '../sidePanel.styles';
 
 const SidePanelHeader = (props) => {
-  return (
-    <View style={sidePanelStyles.sidePanelHeaderContainer}>
-      <Button
-        icon={
-          <Icon
-            name={'arrow-back'}
-            type={'ionicon'}
-            iconStyle={projectStyles.buttons}
-            size={20}
-          />
-        }
-        title={props.title}
-        type={'clear'}
-        containerStyle={{flex: 0, padding: 4}}
-        titleStyle={projectStyles.buttonText}
+
+  const backArrow = () => {
+    return (
+      <Icon
+        name={'arrow-back'}
+        type={'ionicon'}
+        iconStyle={projectStyles.buttons}
+        size={25}
         onPress={props.backButton}
       />
+    );
+  };
+
+  const headerTitle = () => {
+    return (
       <View style={projectStyles.headerTextContainer}>
         <Text style={projectStyles.headerText}>{props.headerTitle}</Text>
       </View>
-    </View>
+    );
+  };
+
+  return (
+    <Header
+      leftComponent={backArrow()}
+      centerComponent={headerTitle()}
+      containerStyle={{
+        backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+        justifyContent: 'space-around',
+      }}
+      rightComponent={props.rightComponent}
+    />
+    // <View style={sidePanelStyles.sidePanelHeaderContainer}>
+    //   <Button
+    //     icon={
+    //       <Icon
+    //         name={'arrow-back'}
+    //         type={'ionicon'}
+    //         iconStyle={projectStyles.buttons}
+    //         size={25}
+    //       />
+    //     }
+    //     type={'clear'}
+    //     // buttonStyle={{alignItems: 'center'}}
+    //     containerStyle={sidePanelStyles.sidePanelButtonContainer}
+    //     onPress={props.backButton}
+    //   />
+    //   <View style={projectStyles.headerTextContainer}>
+    //     <Text style={projectStyles.headerText}>{props.headerTitle}</Text>
+    //   </View>
+    // </View>
   );
 };
 

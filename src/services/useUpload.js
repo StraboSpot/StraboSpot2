@@ -1,10 +1,11 @@
 import {Alert, Platform} from 'react-native';
 
-import ImageResizer from 'react-native-image-resizer';
+// import ImageResizer from '@bam.tech/react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
+import useImageEditingHook from '../modules/images/useImageEditing';
 import useImagesHook from '../modules/images/useImages';
 import {
   deletedSpotIdFromDataset,
@@ -19,6 +20,10 @@ import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 
 const useUpload = () => {
+  let quality = 100;
+  let rotation = 0;
+  let type = 'JPEG';
+
   const datasetsNotUploaded = [];
   const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
@@ -30,6 +35,7 @@ const useUpload = () => {
   const [useServerRequests] = useServerRequestsHook();
   const [useSpots] = useSpotsHook();
   const [useImages] = useImagesHook();
+  const useImageEditing = useImageEditingHook();
   const [useProject] = useProjectHook();
   const useDevice = useDeviceHook();
 
@@ -333,36 +339,37 @@ const useUpload = () => {
   };
 
   // Downsize image for upload
-  const resizeImageForUpload = async (imageProps, imageURI, name) => {
+  const resizeImageForUpload = async (imageProps, imageUri, name) => {
     try {
       console.log(name + ': Resizing Image', imageProps.id, '...');
-      let height = imageProps.height;
-      let width = imageProps.width;
+      let height = imageUri.height;
+      let width = imageUri.width;
 
-      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
+      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageUri));
 
-      if (width && height) {
-        const max_size = name === 'profileImage' ? 300 : 2000;
-        if (width > height && width > max_size) {
-          height = max_size * height / width;
-          width = max_size;
-        }
-        else if (height > max_size) {
-          width = max_size * width / height;
-          height = max_size;
-        }
+      // if (width && height) {
+      //   const max_size = name === 'profileImage' ? 300 : 2000;
+      //   if (width > height && width > max_size) {
+      //     height = max_size * height / width;
+      //     width = max_size;
+      //   }
+      //   else if (height > max_size) {
+      //     width = max_size * width / height;
+      //     height = max_size;
+      //   }
 
-        await useDevice.makeDirectory(tempImagesDownsizedDirectory);
-        const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
-        const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        let imageSizeText;
-        if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
-        else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
-        else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
-        else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-        console.log(name + ': Finished Resizing Image', imageProps.id, 'New Size', imageSizeText);
-        return resizedImage;
-      }
+      await useDevice.makeDirectory(tempImagesDownsizedDirectory);
+      const createResizedImageProps = {imageUri, width, height, type, quality, rotation, name: 'upload'};
+      // const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+      const resizedImage = await useImageEditing.resizeImage(createResizedImageProps);
+      let imageSizeText;
+      if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
+      else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
+      else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
+      else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
+      console.log(name + ': Finished Resizing Image', imageProps.id, 'New Size', imageSizeText);
+      return resizedImage;
+      // }
     }
     catch (err) {
       console.error('Error Resizing Image.', err);

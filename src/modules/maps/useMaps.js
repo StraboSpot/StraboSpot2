@@ -552,7 +552,6 @@ const useMaps = (mapRef) => {
   };
 
   const isDrawMode = mode => Object.values(MAP_MODES.DRAW).includes(mode);
-
   // If feature is mapped on geographical map, not an image basemap or strat section
   const isOnGeoMap = (feature) => {
     if (isEmpty(feature)) return false;
@@ -565,6 +564,7 @@ const useMaps = (mapRef) => {
 
   const saveCustomMap = async (map) => {
     let mapId = map.id.trim();
+    let customEndpointTest;
     let customMap;
     const providerInfo = getProviderInfo(map.source);
     let bbox = '';
@@ -576,7 +576,10 @@ const useMaps = (mapRef) => {
     const tileUrl = buildTileUrl(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
-      const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
+      if (customDatabaseEndpoint.isSelected) {
+        customEndpointTest = customDatabaseEndpoint.url.replace('/db',
+          '/strabo_mymaps_check/');
+      }
       testTileUrl = customDatabaseEndpoint.isSelected
         ? customEndpointTest + map.id
         : STRABO_APIS.MY_MAPS_CHECK + map.id;

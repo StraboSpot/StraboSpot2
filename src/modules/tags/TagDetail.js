@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -71,33 +71,42 @@ const TagDetail = (props) => {
 
   const renderTaggedFeaturesList = () => {
     return (
-      <FlatList
-        listKey={2}
-        keyExtractor={item => item.toString()}
-        data={useTags.getAllTaggedFeatures(selectedTag)}
-        renderItem={({item}) => renderSpotFeatureItem(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
-      />
+      <View style={{}}>
+        <FlatList
+          contentContainerStyle={{flex: 1}}
+          listKey={2}
+          keyExtractor={item => item.toString()}
+          data={useTags.getAllTaggedFeatures(selectedTag)}
+          renderItem={({item}) => renderSpotFeatureItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
+        />
+      </View>
     );
   };
 
   return (
-    <FlatList
-      ListHeaderComponent={
-        <React.Fragment>
-          <SectionDividerWithRightButton
-            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
-            buttonTitle={'View/Edit'}
-            onPress={props.setIsDetailModalVisible}
-          />
-          {selectedTag && useTags.renderTagInfo()}
-          <SectionDividerWithRightButton
-            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
-            buttonTitle={'Add/Remove'}
-            onPress={props.addRemoveSpots}
-          />
+    <View style={{flex: 1}}>
+      {/*<FlatList*/}
+      {/*  ListHeaderComponent={*/}
+      {/*<React.Fragment>*/}
+      <View style={{flex: 1}}>
+        <SectionDividerWithRightButton
+          dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
+          buttonTitle={'View/Edit'}
+          onPress={props.setIsDetailModalVisible}
+        />
+        {selectedTag && useTags.renderTagInfo()}
+      </View>
+      <View style={{flex: 3}}>
+        <SectionDividerWithRightButton
+          dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
+          buttonTitle={'Add/Remove'}
+          onPress={props.addRemoveSpots}
+        />
+        <View style={{flex: 1}}>
           <FlatList
+            contentContainerStyle={{flex: 1}}
             listKey={1}
             keyExtractor={item => item.toString()}
             data={selectedTag.spots && selectedTag.spots.filter(spotId => spots[spotId])}
@@ -105,19 +114,22 @@ const TagDetail = (props) => {
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}
           />
-          {selectedTag.type !== PAGE_KEYS.GEOLOGIC_UNITS && (
-            <React.Fragment>
-              <SectionDividerWithRightButton
-                dividerText={'Tagged Features'}
-                buttonTitle={'Add/Remove'}
-                onPress={props.addRemoveFeatures}
-              />
-              {refresh ? renderTaggedFeaturesList() : renderTaggedFeaturesList()}
-            </React.Fragment>
-          )}
-        </React.Fragment>
-      }
-    />
+        </View>
+      </View>
+      {selectedTag.type !== PAGE_KEYS.GEOLOGIC_UNITS && (
+        <View style={{flex: 3}}>
+          <SectionDividerWithRightButton
+            dividerText={'Tagged Features'}
+            buttonTitle={'Add/Remove'}
+            onPress={props.addRemoveFeatures}
+          />
+          {refresh ? renderTaggedFeaturesList() : renderTaggedFeaturesList()}
+        </View>
+      )}
+      {/*</React.Fragment>*/}
+      {/*}*/}
+      {/*/>*/}
+    </View>
   );
 };
 
