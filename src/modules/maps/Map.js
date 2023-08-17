@@ -26,7 +26,7 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {MapLayer1, MapLayer2} from './Basemaps';
+import {MapLayer} from './Basemaps';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
@@ -94,7 +94,6 @@ const Map = React.forwardRef((props, ref) => {
 
   const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
   const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
-  const [mapToggle, setMapToggle] = useState(true);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [defaultGeomType, setDefaultGeomType] = useState();
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
@@ -127,7 +126,6 @@ const Map = React.forwardRef((props, ref) => {
         imageBasemap: currentImageBasemap,
         stratSection: currentImageBasemap ? undefined : m.stratSection,
       }));
-      setMapToggle(!mapToggle);
     }
   }, [currentImageBasemap]);
 
@@ -138,7 +136,6 @@ const Map = React.forwardRef((props, ref) => {
       imageBasemap: stratSection ? undefined : m.imageBasemap,
       stratSection: stratSection,
     }));
-    setMapToggle(!mapToggle);
   }, [stratSection]);
 
   useEffect(() => {
@@ -274,7 +271,6 @@ const Map = React.forwardRef((props, ref) => {
       ...m,
       basemap: currentBasemap,
     }));
-    setMapToggle(!mapToggle);
     setIsZoomToCenterOffline(false);
   };
 
@@ -1270,9 +1266,7 @@ const Map = React.forwardRef((props, ref) => {
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {/* Switch identical layers to force basemap raster re-render based on mapToggle value*/}
-      {mapProps.basemap && mapToggle && <MapLayer1  {...mapProps}/>}
-      {mapProps.basemap && !mapToggle && <MapLayer2 {...mapProps}/>}
+      {mapProps.basemap && <MapLayer {...mapProps}/>}
       {renderSetInCurrentViewModal()}
     </View>
   );

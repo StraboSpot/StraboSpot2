@@ -32,7 +32,10 @@ import useMapViewHook from './useMapView';
 MapboxGL.setWellKnownTileServer('mapbox');
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
-function Basemap(props) {
+const Basemap = (props) => {
+  console.log('Rendering Basemap...');
+  // console.log('Basemap props:', props);
+
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -478,14 +481,9 @@ function Basemap(props) {
       </MapboxGL.MapView>
     </View>
   );
-}
+};
 
-export const MapLayer1 = React.forwardRef((props, ref) => (
+export const MapLayer = React.forwardRef((props, ref) => (
   <Basemap {...props} forwardedRef={ref}/>
 ));
-MapLayer1.displayName = 'MapLayer1';
-
-export const MapLayer2 = React.forwardRef((props, ref) => (
-  <Basemap {...props} forwardedRef={ref}/>
-));
-MapLayer2.displayName = 'MapLayer2';
+MapLayer.displayName = 'MapLayer';
