@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
@@ -12,6 +12,8 @@ import useStratSectionSymbologyHook from './useStratSectionSymbology';
 import XAxis from './XAxis';
 
 const StratSectionBackground = (props) => {
+  console.log('Rendering StratSectionBackground...');
+
   const useStratSectionSymbology = useStratSectionSymbologyHook();
   const [useImages] = useImagesHook();
   const [useMaps] = useMapsHook();
@@ -20,10 +22,6 @@ const StratSectionBackground = (props) => {
   const stratSectionSpot = useSpots.getSpotWithThisStratSection(props.stratSection.strat_section_id);
   const stratSectionImagesSorted = JSON.parse(JSON.stringify(props.stratSection.images || [])).sort(
     (a, b) => a.z_index - b.z_index);
-
-  useEffect(() => {
-
-  }, [props.stratSection]);
 
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 

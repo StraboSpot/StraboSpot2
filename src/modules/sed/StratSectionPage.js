@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {FlatList, Switch, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -21,24 +21,22 @@ import AddImageOverlayModal from './AddImageOverlayModal';
 import useSedHook from './useSed';
 
 const StratSectionPage = (props) => {
-  const dispatch = useDispatch();
+  console.log('Rendering StratSectionPage...');
 
+  const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [selectedImage, setSelectedImage] = useState(undefined);
-
-  const stratSection = spot.properties?.sed?.strat_section || {};
 
   const stratSectionRef = useRef(null);
 
   const [useForm] = useFormHook();
   const useSed = useSedHook();
 
-  useEffect(() => {
-    console.log('UE StratSectionPage []');
-    console.log('Spot:', spot);
-    console.log('Strat Section:', stratSection);
-  }, []);
+  const stratSection = spot.properties?.sed?.strat_section || {};
+
+  console.log('Spot:', spot);
+  console.log('Strat Section:', stratSection);
 
   const renderImageItem = (image) => {
     return (

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
@@ -17,6 +17,8 @@ import useProjectHook from '../project/useProject';
 import {updatedDatasetProperties} from './projects.slice';
 
 const DatasetList = () => {
+  console.log('Rendering DatasetList...');
+
   const [useProject] = useProjectHook();
   const useDownload = useDownloadHook();
 
@@ -31,10 +33,6 @@ const DatasetList = () => {
   const datasets = useSelector(state => state.project.datasets);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
-
-  useEffect(() => {
-    console.log('UE DatasetList [datasets]', datasets);
-  }, [datasets]);
 
   const editDataset = (id, name) => {
     setSelectedDatasetToEdit({name: name, id: id});

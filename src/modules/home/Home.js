@@ -138,10 +138,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('UE Home [selectedProject]', selectedProject);
-  }, [selectedProject]);
-
-  useEffect(() => {
     console.log('UE Home [user]', user);
     if (user.email && user.name) {
       Sentry.configureScope((scope) => {
@@ -661,11 +657,13 @@ const Home = () => {
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       <InfoModal/>
-      <InitialProjectLoadModal
-        openMainMenu={() => toggleHomeDrawerButton()}
-        visible={isProjectLoadSelectionModalVisible}
-        closeModal={() => closeInitialProjectLoadModal()}
-      />
+      {isProjectLoadSelectionModalVisible && (
+        <InitialProjectLoadModal
+          openMainMenu={() => toggleHomeDrawerButton()}
+          visible={isProjectLoadSelectionModalVisible}
+          closeModal={() => closeInitialProjectLoadModal()}
+        />
+      )}
       <ErrorModal/>
       <StatusModal
         openUrl={openStraboSpotURL}

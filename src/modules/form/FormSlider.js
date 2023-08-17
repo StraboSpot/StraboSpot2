@@ -9,16 +9,14 @@ import Slider from '../../shared/ui/SliderBar';
 import {useFormHook} from '../form';
 
 const FormSlider = (props) => {
+  console.log('Rendering FormSlider...');
+
   const [useForm] = useFormHook();
 
   const field = props.survey.find(f => f.name === props.fieldKey);
   const choices = useForm.getChoicesByKey(props.survey, props.choices, props.fieldKey);
 
   const [sliderValue, setSliderValue] = useState(5);
-
-  // useEffect(() => {
-  //   console.log('Slider Value', sliderValue);
-  // }, [sliderValue, props.formProps]);
 
   const handleSliderValue = () => {
     const value = choices.map(c => c.name);

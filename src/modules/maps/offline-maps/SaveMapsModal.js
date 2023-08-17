@@ -38,7 +38,6 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const currentMapName = currentBasemap && currentBasemap.title;
   const maxZoom = MAP_PROVIDERS[currentBasemap.source]?.maxZoom;
-  let progressStatus = '';
 
   const [tileCount, setTileCount] = useState(0);
   const [installedTiles, setInstalledTiles] = useState(0);
@@ -93,13 +92,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     console.log('UE SaveMapsModal [downloadZoom]', downloadZoom);
     console.log('extentString is UE', extentString);
     shouldDownload().catch(err => console.error('Error in SaveMapsModal shouldDownload()', err));
-
   }, [downloadZoom]);
-
-  useEffect(() => {
-    console.log('UE SaveMapsModal [progressStatus]', progressStatus);
-  }, [progressStatus]);
-
 
   const shouldDownload = async () => {
     if (downloadZoom > 0) {

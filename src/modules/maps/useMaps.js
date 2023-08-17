@@ -1,4 +1,3 @@
-import {useEffect} from 'react';
 import {PixelRatio, Platform} from 'react-native';
 
 import * as turf from '@turf/turf';
@@ -44,7 +43,6 @@ const useMaps = (mapRef) => {
   const customMaps = useSelector(state => state.map.customMaps);
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
-  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isOnline = useSelector(state => state.home.isOnline);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -55,10 +53,6 @@ const useMaps = (mapRef) => {
     'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
     'polygonLayerWithPatternNotSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'polygonLayerSelected', 'polygonLayerWithPatternSelected'];
-
-  useEffect(() => {
-    console.log('UE useMaps [isMainMenuPanelVisible]', isMainMenuPanelVisible);
-  }, [isMainMenuPanelVisible]);
 
   const buildStyleURL = (map) => {
     let tileURL;
