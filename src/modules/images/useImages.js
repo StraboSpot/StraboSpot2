@@ -149,8 +149,7 @@ const useImages = () => {
   };
 
   const getLocalImageURI = (id) => {
-    const imageURI = APP_DIRECTORIES.IMAGES + id + '.jpg';
-    return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
+    return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
   };
 
   const saveImageFromDownloadsDir = async (image) => {
