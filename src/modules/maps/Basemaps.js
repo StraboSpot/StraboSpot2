@@ -225,6 +225,7 @@ const Basemap = (props) => {
             <MapboxGL.RasterLayer
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}
+              belowLayerID={'pointLayerColorHalo'}
             />
           </MapboxGL.ImageSource>
         )}
