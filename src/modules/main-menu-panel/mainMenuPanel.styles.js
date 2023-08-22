@@ -20,22 +20,32 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   buttons: {
+    paddingLeft: 10,
+    paddingRight: 10,
     color: themes.PRIMARY_ACCENT_COLOR,
   },
   headerText: {
+    flex: 3,
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    color: themes.PRIMARY_TEXT_COLOR,
+    textAlign: 'center',
   },
   mainMenuHeaderTextContainer: {
-    flex: 1,
+    flex: 4,
+    flexDirection: 'row',
     alignItems: 'center',
+  },
+  mainMenuIconContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   mainMenuHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    paddingTop: 15,
     height: 70,
     flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
