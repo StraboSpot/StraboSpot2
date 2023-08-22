@@ -26,14 +26,8 @@ const sidePanelStyles = StyleSheet.create({
   },
   sidePanelHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    height: 70,
+    alignItems: 'flex-start',
   },
-  sidePanelButtonContainer: {
-    alignSelf: 'flex-start'
-  },
-  sidePanelBackText: {
-    fontSize: themes.SMALL_TEXT_SIZE
-  }
 });
 
 export default sidePanelStyles;
