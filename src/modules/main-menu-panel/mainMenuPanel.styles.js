@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   buttons: {
     paddingLeft: 10,
     paddingRight: 10,
-    color: themes.BLUE,
+    color: themes.PRIMARY_ACCENT_COLOR,
   },
   headerText: {
     flex: 3,

@@ -5,6 +5,7 @@ import * as themes from '../../../shared/styles.constants';
 const notebookFooterStyles = StyleSheet.create({
   footerIconContainer: {
     justifyContent: 'space-evenly',
+    alignItems: 'center',
     flexDirection: 'row',
   },
   footerIconContainerWrap: {
@@ -35,8 +36,9 @@ const notebookFooterStyles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   morePagesListItemTitle: {
+    flex: 1,
     paddingLeft: 5,
-    alignSelf: 'center',
+    paddingRight: 5,
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
   },
