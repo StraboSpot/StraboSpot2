@@ -42,10 +42,11 @@ const DailyNotesSection = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View>
       <SectionDivider dividerText={'Daily Notes'}/>
       <Button
         title={'Add New Daily Note'}
+        titleStyle={commonStyles.standardButtonText}
         type={'clear'}
         onPress={addDailyNote}
       />

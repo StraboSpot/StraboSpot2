@@ -80,7 +80,7 @@ const DatasetList = () => {
         />
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 18)}</ListItem.Title>
-          <ListItem.Subtitle>
+          <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
             {spotsText}, {'\n'}{imagesText} images needed
           </ListItem.Subtitle>
         </ListItem.Content>
