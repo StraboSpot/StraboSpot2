@@ -15,12 +15,12 @@ PODS:
   - lottie-react-native (5.1.6):
     - lottie-ios (~> 3.4.0)
     - React-Core
-  - MapboxCommon (23.5.0)
-  - MapboxCoreMaps (10.13.1):
-    - MapboxCommon (~> 23.5)
-  - MapboxMaps (10.13.1):
-    - MapboxCommon (= 23.5.0)
-    - MapboxCoreMaps (= 10.13.1)
+  - MapboxCommon (23.6.0)
+  - MapboxCoreMaps (10.14.0):
+    - MapboxCommon (~> 23.6)
+  - MapboxMaps (10.14.0):
+    - MapboxCommon (= 23.6.0)
+    - MapboxCoreMaps (= 10.14.0)
     - MapboxMobileEvents (= 1.0.10)
     - Turf (~> 2.0)
   - MapboxMobileEvents (1.0.10)
@@ -333,14 +333,14 @@ PODS:
     - React-Core
   - RNGestureHandler (2.8.0):
     - React-Core
-  - rnmapbox-maps (10.0.7):
-    - MapboxMaps (~> 10.13.1)
+  - rnmapbox-maps (10.0.10-rc.0):
+    - MapboxMaps (~> 10.14.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.0.7)
+    - rnmapbox-maps/DynamicLibrary (= 10.0.10-rc.0)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.0.7):
-    - MapboxMaps (~> 10.13.1)
+  - rnmapbox-maps/DynamicLibrary (10.0.10-rc.0):
+    - MapboxMaps (~> 10.14.0)
     - React
     - React-Core
     - Turf
@@ -611,9 +611,9 @@ SPEC CHECKSUMS:
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
-  MapboxCommon: fdf7fd31c90b7b607cd9c63e37797f023c01d860
-  MapboxCoreMaps: 24270c7c6b8cb71819fc2f3c549db9620ee4d019
-  MapboxMaps: cb76511b98d3b95c74b0771ed105bc69f30ace6b
+  MapboxCommon: 4a0251dd470ee37e7fadda8e285c01921a5e1eb0
+  MapboxCoreMaps: eb07203bbb0b1509395db5ab89cd3ad6c2e3c04c
+  MapboxMaps: af50ec61a7eb3b032c3f7962c6bd671d93d2a209
   MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   RCT-Folly: 4d8508a426467c48885f1151029bc15fa5d7b3b8
   RCTRequired: eff60a46da0f496a6c76c8f60108c20626860d27
@@ -658,7 +658,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 0a7c1d2532aa7691f9b9925a27e43af006db4dae
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
-  rnmapbox-maps: 0b4fcc6855a8b159fecb94b00b82d7ea0558105d
+  rnmapbox-maps: c28101b8c501123dfc9d28523e998d27eb898784
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
   RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
