@@ -1,5 +1,4 @@
 import React from 'react';
-import {Pressable, ScrollView, Switch, Text, View} from 'react-native';
 import {Platform, Pressable, ScrollView, Switch, Text, View} from 'react-native';
 
 import {Avatar, ListItem, Overlay} from 'react-native-elements';
