@@ -42,7 +42,6 @@
     "@sentry/tracing": "7.29.0",
     "@StraboSpot/react-native-sketch-canvas": "github:StraboSpot/react-native-sketch-canvas",
     "@turf/turf": "6.5.0",
-    "@welldone-software/why-did-you-render": "^7.0.1",
     "formik": "2.2.9",
     "js-base64": "3.7.2",
     "lodash.isequal": "4.5.0",
