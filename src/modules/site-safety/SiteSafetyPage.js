@@ -8,7 +8,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
-import {PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
+import {PAGE_KEYS, SECONDARY_PAGES} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 
@@ -19,7 +19,7 @@ const SiteSafetyPage = () => {
   const [useForm] = useFormHook();
 
   const formRef = useRef(null);
-  const page = PRIMARY_PAGES.find(p => p.key === PAGE_KEYS.SITE_SAFETY);
+  const page = SECONDARY_PAGES.find(p => p.key === PAGE_KEYS.SITE_SAFETY);
   const formName = ['general', 'site_safety'];
 
   const cancelFormAndGo = () => {

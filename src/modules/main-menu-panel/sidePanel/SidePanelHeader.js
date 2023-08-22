@@ -20,7 +20,6 @@ const SidePanelHeader = (props) => {
         }
         title={props.title}
         type={'clear'}
-        containerStyle={{flex: 0, padding: 4}}
         titleStyle={projectStyles.buttonText}
         onPress={props.backButton}
       />

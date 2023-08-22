@@ -30,7 +30,7 @@ const ActiveDatasetsList = () => {
           >
             <ListItem.Content>
               <ListItem.Title style={commonStyles.listItemTitle}>{datasetObj.name}</ListItem.Title>
-              <ListItem.Subtitle>
+              <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
                 {datasetObj.spotIds
                   ? `(${datasetObj.spotIds.length} spot${datasetObj.spotIds.length !== 1 ? 's' : ''})`
                   : '(0 spots)'}

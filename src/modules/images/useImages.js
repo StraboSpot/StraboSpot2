@@ -151,10 +151,8 @@ const useImages = () => {
 
   const getLocalImageURI = (id) => {
     if (Platform.OS === 'web') return STRABO_APIS.PUBLIC_IMAGE + id;
-    else {
-      const imageURI = APP_DIRECTORIES.IMAGES + id + '.jpg';
-      return Platform.OS === 'ios' ? imageURI : 'file://' + imageURI;
-    }
+    else return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
+
   };
 
   const saveImageFromDownloadsDir = async (image) => {

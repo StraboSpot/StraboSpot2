@@ -39,9 +39,11 @@ import sedStructuresBeddingPlane from './sed/structures-bedding-plane.json';
 import sedStructuresBioturbation from './sed/structures-bioturbation.json';
 import sedStructuresPedogenic from './sed/structures-pedogenic.json';
 import sedStructuresPhysical from './sed/structures-physical.json';
-import siteSafety from './site-safety.json'
+import siteSafety from './site-safety.json';
 import surfaceFeature from './surface-feature.json';
 import tags from './tags.json';
+import tephraIntervalComposition from './tephra/composition.json';
+import tephraIntervalDescription from './tephra/description.json';
 import fabric from './three-d-structures/fabric.json';
 import fault from './three-d-structures/fault.json';
 import fold from './three-d-structures/fold.json';
@@ -149,6 +151,10 @@ const forms = {
     stratification: sedLithologiesStratification,
     surfaces: sedInterpretationsSurfaces,
     texture: sedLithologiesTexture,
+  },
+  tephra: {
+    interval_description: tephraIntervalDescription,
+    interval_composition: tephraIntervalComposition,
   },
 };
 

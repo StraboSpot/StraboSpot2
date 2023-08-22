@@ -1,10 +1,11 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import {Alert, Switch, Text, View} from 'react-native';
+import {Alert, FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -81,48 +82,54 @@ const ProjectDescription = (props) => {
           dispatch(setSidePanelVisible({bool: false}));
         }}
       />
+      <View style={{flex: 1.5}}>
+        <FlatList
+          ListHeaderComponent={
+            <Formik
+              innerRef={formRef}
+              onSubmit={values => console.log('Submitting form...', values)}
+              validate={values => useForm.validateForm({formName: formName, values: values})}
+              component={formProps => Form({formName: formName, ...formProps})}
+              initialValues={projectDescription}
+              validateOnChange={true}
+              enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
+            />
+          }
+        />
+      </View>
       <View style={{flex: 1}}>
-        <View style={{flex: 2}}>
-          <Formik
-            innerRef={formRef}
-            onSubmit={values => console.log('Submitting form...', values)}
-            validate={values => useForm.validateForm({formName: formName, values: values})}
-            component={formProps => Form({formName: formName, ...formProps})}
-            initialValues={projectDescription}
-            validateOnChange={true}
-            enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
-          />
-        </View>
-        <DailyNotesSection/>
-        <View style={{flex: 1}}>
-          <Formik
-            initialValues={project.preferences || {}}
-            onSubmit={() => console.log('Submitting form project preferences...')}
-            innerRef={publicRef}
-          >
-            {formProps =>
-              <View>
-                <SectionDivider dividerText={'Privacy Settings'}/>
-                <ListItem>
-                  <ListItem.Content>
-                    <ListItem.Title>Make Project Public? </ListItem.Title>
-                  </ListItem.Content>
-                  <Switch
-                    value={formProps.values.public}
-                    onValueChange={bool => formProps.setFieldValue('public', bool)}/>
-                </ListItem>
-                <View style={{paddingBottom: 15}}>
-                  <Text style={{padding: 10}}>Datasets that are made public can be accessed by anyone at
-                    Strabospot.org/search.
-                  </Text>
-                  <Text style={{padding: 10, paddingTop: 0}}>Privacy settings are reversible.
-                    Settings will be updated when you upload the project to the server.
-                  </Text>
-                </View>
-              </View>
-            }
-          </Formik>
-        </View>
+        <FlatList
+          ListHeaderComponent={
+            <>
+              <DailyNotesSection/>
+              <Formik
+                initialValues={project.preferences || {}}
+                onSubmit={() => console.log('Submitting form project preferences...')}
+                innerRef={publicRef}
+              >
+                {formProps =>
+                  <View>
+                    <SectionDivider dividerText={'Privacy Settings'}/>
+                    <ListItem containerStyle={commonStyles.listItemFormField}>
+                      <ListItem.Content>
+                        <ListItem.Title style={commonStyles.listItemTitle}>Make Project Public? </ListItem.Title>
+                      </ListItem.Content>
+                      <Switch
+                        value={formProps.values.public}
+                        onValueChange={bool => formProps.setFieldValue('public', bool)}/>
+                    </ListItem>
+                    <View style={{paddingBottom: 15}}>
+                      <Text style={commonStyles.noValueText}>Datasets that are made public can be accessed by anyone at
+                        Strabospot.org/search. {'\n'} Privacy settings are reversible.
+                        Settings will be updated when you upload the project to the server.
+                      </Text>
+                    </View>
+                  </View>
+                }
+              </Formik>
+            </>
+          }
+        />
       </View>
     </View>
   );

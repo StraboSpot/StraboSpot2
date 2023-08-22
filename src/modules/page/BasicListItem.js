@@ -3,6 +3,7 @@ import React from 'react';
 import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
+import {useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
 import useSedHook from '../sed/useSed';
 import {PAGE_KEYS} from './page.constants';
@@ -10,6 +11,7 @@ import {PAGE_KEYS} from './page.constants';
 const BasicListItem = (props) => {
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
+  const [useForm] = useFormHook();
 
   const getTitle = () => {
     switch (props.page.key) {
@@ -35,6 +37,9 @@ const BasicListItem = (props) => {
       case PAGE_KEYS.FOSSILS:
       case PAGE_KEYS.INTERPRETATIONS:
         return 'Lithology ' + (props.index + 1);
+      case PAGE_KEYS.TEPHRA:
+        return props.item?.layer_type ? useForm.getLabel(props.item.layer_type, ['tephra', 'interval_description'])
+          : 'Unknown';
       default:
         return 'Unknown';
     }

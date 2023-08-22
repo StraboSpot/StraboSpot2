@@ -1,0 +1,168 @@
+{
+    "survey": [
+        {
+            "type": "start",
+            "name": "start"
+        },
+        {
+            "type": "end",
+            "name": "end"
+        },
+        {
+            "type": "text",
+            "name": "layer_color",
+            "label": "Layer Color",
+            "required": "false"
+        },
+        {
+            "type": "select_one qr36o66",
+            "name": "layer_sorting",
+            "label": "Sorting",
+            "required": "false"
+        },
+        {
+            "type": "select_one ds0ex44",
+            "name": "layer_support",
+            "label": "Grain Support",
+            "required": "false"
+        },
+        {
+            "type": "select_multiple kc0hp09",
+            "name": "grain_angularity",
+            "label": "Grain Angularity",
+            "required": "false"
+        },
+        {
+            "type": "select_multiple ye44h22",
+            "name": "components",
+            "label": "Defining Component(s)",
+            "required": "false"
+        },
+        {
+            "type": "select_one vn0qh36",
+            "name": "tephra_concentration",
+            "label": "Tephra Concentration",
+            "required": "false"
+        },
+        {
+            "type": "note",
+            "name": "layer_description",
+            "label": "Layer Description",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "possible_source_volcano",
+            "label": "Possible Source Volcano(es)",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "unit_id",
+            "label": "Unit ID",
+            "required": "false"
+        }
+    ],
+    "choices": [
+        {
+            "list_name": "qr36o66",
+            "name": "very_well_sorted",
+            "label": "very well sorted"
+        },
+        {
+            "list_name": "qr36o66",
+            "name": "well_sorted",
+            "label": "well sorted"
+        },
+        {
+            "list_name": "qr36o66",
+            "name": "poorly_sorted",
+            "label": "poorly sorted"
+        },
+        {
+            "list_name": "qr36o66",
+            "name": "very_poorly_sorted",
+            "label": "very poorly sorted"
+        },
+        {
+            "list_name": "qr36o66",
+            "name": "unsorted",
+            "label": "unsorted"
+        },
+        {
+            "list_name": "ds0ex44",
+            "name": "matrix",
+            "label": "matrix"
+        },
+        {
+            "list_name": "ds0ex44",
+            "name": "clast",
+            "label": "clast"
+        },
+        {
+            "list_name": "kc0hp09",
+            "name": "angular",
+            "label": "angular"
+        },
+        {
+            "list_name": "kc0hp09",
+            "name": "subangular",
+            "label": "subangular"
+        },
+        {
+            "list_name": "kc0hp09",
+            "name": "subround",
+            "label": "subround"
+        },
+        {
+            "list_name": "kc0hp09",
+            "name": "round",
+            "label": "round"
+        },
+        {
+            "list_name": "ye44h22",
+            "name": "pumice",
+            "label": "pumice"
+        },
+        {
+            "list_name": "ye44h22",
+            "name": "accidental_lithic",
+            "label": "accidental lithic"
+        },
+        {
+            "list_name": "ye44h22",
+            "name": "accessory_lithic",
+            "label": "accessory lithic"
+        },
+        {
+            "list_name": "ye44h22",
+            "name": "glass_obsidian",
+            "label": "glass/obsidian"
+        },
+        {
+            "list_name": "ye44h22",
+            "name": "crystals",
+            "label": "crystals"
+        },
+        {
+            "list_name": "ye44h22",
+            "name": "accretionary_lapilli",
+            "label": "accretionary lapilli"
+        },
+        {
+            "list_name": "vn0qh36",
+            "name": "discrete",
+            "label": "discrete"
+        },
+        {
+            "list_name": "vn0qh36",
+            "name": "disseminated",
+            "label": "disseminated"
+        },
+        {
+            "list_name": "vn0qh36",
+            "name": "cryptotephra",
+            "label": "cryptotephra"
+        }
+    ]
+}
