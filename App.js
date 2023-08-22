@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, SafeAreaView} from 'react-native';
+import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
@@ -57,22 +57,17 @@ const App = () => {
     }
   }, []);
 
-  // In SafeAreaView adding style={{flex: 1}} fixed the white screen on start
   return (
-    <SafeAreaView style={{flex: 1}}>
-      {/*<View style={{flex: 1}}>*/}
-      <Toast>
-        <Provider store={store}>
-          <PersistGate loading={<Loading/>} persistor={persistor}>
-            {/*<Sentry.TouchEventBoundary>*/}
-            <ConnectionStatus/>
-            <Routes/>
-            {/*</Sentry.TouchEventBoundary>*/}
-          </PersistGate>
-        </Provider>
-      </Toast>
-      {/*</View>*/}
-    </SafeAreaView>
+    <Toast>
+      <Provider store={store}>
+        <PersistGate loading={<Loading/>} persistor={persistor}>
+          {/*<Sentry.TouchEventBoundary>*/}
+          <ConnectionStatus/>
+          <Routes/>
+          {/*</Sentry.TouchEventBoundary>*/}
+        </PersistGate>
+      </Provider>
+    </Toast>
   );
 };
 
