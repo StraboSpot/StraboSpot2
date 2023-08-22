@@ -247,8 +247,12 @@ PODS:
     - React
   - react-native-netinfo (9.3.0):
     - React-Core
-  - react-native-safe-area-context (3.4.1):
+  - react-native-safe-area-context (4.5.2):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - ReactCommon/turbomodule/core
   - react-native-slider (4.4.2):
     - React-Core
   - react-native-version-check (3.4.6):
@@ -373,7 +377,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.15.0):
+  - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
   - RNSensors (7.3.5):
@@ -634,7 +638,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
-  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
+  react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
   react-native-slider: 33b8d190b59d4f67a541061bb91775d53d617d9d
   react-native-version-check: dc483031cdf65d9e947aea2d6a41142d010c7e59
   React-perflogger: aa48956d87bae67fc847acc196fae97928b96cd3
@@ -659,7 +663,7 @@ SPEC CHECKSUMS:
   rnmapbox-maps: c28101b8c501123dfc9d28523e998d27eb898784
   RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
   RNReanimated: f0d66bda3d074c43c72a18f4fd4f4c26687bc1fd
-  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSensors: e74c8bd9606400c1048ab67af7f41eb2091cb2fc
   RNSentry: 4c09f4dd9740cb9b33e94303de5b6d0dbeb0737d
   RNSketchCanvas: 9c28adb5381543ed55cc98ce6de46479cb3cb12c
