@@ -235,7 +235,7 @@ PODS:
     - glog
   - react-native-document-picker (8.1.1):
     - React-Core
-  - react-native-geolocation (2.1.0):
+  - react-native-geolocation (3.0.5):
     - React-Core
   - react-native-get-random-values (1.8.0):
     - React-Core
@@ -630,7 +630,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 6aced68014b275b7abd073c9598b0affd0e1669c
   React-logger: bcf33ce10afa135158c72635e621ddb94126c610
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
-  react-native-geolocation: 69f4fd37650b8e7fee91816d395e62dd16f5ab8d
+  react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
   react-native-image-picker: cffb727cf2f59bd5c0408e30b3dbe0b935f88835
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
