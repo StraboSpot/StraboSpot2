@@ -37,6 +37,7 @@ import StratSectionPage from '../sed/StratSectionPage';
 import SiteSafetyPage from '../site-safety/SiteSafetyPage';
 import {TagsAtSpotList, TagsNotebookModal} from '../tags';
 import TagsNotebook from '../tags/TagsNotebook';
+import TephraPage from '../tephra/TephraPage';
 import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
@@ -75,6 +76,7 @@ export const PAGE_KEYS = {
   TAGS: 'tags',
   TERNARY: 'ternary',
   THREE_D_STRUCTURES: '_3d_structures',
+  TEPHRA: 'tephra'
 };
 
 export const OVERVIEW_PAGE = {
@@ -180,6 +182,13 @@ export const SECONDARY_PAGES = [
     icon_src: require('../../assets/icons/SiteSafety.png'),
     icon_pressed_src: require('../../assets/icons/SiteSafety_pressed.png'),
     page_component: SiteSafetyPage,
+    testing: true,
+  }, {
+    key: PAGE_KEYS.TEPHRA,
+    label: 'Tephra Intervals',
+    icon_src: require('../../assets/icons/Tephra.png'),
+    icon_pressed_src: require('../../assets/icons/Tephra_pressed.png'),
+    page_component: TephraPage,
     testing: true,
   },
 ];

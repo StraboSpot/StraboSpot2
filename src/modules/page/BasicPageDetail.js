@@ -117,6 +117,7 @@ const BasicPageDetail = (props) => {
     if (groupKey === 'pet' && props.selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
     else if (groupKey === 'pet' && pageKey === 'igneous') formName = [groupKey, props.selectedFeature.igneous_rock_class];
     else if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, props.selectedFeature.type];
+    else if (props.page.subkey) formName =  [pageKey, props.page.subkey];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
     return formName;
   };
