@@ -39,7 +39,7 @@ import sedStructuresBeddingPlane from './sed/structures-bedding-plane.json';
 import sedStructuresBioturbation from './sed/structures-bioturbation.json';
 import sedStructuresPedogenic from './sed/structures-pedogenic.json';
 import sedStructuresPhysical from './sed/structures-physical.json';
-import siteSafety from './site-safety.json'
+import siteSafety from './site-safety.json';
 import surfaceFeature from './surface-feature.json';
 import tags from './tags.json';
 import fabric from './three-d-structures/fabric.json';

@@ -135,13 +135,6 @@ export const PRIMARY_PAGES = [
     page_component: SamplesPage,
     modal_component: SampleModal,
     action_label: 'Add a Sample',
-  }, {
-    key: PAGE_KEYS.SITE_SAFETY,
-    label: 'Site Safety Summary',
-    icon_src: require('../../assets/icons/SiteSafety.png'),
-    icon_pressed_src: require('../../assets/icons/SiteSafety_pressed.png'),
-    page_component: SiteSafetyPage,
-    testing: true,
   },
 ];
 
@@ -181,6 +174,13 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Data_pressed.png'),
     page_component: ExternalData,
     overview_component: DataOverview,
+  }, {
+    key: PAGE_KEYS.SITE_SAFETY,
+    label: 'Site Safety Summary',
+    icon_src: require('../../assets/icons/SiteSafety.png'),
+    icon_pressed_src: require('../../assets/icons/SiteSafety_pressed.png'),
+    page_component: SiteSafetyPage,
+    testing: true,
   },
 ];
 
