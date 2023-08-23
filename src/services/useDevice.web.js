@@ -91,13 +91,13 @@ const useDevice = (props) => {
 
   const doesDeviceDirectoryExist = async (directory) => {
     try {
-      let checkDirSuccess = await RNFS.exists(directory);
-      console.log(checkDirSuccess);
-      if (checkDirSuccess) console.log('Directory', directory, 'exists.', checkDirSuccess);
-      // If directory does not exist then one is created
-      else checkDirSuccess = await createAppDirectory(directory);
-      console.log(checkDirSuccess);
-      return checkDirSuccess;
+      // let checkDirSuccess = await RNFS.exists(directory);
+      // console.log(checkDirSuccess);
+      // if (checkDirSuccess) console.log('Directory', directory, 'exists.', checkDirSuccess);
+      // // If directory does not exist then one is created
+      // else checkDirSuccess = await createAppDirectory(directory);
+      // console.log(checkDirSuccess);
+      // return checkDirSuccess;
     }
     catch (err) {
       console.error('Error in doesDeviceDirectoryExist()', err);
@@ -143,40 +143,40 @@ const useDevice = (props) => {
       console.log('BEGIN DOWNLOAD RES', res);
     };
     // return request('GET', '/pi/' + imageId, user.encoded_login, {responseType: 'blob'});
-    return RNFS.downloadFile({
-      fromUrl: STRABO_APIS.IMAGE + imageId,
-      toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
-      begin: (begin),
-      headers: {
-        'Authorization': 'Basic ' + user.encoded_login,
-        'Accept': 'application/json',
-      },
-    }).promise.then(async (res) => {
-        console.log('Image Info', res, ' JobID:', res.jobId);
-        if (res.statusCode === 200) {
-          console.log(`File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
-        }
-        else if (res.statusCode === 404) {
-          console.log('Image not found!');
-          throw Error(`Image ${imageId} not found!`);
-        }
-
-        // else {
-        //   // imageCount++;
-        //   // imagesFailedCount++;
-        //   // await RNFS.stopDownload(res.jobId);
-        //   // dispatch(removedLastStatusMessage());
-        //   // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
-        //   // console.log('Stopped downloading image:', imageId);
-        //   console.log('Error on', imageId);
-        //   throw Error(`Failed image ${imageId} removed`);
-        //   return deleteFromDevice(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
-        //     console.log(`Failed image ${imageId} removed`);
-        //     throw Error(`Failed image ${imageId} removed`);
-        //   });
-        // }
-      },
-    );
+    // return RNFS.downloadFile({
+    //   fromUrl: STRABO_APIS.IMAGE + imageId,
+    //   toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
+    //   begin: (begin),
+    //   headers: {
+    //     'Authorization': 'Basic ' + user.encoded_login,
+    //     'Accept': 'application/json',
+    //   },
+    // }).promise.then(async (res) => {
+    //     console.log('Image Info', res, ' JobID:', res.jobId);
+    //     if (res.statusCode === 200) {
+    //       console.log(`File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
+    //     }
+    //     else if (res.statusCode === 404) {
+    //       console.log('Image not found!');
+    //       throw Error(`Image ${imageId} not found!`);
+    //     }
+    //
+    //     // else {
+    //     //   // imageCount++;
+    //     //   // imagesFailedCount++;
+    //     //   // await RNFS.stopDownload(res.jobId);
+    //     //   // dispatch(removedLastStatusMessage());
+    //     //   // dispatch(addedStatusMessage(`Error Downloading ${imagesFailedCount} Images!`));
+    //     //   // console.log('Stopped downloading image:', imageId);
+    //     //   console.log('Error on', imageId);
+    //     //   throw Error(`Failed image ${imageId} removed`);
+    //     //   return deleteFromDevice(APP_DIRECTORIES.IMAGES + imageId + '.jpg').then(() => {
+    //     //     console.log(`Failed image ${imageId} removed`);
+    //     //     throw Error(`Failed image ${imageId} removed`);
+    //     //   });
+    //     // }
+    //   },
+    // );
   };
 
 
