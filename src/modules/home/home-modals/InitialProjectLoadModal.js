@@ -397,7 +397,7 @@ const InitialProjectLoadModal = (props) => {
         <Text style={overlayStyles.titleText}>{statusMessageModalTitle}</Text>
       </View>
       {visibleInitialSection === 'none' && renderUserProfile()}
-      {isLoading ? renderLoadingView() : renderSectionView()}
+      {renderSectionView()}
     </Overlay>
   );
 };

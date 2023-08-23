@@ -8,7 +8,6 @@ import useDownloadHook from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
 import {BLUE} from '../../../shared/styles.constants';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
-import useAnimationsHook from '../../../shared/ui/useAnimations';
 import LottieAnimations from '../../../utils/animations/LottieAnimations';
 import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
@@ -23,7 +22,6 @@ const StatusModal = (props) => {
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const statusMessages = useSelector(state => state.home.statusMessages);
 
-  const useAnimations = useAnimationsHook();
   const useImport = useImportHook();
   const useDownload = useDownloadHook();
 
