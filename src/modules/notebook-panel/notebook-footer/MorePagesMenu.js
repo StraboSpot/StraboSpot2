@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, ScrollView, Switch, Text, View} from 'react-native';
+import {Platform, Pressable, ScrollView, Switch, Text, View} from 'react-native';
 
 import {Avatar, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -49,7 +49,7 @@ const MorePagesMenu = (props) => {
             />
             <ListItem.Title style={footerStyles.morePagesListItemTitle}>{page.label}</ListItem.Title>
           </Pressable>
-          <View style={{paddingLeft: 5, paddingRight: 0}}>
+          <View style={{paddingLeft: 5, paddingRight: Platform.OS === 'web' ? 10 : 0}}>
             <Switch
               onValueChange={() => togglePageSwitch(page.key)}
               value={notebookPagesOn.includes(page.key)}

@@ -13,7 +13,8 @@ export const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export const GEO_LAT_LNG_PROJECTION = 'EPSG:4326';
 export const PIXEL_PROJECTION = 'EPSG:3857';
 export const STRAT_SECTION_CENTER = [0.001, 0.0007];
-export const ZOOM = 14;
+export const ZOOM = 14;                 // Default zoom for geographic map and image basemaps
+export const ZOOM_STRAT_SECTION = 18;   // Default zoom for strat sections
 
 export const MAPBOX_TOKEN = config.get('mapbox_access_token');
 

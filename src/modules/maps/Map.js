@@ -66,7 +66,6 @@ const Map = React.forwardRef((props, ref) => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
-  const zoom = useSelector(state => state.map.zoom);
 
   // Data needing to be tracked when in editing mode
   const initialEditingModeData = {
@@ -113,6 +112,7 @@ const Map = React.forwardRef((props, ref) => {
     onMapPress: e => onMapPress(e),
     onMapLongPress: e => onMapLongPress(e),
     spotsInMapExtent: () => spotsInMapExtent(),
+    mapMode: props.mapMode,
   };
 
   useEffect(() => {
@@ -216,7 +216,8 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const createDefaultGeomContinued = async () => {
-    const centerCoords = await mapRef.current.getCenter();
+    let centerCoords = Platform.OS === 'web' ? await mapRef.current.getCenter().toArray()
+      : await mapRef.current.getCenter();
     if (centerCoords) {
       let defaultFeature = turf.point(centerCoords);
       if (defaultGeomType === 'LineString' || defaultGeomType === 'Polygon') {
@@ -227,7 +228,7 @@ const Map = React.forwardRef((props, ref) => {
           defaultFeature = turf.lineString([defaultFeatureCoords[0][0], defaultFeatureCoords[0][2]]);
         }
       }
-      // copy spot for imagebasemaps needs conversion of coordinates.
+      // copy spot for image basemaps needs conversion of coordinates.
       if (currentImageBasemap || stratSection) {
         defaultFeature = useMaps.convertFeatureGeometryToImagePixels(defaultFeature);
       }
@@ -255,18 +256,11 @@ const Map = React.forwardRef((props, ref) => {
 
   const updateMapView = async () => {
     console.log('Updating map view from Map.js');
-    let newCenter = JSON.parse(JSON.stringify(center));
-    let newZoom = JSON.parse(JSON.stringify(zoom));
     if (!isEmpty(currentBasemap) && isZoomToCenterOffline) {
-      newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
-      newZoom = 12;
+      const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+      const newZoom = 12;
+      useMapView.setMapView(newCenter, newZoom);
     }
-    else if (mapRef && mapRef.current) {
-      newCenter = await mapRef.current.getCenter();
-      newZoom = await mapRef.current.getZoom();
-    }
-    useMapView.setMapView(newCenter, newZoom);
-
     setMapPropsMutable(m => ({
       ...m,
       basemap: currentBasemap,
@@ -276,7 +270,8 @@ const Map = React.forwardRef((props, ref) => {
 
   const moveVertex = async () => {
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
-      const newVertexCoords = await mapRef.current.getCoordinateFromView(vertexEndCoords);
+      const newVertexCoords = Platform.OS === 'web' ? mapRef.current.unproject(vertexEndCoords).toArray()
+        : await mapRef.current.getCoordinateFromView(vertexEndCoords);
       if ((currentImageBasemap || stratSection) && editingModeData.spotEditing
         && turf.getType(editingModeData.spotEditing) === 'Point') {
         const vertexCoordinates = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
@@ -403,8 +398,9 @@ const Map = React.forwardRef((props, ref) => {
       // Select/Unselect a feature
       if (props.mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
-        const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
-          : [e.properties.screenPointX, e.properties.screenPointY];
+        const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
+          : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+            : [e.properties.screenPointX, e.properties.screenPointY];
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
@@ -416,10 +412,10 @@ const Map = React.forwardRef((props, ref) => {
       else if (useMaps.isDrawMode(props.mapMode)) {
         console.log('Drawing', props.mapMode, '...');
         let feature = {};
-        const newCoord = turf.getCoord(e);
+        const newCoord = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
         // Draw a point for the last coordinate touched
         // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
-        const lastVertexPlaced = turf.point(e.geometry.coordinates);
+        const lastVertexPlaced = turf.point(newCoord);
         // Draw a point (if set point to current location not working)
         if (props.mapMode === MAP_MODES.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
         else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
@@ -458,8 +454,9 @@ const Map = React.forwardRef((props, ref) => {
       // Edit a Spot
       else if (props.mapMode === MAP_MODES.EDIT) {
         // Select/Unselect new vertex to edit
-        const [screenPointX, screenPointY] = Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
-          : [e.properties.screenPointX, e.properties.screenPointY];
+        const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
+          : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+            : [e.properties.screenPointX, e.properties.screenPointY];
         console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
         console.log('Selecting feature to edit...');
 
@@ -583,8 +580,10 @@ const Map = React.forwardRef((props, ref) => {
       // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
       vertexGeoCoords = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, vertexGeoCoords);
     }
-    let vertexScreenCoords = await mapRef.current.getPointInView(vertexGeoCoords);
-    if (Platform.OS === 'android') {
+    let vertexScreenCoords = Platform.OS === 'web' ? mapRef.current.project(vertexGeoCoords)
+      : await mapRef.current.getPointInView(vertexGeoCoords);
+    if (Platform.OS === 'web') vertexScreenCoords = [vertexScreenCoords.x, vertexScreenCoords.y];
+    else if (Platform.OS === 'android') {
       vertexScreenCoords = [vertexScreenCoords[0] / PixelRatio.get(), vertexScreenCoords[1] / PixelRatio.get()];
     }
     dispatch(setVertexStartCoords(vertexScreenCoords));
@@ -755,7 +754,8 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const getExtentString = async () => {
-    const mapBounds = await mapRef.current.getVisibleBounds();
+    const mapBounds = Platform.OS === 'web' ? await mapRef.current.getBounds().toArray()
+      : await mapRef.current.getVisibleBounds();
 
     let right = mapBounds[0][0];
     let top = mapBounds[0][1];
@@ -791,10 +791,13 @@ const Map = React.forwardRef((props, ref) => {
 
   // Fly the map to the current location
   const goToCurrentLocation = async () => {
-    if (cameraRef.current) {
+    if (cameraRef.current || Platform.OS === 'web') {
       console.log('%cFlying to location', 'color: red');
       const currentLocation = await useLocation.getCurrentLocation();
-      await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
+      if (Platform.OS === 'web') {
+        mapRef.current.flyTo({center: [currentLocation.longitude, currentLocation.latitude], maxDuration: 2500});
+      }
+      else await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
     }
     else throw 'Error Getting Map Camera';
   };
@@ -810,7 +813,8 @@ const Map = React.forwardRef((props, ref) => {
         for (let i = 0; i < screenCoordinates.length; i++) {
           screenX = screenCoordinates[i][0];
           screenY = screenCoordinates[i][1];
-          let geoCoordinates = await mapRef.current.getCoordinateFromView([screenX, screenY]);
+          let geoCoordinates = Platform.OS === 'web' ? mapRef.current.unproject([screenX, screenY]).toArray()
+            : await mapRef.current.getCoordinateFromView([screenX, screenY]);
           featureCoordinates.push(geoCoordinates);
         }
         let feature;
@@ -961,9 +965,9 @@ const Map = React.forwardRef((props, ref) => {
   // Handle a long press on the map by making the point or vertex at the point "selected"
   const onMapLongPress = async (e) => {
     console.log('Map long press detected:', e);
-    const [screenPointX, screenPointY] = Platform.OS === 'android'
-      ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
-      : [e.properties.screenPointX, e.properties.screenPointY];
+    const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
+      : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+        : [e.properties.screenPointX, e.properties.screenPointY];
     const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
     const mappedSpots = useMaps.getAllMappedSpots();
     if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
@@ -1194,7 +1198,8 @@ const Map = React.forwardRef((props, ref) => {
   const spotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
       console.log('Updating spots in map extent...');
-      const mapBounds = await mapRef.current.getVisibleBounds();
+      const mapBounds = Platform.OS === 'web' ? await mapRef.current.getBounds().toArray()
+        : await mapRef.current.getVisibleBounds();
       let right = mapBounds[0][0];
       let top = mapBounds[0][1];
       let left = mapBounds[1][0];
@@ -1222,8 +1227,14 @@ const Map = React.forwardRef((props, ref) => {
     const animationDuration = duration;
     if (bbox) {
       const bboxArr = bbox.split(',');
-      cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
-        100, animationDuration || 1500);
+      if (Platform.OS === 'web') {
+        mapRef.current?.fitBounds([[Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])]],
+          {padding: 100, duration: animationDuration || 1500});
+      }
+      else {
+        cameraRef.current.fitBounds([Number(bboxArr[0]), Number(bboxArr[1])], [Number(bboxArr[2]), Number(bboxArr[3])],
+          100, animationDuration || 1500);
+      }
     }
     else {
       console.error('Error: not able to get Custom Map bbox coords...');

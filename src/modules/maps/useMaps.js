@@ -259,8 +259,10 @@ const useMaps = (mapRef) => {
       }
       else {
         const eachFeature = JSON.parse(JSON.stringify(featuresInRect[i]));
-        screenCoords = await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
-        if (Platform.OS === 'android') {
+        screenCoords = Platform.OS === 'web' ? mapRef.current.project(eachFeature.geometry.coordinates)
+          : await mapRef.current.getPointInView(eachFeature.geometry.coordinates);
+        if (Platform.OS === 'web') screenCoords = [screenCoords.x, screenCoords.y];
+        else if (Platform.OS === 'android') {
           const pixelRatio = PixelRatio.get();
           screenCoords = [screenCoords[0] / pixelRatio, screenCoords[1] / pixelRatio];
         }
@@ -296,13 +298,14 @@ const useMaps = (mapRef) => {
       const minX = x - r;
       const maxY = y + r;
       const minY = y - r;
-      return [maxY, maxX, minY, minX];
+      return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]] : [maxY, maxX, minY, minX];
     };
 
     // Get all the features in the bounding box
     const bbox = getBoundingBox();
-    const nearFeaturesCollection = await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
-    let nearFeatures = nearFeaturesCollection.features;
+    const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
+      : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
 
     // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in the visible map bounds for
     //  Android only. Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
@@ -647,16 +650,18 @@ const useMaps = (mapRef) => {
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
     if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))
       || spotsToZoomTo.every(s => isOnStratSection(s))) {
-      if (camera) {
+      if (camera || Platform.OS === 'web') {
         try {
           if (spotsToZoomTo.length === 1) {
             const centroid = turf.centroid(spotsToZoomTo[0]);
-            camera.flyTo(turf.getCoord(centroid));
+            if (Platform.OS === 'web') map.flyTo({center: turf.getCoord(centroid)});
+            else camera.flyTo(turf.getCoord(centroid));
           }
           else if (spotsToZoomTo.length > 1) {
             const features = turf.featureCollection(spotsToZoomTo);
             const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
-            camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
+            if (Platform.OS === 'web') map.fitBounds([[maxX, minY], [minX, maxY]], {padding: 100, duration: 2500});
+            else camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
           }
         }
         catch (err) {

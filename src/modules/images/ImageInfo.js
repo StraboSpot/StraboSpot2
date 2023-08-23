@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, View} from 'react-native';
+import {ActivityIndicator, Alert, Dimensions, Platform, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
@@ -52,8 +52,10 @@ const ImageInfo = (props) => {
   return (
     <View style={{backgroundColor: 'black'}}>
       <Image
-        source={{uri: useImages.getLocalImageURI(imageProps)}}
-        style={{width: '100%', height: '100%'}}
+        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageProps)}
+          : {uri: useImages.getLocalImageURI(imageProps)}}
+        style={Platform.OS === 'web' ? {width: Dimensions.get('window').width, height: Dimensions.get('window').height}
+          : {width: '100%', height: '100%'}}
         resizeMode={'contain'}
         PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>
           : <Image style={styles.thumbnail} source={placeholderImage}/>}

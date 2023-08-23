@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
@@ -34,11 +34,11 @@ const useUpload = () => {
   const useDevice = useDeviceHook();
 
   const initializeUpload = async () => {
-    KeepAwake.activate();
+    Platform.OS !== 'web' && KeepAwake.activate();
     try {
       await uploadProject();
       const uploadStatus = await uploadDatasets();
-      KeepAwake.deactivate();
+      Platform.OS !== 'web' && KeepAwake.deactivate();
       return {status: uploadStatus, datasets: datasetsNotUploaded};
     }
     catch (err) {

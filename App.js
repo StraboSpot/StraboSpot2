@@ -19,7 +19,7 @@ import config from './src/utils/config';
 
 Sentry.init({
   dsn: config.get('Error_reporting_DSN'),
-  enableNative: true,
+  enableNative: Platform.OS !== 'web',
   debug: __DEV__,
   release: RELEASE_NAME,
   dist: RELEASE_NAME,
