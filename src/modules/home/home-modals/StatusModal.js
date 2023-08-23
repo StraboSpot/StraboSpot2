@@ -23,7 +23,6 @@ const StatusModal = (props) => {
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const statusMessages = useSelector(state => state.home.statusMessages);
 
-  const useAnimations = useAnimationsHook();
   const useImport = useImportHook();
   const useDownload = useDownloadHook();
 
