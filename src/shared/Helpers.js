@@ -282,7 +282,7 @@ export const animatePanels = (animatedState, toValue) => {
     toValue: toValue,
     duration: 300,
     easing: Easing.linear,
-    useNativeDriver: true,
+    useNativeDriver: Platform.OS !== 'web',
   }).start();
 };
 
