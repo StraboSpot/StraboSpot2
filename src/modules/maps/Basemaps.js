@@ -20,6 +20,7 @@ import {
   PIXEL_PROJECTION,
   STRAT_SECTION_CENTER,
   ZOOM,
+  ZOOM_STRAT_SECTION,
 } from './maps.constants';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
@@ -42,8 +43,9 @@ const Basemap = (props) => {
   const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef, cameraRef} = props.forwardedRef;
-  const [useMapSymbology] = useMapSymbologyHook();
+
   const [useImages] = useImagesHook();
+  const [useMapSymbology] = useMapSymbologyHook();
   const [useMaps] = useMapsHook();
   const useMapView = useMapViewHook();
 
@@ -109,8 +111,8 @@ const Basemap = (props) => {
 
   const getZoomLevel = () => {
     console.log('Getting initial zoom...');
-    if (props.imageBasemap) return 14;
-    else if (props.stratSection) return 18;
+    if (props.imageBasemap) return ZOOM;
+    else if (props.stratSection) return ZOOM_STRAT_SECTION;
     return zoom;
   };
 
@@ -240,7 +242,7 @@ const Basemap = (props) => {
 
         {/* Colored Halo Around Points Layer */}
         <MapboxGL.ShapeSource
-          id={'shapeSource'}
+          id={'pointSourceColorHalo'}
           shape={turf.featureCollection(useMapSymbology.addSymbology(props.spotsNotSelected))}
         >
           <MapboxGL.CircleLayer

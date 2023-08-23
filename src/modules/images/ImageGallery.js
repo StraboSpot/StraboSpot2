@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, SectionList, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Platform, SectionList, Text, View} from 'react-native';
 
 import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -59,20 +59,28 @@ const ImageGallery = (props) => {
 
   const handleImagePressed = async (image) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
-    useImages.doesImageExistOnDevice(image.id)
-      .then((doesExist) => {
-        if (doesExist) {
-          console.log('Opening image', image.id, '...');
-          dispatch(setSelectedAttributes([image]));
-          dispatch(setImageModalVisible(true));
-          dispatch(setLoadingStatus({view: 'home', bool: false}));
-        }
-        else {
-          Alert.alert('Missing Image!', 'Unable to find image file on this device.');
-          dispatch(setLoadingStatus({view: 'home', bool: false}));
-        }
-      })
-      .catch(e => console.error('Image not found', e));
+    if (Platform.OS === 'web') {
+      console.log('Opening image', image.id, '...');
+      dispatch(setSelectedAttributes([image]));
+      dispatch(setImageModalVisible(true));
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+    else {
+      useImages.doesImageExistOnDevice(image.id)
+        .then((doesExist) => {
+          if (doesExist) {
+            console.log('Opening image', image.id, '...');
+            dispatch(setSelectedAttributes([image]));
+            dispatch(setImageModalVisible(true));
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+          }
+          else {
+            Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+          }
+        })
+        .catch(e => console.error('Image not found', e));
+    }
   };
 
   const renderImagesInSpot = (images) => {

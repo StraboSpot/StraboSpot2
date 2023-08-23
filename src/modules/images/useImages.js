@@ -1,4 +1,4 @@
-import {Alert, Image, PermissionsAndroid, Platform} from 'react-native';
+import {Alert, Dimensions, Image, PermissionsAndroid, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -6,6 +6,7 @@ import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
+import {STRABO_APIS} from '../../services/urls.constants';
 import useDeviceHook from '../../services/useDevice';
 import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
@@ -149,7 +150,8 @@ const useImages = () => {
   };
 
   const getLocalImageURI = (id) => {
-    return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
+    if (Platform.OS === 'web') return STRABO_APIS.PUBLIC_IMAGE + id;
+    else return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
   };
 
   const saveImageFromDownloadsDir = async (image) => {
@@ -210,19 +212,33 @@ const useImages = () => {
     });
   };
 
+  const getImageThumbnailURI = (id) => {
+    return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
+  };
+
+  const getImageScreenSizedURI = (id) => {
+    const {width, height} = Dimensions.get('window');
+    return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
+  };
+
   const getImageThumbnailURIs = async (spotsWithImages) => {
     try {
       let imageThumbnailURIs = {};
       await Promise.all(spotsWithImages.map(async (spot) => {
         await Promise.all(spot.properties.images.map(async (image) => {
-          const imageUri = getLocalImageURI(image.id);
-          const exists = await useDevice.doesDeviceDirExist(imageUri);
-          if (exists) {
-            const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
-            const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
+          if (Platform.OS === 'web') {
+            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: getImageThumbnailURI(image.id)};
           }
-          else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
+          else {
+            const imageUri = getLocalImageURI(image.id);
+            const exists = await useDevice.doesDeviceDirExist(imageUri);
+            if (exists) {
+              const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
+              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+              imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
+            }
+            else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
+          }
         }));
       }));
       return imageThumbnailURIs;
@@ -364,6 +380,8 @@ const useImages = () => {
     saveImageFromDownloadsDir: saveImageFromDownloadsDir,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
+    getImageScreenSizedURI: getImageScreenSizedURI,
+    getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
     launchCameraFromNotebook: launchCameraFromNotebook,
     requestCameraPermission: requestCameraPermission,

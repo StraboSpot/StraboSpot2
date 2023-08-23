@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Switch, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -47,15 +47,21 @@ const ImagesOverview = () => {
 
   const handleImageBasemapPressed = (image) => {
     console.log('Pressed image basemap:', image);
-    useImages.doesImageExistOnDevice(image.id)
-      .then((doesExist) => {
-        if (doesExist) {
-          dispatch(clearedSelectedSpots());
-          dispatch(setCurrentImageBasemap(image));
-        }
-        else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
-      })
-      .catch(e => console.error('Image not found', e));
+    if (Platform.OS === 'web') {
+      dispatch(clearedSelectedSpots());
+      dispatch(setCurrentImageBasemap(image));
+    }
+    else {
+      useImages.doesImageExistOnDevice(image.id)
+        .then((doesExist) => {
+          if (doesExist) {
+            dispatch(clearedSelectedSpots());
+            dispatch(setCurrentImageBasemap(image));
+          }
+          else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+        })
+        .catch(e => console.error('Image not found', e));
+    }
   };
 
   const renderImage = (image) => {

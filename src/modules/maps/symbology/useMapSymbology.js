@@ -340,7 +340,7 @@ const useMapSymbology = () => {
       iconAllowOverlap: true,     // Need to be able to stack symbols at same location
       iconIgnorePlacement: true,  // Need to be able to stack symbols at same location
       iconSize: 0.35,
-      symbolSpacing: 0,
+      // symbolSpacing: 0,
     },
     pointColorHalo: {
       circleRadius: 17,
@@ -445,14 +445,85 @@ const useMapSymbology = () => {
       lineColor: 'black',
       lineWidth: 3,
     },
+    xAxisTickMarkLabels: {
+      textField: ['get', 'label'],
+      textAnchor: 'bottom-left',
+      textOffset: [1, 1],
+      textRotate: 45,
+      textIgnorePlacement: true,
+      textSize: 10,
+    },
+    yAxisTickMarkLabels: {
+      textField: ['get', 'label'],
+      textAnchor: 'bottom',
+      textOffset: [-1, 0],
+      textIgnorePlacement: true,
+      textSize: 10,
+    },
   };
 
-  const getMapSymbology = () => {
-    return mapStyles;
+  const getPaintSymbology = () => {
+    // Map of properties for native to web
+    const paintPropertiesMap = {
+      circleColor: 'circle-color',
+      circleOpacity: 'circle-opacity',
+      circleRadius: 'circle-radius',
+      circleStrokeColor: 'circle-stroke-color',
+      circleStrokeWidth: 'circle-stroke-width',
+      fillColor: 'fill-color',
+      fillOpacity: 'fill-opacity',
+      fillOutlineColor: 'fill-outline-color',
+      fillPattern: 'fill-pattern',
+      lineColor: 'line-color',
+      lineDasharray: 'line-dasharray',
+      lineWidth: 'line-width',
+    };
+   return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      ...acc,
+      ...{
+        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
+            return paintPropertiesMap[property] ? {...acc2, ...{[paintPropertiesMap[property]]: style}} : acc2;
+          },
+          {}),
+      },
+    }), {});
   };
+
+  const getLayoutSymbology = () => {
+    // Map of properties for native to web
+    const layoutPropertiesMap = {
+      iconAllowOverlap: 'icon-allow-overlap',
+      iconIgnorePlacement: 'icon-ignore-placement',
+      iconImage: 'icon-image',
+      iconRotate: 'icon-rotate',
+      iconSize: 'icon-size',
+      symbolPlacement: 'symbol-placement',
+      symbolSpacing: 'symbol-spacing',
+      textAnchor: 'text-anchor',
+      textField: 'text-field',
+      textIgnorePlacement: 'text-ignore-placement',
+      textOffset: 'text-offset',
+      textRotate: 'text-rotate',
+      textSize: 'text-size',
+    };
+
+    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      ...acc,
+      ...{
+        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
+            return layoutPropertiesMap[property] ? {...acc2, ...{[layoutPropertiesMap[property]]: style}} : acc2;
+          },
+          {}),
+      },
+    }), {});
+  };
+
+  const getMapSymbology = () => mapStyles;
 
   return [{
     addSymbology: addSymbology,
+    getPaintSymbology: getPaintSymbology,
+    getLayoutSymbology: getLayoutSymbology,
     getMapSymbology: getMapSymbology,
     getLinesFilteredByPattern: getLinesFilteredByPattern,
     getSymbology: getSymbology,

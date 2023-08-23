@@ -1,7 +1,7 @@
 import React from 'react';
 
-import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
+import {Layer, Source} from 'react-map-gl';
 
 import {useFormHook} from '../../form';
 import useMapSymbologyHook from '../symbology/useMapSymbology';
@@ -10,8 +10,8 @@ import {BASIC_LITHOLOGIES_LABELS, CARBONATE_KEYS, GRAIN_SIZE_KEYS, LITHOLOGIES_K
 
 function XAxis(props) {
   const [useMaps] = useMapsHook();
-  const [useMapSymbology] = useMapSymbologyHook();
   const [useForm] = useFormHook();
+  const [useMapSymbology] = useMapSymbologyHook();
 
   const xCl = 10;  // Horizontal spacing between clastic tick marks
   const xCa = 23.3; // Horizonatal space between carbonate tick marks
@@ -78,31 +78,36 @@ function XAxis(props) {
     <React.Fragment>
 
       {/* X Axis Line*/}
-      <MapboxGL.ShapeSource
+      <Source
         id={'xAxisSource' + props.n}
-        shape={getXAxis(props.n)}
+        type={'geojson'}
+        data={getXAxis(props.n)}
       >
-        <MapboxGL.LineLayer
+        <Layer
+          type={'line'}
           id={'xAxisLayer' + props.n}
           minZoomLevel={1}
         />
-      </MapboxGL.ShapeSource>
+      </Source>
 
       {/* X Axis Tick Marks */}
-      <MapboxGL.ShapeSource
+      <Source
         id={'xAxisTickMarksSource' + props.n}
-        shape={getXAxisTickMarks(props.n)}
+        type={'geojson'}
+        data={getXAxisTickMarks(props.n)}
       >
-        <MapboxGL.LineLayer
+        <Layer
+          type={'line'}
           id={'xAxisTickMarksLayer' + props.n}
           minZoomLevel={1}
         />
-        <MapboxGL.SymbolLayer
+        <Layer
+          type={'symbol'}
           id={'xAxisTickMarksLabelLayer' + props.n}
           minZoomLevel={1}
-          style={useMapSymbology.getMapSymbology().xAxisTickMarkLabels}
+          layout={useMapSymbology.getLayoutSymbology().xAxisTickMarkLabels}
         />
-      </MapboxGL.ShapeSource>
+      </Source>
 
     </React.Fragment>
   );

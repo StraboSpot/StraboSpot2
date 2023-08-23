@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Platform, Text, View} from 'react-native';
 
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
@@ -38,19 +38,26 @@ const ImageBasemaps = () => {
 
   const handleImagePressed = (image) => {
     console.log('Pressed image basemap:', image);
-    useImages.doesImageExistOnDevice(image.id)
-      .then((doesExist) => {
-        if (doesExist) {
-          dispatch(clearedSelectedSpots());
-          dispatch(setCurrentImageBasemap(image));
-        }
-        else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
-      })
-      .catch(e => console.error('Image not found', e));
+    if (Platform.OS === 'web') {
+      dispatch(clearedSelectedSpots());
+      dispatch(setCurrentImageBasemap(image));
+    }
+    else {
+      useImages.doesImageExistOnDevice(image.id)
+        .then((doesExist) => {
+          if (doesExist) {
+            dispatch(clearedSelectedSpots());
+            dispatch(setCurrentImageBasemap(image));
+          }
+          else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+        })
+        .catch(e => console.error('Image not found', e));
+    }
   };
 
   const renderImageBasemapThumbnail = (image) => {
-    const uri = useImages.getLocalImageURI(image.id);
+    const uri = Platform.OS === 'web' ? useImages.getImageThumbnailURI(image.id)
+      : useImages.getLocalImageURI(image.id);
     return (
       <View style={imageStyles.thumbnailContainer}>
         <Text>{image.title}</Text>

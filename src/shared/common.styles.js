@@ -41,7 +41,7 @@ const commonStyles = StyleSheet.create({
   },
   // List Styles
   listItem: {
-    padding: 10,
+    padding: Platform.OS === 'web' ? 5 : 10,
   },
   listItemInverse: {
     padding: 10,
