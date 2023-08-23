@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import LottieView from 'lottie-react-native';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,10 +10,7 @@ import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import SectionDivider from '../../../shared/ui/SectionDivider';
 import Spacer from '../../../shared/ui/Spacer';
-import useAnimationsHook from '../../../shared/ui/useAnimations';
-import useImagesHook from '../../images/useImages';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
 import ImportProjectAndroid from '../../project/ImportProjectAndroid';
@@ -42,7 +38,6 @@ const InitialProjectLoadModal = (props) => {
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const isLoading = useSelector(state => state.home.loading.modal);
   const selectedProject = useSelector(state => state.project.project);
-  const statusMessages = useSelector(state => state.home.statusMessages);
   const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
@@ -54,10 +49,7 @@ const InitialProjectLoadModal = (props) => {
   const [importedProjectData, setImportedProjectData] = useState({});
   const [importedImageFiles, setImportedImageFiles] = useState([]);
   const [importComplete, setImportComplete] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
 
-  const useAnimations = useAnimationsHook();
-  const [useImages] = useImagesHook();
   const useDevice = useDeviceHook();
   const toast = useToast();
   const useUserProfile = useUserProfileHook();
@@ -306,21 +298,6 @@ const InitialProjectLoadModal = (props) => {
         </View>
       );
     }
-  };
-
-  const renderLoadingView = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
-        <SectionDivider dividerText={'Loading Project'}/>
-        <LottieView
-          style={{width: 150, height: 150}}
-          source={useAnimations.getAnimationType('loadingFile')}
-          autoPlay
-          loop={isLoading}
-        />
-        <Text>{statusMessages}</Text>
-      </View>
-    );
   };
 
   const renderSectionView = () => {
