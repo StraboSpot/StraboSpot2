@@ -50,6 +50,7 @@ const Map = React.forwardRef((props, ref) => {
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
 
+  const center = useSelector(state => state.map.center);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customBasemap = useSelector(state => state.map.customMaps);
   const stratSection = useSelector(state => state.map.stratSection);
@@ -79,6 +80,7 @@ const Map = React.forwardRef((props, ref) => {
   const initialMapPropsMutable = {
     allowMapViewMove: true,
     basemap: currentBasemap,
+    centerCoordinate: center,
     drawFeatures: [],
     editFeatureVertex: [],
     imageBasemap: currentImageBasemap,
@@ -113,12 +115,6 @@ const Map = React.forwardRef((props, ref) => {
     mapMode: props.mapMode,
   };
 
-  // Set the initial map view states
-  useEffect(() => {
-    console.log('UE Map', 'Setting initial view states...');
-    useMapView.setInitialViewStates();
-  }, [useMapView]);
-
   useEffect(() => {
     console.log('UE Map [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
@@ -144,7 +140,7 @@ const Map = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
-    updateBasemap().catch(err => console.warn('Error getting center of custom map:', err));
+    updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
@@ -222,7 +218,6 @@ const Map = React.forwardRef((props, ref) => {
   const createDefaultGeomContinued = async () => {
     let centerCoords = Platform.OS === 'web' ? await mapRef.current.getCenter().toArray()
       : await mapRef.current.getCenter();
-    if (Platform.OS === 'web') centerCoords = [centerCoords.lng, centerCoords.lat];
     if (centerCoords) {
       let defaultFeature = turf.point(centerCoords);
       if (defaultGeomType === 'LineString' || defaultGeomType === 'Polygon') {
@@ -259,8 +254,13 @@ const Map = React.forwardRef((props, ref) => {
     }));
   };
 
-  const updateBasemap = async () => {
+  const updateMapView = async () => {
     console.log('Updating map view from Map.js');
+    if (!isEmpty(currentBasemap) && isZoomToCenterOffline) {
+      const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+      const newZoom = 12;
+      useMapView.setMapView(newCenter, newZoom);
+    }
     setMapPropsMutable(m => ({
       ...m,
       basemap: currentBasemap,
@@ -797,7 +797,8 @@ const Map = React.forwardRef((props, ref) => {
       if (Platform.OS === 'web') {
         mapRef.current.flyTo({center: [currentLocation.longitude, currentLocation.latitude], maxDuration: 2500});
       }
-      else await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);    }
+      else await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
+    }
     else throw 'Error Getting Map Camera';
   };
 
