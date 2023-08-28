@@ -53,7 +53,7 @@ const DateInputField = ({
           value={date}
           onChange={changeDate}
           display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          neutralButtonLabel={'clear'}
+          neutralButton={'clear'}
         />
       </View>
     );
