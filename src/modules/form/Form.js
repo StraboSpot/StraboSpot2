@@ -5,6 +5,7 @@ import {Field} from 'formik';
 import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
@@ -84,6 +85,13 @@ const Form = (props) => {
       delete choice.name;
       return choice;
     });
+
+    // Set default values
+    if (isEmpty(props.values[field.name]) && field.default
+      && fieldChoicesCopy.map(c => c.value).includes(field.default)) {
+      props.setFieldValue(field.name, field.default, false);
+    }
+
     return (
       <Field
         as={SelectInputField}
