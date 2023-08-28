@@ -55,7 +55,7 @@
     "react": "18.0.0",
     "react-datepicker": "4.16.0",
     "react-dom": "18.0.0",
-    "react-map-gl": "7.1.2",
+    "react-map-gl": "7.1.5",
     "react-native": "0.69.0",
     "react-native-device-info": "10.0.2",
     "react-native-document-picker": "8.1.1",
