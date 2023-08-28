@@ -87,7 +87,7 @@
     "redux": "4.2.0",
     "redux-logger": "3.0.6",
     "redux-persist": "6.0.0",
-    "uuid": "8.3.2"
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
