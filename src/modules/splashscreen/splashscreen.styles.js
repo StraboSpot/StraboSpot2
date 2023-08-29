@@ -1,5 +1,7 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 
+import {PRIMARY_TEXT_SIZE} from '../../shared/styles.constants';
+
 const platform = Platform.OS === 'ios' ? 'screen' : 'window';
 const windowWidth = Dimensions.get(platform).width;
 const windowHeight = Dimensions.get(platform).height;
@@ -13,6 +15,15 @@ const splashscreenStyles = StyleSheet.create({
     paddingTop: 70,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  dimensionsContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  dimensionsText: {
+    color: 'white',
+    fontSize: PRIMARY_TEXT_SIZE,
+    fontWeight: 'bold',
   },
   title: {
     color: 'black',
