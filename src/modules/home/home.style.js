@@ -7,6 +7,15 @@ const homeStyles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
   },
+  imageSliderContainer: {
+    flex: 1,
+    position: 'absolute',
+    top: 100,
+    left: 0,
+    right: 0,
+    bottom: 20,
+    alignItems: 'center',
+  },
   mapboxAttributionPosition: {
     left: 165,
     bottom: Platform.OS === 'ios' ? -15 : 7,

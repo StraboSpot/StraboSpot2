@@ -3,7 +3,6 @@ import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'r
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
-import {FlatListSlider} from 'react-native-flatlist-slider';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -15,7 +14,7 @@ import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import uiStyles from '../../shared/ui/ui.styles';
-import Preview from '../images/Preview';
+import ImageSlider from '../images/ImageSlider';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
@@ -634,22 +633,11 @@ const Home = () => {
         toast={message => toast.show(message, {type: 'warning'})}
       />
       {(imageSlideshowData.length) > 0 && (
-        <View>
-          <FlatListSlider
-            data={imageSlideshowData}
-            imageKey={'uri'}
-            autoscroll={false}
-            separator={0}
-            loop={true}
-            width={deviceDimensions.width}
-            height={deviceDimensions.height}
-            indicatorContainerStyle={{position: 'absolute', top: 20}}
-            component={(
-              <Preview
-                toggle={() => toggleImageModal()}
-                openNotebookPanel={page => openNotebookPanel(page)}
-              />
-            )}
+        <View style={homeStyles.imageSliderContainer}>
+          <ImageSlider
+            images={imageSlideshowData}
+            toggle={() => toggleImageModal()}
+            openNotebookPanel={page => openNotebookPanel(page)}
           />
         </View>
       )}
