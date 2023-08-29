@@ -22,7 +22,6 @@ import {
 } from '../home/home.slice';
 import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
-import styles from './signIn.styles';
 import signInStyles from './signIn.styles';
 
 const SignIn = (props) => {
@@ -107,27 +106,27 @@ const SignIn = (props) => {
 
   const renderButtons = () => {
     return (
-      <View style={styles.buttonsContainer}>
+      <View style={signInStyles.buttonsContainer}>
         <Button
           type={'solid'}
-          containerStyle={styles.buttonContainer}
+          containerStyle={signInStyles.buttonContainer}
           onPress={() => signIn()}
-          buttonStyle={styles.buttonStyle}
+          buttonStyle={signInStyles.buttonStyle}
           disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
           title={'Sign In'}
         />
         <Button
           type={'solid'}
-          containerStyle={styles.buttonContainer}
+          containerStyle={signInStyles.buttonContainer}
           onPress={() => createAccount()}
-          buttonStyle={styles.buttonStyle}
+          buttonStyle={signInStyles.buttonStyle}
           title={'Sign Up'}
         />
         <Button
           type={'solid'}
           onPress={() => guestSignIn()}
-          containerStyle={styles.buttonContainer}
-          buttonStyle={styles.buttonStyle}
+          containerStyle={signInStyles.buttonContainer}
+          buttonStyle={signInStyles.buttonStyle}
           title={'Continue as Guest'}
         />
       </View>
@@ -169,9 +168,9 @@ const SignIn = (props) => {
   return (
     <Splashscreen>
       <View style={{marginTop: 20}}>
-        <View style={styles.signInContainer}>
+        <View style={signInStyles.signInContainer}>
           <TextInput
-            style={styles.input}
+            style={signInStyles.input}
             placeholder={'Email'}
             autoCapitalize={'none'}
             autoCorrect={false}
@@ -182,7 +181,7 @@ const SignIn = (props) => {
             returnKeyType={'go'}
           />
           <TextInput
-            style={styles.input}
+            style={signInStyles.input}
             placeholder={'Password'}
             autoCapitalize={'none'}
             secureTextEntry={true}
