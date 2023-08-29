@@ -612,7 +612,7 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
-  lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
+  lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
   MapboxCommon: 4a0251dd470ee37e7fadda8e285c01921a5e1eb0
   MapboxCoreMaps: eb07203bbb0b1509395db5ab89cd3ad6c2e3c04c
   MapboxMaps: af50ec61a7eb3b032c3f7962c6bd671d93d2a209
