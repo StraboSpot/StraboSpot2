@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   itemSeparator: {
-    height: 1,
+    borderTopWidth: 1,
+    borderColor: themes.LIGHTGREY,
   },
   leftContainer: {
     flex: 1,
