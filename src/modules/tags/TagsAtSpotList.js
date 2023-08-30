@@ -4,8 +4,7 @@ import {FlatList} from 'react-native';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {PAGE_KEYS} from '../page/page.constants';
-import {useTagsHook} from '../tags';
-import TagsList from './TagsList';
+import {useTagsHook, TagsListItem} from '../tags';
 
 const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
@@ -15,7 +14,7 @@ const TagsAtSpotList = (props) => {
   const listEmptyText = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? 'No Geologic Units' : 'No Tags';
 
   const renderTag = (tag) => {
-    return <TagsList tag={tag} openMainMenu={props.openMainMenu}/>;
+    return <TagsListItem tag={tag} openMainMenu={props.openMainMenu}/>;
   };
 
   return (

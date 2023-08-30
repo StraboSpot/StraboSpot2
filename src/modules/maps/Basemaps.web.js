@@ -144,7 +144,7 @@ const Basemap = (props) => {
   // Update spots in extent and saved view (center and zoom)
   const onMove = (evt) => {
     console.log('Event onMove', evt);
-    props.spotsInMapExtent();
+    props.updateSpotsInMapExtent();
     if (props.imageBasemap || props.stratSection) setViewState(evt.viewState);
     else {
       console.log('evt.viewState', evt.viewState);

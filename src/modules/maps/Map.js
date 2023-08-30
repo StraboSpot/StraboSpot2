@@ -111,7 +111,7 @@ const Map = React.forwardRef((props, ref) => {
     ref: {mapRef: mapRef, cameraRef: cameraRef},
     onMapPress: e => onMapPress(e),
     onMapLongPress: e => onMapLongPress(e),
-    spotsInMapExtent: () => spotsInMapExtent(),
+    updateSpotsInMapExtent: () => updateSpotsInMapExtent(),
     mapMode: props.mapMode,
   };
 
@@ -1195,7 +1195,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   // Calculate the Spots in the current map extent and send to redux
-  const spotsInMapExtent = async () => {
+  const updateSpotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
       console.log('Updating spots in map extent...');
       const mapBounds = Platform.OS === 'web' ? await mapRef.current.getBounds().toArray()

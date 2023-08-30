@@ -11,6 +11,8 @@ import SortingButtons from '../main-menu-panel/SortingButtons';
 import {SpotsListItem, useSpotsHook} from './index';
 
 const SpotsList = (props) => {
+  console.log('Rendering SpotsList...');
+
   const [useSpots] = useSpotsHook();
 
   const recentViews = useSelector(state => state.spot.recentViews);

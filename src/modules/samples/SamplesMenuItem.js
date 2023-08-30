@@ -21,6 +21,7 @@ const SamplesMenuItem = (props) => {
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   const renderNoSamplesText = () => {
     return <ListEmptyText text={'No Samples in Active Datasets'}/>;
@@ -45,7 +46,7 @@ const SamplesMenuItem = (props) => {
     let sortedSpotsWithSamples = useSpots.getSpotsWithSamplesSortedReverseChronologically();
     let noSamplesText = 'No Spots with Samples';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpotsWithSamples = props.spotsInMapExtent.filter(spot => spot.properties.samples);
+      sortedSpotsWithSamples = spotsInMapExtent.filter(spot => spot.properties.samples);
       if (isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No Spots with samples in current map extent';
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {

@@ -31,6 +31,7 @@ const ImageGallery = (props) => {
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [isError, setIsError] = useState(false);
@@ -142,7 +143,7 @@ const ImageGallery = (props) => {
     let sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
     let noImagesText = 'No Spots with images';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpotsWithImages = props.spotsInMapExtent.filter(spot => spot.properties.images);
+      sortedSpotsWithImages = spotsInMapExtent.filter(spot => spot.properties.images);
       if (isEmpty(sortedSpotsWithImages)) noImagesText = 'No Spots with images in current map extent';
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {

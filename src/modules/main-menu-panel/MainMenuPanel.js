@@ -36,7 +36,6 @@ const MainMenuPanel = (props) => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
   const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
 
   const mainMenuHeader = (
@@ -103,10 +102,7 @@ const MainMenuPanel = (props) => {
     case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageGallery
-            openSpotInNotebook={openSpotInNotebook}
-            spotsInMapExtent={spotsInMapExtent}
-          />
+          <ImageGallery openSpotInNotebook={openSpotInNotebook}/>
         </View>
       );
       break;
@@ -115,7 +111,6 @@ const MainMenuPanel = (props) => {
         <View style={styles.mainMenuContainer}>
           <SamplesMenuItem
             openSpotInNotebook={openSpotInNotebook}
-            spotsInMapExtent={spotsInMapExtent}
             openNotebookPanel={notebookPage => props.openNotebookPanel(notebookPage)}
           />
         </View>

@@ -4,9 +4,7 @@ import ShortcutNotesModal from '../notes/ShortcutNotesModal';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
 import DailyNotesModal from '../project/description/DailyNotesModal';
 import SampleModal from '../samples/SampleModal';
-import {AddTagsToSpotsShortcutModal} from '../tags';
-import FeatureTagsModal from '../tags/FeatureTagsModal';
-import TagsShortcutModal from '../tags/TagsShortcutModal';
+import {AddTagsToSpotsShortcutModal, FeatureTagsModal, TagsShortcutModal} from '../tags';
 
 export const MODAL_KEYS = {
   // Get the notebook modal keys from the notebook constants

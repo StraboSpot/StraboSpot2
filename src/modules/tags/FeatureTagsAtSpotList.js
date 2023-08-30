@@ -7,8 +7,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {PAGE_KEYS} from '../page/page.constants';
 import {useSpotsHook} from '../spots';
-import {useTagsHook} from '../tags';
-import TagsList from './TagsList';
+import {useTagsHook, TagsListItem} from '../tags';
 
 const FeatureTagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();
@@ -24,7 +23,7 @@ const FeatureTagsAtSpotList = (props) => {
   };
 
   const renderTag = (tag) => {
-    return <TagsList tag={tag} openMainMenu={props.openMainMenu}/>;
+    return <TagsListItem tag={tag} openMainMenu={props.openMainMenu}/>;
   };
 
   return (
