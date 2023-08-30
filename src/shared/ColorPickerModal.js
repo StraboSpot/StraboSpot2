@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 
-import {Button, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import overlayStyles from '../modules/home/overlay.styles';
@@ -44,12 +44,13 @@ const ColorPickerModal = (props) => {
       overlayStyle={{...overlayStyles.overlayContainer, width: 400}}
     >
       <View style={{maxHeight: '100%'}}>
-        <Button
-          title={'X'}
-          titleStyle={overlayStyles.buttonTitle}
-          containerStyle={overlayStyles.closeButton}
-          type={'clear'}
+        <Icon
+          name={'close-outline'}
+          type={'ionicon'}
+          size={20}
+          color={'darkgrey'}
           onPress={() => props.closeModal()}
+          containerStyle={overlayStyles.closeButton}
         />
         <View
           style={overlayStyles.titleContainer}>

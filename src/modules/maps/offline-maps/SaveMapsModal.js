@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
-import {Button, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -240,12 +240,13 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
         setShowComplete(false);
       }}
     >
-      <Button
-        title={'X'}
-        titleStyle={overlayStyles.buttonTitle}
-        containerStyle={overlayStyles.closeButton}
-        type={'clear'}
+      <Icon
+        name={'close-outline'}
+        type={'ionicon'}
+        size={20}
+        color={'darkgrey'}
         onPress={() => dispatch(setOfflineMapsModalVisible(false))}
+        containerStyle={overlayStyles.closeButton}
       />
       <View style={overlayStyles.titleContainer}>
         <Text style={[overlayStyles.titleText]}>{currentMapName}</Text>
