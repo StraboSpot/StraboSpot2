@@ -19,14 +19,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   buttonText: {
-    fontSize: themes.MEDIUM_TEXT_SIZE,
     color: themes.PRIMARY_TEXT_COLOR,
-  },
-  buttonTitle: {
-    margin: 5,
-    color: themes.PRIMARY_TEXT_COLOR,
-    // fontWeight: 'normal',
-    // borderBottomWidth: 1,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   closeButton: {
     alignItems: 'flex-end',

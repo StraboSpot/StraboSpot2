@@ -4,6 +4,7 @@ import {Dimensions, FlatList, Platform, Switch, Text, View} from 'react-native';
 import {ButtonGroup, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
@@ -80,19 +81,30 @@ const MapSymbolsDialog = (props) => {
             />
           </View>
         )}
-        <ListItem key={'all'}>
+        <ListItem
+          key={'all'}
+          containerStyle={commonStyles.listItem}
+        >
           <ListItem.Content>
             <ListItem.Title>{'All Symbols'}</ListItem.Title>
           </ListItem.Content>
           <Switch onChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
         </ListItem>
-        <ListItem key={'spotLabels'}>
+        <FlatListItemSeparator/>
+        <ListItem
+          key={'spotLabels'}
+          containerStyle={commonStyles.listItem}
+        >
           <ListItem.Content>
             <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
           </ListItem.Content>
           <Switch onChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
         </ListItem>
-        <ListItem key={'tag_color'}>
+        <FlatListItemSeparator/>
+        <ListItem
+          key={'tag_color'}
+          containerStyle={commonStyles.listItem}
+        >
           <ListItem.Content>
             <ListItem.Title>{'Show Tag Color'}</ListItem.Title>
           </ListItem.Content>

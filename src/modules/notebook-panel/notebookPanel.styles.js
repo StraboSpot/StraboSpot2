@@ -36,10 +36,6 @@ const notebookStyles = StyleSheet.create({
   dialogTitle: {
     backgroundColor: themes.PRIMARY_ACCENT_COLOR,
   },
-  threeDotMenuButtonContainer: {
-    borderTopWidth: 1,
-    borderColor: 'lightgrey',
-  },
   traceSurfaceFeatureContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
