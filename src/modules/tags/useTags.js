@@ -6,10 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {deepFindFeatureById, getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook} from '../form';
-import {MODAL_KEYS} from '../home/home.constants';
 import MeasurementLabel from '../measurements/MeasurementLabel';
 import OtherFeatureLabel from '../other-features/OtherFeatureLabel';
-import {PAGE_KEYS} from '../page/page.constants';
+import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';

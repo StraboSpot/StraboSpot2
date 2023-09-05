@@ -10,11 +10,10 @@ import * as themes from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {formStyles} from '../form';
-import {MODAL_KEYS, MODALS} from '../home/home.constants';
 import MeasurementDetail from '../measurements/MeasurementDetail';
 import {MEASUREMENT_KEYS} from '../measurements/measurements.constants';
 import BasicPageDetail from '../page/BasicPageDetail';
-import {PET_PAGES, SED_PAGES} from '../page/page.constants';
+import {MODAL_KEYS, MODALS, PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {addedTemplates, setActiveTemplates, setUseTemplate} from '../project/projects.slice';
 
 const Templates = (props) => {

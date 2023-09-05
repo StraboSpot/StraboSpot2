@@ -12,9 +12,9 @@ import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
 import {MAP_MODES} from '../maps/maps.constants';
 import useLocationHook from '../maps/useLocation';
+import {MODAL_KEYS, SHORTCUT_MODALS} from '../page/page.constants';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots} from '../spots/spots.slice';
-import {MODAL_KEYS, SHORTCUT_MODALS} from './home.constants';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 

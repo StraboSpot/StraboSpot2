@@ -8,8 +8,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../../shared/common.styles';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import {MODAL_KEYS} from '../../home/home.constants';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
+import {MODAL_KEYS} from '../../page/page.constants';
 
 const DailyNotesSection = () => {
   const dispatch = useDispatch();

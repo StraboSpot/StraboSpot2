@@ -31,7 +31,7 @@ import VertexDrag from '../maps/VertexDrag';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
-import {PAGE_KEYS} from '../page/page.constants';
+import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
@@ -46,7 +46,6 @@ import StatusModal from './home-modals/StatusModal';
 import UploadModal from './home-modals/UploadModal';
 import UploadProgressModal from './home-modals/UploadProgressModal';
 import WarningModal from './home-modals/WarningModal';
-import {MODAL_KEYS, MODALS} from './home.constants';
 import {
   addedStatusMessage,
   clearedStatusMessages,

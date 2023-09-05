@@ -4,9 +4,8 @@ import * as Sentry from '@sentry/react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
-import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {PAGE_KEYS} from '../page/page.constants';
+import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {
   addedDataset,
   addedSpotsIdsToDataset,

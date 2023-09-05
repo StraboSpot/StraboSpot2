@@ -3,11 +3,10 @@ import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {MODAL_KEYS} from '../../modules/home/home.constants';
 import {setModalVisible} from '../../modules/home/home.slice';
 import {imageStyles} from '../../modules/images';
 import {setNotebookPageVisible} from '../../modules/notebook-panel/notebook.slice';
-import {PAGE_KEYS} from '../../modules/page/page.constants';
+import {MODAL_KEYS, PAGE_KEYS} from '../../modules/page/page.constants';
 import ReturnToOverviewButton from '../../modules/page/ui/ReturnToOverviewButton';
 import {setMultipleFeaturesTaggingEnabled} from '../../modules/project/projects.slice';
 import {setSelectedAttributes} from '../../modules/spots/spots.slice';

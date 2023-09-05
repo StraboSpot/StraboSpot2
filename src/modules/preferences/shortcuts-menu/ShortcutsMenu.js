@@ -5,7 +5,7 @@ import {Avatar, ListItem} from 'react-native-elements';
 
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
-import {SHORTCUT_MODALS} from '../../home/home.constants';
+import {SHORTCUT_MODALS} from '../../page/page.constants';
 import shortcutMenuStyles from './shortcutsMenu.styles';
 
 const ShortcutMenu = (props) => {

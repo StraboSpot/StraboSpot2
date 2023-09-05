@@ -5,10 +5,10 @@ import {useNavigation} from '@react-navigation/native';
 // import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';  // TODO Fix for Web
 import {useDispatch, useSelector} from 'react-redux';
 
-import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import useMapsHook from '../maps/useMaps';
+import {MODAL_KEYS} from '../page/page.constants';
 import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
 

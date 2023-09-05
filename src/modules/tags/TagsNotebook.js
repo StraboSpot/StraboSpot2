@@ -5,9 +5,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
-import {PAGE_KEYS} from '../page/page.constants';
+import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';

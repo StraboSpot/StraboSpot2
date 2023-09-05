@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
-import {MODAL_KEYS} from '../home/home.constants';
+import {MODAL_KEYS} from '../page/page.constants';
 import {
   addedStatusMessage,
   clearedStatusMessages,

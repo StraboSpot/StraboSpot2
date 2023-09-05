@@ -7,8 +7,7 @@ import {isEmpty} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
-import {MODAL_KEYS} from '../home/home.constants';
-import {PAGE_KEYS} from '../page/page.constants';
+import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
 

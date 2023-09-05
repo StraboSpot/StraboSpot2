@@ -5,7 +5,7 @@ import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import compassStyles from '../../../modules/compass/compass.styles';
-import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/home/home.constants';
+import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import modalStyle from './modal.style';

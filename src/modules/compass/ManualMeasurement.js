@@ -9,7 +9,7 @@ import commonStyles from '../../shared/common.styles';
 import SaveButton from '../../shared/SaveButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {NumberInputField} from '../form';
-import {MODAL_KEYS} from '../home/home.constants';
+import {MODAL_KEYS} from '../page/page.constants';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 
 const ManualMeasurement = (props) => {

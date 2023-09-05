@@ -2,12 +2,11 @@ import React from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {MODAL_KEYS} from '../home/home.constants';
 import {setModalVisible} from '../home/home.slice';
+import {MODAL_KEYS} from '../page/page.constants';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import TagsNotebookModal from './TagsNotebookModal';
-
 
 const FeatureTagsModal = () => {
   const dispatch = useDispatch();
