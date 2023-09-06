@@ -21,7 +21,7 @@ const ShortcutMenu = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
         </ListItem.Content>
         <Switch
-          onChange={() => props.toggleSwitch(toggleButton.key)}
+          onValueChange={() => props.toggleSwitch(toggleButton.key)}
           value={props.shortcutSwitchPosition[toggleButton.key]}
         />
       </ListItem>
@@ -38,7 +38,7 @@ const ShortcutMenu = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>All</ListItem.Title>
         </ListItem.Content>
         <Switch
-          onChange={() => props.toggleSwitch('all')}
+          onValueChange={() => props.toggleSwitch('all')}
           value={props.shortcutSwitchPosition['all']}
         />
       </ListItem>

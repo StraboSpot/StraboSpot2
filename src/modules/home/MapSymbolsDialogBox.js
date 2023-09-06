@@ -37,7 +37,7 @@ const MapSymbolsDialog = (props) => {
         <ListItem.Content>
           <ListItem.Title>{getSymbolTitle(item)}</ListItem.Title>
         </ListItem.Content>
-        <Switch onChange={() => toggleSymbolSelected(item)} value={symbolsOn.includes(item)}/>
+        <Switch onValueChange={() => toggleSymbolSelected(item)} value={symbolsOn.includes(item)}/>
       </ListItem>
     );
   };
@@ -88,7 +88,7 @@ const MapSymbolsDialog = (props) => {
           <ListItem.Content>
             <ListItem.Title>{'All Symbols'}</ListItem.Title>
           </ListItem.Content>
-          <Switch onChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
+          <Switch onValueChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
         </ListItem>
         <FlatListItemSeparator/>
         <ListItem
@@ -98,7 +98,7 @@ const MapSymbolsDialog = (props) => {
           <ListItem.Content>
             <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
           </ListItem.Content>
-          <Switch onChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
+          <Switch onValueChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
         </ListItem>
         <FlatListItemSeparator/>
         <ListItem
@@ -108,7 +108,7 @@ const MapSymbolsDialog = (props) => {
           <ListItem.Content>
             <ListItem.Title>{'Show Tag Color'}</ListItem.Title>
           </ListItem.Content>
-          <Switch onChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
+          <Switch onValueChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
         </ListItem>
         {tagTypeForColor && (
           <ButtonGroup
