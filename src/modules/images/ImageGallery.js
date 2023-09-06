@@ -11,18 +11,16 @@ import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {setImageModalVisible, setLoadingStatus} from '../home/home.slice';
+import {setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
-import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 
-const ImageGallery = (props) => {
+const ImageGallery = ({openSpotInNotebook}) => {
   console.log('Rendering ImageGallery...');
-  console.log('ImageGallery props:', props);
 
   const dispatch = useDispatch();
 
@@ -64,8 +62,7 @@ const ImageGallery = (props) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     if (Platform.OS === 'web') {
       console.log('Opening image', image.id, '...');
-      dispatch(setSelectedAttributes([image]));
-      dispatch(setImageModalVisible(true));
+      navigate.navigate('ImageSlider', {selectedImage: image});
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     else {
@@ -90,17 +87,17 @@ const ImageGallery = (props) => {
         keyExtractor={image => image.id}
         data={images}
         numColumns={3}
-        renderItem={({item}) => renderImage(item)}
+        renderItem={({item, index}) => renderImage(item, index)}
       />
     );
   };
 
-  const renderImage = (image) => {
+  const renderImage = (image, i) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
         <Image
           style={imageStyles.thumbnail}
-          onPress={() => handleImagePressed(image)}
+          onPress={() => handleImagePressed(image, i)}
           source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
           PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
             : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
@@ -133,7 +130,7 @@ const ImageGallery = (props) => {
         <SectionDividerWithRightButton
           dividerText={spot.properties.name}
           buttonTitle={'View In Spot'}
-          onPress={() => props.openSpotInNotebook(spot, PAGE_KEYS.IMAGES)}
+          onPress={() => openSpotInNotebook(spot, PAGE_KEYS.IMAGES)}
         />
       </View>
     );

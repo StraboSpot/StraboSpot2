@@ -164,12 +164,6 @@ const Home = ({navigation, route}) => {
   }, [currentImageBasemap, customMaps, stratSection]);
 
   useEffect(() => {
-    console.log('UE Home [isImageModalVisible]', isImageModalVisible);
-    if (isImageModalVisible) populateImageSlideshowData();
-    else setImageSlideshowData([]);
-  }, [isImageModalVisible]);
-
-  useEffect(() => {
     console.log('UE Home [modalVisible]', modalVisible);
     if (Platform.OS === 'ios') {
       Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
@@ -201,23 +195,6 @@ const Home = ({navigation, route}) => {
     homeTextInputAnimate);
 
   const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
-
-  const populateImageSlideshowData = () => {
-    toggleHomeDrawerButton();
-    let image = selectedImage;
-    let firstImageID = selectedImage.id;
-    let uri = useImages.getLocalImageURI(firstImageID);
-    let firstSlideshowImage = {image, uri};
-    const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
-      const imagesForSlideshow1 = spot.properties.images
-        && spot.properties.images.reduce((acc1, image) => {
-          uri = useImages.getLocalImageURI(image.id);
-          return (image.id !== firstImageID) ? [...acc1, {image, uri}] : acc1;
-        }, []) || [];
-      return [...acc, ...imagesForSlideshow1];
-    }, []);
-    setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
-  };
 
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
@@ -646,15 +623,6 @@ const Home = ({navigation, route}) => {
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         toast={message => toast.show(message, {type: 'warning'})}
       />
-      {(imageSlideshowData.length) > 0 && (
-        <View style={homeStyles.imageSliderContainer}>
-          <ImageSlider
-            images={imageSlideshowData}
-            toggle={() => toggleImageModal()}
-            openNotebookPanel={page => openNotebookPanel(page)}
-          />
-        </View>
-      )}
       {/*Modals for Home Page*/}
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
