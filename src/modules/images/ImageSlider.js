@@ -12,7 +12,9 @@ import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 import imageSliderStyles from './imageSlider.styles';
 
-const ImageIndex = ({images, openNotebookPanel, toggle}) => {
+const ImageIndex = ({openNotebookPanel, toggle, route, navigation}) => {
+  console.log('ROUTE', route);
+  // const selectedImage = route.params.selectedImage;
   const platform = Platform.OS === 'ios' ? 'screen' : 'window';
   const width = Dimensions.get(platform).width * .60;
 
@@ -26,7 +28,7 @@ const ImageIndex = ({images, openNotebookPanel, toggle}) => {
   const getSpotFromId = (spotId) => {
     toggle();
     const spot = spots[spotId];
-    openNotebookPanel(PAGE_KEYS.OVERVIEW);
+    navigation.navigate('HomeScreen', {pageKey: PAGE_KEYS.OVERVIEW});
     dispatch(setSelectedSpot(spot));
   };
 
@@ -55,7 +57,7 @@ const ImageIndex = ({images, openNotebookPanel, toggle}) => {
         <IconButton
           style={styles.imageInfoButtons}
           source={require('../../assets/icons/Close.png')}
-          onPress={toggle}
+          onPress={() => navigation.goBack()}
         />
       </View>
       <Carousel

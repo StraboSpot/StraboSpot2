@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import Home from '../modules/home/Home';
 import ImageInfo from '../modules/images/ImageInfo';
+import ImageSlider from '../modules/images/ImageSlider';
 import SignIn from '../modules/sign-in/SignIn';
 import SignUp from '../modules/sign-up/SignUp';
 import Sketch from '../modules/sketch/Sketch';
@@ -47,6 +48,11 @@ const Routes = () => {
         <Stack.Screen
           name={'ImageInfo'}
           component={ImageInfo}
+          options={navigationOptions}
+        />
+        <Stack.Screen
+          name={'ImageSlider'}
+          component={ImageSlider}
           options={navigationOptions}
         />
         <Stack.Screen

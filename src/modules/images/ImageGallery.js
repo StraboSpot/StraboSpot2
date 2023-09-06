@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, FlatList, Platform, SectionList, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -27,6 +28,7 @@ const ImageGallery = (props) => {
 
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
+  const navigate = useNavigation();
 
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
@@ -70,9 +72,7 @@ const ImageGallery = (props) => {
       useImages.doesImageExistOnDevice(image.id)
         .then((doesExist) => {
           if (doesExist) {
-            console.log('Opening image', image.id, '...');
-            dispatch(setSelectedAttributes([image]));
-            dispatch(setImageModalVisible(true));
+            navigate.navigate('ImageSlider', {selectedImage: image});
             dispatch(setLoadingStatus({view: 'home', bool: false}));
           }
           else {

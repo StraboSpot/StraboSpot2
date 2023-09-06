@@ -64,8 +64,7 @@ import useHomeHook from './useHome';
 
 const {State: TextInputState} = TextInput;
 
-const Home = () => {
-  console.log('Rendering Home...');
+const Home = ({navigation, route}) => {
 
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
@@ -134,6 +133,17 @@ const Home = () => {
         res => console.log('Permission Status:', res));
     }
   }, []);
+
+  useEffect(() => {
+    console.log('NAVIGATION UE', route.params);
+    const unsubscribe = navigation.addListener('focus', () => {
+      route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
+    });
+    return () => {
+      console.log('Navigation Unsubscribed');
+      return unsubscribe;
+    };
+  }, [navigation, route.params]);
 
   useEffect(() => {
     console.log('UE Home [user]', user);
@@ -350,6 +360,10 @@ const Home = () => {
       useHome.toggleLoading(false);
       toast.show(`${err.toString()}`);
     }
+  };
+
+  const openImageSlider = (selectedImage) => {
+    navigation.navigate('ImageSlider', {selectedImage: selectedImage});
   };
 
   const modalHandler = (modalKey) => {
@@ -576,6 +590,7 @@ const Home = () => {
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         zoomToCustomMap={bbox => mapComponentRef.current.zoomToCustomMap(bbox)}
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
+        imageSliderNavigation={val => openImageSlider(val)}
       />
     </Animated.View>
   );
