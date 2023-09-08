@@ -14,7 +14,7 @@
     "upload-sourcemaps-android": "sentry-cli releases files org.StraboSpot2-1.44.2 upload-sourcemaps index.android.bundle index.android.bundle.map --dist org.StraboSpot2-1.44.2",
     "upload-sourcemaps": "concurrently --kill-others \"npm:upload-sourcemaps-android\" \"npm:upload-sourcemaps-ios\"",
     "build:ios": "react-native bundle --entry-file index.js --bundle-output ios/main.jsbundle --sourcemap-output ios/main.jsbundle.map  --dev false --platform ios --sourcemap-output ios/main.jsbundle.map --reset-cache",
-    "build:android": "react-native bundle --entry-file index.js --bundle-output android/index.android.bundle --minify true --dev false --platform android --sourcemap-output android/index.android.bundle.map --reset-cache",
+    "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --sourcemap-output android/index.android.bundle.map --assets-dest android/app/src/main/res --reset-cache",
     "deploy:android": "cd android && ./gradlew bundleRelease",
     "bump-patch": "npm version patch --no-git-tag-version && bundle exec fastlane bump",
     "bump-minor": "npm version minor --no-git-tag-version && bundle exec fastlane bump",
