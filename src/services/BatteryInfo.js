@@ -29,6 +29,7 @@ const BatteryInfo = () => {
   };
 
   const batteryPercentColor = () => {
+    if (batteryLevel >= 0.31) return uiStyles.batteryLevelGreen;
     if (batteryLevel > 0.21 && batteryLevel <= 0.30) return uiStyles.batteryLevelYellow;
     if (batteryLevel > 0 && batteryLevel <= 0.20) return uiStyles.batteryLevelRed;
   };
