@@ -253,7 +253,7 @@ const BaseMapDialog = (props) => {
     <Overlay
       animationType={'slide'}
       isVisible={props.visible}
-      overlayStyle={overlayStyles.overlayContainer}
+      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
       onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
