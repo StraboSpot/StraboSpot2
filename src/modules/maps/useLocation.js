@@ -11,7 +11,7 @@ const useLocation = () => {
 
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 5000, maximumAge: 10000, enableHighAccuracy: true};
+    const geolocationOptions = {timeout: 10000, maximumAge: 10000, enableHighAccuracy: true};
     return (
       new Promise((resolve, reject) => {
         Geolocation.getCurrentPosition(
