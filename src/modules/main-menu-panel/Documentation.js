@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, FlatList, Linking, Platform, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
-import PDFView from 'react-native-view-pdf';
+// import PDFView from 'react-native-view-pdf';
 import {useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../services/urls.constants';
@@ -81,14 +81,14 @@ const Documentation = () => {
           }
         />
         {/*<WebView source={doc}/>*/}
-        <PDFView
-          fadeInDuration={250.0}
-          style={{flex: 1}}
-          resource={findFile()}
-          resourceType={resourceType}
-          onLoad={() => console.log(`PDF rendered from ${resourceType}`)}
-          onError={error => console.log('Cannot render PDF', error)}
-        />
+        {/*<PDFView*/}
+        {/*  fadeInDuration={250.0}*/}
+        {/*  style={{flex: 1}}*/}
+        {/*  resource={findFile()}*/}
+        {/*  resourceType={resourceType}*/}
+        {/*  onLoad={() => console.log(`PDF rendered from ${resourceType}`)}*/}
+        {/*  onError={error => console.log('Cannot render PDF', error)}*/}
+        {/*/>*/}
       </Overlay>
     );
   };

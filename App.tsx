@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
-import VersionCheck from 'react-native-version-check';
+// import VersionCheck from 'react-native-version-check';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -25,7 +25,7 @@ Sentry.init({
   dist: RELEASE_NAME,
   autoSessionTracking: true,
   environment: __DEV__ ? 'development' : 'production',
-  deactivateStacktraceMerging: true,
+  // deactivateStacktraceMerging: true,
 });
 
 NetInfo.configure({
@@ -47,15 +47,15 @@ const App = () => {
 
   const [isUpdateNeeded, setIsUpdateNeeded] = useState(false);
 
-  useEffect(() => {
-    if (Platform.OS === 'ios') {
-      console.log(VersionCheck.getPackageName());        // com.reactnative.app
-      console.log(VersionCheck.getCurrentBuildNumber()); // 10
-      console.log(VersionCheck.getCurrentVersion());     // 0.1.1
-      VersionCheck.getStoreUrl({appID: 1555903455}).then(storeUrl => console.log('Store URL', storeUrl));
-      VersionCheck.needUpdate({currentVersion: version}).then(update => setIsUpdateNeeded(update?.isNeeded));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Platform.OS === 'ios') {
+  //     console.log(VersionCheck.getPackageName());        // com.reactnative.app
+  //     console.log(VersionCheck.getCurrentBuildNumber()); // 10
+  //     console.log(VersionCheck.getCurrentVersion());     // 0.1.1
+  //     VersionCheck.getStoreUrl({appID: 1555903455}).then(storeUrl => console.log('Store URL', storeUrl));
+  //     VersionCheck.needUpdate({currentVersion: version}).then(update => setIsUpdateNeeded(update?.isNeeded));
+  //   }
+  // }, []);
 
   return (
     <Toast>
