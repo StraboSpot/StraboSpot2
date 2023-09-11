@@ -70,6 +70,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  customEndpointSwitch: {
+    height: 48,
+    width: 48,
+  },
   imageIcon: {
     width: Platform.OS === 'web' ? 50 : 65,
     height: Platform.OS === 'web' ? 50 : 65,

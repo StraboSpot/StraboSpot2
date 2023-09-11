@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     width: 350,
     fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: '500',
-    height: 40,
+    height: 48,
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     margin: 10,
     color: 'black',
@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingRight: 20,
     paddingLeft: 20,
+    height: 48,
+
   },
   customEndpointContainer: {
     alignItems: 'center',
