@@ -31,3 +31,6 @@ export const SMALL_TEXT_SIZE = Platform.OS === 'web' ? 10 : 14;
 export const MEDIUM_TEXT_SIZE = Platform.OS === 'web' ? 12 : 16;
 export const SPOT_NAME_SIZE = Platform.OS === 'web' ? 20 : 30;
 export const MODAL_TEXT_SIZE = Platform.OS === 'web' ? 10 : 14;
+
+export const UPDATE_LABEL_WIDTH = 150;
+export const UPDATE_LABEL_HEIGHT = 150;
