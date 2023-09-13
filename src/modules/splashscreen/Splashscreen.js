@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux';
 
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
+import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
@@ -45,10 +46,8 @@ const Splashscreen = (props) => {
             W: {windowDimensions.width.toFixed(0)} </Text>
         </View>}
       </ScrollView>
-      <Loading
-        isLoading={loading}
-        size={60}
-      />
+      <Loading isLoading={loading} size={60}/>
+      <VersionCheckLabel />
     </ImageBackground>
   );
 };

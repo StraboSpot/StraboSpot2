@@ -1,14 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
-// import VersionCheck from 'react-native-version-check';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
-import {version} from './package.json';
 import Routes from './src/routes/Routes';
 import ConnectionStatus from './src/services/ConnectionStatus';
 import {RELEASE_NAME} from './src/shared/app.constants';
