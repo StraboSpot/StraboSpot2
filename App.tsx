@@ -43,8 +43,6 @@ const App = () => {
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
-  const [isUpdateNeeded, setIsUpdateNeeded] = useState(false);
-
   // useEffect(() => {
   //   if (Platform.OS === 'ios') {
   //     console.log(VersionCheck.getPackageName());        // com.reactnative.app
