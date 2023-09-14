@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import {
+  GOLD,
   PRIMARY_HEADER_TEXT_SIZE,
   UPDATE_LABEL_HEIGHT,
   UPDATE_LABEL_WIDTH,
@@ -12,9 +13,10 @@ const versionCheckStyles = StyleSheet.create({
     bottom: 175,
     right: 200,
     zIndex: 1,
-    backgroundColor: 'green',
-    // justifyContent: 'center',
-    // alignContent: 'center',
+    shadowColor: 'black',
+    shadowOffset: {width: 5, height: 5},
+    shadowOpacity: 0.75,
+    shadowRadius: 3,
   },
   title: {
     fontWeight: 'bold',
@@ -41,28 +43,22 @@ const versionCheckStyles = StyleSheet.create({
   twelvePointBurstMain: {
     width: UPDATE_LABEL_WIDTH,
     height: UPDATE_LABEL_HEIGHT,
-    backgroundColor: '#ccc',
+    backgroundColor: GOLD,
     zIndex: 1,
-    // top: 0,
-    // right: 0,
     position: 'absolute',
   },
   twelvePointBurst30: {
     width: UPDATE_LABEL_WIDTH,
     height: UPDATE_LABEL_HEIGHT,
     position: 'absolute',
-    backgroundColor: '#ccc',
-    // top: 0,
-    // right: 0,
+    backgroundColor: GOLD,
     transform: [{rotate: '30deg'}],
   },
   twelvePointBurst60: {
     width: UPDATE_LABEL_WIDTH,
     height: UPDATE_LABEL_HEIGHT,
     position: 'absolute',
-    backgroundColor: '#ccc',
-    // top: 0,
-    // right: 0,
+    backgroundColor: GOLD,
     transform: [{rotate: '60deg'}],
   },
 });

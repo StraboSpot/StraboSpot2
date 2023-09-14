@@ -1,29 +1,35 @@
-import React from 'react';
-import {Text, View} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+import {Animated} from 'react-native';
+
 import {checkVersion} from 'react-native-check-version';
+import DeviceInfo from 'react-native-device-info';
 
 const useVersionCheck = (props) => {
+  const animateLabel = (animatedPulse) => {
+    Animated.sequence([
+      // increase size
+      Animated.timing(animatedPulse, {
+        useNativeDriver: true,
+        toValue: 1,
+        duration: 750,
+      }),
+      // decrease size
+      Animated.timing(animatedPulse, {
+        useNativeDriver: true,
+        toValue: 0.75,
+        duration: 500,
+      }),
+    ]).start();
+  };
+
   const checkAppStoreVersion = async () => {
     console.log('Got device version:', DeviceInfo.getVersion());
-    const deviceVersion = DeviceInfo.getVersion;
-    console.log('Got device bundleId:', DeviceInfo.getBundleId());
-    console.log('Got device type:', DeviceInfo.getDeviceType());
-
     const version = await checkVersion();
     console.log('Got version info:', version);
-
-    // if (version.needsUpdate) {
-    //   console.log(`App has a ${version.updateType} update pending.`);
-    //   setNeedsUpdate(version.needsUpdate);
-    // }
-    return {
-      deviceVersion: deviceVersion,
-      versionObj: version,
-    };
+    return version;
   };
 
   return {
+    animateLabel: animateLabel,
     checkAppStoreVersion: checkAppStoreVersion,
   };
 };

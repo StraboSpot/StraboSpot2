@@ -1,42 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {Linking, Platform, Pressable, Text, View} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
-import {checkVersion} from 'react-native-check-version';
-import DeviceInfo from 'react-native-device-info';
 import VersionCheckHook from '../versionCheck/useVersionCheck';
-
 import styles from './versionCheck.styles';
 
 const VersionCheckLabel = (props) => {
   const [versionObj, setVersionObj] = useState({});
-  const [deviceVersion, setDeviceVersion] = useState('');
+  const animatedPulse = useMemo(() => new Animated.Value(0), []);
 
   const useVersionCheck = VersionCheckHook();
 
   useEffect(() => {
-    // if (Platform.OS === 'ios') {
-    useVersionCheck.checkAppStoreVersion().then((res) => {
-      setVersionObj(res.versionObj);
-      setDeviceVersion(res.deviceVersion);
-    });
-    // }
+    if (Platform.OS !== 'web') {
+      useVersionCheck.animateLabel(animatedPulse);
+      useVersionCheck.checkAppStoreVersion().then((res) => {
+        setVersionObj(res);
+      });
+    }
   }, []);
-
-  // const checkAppStoreVersion = async () => {
-  //   console.log('Got device version:', DeviceInfo.getVersion());
-  //   setDeviceVersion(DeviceInfo.getVersion);
-  //   console.log('Got device bundleId:', DeviceInfo.getBundleId());
-  //   console.log('Got device type:', DeviceInfo.getDeviceType());
-  //
-  //   const version = await checkVersion();
-  //   setVersionObj(version);
-  //   console.log('Got version info:', version);
-  //
-  //   if (version.needsUpdate) {
-  //     console.log(`App has a ${version.updateType} update pending.`);
-  //     setNeedsUpdate(version.needsUpdate);
-  //   }
-  // };
 
   const handlePress = async () => {
     const res = await Linking.canOpenURL(versionObj.url);
@@ -44,9 +25,15 @@ const VersionCheckLabel = (props) => {
   };
 
   return (
-    <Pressable style={styles.container} onPress={() => handlePress()}>
+    <Pressable
+      style={styles.container}
+      onPress={() => handlePress()}>
       {versionObj.needsUpdate && (
-        <View style={styles.twelvePointBurstContainer}>
+        <Animated.View
+          style={{
+            ...styles.twelvePointBurstContainer,
+            transform: [{scale: animatedPulse}],
+          }}>
           <View style={styles.twelvePointBurstMain}>
             <View style={styles.textContainer}>
               <Text style={styles.title}>Update Available!</Text>
@@ -65,7 +52,7 @@ const VersionCheckLabel = (props) => {
           </View>
           <View style={styles.twelvePointBurst30} />
           <View style={styles.twelvePointBurst60} />
-        </View>
+        </Animated.View>
       )}
     </Pressable>
   );
