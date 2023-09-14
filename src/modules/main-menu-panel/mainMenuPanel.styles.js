@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     textAlign: 'center',
   },
+  documentListItem: {
+    margin: 5,
+    borderRadius: 15,
+  },
   mainMenuHeaderTextContainer: {
     flex: 4,
     flexDirection: 'row',

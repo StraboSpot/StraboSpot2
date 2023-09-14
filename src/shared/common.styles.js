@@ -1,9 +1,6 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from './styles.constants';
-
-const type = Platform.OS === 'ios' ? 'screen' : 'window';
-const height = Dimensions.get(type).height;
 
 const commonStyles = StyleSheet.create({
   alignItemsCenter: {
@@ -42,6 +39,11 @@ const commonStyles = StyleSheet.create({
   // List Styles
   listItem: {
     padding: Platform.OS === 'web' ? 5 : 10,
+  },
+  listItemContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: 10,
   },
   listItemInverse: {
     padding: 10,
