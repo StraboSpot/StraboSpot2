@@ -135,11 +135,11 @@ const Home = () => {
   useEffect(() => {
     let updateTimer;
     if (Platform.OS === 'android') {
-      useImages.requestCameraPermission().then((res) => console.log('Permission Status:', res));
+      useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
     }
-    if (!isProjectLoadSelectionModalVisible) {
+    if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
-        if (res.versionObj.needsUpdate) {
+        if (res.needsUpdate) {
           setShowUpdateLabel(true);
           updateTimer = setTimeout(() => setShowUpdateLabel(false), 5000);
         }
