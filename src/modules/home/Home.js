@@ -620,7 +620,7 @@ const Home = () => {
         setDistance={d => setDistance(d)}
       />
       <View style={uiStyles.iconContainer}>
-        {Platform.OS === 'ios' && <BatteryInfo/>}
+        {<BatteryInfo/>}
         <ConnectionStatusIcon/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
