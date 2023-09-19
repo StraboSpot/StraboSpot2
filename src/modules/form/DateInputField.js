@@ -29,9 +29,10 @@ const DateInputField = ({
     if (Platform.OS === 'ios') selectedDate = selectedDate.toISOString();
     else {
       setIsDatePickerModalVisible(false);
-      if (event.type === 'set' || event.type === 'neutralButtonPressed') {
+      if (event.type === 'neutralButtonPressed') selectedDate = undefined;
+      else if (event.type === 'set') {
         setDate(selectedDate);
-        if (event.type === 'set') selectedDate = selectedDate.toISOString();
+        selectedDate = selectedDate.toISOString();
       }
     }
     if (selectedDate && name === 'start_date' && values.end_date) {
@@ -53,7 +54,7 @@ const DateInputField = ({
           value={date}
           onChange={changeDate}
           display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          neutralButton={'clear'}
+          neutralButton={{label: 'Clear', textColor: 'grey'}} // Android only
         />
       </View>
     );
