@@ -1,6 +1,6 @@
 import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
-import DocumentPicker from 'react-native-document-picker';
+// import DocumentPicker from 'react-native-document-picker';
 // import RNFS from 'react-native-fs';
 // import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
@@ -182,9 +182,9 @@ const useDevice = (props) => {
 
   const getExternalProjectData = async () => {
     // try {
-    const res = await DocumentPicker.pick({type: [DocumentPicker.types.zip], copyTo: 'cachesDirectory'});
-    console.log('External Document', res);
-    return res[0];
+    // const res = await DocumentPicker.pick({type: [DocumentPicker.types.zip], copyTo: 'cachesDirectory'});
+    // console.log('External Document', res);
+    // return res[0];
   };
 
   const openURL = async (url) => {
