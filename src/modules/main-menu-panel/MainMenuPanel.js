@@ -102,7 +102,10 @@ const MainMenuPanel = (props) => {
     case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageGallery openSpotInNotebook={openSpotInNotebook}/>
+          <ImageGallery
+            openSpotInNotebook={openSpotInNotebook}
+            navigation={props.navigation}
+          />
         </View>
       );
       break;

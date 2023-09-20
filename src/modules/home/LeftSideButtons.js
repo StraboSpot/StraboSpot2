@@ -9,6 +9,7 @@ import BaseMapDialog from './BaseMapDialogBox';
 import homeStyles from './home.style';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
+import overlayStyles from './overlay.styles';
 
 const LeftSideButtons = (props) => {
 
@@ -91,6 +92,7 @@ const LeftSideButtons = (props) => {
       </Animated.View>
       <MapActionsDialog
         visible={dialogs.mapActionsMenuVisible}
+        overlayStyle={overlayStyles.mapActionsPosition}
         onPress={(name) => {
           props.dialogClickHandler('mapActionsMenuVisible', name);
           toggleDialog('mapActionsMenuVisible');
@@ -99,6 +101,7 @@ const LeftSideButtons = (props) => {
       />
       <MapSymbolsDialog
         visible={dialogs.mapSymbolsMenuVisible}
+        overlayStyle={overlayStyles.mapSymbolsPosition}
         onPress={(name) => {
           props.dialogClickHandler('mapSymbolsMenuVisible', name);
           toggleDialog('mapSymbolsMenuVisible');
@@ -107,6 +110,7 @@ const LeftSideButtons = (props) => {
       />
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
+        overlayStyle={overlayStyles.baseMapPosition}
         close={() => toggleDialog('baseMapMenuVisible')}
         zoomToCustomMap={props.zoomToCustomMap}
         zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}

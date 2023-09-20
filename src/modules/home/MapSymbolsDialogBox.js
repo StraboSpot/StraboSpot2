@@ -63,7 +63,7 @@ const MapSymbolsDialog = (props) => {
     <Overlay
       animationType={'slide'}
       isVisible={props.visible}
-      overlayStyle={[overlayStyles.overlayContainer]}
+      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
       onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
@@ -98,7 +98,8 @@ const MapSymbolsDialog = (props) => {
           <ListItem.Content>
             <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
           </ListItem.Content>
-          <Switch onValueChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))} value={isShowSpotLabelsOn}/>
+          <Switch onValueChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))}
+                  value={isShowSpotLabelsOn}/>
         </ListItem>
         <FlatListItemSeparator/>
         <ListItem

@@ -66,8 +66,7 @@ import useHomeHook from './useHome';
 
 const {State: TextInputState} = TextInput;
 
-const Home = () => {
-  console.log('Rendering Home...');
+const Home = ({navigation, route}) => {
 
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
@@ -151,6 +150,17 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log('NAVIGATION UE', route.params);
+    const unsubscribe = navigation.addListener('focus', () => {
+      route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
+    });
+    return () => {
+      console.log('Navigation Unsubscribed');
+      return unsubscribe;
+    };
+  }, [navigation, route.params]);
+
+  useEffect(() => {
     console.log('UE Home [user]', user);
     if (user.email && user.name) {
       Sentry.configureScope((scope) => {
@@ -167,12 +177,6 @@ const Home = () => {
       console.log('currentImageBasemap and stratSection cleanup UE');
     };
   }, [currentImageBasemap, customMaps, stratSection]);
-
-  useEffect(() => {
-    console.log('UE Home [isImageModalVisible]', isImageModalVisible);
-    if (isImageModalVisible) populateImageSlideshowData();
-    else setImageSlideshowData([]);
-  }, [isImageModalVisible]);
 
   useEffect(() => {
     console.log('UE Home [modalVisible]', modalVisible);
@@ -206,23 +210,6 @@ const Home = () => {
     homeTextInputAnimate);
 
   const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
-
-  const populateImageSlideshowData = () => {
-    toggleHomeDrawerButton();
-    let image = selectedImage;
-    let firstImageID = selectedImage.id;
-    let uri = useImages.getLocalImageURI(firstImageID);
-    let firstSlideshowImage = {image, uri};
-    const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
-      const imagesForSlideshow1 = spot.properties.images
-        && spot.properties.images.reduce((acc1, image) => {
-          uri = useImages.getLocalImageURI(image.id);
-          return (image.id !== firstImageID) ? [...acc1, {image, uri}] : acc1;
-        }, []) || [];
-      return [...acc, ...imagesForSlideshow1];
-    }, []);
-    setImageSlideshowData([firstSlideshowImage, ...imagesForSlideshow]);
-  };
 
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
@@ -365,6 +352,10 @@ const Home = () => {
       useHome.toggleLoading(false);
       toast.show(`${err.toString()}`);
     }
+  };
+
+  const openImageSlider = (selectedImage) => {
+    navigation.navigate('ImageSlider', {selectedImage: selectedImage});
   };
 
   const modalHandler = (modalKey) => {
@@ -591,6 +582,7 @@ const Home = () => {
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         zoomToCustomMap={bbox => mapComponentRef.current.zoomToCustomMap(bbox)}
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
+        imageSliderNavigation={val => openImageSlider(val)}
       />
     </Animated.View>
   );
@@ -646,15 +638,6 @@ const Home = () => {
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         toast={message => toast.show(message, {type: 'warning'})}
       />
-      {(imageSlideshowData.length) > 0 && (
-        <View style={homeStyles.imageSliderContainer}>
-          <ImageSlider
-            images={imageSlideshowData}
-            toggle={() => toggleImageModal()}
-            openNotebookPanel={page => openNotebookPanel(page)}
-          />
-        </View>
-      )}
       {/*Modals for Home Page*/}
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}

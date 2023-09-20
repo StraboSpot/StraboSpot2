@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
   backdropStyles: {
     backgroundColor: 'transparent',
   },
+  baseMapPosition: {
+    position: 'absolute',
+    left: 75,
+    bottom: 40,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -42,6 +47,16 @@ const styles = StyleSheet.create({
     width: 250,
     height: 40,
     borderBottomWidth: 1,
+  },
+  mapActionsPosition: {
+    position: 'absolute',
+    left: 75,
+    bottom: 100,
+  },
+  mapSymbolsPosition: {
+    position: 'absolute',
+    left: 75,
+    bottom: 100,
   },
   titleContainer: {
     // backgroundColor: themes.LIGHTGREY,

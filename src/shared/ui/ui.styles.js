@@ -19,6 +19,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
     zIndex: 50,
   },
+  batteryLevelGreen: {
+    color: 'green',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
+  },
   batteryLevelYellow: {
     color: 'yellow',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
@@ -63,6 +69,10 @@ const styles = StyleSheet.create({
     width: 300,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  customEndpointSwitch: {
+    height: 48,
+    width: 48,
   },
   imageIcon: {
     width: Platform.OS === 'web' ? 50 : 65,
