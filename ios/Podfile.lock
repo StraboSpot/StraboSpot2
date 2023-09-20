@@ -508,7 +508,7 @@ PODS:
     - React
     - React-Core
     - Turf
-  - RNReanimated (3.4.2):
+  - RNReanimated (3.5.3):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -892,7 +892,7 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 38aa38413896620338948fbb5c90579a7b1c3fde
   rnmapbox-maps: 3afcd9081d3cc5a53af23bbbf908d087b951023b
-  RNReanimated: f8379347f71248607d530a21e31e4140c5910c25
+  RNReanimated: 5ce298660a0eb7ae36448a1237788a86b1310530
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
   RNSentry: 4c09f4dd9740cb9b33e94303de5b6d0dbeb0737d

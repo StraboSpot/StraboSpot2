@@ -16,7 +16,6 @@
     "build:ios": "react-native bundle --entry-file index.js --bundle-output ios/main.jsbundle --sourcemap-output ios/main.jsbundle.map  --dev false --platform ios --sourcemap-output ios/main.jsbundle.map --reset-cache",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --sourcemap-output android/index.android.bundle.map --assets-dest android/app/src/main/res --reset-cache && rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw ",
     "bundle:android": "cd android && ./gradlew bundleRelease",
-
     "bump-patch": "npm version patch --no-git-tag-version && bundle exec fastlane bump",
     "bump-minor": "npm version minor --no-git-tag-version && bundle exec fastlane bump",
     "bump-major": "npm version major --no-git-tag-version && bundle exec fastlane bump",
@@ -73,7 +72,7 @@
     "react-native-multiple-select": "0.5.12",
     "react-native-pdf": "6.7.1",
     "react-native-progress": "5.0.0",
-    "react-native-reanimated": "3.4.2",
+    "react-native-reanimated": "3.5.3",
     "react-native-reanimated-carousel": "3.5.1",
     "react-native-safe-area-context": "4.7.2",
     "react-native-screens": "3.25.0",
