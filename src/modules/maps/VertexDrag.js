@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import Animated, {useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
+import Animated, {runOnJS, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {setVertexEndCoords} from './maps.slice';
@@ -32,6 +32,10 @@ const VertexDrag = () => {
     };
   });
 
+  const saveEnd = (endCoords) => {
+    dispatch(setVertexEndCoords(endCoords))
+  }
+
   const gesture = Gesture.Pan()
     .onBegin(() => {
       isPressed.value = true;
@@ -51,7 +55,7 @@ const VertexDrag = () => {
       };
       let endCoords = [start.value.x, start.value.y];
       // console.log('End Coords:', endCoords);
-      dispatch(setVertexEndCoords(endCoords));
+      runOnJS(saveEnd)(endCoords);
     })
     .onFinalize(() => {
       // console.log('onFinalize');
