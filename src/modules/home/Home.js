@@ -10,6 +10,8 @@ import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
+import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
+import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -80,6 +82,7 @@ const Home = ({navigation, route}) => {
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useLocation = useLocationHook();
+  const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
@@ -114,6 +117,7 @@ const Home = ({navigation, route}) => {
     baseMapMenuVisible: false,
   });
   const [distance, setDistance] = useState(0);
+  const [showUpdateLabel, setShowUpdateLabel] = useState(false);
   const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
@@ -128,10 +132,21 @@ const Home = ({navigation, route}) => {
   const mapComponentRef = useRef(null);
 
   useEffect(() => {
+    let updateTimer;
     if (Platform.OS === 'android') {
-      useImages.requestCameraPermission().then(
-        res => console.log('Permission Status:', res));
+      useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
     }
+    if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
+      useVersionCheck.checkAppStoreVersion().then((res) => {
+        if (res.needsUpdate) {
+          setShowUpdateLabel(true);
+          updateTimer = setTimeout(() => setShowUpdateLabel(false), 5000);
+        }
+      });
+    }
+    return () => {
+      clearTimeout(updateTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -597,7 +612,7 @@ const Home = ({navigation, route}) => {
         setDistance={d => setDistance(d)}
       />
       <View style={uiStyles.iconContainer}>
-        {Platform.OS === 'ios' && <BatteryInfo/>}
+        {<BatteryInfo/>}
         <ConnectionStatusIcon/>
       </View>
       {vertexStartCoords && <VertexDrag/>}
@@ -651,6 +666,7 @@ const Home = ({navigation, route}) => {
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
+      {showUpdateLabel && <VersionCheckLabel />}
     </Animated.View>
   );
 };

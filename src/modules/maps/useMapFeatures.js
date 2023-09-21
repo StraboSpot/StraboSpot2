@@ -1,6 +1,6 @@
 import {Alert} from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 import * as turf from '@turf/turf';
 import moment from 'moment';
 import {useSelector} from 'react-redux';

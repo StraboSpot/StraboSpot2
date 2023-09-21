@@ -2,15 +2,17 @@ import React, {useState} from 'react';
 import {Alert, FlatList, Linking, Platform, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
-import PDFView from 'react-native-view-pdf';
+import Pdf from 'react-native-pdf';
 import {useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../services/urls.constants';
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import {BLACK, BLUE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from './documentation.styles';
+import mainMenuPanelStyles from './mainMenuPanel.styles';
 
 const Documentation = () => {
 
@@ -23,24 +25,31 @@ const Documentation = () => {
 
   const files = [
     {
+      id: 1,
+      platform: ['ios'],
       label: 'airdrop',
       name: 'How to Airdrop backup files to other iPads',
-      file: Platform.OS === 'ios' ? 'Airdrop-from-iPad-to-iPad.pdf' : null,
+      file: require('../../assets/documents/Airdrop-from-iPad-to-iPad.pdf'),
     },
     {
+      id: 2,
+      platform: ['ios'],
       label: 'moveFiles',
       name: 'Moving backups out of StraboSpot 2 folder ',
-      file: Platform.OS === 'ios' ? 'Moving-Project-Backups-Out-of-StraboSpot2.pdf' : null,
+      file: Platform.OS === 'ios' && require('../../assets/documents/MovingProjectBackupsOutOfStraboSpot2.pdf'),
     },
     {
+      id: 3,
+      platform: ['ios', 'android'],
       label: 'helpDocument',
       name: 'Strabo Help Guide',
-      file: 'Strabo_Help_Guide.pdf',
+      file:
+        Platform.OS === 'ios' ? require('../../assets/documents/Strabo_Help_Guide.pdf') : {uri: 'bundle-assets://Strabo_Help_Guide.pdf'},
     },
   ];
 
-  const toggleOverlay = (pdfLabel) => {
-    setDoc(pdfLabel);
+  const handlePress = (document) => {
+    setDoc(document);
     setVisible(!visible);
   };
 
@@ -50,63 +59,84 @@ const Documentation = () => {
       if (canOpen) await Linking.openURL(path);
       else Alert.alert('Uh Oh!', `Can not open the url ${path}`);
     }
-    catch (err) {
+ catch (err) {
       console.error('Can\t open URL', err);
       Alert.alert(' Unable to open URL!');
     }
   };
 
-  const findFile = () => {
-    const file = files.find((pdf, index) => {
-      if (pdf.label === doc) return pdf.file;
-    });
-    return file && file.file;
-  };
-
-  const viewPDF = () => {
-    const resourceType = 'file';
-    return (
-      <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={styles.overlayContainer}>
-        <Button
-          type={'clear'}
-          containerStyle={{alignItems: 'flex-end'}}
-          onPress={() => setVisible(!visible)}
-          icon={
-            <Icon
-              name={'close-outline'}
-              type={'ionicon'}
-              size={30}
-              color={BLACK}
-            />
-          }
-        />
-        {/*<WebView source={doc}/>*/}
-        <PDFView
-          fadeInDuration={250.0}
+  const viewPDF = () => (
+    <Overlay isVisible={visible} overlayStyle={styles.overlayContainer}>
+      <Button
+        type={'clear'}
+        containerStyle={{alignItems: 'flex-end'}}
+        onPress={() => setVisible(!visible)}
+        icon={
+          <Icon
+            name={'close-outline'}
+            type={'ionicon'}
+            size={30}
+            color={BLACK}
+          />
+        }
+      />
+      {!isEmpty(doc) && (
+        <Pdf
+          source={doc.file}
           style={{flex: 1}}
-          resource={findFile()}
-          resourceType={resourceType}
-          onLoad={() => console.log(`PDF rendered from ${resourceType}`)}
-          onError={error => console.log('Cannot render PDF', error)}
+          onLoadComplete={(numberOfPages, filePath) => {
+            console.log(`Number of pages: ${numberOfPages}`);
+          }}
+          onError={(error) => {
+            console.log(error);
+          }}
+          onPressLink={(uri) => {
+            console.log(`Link pressed: ${uri}`);
+          }}
         />
-      </Overlay>
-    );
-  };
+      )}
+    </Overlay>
+  );
 
-  const renderFAQListItem = ({item}) => (
-    <ListItem key={item} onPress={() => toggleOverlay(item.label)} containerStyle={commonStyles.listItem}>
-      <ListItem.Title>{item.name}</ListItem.Title>
+  const renderFAQListItem = item => (
+    <ListItem
+      onPress={() => handlePress(item)}
+      containerStyle={mainMenuPanelStyles.documentListItem}>
+      <ListItem.Content style={commonStyles.listItemContent}>
+        <ListItem.Title style={commonStyles.listItemTitle}>
+          {item.name}
+        </ListItem.Title>
+      </ListItem.Content>
+      <ListItem.Chevron size={20} />
     </ListItem>
   );
 
-  const renderFAQitems = () => (
-    <FlatList
-      keyExtractor={item => item.toString()}
-      data={files}
-      renderItem={renderFAQListItem}
-      ItemSeparatorComponent={FlatListItemSeparator}
-    />
-  );
+  const renderFAQItems = () => {
+    let filteredDocs = [];
+    files.forEach((file) => {
+      if (Platform.OS === 'ios' && file.platform.includes('ios')) {
+        filteredDocs.push(file);
+      }
+ else if (
+        Platform.OS === 'android'
+        && file.platform.includes('android')
+      ) {
+        filteredDocs.push(file);
+      }
+    });
+    console.log(filteredDocs);
+
+    return (
+      <View style={{maxHeight: '80%'}}>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={filteredDocs}
+          renderItem={({item}) => renderFAQListItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+        />
+      </View>
+    );
+  };
 
   const renderHelpLink = () => (
     <View style={styles.bottomButton}>
@@ -131,12 +161,11 @@ const Documentation = () => {
 
   return (
     <View style={{flex: 1}}>
-      <View style={{flex: 1, alignItems: 'center'}}>
-        <SectionDivider dividerText={'FAQ\'s'}/>
-        {Platform.OS === 'ios' ? renderFAQitems()
-          : <Text style={commonStyles.noValueText}>Not available for Android yet</Text>}
-      </View>
       {renderHelpLink()}
+      <View style={{alignItems: 'center'}}>
+        <SectionDivider dividerText={'FAQ\'s'} />
+      </View>
+      {renderFAQItems()}
       {viewPDF()}
     </View>
   );
