@@ -5,6 +5,7 @@
   "scripts": {
     "android": "npx react-native run-android",
     "android-release": "react-native run-android --variant=release",
+    "ios-release": "react-native run-ios --mode=Release",
     "ios": "npx react-native run-ios",
     "start": "react-native start",
     "test": "jest",
