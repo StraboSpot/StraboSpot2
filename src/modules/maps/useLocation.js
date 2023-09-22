@@ -11,7 +11,7 @@ const useLocation = () => {
 
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 10000, maximumAge: 10000, enableHighAccuracy: true};
+    const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
     return (
       new Promise((resolve, reject) => {
         Geolocation.getCurrentPosition(
@@ -35,7 +35,8 @@ const useLocation = () => {
     if (currentLocation.accuracy) feature.properties.gps_accuracy = currentLocation.accuracy;
     const newSpot = await useSpots.createSpot(feature);
     dispatch(setSelectedSpot(newSpot));
-    return Promise.resolve(newSpot);
+    // return Promise.resolve(newSpot);
+    return newSpot;
   };
 
   return {
