@@ -14,6 +14,12 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-StraboSpot2-StraboSpot2Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-StraboSpot2-StraboSpot2Tests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		D6E5C2B22ABE2716005F243A /* Moving-Project-Backups-Out-of-StraboSpot2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6E5C2AF2ABE2715005F243A /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */; };
+		D6E5C2B92ABE2774005F243A /* Airdrop-from-iPad-to-iPad.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D6E5C2B82ABE2774005F243A /* Airdrop-from-iPad-to-iPad.pdf */; };
+		D6E5C2BB2ABE277D005F243A /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E5C2BA2ABE277D005F243A /* Compass.swift */; };
+		D6E5C2BE2ABE281C005F243A /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E5C2BC2ABE281C005F243A /* Dummy.swift */; };
+		D6E5C2BF2ABE281C005F243A /* Compass.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E5C2BD2ABE281C005F243A /* Compass.m */; };
+		D6E5C2C22ABE2CA2005F243A /* compass_button_click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D6E5C2C12ABE2CA1005F243A /* compass_button_click.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +49,13 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-StraboSpot2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StraboSpot2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = StraboSpot2/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-StraboSpot2-StraboSpot2Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StraboSpot2-StraboSpot2Tests.release.xcconfig"; path = "Target Support Files/Pods-StraboSpot2-StraboSpot2Tests/Pods-StraboSpot2-StraboSpot2Tests.release.xcconfig"; sourceTree = "<group>"; };
+		D6E5C2AF2ABE2715005F243A /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Moving-Project-Backups-Out-of-StraboSpot2.pdf"; sourceTree = "<group>"; };
+		D6E5C2B82ABE2774005F243A /* Airdrop-from-iPad-to-iPad.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Airdrop-from-iPad-to-iPad.pdf"; sourceTree = "<group>"; };
+		D6E5C2BA2ABE277D005F243A /* Compass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compass.swift; sourceTree = "<group>"; };
+		D6E5C2BC2ABE281C005F243A /* Dummy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
+		D6E5C2BD2ABE281C005F243A /* Compass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Compass.m; sourceTree = "<group>"; };
+		D6E5C2C02ABE282A005F243A /* StraboSpot2-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "StraboSpot2-Bridging-Header.h"; sourceTree = "<group>"; };
+		D6E5C2C12ABE2CA1005F243A /* compass_button_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = compass_button_click.mp3; path = "../../../Strabo Resources/UI Animations and sounds/compass_button_click.mp3"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -86,6 +99,13 @@
 		13B07FAE1A68108700A75B9A /* StraboSpot2 */ = {
 			isa = PBXGroup;
 			children = (
+				D6E5C2C12ABE2CA1005F243A /* compass_button_click.mp3 */,
+				D6E5C2C02ABE282A005F243A /* StraboSpot2-Bridging-Header.h */,
+				D6E5C2BD2ABE281C005F243A /* Compass.m */,
+				D6E5C2BC2ABE281C005F243A /* Dummy.swift */,
+				D6E5C2BA2ABE277D005F243A /* Compass.swift */,
+				D6E5C2B82ABE2774005F243A /* Airdrop-from-iPad-to-iPad.pdf */,
+				D6E5C2AF2ABE2715005F243A /* Moving-Project-Backups-Out-of-StraboSpot2.pdf */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -207,7 +227,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -243,7 +263,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				D6E5C2C22ABE2CA2005F243A /* compass_button_click.mp3 in Resources */,
+				D6E5C2B92ABE2774005F243A /* Airdrop-from-iPad-to-iPad.pdf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				D6E5C2B22ABE2716005F243A /* Moving-Project-Backups-Out-of-StraboSpot2.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,8 +435,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6E5C2BB2ABE277D005F243A /* Compass.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				D6E5C2BE2ABE281C005F243A /* Dummy.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				D6E5C2BF2ABE281C005F243A /* Compass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,6 +458,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-StraboSpot2-StraboSpot2Tests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -459,6 +486,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-StraboSpot2-StraboSpot2Tests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = StraboSpot2Tests/Info.plist;
@@ -505,6 +533,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -537,6 +566,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "StraboSpot2-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
 				VERSIONING_SYSTEM = "apple-generic";

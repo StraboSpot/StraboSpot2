@@ -16,7 +16,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
-import deviceSound from '../../utils/sounds/sound';
+import DeviceSound from '../../utils/sounds/sound';
 import {formStyles} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import useMeasurementsHook from '../measurements/useMeasurements';
@@ -59,7 +59,7 @@ const Compass = (props) => {
 
   useEffect(() => {
     console.log('UE Compass []');
-    const buttonClick = new deviceSound('compass_button_click.mp3', deviceSound.MAIN_BUNDLE, (error) => {
+    const buttonClick = new DeviceSound('compass_button_click.mp3', DeviceSound.MAIN_BUNDLE, (error) => {
       if (error) console.log('Failed to load sound', error);
     });
     setButtonSound(buttonClick);
