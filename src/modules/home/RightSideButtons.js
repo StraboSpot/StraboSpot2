@@ -128,8 +128,8 @@ const RightSideButtons = (props) => {
           break;
         }
         default:
-          if (modalVisible === key) await dispatch(setModalVisible({modal: null}));
-          else await dispatch(setModalVisible({modal: key}));
+          if (modalVisible === key) dispatch(setModalVisible({modal: null}));
+          else dispatch(setModalVisible({modal: key}));
       }
     };
 

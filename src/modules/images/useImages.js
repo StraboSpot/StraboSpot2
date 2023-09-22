@@ -85,7 +85,7 @@ const useImages = () => {
         height: savedPhoto.height,
         width: savedPhoto.width,
       };
-      useHome.toggleLoading(true);
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (savedPhoto === 'cancelled') {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
@@ -93,7 +93,7 @@ const useImages = () => {
           dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         }
         else Alert.alert('No Photos To Save', 'Please try again...');
-        useHome.toggleLoading(false);
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
         return newImages.length;
       }
       else {
@@ -104,7 +104,7 @@ const useImages = () => {
     }
     catch (e) {
       Alert.alert('Error Getting Photo!', 'Please try again...');
-      useHome.toggleLoading(false);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
 

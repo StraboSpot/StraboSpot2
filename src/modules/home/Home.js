@@ -342,14 +342,14 @@ const Home = ({navigation, route}) => {
   };
 
   const goToCurrentLocation = async () => {
-    useHome.toggleLoading(true);
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
     try {
       await mapComponentRef.current.goToCurrentLocation();
-      useHome.toggleLoading(false);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
       console.error('Geolocation Error:', err);
-      useHome.toggleLoading(false);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(`${err.toString()}`);
     }
   };

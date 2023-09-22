@@ -13,7 +13,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
-import {setModalVisible} from '../home/home.slice';
+import {setLoadingStatus, setModalVisible} from '../home/home.slice';
 import useLocationHook from '../maps/useLocation';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
@@ -67,21 +67,29 @@ const TagsModal = (props) => {
   };
 
   const save = async () => {
-    let tagsToUpdate = [];
-    if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
-      useLocation.setPointAtCurrentLocation().then((spot) => {
-        checkedTagsTemp.map((tag) => {
-          if (isEmpty(tag.spots)) tag.spots = [];
-          tag.spots.push(spot.properties.id);
-          tagsToUpdate.push(tag);
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
+    try {
+      let tagsToUpdate = [];
+      if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
+        useLocation.setPointAtCurrentLocation().then((spot) => {
+          checkedTagsTemp.map((tag) => {
+            if (isEmpty(tag.spots)) tag.spots = [];
+            tag.spots.push(spot.properties.id);
+            tagsToUpdate.push(tag);
+          });
+          useTags.saveTag(tagsToUpdate);
+          props.goToCurrentLocation();
         });
-        useTags.saveTag(tagsToUpdate);
-        props.goToCurrentLocation();
-      });
+      }
+      else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
+      // if (props.close) props.close();
+      // dispatch(setLoadingStatus({view: 'home', bool: false}));
+      dispatch(setModalVisible({modal: null}));
     }
-    else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
-    // if (props.close) props.close();
-    dispatch(setModalVisible({modal: null}));
+    catch (err) {
+      console.error('Error saving Tag', err);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
   };
 
   const renderSpotTagsList = () => {

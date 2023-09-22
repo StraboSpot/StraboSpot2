@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import uiStyles from '../../shared/ui/ui.styles';
+import {setLoadingStatus} from '../home/home.slice';
 import useLocationHook from '../maps/useLocation';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
@@ -54,6 +55,7 @@ const Notes = (props) => {
 
   const saveForm = async (currentForm, pageTransition) => {
     try {
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
         const pointSetAtCurrentLocation = await useLocation.setPointAtCurrentLocation();
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
@@ -65,9 +67,11 @@ const Notes = (props) => {
       await currentForm.resetForm();
       if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
       else if (props.goToCurrentLocation) await props.goToCurrentLocation();
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
       console.log('Error submitting form', err);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
 

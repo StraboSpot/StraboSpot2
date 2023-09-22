@@ -7,161 +7,202 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {
+  PRIMARY_ACCENT_COLOR,
+  PRIMARY_TEXT_COLOR,
+} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
+import {setLoadingStatus} from '../home/home.slice';
 import useLocationHook from '../maps/useLocation';
 import {MODAL_KEYS} from '../page/page.constants';
-import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
+import {
+  updatedModifiedTimestampsBySpotsIds,
+  updatedProject,
+} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const SampleModal = (props) => {
-    const dispatch = useDispatch();
-    const modalVisible = useSelector(state => state.home.modalVisible);
-    const preferences = useSelector(state => state.project.project.preferences) || {};
-    const spot = useSelector(state => state.spot.selectedSpot);
+  const dispatch = useDispatch();
+  const modalVisible = useSelector(state => state.home.modalVisible);
+  const preferences = useSelector(state => state.project.project.preferences) || {};
+  const spot = useSelector(state => state.spot.selectedSpot);
 
-    const [useForm] = useFormHook();
-    const [useSpots] = useSpotsHook();
-    const useLocation = useLocationHook();
+  const [useForm] = useFormHook();
+  const [useSpots] = useSpotsHook();
+  const useLocation = useLocationHook();
 
-    const [namePrefix, setNamePrefix] = useState(null);
-    const [startingNumber, setStartingNumber] = useState(null);
+  const [namePrefix, setNamePrefix] = useState(null);
+  const [startingNumber, setStartingNumber] = useState(null);
 
-    const formRef = useRef(null);
+  const formRef = useRef(null);
 
-    const formName = ['general', 'samples'];
+  const formName = ['general', 'samples'];
 
-    // Relevant keys for quick-entry modal
-    const firstKeys = ['sample_id_name', 'label', 'sample_description'];
-    const inplacenessKey = 'inplaceness_of_sample';
-    const orientedKey = 'oriented_sample';
-    const lastKeys = ['sample_notes'];
+  // Relevant keys for quick-entry modal
+  const firstKeys = ['sample_id_name', 'label', 'sample_description'];
+  const inplacenessKey = 'inplaceness_of_sample';
+  const orientedKey = 'oriented_sample';
+  const lastKeys = ['sample_notes'];
 
-    // Relevant fields for quick-entry modal
-    const survey = useForm.getSurvey(formName);
-    const choices = useForm.getChoices(formName);
-    const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
-    const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
+  // Relevant fields for quick-entry modal
+  const survey = useForm.getSurvey(formName);
+  const choices = useForm.getChoices(formName);
+  const firstKeysFields = firstKeys.map(k =>
+    survey.find(f => f.name === k),
+  );
+  const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
-    useLayoutEffect(() => {
-      console.log('ULE SampleModal []');
-      return () => confirmLeavePage();
-    }, []);
+  useLayoutEffect(() => {
+    console.log('ULE SampleModal []');
+    return () => confirmLeavePage();
+  }, []);
 
-    useEffect(() => {
-      console.log('UE SampleModal [spot]', spot);
-      setNamePrefix(preferences.sample_prefix || 'Unnamed');
+  useEffect(() => {
+    console.log('UE SampleModal [spot]', spot);
+    setNamePrefix(preferences.sample_prefix || 'Unnamed');
 
+    setStartingNumber(
+      preferences.starting_sample_number
+        || spot.properties?.samples?.length + 1
+        || getAllSamplesCount(),
+    );
+    // preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
+  }, [spot]);
 
-      setStartingNumber(
-        preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || getAllSamplesCount());
-      // preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
-    }, [spot]);
+  const confirmLeavePage = () => {
+    if (formRef.current && formRef.current.dirty) {
+      const formCurrent = formRef.current;
+      Alert.alert(
+        'Unsaved Changes',
+        'Would you like to save your sample before continuing?',
+        [
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () => saveForm(formCurrent),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
 
-    const confirmLeavePage = () => {
-      if (formRef.current && formRef.current.dirty) {
-        const formCurrent = formRef.current;
-        Alert.alert('Unsaved Changes',
-          'Would you like to save your sample before continuing?',
-          [
-            {
-              text: 'No',
-              style: 'cancel',
-            },
-            {
-              text: 'Yes',
-              onPress: () => saveForm(formCurrent),
-            },
-          ],
-          {cancelable: false},
-        );
-      }
-    };
+  const getAllSamplesCount = async () => {
+    const count = await useSpots.getAllSpotSamplesCount();
+    console.log('SAMPLE COUNT', count);
+    setStartingNumber(count);
+  };
 
-    const getAllSamplesCount = async () => {
-      const count = await useSpots.getAllSpotSamplesCount();
-      console.log('SAMPLE COUNT', count);
-      setStartingNumber(count);
-    };
+  const onOrientedButtonPress = (i) => {
+    if (i === 0 && formRef.current?.values[orientedKey] === 'yes') {
+      formRef.current?.setFieldValue(orientedKey, undefined);
+    }
+ else if (i === 0) formRef.current?.setFieldValue(orientedKey, 'yes');
+    else if (i === 1 && formRef.current?.values[orientedKey] === 'no') {
+      formRef.current?.setFieldValue(orientedKey, undefined);
+    }
+ else formRef.current?.setFieldValue(orientedKey, 'no');
+  };
 
-    const onOrientedButtonPress = (i) => {
-      if (i === 0 && formRef.current?.values[orientedKey] === 'yes') {
-        formRef.current?.setFieldValue(orientedKey, undefined);
-      }
-      else if (i === 0) formRef.current?.setFieldValue(orientedKey, 'yes');
-      else if (i === 1 && formRef.current?.values[orientedKey] === 'no') {
-        formRef.current?.setFieldValue(orientedKey, undefined);
-      }
-      else formRef.current?.setFieldValue(orientedKey, 'no');
-    };
+  const renderForm = (formProps) => {
+    return (
+      <React.Fragment>
+        <Form
+          {...{
+            formName: props.formName,
+            surveyFragment: firstKeysFields,
+            ...props.formProps,
+          }}
+        />
+        <FormSlider
+          fieldKey={inplacenessKey}
+          formProps={props.formProps}
+          survey={survey}
+          choices={choices}
+          labels={['In Place', 'Float']}
+        />
+        <ButtonGroup
+          selectedIndex={
+            formRef.current?.values[orientedKey] === 'yes'
+              ? 0
+              : formRef.current?.values[orientedKey] === 'no'
+              ? 1
+              : undefined
+          }
+          onPress={onOrientedButtonPress}
+          buttons={['Oriented', 'Unoriented']}
+          containerStyle={{height: 40, borderRadius: 10}}
+          buttonStyle={{padding: 5}}
+          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+          textStyle={{color: PRIMARY_TEXT_COLOR}}
+        />
+        <Form
+          {...{
+            formName: props.formName,
+            surveyFragment: lastKeysFields,
+            ...props.formProps,
+          }}
+        />
+      </React.Fragment>
+    );
+  };
 
-    const renderForm = (formProps) => {
-      return (
+  const renderSamplesModal = () => {
+    return (
+      <Modal onPress={props.onPress}>
         <React.Fragment>
-          <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-          <FormSlider
-            fieldKey={inplacenessKey}
-            formProps={props.formProps}
-            survey={survey}
-            choices={choices}
-            labels={['In Place', 'Float']}
+          <Formik
+            innerRef={formRef}
+            initialValues={{
+              sample_id_name: namePrefix + startingNumber,
+              inplaceness_of_sample: '5___definitely',
+            }}
+            onSubmit={values => console.log('Submitting form...', values)}
+            enableReinitialize={true}>
+            {formProps => <View style={{}}>{renderForm(formProps)}</View>}
+          </Formik>
+          <SaveButton
+            title={'Save Sample'}
+            onPress={() => saveForm(formRef.current)}
           />
-          <ButtonGroup
-            selectedIndex={formRef.current?.values[orientedKey] === 'yes' ? 0
-              : formRef.current?.values[orientedKey] === 'no' ? 1
-                : undefined}
-            onPress={onOrientedButtonPress}
-            buttons={['Oriented', 'Unoriented']}
-            containerStyle={{height: 40, borderRadius: 10}}
-            buttonStyle={{padding: 5}}
-            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-            textStyle={{color: PRIMARY_TEXT_COLOR}}
-          />
-          <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
         </React.Fragment>
-      );
-    };
+      </Modal>
+    );
+  };
 
-    const renderSamplesModal = () => {
-      return (
-        <Modal onPress={props.onPress}>
-          <React.Fragment>
-            <Formik
-              innerRef={formRef}
-              initialValues={{sample_id_name: namePrefix + startingNumber, inplaceness_of_sample: '5___definitely'}}
-              onSubmit={values => console.log('Submitting form...', values)}
-              enableReinitialize={true}
-            >
-              {formProps => (
-                <View style={{}}>
-                  {renderForm(formProps)}
-                </View>
-              )}
-            </Formik>
-            <SaveButton title={'Save Sample'} onPress={() => saveForm(formRef.current)}/>
-          </React.Fragment>
-        </Modal>
-      );
-    };
-
-    const saveForm = async (currentForm) => {
+  const saveForm = async (currentForm) => {
+    try {
       let newSample = currentForm.values;
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        let pointSetAtCurrentLocation = await useLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation
+          = await useLocation.setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
-          properties: {...pointSetAtCurrentLocation.properties, samples: [newSample]},
+          properties: {
+            ...pointSetAtCurrentLocation.properties,
+            samples: [newSample],
+          },
         };
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
         dispatch(editedOrCreatedSpot(pointSetAtCurrentLocation));
-        dispatch(updatedModifiedTimestampsBySpotsIds([pointSetAtCurrentLocation.properties.id]));
+        dispatch(
+          updatedModifiedTimestampsBySpotsIds([
+            pointSetAtCurrentLocation.properties.id,
+          ]),
+        );
         await props.goToCurrentLocation();
       }
-      else {
-        const samples = spot.properties?.samples ? [...spot.properties.samples, newSample] : [newSample];
+ else {
+        const samples = spot.properties?.samples
+          ? [...spot.properties.samples, newSample]
+          : [newSample];
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
         const updatedPreferences = {
@@ -169,15 +210,20 @@ const SampleModal = (props) => {
           sample_prefix: namePrefix,
           starting_sample_number: startingNumber + 1,
         };
-        dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+        dispatch(
+          updatedProject({field: 'preferences', value: updatedPreferences}),
+        );
       }
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
-    };
+    }
+ catch (err) {
+      console.error('Error saving Sample', err);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+  };
 
-
-    if (Platform.OS === 'android') return renderSamplesModal();
-    else return renderSamplesModal();
-  }
-;
-
+  if (Platform.OS === 'android') return renderSamplesModal();
+  else return renderSamplesModal();
+};
 export default SampleModal;
