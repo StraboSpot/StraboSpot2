@@ -62,7 +62,6 @@ import {
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
-import useHomeHook from './useHome';
 
 const {State: TextInputState} = TextInput;
 
@@ -75,7 +74,6 @@ const Home = ({navigation, route}) => {
   const notebookPanelWidth = 400;
 
   const useExport = useExportHook();
-  const [useHome] = useHomeHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();

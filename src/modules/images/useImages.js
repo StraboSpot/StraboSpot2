@@ -10,7 +10,6 @@ import {STRABO_APIS} from '../../services/urls.constants';
 import useDeviceHook from '../../services/useDevice';
 import {getNewId} from '../../shared/Helpers';
 import {setLoadingStatus} from '../home/home.slice';
-import useHomeHook from '../home/useHome';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
@@ -24,7 +23,6 @@ import {
 const useImages = () => {
   const navigation = useNavigation();
 
-  const [useHome] = useHomeHook();
   const useDevice = useDeviceHook();
   // const [useSpots] = useSpotsHook();
 
