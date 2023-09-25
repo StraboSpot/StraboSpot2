@@ -11,8 +11,9 @@ import overlayStyles from './overlay.styles';
 const MapActionsDialog = (props) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const {isInternetReachable, isConnected} = useSelector(state => state.home.isOnline);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
+  const {isInternetReachable, isConnected} = useSelector(state => state.home.isOnline);
 
   const actions = [
     {key: 'zoom', title: 'Zoom to Extent of Spots'},
@@ -29,7 +30,9 @@ const MapActionsDialog = (props) => {
         || (!isInternetReachable && isConnected && currentBasemap?.source)))
       || (item.key === 'stereonet' && Platform.OS === 'ios')
       || (item.key === 'stratSection' && stratSection)
-      || item.key !== 'saveMap' && item.key !== 'stereonet' && item.key !== 'stratSection') {
+      || (item.key === 'mapMeasurement' && !stratSection && !currentImageBasemap)
+      || item.key !== 'saveMap' && item.key !== 'stereonet' && item.key !== 'stratSection'
+      && item.key !== 'mapMeasurement') {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
