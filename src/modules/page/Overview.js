@@ -52,7 +52,7 @@ const Overview = (props) => {
 
   useEffect(() => {
     console.log('UE Overview [spot]', spot);
-    setIsTraceSurfaceFeatureEnabled((spot.properties.trace?.trace_feature) || spot.properties.surface_feature);
+    setIsTraceSurfaceFeatureEnabled(!!(spot.properties.trace?.trace_feature || spot.properties.surface_feature));
     setIsTraceSurfaceFeatureEdit(false);
   }, [spot]);
 
