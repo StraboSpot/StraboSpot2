@@ -99,8 +99,17 @@ const usePage = () => {
     const sedPagesWithoutSedRocks = [...SED_PAGES.slice(1, SED_PAGES.length)];
     return sedPagesWithoutSedRocks.reduce((acc, page) => {
       if ((!page.testing || (isTestingMode && page?.testing))
-        && (page.key !== PAGE_KEYS.STRAT_SECTION || (page.key === PAGE_KEYS.STRAT_SECTION
-          && spot.properties?.surface_feature?.surface_feature_type !== 'strat_interval'))) {
+        && (page.key !== PAGE_KEYS.STRAT_SECTION
+          || (page.key === PAGE_KEYS.STRAT_SECTION
+            && spot.properties?.surface_feature?.surface_feature_type !== 'strat_interval'
+            && !spot.properties?.strat_section_id))
+        && (page.key !== PAGE_KEYS.INTERVAL
+          || (page.key === PAGE_KEYS.INTERVAL
+            && spot.properties?.surface_feature?.surface_feature_type === 'strat_interval'))
+        && (page.key !== PAGE_KEYS.INTERPRETATIONS
+          || (page.key === PAGE_KEYS.INTERPRETATIONS
+            && (spot.properties?.surface_feature?.surface_feature_type === 'strat_interval'
+              || spot.properties?.strat_section_id)))) {
         return [...acc, page];
       }
       return acc;
