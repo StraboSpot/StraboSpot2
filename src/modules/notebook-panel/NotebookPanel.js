@@ -12,6 +12,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {setModalVisible} from '../home/home.slice';
 import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
+import usePageHoook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
@@ -30,6 +31,7 @@ const NotebookPanel = (props) => {
   const spots = useSelector(state => state.spot.spots);
 
   const [useSpots] = useSpotsHook();
+  const usePage = usePageHoook();
 
   const [textInputAnimate] = useState(new Animated.Value(0));
 
@@ -47,7 +49,14 @@ const NotebookPanel = (props) => {
   };
 
   const renderNotebookContent = () => {
-    const page = NOTEBOOK_PAGES.find(p => p.key === (pageVisible || PAGE_KEYS.OVERVIEW));
+    const isRelevantPage = pageVisible === PAGE_KEYS.OVERVIEW
+      || usePage.getRelevantGeneralPages().map(p=>p.key).includes(pageVisible)
+      || usePage.getRelevantPetPages().map(p=>p.key).includes(pageVisible)
+      || usePage.getRelevantSedPages().map(p=>p.key).includes(pageVisible);
+    if (!isRelevantPage) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
+
+    let pageKey = isRelevantPage ? pageVisible : PAGE_KEYS.OVERVIEW;
+    const page = NOTEBOOK_PAGES.find(p => p.key === pageKey);
     const Page = page?.page_component || Overview;
     let pageProps = {page: page, openMainMenu: props.openMainMenu};
     if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
