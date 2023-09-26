@@ -17,7 +17,7 @@ const compileNodeModules = [
   'react-native-gesture-handler',
   'react-native-image-picker',
   'react-native-reanimated',
-  'react-native-vector-icons'
+  'react-native-vector-icons',
 ].map(moduleName => path.resolve(__dirname, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
@@ -70,8 +70,8 @@ const ttfLoaderConfiguration = {
 
 const cssLoaderConfiguration = {
   test: /\.css$/i,
-  use: ['style-loader', 'css-loader']
-}
+  use: ['style-loader', 'css-loader'],
+};
 
 module.exports = {
   entry: [
@@ -94,6 +94,9 @@ module.exports = {
   },
   module: {
     rules: [babelLoaderConfiguration, imageLoaderConfiguration, ttfLoaderConfiguration, cssLoaderConfiguration],
+  },
+  devServer: {
+    allowedHosts: 'all',
   },
   plugins: [
     new HtmlWebpackPlugin({template: path.join(__dirname, 'index.html')}),
