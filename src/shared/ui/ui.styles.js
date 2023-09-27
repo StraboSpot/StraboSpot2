@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
   spacer: {
     padding: 10,

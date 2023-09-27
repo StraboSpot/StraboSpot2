@@ -121,7 +121,7 @@ const Basemap = (props) => {
       longitude: initialCenter[0],
       latitude: initialCenter[1],
       zoom: initialZoom,
-    }
+    };
 
     console.log('Setting Initial View State', initialViewState);
     setViewState(initialViewState);

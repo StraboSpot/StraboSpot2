@@ -5,7 +5,7 @@ import {ButtonGroup} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, PRIMARY_TEXT_SIZE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
@@ -75,7 +75,7 @@ const BasicSedPage = (props) => {
             containerStyle={{height: 40, borderRadius: 10}}
             buttonStyle={{padding: 5}}
             selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-            textStyle={{color: PRIMARY_TEXT_COLOR}}
+            textStyle={{color: PRIMARY_TEXT_COLOR, fontSize: PRIMARY_TEXT_SIZE}}
           />
           <BasicPageDetail
             closeDetailView={() => setIsDetailView(false)}
