@@ -87,17 +87,23 @@ const StratSectionPage = (props) => {
           save={saveStratSection}
         />
         <View style={{flex: 1}}>
-          <Formik
-            innerRef={stratSectionRef}
-            onSubmit={() => console.log('Submitting form...')}
-            onReset={() => console.log('Resetting form...')}
-            validate={values => useForm.validateForm({formName: formName, values: values})}
-            initialValues={stratSection}
-            validateOnChange={false}
-            enableReinitialize={true}
-          >
-            {formProps => <Form {...{...formProps, formName: formName}}/>}
-          </Formik>
+          <FlatList
+            ListHeaderComponent={
+              <>
+                <Formik
+                  innerRef={stratSectionRef}
+                  onSubmit={() => console.log('Submitting form...')}
+                  onReset={() => console.log('Resetting form...')}
+                  validate={values => useForm.validateForm({formName: formName, values: values})}
+                  initialValues={stratSection}
+                  validateOnChange={false}
+                  enableReinitialize={true}
+                >
+                  {formProps => <Form {...{...formProps, formName: formName}}/>}
+                </Formik>
+              </>
+            }
+          />
         </View>
       </View>
     );
