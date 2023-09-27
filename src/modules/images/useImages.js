@@ -3,6 +3,7 @@ import {Alert, Dimensions, Image, PermissionsAndroid, Platform} from 'react-nati
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
@@ -20,9 +21,10 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 
+
 const useImages = () => {
   const navigation = useNavigation();
-
+  const toast = useToast();
   const useDevice = useDeviceHook();
   // const [useSpots] = useSpotsHook();
 
@@ -90,7 +92,7 @@ const useImages = () => {
           dispatch(editedSpotImages(newImages));
           dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         }
-        else Alert.alert('No Photos To Save', 'Please try again...');
+        else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         return newImages.length;
       }

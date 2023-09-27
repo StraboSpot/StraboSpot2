@@ -43,16 +43,6 @@ const App = () => {
   const persistor = persistStore(store);
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
-  // useEffect(() => {
-  //   if (Platform.OS === 'ios') {
-  //     console.log(VersionCheck.getPackageName());        // com.reactnative.app
-  //     console.log(VersionCheck.getCurrentBuildNumber()); // 10
-  //     console.log(VersionCheck.getCurrentVersion());     // 0.1.1
-  //     VersionCheck.getStoreUrl({appID: 1555903455}).then(storeUrl => console.log('Store URL', storeUrl));
-  //     VersionCheck.needUpdate({currentVersion: version}).then(update => setIsUpdateNeeded(update?.isNeeded));
-  //   }
-  // }, []);
-
   return (
     <Toast>
       <Provider store={store}>

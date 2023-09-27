@@ -118,8 +118,8 @@ const Basemap = (props) => {
 
   // Update spots in extent and saved view (center and zoom)
   const onMapIdle = async (e) => {
-    console.log('Event onMapIdle', e);
-    props.updateSpotsInMapExtent();
+    // console.log('Event onMapIdle', e);
+    await props.updateSpotsInMapExtent();
     if (!props.imageBasemap && !props.stratSection && mapRef?.current) {
       const newCenter = await mapRef.current.getCenter();
       const newZoom = await mapRef.current.getZoom();
