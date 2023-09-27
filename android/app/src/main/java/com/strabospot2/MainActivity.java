@@ -36,13 +36,5 @@ public class MainActivity extends ReactActivity {
   @Override
           protected void onCreate(Bundle savedInstanceState) {
               super.onCreate(savedInstanceState);
-              hideNavigationBar();
-          }
-
-          private void hideNavigationBar() {
-            getWindow().getDecorView().getWindowInsetsController().hide(
-              android.view.WindowInsets.Type.statusBars()
-              | android.view.WindowInsets.Type.navigationBars()
-           );
-          }
+          }))
 }

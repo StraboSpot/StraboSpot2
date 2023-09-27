@@ -3,6 +3,7 @@ import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'r
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -64,6 +65,8 @@ import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 
 const {State: TextInputState} = TextInput;
+SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
+SystemNavigationBar.setNavigationColor('translucent');
 
 const Home = ({navigation, route}) => {
 
