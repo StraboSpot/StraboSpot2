@@ -11,7 +11,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {setModalVisible} from '../home/home.slice';
 import Overview from '../page/Overview';
-import {NOTEBOOK_PAGES, PAGE_KEYS} from '../page/page.constants';
+import {NOTEBOOK_PAGES, PAGE_KEYS, SUBPAGES} from '../page/page.constants';
 import usePageHoook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
@@ -52,7 +52,8 @@ const NotebookPanel = (props) => {
     const isRelevantPage = pageVisible === PAGE_KEYS.OVERVIEW
       || usePage.getRelevantGeneralPages().map(p=>p.key).includes(pageVisible)
       || usePage.getRelevantPetPages().map(p=>p.key).includes(pageVisible)
-      || usePage.getRelevantSedPages().map(p=>p.key).includes(pageVisible);
+      || usePage.getRelevantSedPages().map(p=>p.key).includes(pageVisible)
+      || SUBPAGES.map(p=>p.key).includes(pageVisible);
     if (!isRelevantPage) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
 
     let pageKey = isRelevantPage ? pageVisible : PAGE_KEYS.OVERVIEW;
