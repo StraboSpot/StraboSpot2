@@ -356,8 +356,8 @@ const ProjectOptionsDialogBox = (props) => {
             key={i}
             title={l}
             containerStyle={commonStyles.checkboxContainer}
-            checkedIcon='dot-circle-o'
-            uncheckedIcon='circle-o'
+            checkedIcon={'dot-circle-o'}
+            uncheckedIcon={'circle-o'}
             checked={checked === i + 1}
             onPress={() => {
               setAction('');

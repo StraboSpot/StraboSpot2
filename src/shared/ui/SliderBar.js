@@ -32,7 +32,10 @@ const SliderBar = (props) => {
           : [styles.sliderTextContainer, props.sliderTextContainer]}>
           {props.labels?.map((label, index) => {
             return (
-              <Text key={label + index} style={props.rotateLabels && {transform: [{rotate: '290deg'}], marginLeft: -12}}>
+              <Text
+                key={label + index}
+                style={props.rotateLabels && {transform: [{rotate: '290deg'}], marginLeft: -12}}
+              >
                 {label}
               </Text>
             );

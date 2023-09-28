@@ -4,7 +4,7 @@ import {FlatList} from 'react-native';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {PAGE_KEYS} from '../page/page.constants';
-import {useTagsHook, TagsListItem} from '../tags';
+import {TagsListItem, useTagsHook} from '../tags';
 
 const TagsAtSpotList = (props) => {
   const [useTags] = useTagsHook();

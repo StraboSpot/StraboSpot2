@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Dimensions, Image, Platform, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';

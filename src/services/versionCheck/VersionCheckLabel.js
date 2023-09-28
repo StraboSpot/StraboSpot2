@@ -50,8 +50,8 @@ const VersionCheckLabel = (props) => {
               </View>
             </View>
           </View>
-          <View style={styles.twelvePointBurst30} />
-          <View style={styles.twelvePointBurst60} />
+          <View style={styles.twelvePointBurst30}/>
+          <View style={styles.twelvePointBurst60}/>
         </Animated.View>
       )}
     </Pressable>

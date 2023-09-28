@@ -8,7 +8,7 @@ export const BLUE = 'dodgerblue'; // (#1e90ff)
 export const RED = 'red';
 export const WHITE = '#ffffff';
 export const BLACK = 'black';
-export const GOLD =  '#FFD700';
+export const GOLD = '#FFD700';
 //export const REACT_NATIVE_ELEMENTS_BLUE = '#2089dc';
 
 export const PRIMARY_BACKGROUND_COLOR = LIGHTGREY;

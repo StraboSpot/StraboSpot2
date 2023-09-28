@@ -107,10 +107,10 @@ const CustomEndpoint = (props) => {
                     <Text style={[props.iconText]}>Verified</Text>
                     <Icon
                       reverse
-                      name='checkmark-sharp'
-                      type='ionicon'
+                      name={'checkmark-sharp'}
+                      type={'ionicon'}
                       size={10}
-                      color='green'
+                      color={'green'}
                     />
                   </View>
                 )

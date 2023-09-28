@@ -20,7 +20,7 @@ const Documentation = () => {
       const canOpen = await Linking.canOpenURL(path);
       canOpen && (await Linking.openURL(path));
     }
- catch (err) {
+    catch (err) {
       console.error('Can\t open URL', err);
       Alert.alert(' Unable to open URL!');
     }

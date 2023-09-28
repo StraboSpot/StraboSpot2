@@ -1,11 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-import {
-  GOLD,
-  PRIMARY_HEADER_TEXT_SIZE,
-  UPDATE_LABEL_HEIGHT,
-  UPDATE_LABEL_WIDTH,
-} from '../../shared/styles.constants';
+import {GOLD, PRIMARY_HEADER_TEXT_SIZE, UPDATE_LABEL_HEIGHT, UPDATE_LABEL_WIDTH} from '../../shared/styles.constants';
 
 const versionCheckStyles = StyleSheet.create({
   container: {

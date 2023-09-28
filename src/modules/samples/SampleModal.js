@@ -7,19 +7,13 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {
-  PRIMARY_ACCENT_COLOR,
-  PRIMARY_TEXT_COLOR,
-} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
 import useLocationHook from '../maps/useLocation';
 import {MODAL_KEYS} from '../page/page.constants';
-import {
-  updatedModifiedTimestampsBySpotsIds,
-  updatedProject,
-} from '../project/projects.slice';
+import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
@@ -65,8 +59,8 @@ const SampleModal = (props) => {
 
     setStartingNumber(
       preferences.starting_sample_number
-        || spot.properties?.samples?.length + 1
-        || getAllSamplesCount(),
+      || spot.properties?.samples?.length + 1
+      || getAllSamplesCount(),
     );
     // preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
   }, [spot]);
@@ -102,11 +96,11 @@ const SampleModal = (props) => {
     if (i === 0 && formRef.current?.values[orientedKey] === 'yes') {
       formRef.current?.setFieldValue(orientedKey, undefined);
     }
- else if (i === 0) formRef.current?.setFieldValue(orientedKey, 'yes');
+    else if (i === 0) formRef.current?.setFieldValue(orientedKey, 'yes');
     else if (i === 1 && formRef.current?.values[orientedKey] === 'no') {
       formRef.current?.setFieldValue(orientedKey, undefined);
     }
- else formRef.current?.setFieldValue(orientedKey, 'no');
+    else formRef.current?.setFieldValue(orientedKey, 'no');
   };
 
   const renderForm = (formProps) => {
@@ -131,8 +125,8 @@ const SampleModal = (props) => {
             formRef.current?.values[orientedKey] === 'yes'
               ? 0
               : formRef.current?.values[orientedKey] === 'no'
-              ? 1
-              : undefined
+                ? 1
+                : undefined
           }
           onPress={onOrientedButtonPress}
           buttons={['Oriented', 'Unoriented']}
@@ -199,7 +193,7 @@ const SampleModal = (props) => {
         );
         await props.goToCurrentLocation();
       }
- else {
+      else {
         const samples = spot.properties?.samples
           ? [...spot.properties.samples, newSample]
           : [newSample];
@@ -217,7 +211,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
     }
- catch (err) {
+    catch (err) {
       console.error('Error saving Sample', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }

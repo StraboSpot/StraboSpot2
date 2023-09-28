@@ -478,7 +478,7 @@ const useMapSymbology = () => {
       lineDasharray: 'line-dasharray',
       lineWidth: 'line-width',
     };
-   return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
       ...acc,
       ...{
         [key]: Object.entries(value).reduce((acc2, [property, style]) => {

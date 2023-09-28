@@ -50,10 +50,10 @@ const NotebookPanel = (props) => {
 
   const renderNotebookContent = () => {
     const isRelevantPage = pageVisible === PAGE_KEYS.OVERVIEW
-      || usePage.getRelevantGeneralPages().map(p=>p.key).includes(pageVisible)
-      || usePage.getRelevantPetPages().map(p=>p.key).includes(pageVisible)
-      || usePage.getRelevantSedPages().map(p=>p.key).includes(pageVisible)
-      || SUBPAGES.map(p=>p.key).includes(pageVisible);
+      || usePage.getRelevantGeneralPages().map(p => p.key).includes(pageVisible)
+      || usePage.getRelevantPetPages().map(p => p.key).includes(pageVisible)
+      || usePage.getRelevantSedPages().map(p => p.key).includes(pageVisible)
+      || SUBPAGES.map(p => p.key).includes(pageVisible);
     if (!isRelevantPage) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
 
     let pageKey = isRelevantPage ? pageVisible : PAGE_KEYS.OVERVIEW;

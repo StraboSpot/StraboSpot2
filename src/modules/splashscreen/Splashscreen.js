@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  ImageBackground,
-  Platform,
-  ScrollView,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import {ImageBackground, Platform, ScrollView, Text, useWindowDimensions, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -32,8 +25,8 @@ const Splashscreen = (props) => {
       style={splashscreenStyles.backgroundImage}>
       <ScrollView automaticallyAdjustKeyboardInsets={true} style={{flex: 1}}>
         <View style={splashscreenStyles.wifiIndicatorContainer}>
-          {Platform.OS === 'ios' && <BatteryInfo />}
-          <ConnectionStatusIcon />
+          {Platform.OS === 'ios' && <BatteryInfo/>}
+          <ConnectionStatusIcon/>
         </View>
         <View style={splashscreenStyles.contentContainer}>
           <View style={splashscreenStyles.titleContainer}>
@@ -60,7 +53,7 @@ const Splashscreen = (props) => {
         )}
       </ScrollView>
       <Loading isLoading={loading} size={60}/>
-      <VersionCheckLabel />
+      <VersionCheckLabel/>
     </ImageBackground>
   );
 };

@@ -85,7 +85,7 @@ export const PAGE_KEYS = {
   TAGS: 'tags',
   TERNARY: 'ternary',
   THREE_D_STRUCTURES: '_3d_structures',
-  TEPHRA: 'tephra'
+  TEPHRA: 'tephra',
 };
 
 export const OVERVIEW_PAGE = {

@@ -1,11 +1,7 @@
 import React from 'react';
 
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
+import Animated, {runOnJS, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {setVertexEndCoords} from './maps.slice';
@@ -66,7 +62,7 @@ const VertexDrag = () => {
   return (
     <React.Fragment>
       <GestureDetector gesture={gesture}>
-        <Animated.View style={[mapStyles.vertexEditPoint, animatedStyles]} />
+        <Animated.View style={[mapStyles.vertexEditPoint, animatedStyles]}/>
       </GestureDetector>
     </React.Fragment>
   );

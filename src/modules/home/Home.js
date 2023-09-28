@@ -17,7 +17,6 @@ import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import uiStyles from '../../shared/ui/ui.styles';
-import ImageSlider from '../images/ImageSlider';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
@@ -667,7 +666,7 @@ const Home = ({navigation, route}) => {
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
-      {showUpdateLabel && <VersionCheckLabel />}
+      {showUpdateLabel && <VersionCheckLabel/>}
     </Animated.View>
   );
 };

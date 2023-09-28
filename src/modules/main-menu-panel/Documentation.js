@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, FlatList, Linking, Platform, Text, View} from 'react-native';
+import {Alert, FlatList, Linking, Platform, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import Pdf from 'react-native-pdf';
@@ -44,7 +44,8 @@ const Documentation = () => {
       label: 'helpDocument',
       name: 'Strabo Help Guide',
       file:
-        Platform.OS === 'ios' ? require('../../assets/documents/Strabo_Help_Guide.pdf') : {uri: 'bundle-assets://Strabo_Help_Guide.pdf'},
+        Platform.OS === 'ios' ? require('../../assets/documents/Strabo_Help_Guide.pdf')
+          : {uri: 'bundle-assets://Strabo_Help_Guide.pdf'},
     },
   ];
 
@@ -59,7 +60,7 @@ const Documentation = () => {
       if (canOpen) await Linking.openURL(path);
       else Alert.alert('Uh Oh!', `Can not open the url ${path}`);
     }
- catch (err) {
+    catch (err) {
       console.error('Can\t open URL', err);
       Alert.alert(' Unable to open URL!');
     }
@@ -107,7 +108,7 @@ const Documentation = () => {
           {item.name}
         </ListItem.Title>
       </ListItem.Content>
-      <ListItem.Chevron size={20} />
+      <ListItem.Chevron size={20}/>
     </ListItem>
   );
 
@@ -117,7 +118,7 @@ const Documentation = () => {
       if (Platform.OS === 'ios' && file.platform.includes('ios')) {
         filteredDocs.push(file);
       }
- else if (
+      else if (
         Platform.OS === 'android'
         && file.platform.includes('android')
       ) {
@@ -163,7 +164,7 @@ const Documentation = () => {
     <View style={{flex: 1}}>
       {renderHelpLink()}
       <View style={{alignItems: 'center'}}>
-        <SectionDivider dividerText={'FAQ\'s'} />
+        <SectionDivider dividerText={'FAQ\'s'}/>
       </View>
       {renderFAQItems()}
       {viewPDF()}

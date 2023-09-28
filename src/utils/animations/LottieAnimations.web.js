@@ -13,9 +13,9 @@ const LottieAnimation = ({doesLoop, show}) => {
       {show ? <ActivityIndicator size={75}/>
         : <Icon
           reverse
-          name='check'
-          type='material-community'
-          color='#517fa4'
+          name={'check'}
+          type={'material-community'}
+          color={'#517fa4'}
           size={35}
         />}
     </View>
