@@ -3,9 +3,24 @@ import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const homeStyles = StyleSheet.create({
+  batteryLevelContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 10,
+  },
   container: {
     flex: 1,
     overflow: 'hidden',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    position: 'absolute',
+    // top: 10,
+    // left: '50%',
+    width: '100%',
+    zIndex: -1,
+    justifyContent: 'flex-start',
   },
   imageSliderContainer: {
     flex: 1,
@@ -28,6 +43,11 @@ const homeStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  statusBarContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   toastText: {
     color: themes.PRIMARY_TEXT_COLOR,
@@ -113,7 +133,7 @@ const homeStyles = StyleSheet.create({
   },
   notebookButton: {
     position: 'absolute',
-    top: 10,
+    top: 30,
     right: 0,
   },
   // --- Bottom Left Icon (current location) ---
@@ -125,7 +145,7 @@ const homeStyles = StyleSheet.create({
   homeIconContainer: {
     position: 'absolute',
     left: 0,
-    top: 10,
+    top: 30,
     zIndex: -1,
   },
   currentZoomTextBlack: {
@@ -143,11 +163,6 @@ const homeStyles = StyleSheet.create({
     textShadowColor: themes.BLACK,
     textShadowRadius: 10,
     marginLeft: 40,
-  },
-  batteryLevelContainer: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    paddingLeft: 10,
   },
   addIntervalButton: {
     position: 'absolute',
@@ -168,11 +183,8 @@ const homeStyles = StyleSheet.create({
   zoomAndScaleBarContainer: {
     zIndex: 1,
     position: 'absolute',
-    bottom: 35,
-    left: '40%',
-    // flexDirection: 'row',
-    // alignItems: 'flex-end',
-    // backgroundColor: 'red'
+    bottom: 60,
+    left: 40,
   },
 });
 

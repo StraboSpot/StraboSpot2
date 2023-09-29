@@ -37,6 +37,12 @@ const styles = StyleSheet.create({
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
   },
+  connectionIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 50,
+  },
   customEndpointContainer: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -77,21 +83,6 @@ const styles = StyleSheet.create({
   imageIcon: {
     width: Platform.OS === 'web' ? 50 : 65,
     height: Platform.OS === 'web' ? 50 : 65,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    top: 10,
-    width: '100%',
-    zIndex: -1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  offlineIcon: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'white',
-    borderRadius: 50,
   },
   itemSeparator: {
     borderTopWidth: 1,

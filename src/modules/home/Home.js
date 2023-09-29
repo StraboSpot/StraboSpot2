@@ -62,6 +62,7 @@ import {
 import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
+import StatusBar from './StatusBar';
 
 const {State: TextInputState} = TextInput;
 SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));

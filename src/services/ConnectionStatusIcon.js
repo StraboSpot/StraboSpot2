@@ -19,14 +19,10 @@ const ConnectionStatusIcon = () => {
   };
 
   return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Image
-        source={getNetworkStatusIcon()}
-        style={uiStyles.offlineIcon}
-      />
-      {/*<Text>Is Online: {isOnline?.isInternetReachable?.toString()} </Text>*/}
-      {/*<Text>Is Connected: {isOnline?.isConnected?.toString()}</Text>*/}
-    </View>
+    <Image
+      source={getNetworkStatusIcon()}
+      style={uiStyles.connectionIcon}
+    />
   );
 };
 
