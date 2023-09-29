@@ -43,10 +43,11 @@ const useImport = () => {
       if (checkDirSuccess) {
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-        const zipFile = await useDevice.readDirectory(sourceDir + fileName + '/maps');
+        let zipFile = await useDevice.readDirectory(sourceDir + fileName + '/maps');
         console.log(sourceDir + ' zipFile' + zipFile[0]);
         if (zipFile) {
           dispatch(addedStatusMessage('Importing maps...'));
+          if (zipFile.length > 1) zipFile = zipFile.filter(zip => zip === 'OfflineTiles.zip');
           await unzipFile(sourceDir + fileName + '/maps/' + zipFile[0]);
           console.log('Offline Maps File Unzipped!');
         }
