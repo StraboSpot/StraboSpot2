@@ -17,7 +17,11 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {setBackupOverwriteModalVisible, setStatusMessageModalTitle} from '../home/home.slice';
+import {
+  setBackupOverwriteModalVisible,
+  setProjectLoadSelectionModalVisible,
+  setStatusMessageModalTitle,
+} from '../home/home.slice';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 
@@ -124,7 +128,7 @@ const ProjectList = (props) => {
     if (isInitialProjectLoadModalVisible) {
       dispatch(setSelectedProject({project: '', source: ''}));
       const res = loadSelectedProject(project);
-      console.log('Done loading project', res);
+      console.log('Done loading project from InitialProjectModal', res);
     }
     else setIsProjectOptionsModalVisible(true);
   };
@@ -144,8 +148,7 @@ const ProjectList = (props) => {
       console.log('Getting project...');
       if (!isEmpty(project)) useProject.destroyOldProject();
       if (props.source === 'device') {
-        // dispatch(clearedStatusMessages());
-        // dispatch(setStatusMessagesModalVisible(true));
+        dispatch(setProjectLoadSelectionModalVisible(false));
         const res = await useImport.loadProjectFromDevice(project);
         dispatch(setStatusMessageModalTitle(res.project.description.project_name));
         console.log('Done loading project', res);

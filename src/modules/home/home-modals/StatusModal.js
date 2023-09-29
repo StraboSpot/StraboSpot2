@@ -39,7 +39,11 @@ const StatusModal = (props) => {
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       await useDownload.initializeDownload(selectedProject.project);
     }
-    else dispatch(setStatusMessagesModalVisible(false));
+    else {
+      dispatch(setStatusMessagesModalVisible(false));
+      props.openMainMenu();
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+    }
   };
 
   return (
