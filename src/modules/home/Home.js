@@ -654,7 +654,7 @@ const Home = ({navigation, route}) => {
       <StatusModal
         openUrl={openStraboSpotURL}
         exportProject={() => exportProject()}
-        openMainMenu={() => toggleHomeDrawerButton()}
+        openMainMenu={() => !isMainMenuPanelVisible && toggleHomeDrawerButton()}
       />
       <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
       <UploadProgressModal/>
