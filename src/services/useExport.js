@@ -160,14 +160,7 @@ const useExport = () => {
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
         await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
-        await Promise.all(
-          Object.values(maps).map(async (map) => {
-            const mapId = await moveDistributedMap(map.mapId, fileName, deviceDir);
-            console.log('Moved map:', mapId);
-            promises.push(mapId);
-            console.log(promises);
-          }),
-        );
+        await zip(APP_DIRECTORIES.TILE_CACHE, deviceDir + fileName + '/maps/OfflineTiles.zip');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Finished Exporting ${mapCount} Offline Map${mapCount > 1 ? 's' : ''}.`));
       }
