@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
@@ -7,7 +7,6 @@ import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import ScaleBarAndZoom from '../../shared/ui/Scalebar';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
@@ -35,6 +34,8 @@ MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const Basemap = (props) => {
   console.log('Rendering Basemap...');
+  const zoomTextStyle = props.basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
+    : homeStyles.currentZoomTextBlack;
   // console.log('Basemap props:', props);
 
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
@@ -147,7 +148,8 @@ const Basemap = (props) => {
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
         <View style={homeStyles.zoomAndScaleBarContainer}>
-          <ScaleBarAndZoom basemap={props.basemap} center={center[1]} zoom={zoomText}/>
+          <Text style={zoomTextStyle}>Zoom:</Text>
+          <Text style={zoomTextStyle}>{zoomText.toFixed(1)}</Text>
         </View>
       )}
       <MapboxGL.MapView
@@ -172,7 +174,8 @@ const Basemap = (props) => {
         onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
         onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
         onDidFinishLoadingMap={onDidFinishLoadingMap}
-        scaleBarEnabled={false}
+        scaleBarEnabled={true}
+        scaleBarPosition={{bottom: 20, left: 80}}
       >
 
         {/* Blue dot for user location */}
