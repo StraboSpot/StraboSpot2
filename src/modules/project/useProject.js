@@ -263,6 +263,7 @@ const useProject = () => {
           dispatch(setStatusMessagesModalVisible(true));
           const res = await useImport.loadProjectFromDevice(selectedProject.project);
           console.log('Done loading project', res);
+          dispatch(setStatusMessagesModalVisible(false));
         }
         else if (selectedProject.source === 'server') {
           dispatch(setSelectedProject({project: '', source: ''}));
