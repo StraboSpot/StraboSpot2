@@ -612,10 +612,7 @@ const Home = ({navigation, route}) => {
         isSelectingForTagging={isSelectingForTagging}
         setDistance={d => setDistance(d)}
       />
-      <View style={uiStyles.iconContainer}>
-        {<BatteryInfo/>}
-        <ConnectionStatusIcon/>
-      </View>
+      <StatusBar/>
       {vertexStartCoords && <VertexDrag/>}
       <RightSideButtons
         closeNotebookPanel={closeNotebookPanel}
