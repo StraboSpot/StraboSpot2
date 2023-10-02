@@ -3,12 +3,6 @@ import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const homeStyles = StyleSheet.create({
-  batteryLevelContainer: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingLeft: 10,
-  },
   container: {
     flex: 1,
     overflow: 'hidden',

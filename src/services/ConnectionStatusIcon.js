@@ -21,7 +21,7 @@ const ConnectionStatusIcon = () => {
   return (
     <Image
       source={getNetworkStatusIcon()}
-      style={uiStyles.connectionIcon}
+      style={uiStyles.statusBarIcon}
     />
   );
 };

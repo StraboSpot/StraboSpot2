@@ -19,25 +19,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
     zIndex: 50,
   },
-  batteryLevelGreen: {
-    color: 'green',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 1,
+  batteryLevelTextContainer: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  batteryLevelYellow: {
-    color: 'yellow',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 1,
+  batteryLevelText: {
+    color: themes.BLACK,
+    fontWeight: 'bold',
+    fontSize: themes.SMALL_TEXT_SIZE,
   },
-  batteryLevelRed: {
-    color: 'red',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 1,
-  },
-  connectionIcon: {
+  statusBarIcon: {
     width: 40,
     height: 40,
     backgroundColor: 'white',
