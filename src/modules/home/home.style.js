@@ -13,14 +13,14 @@ const homeStyles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
   },
-  iconContainer: {
+  statusBarContainer: {
+    flex: 1,
     flexDirection: 'row',
     position: 'absolute',
-    // top: 10,
-    // left: '50%',
+    top: 10,
     width: '100%',
     zIndex: -1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   imageSliderContainer: {
     flex: 1,
@@ -43,11 +43,6 @@ const homeStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  statusBarContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   toastText: {
     color: themes.PRIMARY_TEXT_COLOR,
@@ -133,7 +128,7 @@ const homeStyles = StyleSheet.create({
   },
   notebookButton: {
     position: 'absolute',
-    top: 30,
+    top: 10,
     right: 0,
   },
   // --- Bottom Left Icon (current location) ---
@@ -145,7 +140,7 @@ const homeStyles = StyleSheet.create({
   homeIconContainer: {
     position: 'absolute',
     left: 0,
-    top: 30,
+    top: 10,
     zIndex: -1,
   },
   currentZoomTextBlack: {

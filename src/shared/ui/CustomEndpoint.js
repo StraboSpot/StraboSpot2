@@ -103,7 +103,7 @@ const CustomEndpoint = (props) => {
             <View style={uiStyles.customEndpointVerifyButtonContainer}>
               {isVerified
                 ? (
-                  <View style={[uiStyles.customEndpointVerifyIconContainer, props.iconContainer]}>
+                  <View style={uiStyles.customEndpointVerifyIconContainer}>
                     <Text style={[props.iconText]}>Verified</Text>
                     <Icon
                       reverse

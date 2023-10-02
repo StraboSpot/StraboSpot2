@@ -5,21 +5,21 @@ import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import homeStyles from './home.style';
 
-const StatusBar = (props) => {
-  return (
-    <React.Fragment>
-      {Platform.OS !== 'web' && <View style={homeStyles.iconContainer}>
+const StatusBar = () => {
+  if (Platform.OS !== 'web') {
+    return (
+      <React.Fragment>
         <View style={homeStyles.statusBarContainer}>
-          <View style={{marginStart: '50%'}}>
+          <View>
             <ConnectionStatusIcon/>
           </View>
-          <View style={{marginEnd: 10}}>
+          <View>
             {<BatteryInfo/>}
           </View>
         </View>
-      </View>}
-    </React.Fragment>
-  );
+      </React.Fragment>
+    );
+  }
 };
 
 export default StatusBar;
