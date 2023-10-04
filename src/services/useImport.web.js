@@ -35,7 +35,7 @@ const useImport = () => {
 
   const useDevice = useDeviceHook();
 
-  const copyZipMapsForDistribution = async (fileName, isExternal) => {
+  const copyZipMapsToProject = async (fileName, isExternal) => {
     try {
       const sourceDir = isExternal ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       const checkDirSuccess = await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
@@ -90,7 +90,7 @@ const useImport = () => {
     }
     dispatch(addedStatusMessage('Checking for map tiles to import...'));
     if (!isEmpty(mapNamesDb)) {
-      // const mapsFolderExists = await copyZipMapsForDistribution(selectedProject.fileName, isExternal);
+      // const mapsFolderExists = await copyZipMapsToProject(selectedProject.fileName, isExternal);
       // if (mapsFolderExists) {
       //   dispatch(removedLastStatusMessage());
       //   dispatch(addedStatusMessage('Finished importing maps.'));
@@ -307,7 +307,7 @@ const useImport = () => {
   };
 
   return {
-    copyZipMapsForDistribution: copyZipMapsForDistribution,
+    copyZipMapsToProject: copyZipMapsToProject,
     loadProjectFromDevice: loadProjectFromDevice,
     moveFiles: moveFiles,
     readDeviceJSONFile: readDeviceJSONFile,

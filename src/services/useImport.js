@@ -1,3 +1,5 @@
+import {useEffect} from 'react';
+
 import {unzip} from 'react-native-zip-archive';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
@@ -25,6 +27,7 @@ import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 
 const useImport = () => {
+  let isOldBackup;
   let fileCount = 0;
   let neededTiles = 0;
   let notNeededTiles = 0;
@@ -35,7 +38,11 @@ const useImport = () => {
 
   const useDevice = useDeviceHook();
 
-  const copyZipMapsForDistribution = async (fileName, isExternal) => {
+  useEffect(() => {
+    console.log('ISOLDBACKUP', isOldBackup);
+  }, [isOldBackup]);
+
+  const copyZipMapsToProject = async (fileName, isExternal) => {
     try {
       const sourceDir = isExternal ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
       const checkDirSuccess = await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
@@ -43,13 +50,21 @@ const useImport = () => {
       if (checkDirSuccess) {
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-        let zipFile = await useDevice.readDirectory(sourceDir + fileName + '/maps');
-        console.log(sourceDir + ' zipFile' + zipFile[0]);
-        if (zipFile) {
+        let zipFiles = await useDevice.readDirectory(sourceDir + fileName + '/maps');
+        if (zipFiles.length <= 2 && zipFiles.includes('OfflineTiles.zip')) {
+          isOldBackup = false;
           dispatch(addedStatusMessage('Importing maps...'));
           if (zipFile.length > 1) zipFile = zipFile.filter(zip => zip === 'OfflineTiles.zip');
           await unzipFile(sourceDir + fileName + '/maps/' + zipFile[0]);
           console.log('Offline Maps File Unzipped!');
+        }
+        else {
+          console.log('Old Zip Method');
+          isOldBackup = true;
+          await Promise.all(
+            zipFiles.map(async fileEntry => await unzipFile(sourceDir + fileName + '/maps/' + fileEntry)),
+          );
+          console.log('All map zips unzipped');
         }
       }
     }
@@ -73,7 +88,7 @@ const useImport = () => {
     }
     dispatch(addedStatusMessage('Checking for map tiles to import...'));
     if (!isEmpty(mapNamesDb)) {
-      await copyZipMapsForDistribution(selectedProject.fileName, isExternal);
+      await copyZipMapsToProject(selectedProject.fileName, isExternal);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished importing maps.'));
       dispatch(addedStatusMessage(`Finished copying and ${'\n'}unzipping all files`));
@@ -118,7 +133,14 @@ const useImport = () => {
           const dest = APP_DIRECTORIES.TILE_TEMP;
           await unzip(source, dest);
         }
-        else console.log('its not a zip file');
+        else {
+          const fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
+          if (fileExtension === 'zip') {
+            const source = filePath;
+            const dest = APP_DIRECTORIES.TILE_TEMP;
+            await unzip(source, dest);
+          }
+        }
       }
     }
     catch (err) {
@@ -142,8 +164,9 @@ const useImport = () => {
     }
   };
 
-  const moveFiles = async (dataFile, zipId) => {
+  const moveFiles = async (dataFile) => {
     try {
+      let fileEntries = [];
       console.log(dataFile.mapNamesDb);
       await Promise.all(
         Object.values(dataFile.mapNamesDb).map(async (map) => {
@@ -153,14 +176,14 @@ const useImport = () => {
             console.log('dir exists');
             const files = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP);
             const mapId = files.find(id => id === map.id);
-            if (mapId) {
-              const fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP + mapId + '/tiles');
-              await moveTile(fileEntries, map);
-            }
+            const zipID = files.find(zipId => zipId === map.mapId);
+            const id = isOldBackup ? zipID : mapId;
+            if (id) fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP + id + '/tiles');
             else {
               mapFailures++;
               console.log('Map file not found', mapFailures);
             }
+            await moveTile(fileEntries, id, map);
           }
         }),
       );
@@ -179,7 +202,7 @@ const useImport = () => {
         const fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
         if (!fileExists) {
           await useDevice.moveFile(
-            APP_DIRECTORIES.TILE_TEMP + map.id + '/tiles/' + tile,
+            APP_DIRECTORIES.TILE_TEMP + id + '/tiles/' + tile,
             APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
           neededTiles++;
         }
@@ -275,7 +298,7 @@ const useImport = () => {
   };
 
   return {
-    copyZipMapsForDistribution: copyZipMapsForDistribution,
+    copyZipMapsToProject: copyZipMapsToProject,
     loadProjectFromDevice: loadProjectFromDevice,
     moveFiles: moveFiles,
     readDeviceJSONFile: readDeviceJSONFile,
