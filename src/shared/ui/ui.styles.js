@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   batteryLevelText: {
     color: themes.BLACK,
     fontWeight: 'bold',
-    fontSize: themes.SMALL_TEXT_SIZE,
+    fontSize: 12,
   },
   statusBarIcon: {
     width: 40,
