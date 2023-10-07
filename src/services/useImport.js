@@ -54,8 +54,9 @@ const useImport = () => {
         if (zipFiles.length <= 2 && zipFiles.includes('OfflineTiles.zip')) {
           isOldBackup = false;
           dispatch(addedStatusMessage('Importing maps...'));
-          if (zipFile.length > 1) zipFile = zipFile.filter(zip => zip === 'OfflineTiles.zip');
-          await unzipFile(sourceDir + fileName + '/maps/' + zipFile[0]);
+          console.log('New Zip Method');
+          zipFiles = zipFiles.filter(zip => zip === 'OfflineTiles.zip');
+          await unzipFile(sourceDir + fileName + '/maps/' + zipFiles[0]);
           console.log('Offline Maps File Unzipped!');
         }
         else {
@@ -125,13 +126,14 @@ const useImport = () => {
       const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       console.log(checkDirSuccess);
       if (checkDirSuccess) {
-        const fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_ZIP);
-        console.log(fileEntries);
-        const fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
-        if (fileExtension === 'zip') {
-          const source = filePath;
-          const dest = APP_DIRECTORIES.TILE_TEMP;
-          await unzip(source, dest);
+        if (isOldBackup) {
+          const fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
+          if (fileExtension === 'zip') {
+            const source = filePath;
+            const dest = APP_DIRECTORIES.TILE_TEMP;
+            await unzip(source, dest);
+            console.log('unzip completed', filePath, 'to destination:', dest);
+          }
         }
         else {
           const fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
@@ -195,7 +197,7 @@ const useImport = () => {
     }
   };
 
-  const moveTile = async (tileArray, map) => {
+  const moveTile = async (tileArray, id, map) => {
     await Promise.all(
       tileArray.map(async (tile) => {
         fileCount++;
