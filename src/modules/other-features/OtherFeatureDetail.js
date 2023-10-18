@@ -25,11 +25,7 @@ const OtherFeatureDetail = (props) => {
 
   const selectedFeature = props.selectedFeature;
   const customFeatureTypes = projectFeatures.filter(feature => !DEFAULT_GEOLOGIC_TYPES.includes(feature));
-  let label = useState(selectedFeature.label === undefined ? '' : selectedFeature.label);
-  let name = useState(selectedFeature.name === undefined ? '' : selectedFeature.name);
-  let type = useState(selectedFeature.type === undefined ? '' : selectedFeature.type);
-  let [otherType, setOtherType] = useState('');
-  let description = useState(selectedFeature.description === undefined ? '' : selectedFeature.description);
+  let [otherType, setOtherType] = useState(undefined);
   const formRef = useRef(null);
 
   useLayoutEffect(() => {
@@ -92,22 +88,20 @@ const OtherFeatureDetail = (props) => {
     );
   };
 
-  const isOtherType = () => type === 'other' || (formRef.current && formRef.current.values.type) === 'other';
-
   const renderForm = () => {
     // Validate the feature
     const validateFeature = (values) => {
       let errors = {};
-      if (values.name === '') errors.name = 'Feature name cannot be empty';
-      if (!values.type || values.type === '') errors.type = 'Feature type cannot be empty';
+      if (isEmpty(values.name)) errors.name = 'Feature name cannot be empty';
+      if (!values.type || isEmpty(values.type)) errors.type = 'Feature type cannot be empty';
       return errors;
     };
 
     const initialFeatureValues = {
-      label: selectedFeature.label ? selectedFeature.label : '',
-      name: selectedFeature.name ? selectedFeature.name : '',
-      type: selectedFeature.type ? selectedFeature.type : '',
-      description: selectedFeature.description ? selectedFeature.description : '',
+      label: selectedFeature.label,
+      name: selectedFeature.name,
+      type: selectedFeature.type,
+      description: selectedFeature.description,
     };
 
     return (
@@ -158,7 +152,7 @@ const OtherFeatureDetail = (props) => {
                 </ListItem.Content>
               </ListItem>
               <FlatListItemSeparator/>
-              {isOtherType() && (
+              {formRef.current && formRef.current.values.type === 'other' && (
                 <React.Fragment>
                   <ListItem containerStyle={commonStyles.listItemFormField}>
                     <ListItem.Content>
@@ -206,11 +200,6 @@ const OtherFeatureDetail = (props) => {
       let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       let featureToEdit;
       let otherFeatures = spot.properties.other_features;
-      if (!formValues.label) label = formValues.name;
-      else label = formValues.label;
-      name = formValues.name;
-      description = formValues.description;
-      type = formValues.type;
       if (otherFeatures && otherFeatures.length > 0) {
         let existingFeatures = otherFeatures.filter(feature => feature.id === props.selectedFeature.id);
         if (!isEmpty(existingFeatures)) {
@@ -226,7 +215,7 @@ const OtherFeatureDetail = (props) => {
         otherFeatures = [];
         featureToEdit = props.selectedFeature;
       }
-      if (updateFeature(featureToEdit, otherFeatures)) {
+      if (updateFeature(featureToEdit, otherFeatures, formValues)) {
         await formRef.current.resetForm();
         props.hideFeatureDetail();
       }
@@ -236,10 +225,10 @@ const OtherFeatureDetail = (props) => {
     }
   };
 
-  const updateFeature = (feature, otherFeatures) => {
-    feature.label = label;
-    feature.name = name;
-    if (type === 'other') {
+  const updateFeature = (feature, otherFeatures, formValues) => {
+    feature.label = formValues.label || formValues.name;
+    feature.name = formValues.name;
+    if (formValues.type === 'other') {
       if (validateAndSetNewType(otherType)) {
         feature.type = otherType;
         //let index = projectFeatures[projectFeatures.length - 1].id + 1;
@@ -250,8 +239,8 @@ const OtherFeatureDetail = (props) => {
       }
       else return false;
     }
-    else feature.type = type;
-    feature.description = description;
+    else feature.type = formValues.type;
+    feature.description = formValues.description;
     otherFeatures.push(feature);
     dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
