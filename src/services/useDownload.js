@@ -228,7 +228,6 @@ const useDownload = () => {
             + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
           ));
         }
-        else {
           const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
           console.log(neededDatasetImagesUpdated);
           dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -238,9 +237,7 @@ const useDownload = () => {
             modified_timestamp: dataset.modified_timestamp,
           }));
           dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
-        }
       }
-      // dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }

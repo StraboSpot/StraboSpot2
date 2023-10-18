@@ -122,8 +122,8 @@ const useImages = () => {
       let imageIds;
       console.log('Gathering Needed Images...');
       // dispatch(addedStatusMessage('Gathering Needed Images...'));
-      if (dataset?.images?.neededImagesIds) {
-        imageIds = dataset.images.neededImagesIds;
+      if (dataset?.images?.imageIds) {
+        imageIds = dataset.images.imageIds;
       }
       else imageIds = getAllImagesIds(spotsOnServer);
       await Promise.all(
@@ -136,11 +136,6 @@ const useImages = () => {
           else console.log('Image', imageId, 'already exists on device. Not downloading.');
         }),
       );
-      if (neededImagesIds.length > 0) {
-        console.log('Images Needed to Download: ' + neededImagesIds.length, '/', imageIds.length);
-        // dispatch(removedLastStatusMessage());
-        // dispatch(addedStatusMessage('Images Needed to Download: ' + neededImagesIds.length));
-      }
       console.log('Promised Finished');
       return {neededImagesIds: neededImagesIds, imageIds: imageIds};
     }

@@ -34,6 +34,11 @@ const DatasetList = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
+  const downloadImages = async (dataset) => {
+    const imageRes = await useDownload.initializeDownloadImages(dataset?.images?.neededImagesIds, dataset);
+    console.log('Image Res', imageRes);
+  };
+
   const editDataset = (id, name) => {
     setSelectedDatasetToEdit({name: name, id: id});
     setIsDatasetNameModalVisible(true);
@@ -105,7 +110,7 @@ const DatasetList = () => {
             color={spotIds ? needImages && 'green' : 'black'}
             disabled={needImages}
             disabledStyle={{backgroundColor: 'transparent'}}
-            onPress={() => useDownload.initializeDownloadImages(dataset?.images?.neededImagesIds, dataset)}
+            onPress={() => downloadImages(dataset)}
           />
         </View>
       </ListItem>

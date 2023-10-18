@@ -162,12 +162,14 @@ const useDevice = (props) => {
         else if (res.statusCode === 404) {
           console.log('Image not found!');
           return res.statusCode;
-          // throw Error(`Image ${imageId} not found!`);
         }
-      }, (rej) => {
-        console.log('rejected Image!!!,', rej);
       },
-    );
+    )
+      .catch((err) => {
+        console.log('err', err);
+        console.warn(`Current URL ${imageURI + imageId}`);
+        return {error: err, imageId: imageId};
+      });
   };
 
   const downloadAndSaveMap = async (downloadOptions) => {
