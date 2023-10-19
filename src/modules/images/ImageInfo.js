@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, Dimensions, Platform, View} from 'react-native';
+import {ActivityIndicator, Text, Dimensions, Platform, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
@@ -8,6 +8,7 @@ import {useDispatch} from 'react-redux';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
+import WarningModal from '../home/home-modals/WarningModal';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import ImagePropertiesModal from './ImagePropertiesModal';
@@ -19,12 +20,13 @@ const ImageInfo = (props) => {
 
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
-  const [imageProps] = useState(props.route.params.imageId);
+  const [imageId] = useState(props.route.params.imageId);
   const [useImages] = useImagesHook();
   const [useSpots] = useSpotsHook();
   const navigation = useNavigation();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isImageDeleteModalVisible, setIsImageDeleteModalVisible] = useState(false);
 
   useEffect(() => {
     console.log('UE ImageInfo []');
@@ -35,25 +37,46 @@ const ImageInfo = (props) => {
     console.log(name);
     switch (name) {
       case 'sketch':
-        navigation.navigate('Sketch', {imageId: imageProps});
+        navigation.navigate('Sketch', {imageId: imageId});
         break;
     }
+  };
+
+  const handleDeleteImageOnPress = () => {
+    setIsImageDeleteModalVisible(true);
   };
 
   const closeModal = () => {
     setIsImagePropertiesModalVisible(false);
   };
 
-  const deleteImage = async (imageId) => {
+  const deleteImage = async () => {
     const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
+    setIsImageDeleteModalVisible(false);
     if (isImageDeleted) navigation.goBack();
+  };
+
+  const renderDeleteImageModal = () => {
+    return (
+      <WarningModal
+        isVisible={isImageDeleteModalVisible}
+        closeModal={() => setIsImageDeleteModalVisible(false)}
+        confirmText={'Delete'}
+        showConfirm={true}
+        titleStyle={{color: 'red'}}
+        onPress={() => deleteImage()}
+      >
+        <Text>Are you sure you want to delete image:{'\n'}</Text>
+        <Text>{imageId}</Text>
+      </WarningModal>
+    );
   };
 
   return (
     <View style={{backgroundColor: 'black'}}>
       <Image
-        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageProps)}
-          : {uri: useImages.getLocalImageURI(imageProps)}}
+        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageId)}
+          : {uri: useImages.getLocalImageURI(imageId)}}
         style={Platform.OS === 'web' ? {width: Dimensions.get('window').width, height: Dimensions.get('window').height}
           : {width: '100%', height: '100%'}}
         resizeMode={'contain'}
@@ -93,22 +116,10 @@ const ImageInfo = (props) => {
         />
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/DeleteButton.png')} onPress={() =>
-          Alert.alert(
-            'Deleting image ' + imageProps, 'Are you sure you want to delete image ' + imageProps,
-            [
-              {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {
-                text: 'OK', onPress: () => deleteImage(imageProps),
-              },
-            ],
-            {cancelable: false},
-          )}
+          source={require('../../assets/icons/DeleteButton.png')}
+          onPress={() => handleDeleteImageOnPress()}
         />
+        {renderDeleteImageModal()}
       </View>
     </View>
   );

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Platform, SectionList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Platform, SectionList, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
@@ -11,7 +11,12 @@ import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {setLoadingStatus} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setLoadingStatus,
+} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -73,7 +78,12 @@ const ImageGallery = ({openSpotInNotebook}) => {
             dispatch(setLoadingStatus({view: 'home', bool: false}));
           }
           else {
-            Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+            batch(() => {
+              dispatch(clearedStatusMessages());
+              dispatch(addedStatusMessage('Missing Image!\nUnable to find image file on this device.'));
+              dispatch(setErrorMessagesModalVisible(true));
+              dispatch(setLoadingStatus({view: 'home', bool: false}));
+            });
             dispatch(setLoadingStatus({view: 'home', bool: false}));
           }
         })

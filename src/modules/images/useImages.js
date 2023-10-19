@@ -1,16 +1,21 @@
-import {Alert, Dimensions, Image, PermissionsAndroid, Platform} from 'react-native';
+import {Dimensions, Image, PermissionsAndroid, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useToast} from 'react-native-toast-notifications';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useDeviceHook from '../../services/useDevice';
 import {getNewId} from '../../shared/Helpers';
-import {setLoadingStatus} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setLoadingStatus,
+} from '../home/home.slice';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
@@ -40,7 +45,12 @@ const useImages = () => {
   const deleteImage = async (imageId, spotWithImage) => {
     const spotsOnImage = Object.values(spots).filter(spot => spot.properties.image_basemap === imageId);
     if (spotsOnImage && spotsOnImage.length >= 1) {
-      Alert.alert('Image Basemap contains Spots!', 'Delete the spots, before trying to delete the image');
+      batch(() => {
+        dispatch(clearedStatusMessages());
+        dispatch(
+          addedStatusMessage('Image Basemap contains Spots! \n\nDelete the spots, before trying to delete the image'));
+        dispatch(setErrorMessagesModalVisible(true));
+      });
       return false;
     }
     else if (spotWithImage) {
@@ -55,7 +65,13 @@ const useImages = () => {
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
-    else Alert.alert(`There was an error deleting image ${imageId}`);
+    else {
+      batch(() => {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage(`There was an error deleting image ${imageId}`));
+        dispatch(setErrorMessagesModalVisible(true));
+      });
+    }
   };
 
   // Check to see if image is on the local device
@@ -102,9 +118,14 @@ const useImages = () => {
         return launchCameraFromNotebook();
       }
     }
-    catch (e) {
-      Alert.alert('Error Getting Photo!', 'Please try again...');
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    catch (err) {
+      console.error(`Error Taking picture ${err}`);
+      batch(() => {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
+        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+      });
     }
   };
 
@@ -180,7 +201,7 @@ const useImages = () => {
                 const resizedImage = await resizeImageIfNecessary(image);
                 const savedPhoto = await saveFile(resizedImage);
                 console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-                await dispatch(editedSpotImages([savedPhoto]));
+                dispatch(editedSpotImages([savedPhoto]));
                 dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
               }),
             );
