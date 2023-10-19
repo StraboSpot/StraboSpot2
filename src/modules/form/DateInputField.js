@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
-import {Alert, Platform, Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {Button} from 'react-native-elements';
+import {useDispatch} from 'react-redux';
 
 import DateDialogBox from '../../shared/ui/StatusDialogBox';
 import {formStyles} from '../form';
+import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -15,6 +17,8 @@ const DateInputField = ({
                         }) => {
   const [isDatePickerModalVisible, setIsDatePickerModalVisible] = useState(false);
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : new Date());
+
+  const dispatch = useDispatch();
 
   let title = value ? props.isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
       : moment(value).format('MM/DD/YYYY')
@@ -37,11 +41,19 @@ const DateInputField = ({
     }
     if (selectedDate && name === 'start_date' && values.end_date) {
       if (Date.parse(selectedDate) <= Date.parse(values.end_date)) setFieldValue(name, selectedDate);
-      else Alert.alert('Date Error!', 'Start Date must be before End Date.');
+      else {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage('Date Error!\nStart Date must be before End Date.'));
+        dispatch(setErrorMessagesModalVisible(true));
+      }
     }
     else if (selectedDate && name === 'end_date' && values.start_date) {
       if (Date.parse(values.start_date) <= Date.parse(selectedDate)) setFieldValue(name, selectedDate);
-      else Alert.alert('Date Error!', 'End Date must be after Start Date.');
+      else {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage('Date Error!\nStart Date must be before End Date.'));
+        dispatch(setErrorMessagesModalVisible(true));
+      }
     }
     else setFieldValue(name, selectedDate);
   };

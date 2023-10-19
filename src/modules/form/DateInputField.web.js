@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
+
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import {batch, useDispatch} from 'react-redux';
+
 import {formStyles} from '../form';
+import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -12,6 +16,8 @@ const DateInputField = ({
                           ...props
                         }) => {
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : undefined);
+
+  const dispatch = useDispatch();
 
   let title = value ? props.isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
       : moment(value).format('MM/DD/YYYY')
@@ -26,14 +32,22 @@ const DateInputField = ({
       if (Date.parse(selectedDate) <= Date.parse(values.end_date)) setFieldValue(name, selectedDate);
       else {
         console.log('Date Error!', 'Start Date must be before End Date.');
-        Alert.alert('Date Error!', 'Start Date must be before End Date.');
+        batch(() => {
+          dispatch(clearedStatusMessages());
+          dispatch(addedStatusMessage('Date Error!\n\nStart Date must be before End Date!'));
+          dispatch(setErrorMessagesModalVisible(true));
+        });
       }
     }
     else if (selectedDate && name === 'end_date' && values.start_date) {
       if (Date.parse(values.start_date) <= Date.parse(selectedDate)) setFieldValue(name, selectedDate);
       else {
         console.log('Date Error!', 'Start Date must be before End Date.');
-        Alert.alert('Date Error!', 'Start Date must be before End Date.');
+        batch(() => {
+          dispatch(clearedStatusMessages());
+          dispatch(addedStatusMessage('Date Error!\n\nStart Date must be before End Date!'));
+          dispatch(setErrorMessagesModalVisible(true));
+        });
       }
     }
     else setFieldValue(name, selectedDate);
