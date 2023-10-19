@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,12 +9,12 @@ import {setWarningModalVisible} from '../home.slice';
 import overlayStyles from '../overlay.styles';
 
 
-const WarningModal = () => {
+const WarningModal = (props) => {
   const dispatch = useDispatch();
   const isWarningModalVisible = useSelector(state => state.home.isWarningMessagesModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
-  const closeErrorModal = () => {
+  const closeWarningModal = () => {
     dispatch(setWarningModalVisible(false));
   };
 
@@ -22,14 +22,23 @@ const WarningModal = () => {
     <StatusDialogBox
       title={'Warning!'}
       overlayTitleText={overlayStyles.titleTextWarning}
-      visible={isWarningModalVisible}
+      visible={props.isVisible || isWarningModalVisible}
     >
       <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
-      <Button
-        title={'OK'}
-        type={'clear'}
-        onPress={closeErrorModal}
-      />
+      {props.children}
+      <View style={overlayStyles.buttonContainer}>
+        <Button
+          title={'Close'}
+          type={'clear'}
+          onPress={props.closeModal || closeWarningModal}
+        />
+        {props.showConfirm && <Button
+          title={props.confirmText || 'Confirm'}
+          titleStyle={props.titleStyle}
+          type={'clear'}
+          onPress={props.onPress}
+        />}
+      </View>
     </StatusDialogBox>
   );
 };
