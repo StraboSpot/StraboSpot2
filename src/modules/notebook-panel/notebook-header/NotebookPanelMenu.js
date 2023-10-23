@@ -1,21 +1,25 @@
-import React from 'react';
-import {Alert, FlatList, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, Text, View} from 'react-native';
 
 import {ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import WarningModal from '../../home/home-modals/WarningModal';
 import overlayStyles from '../../home/overlay.styles';
 import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
-import styles from '../notebookPanel.styles';
+import notebookStyles from '../notebookPanel.styles';
 
 const NotebookPanelMenu = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+
+  const [isDeleteSpotModalVisible, setIsDeleteSpotModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [useSpots] = useSpotsHook();
   const useStratSection = useStratSectionHook();
@@ -28,28 +32,18 @@ const NotebookPanelMenu = (props) => {
     {key: 'close', title: 'Close Notebook'},
   ];
 
+  useEffect(() => {
+    console.log(isDeleteSpotModalVisible);
+  }, [isDeleteSpotModalVisible]);
+
   const continueDeleteSelectedSpot = () => {
     if (useSpots.isStratInterval(spot)) useStratSection.deleteInterval(spot);
     else useSpots.deleteSpot(spot.properties.id);
   };
 
   const deleteSelectedSpot = () => {
-    const errorMsg = useSpots.checkIsSafeDelete(spot);
-    if (errorMsg) Alert.alert('Unable to Delete Spot', errorMsg);
-    else {
-      Alert.alert(
-        'Delete Spot?',
-        'Are you sure you want to delete Spot: ' + spot.properties.name,
-        [{
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        }, {
-          text: 'Delete',
-          onPress: continueDeleteSelectedSpot,
-        }],
-      );
-    }
+    setErrorMessage(useSpots.checkIsSafeDelete(spot));
+    setIsDeleteSpotModalVisible(true);
   };
 
   const onPress = (key) => {
@@ -76,25 +70,57 @@ const NotebookPanelMenu = (props) => {
     );
   };
 
+  const renderDeleteMessage = () => {
+    return (
+      errorMessage
+        ? (
+          <View>
+            <Text style={notebookStyles.deleteSpotWarningText}>Unable to delete spot!</Text>
+            <Text style={notebookStyles.deleteSpotWarningText}>{errorMessage}</Text>
+          </View>
+        )
+        : (
+          <View>
+            <Text style={notebookStyles.deleteSpotWarningText}>Delete Spot?</Text>
+            <Text style={notebookStyles.deleteSpotWarningText}>Are you sure you want to delete
+              Spot: {spot.properties.name}?</Text>
+          </View>
+        )
+    );
+  };
+
   return (
-    <Overlay
-      overlayStyle={[overlayStyles.overlayContainer, styles.dialogBoxPosition]}
-      isVisible={props.visible}
-      onBackdropPress={props.onTouchOutside}
-    >
-      <View style={overlayStyles.titleContainer}>
-        <Text style={overlayStyles.titleText}>Spot Actions</Text>
-      </View>
-      <View>
-        <FlatList
-          key={'notebookActions'}
-          data={actions}
-          contentContainerStyle={{alignItems: 'center'}}
-          renderItem={({item}) => renderActionItem(item)}
-          ItemSeparatorComponent={FlatListItemSeparator}
-        />
-      </View>
-    </Overlay>
+    <View>
+      <Overlay
+        overlayStyle={[overlayStyles.overlayContainer, notebookStyles.dialogBoxPosition]}
+        isVisible={props.visible}
+        onBackdropPress={props.onTouchOutside}
+      >
+        <View style={overlayStyles.titleContainer}>
+          <Text style={overlayStyles.titleText}>Spot Actions</Text>
+        </View>
+        <View>
+          <FlatList
+            key={'notebookActions'}
+            data={actions}
+            contentContainerStyle={{alignItems: 'center'}}
+            renderItem={({item}) => renderActionItem(item)}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
+        </View>
+      </Overlay>
+      <WarningModal
+        isVisible={isDeleteSpotModalVisible}
+        closeTitle={errorMessage && 'Ok'}
+        closeModal={() => setIsDeleteSpotModalVisible(false)}
+        showConfirm={isDeleteSpotModalVisible && !errorMessage}
+        confirmText={'DELETE'}
+        confirmTitleStyle={{color: 'red'}}
+        onPress={() => continueDeleteSelectedSpot()}
+      >
+        {renderDeleteMessage()}
+      </WarningModal>
+    </View>
   );
 };
 

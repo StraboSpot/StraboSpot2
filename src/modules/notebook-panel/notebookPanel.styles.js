@@ -28,6 +28,10 @@ const notebookStyles = StyleSheet.create({
     borderTopWidth: 0.5,
     borderTopColor: themes.MEDIUMGREY,
   },
+  deleteSpotWarningText: {
+    textAlign: 'center',
+    paddingTop: 10,
+  },
   dialogBoxPosition: {
     position: 'absolute',
     top: 10,
