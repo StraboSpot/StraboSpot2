@@ -9,7 +9,8 @@ import {setWarningModalVisible} from '../home.slice';
 import overlayStyles from '../overlay.styles';
 
 
-const WarningModal = (props) => {
+const WarningModal = ({children, closeModal, closeTitle, confirmText, confirmTitleStyle, isVisible, showConfirm, onPress}) => {
+
   const dispatch = useDispatch();
   const isWarningModalVisible = useSelector(state => state.home.isWarningMessagesModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
@@ -22,21 +23,20 @@ const WarningModal = (props) => {
     <StatusDialogBox
       title={'Warning!'}
       overlayTitleText={overlayStyles.titleTextWarning}
-      visible={props.isVisible || isWarningModalVisible}
+      visible={isVisible || isWarningModalVisible}
     >
-      <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
-      {props.children}
+      <Text style={overlayStyles.statusMessageText}>{children || statusMessages.join('\n')}</Text>
       <View style={overlayStyles.buttonContainer}>
         <Button
-          title={'Close'}
+          title={closeTitle || 'Close'}
           type={'clear'}
-          onPress={props.closeModal || closeWarningModal}
+          onPress={closeModal || closeWarningModal}
         />
-        {props.showConfirm && <Button
-          title={props.confirmText || 'Confirm'}
-          titleStyle={props.titleStyle}
+        {showConfirm && <Button
+          title={confirmText || 'Confirm'}
+          titleStyle={confirmTitleStyle}
           type={'clear'}
-          onPress={props.onPress}
+          onPress={onPress}
         />}
       </View>
     </StatusDialogBox>
