@@ -81,7 +81,6 @@ const NotebookPanelMenu = (props) => {
         )
         : (
           <View>
-            <Text style={notebookStyles.deleteSpotWarningText}>Delete Spot?</Text>
             <Text style={notebookStyles.deleteSpotWarningText}>Are you sure you want to delete
               Spot: {spot.properties.name}?</Text>
           </View>
@@ -110,13 +109,14 @@ const NotebookPanelMenu = (props) => {
         </View>
       </Overlay>
       <WarningModal
+        title={'Delete Spot?'}
         isVisible={isDeleteSpotModalVisible}
         closeTitle={errorMessage && 'Ok'}
         closeModal={() => setIsDeleteSpotModalVisible(false)}
-        showConfirm={isDeleteSpotModalVisible && !errorMessage}
+        showConfirmButton={isDeleteSpotModalVisible && !errorMessage}
         confirmText={'DELETE'}
-        confirmTitleStyle={{color: 'red'}}
-        onPress={() => continueDeleteSelectedSpot()}
+        confirmTitleStyle={overlayStyles.importantText}
+        onConfirmPress={() => continueDeleteSelectedSpot()}
       >
         {renderDeleteMessage()}
       </WarningModal>
