@@ -1,31 +1,59 @@
 import React, {useRef} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 
-import {Overlay} from 'react-native-elements';
+import {Button, Overlay} from 'react-native-elements';
 
 import overlayStyles from '../../modules/home/overlay.styles';
 
-const StatusDialogBox = (props) => {
+const StatusDialogBox = ({
+                           children,
+                           closeModal,
+                           closeTitle,
+                           confirmText,
+                           confirmTitleStyle,
+                           onConfirmPress,
+                           onTouchOutside,
+                           overlayContent,
+                           overlayTitleText,
+                           showCancelButton,
+                           showConfirmButton,
+                           title,
+                           titleContainer,
+                           isVisible,
+                         }) => {
   const scrollView = useRef();
 
   return (
     <Overlay
       animationType={'fade'}
-      isVisible={props.visible}
-      onBackdropPress={props.onTouchOutside}
+      isVisible={isVisible}
+      onBackdropPress={onTouchOutside}
       overlayStyle={overlayStyles.overlayContainer}
     >
-      <View style={[overlayStyles.titleContainer, props.titleContainer]}>
-        <Text style={[overlayStyles.titleText, props.overlayTitleText]}>{props.title}</Text>
+      <View style={[overlayStyles.titleContainer, titleContainer]}>
+        <Text style={[overlayStyles.titleText, overlayTitleText]}>{title}</Text>
       </View>
       <ScrollView
         ref={scrollView}
         onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}
       >
-        <View style={[overlayStyles.overlayContent, props.overlayContent]}>
-          {props.children}
+        <View style={[overlayStyles.overlayContent, overlayContent]}>
+          {children}
         </View>
       </ScrollView>
+      <View style={overlayStyles.buttonContainer}>
+        {(showCancelButton || false) && <Button
+          title={closeTitle || 'Close'}
+          type={'clear'}
+          onPress={closeModal}
+        />}
+        {showConfirmButton && <Button
+          title={confirmText || 'Ok'}
+          titleStyle={confirmTitleStyle}
+          type={'clear'}
+          onPress={onConfirmPress}
+        />}
+      </View>
     </Overlay>
   );
 };

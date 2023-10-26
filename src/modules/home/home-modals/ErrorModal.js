@@ -1,7 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
@@ -9,7 +8,7 @@ import {setErrorMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlay.styles';
 
 
-const ErrorModal = () => {
+const ErrorModal = ({closeModal, children, isVisible}) => {
   const dispatch = useDispatch();
   const isErrorMessagesModalVisible = useSelector(state => state.home.isErrorMessagesModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
@@ -21,15 +20,11 @@ const ErrorModal = () => {
   return (
     <StatusDialogBox
       title={'Error!'}
-      visible={isErrorMessagesModalVisible}
+      isVisible={isVisible || isErrorMessagesModalVisible}
       overlayTitleText={overlayStyles.titleTextError}
+      closeModal={closeModal || closeErrorModal}
     >
-      <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
-      <Button
-        title={'OK'}
-        type={'clear'}
-        onPress={closeErrorModal}
-      />
+      <Text style={overlayStyles.statusMessageText}>{children || statusMessages.join('\n')}</Text>
     </StatusDialogBox>
   );
 };

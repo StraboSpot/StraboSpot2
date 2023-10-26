@@ -49,7 +49,8 @@ const StatusModal = (props) => {
   return (
     <StatusDialogBox
       title={'Status'}
-      visible={isStatusMessagesModalVisible}
+      isVisible={isStatusMessagesModalVisible}
+      closeModal={() => dispatch(setStatusMessagesModalVisible(false))}
     >
       <View>
         {isModalLoading && (
@@ -66,7 +67,7 @@ const StatusModal = (props) => {
           )}
           <View style={{flexDirection: 'row'}}>
             <Button
-              title={selectedProject.source !== '' ? 'Continue' : 'OK'}
+              title={selectedProject.source !== '' && 'Continue'}
               type={'clear'}
               containerStyle={{padding: 10}}
               onPress={() => getProjectFromSource(selectedProject)}
