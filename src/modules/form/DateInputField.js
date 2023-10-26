@@ -75,9 +75,9 @@ const DateInputField = ({
   const renderDatePickerDialogBox = () => {
     return (
       <DateDialogBox
-        visible={isDatePickerModalVisible}
+        isVisible={isDatePickerModalVisible}
         onTouchOutside={() => setIsDatePickerModalVisible(false)}
-        dialogTitle={'Pick ' + props.label}
+        title={'Pick ' + props.label}
       >
         {renderDatePicker()}
         <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-evenly'}}>
