@@ -22,7 +22,6 @@ const initialHomeState = {
   isProgressModalVisible: false,
   isProjectLoadSelectionModalVisible: false,
   isOfflineMapModalVisible: false,
-  isInfoModalVisible: false,
   isImageModalVisible: false,
   isMainMenuPanelVisible: false,
   isUploadModalVisible: false,
@@ -65,9 +64,6 @@ const homeSlice = createSlice({
     },
     setImageModalVisible(state, action) {
       state.isImageModalVisible = action.payload;
-    },
-    setInfoMessagesModalVisible(state, action) {
-      state.isInfoModalVisible = action.payload;
     },
     setLoadingStatus(state, action) {
       const {bool, view} = action.payload;
