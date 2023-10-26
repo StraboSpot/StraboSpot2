@@ -9,6 +9,7 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
 import WarningModal from '../home/home-modals/WarningModal';
+import overlayStyles from '../home/overlay.styles';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import ImagePropertiesModal from './ImagePropertiesModal';
@@ -51,20 +52,21 @@ const ImageInfo = (props) => {
   };
 
   const deleteImage = async () => {
-    const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
     setIsImageDeleteModalVisible(false);
+    const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
     if (isImageDeleted) navigation.goBack();
   };
 
   const renderDeleteImageModal = () => {
     return (
       <WarningModal
+        title={'Delete Image?'}
         isVisible={isImageDeleteModalVisible}
         closeModal={() => setIsImageDeleteModalVisible(false)}
         confirmText={'Delete'}
-        showConfirm={true}
-        titleStyle={{color: 'red'}}
-        onPress={() => deleteImage()}
+        showConfirmButton={true}
+        confirmTitleStyle={overlayStyles.importantText}
+        onConfirmPress={() => deleteImage()}
       >
         <Text>Are you sure you want to delete image:{'\n'}</Text>
         <Text>{imageId}</Text>
