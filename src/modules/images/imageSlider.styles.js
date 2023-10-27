@@ -3,9 +3,12 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   buttonsContainer: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     position: 'absolute',
-    right: 50,
+    width: '100%',
     zIndex: 1,
+    paddingRight: 10,
   },
   imageContainer: {
     flex: 1,
@@ -28,11 +31,11 @@ const styles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    // top: '50%',
-    width: '90%',
+    width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
     height: '100%',
+    padding: 10,
   },
   navButtonContainer: {
     shadowColor: 'white',

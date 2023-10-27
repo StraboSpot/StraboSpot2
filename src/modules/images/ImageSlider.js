@@ -1,149 +1,123 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions, Image, Platform, View} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {ActivityIndicator, Dimensions, Platform, View} from 'react-native';
 
-import {Button, Icon} from 'react-native-elements';
-import Carousel from 'react-native-reanimated-carousel';
+import {Button, Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import placeholderImage from '../../assets/images/noimage.jpg';
+import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 import styles from './images.styles';
 import imageSliderStyles from './imageSlider.styles';
 import useImagesHook from './useImages';
 
-const ImageIndex = ({route, navigation}) => {
-  const platform = Platform.OS === 'ios' ? 'screen' : 'window';
-  const width = Dimensions.get(platform).width;
-  const height = Dimensions.get(platform).height;
+const ImageSlider = ({route, navigation}) => {
+  console.log('Rendering ImageSlider...');
 
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
+
   const [useImages] = useImagesHook();
-  const [useSpots] = useSpotsHook();
 
-  const [startingImageIndex, setStartingImageIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(undefined);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-  const ref = useRef();
-  const imageRef = useRef(route.params.selectedImage);
-  const imagesDataRef = useRef();
+  const imagesObj = useMemo(() => {
+    const sortedSpotsWithImages = route.params.sortedSpotsWithImages;
+    return sortedSpotsWithImages.reduce((acc, spot) => {
+      const imagesInSpot = spot.properties.images?.reduce((acc1, image) => {
+        return [...acc1, {imageId: image.id, spotId: spot.properties.id}];
+      }, []);
+      return [...acc, ...imagesInSpot];
+    }, []);
+  }, [route.params.sortedSpotsWithImages]);
 
-  useEffect(() => {
-    console.log('IMAGE SLIDER UE', imagesDataRef);
-    populateImageSlideshowData();
-  }, []);
+  if (isEmpty(imageIndex)) {
+    const startImageId = route.params.selectedImage.id;
+    const startIndex = imagesObj.map(i => i.imageId).indexOf(startImageId);
+    setImageIndex(startIndex);
+  }
 
-  const getImageUrlFromServer = (imageId) => {
-    return useImages.getImageScreenSizedURI(imageId);
-    // return imageUrl + imageId;
-  };
-
-  const getSpotFromId = (imageId) => {
-    const spotId = useSpots.getSpotByImageId(imageId).properties.id;
-    const spot = spots[spotId];
+  const getSpotFromId = () => {
+    console.log('getSpotFromId getCurrentIndex', imageIndex);
+    const spot = spots[imagesObj[imageIndex].spotId];
     navigation.navigate('HomeScreen', {pageKey: PAGE_KEYS.OVERVIEW});
     dispatch(setSelectedSpot(spot));
   };
 
-  const populateImageSlideshowData = async () => {
-    // toggleHomeDrawerButton();
-    let firstImageID = imageRef.current.id;
-    let uri = useImages.getLocalImageURI(firstImageID);
-    const imagesForSlideshow = Object.values(useSpots.getActiveSpotsObj()).reduce((acc, spot) => {
-      const imagesForSlideshow1 = spot.properties.images
-        && spot.properties.images.reduce((acc1, image) => {
-          // const imageFromServer = getImageUrlFromServer(image.id);
-          uri = Platform.OS !== 'web' ? useImages.getLocalImageURI(image.id) : getImageUrlFromServer(image.id);
-          // return (image.id !== firstImageID) ? [...acc1, {image, uri, currentIndex}] : acc1;
-          return [...acc1, {image, uri}];
-        }, []) || [];
-      return [...acc, ...imagesForSlideshow1];
-    }, []);
-    imagesDataRef.current = imagesForSlideshow;
-    setStartingImageIndex(imagesForSlideshow.findIndex(image => image.image.id === firstImageID));
+  const onPressNext = () => {
+    setIsImageLoaded(false);
+    setImageIndex(i => i === imagesObj.length - 1 ? 0 : i + 1);
   };
 
-  const renderImage = (image) => {
+  const onPressPrevious = () => {
+    setIsImageLoaded(false);
+    setImageIndex(i => i === 0 ? imagesObj.length - 1 : i - 1);
+  };
+
+  if (!isEmpty(imageIndex)) {
+    const imageId = imagesObj[imageIndex].imageId;
     return (
-      <View style={imageSliderStyles.imageContainer}>
+      <View style={{backgroundColor: 'black'}}>
+        <View style={imageSliderStyles.buttonsContainer}>
+          <IconButton
+            style={styles.imageInfoButtons}
+            source={require('../../assets/icons/NotebookNavButton.png')}
+            onPress={getSpotFromId}
+          />
+          <IconButton
+            style={styles.imageInfoButtons}
+            source={require('../../assets/icons/Close.png')}
+            onPress={() => navigation.goBack()}
+          />
+        </View>
         <Image
-          source={{uri: image.uri}}
+          source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageId)}
+            : {uri: useImages.getLocalImageURI(imageId)}}
           style={Platform.OS === 'web' ? {
-              width: '90%',
-              height: '90%',
-              resizeMode: 'contain',
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height,
             }
-            : imageSliderStyles.image}
+            : {width: '100%', height: '100%'}}
+          resizeMode={'contain'}
+          PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>
+            : <Image style={styles.thumbnail} source={placeholderImage}/>}
+          placeholderStyle={commonStyles.imagePlaceholder}
+          onError={() => setIsImageLoaded(true)}
+          onLoadEnd={() => setIsImageLoaded(true)}
         />
+        <View style={imageSliderStyles.navButtonsContainer}>
+          <Button
+            icon={
+              <Icon
+                name={'chevron-back'}
+                type={'ionicon'}
+                size={36}
+              />
+            }
+            type={'clear'}
+            containerStyle={{borderRadius: 50, borderWidth: 1, backgroundColor: '#cccaca'}}
+            onPress={onPressPrevious}
+          />
+          <Button
+            icon={
+              <Icon
+                name={'chevron-forward'}
+                type={'ionicon'}
+                size={36}
+              />
+            }
+            type={'clear'}
+            containerStyle={{borderRadius: 50, borderWidth: 1, backgroundColor: '#cccaca'}}
+            onPress={onPressNext}
+          />
+        </View>
       </View>
     );
-  };
-
-  return (
-    <View style={imageSliderStyles.sliderContainer}>
-      <View style={imageSliderStyles.buttonsContainer}>
-        <IconButton
-          style={styles.imageInfoButtons}
-          source={require('../../assets/icons/NotebookNavButton.png')}
-          onPress={() => {
-            getSpotFromId(imageRef.current.id);
-          }}
-        />
-        <IconButton
-          style={styles.imageInfoButtons}
-          source={require('../../assets/icons/Close.png')}
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <Carousel
-        scrollEnabled={false}
-        ref={ref}
-        width={width}
-        height={height}
-        defaultIndex={startingImageIndex}
-        data={imagesDataRef.current}
-        scrollAnimationDuration={500}
-        onSnapToItem={index => console.log('current index:', index)}
-        renderItem={({item, index}) => renderImage(item, index)}
-        // panGestureHandlerProps={{maxPointers: 0}}
-      />
-      {Platform.OS === 'web' && <View style={imageSliderStyles.navButtonsContainer}>
-        <Button
-          icon={
-            <Icon
-              name={'chevron-back'}
-              type={'ionicon'}
-              size={36}
-            />
-          }
-          type={'clear'}
-          containerStyle={{
-            borderRadius: 50,
-            borderWidth: 1,
-            backgroundColor: '#cccaca',
-          }}
-          onPress={() => ref.current.prev(0)}
-        />
-        <Button
-          icon={
-            <Icon
-              name={'chevron-forward'}
-              type={'ionicon'}
-              size={36}
-            />
-          }
-          type={'clear'}
-          containerStyle={{
-            borderRadius: 50,
-            borderWidth: 1,
-            backgroundColor: '#cccaca',
-          }}
-          onPress={() => ref.current.next(0)}
-        />
-      </View>}
-    </View>
-  );
+  }
 };
 
-export default ImageIndex;
+export default ImageSlider;

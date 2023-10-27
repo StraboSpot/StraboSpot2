@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Platform, SectionList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, SectionList, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
@@ -11,12 +11,7 @@ import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setErrorMessagesModalVisible,
-  setLoadingStatus,
-} from '../home/home.slice';
+import {setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -42,6 +37,8 @@ const ImageGallery = ({openSpotInNotebook}) => {
   const [isError, setIsError] = useState(false);
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
 
+  let sortedSpotsWithImages = [];
+
   useEffect(() => {
     console.log('UE ImageGallery []');
     getImageThumbnailURIs().catch(err => console.error(err));
@@ -65,30 +62,9 @@ const ImageGallery = ({openSpotInNotebook}) => {
 
   const handleImagePressed = async (image) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
-    if (Platform.OS === 'web') {
-      console.log('Opening image', image.id, '...');
-      navigate.navigate('ImageSlider', {selectedImage: image});
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-    }
-    else {
-      useImages.doesImageExistOnDevice(image.id)
-        .then((doesExist) => {
-          if (doesExist) {
-            navigate.navigate('ImageSlider', {selectedImage: image});
-            dispatch(setLoadingStatus({view: 'home', bool: false}));
-          }
-          else {
-            batch(() => {
-              dispatch(clearedStatusMessages());
-              dispatch(addedStatusMessage('Missing Image!\nUnable to find image file on this device.'));
-              dispatch(setErrorMessagesModalVisible(true));
-              dispatch(setLoadingStatus({view: 'home', bool: false}));
-            });
-            dispatch(setLoadingStatus({view: 'home', bool: false}));
-          }
-        })
-        .catch(e => console.error('Image not found', e));
-    }
+    console.log('Opening image', image.id, '...');
+    navigate.navigate('ImageSlider', {selectedImage: image, sortedSpotsWithImages: sortedSpotsWithImages});
+    dispatch(setLoadingStatus({view: 'home', bool: false}));
   };
 
   const renderImagesInSpot = (images) => {
@@ -113,10 +89,10 @@ const ImageGallery = ({openSpotInNotebook}) => {
             : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
           placeholderStyle={commonStyles.imagePlaceholder}
           onError={() => {
-            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
+            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));
           }}
           onLoadEnd={() => {
-            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
+            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));
           }}
         />
       </View>
@@ -147,7 +123,7 @@ const ImageGallery = ({openSpotInNotebook}) => {
   };
 
   const renderSpotsWithImages = () => {
-    let sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
+    sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
     let noImagesText = 'No Spots with images';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
       sortedSpotsWithImages = spotsInMapExtent.filter(spot => spot.properties.images);
