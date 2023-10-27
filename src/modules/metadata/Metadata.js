@@ -160,8 +160,8 @@ const Metadata = () => {
       await metadataFormRef.current.submitForm();
       const editedSpotProperties = useForm.showErrors(metadataFormRef.current);
       console.log('Saving form data to Spot ...');
-      dispatch(editedOrCreatedSpot({...spot, properties: editedSpotProperties}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedOrCreatedSpot({...spot, properties: editedSpotProperties}));
       return Promise.resolve();
     }
     catch (e) {

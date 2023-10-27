@@ -101,8 +101,8 @@ const NotebookHeader = (props) => {
   };
 
   const onSpotEdit = (field, value) => {
-    dispatch(editedSpotProperties({field: field, value: value}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: field, value: value}));
   };
 
   const renderCoordsText = () => {
@@ -149,8 +149,8 @@ const NotebookHeader = (props) => {
     editedSpot.geometry = turf.point([currentLocation.longitude, currentLocation.latitude]).geometry;
     if (currentLocation.altitude) editedSpot.properties.altitude = currentLocation.altitude;
     if (currentLocation.accuracy) editedSpot.properties.gps_accuracy = currentLocation.accuracy;
-    dispatch(editedOrCreatedSpot(editedSpot));
     dispatch(updatedModifiedTimestampsBySpotsIds([editedSpot.properties.id]));
+    dispatch(editedOrCreatedSpot(editedSpot));
     dispatch(setSelectedSpot(editedSpot));
   };
 

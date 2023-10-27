@@ -45,8 +45,8 @@ const ImagePropertiesModal = (props) => {
       let i = images.findIndex(img => img.id === formValues.id);
       images[i] = {...formValues, annotated: annotated};
       dispatch(setSelectedAttributes([images[i]]));
-      dispatch(editedSpotProperties({field: 'images', value: images}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'images', value: images}));
       props.close();
       return Promise.resolve();
     }

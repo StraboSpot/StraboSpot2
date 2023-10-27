@@ -46,8 +46,8 @@ const Sketch = (props) => {
       console.log(success, 'Path:', path);
       if (success) {
         const savedSketch = await useImages.saveFile({'path': path});
-        dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+        dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         Alert.alert(
           'Sketch Saved!',
           `Sketch saved to ${selectedSpot.properties.name}.`,

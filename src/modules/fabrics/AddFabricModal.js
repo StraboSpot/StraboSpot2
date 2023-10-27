@@ -156,8 +156,8 @@ const AddFabricModal = (props) => {
       console.log('Saving fabic data to Spot ...');
       let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
       editedFabricsData.push({...editedFabricData, id: getNewId()});
-      dispatch(editedSpotProperties({field: groupKey, value: editedFabricsData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: groupKey, value: editedFabricsData}));
     }
     catch (err) {
       console.log('Error submitting form', err);

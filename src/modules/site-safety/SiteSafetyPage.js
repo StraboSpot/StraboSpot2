@@ -40,9 +40,9 @@ const SiteSafetyPage = () => {
     try {
       await currentForm.submitForm();
       const editedSiteSafetyFormData = useForm.showErrors(currentForm);
-      dispatch(editedSpotProperties({field: 'site_safety', value: editedSiteSafetyFormData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(setSelectedSpotNotesTimestamp());
+      dispatch(editedSpotProperties({field: 'site_safety', value: editedSiteSafetyFormData}));
       await currentForm.resetForm();
     }
     catch (err) {

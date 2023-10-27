@@ -44,8 +44,8 @@ const BasicOverviewList = (props) => {
     if (props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY) editedSedData[PAGE_KEYS.LITHOLOGIES].splice(i, 1, item);
     else if (props.page.key === PAGE_KEYS.BEDDING) editedSedData[props.page.key].beds.splice(i, 1, item);
     else editedSedData[props.page.key].splice(i, 1, item);
-    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(setSelectedAttributes([item]));
   };
 

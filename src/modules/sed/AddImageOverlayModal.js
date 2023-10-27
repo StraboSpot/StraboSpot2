@@ -28,8 +28,8 @@ const AddImageOverlayModal = (props) => {
     const editedStratSectionImages = editedSedData.strat_section.images.filter(i => i.id !== props.image.id);
     if (isEmpty(editedStratSectionImages)) delete editedSedData.strat_section.images;
     else editedSedData.strat_section.images = editedStratSectionImages;
-    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
 
     // Update strat section for map if matches edited strat section
     const stratSectionSettings = editedSedData.strat_section || {};
@@ -226,7 +226,6 @@ const AddImageOverlayModal = (props) => {
       editedStratSectionData = {...editedStratSectionData, images: editedImageOverlaysData};
       editedSedData = {...editedSedData, strat_section: editedStratSectionData};
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
-      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
 
       // Update strat section for map if matches edited strat section
       const stratSectionSettings = editedSedData.strat_section || {};

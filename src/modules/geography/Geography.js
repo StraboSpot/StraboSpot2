@@ -331,8 +331,8 @@ const Geography = () => {
         }
       }
       const editedSpot = {geometry: geometry, properties: {...geographyProperties}, type: spot.type};
-      dispatch(editedOrCreatedSpot(editedSpot));
       dispatch(updatedModifiedTimestampsBySpotsIds([editedSpot.properties.id]));
+      dispatch(editedOrCreatedSpot(editedSpot));
       return Promise.resolve();
     }
     catch (e) {

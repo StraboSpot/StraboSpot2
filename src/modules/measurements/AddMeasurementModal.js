@@ -458,8 +458,8 @@ const AddMeasurementModal = (props) => {
             t => editedMeasurementsData.push({...t.values, ...editedMeasurementData, id: getNewUUID()}));
         }
         console.log('editedMeasurementData', editedMeasurementsData);
-        dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
       else {
         if (isSelectedAttitude) {
@@ -469,8 +469,8 @@ const AddMeasurementModal = (props) => {
         else editedMeasurementsData.push({...editedMeasurementData, id: getNewUUID()});
         console.log('editedMeasurementData', editedMeasurementData);
         console.log('Saving Measurement data to Spot ...', editedMeasurementsData);
-        dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'orientation_data', value: editedMeasurementsData}));
       }
       if (isSelectedAttitude) {
         dispatch(setSelectedAttributes([editedMeasurementData]));

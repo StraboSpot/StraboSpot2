@@ -93,8 +93,8 @@ const RockPage = (props) => {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
       rock = {...rock, id: getNewUUID()};
       editedSedData[pageKey].splice(i, 1, rock);
-      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
     batch(() => {
       setIsDetailView(true);
@@ -126,8 +126,8 @@ const RockPage = (props) => {
           r => ({...r, id: getNewUUID()}));
         updatedPetData[pageKey] = [...rockData[pageKey] || [], ...copyDataWithNewIds];
       }
-      dispatch(editedSpotProperties({field: groupKey, value: updatedPetData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: groupKey, value: updatedPetData}));
     };
 
     if (!isEmpty(spotToCopy)) {

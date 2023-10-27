@@ -71,8 +71,8 @@ const useExternalData = () => {
     console.log(CSVcopy);
     const filteredArr = CSVcopy.filter(table => table.id !== tableToDelete.id);
     console.log(filteredArr);
-    dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
   };
 
   const deleteUrl = (urlToDelete) => {
@@ -80,8 +80,8 @@ const useExternalData = () => {
     console.log(urlCopy);
     const filteredArr = urlCopy.filter(url => url !== urlToDelete);
     console.log(filteredArr);
-    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
   };
 
   const saveCSV = () => {
@@ -93,8 +93,8 @@ const useExternalData = () => {
       if (!editedData.tables) editedData.tables = [];
       editedData.tables.push(CSVObject);
       console.log(editedData);
-      dispatch(editedSpotProperties({field: 'data', value: editedData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'data', value: editedData}));
     }
     catch (err) {
       console.error('Error saving .CSV file');
@@ -104,8 +104,8 @@ const useExternalData = () => {
   const saveEdits = (urlToEdit) => {
     const urlArrCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
     urlArrCopy.splice(urlToEdit.index, 1, urlToEdit.url);
-    dispatch(editedSpotProperties({field: 'data', value: {urls: urlArrCopy}}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'data', value: {urls: urlArrCopy}}));
   };
 
   const saveURL = (protocol, url) => {
@@ -119,8 +119,8 @@ const useExternalData = () => {
       if (!savedUrls?.includes(fullURL)) {
         if (!editedData?.urls) editedData.urls = [];
         editedData.urls.push(fullURL.toLowerCase());
-        dispatch(editedSpotProperties({field: 'data', value: editedData}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'data', value: editedData}));
       }
       else {
         dispatch(clearedStatusMessages());

@@ -31,8 +31,8 @@ const usePetrology = () => {
       editedPetData[key] = editedPetData[key].filter(type => type.id !== selectedFeature.id);
       if (isEmpty(editedPetData[key])) delete editedPetData[key];
     }
-    dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
   };
 
   const getAbbrevFromFullMineralName = (name) => {
@@ -96,16 +96,16 @@ const usePetrology = () => {
       console.log('Saving', key, 'data to Spot ...');
       if (editedFeatureData.rock_type && (key === PAGE_KEYS.ROCK_TYPE_IGNEOUS
         || key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC || key === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE)) {
-        dispatch(editedSpotProperties({field: 'pet', value: editedFeatureData}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'pet', value: editedFeatureData}));
       }
       else {
         let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
         if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
         editedPetData[key] = editedPetData[key].filter(type => type.id !== editedFeatureData.id);
         editedPetData[key].push(editedFeatureData);
-        dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
       }
       // await formCurrent.resetForm();
     }
@@ -120,8 +120,8 @@ const usePetrology = () => {
     if (!editedPetData[key] || !Array.isArray(editedPetData[key])) editedPetData[key] = [];
     activeTemplates.forEach(t => editedPetData[key].push({...t.values, id: getNewId()}));
     console.log('editedPetData', editedPetData);
-    dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'pet', value: editedPetData}));
   };
 
   return {

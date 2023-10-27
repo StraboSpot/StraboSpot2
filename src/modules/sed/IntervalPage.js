@@ -39,8 +39,8 @@ const IntervalPage = (props) => {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
       editedSedData.character = spot.properties?.sed?.interval_type;
       delete spot.properties?.sed?.interval_type;
-      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
     return () => confirmLeavePage();
   }, []);

@@ -57,8 +57,8 @@ const useImages = () => {
       const imagesDataCopy = spotWithImage.properties.images;
       const allOtherImages = imagesDataCopy.filter(item => imageId !== item.id);
       dispatch(setSelectedSpot(spotWithImage));
-      dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
       dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+      dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
       const localImageFile = getLocalImageURI(imageId);
       const fileExists = await useDevice.doesDeviceDirExist(localImageFile);
       if (fileExists) await useDevice.deleteFromDevice(localImageFile);
@@ -105,8 +105,8 @@ const useImages = () => {
       if (savedPhoto === 'cancelled') {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
-          dispatch(editedSpotImages(newImages));
           dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+          dispatch(editedSpotImages(newImages));
         }
         else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
         dispatch(setLoadingStatus({view: 'home', bool: false}));
@@ -201,8 +201,8 @@ const useImages = () => {
                 const resizedImage = await resizeImageIfNecessary(image);
                 const savedPhoto = await saveFile(resizedImage);
                 console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-                dispatch(editedSpotImages([savedPhoto]));
                 dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+                dispatch(editedSpotImages([savedPhoto]));
               }),
             );
             res(imageCount);
@@ -313,8 +313,8 @@ const useImages = () => {
       const updatedImages = selectedSpot.properties.images.filter(image2 => imageCopy.id !== image2.id);
       console.log(updatedImages);
       updatedImages.push(imageCopy);
-      dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
       dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+      dispatch(editedSpotProperties({field: 'images', value: updatedImages}));
     }
     if (!imageCopy.annotated) dispatch(setCurrentImageBasemap(undefined));
   };

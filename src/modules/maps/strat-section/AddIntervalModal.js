@@ -71,7 +71,7 @@ const AddIntervalModal = () => {
      initialValues.avg_thickness_1 = 8;*/
 
     setInitialFormValues(initialValues);
-  }, {});
+  }, []);
 
   const close = () => {
     dispatch(setModalValues({}));

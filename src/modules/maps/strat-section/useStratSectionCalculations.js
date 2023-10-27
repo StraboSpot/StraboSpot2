@@ -238,8 +238,8 @@ const useStratSectionCalculations = () => {
       });
     }
     console.log('interval w new geom:', targetIntervalModified);
-    dispatch(editedOrCreatedSpot(targetIntervalModified));
     dispatch(updatedModifiedTimestampsBySpotsIds([targetIntervalModified.properties.id]));
+    dispatch(editedOrCreatedSpot(targetIntervalModified));
     targetIntervalExtent = turf.bbox(targetIntervalModified);
     moveSpotsUpOrDownByPixels(targetIntervalModified.properties.strat_section_id, targetIntervalExtent[1],
       targetIntervalHeight, targetIntervalModified.properties.id);
@@ -265,8 +265,8 @@ const useStratSectionCalculations = () => {
     const updatedGeometry = calculateIntervalGeometry(spot.properties.strat_section_id, spot.properties.sed, extent[1]);
     const editedSpot = {...spot, geometry: updatedGeometry};
     console.log('Spot after geometry recalculation', editedSpot);
-    dispatch(editedOrCreatedSpot(editedSpot));
     dispatch(updatedModifiedTimestampsBySpotsIds([editedSpot.properties.id]));
+    dispatch(editedOrCreatedSpot(editedSpot));
     console.log('Dispatching', editedSpot);
     return editedSpot;
   };

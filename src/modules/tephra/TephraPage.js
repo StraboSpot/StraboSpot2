@@ -49,8 +49,8 @@ const TephraPage = (props) => {
       let editedTephraData = JSON.parse(JSON.stringify(spot.properties.tephra));
       attribute = {...attribute, id: getNewUUID()};
       editedTephraData[props.page.key].splice(i, 1, attribute);
-      dispatch(editedSpotProperties({field: 'tephra', value: editedTephraData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'tephra', value: editedTephraData}));
     }
     batch(() => {
       setIsDetailView(true);

@@ -98,8 +98,8 @@ const BeddingPage = (props) => {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
       attribute = {...attribute, id: getNewUUID()};
       editedSedData[props.page.key].beds.splice(i, 1, attribute);
-      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
     batch(() => {
       setIsDetailView(true);

@@ -65,8 +65,8 @@ const MineralsPage = (props) => {
         ? [...spot.properties.pet[props.page.key], ...mineralsToCopy] : mineralsToCopy;
       const updatedPet = spot.properties?.pet ? {...spot.properties.pet, minerals: updatedMinerals}
         : {minerals: updatedMinerals};
-      dispatch(editedSpotProperties({field: 'pet', value: updatedPet}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'pet', value: updatedPet}));
       preFormRef.current.resetForm();
     }
   };

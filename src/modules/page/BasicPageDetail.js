@@ -88,8 +88,8 @@ const BasicPageDetail = (props) => {
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
-      dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
     }
     dispatch(setSelectedAttributes([]));
     props.closeDetailView();
@@ -182,8 +182,8 @@ const BasicPageDetail = (props) => {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
       editedPageData.push(editedFeatureData);
-      dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
     }
     catch (err) {
       console.log('Error saving', pageKey, err);

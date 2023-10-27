@@ -13,6 +13,7 @@ import {
   deletedSpotIdFromTags,
   setActiveDatasets,
   setSelectedDataset,
+  updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
@@ -127,8 +128,7 @@ const useSpots = () => {
       useTags.addSpotsToTags(continuousTaggingList, [newSpot]);
     }
     console.log('Creating new Spot:', newSpot);
-    await dispatch(editedOrCreatedSpot(newSpot));
-    // dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id])); // Timestamps gets updated in addedSpotsIdsToDataset below
+    dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
     let currentDataset = datasets[selectedDatasetId];
     if (isEmpty(currentDataset)) {
       Alert.alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
@@ -140,7 +140,8 @@ const useSpots = () => {
       });
     }
     console.log('Active Dataset', currentDataset);
-    await dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
+    dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
+    dispatch(editedOrCreatedSpot(newSpot));
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
   };

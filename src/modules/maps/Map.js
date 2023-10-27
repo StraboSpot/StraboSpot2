@@ -236,8 +236,8 @@ const Map = React.forwardRef((props, ref) => {
         ...selectedSpot,
         geometry: defaultFeature.geometry,
       };
-      dispatch(editedOrCreatedSpot(selectedSpotCopy));
       dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpotCopy.properties.id]));
+      dispatch(editedOrCreatedSpot(selectedSpotCopy));
 
       // Set new geometry ready for editing, set the active vertex to first index of the geometry.
       startEditing(selectedSpotCopy, turf.explode(selectedSpotCopy).features[0], 0);
@@ -917,9 +917,9 @@ const Map = React.forwardRef((props, ref) => {
       await dispatch(setSelectedSpot(editingModeData.spotEditing));
     }
     if (!isEmpty(editingModeData.spotsEdited)) {
-      dispatch(editedSpots(editingModeData.spotsEdited));
       const spotIds = editingModeData.spotsEdited.map(s => s.properties.id);
       dispatch(updatedModifiedTimestampsBySpotsIds(spotIds));
+      dispatch(editedSpots(editingModeData.spotsEdited));
     }
     clearEditing();
   };

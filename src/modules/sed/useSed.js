@@ -167,8 +167,8 @@ const useSed = () => {
     editedSedData.strat_section.strat_section_id = getNewUUID();
     editedSedData.strat_section.column_profile = 'clastic';
     editedSedData.strat_section.column_y_axis_units = 'm';
-    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 
   const deleteSedFeature = (key, spot, selectedFeature) => {
@@ -195,15 +195,15 @@ const useSed = () => {
       editedSedData[pageKey] = editedSedData[pageKey].filter(type => type.id !== selectedFeature.id);
       if (isEmpty(editedSedData[pageKey])) delete editedSedData[pageKey];
     }
-    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 
   const deleteStratSection = (spot) => {
     let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
     delete editedSedData.strat_section;
-    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 
   const getBeddingTitle = (bedding) => {
@@ -307,14 +307,14 @@ const useSed = () => {
       if (useSpots.isStratInterval(spot)) {
         const updatedSpot = checkForIntervalUpdates(pageKey, editedSpot, spot);
         console.log('Saving', pageKey, 'data to Spot ...');
-        dispatch(editedOrCreatedSpot(updatedSpot));
         dispatch(updatedModifiedTimestampsBySpotsIds([updatedSpot.properties.id]));
+        dispatch(editedOrCreatedSpot(updatedSpot));
       }
       // Update Sed data
       else {
         console.log('Saving', pageKey, 'data to Spot ...');
-        dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
       }
 
       // Update strat section for map if matches edited strat section
@@ -334,8 +334,8 @@ const useSed = () => {
     let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
     if (!editedSedData[key] || !Array.isArray(editedSedData[key])) editedSedData[key] = [];
     activeTemplates.forEach(t => editedSedData[key].push({...t.values, id: getNewId()}));
-    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
   };
 
   const toggleStratSection = (spot) => {

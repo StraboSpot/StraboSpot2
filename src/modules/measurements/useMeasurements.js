@@ -83,8 +83,8 @@ const useMeasurements = () => {
 
       const orientations = !spot.properties.orientation_data ? [newOrientation]
         : [...spot.properties.orientation_data, newOrientation];
-      dispatch(editedSpotProperties({field: 'orientation_data', value: orientations}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'orientation_data', value: orientations}));
 
       if (compassMeasurements.manual) {
         dispatch(setSelectedAttributes([newOrientation]));
@@ -136,8 +136,8 @@ const useMeasurements = () => {
     flattenedMeasurementsToDelete.forEach((measurementToDelete) => {
       updatedOrientationData = removeMeasurementFromObj(updatedOrientationData, measurementToDelete);
     });
-    dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));
     dispatch(setSelectedAttributes([]));
   };
 

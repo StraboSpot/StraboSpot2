@@ -185,20 +185,16 @@ const SampleModal = (props) => {
           },
         };
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+        dispatch(updatedModifiedTimestampsBySpotsIds([pointSetAtCurrentLocation.properties.id]));
         dispatch(editedOrCreatedSpot(pointSetAtCurrentLocation));
-        dispatch(
-          updatedModifiedTimestampsBySpotsIds([
-            pointSetAtCurrentLocation.properties.id,
-          ]),
-        );
         await props.goToCurrentLocation();
       }
       else {
         const samples = spot.properties?.samples
           ? [...spot.properties.samples, newSample]
           : [newSample];
-        dispatch(editedSpotProperties({field: 'samples', value: samples}));
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(editedSpotProperties({field: 'samples', value: samples}));
         const updatedPreferences = {
           ...preferences,
           sample_prefix: namePrefix,

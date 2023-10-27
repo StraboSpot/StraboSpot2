@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -47,9 +47,9 @@ const Notes = (props) => {
     if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       saveForm(formCurrent, false);
-      toast.show('Notes saved', {type: 'success'});
+      if (Platform.OS !== 'web') toast.show('Notes saved', {type: 'success'});
     }
-    else toast.show('No changes.');
+    else if (Platform.OS !== 'web') toast.show('No changes.');
 
   };
 
@@ -61,9 +61,9 @@ const Notes = (props) => {
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
       }
       await currentForm.submitForm();
-      dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(setSelectedSpotNotesTimestamp());
+      dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
       await currentForm.resetForm();
       if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
       else if (props.goToCurrentLocation) await props.goToCurrentLocation();

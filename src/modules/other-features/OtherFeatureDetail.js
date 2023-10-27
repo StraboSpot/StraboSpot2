@@ -65,8 +65,8 @@ const OtherFeatureDetail = (props) => {
       delete existingFeature[0];
       useTags.deleteFeatureTags([props.selectedFeature]);
       otherFeatures = otherFeatures.filter(feature => feature.id !== props.selectedFeature.id);
-      dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
     }
     props.hideFeatureDetail();
   };
@@ -242,8 +242,8 @@ const OtherFeatureDetail = (props) => {
     else feature.type = formValues.type;
     feature.description = formValues.description;
     otherFeatures.push(feature);
-    dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
     return true;
   };
 

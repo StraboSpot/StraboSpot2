@@ -177,8 +177,8 @@ const AddThreeDStructureModal = (props) => {
       let edited3DStructuresData = spot.properties[groupKey] ? JSON.parse(JSON.stringify(spot.properties[groupKey]))
         : [];
       edited3DStructuresData.push({...edited3DStructureData, id: getNewId()});
-      dispatch(editedSpotProperties({field: groupKey, value: edited3DStructuresData}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: groupKey, value: edited3DStructuresData}));
     }
     catch (err) {
       console.log('Error submitting form', err);

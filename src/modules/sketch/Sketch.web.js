@@ -11,6 +11,7 @@ import useMapsHook from '../maps/useMaps';
 import {MODAL_KEYS} from '../page/page.constants';
 import {editedSpotImages} from '../spots/spots.slice';
 import styles from './sketch.styles';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 
 const Sketch = (props) => {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ const Sketch = (props) => {
       console.log(success, 'Path:', path);
       if (success) {
         const savedSketch = await useImages.saveFile({'path': path});
+        dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         Alert.alert(modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH
             ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`

@@ -445,8 +445,8 @@ const MeasurementDetail = (props) => {
         }
       });
       dispatch(setSelectedAttributes(editedSelectedMeasurements));
-      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotProperties({field: 'orientation_data', value: orientationDataCopy}));
       await formCurrent.resetForm();
       console.log('Finished saving form data to Spot');
     }
