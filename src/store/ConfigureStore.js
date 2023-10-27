@@ -14,6 +14,7 @@ import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
 import {REDUX} from '../shared/app.constants';
+import listenerMiddleware from './listenerMiddleware';
 
 // Redux Persist
 export const persistConfig = {
@@ -93,31 +94,29 @@ const combinedReducers = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-    if (action.type === REDUX.CLEAR_STORE) {
-      state = {
-        compass: undefined,
-        home: {
-          ...state.home,
-          isOnline: state.home.isOnline,
-        },
-        notebook: undefined,
-        map: undefined,
-        project: {
-          ...state.project,
-          project: {},
-          datasets: {},
-          databaseEndpoint: state.project.databaseEndpoint,
-        },
-        offlineMap: state.offlineMap,
-        spot: undefined,
-        user: undefined,
-      }
-      ;
-    }
-
-    return combinedReducers(state, action);
+  if (action.type === REDUX.CLEAR_STORE) {
+    state = {
+      compass: undefined,
+      home: {
+        ...state.home,
+        isOnline: state.home.isOnline,
+      },
+      notebook: undefined,
+      map: undefined,
+      project: {
+        ...state.project,
+        project: {},
+        datasets: {},
+        databaseEndpoint: state.project.databaseEndpoint,
+      },
+      offlineMap: state.offlineMap,
+      spot: undefined,
+      user: undefined,
+    };
   }
-;
+
+  return combinedReducers(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -133,8 +132,8 @@ const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware => __DEV__
     ? getDefaultMiddleware(defaultMiddlewareOptions)
-      .concat(loggerMiddleware)
-    : getDefaultMiddleware(defaultMiddlewareOptions),
+      .concat(loggerMiddleware, listenerMiddleware.middleware)
+    : getDefaultMiddleware(defaultMiddlewareOptions).concat(listenerMiddleware.middleware),
 });
 
 export default store;
