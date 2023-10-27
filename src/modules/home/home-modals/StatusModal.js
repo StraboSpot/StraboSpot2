@@ -51,6 +51,8 @@ const StatusModal = (props) => {
       title={'Status'}
       isVisible={isStatusMessagesModalVisible}
       closeModal={() => dispatch(setStatusMessagesModalVisible(false))}
+      showConfirmButton={true}
+      onConfirmPress={() => dispatch(setStatusMessagesModalVisible(false))}
     >
       <View>
         {isModalLoading && (
