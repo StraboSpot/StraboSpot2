@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  errorText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+  },
   verifyButtonContainer: {
     paddingLeft: 10,
   },

@@ -45,7 +45,7 @@ const useSpots = () => {
         + ' before deleting.';
     }
     if (spotToDelete.properties?.sed?.strat_section) return 'Remove the strat section from this Spot before deleting.';
-    if (!isEmpty(spotToDelete.properties?.images)) return 'Remove all images from this Spot before deleting.';
+    if (!isEmpty(spotToDelete.properties?.images)) return `Remove all ${(spotToDelete.properties.images).length} images from this Spot before deleting.`;
     //var childrenSpots = getChildrenGenerationsSpots(spotToDelete, 1)[0];
     // Get only children that are mapped on an image basemap or strat section which is
     // different from the image basemap or strat section of the Spot being deleted

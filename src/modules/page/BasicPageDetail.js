@@ -192,18 +192,23 @@ const BasicPageDetail = (props) => {
   };
 
   const saveForm = async (formCurrent) => {
-    if (groupKey === 'pet') {
-      await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+    try {
+      if (groupKey === 'pet') {
+        await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      }
+      else if (groupKey === 'sed' && pageKey === 'bedding') {
+        await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      }
+      else if (groupKey === 'sed') {
+        await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      }
+      else await saveFeature(formCurrent);
+      await formCurrent.resetForm();
+      props.closeDetailView();
     }
-    else if (groupKey === 'sed' && pageKey === 'bedding') {
-      await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+    catch (err) {
+      console.error('ERROR saving form', err);
     }
-    else if (groupKey === 'sed') {
-      await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
-    }
-    else await saveFeature(formCurrent);
-    await formCurrent.resetForm();
-    props.closeDetailView();
   };
 
   const saveTemplate = async (formCurrent) => {

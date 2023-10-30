@@ -12,6 +12,7 @@ import Modal from '../../../shared/ui/modal/Modal';
 import SaveAndCloseButtons from '../../../shared/ui/SaveAndCloseButtons';
 import {DateInputField, TextInputField} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
+import overlayStyles from '../../home/overlay.styles';
 import {updatedProject} from '../projects.slice';
 
 const DailyNotesModal = () => {
@@ -104,7 +105,7 @@ const DailyNotesModal = () => {
               </ListItem>
               <Button
                 title={'Delete Note'}
-                titleStyle={{color: 'red'}}
+                titleStyle={overlayStyles.importantText}
                 type={'clear'}
                 onPress={() => deleteNoteConfirm()}
                 icon={

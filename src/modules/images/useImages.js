@@ -223,7 +223,7 @@ const useImages = () => {
         resolve({height: height, width: width});
       }, (err) => {
         console.log('Error getting size of image:', err.message);
-        reject();
+        reject(err);
       });
     });
   };
@@ -301,7 +301,7 @@ const useImages = () => {
       imageCount++;
       console.log('Error on', imageId, ':', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      throw Error;
+      throw Error(err);
     }
   };
 

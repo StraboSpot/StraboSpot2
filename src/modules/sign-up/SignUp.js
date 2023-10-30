@@ -227,8 +227,8 @@ const SignUp = (props) => {
         {renderButtons()}
       </View>
       <StatusDialog
-        visible={statusDialog}
-        dialogTitle={statusDialogTitle}
+        isVisible={statusDialog}
+        title={statusDialogTitle}
         onTouchOutside={() => setStatusDialog(false)}
       >
         <Text>{statusMessage}</Text>

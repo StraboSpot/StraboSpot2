@@ -36,7 +36,7 @@ const homeConfig = {
   storage: AsyncStorage,
   blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible',
     'isStatusMessagesModalVisible', 'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible',
-    'isOfflineMapModalVisible', 'isInfoModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible',
+    'isOfflineMapModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible',
     'isProjectLoadComplete', 'isProgressModalVisible'],
   timeout: null,
 };

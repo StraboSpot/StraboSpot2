@@ -24,6 +24,7 @@ const WarningModal = ({children, closeModal, showCancelButton, title, closeTitle
       isVisible={isVisible || isWarningModalVisible}
       confirmText={confirmText}
       showConfirmButton={showConfirmButton}
+      showCancelButton={showCancelButton}
       closeModal={closeModal}
       onConfirmPress={onConfirmPress}
       confirmTitleStyle={confirmTitleStyle}

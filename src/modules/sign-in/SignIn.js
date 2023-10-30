@@ -32,11 +32,9 @@ const SignIn = (props) => {
   const isOnline = useSelector(state => state.home.isOnline);
   const user = useSelector(state => state.user);
 
-  const {protocol, domain, path, isSelected, isVerified} = customDatabaseEndpoint;
+  const {isSelected, isVerified} = customDatabaseEndpoint;
 
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   // const [endpointValue, setEndpointValue] = useState(url);
@@ -62,7 +60,7 @@ const SignIn = (props) => {
     });
     if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
-    await navigation.navigate('HomeScreen');
+    navigation.navigate('HomeScreen');
     setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
   };
 
