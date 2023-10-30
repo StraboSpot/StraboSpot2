@@ -34,7 +34,7 @@ const AddImageOverlayModal = (props) => {
     // Update strat section for map if matches edited strat section
     const stratSectionSettings = editedSedData.strat_section || {};
     if (stratSectionSettings.strat_section_id
-      && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
+      && stratSection?.strat_section_id === stratSectionSettings.strat_section_id) {
       dispatch(setStratSection(stratSectionSettings));
     }
 
@@ -230,7 +230,7 @@ const AddImageOverlayModal = (props) => {
       // Update strat section for map if matches edited strat section
       const stratSectionSettings = editedSedData.strat_section || {};
       if (stratSectionSettings.strat_section_id
-        && stratSection.strat_section_id === stratSectionSettings.strat_section_id) {
+        && stratSection?.strat_section_id === stratSectionSettings.strat_section_id) {
         dispatch(setStratSection(stratSectionSettings));
       }
     }
