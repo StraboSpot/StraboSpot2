@@ -58,6 +58,8 @@ const UploadProgressModal = (props) => {
     }
     catch (err) {
       console.error('Error loading or downloading project', err);
+      setUploadComplete('');
+      setError(true);
     }
   };
 
@@ -78,6 +80,7 @@ const UploadProgressModal = (props) => {
     }
     catch (err) {
       console.error('Error in renderUploadProgressModal', err);
+      setUploadComplete('');
       setError(true);
     }
   };
@@ -118,6 +121,7 @@ const UploadProgressModal = (props) => {
           type={error ? 'error' : uploadComplete === 'complete' ? 'complete' : 'uploading'}
           doesLoop={uploadComplete === 'uploading'}
           show={uploadComplete === 'uploading'}
+          error={error}
         />}
       info={renderDatasetsNotUploaded()}
     >
@@ -139,11 +143,9 @@ const UploadProgressModal = (props) => {
             {/*{uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}*/}
           </View>
         )
-        : <View style={{flex: 1}}>
-          <View style={{}}>
+        : <View>
             <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
           </View>
-        </View>
       }
     </ProgressModal>
   );
