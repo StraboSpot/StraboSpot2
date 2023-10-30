@@ -46,22 +46,6 @@ const useMapsOffline = () => {
     });
   };
 
-  // const adjustRedux = async (mapFileNames) => {
-  //   alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'
-  //     + ' StraboSpot. These have be removed automatically.',
-  //     [{title: 'OK', onPress: value => console.log('Ok pressed', value)}]);
-  //   let adjustedReduxMaps = {};
-  //   let foundMap = '';
-  //   console.log('ADJUST REDUX');
-  //   Object.values(offlineMaps).map((offlineMap) => {
-  //     if (isEmpty(offlineMap)) console.log('OFFLINE MAP IS EMPTY');
-  //     foundMap = mapFileNames.find(map => offlineMap.id === map);
-  //     if (foundMap) adjustedReduxMaps = {...adjustedReduxMaps, [foundMap]: offlineMaps[foundMap]};
-  //   });
-  //   console.log('ADJUSTED MAPS', adjustedReduxMaps);
-  //   dispatch(adjustedMapsFromDevice(adjustedReduxMaps));
-  // };
-
   const addMapFromDeviceToRedux = async (mapId) => {
     const map = await createOfflineMapObject(mapId);
     const mapSavedObject = Object.assign({}, map.source === 'mapbox_styles'
@@ -430,7 +414,6 @@ const useMapsOffline = () => {
       const selectedOfflineMap = mapId ? offlineMaps[mapId] : offlineMaps[currentBasemap.id];
       if (selectedOfflineMap && selectedOfflineMap.count > 0) {
         console.log('SelectedOfflineMap', selectedOfflineMap);
-        // alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
         await setOfflineMapTiles(selectedOfflineMap);
       }
       else {

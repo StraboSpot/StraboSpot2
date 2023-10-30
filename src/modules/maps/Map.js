@@ -9,7 +9,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import IconButton from '../../shared/ui/IconButton';
-import {MODAL_KEYS} from '../page/page.constants';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -18,6 +17,7 @@ import {
 } from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
 import useImagesHook from '../images/useImages';
+import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
   clearedSelectedSpots,
