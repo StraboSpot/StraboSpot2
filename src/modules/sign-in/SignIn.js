@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Platform, TextInput, View} from 'react-native';
+import {Platform, Text, TextInput, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
@@ -12,13 +12,10 @@ import useDeviceHook from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
-import WarningModal from '../home/home-modals/WarningModal';
+import ErrorModal from '../home/home-modals/ErrorModal';
 import {
-  addedStatusMessage,
-  clearedStatusMessages,
   setLoadingStatus,
   setProjectLoadSelectionModalVisible,
-  setWarningModalVisible,
 } from '../home/home.slice';
 import Splashscreen from '../splashscreen/Splashscreen';
 import {setUserData} from '../user/userProfile.slice';
@@ -37,10 +34,8 @@ const SignIn = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-  // const [endpointValue, setEndpointValue] = useState(url);
-  const [protocolValue, setProtocolValue] = useState(protocol);
-  const [domainValue, setDomainValue] = useState(domain);
-  const [pathValue, setPathValue] = useState(path);
+
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
 
   const useDevice = useDeviceHook();
   const navigation = useNavigation();
@@ -87,7 +82,8 @@ const SignIn = (props) => {
         });
       }
       else {
-        Alert.alert('Login Failure', 'Incorrect username and/or password');
+        setErrorMessage('Login Failure!\n\nIncorrect username and/or password');
+        setIsErrorModalVisible(true);
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         setPassword('');
       }
@@ -96,9 +92,7 @@ const SignIn = (props) => {
       console.log('error:', err);
       Sentry.captureException(err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(err));
-      dispatch(setWarningModalVisible(true));
+      setErrorMessage(err);
     }
   };
 
@@ -159,6 +153,17 @@ const SignIn = (props) => {
     }
   };
 
+  const renderErrorModal = () => {
+    return (
+      <ErrorModal
+        isVisible={isErrorModalVisible}
+        closeModal={() => setIsErrorModalVisible(false)}
+      >
+        <Text style={signInStyles.errorText}>{errorMessage}</Text>
+      </ErrorModal>
+    );
+  };
+
   const createAccount = () => {
     props.navigation.navigate('SignUp');
   };
@@ -196,8 +201,8 @@ const SignIn = (props) => {
             iconText={signInStyles.verifyEndpointIconText}
           />
         </View>
+        {renderErrorModal()}
       </View>
-      <WarningModal/>
     </Splashscreen>
   );
 };
