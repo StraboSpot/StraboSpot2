@@ -23,6 +23,7 @@ const ErrorModal = ({closeModal, children, isVisible}) => {
       isVisible={isVisible || isErrorMessagesModalVisible}
       overlayTitleText={overlayStyles.titleTextError}
       closeModal={closeModal || closeErrorModal}
+      showCancelButton={true}
     >
       <Text style={overlayStyles.statusMessageText}>{children || statusMessages.join('\n')}</Text>
     </StatusDialogBox>
