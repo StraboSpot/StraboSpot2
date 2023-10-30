@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import { FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {useSpotsHook} from '../spots';
@@ -29,7 +30,7 @@ const CustomFeatureTypes = () => {
   };
 
   const deleteFeatureConfirm = (feature) => {
-    Alert.alert('Delete Feature ' + toTitleCase(feature),
+    alert('Delete Feature ' + toTitleCase(feature),
       'Are you sure you would like to delete ' + feature + '?',
       [
         {
@@ -55,7 +56,7 @@ const CustomFeatureTypes = () => {
         let otherFeatures = spot.properties.other_features;
         let featuresWithFeatureType = otherFeatures.filter(spotFeature => feature === spotFeature.type);
         if (!isEmpty(featuresWithFeatureType)) {
-          Alert.alert('Type in Use',
+          alert('Type in Use',
             'This type is being used in spots, please remove this type from spots before deleting this type');
           isValidDelete = false;
         }

@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Alert, Platform, View} from 'react-native';
+import { Platform, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
@@ -68,7 +69,7 @@ const SampleModal = (props) => {
   const confirmLeavePage = () => {
     if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
-      Alert.alert(
+      alert(
         'Unsaved Changes',
         'Would you like to save your sample before continuing?',
         [

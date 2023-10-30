@@ -1,5 +1,5 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Alert, PixelRatio, Platform, Text, View} from 'react-native';
+import { PixelRatio, Platform, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
@@ -7,6 +7,7 @@ import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import IconButton from '../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../page/page.constants';
 import {
@@ -148,7 +149,6 @@ const Map = React.forwardRef((props, ref) => {
     if (isOnline.isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
     else if (isOnline.isInternetReachable && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
-      // Alert.alert('Online Basemap', `${JSON.stringify(currentBasemap.id)}`);
       useMaps.setBasemap(currentBasemap.id).catch((error) => {
         console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
@@ -879,7 +879,7 @@ const Map = React.forwardRef((props, ref) => {
       dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS}));
     }
     else {
-      Alert.alert(
+      alert(
         'Error!',
         'No Spots selected.',
       );

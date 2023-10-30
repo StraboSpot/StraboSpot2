@@ -6,6 +6,7 @@ import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
+import alert from '../../../shared/ui/alert';
 import config from '../../../utils/config';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
 import {DEFAULT_MAPS} from '../maps.constants';
@@ -46,7 +47,7 @@ const useMapsOffline = () => {
   };
 
   // const adjustRedux = async (mapFileNames) => {
-  //   Alert.alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'
+  //   alert('Map Missing on Device!', 'There are some maps that are not on the device that are in the'
   //     + ' StraboSpot. These have be removed automatically.',
   //     [{title: 'OK', onPress: value => console.log('Ok pressed', value)}]);
   //   let adjustedReduxMaps = {};
@@ -429,12 +430,12 @@ const useMapsOffline = () => {
       const selectedOfflineMap = mapId ? offlineMaps[mapId] : offlineMaps[currentBasemap.id];
       if (selectedOfflineMap && selectedOfflineMap.count > 0) {
         console.log('SelectedOfflineMap', selectedOfflineMap);
-        // Alert.alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
+        // alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
         await setOfflineMapTiles(selectedOfflineMap);
       }
       else {
         const firstAvailableOfflineMap = Object.values(offlineMaps)[0];
-        Alert.alert(
+        alert(
           'Not Available',
           'Selected map is not available for offline use.  '
           + `${firstAvailableOfflineMap.name} is available`, [

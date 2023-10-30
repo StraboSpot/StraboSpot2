@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Switch, Text, TextInput, View} from 'react-native';
+import { FlatList, Switch, Text, TextInput, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {formStyles} from '../form';
@@ -99,7 +100,7 @@ const Templates = (props) => {
   };
 
   const deleteTemplateConfirm = () => {
-    Alert.alert(
+    alert(
       'Delete Template',
       'Are you sure you want to delete ' + selectedTemplate.name + '?',
       [
@@ -372,7 +373,7 @@ const Templates = (props) => {
 
   const saveTemplate = (values) => {
     let templateObject;
-    if (isEmpty(name)) Alert.alert('Template name empty', 'Provide a template name.');
+    if (isEmpty(name)) alert('Template name empty', 'Provide a template name.');
     else {
       let existingTemplatesCopy = !isEmpty(templatesForKey) ? JSON.parse(JSON.stringify(templatesForKey)) : [];
       if (!isEmpty(selectedTemplate.id)) {

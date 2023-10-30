@@ -1,9 +1,8 @@
-import {Alert} from 'react-native';
-
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, getNewUUID, isEmpty, roundToDecimalPlaces, toTitleCase} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {useFormHook} from '../form';
 import {setStratSection} from '../maps/maps.slice';
 import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';
@@ -182,7 +181,7 @@ const useSed = () => {
     if (pageKey === PAGE_KEYS.STRAT_SECTION) {
       // ToDo Check if any spots mapped on this strat section before deleting
       console.log('Delete not implemented yet.');
-      Alert.alert('Notice', 'Unable to delete. This feature has not been implemented yet.');
+      alert('Notice', 'Unable to delete. This feature has not been implemented yet.');
     }
     else if (pageKey === PAGE_KEYS.BEDDING) {
       if (editedSedData[pageKey].beds) {
@@ -344,11 +343,11 @@ const useSed = () => {
       const spotsMappedOnThisStratSection = useSpots.getSpotsMappedOnGivenStratSection(
         spot.properties.sed.strat_section.strat_section_id);
       if (spotsMappedOnThisStratSection.length > 0) {
-        Alert.alert('Strat Section In Use', 'There are ' + spotsMappedOnThisStratSection.length
+        alert('Strat Section In Use', 'There are ' + spotsMappedOnThisStratSection.length
           + ' Spot(s) mapped on this Spot. Delete these Spots before removing the strat section.');
       }
       else {
-        Alert.alert(
+        alert(
           'Delete Strat Section?',
           'Are you sure you want to delete this strat section?',
           [{

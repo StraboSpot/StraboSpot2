@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, FlatList, Linking, Platform, View} from 'react-native';
+import { FlatList, Linking, Platform, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import Pdf from 'react-native-pdf';
@@ -9,6 +9,7 @@ import {STRABO_APIS} from '../../services/urls.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLACK, BLUE} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from './documentation.styles';
@@ -58,11 +59,11 @@ const Documentation = () => {
     try {
       const canOpen = await Linking.canOpenURL(path);
       if (canOpen) await Linking.openURL(path);
-      else Alert.alert('Uh Oh!', `Can not open the url ${path}`);
+      else alert('Uh Oh!', `Can not open the url ${path}`);
     }
     catch (err) {
       console.error('Can\t open URL', err);
-      Alert.alert(' Unable to open URL!');
+      alert(' Unable to open URL!');
     }
   };
 

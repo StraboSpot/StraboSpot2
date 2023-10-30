@@ -1,9 +1,8 @@
-import {Alert} from 'react-native';
-
 import * as Sentry from '@sentry/react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {
@@ -131,7 +130,7 @@ const useSpots = () => {
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
     let currentDataset = datasets[selectedDatasetId];
     if (isEmpty(currentDataset)) {
-      Alert.alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
+      alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
       currentDataset = useProject.createDataset();
       batch(() => {
         dispatch(addedDataset(currentDataset));
@@ -250,7 +249,7 @@ const useSpots = () => {
         if (!hasValidGeometry || isEmpty(coordsFlat) || !isEqual(coordsFlat, coordsFlatValid)) hasValidGeometry = false;
       });
       if (spot.geometry && !hasValidGeometry) {
-        Alert.alert('Invalid Geometry', 'Found a Spot with invalid geometry. Unable to map this Spot.'
+        alert('Invalid Geometry', 'Found a Spot with invalid geometry. Unable to map this Spot.'
           + '\nSpot Name: ' + spot.properties.name);
         console.error('INVALID Geometry! Spot:', spot);
       }

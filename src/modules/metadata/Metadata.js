@@ -1,11 +1,12 @@
 import React, {useRef} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import { FlatList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -37,7 +38,7 @@ const Metadata = () => {
     }, []);
 
     if (datasetsWithThisSpot.length === 1 && datasetsWithThisSpot.includes(datasetChecked.id)) {
-      Alert.alert('Unable to Remove Spot from Dataset', 'One dataset must remain checked.');
+      alert('Unable to Remove Spot from Dataset', 'One dataset must remain checked.');
     }
     else {
       if (datasetChecked.spotIds.includes(spot.properties.id)) {

@@ -1,11 +1,12 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import {Alert, FlatList, Switch, Text, View} from 'react-native';
+import { FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
+import alert from '../../shared/ui/alert';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -47,7 +48,7 @@ const ProjectDescription = (props) => {
         const errorMessages = Object.entries(formCurrent.errors).map(([key, value]) => (
           useForm.getLabel(key, formName) + ': ' + value
         ));
-        Alert.alert('Project Description Errors!', 'Changes in the following fields were not saved.'
+        alert('Project Description Errors!', 'Changes in the following fields were not saved.'
           + ' Please fix the errors:\n\n' + errorMessages.join('\n'));
         const newValuesWithoutErrors = Object.keys(formCurrent.values).reduce((acc, key) => {
           return Object.keys(formCurrent.errors).includes(key) ? acc : {...acc, [key]: formCurrent.values[key]};

@@ -1,7 +1,6 @@
-import {Alert} from 'react-native';
-
 import * as Sentry from '@sentry/react-native';
 
+import alert from '../shared/ui/alert';
 import {STRABO_APIS} from './urls.constants';
 
 const baseUrl = STRABO_APIS.DB;
@@ -57,7 +56,7 @@ const post = async (urlPart, login, data) => {
   }
   catch (err) {
     console.error('Error Posting', err);
-    Alert.alert('Error', `${err.toString()}`);
+    alert('Error', `${err.toString()}`);
   }
 };
 

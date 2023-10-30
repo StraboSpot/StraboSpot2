@@ -1,10 +1,11 @@
 import React from 'react';
-import {Alert, Dimensions, FlatList, Platform, View} from 'react-native';
+import { Dimensions, FlatList, Platform, View} from 'react-native';
 
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
@@ -18,7 +19,7 @@ const TagDetailModal = (props) => {
   const [useTags] = useTagsHook();
 
   const confirmDeleteTag = () => {
-    Alert.alert(
+    alert(
       'Delete Tag',
       'Are you sure you want to delete ' + selectedTag.name + '?',
       [

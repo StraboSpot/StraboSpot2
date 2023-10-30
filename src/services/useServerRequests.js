@@ -1,5 +1,3 @@
-import {Alert} from 'react-native';
-
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -10,6 +8,7 @@ import {
   setDatabaseVerify,
   updatedProjectTransferProgress,
 } from '../modules/project/projects.slice';
+import alert from '../shared/ui/alert';
 import {STRABO_APIS} from './urls.constants';
 
 const useServerRequests = (props) => {
@@ -63,7 +62,7 @@ const useServerRequests = (props) => {
     }
     catch (err) {
       console.error('Error Fetching', err);
-      Alert.alert('Error', `${err.toString()}`);
+      alert('Error', `${err.toString()}`);
       throw Error('Unable to Get Project from Server.');
     }
   };
@@ -82,7 +81,7 @@ const useServerRequests = (props) => {
     }
     catch (err) {
       console.error('Error Posting', err);
-      Alert.alert('Error', `${err.toString()}`);
+      alert('Error', `${err.toString()}`);
     }
   };
 
@@ -105,7 +104,7 @@ const useServerRequests = (props) => {
     }
     catch (err) {
       console.error('Error Posting', err);
-      Alert.alert('Error', `${err.toString()}`);
+      alert('Error', `${err.toString()}`);
     }
   };
 

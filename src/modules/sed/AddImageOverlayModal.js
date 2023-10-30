@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {Alert, View} from 'react-native';
+import {View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {Button, ListItem} from 'react-native-elements';
@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import {NumberInputField, SelectInputField, useFormHook} from '../form';
 import {setStratSection} from '../maps/maps.slice';
@@ -42,7 +43,7 @@ const AddImageOverlayModal = (props) => {
   };
 
   const deleteImageOverlayConfirm = () => {
-    Alert.alert(
+    alert(
       'Remove Image Overlay?',
       'Are you sure you want to remove this image overlay?',
       [{
@@ -238,7 +239,7 @@ const AddImageOverlayModal = (props) => {
   };
 
   const showFieldInfo = (label, info) => {
-    Alert.alert(label, info);
+    alert(label, info, []);
   };
 
   const validateImageOverlay = (values) => {

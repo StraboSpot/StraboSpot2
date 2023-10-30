@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setLoadingStatus} from '../home/home.slice';
@@ -98,7 +99,7 @@ const ImagesViewPage = () => {
             dispatch(clearedSelectedSpots());
             dispatch(setCurrentImageBasemap(image));
           }
-          else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+          else alert('Missing Image!', 'Unable to find image file on this device.');
         })
         .catch(e => console.error('Image not found', e));
     }

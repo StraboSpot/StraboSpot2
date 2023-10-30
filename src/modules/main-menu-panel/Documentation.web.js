@@ -1,11 +1,12 @@
 import React from 'react';
-import {Alert, Linking, View} from 'react-native';
+import {Linking, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../services/urls.constants';
 import {BLUE} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import styles from './documentation.styles';
 
 const Documentation = () => {
@@ -16,14 +17,9 @@ const Documentation = () => {
   const helpUrl = STRABO_APIS.STRABO + '/help';
 
   const viewOnlineHelp = async (path) => {
-    try {
       const canOpen = await Linking.canOpenURL(path);
-      canOpen && (await Linking.openURL(path));
-    }
-    catch (err) {
-      console.error('Can\t open URL', err);
-      Alert.alert(' Unable to open URL!');
-    }
+      canOpen ? (await Linking.openURL(path))
+      : alert('Unable to open URL');
   };
 
   const renderHelpLink = () => (

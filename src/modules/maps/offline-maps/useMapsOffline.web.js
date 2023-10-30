@@ -1,5 +1,4 @@
 import {useEffect} from 'react';
-import {Alert} from 'react-native';
 
 // import RNFS from 'react-native-fs';
 // import {unzip} from 'react-native-zip-archive';
@@ -10,6 +9,7 @@ import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequesteHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
+import alert from '../../../shared/ui/alert';
 import config from '../../../utils/config';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
 import {DEFAULT_MAPS} from '../maps.constants';
@@ -394,12 +394,11 @@ const useMapsOffline = () => {
       const selectedOfflineMap = mapId ? offlineMaps[mapId] : offlineMaps[currentBasemap.id];
       if (selectedOfflineMap) {
         console.log('SelectedOfflineMap', selectedOfflineMap);
-        // Alert.alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
         await setOfflineMapTiles(selectedOfflineMap);
       }
       else {
         const firstAvailableOfflineMap = Object.values(offlineMaps)[0];
-        Alert.alert(
+        alert(
           'Not Available',
           'Selected map is not available for offline use.  '
           + `${firstAvailableOfflineMap.name} is available`, [

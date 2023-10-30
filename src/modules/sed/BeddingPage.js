@@ -1,10 +1,11 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -53,7 +54,7 @@ const BeddingPage = (props) => {
   const confirmLeavePage = () => {
     if (beddingSharedRef.current && beddingSharedRef.current.dirty) {
       const formCurrent = beddingSharedRef.current;
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your interval before continuing?',
         [
           {text: 'No', style: 'cancel'},
@@ -66,7 +67,7 @@ const BeddingPage = (props) => {
 
   const addAttribute = async () => {
     if (beddingSharedRef.current && beddingSharedRef.current.dirty) {
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your general bedding data and continue?',
         [
           {text: 'No', style: 'cancel'},

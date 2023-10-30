@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, SectionList, View} from 'react-native';
+import { SectionList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection';
@@ -86,7 +87,7 @@ const MeasurementsPage = (props) => {
   const deleteMeasurementsConfirm = (measurementsToDelete) => {
     const deleteText = 'Are you sure you want to delete '
       + (measurementsToDelete.length === 1 ? 'this measurement' : 'these measurements') + '?';
-    Alert.alert(
+    alert(
       'Delete Measurement',
       deleteText,
       [{
@@ -133,7 +134,7 @@ const MeasurementsPage = (props) => {
         else setSelectedFeaturesTemp([...selectedFeaturesTemp, item]);
         console.log('Adding selected feature to identify group ...');
       }
-      else Alert.alert('Feature type mismatch!');
+      else alert('Feature type mismatch!');
     }
   };
 

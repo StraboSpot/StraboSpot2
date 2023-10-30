@@ -1,11 +1,12 @@
 import React from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Field} from 'formik';
 import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
@@ -142,7 +143,11 @@ const Form = (props) => {
       const arr = Object.entries(LABELS_WITH_ABBREVIATIONS).map(([key, value]) => key + ': ' + value);
       info += arr.join('\n');
     }
-    Alert.alert(label, info);
+    alert(
+      label,
+      info,
+      [],
+      );
   };
 
   return (

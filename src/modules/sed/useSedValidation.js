@@ -1,6 +1,5 @@
-import {Alert} from 'react-native';
-
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {useFormHook} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
 import {useSpotsHook} from '../spots';
@@ -148,7 +147,7 @@ const useSedValidation = () => {
 
     if (isEmpty(errorMessages)) return true;
     else {
-      Alert.alert('Error Saving', 'Errors found in following fields. Unable to save these changes.'
+      alert('Error Saving', 'Errors found in following fields. Unable to save these changes.'
         + ' Please fix the following errors.\n\n' + errorMessages.join('\n'));
       throw Error('Sed Validation Error');
     }

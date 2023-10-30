@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Platform, View} from 'react-native';
+import { Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
@@ -10,6 +10,7 @@ import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import Spacer from '../../shared/ui/Spacer';
 import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
@@ -69,7 +70,7 @@ const MyStraboSpot = (props) => {
       }
       else {
         console.error('Error picking document!', err);
-        Alert.alert('ERROR', err.toString());
+        alert('ERROR', err.toString());
       }
     }
   };

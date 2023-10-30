@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Platform, Text, View} from 'react-native';
+import {ActivityIndicator,  FlatList, Platform, Text, View} from 'react-native';
 
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
@@ -49,7 +50,7 @@ const ImageBasemaps = () => {
             dispatch(clearedSelectedSpots());
             dispatch(setCurrentImageBasemap(image));
           }
-          else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+          else alert('Missing Image!', 'Unable to find image file on this device.');
         })
         .catch(e => console.error('Image not found', e));
     }

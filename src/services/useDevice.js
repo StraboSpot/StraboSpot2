@@ -318,7 +318,6 @@ const useDevice = (props) => {
     }
     catch (err) {
       console.error('Write Error!', err.message);
-      // Alert.alert('Error:', 'There is an issue writing the project data \n' + err.toString());
       throw Error(err);
     }
   };

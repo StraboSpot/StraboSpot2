@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Alert, Animated, FlatList, Text, View} from 'react-native';
+import { Animated, FlatList, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
+import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
@@ -66,7 +67,7 @@ const ManageOfflineMaps = (props) => {
 
   const confirmDeleteMap = async (map) => {
     console.log(map);
-    Alert.alert(
+    alert(
       'Delete Offline Map',
       'Are you sure you want to delete ' + map.name + '?',
       [

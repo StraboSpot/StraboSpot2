@@ -1,8 +1,7 @@
-import {Alert} from 'react-native';
-
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
+import alert from '../../../shared/ui/alert';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
 import useSedValidationHook from '../../sed/useSedValidation';
 import {editedOrCreatedSpot, editedSpots} from '../../spots/spots.slice';
@@ -88,7 +87,7 @@ const useStratSectionCalculations = () => {
     }
     else if (character === 'interbedded' || character === 'bed_mixed_lit') {
       console.log('Not enough data to properly draw interval', sedData);
-      Alert.alert(
+      alert(
         'Missing Data!',
         'This interval is interbedded or mixed but there is not enough data to properly '
         + 'draw this interval. Check that you have entered all of the necessary bedding data for two lithologies. '

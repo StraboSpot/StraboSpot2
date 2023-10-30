@@ -1,11 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Pressable, SectionList, Switch, Text, View} from 'react-native';
+import { FlatList, Pressable, SectionList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -186,7 +187,7 @@ const Overview = (props) => {
       || spot.properties.surface_feature)) {
       let featureTypeText = spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString'
         ? 'Trace' : 'Surface';
-      Alert.alert('Turn Off ' + featureTypeText + ' Feature Warning',
+      alert('Turn Off ' + featureTypeText + ' Feature Warning',
         'Turning off ' + featureTypeText.toLowerCase() + ' feature will delete all '
         + featureTypeText.toLowerCase() + ' feature data. Are you sure you want to continue?',
         [

@@ -1,8 +1,7 @@
-import {Alert} from 'react-native';
-
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {useFormHook} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -91,7 +90,7 @@ const useMeasurements = () => {
         dispatch(setNotebookPageVisible(PAGE_KEYS.MEASUREMENTS));
       }
     }
-    else Alert.alert('No Measurement Type', 'Please select a measurement type using the toggles.');
+    else alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
 
   const removeMeasurementFromObj = (currentOrientationData, measurementToDelete) => {
@@ -100,7 +99,7 @@ const useMeasurements = () => {
     orientationDataCopy.forEach((measurement, i) => {
       if (measurementToDelete.id === measurement.id && !measurement.associated_orientation) orientationDataCopy[i] = {};
       else if (measurementToDelete.id === measurement.id && measurement.associated_orientation) {
-        Alert.alert('Unable to Delete', 'Please delete the associated features before deleting the primary feature.');
+        alert('Unable to Delete', 'Please delete the associated features before deleting the primary feature.');
         aborted = true;
         throw Error;
       }

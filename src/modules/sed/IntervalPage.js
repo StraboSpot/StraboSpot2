@@ -1,9 +1,10 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import {Alert, View} from 'react-native';
+import { View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
+import alert from '../../shared/ui/alert';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
@@ -48,7 +49,7 @@ const IntervalPage = (props) => {
   const confirmLeavePage = () => {
     if (intervalRef.current && intervalRef.current.dirty) {
       const formCurrent = intervalRef.current;
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your interval before continuing?',
         [
           {text: 'No', style: 'cancel'},

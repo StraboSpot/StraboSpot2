@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, SectionList, View} from 'react-native';
+import { SectionList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -7,6 +7,7 @@ import {batch, useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -135,7 +136,7 @@ const RockPage = (props) => {
       console.log('Copying ' + title + ' data from Spot:', spotToCopy);
       if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type?.includes(pageKey)
         && rockData?.rock_type?.includes(pageKey)) {
-        Alert.alert('Overwrite Existing Data',
+        alert('Overwrite Existing Data',
           'Are you sure you want to overwrite any current ' + title + ' rock data '
           + 'with the ' + title + ' rock data from ' + spotToCopy.properties.name + '?',
           [

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Text, View} from 'react-native';
+import { View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 // import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';  // TODO Fix for Web
 import {useDispatch, useSelector} from 'react-redux';
 
+import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
 import useMapsHook from '../maps/useMaps';
@@ -48,7 +49,7 @@ const Sketch = (props) => {
         const savedSketch = await useImages.saveFile({'path': path});
         dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
-        Alert.alert(modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH
+        alert(modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH
             ? `Sketch saved to NEW spot, ${selectedSpot.properties.name}!`
             : `Sketch saved to ${selectedSpot.properties.name}!`,
           null,
@@ -64,7 +65,7 @@ const Sketch = (props) => {
     }
     catch (err) {
       console.error('Error Saving Sketch', err);
-      Alert.alert('Error Saving Sketch!',
+      alert('Error Saving Sketch!',
         null,
         [{
           text: 'Cancel',

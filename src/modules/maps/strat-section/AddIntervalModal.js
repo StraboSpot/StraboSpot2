@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, FlatList} from 'react-native';
+import { FlatList} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import {deepObjectExtend} from '../../../shared/Helpers';
+import alert from '../../../shared/ui/alert';
 import Modal from '../../../shared/ui/modal/Modal';
 import {Form, SelectInputField, TextInputField, useFormHook} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
@@ -104,7 +105,7 @@ const AddIntervalModal = () => {
         return data[unitsField] && stratSection.column_y_axis_units !== data[unitsField];
       });
       if (mismatchUnitsField) {
-        Alert.alert(
+        alert(
           'Units Mismatch',
           'The units for the Y Axis are ' + stratSection.column_y_axis_units + ' but '
           + data[mismatchUnitsField] + ' have been designated for '

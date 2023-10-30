@@ -1,4 +1,4 @@
-import {Alert, Platform} from 'react-native';
+import { Platform} from 'react-native';
 
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
@@ -15,6 +15,7 @@ import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import useDeviceHook from '../services/useDevice';
 import {isEmpty} from '../shared/Helpers';
+import alert from '../shared/ui/alert';
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 
@@ -178,7 +179,7 @@ const useUpload = () => {
         const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
         console.log('duppes', spotId);
         dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
-        Alert.alert('Fixed Spot in Another Dataset Error',
+        alert('Fixed Spot in Another Dataset Error',
           'Spot removed from ' + dataset.name + '. Please try uploading again.');
       }
       throw Error(err);

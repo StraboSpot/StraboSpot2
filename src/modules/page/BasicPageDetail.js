@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import { FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {Form, useFormHook} from '../form';
 import NoteForm from '../notes/NoteForm';
@@ -67,7 +68,7 @@ const BasicPageDetail = (props) => {
   const confirmLeavePage = () => {
     if (!isTemplate && formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
         [{
           text: 'No',
@@ -96,7 +97,7 @@ const BasicPageDetail = (props) => {
   };
 
   const deleteFeatureConfirm = () => {
-    Alert.alert('Delete ' + title,
+    alert('Delete ' + title,
       'Are you sure you would like to delete this ' + title + '?',
       [
         {

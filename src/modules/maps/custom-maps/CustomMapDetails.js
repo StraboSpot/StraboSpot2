@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
+import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
+import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import Slider from '../../../shared/ui/SliderBar';
@@ -80,7 +81,7 @@ const AddCustomMaps = () => {
 
   const confirmDeleteMap = async () => {
     // console.log(customMapToEdit.id);
-    Alert.alert(
+    alert(
       'Delete Custom Map',
       'Are your sure you want to delete ' + customMapToEdit.title + '?',
       [
@@ -90,7 +91,7 @@ const AddCustomMaps = () => {
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Delete',
           onPress: () => useMaps.deleteMap(customMapToEdit.id),
         },
       ],

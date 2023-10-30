@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
+import {ActivityIndicator,  FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import overlayStyles from '../home/overlay.styles';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
@@ -58,7 +59,7 @@ const ImagesOverview = () => {
             dispatch(clearedSelectedSpots());
             dispatch(setCurrentImageBasemap(image));
           }
-          else Alert.alert('Missing Image!', 'Unable to find image file on this device.');
+          else alert('Missing Image!', 'Unable to find image file on this device.');
         })
         .catch(e => console.error('Image not found', e));
     }

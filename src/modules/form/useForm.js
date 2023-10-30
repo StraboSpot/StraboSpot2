@@ -1,7 +1,6 @@
-import {Alert} from 'react-native';
-
 import * as forms from '../../assets/forms';
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {LABEL_DICTIONARY} from '../form';
 
 const useForm = () => {
@@ -112,7 +111,7 @@ const useForm = () => {
         else delete formValues[key];
         return getLabel(key, formName) + ': ' + value;
       });
-      Alert.alert('Error Saving', 'Errors found in following fields. Unable to save these changes.'
+      alert('Error Saving', 'Errors found in following fields. Unable to save these changes.'
         + ' Please fix the following errors.\n\n' + errorMessages.join('\n'));
       if (!isLeavingPage) throw Error('Found validation errors.');  // If we don't want user to leave the page throw Error
     }

@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Text, View} from 'react-native';
+import { FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -121,7 +122,7 @@ const MeasurementDetail = (props) => {
   };
 
   const confirmDeleteMeasurement = () => {
-    Alert.alert(
+    alert(
       'Delete Measurement',
       'Are you sure you want to delete this measurement?',
       [{
@@ -139,7 +140,7 @@ const MeasurementDetail = (props) => {
   const confirmLeavePage = () => {
     if (!isTemplate && formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
         [{
           text: 'No',
@@ -179,7 +180,7 @@ const MeasurementDetail = (props) => {
   // Confirm switching the selected measurement
   const onAddAssociatedMeasurement = () => {
     if (formRef.current.dirty) {
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
         [{
           text: 'No',
@@ -210,7 +211,7 @@ const MeasurementDetail = (props) => {
   const onSwitchSelectedMeasurement = (measurement) => {
     if (measurement.id !== selectedMeasurement.id) {
       if (formRef.current.dirty) {
-        Alert.alert('Unsaved Changes',
+        alert('Unsaved Changes',
           'Would you like to save your data before continuing?',
           [{
             text: 'No',
@@ -237,7 +238,7 @@ const MeasurementDetail = (props) => {
         + 'lose all data for this measurement not relevant to ' + typeText + '.'
         : 'these measurements to ' + typeText + '? You will lose all data for these measurements not relevant to '
         + typeText + '.';
-      Alert.alert('Switch to ' + typeText, 'Are you sure you want to switch ' + alertTextEnd,
+      alert('Switch to ' + typeText, 'Are you sure you want to switch ' + alertTextEnd,
         [{
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),

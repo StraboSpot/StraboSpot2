@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
-import {Alert, FlatList, Text, TextInput, View} from 'react-native';
+import { FlatList, Text, TextInput, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {Button, ListItem} from 'react-native-elements';
@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {formStyles, SelectInputField, TextInputField, useFormHook} from '../form';
@@ -41,7 +42,7 @@ const OtherFeatureDetail = (props) => {
   const confirmLeavePage = () => {
     if (formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
-      Alert.alert('Unsaved Changes',
+      alert('Unsaved Changes',
         'Would you like to save your data before continuing?',
         [
           {
@@ -72,7 +73,7 @@ const OtherFeatureDetail = (props) => {
   };
 
   const deleteFeatureConfirm = () => {
-    Alert.alert('Delete Feature',
+    alert('Delete Feature',
       'Are you sure you would like to delete this feature?',
       [
         {
@@ -250,13 +251,13 @@ const OtherFeatureDetail = (props) => {
   const validateAndSetNewType = (newType) => {
     let existingCustomFeatureTypes = customFeatureTypes.filter(feature => feature === newType);
     if (!isEmpty(existingCustomFeatureTypes)) {
-      Alert.alert('Alert!',
+      alert('Alert!',
         'The type ' + newType + ' is already being used. Choose a different type name.');
       setOtherType('');
       return false;
     }
     else if (isEmpty(otherType)) {
-      Alert.alert('Alert!', 'The new type being defined is empty');
+      alert('Alert!', 'The new type being defined is empty');
       return false;
     }
     else return true;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Linking, Platform, Text, View} from 'react-native';
+import { Linking, Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import uiStyles from '../../shared/ui/ui.styles';
@@ -44,7 +45,7 @@ const UploadBackAndExport = () => {
   const openURL = async () => {
     const url = 'https://strabospot.org/files/helpFiles/Moving_Project_Backups_Out_of%20StraboSpot2.pdf';
     const canOpen = await Linking.canOpenURL(url);
-    canOpen ? await Linking.openURL(url) : Alert.alert('Need to be online');
+    canOpen ? await Linking.openURL(url) : alert('Need to be online');
   };
 
   const renderUploadAndBackupButtons = () => {
