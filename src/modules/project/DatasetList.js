@@ -130,7 +130,7 @@ const DatasetList = () => {
         >
           <Button
             title={'Delete Dataset'}
-            titleStyle={{color: 'red'}}
+            titleStyle={overlayStyles.importantText}
             type={'clear'}
             disabled={isDisabled(selectedDatasetToEdit.id)}
             buttonStyle={{padding: 0}}

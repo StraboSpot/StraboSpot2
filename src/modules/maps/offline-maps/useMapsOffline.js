@@ -1,5 +1,3 @@
-import {Alert} from 'react-native';
-
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -429,7 +427,7 @@ const useMapsOffline = () => {
   const switchToOfflineMap = async (mapId) => {
     if (!isEmpty(offlineMaps)) {
       const selectedOfflineMap = mapId ? offlineMaps[mapId] : offlineMaps[currentBasemap.id];
-      if (selectedOfflineMap) {
+      if (selectedOfflineMap && selectedOfflineMap.count > 0) {
         console.log('SelectedOfflineMap', selectedOfflineMap);
         // Alert.alert('Selected Offline Map', `${JSON.stringify(selectedOfflineMap)}`)
         await setOfflineMapTiles(selectedOfflineMap);
