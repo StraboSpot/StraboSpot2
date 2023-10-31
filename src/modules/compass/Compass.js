@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
   Animated,
   AppState,
   Easing,
@@ -137,7 +136,6 @@ const Compass = (props) => {
   };
 
   const matrixRotation = (res) => {
-    if (res) {
       setCompassData({
         heading: res.heading,
         strike: res.strike,
@@ -154,8 +152,6 @@ const Compass = (props) => {
         M32: roundToDecimalPlaces(res.M32, 3),
         M33: roundToDecimalPlaces(res.M33, 3),
       });
-    }
-    else Alert.alert('Having trouble getting compass data from device!');
   };
 
   const renderCompass = () => {

@@ -12,6 +12,7 @@ import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
+import WarningModal from '../../home/home-modals/WarningModal';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
 import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
@@ -30,6 +31,7 @@ const ManageOfflineMaps = (props) => {
   const [availableMaps, setAvailableMaps] = useState({});
   const [loading, setLoading] = useState(false);
   const [isNameModalVisible, setIsNameModalVisible] = useState(false);
+  const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
   const [selectedMap, setSelectedMap] = useState({});
 
   const useDevice = useDeviceHook();
@@ -195,6 +197,18 @@ const ManageOfflineMaps = (props) => {
     );
   };
 
+  const renderWarningModal = () => {
+
+    return (
+      <WarningModal
+        title={'Map Not Available!'}
+        isVisible={isWarningModalVisible}
+      >
+        <Text>Not Available Selected map is not available for offline use. Switching to first available map: {selectedMap.name}</Text>
+      </WarningModal>
+    );
+  };
+
   const saveMapEdits = () => {
     console.log('Map name saved!', selectedMap.name);
     dispatch(editedOfflineMap(selectedMap));
@@ -208,8 +222,12 @@ const ManageOfflineMaps = (props) => {
     }
     else {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: true}));
-      await useMapsOffline.switchToOfflineMap(item.id);
-      props.zoomToCenterOfflineTile();
+      const res = await useMapsOffline.switchToOfflineMap(item.id);
+      if (!isEmpty(res)) {
+        setSelectedMap(res);
+        setIsWarningModalVisible(true);
+      }
+      else props.zoomToCenterOfflineTile();
     }
   };
 
@@ -230,6 +248,7 @@ const ManageOfflineMaps = (props) => {
       <SectionDivider dividerText={'Offline Maps'}/>
       {loading ? <Text style={{textAlign: 'center', padding: 15}}>Loading...</Text> : renderMapsList()}
       {renderNameChangeModal()}
+      {renderWarningModal()}
     </React.Fragment>
   );
 };

@@ -1,16 +1,15 @@
-import {Alert} from 'react-native';
-
 import Clipboard from '@react-native-clipboard/clipboard';
 import * as turf from '@turf/turf';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
 import useNestingHook from '../nesting/useNesting';
 import useSpotsHook from '../spots/useSpots';
 
 const useMapFeatures = () => {
-
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user);
 
   const [useNesting] = useNestingHook();
@@ -188,16 +187,18 @@ const useMapFeatures = () => {
 
     if (hasData) {
       await Clipboard.setString(out);
-      Alert.alert(
-        'Success!',
-        'Data has been copied to clipboard.',
-      );
+      batch(() => {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage('Success!\n\nData has been copied to clipboard.'));
+        dispatch(setErrorMessagesModalVisible(true));
+      });
     }
     else {
-      Alert.alert(
-        'Error!',
-        'Your selected spots contained no valid stereonet data.',
-      );
+      batch(() => {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage('Error!\n\nYour selected spots contained no valid stereonet data.'));
+        dispatch(setErrorMessagesModalVisible(true));
+      });
     }
   };
 

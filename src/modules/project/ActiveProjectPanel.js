@@ -10,7 +10,8 @@ import {isEmpty} from '../../shared/Helpers';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import StandardModal from '../../shared/ui/StandardModal';
+import WarningModal from '../home/home-modals/WarningModal';
+import {clearedStatusMessages} from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
 import ActiveDatasetsList from './ActiveDatasetsList';
 import ActiveProjectList from './ActiveProjectList';
@@ -54,6 +55,12 @@ const ActiveProjectPanel = () => {
     await useDownload.initializeDownload(project);
   };
 
+  const handleDownloadProject = () => {
+    dispatch(clearedStatusMessages());
+    setIsWarningModalVisible(true);
+
+  };
+
   const renderAddDatasetModal = () => {
     return (
       <TextInputModal
@@ -69,28 +76,20 @@ const ActiveProjectPanel = () => {
 
   const renderWarningModal = () => {
     return (
-      <StandardModal
-        visible={isWarningModalVisible}
-        dialogTitle={'Warning!'}
+      <WarningModal
+        title={'Overwrite Warning!'}
+        isVisible={isWarningModalVisible}
+        closeModal={() => setIsWarningModalVisible(false)}
+        onConfirmPress={() => confirm()}
+        showConfirmButton={true}
+        showCancelButton={true}
       >
-        <View style={[overlayStyles.overlayContent]}>
-          <Text style={[overlayStyles.statusMessageText, {textAlign: 'center'}]}>
-            This will overwrite anything that has not been uploaded to the server
+        <View style={[overlayStyles.overlayContent, {marginBottom: 0}]}>
+          <Text style={overlayStyles.statusMessageText}>
+            This will OVERWRITE anything that has not been uploaded to the server
           </Text>
         </View>
-        <View style={overlayStyles.buttonContainer}>
-          <Button
-            title={'OK'}
-            type={'clear'}
-            onPress={() => confirm()}
-          />
-          <Button
-            title={'Cancel'}
-            type={'clear'}
-            onPress={() => setIsWarningModalVisible(false)}
-          />
-        </View>
-      </StandardModal>
+      </WarningModal>
     );
   };
 
@@ -132,7 +131,7 @@ const ActiveProjectPanel = () => {
                 title={'Download server version of project'}
                 titleStyle={commonStyles.standardButtonText}
                 type={'outline'}
-                onPress={() => setIsWarningModalVisible(true)}
+                onPress={() => handleDownloadProject()}
               />
               <View style={{alignItems: 'center', paddingTop: 20}}>
                 <Text style={commonStyles.standardDescriptionText}>
