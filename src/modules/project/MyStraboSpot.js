@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Platform, View} from 'react-native';
+import {Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
@@ -87,12 +87,17 @@ const MyStraboSpot = (props) => {
         return (
           <View style={{padding: 10}}>
             <UserProfile logout={props.logout}/>
-            <Spacer/>
-            <ProjectTypesButtons
-              onLoadProjectsFromServer={() => setShowSection('serverProjects')}
-              onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
-              onLoadProjectsFromDownloadsFolder={() => getExportedAndroidProject()}
-              onStartNewProject={() => setShowSection('new')}/>
+            {Platform.OS !== 'web' && (
+              <>
+                <Spacer/>
+                <ProjectTypesButtons
+                  onLoadProjectsFromServer={() => setShowSection('serverProjects')}
+                  onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
+                  onLoadProjectsFromDownloadsFolder={() => getExportedAndroidProject()}
+                  onStartNewProject={() => setShowSection('new')}
+                />
+              </>
+            )}
           </View>
         );
       case 'serverProjects':

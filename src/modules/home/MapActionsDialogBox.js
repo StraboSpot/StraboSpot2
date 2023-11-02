@@ -27,7 +27,7 @@ const MapActionsDialog = (props) => {
 
   const mapActionItem = (item) => {
     if ((item.key === 'saveMap' && ((isInternetReachable && isConnected)
-        || (!isInternetReachable && isConnected && currentBasemap?.source)))
+        || (!isInternetReachable && isConnected && currentBasemap?.source)) && Platform.OS !== 'web')
       || (item.key === 'stereonet' && Platform.OS === 'ios')
       || (item.key === 'stratSection' && stratSection)
       || (item.key === 'mapMeasurement' && !stratSection && !currentImageBasemap)

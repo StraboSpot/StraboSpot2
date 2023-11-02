@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -124,23 +124,25 @@ const ActiveProjectPanel = () => {
         </View>
 
         {/*Footer*/}
-        <View style={{padding: 10}}>
-          {user.name && (
-            <View>
-              <Button
-                title={'Download server version of project'}
-                titleStyle={commonStyles.standardButtonText}
-                type={'outline'}
-                onPress={() => handleDownloadProject()}
-              />
-              <View style={{alignItems: 'center', paddingTop: 20}}>
-                <Text style={commonStyles.standardDescriptionText}>
-                  This will overwrite anything that has not been uploaded to the server
-                </Text>
+        {Platform.OS !== 'web' && (
+          <View style={{padding: 10}}>
+            {user.name && (
+              <View>
+                <Button
+                  title={'Download server version of project'}
+                  titleStyle={commonStyles.standardButtonText}
+                  type={'outline'}
+                  onPress={() => handleDownloadProject()}
+                />
+                <View style={{alignItems: 'center', paddingTop: 20}}>
+                  <Text style={commonStyles.standardDescriptionText}>
+                    This will overwrite anything that has not been uploaded to the server
+                  </Text>
+                </View>
               </View>
-            </View>
-          )}
-        </View>
+            )}
+          </View>
+        )}
 
       </View>
       {renderAddDatasetModal()}

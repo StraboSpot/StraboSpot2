@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
@@ -147,8 +147,12 @@ const UserProfile = (props) => {
     <React.Fragment>
       <View>
         {renderProfile()}
-        {renderLogOutButton()}
-        {renderLogoutModal()}
+        {Platform.OS !== 'web' && (
+          <>
+            {renderLogOutButton()}
+            {renderLogoutModal()}
+          </>
+        )}
       </View>
     </React.Fragment>
   );

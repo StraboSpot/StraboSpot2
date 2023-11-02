@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Switch, Text, View} from 'react-native';
+import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -94,25 +94,27 @@ const DatasetList = () => {
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
-        <View>
-          {dataset.images?.imageIds && (
+        {Platform.OS !== 'web' && (
+          <View>
+            {dataset.images?.imageIds && (
+              <Icon
+                name={spotIds && 'image-outline'}
+                type={spotIds && 'ionicon'}
+                size={20}
+                containerStyle={{paddingBottom: 5}}
+              />
+            )}
             <Icon
-              name={spotIds && 'image-outline'}
-              type={spotIds && 'ionicon'}
+              name={spotIds ? (needImages ? 'checkmark-outline' : 'download-circle-outline') : 'image-off-outline'}
+              type={spotIds ? (needImages ? 'ionicon' : 'material-community') : 'material-community'}
               size={20}
-              containerStyle={{paddingBottom: 5}}
+              color={spotIds ? needImages && 'green' : 'black'}
+              disabled={needImages}
+              disabledStyle={{backgroundColor: 'transparent'}}
+              onPress={() => downloadImages(dataset)}
             />
-          )}
-          <Icon
-            name={spotIds ? (needImages ? 'checkmark-outline' : 'download-circle-outline') : 'image-off-outline'}
-            type={spotIds ? (needImages ? 'ionicon' : 'material-community') : 'material-community'}
-            size={20}
-            color={spotIds ? needImages && 'green' : 'black'}
-            disabled={needImages}
-            disabledStyle={{backgroundColor: 'transparent'}}
-            onPress={() => downloadImages(dataset)}
-          />
-        </View>
+          </View>
+        )}
       </ListItem>
     );
   };
