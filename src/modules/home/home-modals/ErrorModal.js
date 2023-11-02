@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Platform, Text} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -23,7 +23,7 @@ const ErrorModal = ({closeModal, children, isVisible}) => {
       isVisible={isVisible || isErrorMessagesModalVisible}
       overlayTitleText={overlayStyles.titleTextError}
       closeModal={closeModal || closeErrorModal}
-      showCancelButton={true}
+      showCancelButton={!(Platform.OS === 'web' && statusMessages.includes('Error loading project!'))}
     >
       <Text style={overlayStyles.statusMessageText}>{children || statusMessages.join('\n')}</Text>
     </StatusDialogBox>

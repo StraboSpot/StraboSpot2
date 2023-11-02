@@ -2,6 +2,7 @@ import React from 'react';
 import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
+import {NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
@@ -49,7 +50,9 @@ const App = () => {
         <PersistGate loading={<Loading/>} persistor={persistor}>
           {/*<Sentry.TouchEventBoundary>*/}
           <ConnectionStatus/>
-          <Routes/>
+          <NavigationContainer>
+            <Routes/>
+          </NavigationContainer>
           {/*</Sentry.TouchEventBoundary>*/}
         </PersistGate>
       </Provider>

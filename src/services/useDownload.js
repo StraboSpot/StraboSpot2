@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import initialProjectLoadModal from '../modules/home/home-modals/InitialProjectLoadModal';
@@ -5,6 +7,7 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
+  setErrorMessagesModalVisible,
   setLoadingStatus,
   setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
@@ -37,12 +40,12 @@ const useDownload = () => {
   let imageCount = 0;
 
   const dispatch = useDispatch();
+  const encodedLogin = useSelector(state => state.user.encoded_login);
   const project = useSelector(state => state.project.project);
-  const user = useSelector(state => state.user);
 
-  const useDevice = useDeviceHook();
   const [useImages] = useImagesHook();
   const [useServerRequests] = useServerRequestsHook();
+  const useDevice = useDeviceHook();
 
   const destroyOldProject = () => {
     batch(() => {
@@ -59,7 +62,7 @@ const useDownload = () => {
     try {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
-      const projectResponse = await useServerRequests.getProject(selectedProject.id, user.encoded_login);
+      const projectResponse = await useServerRequests.getProject(selectedProject.id, encodedLogin);
       if (!isEmpty(project)) destroyOldProject();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
@@ -77,7 +80,7 @@ const useDownload = () => {
     }
   };
 
-  const downloadSpots = async (dataset, encodedLogin) => {
+  const downloadSpots = async (dataset) => {
     try {
       console.log(dataset.name, ':', 'Downloading Spots...');
       const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
@@ -117,10 +120,10 @@ const useDownload = () => {
     }
   };
 
-  const downloadDatasets = async (project) => {
+  const downloadDatasets = async (selectedProject) => {
     try {
       dispatch(addedStatusMessage('Downloading datasets from server...'));
-      const projectDatasetsFromServer = await useServerRequests.getDatasets(project.id, user.encoded_login);
+      const projectDatasetsFromServer = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished downloading datasets from server.'));
       if (projectDatasetsFromServer.datasets.length === 1) {
@@ -150,7 +153,7 @@ const useDownload = () => {
       // Synchronous download
       return await Object.values(datasets).reduce(async (previousPromise, dataset, i) => {
         await previousPromise;
-        const datasetSpots = await downloadSpots(dataset, user.encoded_login);
+        const datasetSpots = await downloadSpots(dataset);
         console.log(dataset.name, ':', 'Finished downloading and saving Spots', datasetSpots);
         return {dataset: dataset, spots: datasetSpots};
       }, Promise.resolve());
@@ -163,7 +166,7 @@ const useDownload = () => {
       if (initialProjectLoadModal) dispatch(setProjectLoadSelectionModalVisible(false));
       dispatch(setStatusMessageModalTitle(project.name));
       dispatch(clearedStatusMessages());
-      dispatch(setStatusMessagesModalVisible(true));
+      if (Platform.OS !== 'web') dispatch(setStatusMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
     });
@@ -181,7 +184,12 @@ const useDownload = () => {
     }
     catch (err) {
       console.error('Error Initializing Download.', err);
-      dispatch(addedStatusMessage('Download Failed!', err));
+      if (Platform.OS === 'web') {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage('Error loading project!', err));
+        dispatch(setErrorMessagesModalVisible(true));
+      }
+      else dispatch(addedStatusMessage('Download Failed!', err));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
   };
@@ -228,15 +236,15 @@ const useDownload = () => {
             + '\nFailed Images ' + imagesFailedCount + '/' + neededImageIds.length,
           ));
         }
-          const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
-          console.log(neededDatasetImagesUpdated);
-          dispatch(setLoadingStatus({view: 'modal', bool: false}));
-          dispatch(addedNeededImagesToDataset({
-            datasetId: dataset.id,
-            images: neededDatasetImagesUpdated,
-            modified_timestamp: dataset.modified_timestamp,
-          }));
-          dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
+        const neededDatasetImagesUpdated = await useImages.gatherNeededImages(null, dataset);
+        console.log(neededDatasetImagesUpdated);
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
+        dispatch(addedNeededImagesToDataset({
+          datasetId: dataset.id,
+          images: neededDatasetImagesUpdated,
+          modified_timestamp: dataset.modified_timestamp,
+        }));
+        dispatch(addedStatusMessage('Downloaded Images: ' + imageCount + '/' + neededImageIds.length));
       }
       dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -264,11 +272,6 @@ const useDownload = () => {
   };
 
   return {
-    downloadProject: downloadProject,
-    downloadSpots: downloadSpots,
-    downloadDatasets: downloadDatasets,
-    gatherNeededImages: gatherNeededImages,
-    getDatasetSpots: getDatasetSpots,
     initializeDownload: initializeDownload,
     initializeDownloadImages: initializeDownloadImages,
   };

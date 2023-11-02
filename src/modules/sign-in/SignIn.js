@@ -1,100 +1,39 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, Text, TextInput, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
-import * as Sentry from '@sentry/react-native';
-import {Base64} from 'js-base64';
 import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
-import useServerRequests from '../../services/useServerRequests';
-import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import ErrorModal from '../home/home-modals/ErrorModal';
-import {
-  setLoadingStatus,
-  setProjectLoadSelectionModalVisible,
-} from '../home/home.slice';
 import Splashscreen from '../splashscreen/Splashscreen';
-import {setUserData} from '../user/userProfile.slice';
 import signInStyles from './signIn.styles';
+import useSignInHook from './useSignIn';
 
-const SignIn = (props) => {
+const SignIn = () => {
+  console.log('Rendering SignIn...');
 
-  const dispatch = useDispatch();
-  const currentProject = useSelector(state => state.project.project);
   const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
   const isOnline = useSelector(state => state.home.isOnline);
-  const user = useSelector(state => state.user);
 
   const {isSelected, isVerified} = customDatabaseEndpoint;
 
   const [errorMessage, setErrorMessage] = useState('');
-  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
-  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
-
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
+  const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
 
   const useDevice = useDeviceHook();
-  const navigation = useNavigation();
-  const [serverRequests] = useServerRequests();
+  const useSignIn = useSignInHook();
 
   useEffect(() => {
     console.log('UE SignIn []');
     useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
     Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
       .catch(err => console.error('Error getting permissions', err));
-
   }, []);
-
-  const guestSignIn = async () => {
-    Sentry.configureScope((scope) => {
-      scope.setUser({'id': 'GUEST'});
-    });
-    if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
-    console.log('Loading user: GUEST');
-    navigation.navigate('HomeScreen');
-    setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
-  };
-
-  const signIn = async () => {
-    dispatch(setLoadingStatus({view: 'home', bool: true}));
-    console.log(`Authenticating ${username} and signing in...`);
-    try {
-      const userAuthResponse = await serverRequests.authenticateUser(username, password);
-      // login with provider
-      if (userAuthResponse?.valid === 'true') {
-        Sentry.configureScope((scope) => {
-          scope.setUser({'username': user.name, 'email': user.email});
-        });
-        const encodedLogin = Base64.encode(username + ':' + password);
-        updateUserResponse(encodedLogin).then((userState) => {
-          console.log(`${username} is successfully logged in!`);
-          isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
-          // dispatch(setSignedInStatus(true));
-          // setIsLoading(false);
-          dispatch(setLoadingStatus({view: 'home', bool: false}));
-          setUsername('');
-          setPassword('');
-          navigation.navigate('HomeScreen');
-        });
-      }
-      else {
-        setErrorMessage('Login Failure!\n\nIncorrect username and/or password');
-        setIsErrorModalVisible(true);
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        setPassword('');
-      }
-    }
-    catch (err) {
-      console.log('error:', err);
-      Sentry.captureException(err);
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      setErrorMessage(err);
-    }
-  };
 
   const renderButtons = () => {
     return (
@@ -102,7 +41,8 @@ const SignIn = (props) => {
         <Button
           type={'solid'}
           containerStyle={signInStyles.buttonContainer}
-          onPress={() => signIn()}
+          onPress={() => useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage,
+            setIsErrorModalVisible)}
           buttonStyle={signInStyles.buttonStyle}
           disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
           title={'Sign In'}
@@ -110,47 +50,19 @@ const SignIn = (props) => {
         <Button
           type={'solid'}
           containerStyle={signInStyles.buttonContainer}
-          onPress={() => createAccount()}
+          onPress={() => useSignIn.createAccount()}
           buttonStyle={signInStyles.buttonStyle}
           title={'Sign Up'}
         />
         <Button
           type={'solid'}
-          onPress={() => guestSignIn()}
+          onPress={() => useSignIn.guestSignIn()}
           containerStyle={signInStyles.buttonContainer}
           buttonStyle={signInStyles.buttonStyle}
           title={'Continue as Guest'}
         />
       </View>
     );
-  };
-
-  const getUserImage = async (userProfileImage) => {
-    if (userProfileImage) {
-      return new Promise((resolve, reject) => {
-        readDataUrl(userProfileImage, (base64Image) => {
-          if (base64Image && typeof base64Image === 'string') resolve(base64Image);
-          else reject('Could not convert image to base64');
-        });
-      });
-    }
-    else return require('../../assets/images/noimage.jpg');
-  };
-
-  const updateUserResponse = async (encodedLogin) => {
-    try {
-      let userProfileRes = await serverRequests.getProfile(encodedLogin);
-      const userProfileImage = await serverRequests.getProfileImage(encodedLogin);
-      console.log('userProfileImage', userProfileImage);
-      if (!isEmpty(userProfileImage)) {
-        const profileImage = await getUserImage(userProfileImage);
-        dispatch(setUserData({...userProfileRes, image: profileImage, encoded_login: encodedLogin}));
-      }
-      else dispatch(setUserData({...userProfileRes, image: null, encoded_login: encodedLogin}));
-    }
-    catch (err) {
-      console.log('SIGN IN ERROR', err);
-    }
   };
 
   const renderErrorModal = () => {
@@ -162,10 +74,6 @@ const SignIn = (props) => {
         <Text style={signInStyles.errorText}>{errorMessage}</Text>
       </ErrorModal>
     );
-  };
-
-  const createAccount = () => {
-    props.navigation.navigate('SignUp');
   };
 
   return (
@@ -192,7 +100,8 @@ const SignIn = (props) => {
             onChangeText={val => setPassword(val)}
             value={password}
             returnKeyType={'go'}
-            onSubmitEditing={signIn}
+            onSubmitEditing={() => useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage,
+              setIsErrorModalVisible)}
           />
           {renderButtons()}
           <CustomEndpoint

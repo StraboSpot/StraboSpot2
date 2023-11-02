@@ -1,6 +1,6 @@
 import React from 'react';
+import {Platform} from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector} from 'react-redux';
 
@@ -15,6 +15,9 @@ import {isEmpty} from '../shared/Helpers';
 const Routes = () => {
   console.log('Rendering Routes...');
 
+  const currentProject = useSelector(state => state.project.project);
+  const user = useSelector(state => state.user);
+
   const Stack = createStackNavigator();
   const AppStack = createStackNavigator();
 
@@ -23,51 +26,40 @@ const Routes = () => {
     headerShown: false,
   };
 
-  const AppScreens = () => {
-    // const isSignedIn = useSelector(state => state.home.isSignedIn);
-    const user = useSelector(state => state.user);
-    const currentProject = useSelector(state => state.project.project);
-    return (
-      <AppStack.Navigator
-        initialRouteName={user.name && !isEmpty(currentProject) ? 'HomeScreen' : 'SignIn'}>
-        <Stack.Screen
-          name={'SignIn'}
-          component={SignIn}
-          options={navigationOptions}
-        />
-        <Stack.Screen
-          name={'SignUp'}
-          component={SignUp}
-          options={navigationOptions}
-        />
-        <Stack.Screen
-          name={'HomeScreen'}
-          component={Home}
-          options={navigationOptions}
-        />
-        <Stack.Screen
-          name={'ImageInfo'}
-          component={ImageInfo}
-          options={navigationOptions}
-        />
-        <Stack.Screen
-          name={'ImageSlider'}
-          component={ImageSlider}
-          options={navigationOptions}
-        />
-        <Stack.Screen
-          name={'Sketch'}
-          component={Sketch}
-          options={navigationOptions}
-        />
-      </AppStack.Navigator>
-    );
-  };
-
   return (
-    <NavigationContainer>
-      <AppScreens/>
-    </NavigationContainer>
+    <AppStack.Navigator
+      initialRouteName={(user.name && !isEmpty(currentProject)) || Platform.OS === 'web' ? 'HomeScreen' : 'SignIn'}>
+      <Stack.Screen
+        name={'SignIn'}
+        component={SignIn}
+        options={navigationOptions}
+      />
+      <Stack.Screen
+        name={'SignUp'}
+        component={SignUp}
+        options={navigationOptions}
+      />
+      <Stack.Screen
+        name={'HomeScreen'}
+        component={Home}
+        options={navigationOptions}
+      />
+      <Stack.Screen
+        name={'ImageInfo'}
+        component={ImageInfo}
+        options={navigationOptions}
+      />
+      <Stack.Screen
+        name={'ImageSlider'}
+        component={ImageSlider}
+        options={navigationOptions}
+      />
+      <Stack.Screen
+        name={'Sketch'}
+        component={Sketch}
+        options={navigationOptions}
+      />
+    </AppStack.Navigator>
   );
 };
 

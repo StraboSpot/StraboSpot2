@@ -162,12 +162,6 @@ const useProject = () => {
     return activeDatasets.filter(activeDataset => !isEmpty(activeDataset));
   };
 
-  const initializeNewProject = async (descriptionData) => {
-    await destroyOldProject();
-    await createProject(descriptionData);
-    return Promise.resolve();
-  };
-
   const getAllDeviceProjects = async (directory) => {
     // const deviceProject = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
     //   console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
@@ -212,10 +206,6 @@ const useProject = () => {
     }
   };
 
-  const getSelectedDatasetFromId = () => {
-    return selectedDatasetId ? datasets[selectedDatasetId] : 'Unknown';
-  };
-
   const getDatasetFromSpotId = (spotId) => {
     let datasetIdFound;
     for (const dataset of Object.values(datasets)) {
@@ -228,6 +218,30 @@ const useProject = () => {
     console.log('HERE IS THE DATASET', datasetIdFound);
     if (!datasetIdFound) console.error('Dataset not found');
     return datasetIdFound;
+  };
+
+  const getSelectedDatasetFromId = () => {
+    return selectedDatasetId ? datasets[selectedDatasetId] : 'Unknown';
+  };
+
+  const initializeNewProject = async (descriptionData) => {
+    await destroyOldProject();
+    await createProject(descriptionData);
+    return Promise.resolve();
+  };
+
+  const loadProjectWeb = async (project) => {
+    try {
+      await useDownload.initializeDownload(project);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+    catch (err) {
+      console.error('Error loading project', err);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error loading project!'));
+      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
   };
 
   const makeDatasetCurrent = (datasetId) => {
@@ -293,10 +307,11 @@ const useProject = () => {
     getAllDeviceProjects: getAllDeviceProjects,
     getAllExternalStorageProjects: getAllExternalStorageProjects,
     getAllServerProjects: getAllServerProjects,
-    getSelectedDatasetFromId: getSelectedDatasetFromId,
     getDatasetFromSpotId: getDatasetFromSpotId,
-    makeDatasetCurrent: makeDatasetCurrent,
+    getSelectedDatasetFromId: getSelectedDatasetFromId,
     initializeNewProject: initializeNewProject,
+    loadProjectWeb: loadProjectWeb,
+    makeDatasetCurrent: makeDatasetCurrent,
     setSwitchValue: setSwitchValue,
     switchProject: switchProject,
   };

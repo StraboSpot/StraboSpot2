@@ -7,8 +7,6 @@ import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import BatteryInfo from '../../services/BatteryInfo';
-import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
@@ -16,7 +14,6 @@ import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
-import uiStyles from '../../shared/ui/ui.styles';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
@@ -36,6 +33,7 @@ import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
+import useSignInHook from '../sign-in/useSignIn';
 import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
@@ -68,6 +66,7 @@ SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding sys
 SystemNavigationBar.setNavigationColor('translucent');
 
 const Home = ({navigation, route}) => {
+  console.log('Rendering Home...');
 
   const platform = Platform.OS === 'ios' ? 'window' : 'screen';
   const deviceDimensions = Dimensions.get(platform);
@@ -75,13 +74,14 @@ const Home = ({navigation, route}) => {
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
 
-  const useExport = useExportHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
   const toast = useToast();
   const useDevice = useDeviceHook();
+  const useExport = useExportHook();
   const useLocation = useLocationHook();
+  const useSignIn = useSignInHook();
   const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -99,7 +99,6 @@ const Home = ({navigation, route}) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
-  const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
@@ -132,6 +131,8 @@ const Home = ({navigation, route}) => {
   const mapComponentRef = useRef(null);
 
   useEffect(() => {
+    if (Platform.OS === 'web') useSignIn.autoLogin();
+
     let updateTimer;
     if (Platform.OS === 'android') {
       useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
@@ -638,7 +639,7 @@ const Home = ({navigation, route}) => {
       {/*Modals for Home Page*/}
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
-      {isProjectLoadSelectionModalVisible && (
+      {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
           openMainMenu={() => toggleHomeDrawerButton()}
           visible={isProjectLoadSelectionModalVisible}
