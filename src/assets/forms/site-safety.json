@@ -16,10 +16,10 @@
     },
     {
       "type": "text",
-      "name": "field_stop_catagory",
-      "label": "Field Stop Catagory",
+      "name": "field_stop_category",
+      "label": "Field Stop Category",
       "hint": "Outcrop, trail, overview, roadcut",
-      "required": "true"
+      "required": "false"
     },
     {
       "type": "text",
@@ -60,7 +60,7 @@
     },
     {
       "type": "text",
-      "name": "backup_emergency_medical_conta",
+      "name": "backup_emerg_medical_contact",
       "label": "Backup Emergency Medical Contact",
       "hint": "Local Fire Department, Green River Fire Department (435-564-3228); Utah Highway Patrol (435-564-3474)",
       "required": "false"
