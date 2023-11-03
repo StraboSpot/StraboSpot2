@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import { FlatList, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
@@ -273,7 +273,7 @@ const MeasurementDetail = (props) => {
         {/* Associated measurements */}
         {selectedMeasurement && selectedAttitude && selectedAttitude.associated_orientation
           && (selectedAttitude.associated_orientation.map((item, i) =>
-              <React.Fragment>
+              <React.Fragment key={item.id + 'Outer'}>
                 <MeasurementItem
                   item={item}
                   selectedIds={[selectedMeasurement.id]}
