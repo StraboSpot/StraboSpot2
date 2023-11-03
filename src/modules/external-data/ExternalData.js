@@ -60,7 +60,7 @@ const ExternalData = () => {
                 multiline={true}
                 editable={false}
                 style={formStyles.fieldValue}
-                value={protocol}
+                value={protocol || ''}
               />
             </View>
             <View style={{width: 300}}>
@@ -73,7 +73,7 @@ const ExternalData = () => {
                 onChangeText={text => setUrl(text)}
                 textContentType={'URL'}
                 keyboardType={'url'}
-                value={url}
+                value={url || ''}
               />
             </View>
           </ListItem.Content>

@@ -264,7 +264,7 @@ const Templates = (props) => {
           <TextInput
             style={formStyles.fieldValue}
             onChangeText={value => setName(value)}
-            value={name}
+            value={name || ''}
             autoFocus={isEmpty(name)}
           />
         </View>

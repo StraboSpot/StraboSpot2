@@ -164,7 +164,7 @@ const OtherFeatureDetail = (props) => {
                         style={formStyles.fieldValue}
                         placeholder={'Type of feature ...'}
                         onChangeText={newType => setOtherType(newType)}
-                        value={otherType}
+                        value={otherType || ''}
                       />
                     </ListItem.Content>
                   </ListItem>

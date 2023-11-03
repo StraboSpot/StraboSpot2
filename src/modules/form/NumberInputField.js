@@ -15,7 +15,7 @@ const NumberInputField = ({
 
   const getDisplayValue = () => {
     if (!isEmpty(value)) return value.toString();
-    return value;
+    return value || '';
   };
 
   return (

@@ -50,7 +50,7 @@ const BackupModal = () => {
         </View>
         <View style={overlayStyles.overlayContent}>
           <TextInput
-            value={fileName}
+            value={fileName || ''}
             onChangeText={text => setBackupFileName(text)}
             style={overlayStyles.inputContainer}
           />

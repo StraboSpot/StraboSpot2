@@ -177,7 +177,7 @@ const SignUp = (props) => {
             autoCorrect={false}
             placeholderTextColor={'#6a777e'}
             onChangeText={val => onChangeText('firstName', val)}
-            value={userData.firstName.value}
+            value={userData.firstName.value || ''}
           />
           <TextInput
             style={styles.input}
@@ -186,7 +186,7 @@ const SignUp = (props) => {
             autoCorrect={false}
             placeholderTextColor={'#6a777e'}
             onChangeText={val => onChangeText('lastName', val)}
-            value={userData.lastName.value}
+            value={userData.lastName.value || ''}
           />
         </View>
         <View style={{width: '100%'}}>
@@ -200,7 +200,7 @@ const SignUp = (props) => {
             autoCorrect={false}
             placeholderTextColor={'#6a777e'}
             onChangeText={val => onChangeText('password', val)}
-            value={userData.password.value}
+            value={userData.password.value || ''}
           />
           <TextInput
             style={styles.input}
@@ -210,7 +210,7 @@ const SignUp = (props) => {
             placeholderTextColor={'#6a777e'}
             secureTextEntry={!userData.password.showPassword}
             onChangeText={val => onChangeText('confirmPassword', val)}
-            value={userData.confirmPassword.value}
+            value={userData.confirmPassword.value || ''}
           />
         </View>
         <View style={styles.inputContainer}>
@@ -221,7 +221,7 @@ const SignUp = (props) => {
             autoCorrect={false}
             placeholderTextColor={'#6a777e'}
             onChangeText={val => onChangeText('email', val)}
-            value={userData.email.value}
+            value={userData.email.value || ''}
           />
         </View>
         {renderButtons()}

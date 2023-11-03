@@ -87,7 +87,7 @@ const SignIn = () => {
             autoCorrect={false}
             placeholderTextColor={'#6a777e'}
             onChangeText={val => setUsername(val.toLowerCase())}
-            value={username}
+            value={username || ''}
             keyboardType={'email-address'}
             returnKeyType={'go'}
           />
@@ -98,7 +98,7 @@ const SignIn = () => {
             secureTextEntry={true}
             placeholderTextColor={'#6a777e'}
             onChangeText={val => setPassword(val)}
-            value={password}
+            value={password || ''}
             returnKeyType={'go'}
             onSubmitEditing={() => useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage,
               setIsErrorModalVisible)}
