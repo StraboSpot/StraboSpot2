@@ -191,7 +191,6 @@ export const SECONDARY_PAGES = [
     icon_src: require('../../assets/icons/SiteSafety.png'),
     icon_pressed_src: require('../../assets/icons/SiteSafety_pressed.png'),
     page_component: SiteSafetyPage,
-    testing: true,
   }, {
     key: PAGE_KEYS.TEPHRA,
     label: 'Tephra Intervals',
