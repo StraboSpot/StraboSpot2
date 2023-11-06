@@ -10,6 +10,7 @@ import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 import uiStyles from './ui.styles';
+import * as themes from '../styles.constants';
 
 const CustomEndpoint = (props) => {
   const dispatch = useDispatch();
@@ -83,6 +84,7 @@ const CustomEndpoint = (props) => {
                 value={domainValue}
                 label={'Host'}
                 placeholder={'192.168.x.xxx'}
+                placeholderTextColor={themes.MEDIUMGREY}
                 labelStyle={{fontSize: 10}}
                 errorMessage={errorMessage}
                 errorStyle={{fontSize: 12, fontWeight: 'bold', textAlign: 'center'}}

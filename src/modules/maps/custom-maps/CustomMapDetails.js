@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
+import * as themes from '../../../shared/styles.constants';
 import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
@@ -131,6 +132,7 @@ const AddCustomMaps = () => {
               value={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Style URL'}
+              placeholderTextColor={themes.MEDIUMGREY}
               // onBlur={validate}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Style URL is required'}
               errorStyle={customMapStyles.requiredMessage}
@@ -145,6 +147,7 @@ const AddCustomMaps = () => {
               value={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Map ID'}
+              placeholderTextColor={themes.MEDIUMGREY}
               // onBlur={validate}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
               errorStyle={customMapStyles.requiredMessage}
@@ -158,6 +161,7 @@ const AddCustomMaps = () => {
               value={editableCustomMapData.id}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
+              placeholderTextColor={themes.MEDIUMGREY}
               errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.id) && 'Map ID is required'}
               errorStyle={customMapStyles.requiredMessage}
             />

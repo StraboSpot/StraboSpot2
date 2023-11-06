@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
+import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -163,6 +164,7 @@ const OtherFeatureDetail = (props) => {
                       <TextInput
                         style={formStyles.fieldValue}
                         placeholder={'Type of feature ...'}
+                        placeholderTextColor={themes.MEDIUMGREY}
                         onChangeText={newType => setOtherType(newType)}
                         value={otherType || ''}
                       />

@@ -4,6 +4,7 @@ import {Text, View} from 'react-native';
 import {Button, Input, Overlay} from 'react-native-elements';
 
 import overlayStyles from '../../modules/home/overlay.styles';
+import * as themes from '../styles.constants';
 
 const TextInputModal = (props) => {
   return (
@@ -29,6 +30,7 @@ const TextInputModal = (props) => {
           inputContainerStyle={overlayStyles.inputContainer}
           onChangeText={props.onChangeText}
           placeholder={props.placeholder || 'Enter text here...'}
+          placeholderTextColor={themes.MEDIUMGREY}
           errorMessage={props.errorMessage}
           renderErrorMessage={props.renderErrorMessage}
           onSubmitEditing={props.onSubmitEditing}

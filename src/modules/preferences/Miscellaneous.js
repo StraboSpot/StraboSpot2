@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
@@ -65,6 +66,7 @@ const Miscellaneous = () => {
       </Text>
       <Input
         placeholder={'Password'}
+        placeholderTextColor={themes.MEDIUMGREY}
         secureTextEntry={true}
         defaultValue={''}
         onChangeText={userEntry}

@@ -34,7 +34,8 @@ const TextInputField = ({
           : props.appearance === 'full' ? {...formStyles.fieldValue, ...formStyles.fieldValueFull}
             : formStyles.fieldValue}
         value={value || ''}
-        placeholder={props.placeholder}    // Don't show placeholder in text field. Confusing if empty or not.
+        placeholder={props.placeholder}
+        placeholderTextColor={themes.MEDIUMGREY}
         multiline={props.appearance === 'multiline' || props.appearance === 'full'}
         autoFocus={props.autoFocus}
         autoCapitalize={props.autoCapitalize}

@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
 import {validate} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
 import Splashscreen from '../splashscreen/Splashscreen';
@@ -175,7 +176,7 @@ const SignUp = (props) => {
             placeholder={'First Name'}
             autoCapitalize={'none'}
             autoCorrect={false}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             onChangeText={val => onChangeText('firstName', val)}
             value={userData.firstName.value || ''}
           />
@@ -184,7 +185,7 @@ const SignUp = (props) => {
             placeholder={'Last Name'}
             autoCapitalize={'none'}
             autoCorrect={false}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             onChangeText={val => onChangeText('lastName', val)}
             value={userData.lastName.value || ''}
           />
@@ -198,7 +199,7 @@ const SignUp = (props) => {
             placeholder={'Password'}
             autoCapitalize={'none'}
             autoCorrect={false}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             onChangeText={val => onChangeText('password', val)}
             value={userData.password.value || ''}
           />
@@ -207,7 +208,7 @@ const SignUp = (props) => {
             placeholder={'Confirm Password'}
             autoCapitalize={'none'}
             autoCorrect={false}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             secureTextEntry={!userData.password.showPassword}
             onChangeText={val => onChangeText('confirmPassword', val)}
             value={userData.confirmPassword.value || ''}
@@ -219,7 +220,7 @@ const SignUp = (props) => {
             placeholder={'Email'}
             autoCapitalize={'none'}
             autoCorrect={false}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             onChangeText={val => onChangeText('email', val)}
             value={userData.email.value || ''}
           />

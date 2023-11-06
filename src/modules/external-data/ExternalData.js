@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
@@ -69,6 +70,7 @@ const ExternalData = () => {
                 autoCapitalize={'none'}
                 multiline={true}
                 placeholder={'Example -> www.usgs.gov'}
+                placeholderTextColor={themes.MEDIUMGREY}
                 style={[formStyles.fieldValue]}
                 onChangeText={text => setUrl(text)}
                 textContentType={'URL'}

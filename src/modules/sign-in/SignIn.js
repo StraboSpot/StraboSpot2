@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
+import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import ErrorModal from '../home/home-modals/ErrorModal';
 import Splashscreen from '../splashscreen/Splashscreen';
@@ -85,7 +86,7 @@ const SignIn = () => {
             placeholder={'Email'}
             autoCapitalize={'none'}
             autoCorrect={false}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             onChangeText={val => setUsername(val.toLowerCase())}
             value={username || ''}
             keyboardType={'email-address'}
@@ -96,7 +97,7 @@ const SignIn = () => {
             placeholder={'Password'}
             autoCapitalize={'none'}
             secureTextEntry={true}
-            placeholderTextColor={'#6a777e'}
+            placeholderTextColor={themes.MEDIUMGREY}
             onChangeText={val => setPassword(val)}
             value={password || ''}
             returnKeyType={'go'}

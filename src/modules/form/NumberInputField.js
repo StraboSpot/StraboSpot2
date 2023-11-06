@@ -37,6 +37,7 @@ const NumberInputField = ({
         style={formStyles.fieldValue}
         value={getDisplayValue()}
         placeholder={props.placeholder}
+        placeholderTextColor={themes.MEDIUMGREY}
         keyboardType={'numeric'}
         editable={props.editable}
       />
