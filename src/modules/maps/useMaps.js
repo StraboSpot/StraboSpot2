@@ -329,7 +329,9 @@ const useMaps = (mapRef) => {
 
   const getMeasureFeatures = async (e, measureFeaturesTemp, setDistance) => {
     let distance;
-    const {screenPointX, screenPointY} = e.properties;
+    const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
+      : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
+        : [e.properties.screenPointX, e.properties.screenPointY];
 
     // Used to draw a line between points
     const linestring = {
@@ -355,11 +357,12 @@ const useMaps = (mapRef) => {
       measureFeaturesTemp = measureFeaturesTemp.filter(point => point.properties.id !== id);
     }
     else {
+      const measureCoord = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
       const point = {
         'type': 'Feature',
         'geometry': {
           'type': 'Point',
-          'coordinates': e.geometry.coordinates,
+          'coordinates': measureCoord,
         },
         'properties': {
           'id': String(new Date().getTime()),

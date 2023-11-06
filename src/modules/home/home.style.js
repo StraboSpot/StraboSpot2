@@ -81,6 +81,7 @@ const homeStyles = StyleSheet.create({
   },
   drawToolsTitle: {
     color: 'white',
+    fontSize: themes.PRIMARY_TEXT_SIZE,
   },
   editButtonsContainer: {
     width: 185,
