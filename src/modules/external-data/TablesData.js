@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
-import {Row, Rows, Table} from 'react-native-table-component';
+import {Row, Rows, Table} from 'react-native-reanimated-table';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -64,34 +64,33 @@ function TablesData(props) {
 
   const renderTableListItem = (table) => {
     return (
-      <View>
-        <ListItem
-          onPress={() => selectTable(table)}
-          containerStyle={commonStyles.listItem}
-        >
-          <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-            <ListItem.Title style={commonStyles.listItemTitle}>
-              {table.name}
-            </ListItem.Title>
-            {props.editable && (
-              <Button
-                buttonStyle={externalDataStyles.iconButton}
-                onPress={() => props.initializeDelete('csv', table)}
-                type={'clear'}
-                icon={
-                  <Icon
-                    name={'trash'}
-                    type={'font-awesome'}
-                    size={20}
-                    color={'darkgrey'}
-                    containerStyle={externalDataStyles.iconContainer}
-                  />
-                }
-              />
-            )}
-          </ListItem.Content>
-        </ListItem>
-      </View>
+      <ListItem
+        key={table.id}
+        onPress={() => selectTable(table)}
+        containerStyle={commonStyles.listItem}
+      >
+        <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {table.name}
+          </ListItem.Title>
+          {props.editable && (
+            <Button
+              buttonStyle={externalDataStyles.iconButton}
+              onPress={() => props.initializeDelete('csv', table)}
+              type={'clear'}
+              icon={
+                <Icon
+                  name={'trash'}
+                  type={'font-awesome'}
+                  size={20}
+                  color={'darkgrey'}
+                  containerStyle={externalDataStyles.iconContainer}
+                />
+              }
+            />
+          )}
+        </ListItem.Content>
+      </ListItem>
     );
   };
 
@@ -105,12 +104,12 @@ function TablesData(props) {
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {props.loading ? <Loading style={externalDataStyles.loadingSpinner}/>
         : (
           <FlatList
             listKey={'tables'}
-            keyExtractor={index => index}
+            keyExtractor={item => item.id}
             data={props.spot.properties?.data?.tables}
             renderItem={({item}) => renderTableListItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}

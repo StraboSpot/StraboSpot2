@@ -33,6 +33,7 @@ const TextInputModal = (props) => {
           errorMessage={props.errorMessage}
           renderErrorMessage={props.renderErrorMessage}
           onSubmitEditing={props.onSubmitEditing}
+          style={[{textAlignVertical: 'top'}, props.multiline ? {height: 100} : {height: 40}]}
         />
         {props.children}
       </View>

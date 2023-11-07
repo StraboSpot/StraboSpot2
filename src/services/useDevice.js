@@ -10,7 +10,6 @@ import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 
-
 const useDevice = (props) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
@@ -261,7 +260,19 @@ const useDevice = (props) => {
   };
 
   const readFile = async (source) => {
-    return await RNFS.readFile(source);
+    try {
+      return await RNFS.readFile(source);
+    }
+    catch (e) {
+      console.log('Error reading file as utf8', e);
+      try {
+        return await RNFS.readFile(source, 'ascii');
+      }
+      catch (e2) {
+        console.log('Error reading file as ascii:', e2);
+        return undefined;
+      }
+    }
   };
 
   const requestReadDirectoryPermission = async () => {
@@ -322,6 +333,14 @@ const useDevice = (props) => {
     }
   };
 
+  const pickCSV = async () => {
+    return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
+  };
+
+  const isPickDocumentCanceled = (err) => {
+    return DocumentPicker.isCancel(err);
+  };
+
   return {
     copyFiles: copyFiles,
     createProjectDirectories: createProjectDirectories,
@@ -344,6 +363,8 @@ const useDevice = (props) => {
     requestReadDirectoryPermission: requestReadDirectoryPermission,
     unZipAndCopyImportedData: unZipAndCopyImportedData,
     writeFileToDevice: writeFileToDevice,
+    pickCSV: pickCSV,
+    isPickDocumentCanceled: isPickDocumentCanceled,
   };
 };
 

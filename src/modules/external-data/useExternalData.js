@@ -1,4 +1,3 @@
-import DocumentPicker from 'react-native-document-picker';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
@@ -19,38 +18,28 @@ const useExternalData = () => {
 
   const useDevice = useDeviceHook();
 
-  let CSVObject = {};
+  let csvObject = {};
 
-  const CSVPicker = async () => {
+  const pickCSV = async () => {
     try {
-
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.csv],
-      });
-      console.log({
-          uri: res.uri,
-          type: res.type,
-          name: res.name,
-          size: res.size,
-        },
-      );
-      const id = getNewUUID();
+      const res = await useDevice.pickCSV();
+      console.log({uri: res.uri, type: res.type, name: res.name, size: res.size});
+      csvObject.name = res.name;
+      csvObject.size = res.size;
+      csvObject.id = getNewUUID();
       const CSVData = await useDevice.readFile(res.uri);
-      const csvToArrayRes = csvToArray(CSVData);
-      CSVObject = {
-        id: id,
-        name: res.name,
-        data: csvToArrayRes,
-        size: res.size,
-      };
-      console.log('CSVObject', CSVObject);
-      saveCSV(CSVObject);
-      console.log('.CSV saved successfully!');
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      if (CSVData) {
+        csvObject.data = csvToArray(CSVData);
+        console.log('CSV Object', csvObject);
+        saveCSV(csvObject);
+        console.log('.CSV saved successfully!');
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+      }
+      else throw Error('Error reading file');
     }
     catch (err) {
-      if (DocumentPicker.isCancel(err)) {
+      if (useDevice.isPickDocumentCanceled(err)) {
         console.log('User canceled', err);
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -58,8 +47,9 @@ const useExternalData = () => {
       else {
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage(`Something went wrong opening ${CSVObject.name}!`));
-        dispatch(addedStatusMessage('No such file or directory!'));
+        dispatch(addedStatusMessage(`Something went wrong opening ${csvObject.name}!`));
+        if (err === 'Error reading file') dispatch(addedStatusMessage('Error reading file'));
+        else dispatch(addedStatusMessage('No such file or directory!'));
         dispatch(setErrorMessagesModalVisible(true));
         throw err;
       }
@@ -75,7 +65,7 @@ const useExternalData = () => {
     dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
   };
 
-  const deleteUrl = (urlToDelete) => {
+  const deleteURL = (urlToDelete) => {
     const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
     console.log(urlCopy);
     const filteredArr = urlCopy.filter(url => url !== urlToDelete);
@@ -91,7 +81,7 @@ const useExternalData = () => {
       if (spot.properties.data?.tables) savedTables = spot.properties.data.tables;
       console.log(savedTables);
       if (!editedData.tables) editedData.tables = [];
-      editedData.tables.push(CSVObject);
+      editedData.tables.push(csvObject);
       console.log(editedData);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'data', value: editedData}));
@@ -102,10 +92,11 @@ const useExternalData = () => {
   };
 
   const saveEdits = (urlToEdit) => {
-    const urlArrCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
+    let editedData = spot.properties.data ? JSON.parse(JSON.stringify(spot.properties.data)) : {};
+    const urlArrCopy = editedData.urls;
     urlArrCopy.splice(urlToEdit.index, 1, urlToEdit.url);
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-    dispatch(editedSpotProperties({field: 'data', value: {urls: urlArrCopy}}));
+    dispatch(editedSpotProperties({field: 'data', value: editedData}));
   };
 
   const saveURL = (protocol, url) => {
@@ -132,10 +123,9 @@ const useExternalData = () => {
   };
 
   return {
-    CSVPicker: CSVPicker,
+    pickCSV: pickCSV,
     deleteCVS: deleteCVS,
-    deleteUrl: deleteUrl,
-    saveCSV: saveCSV,
+    deleteURL: deleteURL,
     saveEdits: saveEdits,
     saveURL: saveURL,
   };

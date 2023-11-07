@@ -130,30 +130,29 @@ const DatasetList = () => {
           value={selectedDatasetToEdit.name}
           onChangeText={text => setSelectedDatasetToEdit({...selectedDatasetToEdit, name: text})}
         >
-          <Button
-            title={'Delete Dataset'}
-            titleStyle={overlayStyles.importantText}
-            type={'clear'}
-            disabled={isDisabled(selectedDatasetToEdit.id)}
-            buttonStyle={{padding: 0}}
-            onPress={handleDeletePressed}
-            icon={
-              <Icon
-                iconStyle={{paddingRight: 10}}
-                name={'trash'}
-                type={'font-awesome'}
-                size={20}
-                color={'red'}
-              />
-            }
-          />
-          {isDisabled(selectedDatasetToEdit.id) && (
-            <View style={overlayStyles.overlayContent}>
+          <View style={{paddingBottom: 10}}>
+            <Button
+              title={'Delete Dataset'}
+              titleStyle={overlayStyles.importantText}
+              type={'clear'}
+              disabled={isDisabled(selectedDatasetToEdit.id)}
+              onPress={handleDeletePressed}
+              icon={
+                <Icon
+                  iconStyle={{paddingRight: 10}}
+                  name={'trash'}
+                  type={'font-awesome'}
+                  size={20}
+                  color={'red'}
+                />
+              }
+            />
+            {isDisabled(selectedDatasetToEdit.id) && (
               <Text style={overlayStyles.importantText}>
                 {selectedDatasetToEdit.name} can not be deleted while still selected as the current dataset.
               </Text>
-            </View>
-          )}
+            )}
+          </View>
         </TextInputModal>
       </View>
     );

@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import {Text, TextInput, View} from 'react-native';
+import {Platform, Text, TextInput, View} from 'react-native';
 
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
@@ -20,17 +19,9 @@ const ExternalData = () => {
   const [url, setUrl] = useState('');
   const useExternalData = useExternalDataHook();
 
-  const renderTableData = () => {
-    return <DataWrapper spot={spot} editable={true} urlData={false}/>;
-  };
-
-  const renderURLData = () => {
-    return <DataWrapper spot={spot} editable={true} urlData={true}/>;
-  };
-
   const saveUrl = async () => {
     try {
-      await useExternalData.saveURL(protocol, url);
+      useExternalData.saveURL(protocol, url);
       setUrl('');
       setError(false);
     }
@@ -51,12 +42,12 @@ const ExternalData = () => {
           selectedIndex={protocol === 'http://' ? 0 : 1}
           buttons={['http://', 'https://']}
           containerStyle={{borderRadius: 10}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: PRIMARY_ACCENT_COLOR}}
+          selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
+          textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
         />
         <ListItem containerStyle={commonStyles.listItem}>
           <ListItem.Content style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-            <View style={{justifyContent: 'center'}}>
+            <View>
               <TextInput
                 multiline={true}
                 editable={false}
@@ -64,14 +55,14 @@ const ExternalData = () => {
                 value={protocol || ''}
               />
             </View>
-            <View style={{width: 300}}>
+            <View>
               <TextInput
                 onFocus={() => setError(false)}
                 autoCapitalize={'none'}
                 multiline={true}
                 placeholder={'Example -> www.usgs.gov'}
                 placeholderTextColor={themes.MEDIUMGREY}
-                style={[formStyles.fieldValue]}
+                style={formStyles.fieldValue}
                 onChangeText={text => setUrl(text)}
                 textContentType={'URL'}
                 keyboardType={'url'}
@@ -81,34 +72,38 @@ const ExternalData = () => {
           </ListItem.Content>
         </ListItem>
         {error && <Text style={formStyles.fieldError}>Not a valid url</Text>}
-        <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
           <Button
             title={'Add Link'}
+            titleStyle={{fontSize: themes.PRIMARY_TEXT_SIZE}}
             type={'clear'}
             disabled={url === ''}
             containerStyle={commonStyles.standardButtonContainer}
             onPress={() => saveUrl()}
           />
         </View>
-        {renderURLData()}
+        <View style={{flex: 1}}>
+          <DataWrapper spot={spot} editable={true} urlData={true}/>
+        </View>
       </View>
       <View style={{flex: 1}}>
         <View style={{paddingTop: 15}}>
           <SectionDivider dividerText={'Tables'}/>
-          <Button
-            title={'Attach table from a .CSV file'}
-            type={'outline'}
-            icon={{
-              name: 'attach-outline',
-              type: 'ionicon',
-            }}
-            containerStyle={commonStyles.buttonPadding}
-            buttonStyle={commonStyles.standardButton}
-            titleStyle={commonStyles.standardButtonText}
-            onPress={() => useExternalData.CSVPicker()}
-          />
+          {Platform.OS !== 'web' && (
+            <Button
+              title={'Attach table from a .CSV file'}
+              type={'outline'}
+              icon={{name: 'attach-outline', type: 'ionicon'}}
+              containerStyle={commonStyles.buttonPadding}
+              buttonStyle={commonStyles.standardButton}
+              titleStyle={commonStyles.standardButtonText}
+              onPress={() => useExternalData.pickCSV().catch(console.error)}
+            />
+          )}
         </View>
-        {renderTableData()}
+        <View style={{flex: 1}}>
+          <DataWrapper spot={spot} editable={true} urlData={false}/>
+        </View>
       </View>
     </View>
   );

@@ -24,9 +24,9 @@ const UrlData = (props) => {
   const useExternalData = useExternalDataHook();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
-  const editUrl = (urlToEdit, i) => {
+  const editUrl = (inURLToEdit, i) => {
     if (props.editable) {
-      setUrlToEdit({index: i, url: urlToEdit});
+      setUrlToEdit({index: i, url: inURLToEdit});
       setIsEditModalVisible(true);
     }
     else dispatch(setNotebookPageVisible(PAGE_KEYS.DATA));
@@ -37,7 +37,6 @@ const UrlData = (props) => {
       <TextInputModal
         multiline={true}
         keyboardType={'url'}
-        textInputStyle={{}}
         dialogTitle={'Edit Url'}
         visible={isEditModalVisible}
         onPress={() => saveEdits()}
@@ -97,22 +96,20 @@ const UrlData = (props) => {
 
   const saveEdits = () => {
     try {
-      if (urlValidator(urlToEdit.url)) {
-        useExternalData.saveEdits(urlToEdit);
-        setIsEditModalVisible(false);
-      }
+      setIsEditModalVisible(false);
+      if (urlValidator(urlToEdit.url)) useExternalData.saveEdits(urlToEdit);
       else throw Error('Not valid URL.');
     }
     catch (err) {
       console.error('Error saving edits', err);
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Please make sure you enter a valid url.' + err));
+      dispatch(addedStatusMessage('Please make sure you enter a valid url. ' + err));
       dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <FlatList
         listKey={'urls'}
         keyExtractor={index => index}
