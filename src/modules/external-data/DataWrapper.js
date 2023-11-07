@@ -14,7 +14,7 @@ function DataWrapper(props) {
 
   const deleteSelection = () => {
     itemToDelete.type === 'url'
-      ? useExternalData.deleteUrl(itemToDelete.item)
+      ? useExternalData.deleteURL(itemToDelete.item)
       : useExternalData.deleteCVS(itemToDelete.item);
     setIsDeleteConfirmModalVisible(false);
   };
@@ -40,7 +40,7 @@ function DataWrapper(props) {
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {props.urlData && (
         <UrlData
           spot={props.spot}

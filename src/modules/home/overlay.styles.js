@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingTop: 20,
+    paddingTop: 10,
   },
   buttonText: {
     color: themes.PRIMARY_TEXT_COLOR,
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: 250,
-    height: 40,
     borderBottomWidth: 1,
   },
   mapActionsPosition: {
@@ -59,7 +58,6 @@ const styles = StyleSheet.create({
     bottom: 100,
   },
   titleContainer: {
-    // backgroundColor: themes.LIGHTGREY,
     margin: 10,
     alignItems: 'center',
     borderBottomWidth: 1,
@@ -85,9 +83,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   overlayContainer: {
-    paddingBottom: 30,
+    paddingBottom: 10,
     width: 300,
-    maxHeight: deviceDimensions.height * .95,
+    maxHeight: deviceDimensions.height * 0.95,
     borderRadius: 20,
   },
   overlayContent: {

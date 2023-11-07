@@ -149,7 +149,7 @@ const useImages = () => {
       else imageIds = getAllImagesIds(spotsOnServer);
       await Promise.all(
         imageIds.map(async (imageId) => {
-          const doesExist = await doesImageExistOnDevice(imageId);
+          const doesExist = Platform.OS === 'web' ? undefined : await doesImageExistOnDevice(imageId);
           if (!doesExist) {
             console.log('Need to download image:', imageId);
             neededImagesIds.push(imageId);
