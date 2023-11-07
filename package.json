@@ -24,8 +24,8 @@
     "web": "webpack serve --mode=development --config webpack.config.js"
   },
   "scriptComments": {
-    "build:android": "Must be run with every build for android before deploying to PlayStore. Removed the --assets flag because of duplicates.",
-    "deploy:android": "1. run build:android && cd android && ./gradlew bundleRelease (creates a .aab file in app/build/outputs/bundle/release)"
+    "bundle:android": "Must be run with every build for android before deploying to PlayStore. Removed the --assets flag because of duplicates.",
+    "deploy:android": "creates a .aab file in app/build/outputs/bundle/release"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.19.3",
