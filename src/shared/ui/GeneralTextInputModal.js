@@ -23,9 +23,8 @@ const TextInputModal = (props) => {
         <Input
           autoCapitalize={props.autoCapitalize || 'none'}
           multiline={props.multiline}
-          numberOfLines={5}
-          value={props.value}
-          returnKeyType={'done'}
+          value={props.value || ''}
+          enterKeyHint={'done'}
           keyboardType={props.keyboardType}
           inputContainerStyle={overlayStyles.inputContainer}
           onChangeText={props.onChangeText}
