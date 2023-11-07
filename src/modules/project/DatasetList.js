@@ -70,7 +70,8 @@ const DatasetList = () => {
     const imagesNeededOfTotal = dataset.images
       && `${dataset?.images?.neededImagesIds?.length}/${dataset?.images?.imageIds?.length}`;
     const spotsText = spotIds?.length > 1 && `${spotIds}`;
-    const imagesText = imagesNeededOfTotal?.length > 1 ? `${imagesNeededOfTotal}` : '0/0';
+    const imagesText = Platform.OS === 'web' ? `${dataset?.images?.imageIds?.length || 0} images`
+      : imagesNeededOfTotal?.length > 1 ? `${imagesNeededOfTotal} images needed` : '0/0 images needed';
     return (
       <ListItem
         key={dataset.id}
@@ -86,7 +87,7 @@ const DatasetList = () => {
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 18)}</ListItem.Title>
           <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
-            {spotsText}, {'\n'}{imagesText} images needed
+            {spotsText}, {'\n'}{imagesText}
           </ListItem.Subtitle>
         </ListItem.Content>
         <Switch
