@@ -30,7 +30,7 @@ const MyStraboSpot = (props) => {
 
   useEffect(() => {
     console.log('UE MyStraboSpot []');
-    checkBackupDir().catch(err => console.error('Error checking for backup dir', err));
+    if (Platform.OS !== 'web') checkBackupDir().catch(err => console.error('Error checking for backup dir', err));
   }, []);
 
   const checkBackupDir = async () => {
