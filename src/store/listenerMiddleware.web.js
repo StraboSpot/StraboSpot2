@@ -127,7 +127,7 @@ const updatedProjectDatasetsSpotsListener = async (action, listenerApi) => {
   if (action.type.includes('spot/editedSpots')) {
     const spotIds = action.payload.map(s => s.properties.id);
     const spotIdsGroupedByDatasetId = spotIds.reduce((acc, spotId) => {
-      const dataset = datasets.find(d => d.spotIds.find(id => id === spotId));
+      const dataset = datasets.find(d => d.spotIds?.find(id => id === spotId));
       const datasetId = dataset.id;
       if (Object.keys(acc).includes(datasetId.toString())) return {...acc, [datasetId]: [...acc[datasetId], spotId]};
       else return {...acc, [datasetId]: [spotId]};
@@ -146,7 +146,7 @@ const updatedProjectDatasetsSpotsListener = async (action, listenerApi) => {
     const spot = newState.spot.spots[spotId];
 
     // Get dataset for spot
-    let dataset = datasets.find(d => d.spotIds.find(id => id === spotId));
+    let dataset = datasets.find(d => d.spotIds?.find(id => id === spotId));
     dataset = {...dataset, spots: turf.featureCollection([spot])};
 
     // Create object to send to server
