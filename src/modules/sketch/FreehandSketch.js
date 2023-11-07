@@ -8,7 +8,7 @@ import {setFreehandFeatureCoords} from '../maps/maps.slice';
 import styles from './sketch.styles';
 
 let freehandFeatureCoords = [];
-const Sketch = () => {
+const FreehandSketch = () => {
   const dispatch = useDispatch();
 
   const onDrop = () => {
@@ -36,4 +36,4 @@ const Sketch = () => {
   );
 };
 
-export default Sketch;
+export default FreehandSketch;
