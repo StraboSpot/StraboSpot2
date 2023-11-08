@@ -64,7 +64,8 @@ const ImageInfo = (props) => {
         isVisible={isImageDeleteModalVisible}
         closeModal={() => setIsImageDeleteModalVisible(false)}
         confirmText={'Delete'}
-        showConfirmButton={true}
+        showConfirmButton
+        showCancelButton
         confirmTitleStyle={overlayStyles.importantText}
         onConfirmPress={() => deleteImage()}
       >
