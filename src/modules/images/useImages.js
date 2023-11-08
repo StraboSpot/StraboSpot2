@@ -26,13 +26,11 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 
-
 const useImages = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const useDevice = useDeviceHook();
   // const [useSpots] = useSpotsHook();
-
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -60,8 +58,10 @@ const useImages = () => {
       dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
       const localImageFile = getLocalImageURI(imageId);
-      const fileExists = await useDevice.doesDeviceDirExist(localImageFile);
-      if (fileExists) await useDevice.deleteFromDevice(localImageFile);
+      if (Platform.OS !== 'web') {
+        const fileExists = await useDevice.doesDeviceDirExist(localImageFile);
+        if (fileExists) await useDevice.deleteFromDevice(localImageFile);
+      }
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
