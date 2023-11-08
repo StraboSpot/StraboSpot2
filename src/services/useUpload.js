@@ -1,4 +1,4 @@
-import { Platform} from 'react-native';
+import {Platform} from 'react-native';
 
 import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
@@ -336,9 +336,9 @@ const useUpload = () => {
   // Downsize image for upload
   const resizeImageForUpload = async (imageProps, imageURI, name) => {
     try {
-      console.log(name + ': Resizing Image', imageProps.id, '...');
-      let height = imageProps.height;
-      let width = imageProps.width;
+      console.log(name + ': Resizing Image', imageProps?.id, '...');
+      let height = imageProps?.height;
+      let width = imageProps?.width;
 
       if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
 
@@ -361,12 +361,32 @@ const useUpload = () => {
         else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
         else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
         else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-        console.log(name + ': Finished Resizing Image', imageProps.id, 'New Size', imageSizeText);
+        console.log(name + ': Finished Resizing Image', imageProps?.id, 'New Size', imageSizeText);
         return resizedImage;
       }
     }
     catch (err) {
       console.error('Error Resizing Image.', err);
+      throw Error;
+    }
+  };
+
+  const uploadFromWeb = async (imageId, imageFile) => {
+    try {
+      dispatch(setIsImageTransferring(true));
+      let formData = new FormData();
+      formData.append('name', imageFile.name);
+      formData.append('image_file', imageFile);
+      formData.append('id', imageId);
+      formData.append('modified_timestamp', Date.now());
+
+      const res = await useServerRequests.uploadWebImage(formData, user.encoded_login);
+      console.log('Image Upload Res', res);
+      return res;
+    }
+    catch (err) {
+      console.log('Error Uploading Image', err);
+      dispatch(setIsImageTransferring(false));
       throw Error;
     }
   };
@@ -377,6 +397,7 @@ const useUpload = () => {
     uploadProfile: uploadProfile,
     uploadProject: uploadProject,
     resizeImageForUpload: resizeImageForUpload,
+    uploadFromWeb: uploadFromWeb,
   };
 };
 

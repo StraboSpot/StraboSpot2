@@ -7,8 +7,9 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import placeholderImage from '../../assets/images/noimage.jpg';
+import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -16,16 +17,19 @@ import {setLoadingStatus} from '../home/home.slice';
 import {imageStyles, useImagesHook} from '../images';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {clearedSelectedSpots} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {clearedSelectedSpots, editedSpotImages} from '../spots/spots.slice';
+import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 
 const ImagesViewPage = () => {
   console.log('Rendering ImagesViewPage...');
 
+  const inputRef = useRef(null);
+
   const navigation = useNavigation();
   const [useImages] = useImagesHook();
-  const [useSpots] = useSpotsHook();
   const toast = useToast();
+  const useUpload = useUploadHook();
 
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
@@ -40,17 +44,73 @@ const ImagesViewPage = () => {
     getImageThumbnailURIs().catch(err => console.error('Error getting thumbnails', err));
   }, [images]);
 
-  const getImagesFromCameraRoll = async () => {
+  const importImages = async () => {
+    let res;
     dispatch(setLoadingStatus({view: 'home', bool: true}));
-    const res = await useImages.getImagesFromCameraRoll();
-    console.log(res);
+    if (Platform.OS !== 'web') {
+      res = await useImages.getImagesFromCameraRoll();
+      console.log(res);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      toast.show(`${res} image saved!`,
+        {
+          type: 'success',
+          duration: 1500,
+        });
+    }
+    else {
+      console.log('Import from web');
+      await inputRef.current.click();
+    }
+
+  };
+
+  const clickedFileInput = () => {
+    window.addEventListener('focus', handleFocusBack);
+  };
+
+  const handleFocusBack = () => {
+    console.log('focus-back');
     dispatch(setLoadingStatus({view: 'home', bool: false}));
-    toast.show(`${res} image saved!`,
-      {
-        type: 'success',
-        duration: 1500,
-      });
-    console.log(res);
+    window.removeEventListener('focus', handleFocusBack);
+  };
+
+  const handleFileChange = async (e) => {
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
+
+    console.log('Target', e.target.value);
+    let imageToUpload = e.target.files[0];
+    const imageId = getNewId();
+
+    if (e.target.files.length === 0) {
+      console.log('No File Selected');
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+    else {
+      const metaData = await getImageMetaFromWeb(e.target.files[0]);
+      console.log('MetaData', metaData);
+
+      if (metaData.fileSize > 3000000) {
+        console.log('Target BEFORE resizing', e.target.files[0]);
+        const before = useImages.getSize(e.target.files[0]);
+        console.log('Target size BEFORE resizing', before);
+
+        // setSelectedImageFile(e.target.files[0]);
+        imageToUpload = await resizeFile(e.target.files[0], metaData.height, metaData.width);
+        const after = getSize(imageToUpload);
+        console.log('Target AFTER resizing', e.target.files[0]);
+        console.log('Target size AFTER resizing', after);
+      }
+      const imageObj = {
+        id: imageId,
+        height: metaData.height,
+        width: metaData.width,
+      };
+      const res = await useUpload.uploadFromWeb(imageId, imageToUpload);
+      console.log(res);
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+      dispatch(editedSpotImages([imageObj]));
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
   };
 
   const getImageThumbnailURIs = async () => {
@@ -206,9 +266,9 @@ const ImagesViewPage = () => {
   };
 
   return (
-    <React.Fragment>
+    <View style={{flex: 1}}>
       {isError ? renderError() : renderImages()}
-    </React.Fragment>
+    </View>
   );
 };
 

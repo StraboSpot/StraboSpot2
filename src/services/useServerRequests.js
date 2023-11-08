@@ -332,7 +332,7 @@ const useServerRequests = (props) => {
       xhr.addEventListener('load', () => {
         console.log('XHR RES', xhr.response);
         if (xhr.status === 404) reject(false);
-        else resolve(true);
+        else resolve(xhr.response);
       });
       xhr.addEventListener('error', () => {
         console.error('REJECTED UPDATE');
@@ -355,6 +355,20 @@ const useServerRequests = (props) => {
       },
       body: formdata,
     });
+    return handleResponse(response);
+  };
+
+  const uploadWebImage = async (formData, encodedLogin) => {
+    const response = await fetch(`${baseUrl}/image`, {
+      method: 'POST',
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        'Authorization': 'Basic ' + encodedLogin,
+      },
+      body: formData,
+    });
+
+    console.log(response);
     return handleResponse(response);
   };
 
@@ -429,6 +443,7 @@ const useServerRequests = (props) => {
     updateProject: updateProject,
     uploadImage: uploadImage,
     uploadProfileImage: uploadProfileImage,
+    uploadWebImage: uploadWebImage,
     verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,
     zipURLStatus: zipURLStatus,
