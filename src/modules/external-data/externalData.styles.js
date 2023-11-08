@@ -41,9 +41,6 @@ const externalDataStyles = StyleSheet.create({
     height: '90%',
     borderRadius: 20,
   },
-  tableHeader: {
-    backgroundColor: themes.TABLE_HEADER_COLOR,
-  },
   textStyle: {
     color: 'black',
     backgroundColor: 'pink',

@@ -13,7 +13,6 @@ export const GOLD = '#FFD700';
 
 export const PRIMARY_BACKGROUND_COLOR = LIGHTGREY;
 export const SECONDARY_BACKGROUND_COLOR = WHITE;
-export const TABLE_HEADER_COLOR = MEDIUMGREY;
 
 export const PRIMARY_TEXT_COLOR = BLACK;
 

@@ -25,7 +25,7 @@ const useExternalData = () => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       const res = await useDevice.pickCSV();
       console.log({uri: res.uri, type: res.type, name: res.name, size: res.size});
-      csvObject.name = res.name;
+      csvObject.name = res.name.substring(0, res.name.lastIndexOf('.'));
       csvObject.size = res.size;
       csvObject.id = getNewUUID();
       const CSVData = await useDevice.readFile(res.uri);

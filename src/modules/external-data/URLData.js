@@ -14,7 +14,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import externalDataStyles from './ExternalData.styles';
+import externalDataStyles from './externalData.styles';
 import useExternalDataHook from './useExternalData';
 
 const UrlData = (props) => {

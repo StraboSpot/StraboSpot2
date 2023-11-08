@@ -2,33 +2,41 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
-import {Row, Rows, Table} from 'react-native-reanimated-table';
+import {Rows, Table} from 'react-native-reanimated-table';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
-import externalDataStyles from './ExternalData.styles';
+import externalDataStyles from './externalData.styles';
 
 function TablesData(props) {
   const [isTableVisible, setIsTableVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState({});
-  const [tableHead, setTableHead] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log('UE TablesData [selectedTable]', selectedTable);
+    // console.log('UE TablesData [selectedTable]', selectedTable);
     !isEmpty(selectedTable) && isTableVisible && setLoading(false);
   }, [selectedTable]);
 
   useEffect(() => {
-    console.log('UE TablesData [isTableVisible]', isTableVisible);
+    // console.log('UE TablesData [isTableVisible]', isTableVisible);
     !isTableVisible && setSelectedTable({});
   }, [isTableVisible]);
 
   const renderTable = () => {
+    const numCols = tableData?.[0]?.length;
+    const tableDataTrimmed = tableData.reduce((acc, r) => r.length === numCols ? [...acc, r] : acc, []);
+    let cellMaxWidths = Array(numCols).fill(0);
+    tableDataTrimmed.forEach((r) => {
+      r.forEach((c, i) => {
+        if (c.length > cellMaxWidths[i]) cellMaxWidths[i] = c.length;
+      });
+    });
+    const cellWidths = cellMaxWidths.map(w => Math.min(w * 20, 150));
     return (
       <Overlay
         animationType={'slide'}
@@ -38,24 +46,18 @@ function TablesData(props) {
         <View style={externalDataStyles.centeredView}>
           <View style={externalDataStyles.buttonClose}>
             <Button
-              onPress={() => {
-                setIsTableVisible(!isTableVisible);
-              }}
+              onPress={() => setIsTableVisible(!isTableVisible)}
               type={'clear'}
-              icon={{
-                name: 'close',
-                type: 'ionicon',
-                size: 40,
-              }}
+              icon={{name: 'close', type: 'ionicon', size: 40}}
             />
           </View>
           <Text style={externalDataStyles.modalText}>{selectedTable.name}</Text>
           <ScrollView>
-            <Table borderStyle={{borderWidth: 1}}>
-              <Row data={tableHead} style={externalDataStyles.tableHeader}
-                   textStyle={{textAlign: 'center', fontWeight: 'bold', padding: 30}}/>
-              <Rows data={tableData} textStyle={{textAlign: 'center', padding: 20}}/>
-            </Table>
+            <ScrollView style={{overflow: 'scroll'}} horizontal={true}>
+              <Table borderStyle={{borderWidth: 1}}>
+                <Rows data={tableDataTrimmed} widthArr={cellWidths} textStyle={{textAlign: 'center', margin: 5}}/>
+              </Table>
+            </ScrollView>
           </ScrollView>
         </View>
       </Overlay>
@@ -96,10 +98,8 @@ function TablesData(props) {
 
   const selectTable = (table) => {
     setLoading(true);
-    const filteredData = table.data.filter(row => row.length > 1);
     setSelectedTable(table);
-    setTableHead(filteredData[0]);
-    setTableData(filteredData.slice(1));
+    setTableData(table.data);
     setIsTableVisible(true);
   };
 
