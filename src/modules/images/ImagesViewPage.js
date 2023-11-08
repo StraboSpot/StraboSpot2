@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Platform, Switch, Text, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {ActivityIndicator, FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button, Card, Icon, Image} from 'react-native-elements';
@@ -209,7 +209,7 @@ const ImagesViewPage = () => {
         <ReturnToOverviewButton/>
         <View style={{alignItems: 'center', flex: 1}}>
           <View style={imageStyles.buttonsContainer}>
-            <ButtonRounded
+            {Platform.OS !== 'web' && <ButtonRounded
               icon={
                 <Icon
                   name={'camera-outline'}
@@ -222,7 +222,18 @@ const ImagesViewPage = () => {
               buttonStyle={imageStyles.buttonContainer}
               type={'outline'}
               onPress={takePhoto}
+            />}
+            {Platform.OS === 'web' && <input
+              style={{display: 'none'}}
+              id={'selectedImage'}
+              ref={inputRef}
+              type={'file'}
+              name={'image'}
+              accept={'image/*'}
+              onChange={handleFileChange}
+              onClick={clickedFileInput}
             />
+            }
             <ButtonRounded
               icon={
                 <Icon
@@ -235,9 +246,9 @@ const ImagesViewPage = () => {
               titleStyle={commonStyles.standardButtonText}
               buttonStyle={imageStyles.buttonContainer}
               type={'outline'}
-              onPress={() => getImagesFromCameraRoll()}
+              onPress={() => importImages()}
             />
-            <ButtonRounded
+            {Platform.OS !== 'web' && <ButtonRounded
               icon={
                 <Icon
                   name={'images-outline'}
@@ -250,7 +261,7 @@ const ImagesViewPage = () => {
               buttonStyle={imageStyles.buttonContainer}
               type={'outline'}
               onPress={() => navigation.navigate('Sketch')}
-            />
+            />}
           </View>
           <View style={{padding: 5, flex: 1}}>
             <FlatList
