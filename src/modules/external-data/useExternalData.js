@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../services/useDevice';
@@ -19,24 +21,44 @@ const useExternalData = () => {
   const useDevice = useDeviceHook();
 
   let csvObject = {};
+  let CSVData = '';
 
-  const pickCSV = async () => {
+  const pickCSV = async (dataFile) => {
     try {
+      let CSVFile = {};
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      const res = await useDevice.pickCSV();
-      console.log({uri: res.uri, type: res.type, name: res.name, size: res.size});
-      csvObject.name = res.name.substring(0, res.name.lastIndexOf('.'));
-      csvObject.size = res.size;
-      csvObject.id = getNewUUID();
-      const CSVData = await useDevice.readFile(res.uri);
+
+      if (Platform.OS !== 'web') {
+        CSVFile = await useDevice.pickCSV();
+        console.log({uri: CSVFile.uri, type: CSVFile.type, name: CSVFile.name, size: CSVFile.size});
+        CSVData = await useDevice.readFile(CSVFile.uri);
+      }
+      else {
+        if (dataFile) {
+          CSVFile = dataFile;
+          const getCSVData = () => {
+            return new Promise((resolve, reject) => {
+              const fileReader = new FileReader();
+
+              fileReader.onload = async (event) => {
+                const result = event.target.result;
+                resolve(result);
+              };
+
+              fileReader.readAsText(dataFile);
+            });
+          };
+          CSVData = await getCSVData(dataFile);
+          // console.log('CSV DATA from WEB', CSVData);
+        }
+      }
+
       if (CSVData) {
-        csvObject.data = csvToArray(CSVData);
-        console.log('CSV Object', csvObject);
-        saveCSV(csvObject);
+        const csvObj = createCSVObject(CSVFile, CSVData);
+        saveCSV(csvObj);
         console.log('.CSV saved successfully!');
         dispatch(setLoadingStatus({view: 'home', bool: false}));
       }
-      else throw Error('Error reading file');
     }
     catch (err) {
       if (useDevice.isPickDocumentCanceled(err)) {
@@ -54,6 +76,15 @@ const useExternalData = () => {
         throw err;
       }
     }
+  };
+
+  const createCSVObject = (CSVFile, data) => {
+    csvObject.name = CSVFile.name.substring(0, CSVFile.name.lastIndexOf('.'));
+    csvObject.size = CSVFile.size;
+    csvObject.id = getNewUUID();
+    csvObject.data = csvToArray(data);
+    console.log('CSV Object', csvObject);
+    return csvObject;
   };
 
   const deleteCVS = (tableToDelete) => {
@@ -128,6 +159,7 @@ const useExternalData = () => {
     deleteURL: deleteURL,
     saveEdits: saveEdits,
     saveURL: saveURL,
+    saveCSV: saveCSV,
   };
 };
 

@@ -40,7 +40,7 @@ export const csvToArray = (strData, strDelimiter) => {
   // Keep looping over the regular expression matches
   // until we can no longer find a match.
   while (arrMatches = objPattern.exec(strData)) {
-    console.log('arrMatches', arrMatches);
+    // console.log('arrMatches', arrMatches);
     // Get the delimiter that was found.
     const strMatchedDelimiter = arrMatches[1];
     // Check to see if the given delimiter has a length

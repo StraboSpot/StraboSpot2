@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {Platform, Text, TextInput, View} from 'react-native';
 
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
@@ -13,11 +13,33 @@ import DataWrapper from './DataWrapper';
 import useExternalDataHook from './useExternalData';
 
 const ExternalData = () => {
+  const inputRef = useRef(null);
+
   const spot = useSelector(state => state.spot.selectedSpot);
   const [error, setError] = useState(false);
   const [protocol, setProtocol] = useState('http://');
   const [url, setUrl] = useState('');
   const useExternalData = useExternalDataHook();
+
+  const importCSVFile = () => {
+    try {
+      if (Platform.OS !== 'web') useExternalData.pickCSV().catch(console.error);
+      else {
+        console.log('WEB');
+        inputRef.current.click();
+      }
+    }
+    catch (err) {
+      console.error('ERROR selecting .CSV file', err);
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    console.log('CSV File', e.target.files[0]);
+    const file = e.target.files[0];
+    await useExternalData.pickCSV(file);
+    console.log('CSV From Web Saved');
+  };
 
   const saveUrl = async () => {
     try {
@@ -89,17 +111,28 @@ const ExternalData = () => {
       <View style={{flex: 1}}>
         <View style={{paddingTop: 15}}>
           <SectionDivider dividerText={'Tables'}/>
-          {Platform.OS !== 'web' && (
-            <Button
-              title={'Attach table from a .CSV file'}
-              type={'outline'}
-              icon={{name: 'attach-outline', type: 'ionicon'}}
-              containerStyle={commonStyles.buttonPadding}
-              buttonStyle={commonStyles.standardButton}
-              titleStyle={commonStyles.standardButtonText}
-              onPress={() => useExternalData.pickCSV().catch(console.error)}
-            />
-          )}
+          {Platform.OS === 'web'
+            && (
+              <input
+                style={{display: 'none'}}
+                id={'selectedCSV'}
+                ref={inputRef}
+                type={'file'}
+                name={'.csv'}
+                accept={'.csv'}
+                onChange={handleFileChange}
+                onClick={() => console.log('Canceled')}
+              />
+            )}
+          <Button
+            title={'Attach table from a .CSV file'}
+            type={'outline'}
+            icon={{name: 'attach-outline', type: 'ionicon'}}
+            containerStyle={commonStyles.buttonPadding}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={importCSVFile}
+          />
         </View>
         <View style={{flex: 1}}>
           <DataWrapper spot={spot} editable={true} urlData={false}/>
