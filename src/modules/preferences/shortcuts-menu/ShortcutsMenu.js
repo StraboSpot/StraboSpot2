@@ -39,11 +39,11 @@ const ShortcutMenu = (props) => {
         </ListItem.Content>
         <Switch
           onValueChange={() => props.toggleSwitch('all')}
-          value={props.shortcutSwitchPosition['all']}
+          value={props.shortcutSwitchPosition.all}
         />
       </ListItem>
       <FlatList
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.key}
         data={SHORTCUT_MODALS}
         renderItem={({item}) => renderShortcutListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
