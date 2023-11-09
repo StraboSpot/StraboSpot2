@@ -1,9 +1,11 @@
 import React, {useRef} from 'react';
 import {FlatList, View} from 'react-native';
 
+import * as turf from '@turf/turf';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
@@ -21,6 +23,10 @@ const SiteSafetyPage = () => {
   const formRef = useRef(null);
   const page = SECONDARY_PAGES.find(p => p.key === PAGE_KEYS.SITE_SAFETY);
   const formName = ['general', 'site_safety'];
+
+  let initialValues = spot.properties?.site_safety || {};
+  const coord = spot?.geometry?.type === 'Point' ? turf.getCoord(spot) : undefined;
+  if (isEmpty(initialValues) && !isEmpty(coord)) initialValues = {latitude: coord[1].toString(), longitude: coord[0].toString()};
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
@@ -69,7 +75,7 @@ const SiteSafetyPage = () => {
         onSubmit={values => console.log('Submitting form...', values)}
         onReset={() => console.log('Resetting form...')}
         validate={values => useForm.validateForm({formName: formName, values: values})}
-        initialValues={spot.properties?.site_safety || {}}
+        initialValues={initialValues}
         enableReinitialize={true}
         initialStatus={{formName: formName}}
       >
