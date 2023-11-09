@@ -33,11 +33,10 @@ const AddManualMeasurements = (props) => {
 
   useEffect(() => {
     console.log('UE AddManualMeasurements [sliderValue]', sliderValue);
-    if (sliderValue <= 5) {
-      props.formProps.setFieldValue(qualityKey, sliderValue.toString());
-      if (props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
-        props.formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValue.toString());
-      }
+    const sliderValueString = sliderValue <= 5 ? sliderValue.toString() : undefined;
+    props.formProps.setFieldValue(qualityKey, sliderValueString);
+    if (props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
+      props.formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValueString);
     }
   }, [sliderValue]);
 
