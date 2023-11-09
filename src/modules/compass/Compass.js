@@ -45,8 +45,6 @@ const Compass = (props) => {
     rake_calculated: 'yes',
     quality: null,
   });
-  // const [sliderValue, setSliderValue] = useState((props?.formValues?.quality
-  //   && parseInt(props.formValues.quality)) || 6);
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [buttonSound, setButtonSound] = useState(null);
@@ -87,7 +85,7 @@ const Compass = (props) => {
   }, [compassMeasurements]);
 
   const addAttributeMeasurement = (data) => {
-    const sliderQuality = props.sliderValue ? {quality: props.sliderValue.toString()} : 'N/A';
+    const sliderQuality = props.sliderValue ? {quality: props.sliderValue.toString()} : undefined;
     props.setAttributeMeasurements({...data, ...sliderQuality});
     props.closeCompass();
   };
@@ -136,22 +134,22 @@ const Compass = (props) => {
   };
 
   const matrixRotation = (res) => {
-      setCompassData({
-        heading: res.heading,
-        strike: res.strike,
-        dip: res.dip,
-        trend: res.trend,
-        plunge: res.plunge,
-        M11: roundToDecimalPlaces(res.M11, 3),
-        M12: roundToDecimalPlaces(res.M12, 3),
-        M13: roundToDecimalPlaces(res.M13, 3),
-        M21: roundToDecimalPlaces(res.M21, 3),
-        M22: roundToDecimalPlaces(res.M22, 3),
-        M23: roundToDecimalPlaces(res.M23, 3),
-        M31: roundToDecimalPlaces(res.M31, 3),
-        M32: roundToDecimalPlaces(res.M32, 3),
-        M33: roundToDecimalPlaces(res.M33, 3),
-      });
+    setCompassData({
+      heading: res.heading,
+      strike: res.strike,
+      dip: res.dip,
+      trend: res.trend,
+      plunge: res.plunge,
+      M11: roundToDecimalPlaces(res.M11, 3),
+      M12: roundToDecimalPlaces(res.M12, 3),
+      M13: roundToDecimalPlaces(res.M13, 3),
+      M21: roundToDecimalPlaces(res.M21, 3),
+      M22: roundToDecimalPlaces(res.M22, 3),
+      M23: roundToDecimalPlaces(res.M23, 3),
+      M31: roundToDecimalPlaces(res.M31, 3),
+      M32: roundToDecimalPlaces(res.M32, 3),
+      M33: roundToDecimalPlaces(res.M33, 3),
+    });
   };
 
   const renderCompass = () => {
@@ -263,27 +261,13 @@ const Compass = (props) => {
           />
         )}
         {props.setAttributeMeasurements && isManualMeasurement ? (
-            <ManualMeasurement
-              addAttributeMeasurement={addAttributeMeasurement}
-              setAttributeMeasurements={props.setAttributeMeasurements}
-              measurementTypes={compassMeasurementTypes}
-            />
-          )
-          : renderCompass()
-        }
+          <ManualMeasurement
+            addAttributeMeasurement={addAttributeMeasurement}
+            setAttributeMeasurements={props.setAttributeMeasurements}
+            measurementTypes={compassMeasurementTypes}
+          />
+        ) : renderCompass()}
       </View>
-      {/*<View style={compassStyles.sliderContainer}>*/}
-      {/*  <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>*/}
-      {/*  <Slider*/}
-      {/*    onSlidingComplete={value => setSliderValue(value)}*/}
-      {/*    value={sliderValue}*/}
-      {/*    step={1}*/}
-      {/*    maximumValue={6}*/}
-      {/*    minimumValue={1}*/}
-      {/*    labels={['Low', '', '', '', 'High', 'N/R']}*/}
-      {/*    labelStyle={uiStyles.sliderLabel}*/}
-      {/*  />*/}
-      {/*</View>*/}
     </React.Fragment>
   );
 };

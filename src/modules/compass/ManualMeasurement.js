@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -8,9 +8,12 @@ import {useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import SaveButton from '../../shared/SaveButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import Slider from '../../shared/ui/SliderBar';
+import uiStyles from '../../shared/ui/ui.styles';
 import {NumberInputField} from '../form';
 import {MODAL_KEYS} from '../page/page.constants';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
+import compassStyles from './compass.styles';
 
 const ManualMeasurement = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -92,7 +95,24 @@ const ManualMeasurement = (props) => {
             )}
             {props.setAttributeMeasurements && modalVisible !== MODAL_KEYS.SHORTCUTS.MEASUREMENT
               && modalVisible !== MODAL_KEYS.NOTEBOOK.MEASUREMENTS && (
-                <SaveButton title={'Add to Attribute'} onPress={() => props.addAttributeMeasurement(formProps.values)}/>
+                <>
+                  <View style={compassStyles.sliderContainer}>
+                    <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
+                    <Slider
+                      onSlidingComplete={props.setSliderValue}
+                      value={props.sliderValue}
+                      step={1}
+                      maximumValue={6}
+                      minimumValue={1}
+                      labels={['Low', '', '', '', 'High', 'N/R']}
+                      labelStyle={uiStyles.sliderLabel}
+                    />
+                    <SaveButton
+                      title={'Add to Attribute'}
+                      onPress={() => props.addAttributeMeasurement(formProps.values)}
+                    />
+                  </View>
+                </>
               )}
           </View>
         )}

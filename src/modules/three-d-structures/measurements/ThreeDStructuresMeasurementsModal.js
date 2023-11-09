@@ -1,17 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {Platform} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
+import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import {WARNING_COLOR} from '../../../shared/styles.constants';
 import modalStyle from '../../../shared/ui/modal/modal.style';
 import ModalHeader from '../../../shared/ui/modal/ModalHeader';
 import Compass from '../../compass/Compass';
+import ManualMeasurement from '../../compass/ManualMeasurement';
 import {useFormHook} from '../../form';
 
 const ThreeDStructuresMeasurementsModal = (props) => {
+  const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
+
+  const [sliderValue, setSliderValue] = useState(6);
+
   const [useForm] = useFormHook();
+
+  const addAttributeMeasurement = (data) => {
+    const sliderQuality = sliderValue ? {quality: sliderValue.toString()} : undefined;
+    setMeasurements({...data, ...sliderQuality});
+    props.setIsThreeDStructuresMeasurementsModalVisible(false);
+  };
 
   const setMeasurements = (compassData) => {
     let renamedCompassData = {};
@@ -48,10 +61,20 @@ const ThreeDStructuresMeasurementsModal = (props) => {
         title={props.measurementsGroupLabel}
         close={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
       />
-      <Compass
-        setAttributeMeasurements={setMeasurements}
-        closeCompass={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
-      />
+      {Platform.OS === 'ios' ? (
+        <Compass
+          setAttributeMeasurements={setMeasurements}
+          closeCompass={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
+        />
+      ) : (
+        <ManualMeasurement
+          addAttributeMeasurement={addAttributeMeasurement}
+          setAttributeMeasurements={setMeasurements}
+          measurementTypes={compassMeasurementTypes}
+          setSliderValue={setSliderValue}
+          sliderValue={sliderValue}
+        />
+      )}
       <Button
         titleStyle={{color: WARNING_COLOR}}
         title={'Clear Measurement'}

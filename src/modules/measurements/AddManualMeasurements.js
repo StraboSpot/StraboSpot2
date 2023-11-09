@@ -11,8 +11,7 @@ import {MEASUREMENT_KEYS} from './measurements.constants';
 const AddManualMeasurements = (props) => {
   const [useForm] = useFormHook();
 
-  const [sliderValue, setSliderValue] = useState((props.formProps?.values?.quality
-    && parseInt(props.formProps.values.quality)) || 5);
+  const [sliderValue, setSliderValue] = useState(6);
 
   const groupKey = 'measurement';
 
@@ -34,9 +33,11 @@ const AddManualMeasurements = (props) => {
 
   useEffect(() => {
     console.log('UE AddManualMeasurements [sliderValue]', sliderValue);
-    props.formProps.setFieldValue(qualityKey, sliderValue.toString());
-    if (props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
-      props.formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValue.toString());
+    if (sliderValue <= 5) {
+      props.formProps.setFieldValue(qualityKey, sliderValue.toString());
+      if (props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
+        props.formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValue.toString());
+      }
     }
   }, [sliderValue]);
 
@@ -62,9 +63,9 @@ const AddManualMeasurements = (props) => {
             onSlidingComplete={setSliderValue}
             value={sliderValue}
             step={1}
-            maximumValue={5}
-            minimumValue={0}
-            labels={['N/A', 'Low', '', '', '', 'High']}
+            maximumValue={6}
+            minimumValue={1}
+            labels={['Low', '', '', '', 'High', 'N/R']}
             labelStyle={uiStyles.sliderLabel}
           />
         </View>
