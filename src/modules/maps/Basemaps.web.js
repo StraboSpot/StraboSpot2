@@ -210,10 +210,10 @@ const Basemap = (props) => {
               unit={'imperial'}
               style={{position: 'absolute', left: 50, bottom: 20}}
             />
-            <ScaleControl
-              unit={'metric'}
-              style={{position: 'absolute', left: 50, bottom: 40}}
-            />
+            {/*<ScaleControl*/}
+            {/*  unit={'metric'}*/}
+            {/*  style={{position: 'absolute', left: 50, bottom: 40}}*/}
+            {/*/>*/}
           </View>
         )}
 
