@@ -4,10 +4,11 @@ import {Platform, View} from 'react-native';
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import proj4 from 'proj4';
-import {Layer, Map, Source} from 'react-map-gl';
+import {Layer, Map, Source, ScaleControl} from 'react-map-gl';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import {
   BACKGROUND,
@@ -203,6 +204,15 @@ const Basemap = (props) => {
         interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
         styleDiffing={false}
       >
+
+        <ScaleControl
+          unit={'imperial'}
+          style={{position: 'absolute', left: 50, bottom: 20}}
+        />
+        <ScaleControl
+          unit={'metric'}
+          style={{position: 'absolute', left: 50, bottom: 40}}
+        />
 
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map((customMap) => {

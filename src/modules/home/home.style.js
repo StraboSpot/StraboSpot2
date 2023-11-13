@@ -66,8 +66,8 @@ const homeStyles = StyleSheet.create({
   drawToolsContainer: {
     flex: 1,
     position: 'absolute',
-    bottom: 10,
-    right: 0,
+    bottom: 30,
+    right: 10,
     alignItems: 'center',
     zIndex: -1,
   },
@@ -132,7 +132,7 @@ const homeStyles = StyleSheet.create({
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 30,
     zIndex: -1,
   },
   homeIconContainer: {
