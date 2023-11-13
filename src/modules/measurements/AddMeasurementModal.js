@@ -246,7 +246,7 @@ const AddMeasurementModal = (props) => {
             )}
             {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
               : (
-                <View>
+                <>
                   <Compass
                     setMeasurements={setMeasurements}
                     formValues={formProps.values}
@@ -257,7 +257,7 @@ const AddMeasurementModal = (props) => {
                   <View style={compassStyles.sliderContainer}>
                     <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
                     <Slider
-                      onSlidingComplete={value => setSliderValue(value)}
+                      onSlidingComplete={setSliderValue}
                       value={sliderValue}
                       step={1}
                       maximumValue={6}
@@ -266,7 +266,7 @@ const AddMeasurementModal = (props) => {
                       labelStyle={uiStyles.sliderLabel}
                     />
                   </View>
-                </View>
+                </>
               )}
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
               && getPlanarTemplates(relevantTemplates).length <= 1 && (

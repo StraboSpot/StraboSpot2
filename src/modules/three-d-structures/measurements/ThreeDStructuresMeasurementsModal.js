@@ -1,21 +1,26 @@
 import React, {useState} from 'react';
-import {Platform} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 import {useSelector} from 'react-redux';
 
+import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {WARNING_COLOR} from '../../../shared/styles.constants';
 import modalStyle from '../../../shared/ui/modal/modal.style';
 import ModalHeader from '../../../shared/ui/modal/ModalHeader';
+import Slider from '../../../shared/ui/SliderBar';
+import uiStyles from '../../../shared/ui/ui.styles';
 import Compass from '../../compass/Compass';
+import compassStyles from '../../compass/compass.styles';
 import ManualMeasurement from '../../compass/ManualMeasurement';
-import {useFormHook} from '../../form';
+import {formStyles, useFormHook} from '../../form';
 
 const ThreeDStructuresMeasurementsModal = (props) => {
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
 
+  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
   const [sliderValue, setSliderValue] = useState(6);
 
   const [useForm] = useFormHook();
@@ -61,12 +66,16 @@ const ThreeDStructuresMeasurementsModal = (props) => {
         title={props.measurementsGroupLabel}
         close={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
       />
-      {Platform.OS === 'ios' ? (
-        <Compass
-          setAttributeMeasurements={setMeasurements}
-          closeCompass={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
+      {Platform.OS === 'ios' && (
+        <Button
+          buttonStyle={formStyles.formButtonSmall}
+          titleProps={formStyles.formButtonTitle}
+          title={isManualMeasurement ? 'Switch to Compass Input' : 'Manually Add Measurement'}
+          type={'clear'}
+          onPress={() => setIsManualMeasurement(!isManualMeasurement)}
         />
-      ) : (
+      )}
+      {isManualMeasurement ? (
         <ManualMeasurement
           addAttributeMeasurement={addAttributeMeasurement}
           setAttributeMeasurements={setMeasurements}
@@ -74,6 +83,26 @@ const ThreeDStructuresMeasurementsModal = (props) => {
           setSliderValue={setSliderValue}
           sliderValue={sliderValue}
         />
+      ) : (
+        <>
+          <Compass
+            setAttributeMeasurements={setMeasurements}
+            closeCompass={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
+            sliderValue={sliderValue}
+          />
+          <View style={compassStyles.sliderContainer}>
+            <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
+            <Slider
+              onSlidingComplete={setSliderValue}
+              value={sliderValue}
+              step={1}
+              maximumValue={6}
+              minimumValue={1}
+              labels={['Low', '', '', '', 'High', 'N/R']}
+              labelStyle={uiStyles.sliderLabel}
+            />
+          </View>
+        </>
       )}
       <Button
         titleStyle={{color: WARNING_COLOR}}

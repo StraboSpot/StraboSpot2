@@ -152,27 +152,6 @@ const Compass = (props) => {
     });
   };
 
-  const renderCompass = () => {
-    return (
-      <View>
-        <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
-          <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
-          {renderCompassSymbols()}
-        </TouchableOpacity>
-        {props.setCompassRawDataToDisplay && (
-          <Button
-            containerStyle={{position: 'absolute', bottom: 0, right: 0, width: 75}}
-            titleStyle={{fontSize: 10}}
-            title={'Display Compass Data'}
-            type={'clear'}
-            onPress={props.showCompassDataModal}
-            compassData={props.setCompassRawDataToDisplay(compassData)}
-          />
-        )}
-      </View>
-    );
-  };
-
   const renderCompassSymbols = () => {
     // console.log('Strike', compassData.strike + '\n' + 'Trend', compassData.trend);
     const linearToggleOn = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
@@ -249,26 +228,22 @@ const Compass = (props) => {
   };
 
   return (
-    <React.Fragment>
-      <View style={compassStyles.compassContainer}>
-        {props.setAttributeMeasurements && Platform.OS === 'ios' && (
-          <Button
-            buttonStyle={formStyles.formButtonSmall}
-            titleProps={formStyles.formButtonTitle}
-            title={isManualMeasurement ? 'Switch to Compass Input' : 'Switch to Manual Input'}
-            type={'clear'}
-            onPress={() => setIsManualMeasurement(!isManualMeasurement)}
-          />
-        )}
-        {props.setAttributeMeasurements && isManualMeasurement ? (
-          <ManualMeasurement
-            addAttributeMeasurement={addAttributeMeasurement}
-            setAttributeMeasurements={props.setAttributeMeasurements}
-            measurementTypes={compassMeasurementTypes}
-          />
-        ) : renderCompass()}
-      </View>
-    </React.Fragment>
+    <View style={compassStyles.compassContainer}>
+      <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
+        <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
+        {renderCompassSymbols()}
+      </TouchableOpacity>
+      {props.setCompassRawDataToDisplay && (
+        <Button
+          containerStyle={{position: 'absolute', bottom: 0, right: 0, width: 75}}
+          titleStyle={{fontSize: 10}}
+          title={'Display Compass Data'}
+          type={'clear'}
+          onPress={props.showCompassDataModal}
+          compassData={props.setCompassRawDataToDisplay(compassData)}
+        />
+      )}
+    </View>
   );
 };
 
