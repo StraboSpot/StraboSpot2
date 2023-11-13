@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, FlatList, Platform, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,9 +9,6 @@ import alert from '../../shared/ui/alert';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
-
-const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-const dimensions = Dimensions.get(platform);
 
 const TagDetailModal = (props) => {
   const dispatch = useDispatch();
@@ -67,14 +64,14 @@ const TagDetailModal = (props) => {
     <Overlay
       isVisible={props.isVisible}
       overlayStyle={{
-        maxHeight: dimensions.height - 20,
+        maxHeight: '90%',
         width: 350,
         borderRadius: 20,
         backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
         padding: 0,
       }}
     >
-      <View style={{maxHeight: '100%'}}>
+      <>
         {renderCancelSaveButtons()}
         <FlatList
           ListHeaderComponent={
@@ -89,7 +86,7 @@ const TagDetailModal = (props) => {
             </React.Fragment>
           }
         />
-      </View>
+      </>
     </Overlay>
   );
 };
