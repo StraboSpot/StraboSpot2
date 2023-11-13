@@ -394,7 +394,7 @@ const useMaps = (mapRef) => {
     return Promise.resolve(...[nearestSpot]);
   };
 
-  // Spots with mulitple measurements become mulitple features, one feature for each measurement
+  // Spots with multiple measurements become multiple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
     let mappedFeatures = [];
     spotsToFeatures.map((spot) => {

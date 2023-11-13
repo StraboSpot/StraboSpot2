@@ -60,6 +60,20 @@ const Basemap = (props) => {
 
   const coordQuad = useMaps.getCoordQuad(props.imageBasemap);
 
+  // Get selected and not selected Spots as features, split into multiple features if multiple orientations
+  const featuresNotSelected = turf.featureCollection(
+    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(props.spotsNotSelected)));
+  const featuresSelected = turf.featureCollection(
+    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(props.spotsSelected)));
+
+  // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
+  const featuresNotSelectedUniq = turf.featureCollection(
+    featuresNotSelected.features?.reduce((acc, f) =>
+      acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
+  const featuresSelectedUniq = turf.featureCollection(
+    featuresSelected.features?.reduce((acc, f) =>
+      acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
+
   useEffect(() => {
       console.log('UE Basemap', viewState);
       setInitialViewState();
@@ -236,19 +250,25 @@ const Basemap = (props) => {
           </Source>
         )}
 
-        {/* Sketch Layer */}
-        {/*{(props.freehandSketchMode)*/}
-        {/*  && (*/}
-        {/*    <FreehandSketch>*/}
-        {/*      <MapboxGL.RasterLayer id={'sketchLayer'}/>*/}
-        {/*    </FreehandSketch>*/}
-        {/*  )}*/}
+        {/* Halo Around Selected Point Feature Layer */}
+        <Source
+          id={'pointSpotsSelectedSource'}
+          type={'geojson'}
+          data={featuresSelectedUniq}
+        >
+          <Layer
+            type={'circle'}
+            id={'pointLayerSelectedHalo'}
+            filter={['==', ['geometry-type'], 'Point']}
+            paint={useMapSymbology.getPaintSymbology().pointSelected}
+          />
+        </Source>
 
         {/* Colored Halo Around Points Layer */}
         <Source
-          id={'shapeSource'}
+          id={'pointSourceColorHalo'}
           type={'geojson'}
-          data={turf.featureCollection(useMapSymbology.addSymbology(props.spotsNotSelected))}
+          data={featuresNotSelectedUniq}
         >
           <Layer
             type={'circle'}
@@ -262,8 +282,7 @@ const Basemap = (props) => {
         <Source
           id={'spotsNotSelectedSource'}
           type={'geojson'}
-          data={turf.featureCollection(
-            useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsNotSelected)))}
+          data={featuresNotSelected}
         >
           {/* Polygon Not Selected */}
           <Layer
@@ -339,7 +358,7 @@ const Basemap = (props) => {
         <Source
           id={'spotsSelectedSource'}
           type={'geojson'}
-          data={turf.featureCollection(useMapSymbology.addSymbology(useMaps.getSpotsAsFeatures(props.spotsSelected)))}
+          data={featuresSelected}
         >
           {/* Polygon Selected */}
           <Layer
@@ -403,21 +422,7 @@ const Basemap = (props) => {
 
         </Source>
 
-        {/* Halo Around Selected Point Feature Layer */}
-        <Source
-          id={'pointSpotsSelectedSource'}
-          type={'geojson'}
-          data={turf.featureCollection(useMapSymbology.addSymbology(props.spotsSelected))}
-        >
-          <Layer
-            type={'circle'}
-            id={'pointLayerSelectedHalo'}
-            filter={['==', ['geometry-type'], 'Point']}
-            paint={useMapSymbology.getPaintSymbology().pointSelected}
-          />
-        </Source>
-
-        Draw Layer
+        {/* Draw Layer */}
         <Source
           id={'drawFeatures'}
           type={'geojson'}
