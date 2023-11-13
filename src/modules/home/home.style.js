@@ -29,11 +29,11 @@ const homeStyles = StyleSheet.create({
     alignItems: 'center',
   },
   mapboxAttributionPosition: {
-    left: 165,
+    right: 10,
     bottom: Platform.OS === 'ios' ? -15 : 7,
   },
   mapboxLogoPosition: {
-    left: 70,
+    left: 10,
     bottom: Platform.OS === 'ios' ? -15 : 7,
   },
   toastContainer: {
