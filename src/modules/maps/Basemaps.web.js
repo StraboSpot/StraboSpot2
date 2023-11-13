@@ -204,15 +204,18 @@ const Basemap = (props) => {
         interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
         styleDiffing={false}
       >
-
-        <ScaleControl
-          unit={'imperial'}
-          style={{position: 'absolute', left: 50, bottom: 20}}
-        />
-        <ScaleControl
-          unit={'metric'}
-          style={{position: 'absolute', left: 50, bottom: 40}}
-        />
+        {!props.stratSection && !props.imageBasemap && (
+          <View>
+            <ScaleControl
+              unit={'imperial'}
+              style={{position: 'absolute', left: 50, bottom: 20}}
+            />
+            <ScaleControl
+              unit={'metric'}
+              style={{position: 'absolute', left: 50, bottom: 40}}
+            />
+          </View>
+        )}
 
         {/* Custom Overlay Layer */}
         {Object.values(customMaps).map((customMap) => {
