@@ -88,8 +88,8 @@ android {
         applicationId "com.strabospot2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 69
-        versionName "1.47.6"
+        versionCode 70
+        versionName "1.48.0"
     }
     signingConfigs {
         debug {
