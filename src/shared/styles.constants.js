@@ -1,4 +1,6 @@
-import {Platform} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
+const platform = Platform.OS === 'ios' ? 'screen' : 'window';
+const {width, height} = Dimensions.get(platform);
 
 //See https://facebook.github.io/react-native/docs/colors
 export const LIGHTGREY = '#f7f7f7'; //(lightgrey)
@@ -34,3 +36,5 @@ export const MODAL_TEXT_SIZE = Platform.OS === 'web' ? 10 : 14;
 
 export const UPDATE_LABEL_WIDTH = 150;
 export const UPDATE_LABEL_HEIGHT = 150;
+
+export const SMALL_SCREEN = width < 768 || height < 768;

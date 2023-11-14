@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -120,7 +121,7 @@ const NotebookPanel = (props) => {
   };
 
   return (
-    <View style={notebookStyles.panel}>
+    <View style={SMALL_SCREEN ? notebookStyles.panelSmallScreen : notebookStyles.panel}>
       {isNotebookPanelVisible && (!isEmpty(spot) ? renderNotebookContent() : renderNotebookContentNoSpot())}
     </View>
   );

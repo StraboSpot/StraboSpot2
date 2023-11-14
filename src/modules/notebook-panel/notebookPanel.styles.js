@@ -11,6 +11,10 @@ const notebookStyles = StyleSheet.create({
     right: 0,
     zIndex: -1,
   },
+  panelSmallScreen: {
+    flex: 1,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
   headerContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     flexDirection: 'row',

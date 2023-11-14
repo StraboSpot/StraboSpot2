@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import {Button} from 'react-native-elements';
+import {Button, Header, Icon, Tab, TabView} from 'react-native-elements';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,6 +13,8 @@ import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
+import * as themes from '../../shared/styles.constants';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -48,7 +50,6 @@ import WarningModal from './home-modals/WarningModal';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setImageModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
   setModalVisible,
@@ -196,7 +197,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
-      mapComponentRef.current.zoomToSpotsExtent();
+      mapComponentRef.current?.zoomToSpotsExtent();
       dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
@@ -204,7 +205,7 @@ const Home = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE Home [mapMode]', mapMode);
-    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
+    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current?.endMapMeasurement();
   }, [mapMode]);
 
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
@@ -213,7 +214,7 @@ const Home = ({navigation, route}) => {
   const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
 
   const cancelEdits = async () => {
-    await mapComponentRef.current.cancelEdits();
+    await mapComponentRef.current?.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
       'editButtonsVisible': false,
@@ -253,7 +254,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'toggleUserLocation':
         if (value) goToCurrentLocation().catch(console.error);
-        mapComponentRef.current.toggleUserLocation(value);
+        mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
@@ -263,7 +264,7 @@ const Home = ({navigation, route}) => {
         break;
       // Map Actions
       case 'zoom':
-        mapComponentRef.current.zoomToSpotsExtent();
+        mapComponentRef.current?.zoomToSpotsExtent();
         break;
       case 'saveMap':
         dispatch(setOfflineMapsModalVisible(!isOfflineMapModalVisible));
@@ -271,7 +272,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
-        mapComponentRef.current.clearSelectedSpots();
+        mapComponentRef.current?.clearSelectedSpots();
         setIsSelectingForTagging(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
@@ -279,7 +280,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
-        mapComponentRef.current.clearSelectedSpots();
+        mapComponentRef.current?.clearSelectedSpots();
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
@@ -316,7 +317,7 @@ const Home = ({navigation, route}) => {
   const endDraw = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      const newOrEditedSpot = await mapComponentRef.current.endDraw();
+      const newOrEditedSpot = await mapComponentRef.current?.endDraw();
       setMapMode(MAP_MODES.VIEW);
       if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(PAGE_KEYS.OVERVIEW);
       setIsSelectingForStereonet(false);
@@ -345,7 +346,7 @@ const Home = ({navigation, route}) => {
   const goToCurrentLocation = async () => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     try {
-      await mapComponentRef.current.goToCurrentLocation();
+      await mapComponentRef.current?.goToCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -472,7 +473,7 @@ const Home = ({navigation, route}) => {
   };
 
   const setDraw = async (mapModeToSet) => {
-    mapComponentRef.current.cancelDraw();
+    mapComponentRef.current?.cancelDraw();
     if (mapMode === mapModeToSet
       || (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON && mapModeToSet === MAP_MODES.DRAW.POLYGON)
       || (mapMode === MAP_MODES.DRAW.FREEHANDLINE && mapModeToSet === MAP_MODES.DRAW.LINE)
@@ -481,7 +482,7 @@ const Home = ({navigation, route}) => {
   };
 
   const saveEdits = async () => {
-    mapComponentRef.current.saveEdits();
+    mapComponentRef.current?.saveEdits();
     //cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
@@ -541,10 +542,6 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const toggleImageModal = () => {
-    dispatch(setImageModalVisible(!isImageModalVisible));
-  };
-
   const toggleNotebookPanel = () => {
     if (isNotebookPanelVisible) closeNotebookPanel();
     else openNotebookPanel();
@@ -580,8 +577,8 @@ const Home = ({navigation, route}) => {
         logout={() => onLogout()}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
         openNotebookPanel={pageView => openNotebookPanel(pageView)}
-        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
-        zoomToCustomMap={bbox => mapComponentRef.current.zoomToCustomMap(bbox)}
+        zoomToCenterOfflineTile={() => mapComponentRef.current?.zoomToCenterOfflineTile()}
+        zoomToCustomMap={bbox => mapComponentRef.current?.zoomToCustomMap(bbox)}
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
         imageSliderNavigation={val => openImageSlider(val)}
       />
@@ -593,9 +590,9 @@ const Home = ({navigation, route}) => {
       <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
         <NotebookPanel
           closeNotebookPanel={closeNotebookPanel}
-          createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
+          createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
           openMainMenu={() => toggleHomeDrawerButton()}
-          zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
+          zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
         />
       </Animated.View>
     );
@@ -603,39 +600,94 @@ const Home = ({navigation, route}) => {
 
   return (
     <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
-      <Map
-        mapComponentRef={mapComponentRef}
-        mapMode={mapMode}
-        startEdit={startEdit}
-        endDraw={endDraw}
-        isSelectingForStereonet={isSelectingForStereonet}
-        isSelectingForTagging={isSelectingForTagging}
-        setDistance={d => setDistance(d)}
-      />
-      <StatusBar/>
+      {SMALL_SCREEN ? (
+        <>
+          <Header
+            backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
+            leftComponent={
+              <Icon
+                name={'menu'}
+                color={themes.PRIMARY_TEXT_COLOR}
+                onPress={toggleHomeDrawerButton}
+              />
+            }
+          />
+          <Tab
+            value={isNotebookPanelVisible ? 1 : 0}
+            onChange={i => i === 0 ? closeNotebookPanel() : openNotebookPanel()}
+            indicatorStyle={{borderBottomColor: themes.BLACK, borderBottomWidth: 3}}
+          >
+            <Tab.Item
+              title={'MAP'}
+              titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
+              buttonStyle={{padding: 0, backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}
+            />
+            <Tab.Item
+              title={'NOTEBOOK'}
+              titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
+              buttonStyle={{padding: 0, backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}
+            />
+          </Tab>
+
+          <TabView value={isNotebookPanelVisible ? 1 : 0}>
+            <TabView.Item style={{width: '100%'}}>
+              <Map
+                mapComponentRef={mapComponentRef}
+                mapMode={mapMode}
+                startEdit={startEdit}
+                endDraw={endDraw}
+                isSelectingForStereonet={isSelectingForStereonet}
+                isSelectingForTagging={isSelectingForTagging}
+                setDistance={d => setDistance(d)}
+              />
+            </TabView.Item>
+            <TabView.Item style={{width: '100%'}}>
+              <NotebookPanel
+                closeNotebookPanel={closeNotebookPanel}
+                createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
+                openMainMenu={() => toggleHomeDrawerButton()}
+                zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
+              />
+            </TabView.Item>
+          </TabView>
+        </>
+      ) : (
+        <>
+          <Map
+            mapComponentRef={mapComponentRef}
+            mapMode={mapMode}
+            startEdit={startEdit}
+            endDraw={endDraw}
+            isSelectingForStereonet={isSelectingForStereonet}
+            isSelectingForTagging={isSelectingForTagging}
+            setDistance={d => setDistance(d)}
+          />
+          <StatusBar/>
+          <RightSideButtons
+            closeNotebookPanel={closeNotebookPanel}
+            openNotebookPanel={openNotebookPanel}
+            toggleNotebookPanel={toggleNotebookPanel}
+            clickHandler={name => clickHandler(name)}
+            drawButtonsVisible={buttons.drawButtonsVisible}
+            mapMode={mapMode}
+            endDraw={() => endDraw()}
+            rightsideIconAnimation={rightsideIconAnimation}
+            distance={distance}
+            endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
+          />
+          <LeftSideButtons
+            toggleHomeDrawer={() => toggleHomeDrawerButton()}
+            dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
+            clickHandler={(name, value) => clickHandler(name, value)}
+            // rightsideIconAnimation={rightsideIconAnimation}
+            leftsideIconAnimation={leftsideIconAnimation}
+            zoomToCustomMap={(bbox, duration) => mapComponentRef.current?.zoomToCustomMap(bbox, duration)}
+            zoomToCenterOfflineTile={() => mapComponentRef.current?.zoomToCenterOfflineTile()}
+            toast={message => toast.show(message, {type: 'warning'})}
+          />
+        </>
+      )}
       {vertexStartCoords && <VertexDrag/>}
-      <RightSideButtons
-        closeNotebookPanel={closeNotebookPanel}
-        openNotebookPanel={openNotebookPanel}
-        toggleNotebookPanel={toggleNotebookPanel}
-        clickHandler={name => clickHandler(name)}
-        drawButtonsVisible={buttons.drawButtonsVisible}
-        mapMode={mapMode}
-        endDraw={() => endDraw()}
-        rightsideIconAnimation={rightsideIconAnimation}
-        distance={distance}
-        endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
-      />
-      <LeftSideButtons
-        toggleHomeDrawer={() => toggleHomeDrawerButton()}
-        dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
-        clickHandler={(name, value) => clickHandler(name, value)}
-        // rightsideIconAnimation={rightsideIconAnimation}
-        leftsideIconAnimation={leftsideIconAnimation}
-        zoomToCustomMap={(bbox, duration) => mapComponentRef.current.zoomToCustomMap(bbox, duration)}
-        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
-        toast={message => toast.show(message, {type: 'warning'})}
-      />
       {/*Modals for Home Page*/}
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
