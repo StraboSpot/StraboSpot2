@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -13,9 +13,9 @@ import useSpotsHook from './useSpots';
 
 const SpotsListItem = (props) => {
   const [useNesting] = useNestingHook();
-  const usePage = usePageHoook();
   const [useSpots] = useSpotsHook();
   const [useTags] = useTagsHook();
+  const usePage = usePageHoook();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
 
@@ -29,20 +29,22 @@ const SpotsListItem = (props) => {
   };
 
   const renderSpotDataIcons = () => (
-    <FlatList
-      listKey={new Date().toISOString()}
-      keyExtractor={(item, index) => index.toString()}
-      data={usePage.getPopulatedPagesKeys(props.spot)}
-      horizontal={false}
-      numColumns={5}
-      renderItem={({item}) => (
-        <Avatar
-          source={usePage.getSpotDataIconSource(item)}
-          placeholderStyle={{backgroundColor: 'transparent'}}
-          size={20}
-        />
-      )}
-    />
+    <View>
+      <FlatList
+        data={usePage.getPopulatedPagesKeys(props.spot)}
+        horizontal={false}
+        keyExtractor={(item, index) => index.toString()}
+        listKey={new Date().toISOString()}
+        numColumns={5}
+        renderItem={({item}) => (
+          <Avatar
+            source={usePage.getSpotDataIconSource(item)}
+            placeholderStyle={{backgroundColor: 'transparent'}}
+            size={20}
+          />
+        )}
+      />
+    </View>
   );
 
   const renderSubspots = () => {
@@ -63,9 +65,10 @@ const SpotsListItem = (props) => {
       keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
       onPress={() => props.onPress(props.spot)}
     >
-      <Avatar source={useSpots.getSpotGemometryIconSource(props.spot)}
-              placeholderStyle={{backgroundColor: 'transparent'}}
-              size={20}
+      <Avatar
+        placeholderStyle={{backgroundColor: 'transparent'}}
+        size={20}
+        source={useSpots.getSpotGemometryIconSource(props.spot)}
       />
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{props?.spot?.properties?.name}</ListItem.Title>
