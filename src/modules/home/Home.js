@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import {Button, Header, Icon, Tab, TabView} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,7 +13,6 @@ import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
 import {animatePanels, isEmpty} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useImagesHook from '../images/useImages';
@@ -23,20 +22,16 @@ import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
-import Map from '../maps/Map';
 import {MAP_MODES} from '../maps/maps.constants';
 import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useLocationHook from '../maps/useLocation';
 import VertexDrag from '../maps/VertexDrag';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
-import NotebookPanel from '../notebook-panel/NotebookPanel';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import useSignInHook from '../sign-in/useSignIn';
-import SpotNavigator from '../spots/SpotNavigator';
 import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
@@ -59,9 +54,8 @@ import {
   setProjectLoadSelectionModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
-import LeftSideButtons from './LeftSideButtons';
-import RightSideButtons from './RightSideButtons';
-import StatusBar from './StatusBar';
+import HomeView from './HomeView';
+import HomeViewSmallScreen from './HomeViewSmallScreen';
 
 const {State: TextInputState} = TextInput;
 SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
@@ -101,7 +95,6 @@ const Home = ({navigation, route}) => {
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedProject = useSelector(state => state.project.selectedProject);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
@@ -116,7 +109,6 @@ const Home = ({navigation, route}) => {
   const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
-  const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
   const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [showUpdateLabel, setShowUpdateLabel] = useState(false);
@@ -537,10 +529,6 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const toggleNotebookPanel = () => {
-    if (isNotebookPanelVisible) closeNotebookPanel();
-    else openNotebookPanel();
-  };
 
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
@@ -561,168 +549,59 @@ const Home = ({navigation, route}) => {
   };
 
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
-  const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
-  const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
-  const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
 
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
       <MainMenuPanel
-        logout={() => onLogout()}
-        closeMainMenuPanel={() => toggleHomeDrawerButton()}
-        openNotebookPanel={pageView => openNotebookPanel(pageView)}
-        zoomToCenterOfflineTile={() => mapComponentRef.current?.zoomToCenterOfflineTile()}
-        zoomToCustomMap={bbox => mapComponentRef.current?.zoomToCustomMap(bbox)}
-        toggleHomeDrawer={() => toggleHomeDrawerButton()}
-        imageSliderNavigation={val => openImageSlider(val)}
+        logout={onLogout}
+        closeMainMenuPanel={toggleHomeDrawerButton}
+        openNotebookPanel={openNotebookPanel}
+        zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
+        zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
+        toggleHomeDrawer={toggleHomeDrawerButton}
+        imageSliderNavigation={openImageSlider}
       />
     </Animated.View>
   );
 
-  const renderNotebookPanel = () => {
-    return (
-      <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
-        <NotebookPanel
-          closeNotebookPanel={closeNotebookPanel}
-          createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
-          openMainMenu={() => toggleHomeDrawerButton()}
-          zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
-        />
-      </Animated.View>
-    );
-  };
-
-  const toggleSpotNavigator = () => {
-    closeNotebookPanel();
-    setIsShowingSpotNavigator(s => !s);
-  };
-
   return (
     <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
       {SMALL_SCREEN ? (
-        <>
-          <Header
-            backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
-            leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (
-              <Icon
-                color={themes.PRIMARY_TEXT_COLOR}
-                name={'chevron-back'}
-                onPress={toggleSpotNavigator}
-                type={'ionicon'}
-              />
-            ) : (
-              <Icon
-                color={themes.PRIMARY_TEXT_COLOR}
-                name={'menu'}
-                onPress={toggleHomeDrawerButton}
-              />
-            )}
-            centerComponent={
-              <Button
-                buttonStyle={{padding: 0}}
-                icon={!isShowingSpotNavigator && (
-                  <Icon
-                    color={themes.PRIMARY_TEXT_COLOR}
-                    name={'chevron-forward'}
-                    type={'ionicon'}
-                  />
-                )}
-                iconRight
-                onPress={toggleSpotNavigator}
-                size={'sm'}
-                title={isShowingSpotNavigator ? 'Spot Navigator' : selectedSpot?.properties?.name || 'Spot Navigator'}
-                titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
-                type={'clear'}
-              />
-            }
-          />
-          {isShowingSpotNavigator && !isNotebookPanelVisible ? (
-            <View style={{height: '100%', width: '100%'}}>
-              <SpotNavigator
-                closeSpotsNavigator={toggleSpotNavigator}
-                openNotebookPanel={pageView => openNotebookPanel(pageView)}
-              />
-            </View>
-          ) : (
-            <>
-              <Tab
-                indicatorStyle={{borderBottomColor: themes.BLACK, borderBottomWidth: 3}}
-                onChange={i => i === 0 ? closeNotebookPanel() : openNotebookPanel()}
-                value={isNotebookPanelVisible ? 1 : 0}
-              >
-                <Tab.Item
-                  buttonStyle={{padding: 0, backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}
-                  title={'MAP'}
-                  titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
-                />
-                <Tab.Item
-                  buttonStyle={{padding: 0, backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}
-                  title={'NOTEBOOK'}
-                  titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
-                />
-              </Tab>
-
-              <TabView value={isNotebookPanelVisible ? 1 : 0}>
-                <TabView.Item style={{width: '100%'}}>
-                  <Map
-                    endDraw={endDraw}
-                    isSelectingForStereonet={isSelectingForStereonet}
-                    isSelectingForTagging={isSelectingForTagging}
-                    mapComponentRef={mapComponentRef}
-                    mapMode={mapMode}
-                    setDistance={d => setDistance(d)}
-                    startEdit={startEdit}
-                  />
-                </TabView.Item>
-                <TabView.Item style={{width: '100%'}}>
-                  <NotebookPanel
-                    closeNotebookPanel={closeNotebookPanel}
-                    createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
-                    openMainMenu={() => toggleHomeDrawerButton()}
-                    zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
-                  />
-                </TabView.Item>
-              </TabView>
-            </>
-          )}
-        </>
+        <HomeViewSmallScreen
+          closeNotebookPanel={closeNotebookPanel}
+          endDraw={endDraw}
+          isSelectingForStereonet={isSelectingForStereonet}
+          isSelectingForTagging={isSelectingForTagging}
+          mapComponentRef={mapComponentRef}
+          mapMode={mapMode}
+          openNotebookPanel={openNotebookPanel}
+          setDistance={setDistance}
+          startEdit={startEdit}
+          toggleHomeDrawer={toggleHomeDrawerButton}
+        />
       ) : (
-        <>
-          <Map
-            endDraw={endDraw}
-            isSelectingForStereonet={isSelectingForStereonet}
-            isSelectingForTagging={isSelectingForTagging}
-            mapComponentRef={mapComponentRef}
-            mapMode={mapMode}
-            setDistance={d => setDistance(d)}
-            startEdit={startEdit}
-          />
-          <StatusBar/>
-          <RightSideButtons
-            clickHandler={name => clickHandler(name)}
-            closeNotebookPanel={closeNotebookPanel}
-            distance={distance}
-            drawButtonsVisible={buttons.drawButtonsVisible}
-            endDraw={() => endDraw()}
-            endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
-            mapMode={mapMode}
-            openNotebookPanel={openNotebookPanel}
-            rightsideIconAnimation={rightsideIconAnimation}
-            toggleNotebookPanel={toggleNotebookPanel}
-          />
-          <LeftSideButtons
-            // rightsideIconAnimation={rightsideIconAnimation}
-            clickHandler={(name, value) => clickHandler(name, value)}
-            dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
-            leftsideIconAnimation={leftsideIconAnimation}
-            toast={message => toast.show(message, {type: 'warning'})}
-            toggleHomeDrawer={() => toggleHomeDrawerButton()}
-            zoomToCenterOfflineTile={() => mapComponentRef.current?.zoomToCenterOfflineTile()}
-            zoomToCustomMap={(bbox, duration) => mapComponentRef.current?.zoomToCustomMap(bbox, duration)}
-          />
-          {renderNotebookPanel()}
-        </>
+        <HomeView
+          animation={animation}
+          buttons={buttons}
+          clickHandler={clickHandler}
+          closeNotebookPanel={closeNotebookPanel}
+          dialogClickHandler={dialogClickHandler}
+          distance={distance}
+          endDraw={endDraw}
+          isSelectingForStereonet={isSelectingForStereonet}
+          isSelectingForTagging={isSelectingForTagging}
+          leftsideIconAnimationValue={leftsideIconAnimationValue}
+          mapComponentRef={mapComponentRef}
+          mapMode={mapMode}
+          openNotebookPanel={openNotebookPanel}
+          rightsideIconAnimationValue={rightsideIconAnimationValue}
+          setDistance={setDistance}
+          setMapMode={setMapMode}
+          startEdit={startEdit}
+          toast={toast}
+          toggleHomeDrawer={toggleHomeDrawerButton}
+        />
       )}
       {vertexStartCoords && <VertexDrag/>}
       {/*Modals for Home Page*/}
@@ -730,18 +609,18 @@ const Home = ({navigation, route}) => {
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
-          closeModal={() => closeInitialProjectLoadModal()}
-          openMainMenu={() => toggleHomeDrawerButton()}
+          closeModal={closeInitialProjectLoadModal}
+          openMainMenu={toggleHomeDrawerButton}
           visible={isProjectLoadSelectionModalVisible}
         />
       )}
       <ErrorModal/>
       <StatusModal
-        exportProject={() => exportProject()}
-        openMainMenu={() => !isMainMenuPanelVisible && toggleHomeDrawerButton()}
+        exportProject={exportProject}
+        openMainMenu={!isMainMenuPanelVisible && toggleHomeDrawerButton}
         openUrl={openStraboSpotURL}
       />
-      <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
+      <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
       <UploadProgressModal/>
       <WarningModal/>
       {/*------------------------*/}
