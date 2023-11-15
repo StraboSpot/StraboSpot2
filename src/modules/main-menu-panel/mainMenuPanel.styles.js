@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     textAlign: 'center',
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   documentListItem: {
     margin: 5,
