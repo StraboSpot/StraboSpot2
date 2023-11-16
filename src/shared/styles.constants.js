@@ -1,4 +1,5 @@
 import {Dimensions, Platform} from 'react-native';
+
 const platform = Platform.OS === 'ios' ? 'screen' : 'window';
 const {width, height} = Dimensions.get(platform);
 

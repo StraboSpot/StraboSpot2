@@ -1,6 +1,7 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const platform = Platform.OS === 'ios' ? 'window' : 'screen';
 const deviceDimensions = Dimensions.get(platform);
@@ -49,8 +50,8 @@ const styles = StyleSheet.create({
   },
   mapActionsPosition: {
     position: 'absolute',
-    left: 75,
-    bottom: 100,
+    left: SMALL_SCREEN ? 20 : 75,
+    bottom: SMALL_SCREEN ? 120 : 100,
   },
   mapSymbolsPosition: {
     position: 'absolute',
