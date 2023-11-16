@@ -568,18 +568,19 @@ const Home = ({navigation, route}) => {
   return (
     <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
       {SMALL_SCREEN ? (
-        <HomeViewSmallScreen
-          closeNotebookPanel={closeNotebookPanel}
-          endDraw={endDraw}
-          isSelectingForStereonet={isSelectingForStereonet}
-          isSelectingForTagging={isSelectingForTagging}
-          mapComponentRef={mapComponentRef}
-          mapMode={mapMode}
-          openNotebookPanel={openNotebookPanel}
-          setDistance={setDistance}
-          startEdit={startEdit}
-          toggleHomeDrawer={toggleHomeDrawerButton}
-        />
+          <HomeViewSmallScreen
+            closeNotebookPanel={closeNotebookPanel}
+            clickHandler={(name, value) => clickHandler(name, value)}
+            endDraw={endDraw}
+            isSelectingForStereonet={isSelectingForStereonet}
+            isSelectingForTagging={isSelectingForTagging}
+            mapComponentRef={mapComponentRef}
+            mapMode={mapMode}
+            openNotebookPanel={openNotebookPanel}
+            setDistance={setDistance}
+            startEdit={startEdit}
+            toggleHomeDrawer={toggleHomeDrawerButton}
+          />
       ) : (
         <HomeView
           animation={animation}

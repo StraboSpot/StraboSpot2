@@ -8,19 +8,22 @@ import * as themes from '../../shared/styles.constants';
 import Map from '../maps/Map';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SpotNavigator from '../spots/SpotNavigator';
+import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
+import homeStyle from './home.style';
 
 const HomeViewSmallScreen = ({
-                         closeNotebookPanel,
-                         endDraw,
-                         isSelectingForStereonet,
-                         isSelectingForTagging,
-                         mapComponentRef,
-                         mapMode,
-                         openNotebookPanel,
-                         setDistance,
-                         startEdit,
-                         toggleHomeDrawer,
-                       }) => {
+                               closeNotebookPanel,
+                               clickHandler,
+                               endDraw,
+                               isSelectingForStereonet,
+                               isSelectingForTagging,
+                               mapComponentRef,
+                               mapMode,
+                               openNotebookPanel,
+                               setDistance,
+                               startEdit,
+                               toggleHomeDrawer,
+                             }) => {
   console.log('Rendering HomeViewSmallScreen...');
 
   const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
@@ -97,15 +100,23 @@ const HomeViewSmallScreen = ({
 
           <TabView value={isNotebookPanelVisible ? 1 : 0}>
             <TabView.Item style={{width: '100%'}}>
-              <Map
-                endDraw={endDraw}
-                isSelectingForStereonet={isSelectingForStereonet}
-                isSelectingForTagging={isSelectingForTagging}
-                mapComponentRef={mapComponentRef}
-                mapMode={mapMode}
-                setDistance={setDistance}
-                startEdit={startEdit}
-              />
+              <View style={{flex: 1}}>
+                <Map
+                  endDraw={endDraw}
+                  isSelectingForStereonet={isSelectingForStereonet}
+                  isSelectingForTagging={isSelectingForTagging}
+                  mapComponentRef={mapComponentRef}
+                  mapMode={mapMode}
+                  setDistance={setDistance}
+                  startEdit={startEdit}
+                />
+                <View style={homeStyle.actionButtonsSmallScreenContainer}>
+                  <ActionButtonsSmallScreen
+                    clickHandler={clickHandler}
+                  />
+                </View>
+              </View>
+
             </TabView.Item>
             <TabView.Item style={{width: '100%'}}>
               <NotebookPanel
