@@ -6,7 +6,6 @@ import {Button} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
@@ -15,10 +14,21 @@ import useLocationHook from '../maps/useLocation';
 import {MODAL_KEYS, SHORTCUT_MODALS} from '../page/page.constants';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots} from '../spots/spots.slice';
+import DrawActionButtons from './DrawActionButtons';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 
-const RightSideButtons = (props) => {
+const RightSideButtons = ({
+                            clickHandler,
+                            distance,
+                            drawButtonsVisible,
+                            endMeasurement,
+                            endDraw,
+                            mapMode,
+                            openNotebookPanel,
+                            rightsideIconAnimation,
+                            toggleNotebookPanel,
+                          }) => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
@@ -44,27 +54,27 @@ const RightSideButtons = (props) => {
   const changeDrawType = (name) => {
     switch (pointIconType[name]) {
       case MAP_MODES.DRAW.POINT:
-        return props.mapMode === MAP_MODES.DRAW.POINT
+        return mapMode === MAP_MODES.DRAW.POINT
           ? require('../../assets/icons/PointButton_pressed.png')
           : require('../../assets/icons/PointButton.png');
       case MAP_MODES.DRAW.POINTLOCATION:
-        return props.mapMode === MAP_MODES.DRAW.POINTLOCATION
+        return mapMode === MAP_MODES.DRAW.POINTLOCATION
           ? require('../../assets/icons/PointButtonCurrentLocation_pressed.png')
           : require('../../assets/icons/PointButtonCurrentLocation.png');
       case MAP_MODES.DRAW.LINE:
-        return props.mapMode === MAP_MODES.DRAW.LINE
+        return mapMode === MAP_MODES.DRAW.LINE
           ? require('../../assets/icons/LineButton_pressed.png')
           : require('../../assets/icons/LineButton.png');
       case MAP_MODES.DRAW.FREEHANDLINE:
-        return props.mapMode === MAP_MODES.DRAW.FREEHANDLINE
+        return mapMode === MAP_MODES.DRAW.FREEHANDLINE
           ? require('../../assets/icons/LineFreehandButton_pressed.png')
           : require('../../assets/icons/LineFreehandButton.png');
       case MAP_MODES.DRAW.POLYGON:
-        return props.mapMode === MAP_MODES.DRAW.POLYGON
+        return mapMode === MAP_MODES.DRAW.POLYGON
           ? require('../../assets/icons/PolygonButton_pressed.png')
           : require('../../assets/icons/PolygonButton.png');
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
-        return props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
+        return mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
           ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
           : require('../../assets/icons/PolygonFreehandButton.png');
     }
@@ -117,14 +127,14 @@ const RightSideButtons = (props) => {
               imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot '
               + point.properties.name, {type: 'success'},
             );
-            props.openNotebookPanel();
+            openNotebookPanel();
           }
           break;
         }
         case 'sketch': {
           const point = await useLocation.setPointAtCurrentLocation();
           if (point) navigation.navigate('Sketch');
-          props.openNotebookPanel();
+          openNotebookPanel();
           break;
         }
         default:
@@ -135,7 +145,7 @@ const RightSideButtons = (props) => {
 
     return (
       <Animated.View
-        style={[homeStyles.shortcutButtons, props.rightsideIconAnimation]}>
+        style={[homeStyles.shortcutButtons, rightsideIconAnimation]}>
         {SHORTCUT_MODALS.reduce((acc, sm) => {
             return (
               shortcutSwitchPosition[sm.key] ? [...acc, (
@@ -157,7 +167,7 @@ const RightSideButtons = (props) => {
     <React.Fragment>
       {stratSection && (
         <Animated.View
-          style={[homeStyles.addIntervalButton, props.rightsideIconAnimation]}>
+          style={[homeStyles.addIntervalButton, rightsideIconAnimation]}>
           <IconButton
             source={isNotebookPanelVisible
               ? require('../../assets/icons/AddIntervalButton_pressed.png')
@@ -167,25 +177,25 @@ const RightSideButtons = (props) => {
         </Animated.View>
       )}
       <Animated.View
-        style={[homeStyles.notebookButton, props.rightsideIconAnimation]}>
+        style={[homeStyles.notebookButton, rightsideIconAnimation]}>
         <IconButton
           source={isNotebookPanelVisible
             ? require('../../assets/icons/NotebookViewButton_pressed.png')
             : require('../../assets/icons/NotebookViewButton.png')}
-          onPress={props.toggleNotebookPanel}
+          onPress={toggleNotebookPanel}
         />
       </Animated.View>
       {!currentImageBasemap && !stratSection && !isNotebookPanelVisible && renderShortcutIcons()}
-      {props.drawButtonsVisible && (
+      {drawButtonsVisible && (
         <Animated.View
-          style={[homeStyles.drawToolsContainer, props.rightsideIconAnimation]}>
+          style={[homeStyles.drawContainer, rightsideIconAnimation]}>
           {!isEmpty(selectedDatasetId)
             && [MAP_MODES.DRAW.POINT, MAP_MODES.DRAW.LINE, MAP_MODES.DRAW.FREEHANDLINE, MAP_MODES.DRAW.FREEHANDPOLYGON,
-              MAP_MODES.DRAW.POLYGON, MAP_MODES.DRAW.MEASURE].includes(props.mapMode)
+              MAP_MODES.DRAW.POLYGON, MAP_MODES.DRAW.MEASURE].includes(mapMode)
             && (
               <View style={homeStyles.selectedDatasetContainer}>
-                {props.mapMode === MAP_MODES.DRAW.MEASURE ? (
-                    <Text style={{textAlign: 'center'}}>Total Distance: {props.distance.toFixed(3)}km</Text>
+                {mapMode === MAP_MODES.DRAW.MEASURE ? (
+                    <Text style={{textAlign: 'center'}}>Total Distance: {distance.toFixed(3)}km</Text>
                   )
                   : (
                     <React.Fragment>
@@ -195,18 +205,21 @@ const RightSideButtons = (props) => {
                       </Text>
                     </React.Fragment>
                   )}
-                <View style={commonStyles.buttonContainer}>
-                  {props.mapMode === MAP_MODES.DRAW.POINT ? (
-                      <Text style={{textAlign: 'center'}}>Place a point on the map</Text>
+                <View style={{}}>
+                  {mapMode === MAP_MODES.DRAW.POINT ? (
+                    <View>
+                      <Text style={{textAlign: 'center'}}>Place a point </Text>
+                      <Text style={{textAlign: 'center'}}>on the map</Text>
+                    </View>
                     )
-                    : props.mapMode === MAP_MODES.DRAW.MEASURE ? (
+                    : mapMode === MAP_MODES.DRAW.MEASURE ? (
                         <Button
                           containerStyle={{alignContent: 'center'}}
                           buttonStyle={homeStyles.drawToolsButtons}
                           titleStyle={homeStyles.drawToolsTitle}
                           title={'End Measurement'}
                           type={'clear'}
-                          onPress={props.endMeasurement}
+                          onPress={endMeasurement}
                         />
                       )
                       : (
@@ -216,53 +229,30 @@ const RightSideButtons = (props) => {
                           titleStyle={homeStyles.drawToolsTitle}
                           title={'End Draw'}
                           type={'clear'}
-                          onPress={props.endDraw}
+                          onPress={endDraw}
                         />
                       )
                   }
                 </View>
               </View>
             )}
-          <View style={{flexDirection: 'row'}}>
-            {(currentImageBasemap || stratSection) ? (
-                <IconButton
-                  style={{top: 5}}
-                  source={props.mapMode === MAP_MODES.DRAW.POINT
-                    ? require('../../assets/icons/PointButton_pressed.png')
-                    : require('../../assets/icons/PointButton.png')}
-                  onPress={() => {
-                    props.clickHandler(MAP_MODES.DRAW.POINT);
-                  }}
-                />)
-              : (
-                <IconButton
-                  style={{top: 5}}
-                  source={changeDrawType(MAP_MODES.DRAW.POINT)}
-                  onPress={() => {
-                    if (pointIconType.point === MAP_MODES.DRAW.POINT) props.clickHandler(MAP_MODES.DRAW.POINT);
-                    else props.clickHandler(MAP_MODES.DRAW.POINTLOCATION);
-                  }}
-                  onLongPress={() => onLongPress('point')}
-                />)}
-            <IconButton
-              style={{top: 5}}
-              source={changeDrawType(MAP_MODES.DRAW.LINE)}
-              onPress={() => {
-                if (pointIconType.line === MAP_MODES.DRAW.LINE) props.clickHandler(MAP_MODES.DRAW.LINE);
-                else props.clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
-              }}
-              onLongPress={() => onLongPress('line')}
-            />
-            <IconButton
-              style={{top: 5}}
-              source={changeDrawType(MAP_MODES.DRAW.POLYGON)}
-              onPress={() => {
-                if (pointIconType.polygon === MAP_MODES.DRAW.POLYGON) props.clickHandler(MAP_MODES.DRAW.POLYGON);
-                else props.clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
-              }}
-              onLongPress={() => onLongPress('polygon')}
-            />
-          </View>
+          {(currentImageBasemap || stratSection) ? (
+              <IconButton
+                source={mapMode === MAP_MODES.DRAW.POINT
+                  ? require('../../assets/icons/PointButton_pressed.png')
+                  : require('../../assets/icons/PointButton.png')}
+                onPress={() => {
+                  clickHandler(MAP_MODES.DRAW.POINT);
+                }}
+              />)
+            : (
+              <DrawActionButtons
+                clickHandler={clickHandler}
+                onLongPress={type => onLongPress(type)}
+                changeDrawType={name => changeDrawType(name)}
+                pointIconType={pointIconType}
+              />
+            )}
         </Animated.View>
       )}
     </React.Fragment>
