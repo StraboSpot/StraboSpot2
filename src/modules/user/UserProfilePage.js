@@ -28,7 +28,7 @@ const UserProfile = (props) => {
   const formRef = useRef(null);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
 
   const [avatar, setAvatar] = useState(userData.image);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);

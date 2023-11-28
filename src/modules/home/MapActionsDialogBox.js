@@ -13,7 +13,7 @@ const MapActionsDialog = (props) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
-  const {isInternetReachable, isConnected} = useSelector(state => state.home.isOnline);
+  const {isInternetReachable, isConnected} = useSelector(state => state.connections.isOnline);
 
   const actions = [
     {key: 'zoom', title: 'Zoom to Extent of Spots'},

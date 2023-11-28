@@ -23,7 +23,7 @@ const ManageOfflineMaps = (props) => {
   console.log('Rendering ManageOfflineMaps...');
 
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const mainMenuPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const dispatch = useDispatch();
 

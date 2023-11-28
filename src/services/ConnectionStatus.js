@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import {useDispatch} from 'react-redux';
 
-import {setOnlineStatus} from '../modules/home/home.slice';
+import {setOnlineStatus} from './connections.slice';
 
 const ConnectionStatus = () => {
   console.log('Rendering ConnectionStatus...');

@@ -16,7 +16,7 @@ const ManageCustomMaps = (props) => {
   console.log('Rendering ManageCustomMaps...');
 
   const customMaps = useSelector(state => state.map.customMaps);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const [useMaps] = useMapHook();
 
   const {isInternetReachable, isConnected} = isOnline;

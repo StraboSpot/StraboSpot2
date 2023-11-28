@@ -24,8 +24,8 @@ const BaseMapDialog = (props) => {
 
   const customMaps = useSelector(state => state.map.customMaps);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const customEndpoint = useSelector(state => state.project.databaseEndpoint);
-  const {isConnected, isInternetReachable} = useSelector(state => state.home.isOnline);
+  const customEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const {isConnected, isInternetReachable} = useSelector(state => state.connections.isOnline);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
 
   useEffect(() => {

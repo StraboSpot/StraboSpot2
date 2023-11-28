@@ -1,5 +1,7 @@
 import React from 'react';
-import {Image, Pressable} from 'react-native';
+import {Pressable} from 'react-native';
+
+import {Image} from 'react-native-elements';
 
 import uiStyles from '../ui/ui.styles';
 

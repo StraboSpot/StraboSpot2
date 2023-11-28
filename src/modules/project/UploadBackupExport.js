@@ -24,7 +24,7 @@ import {setSelectedProject} from './projects.slice';
 const UploadBackAndExport = () => {
 
   const dispatch = useDispatch();
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
   const user = useSelector(state => state.user);
 

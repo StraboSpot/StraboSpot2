@@ -9,13 +9,13 @@ import useImagesHook from '../modules/images/useImages';
 import {
   deletedSpotIdFromDataset,
   setIsImageTransferring,
-  updatedProjectTransferProgress,
 } from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import useDeviceHook from '../services/useDevice';
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
+import {updatedProjectTransferProgress} from './connections.slice';
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 

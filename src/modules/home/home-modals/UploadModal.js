@@ -14,7 +14,7 @@ import overlayStyles from '../overlay.styles';
 const UploadModal = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
-  const endPoint = useSelector(state => state.project.databaseEndpoint);
+  const endPoint = useSelector(state => state.connections.databaseEndpoint);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
 
   const [useProject] = useProjectHook();

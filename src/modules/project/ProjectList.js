@@ -27,9 +27,9 @@ import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
-  const endPoint = useSelector(state => state.project.databaseEndpoint);
+  const endPoint = useSelector(state => state.connections.databaseEndpoint);
   const isInitialProjectLoadModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);

@@ -4,7 +4,7 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 
 const useUserProfile = () => {
   const userData = useSelector(state => state.user);
-  const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
 
   const getInitials = () => {
     return userData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();

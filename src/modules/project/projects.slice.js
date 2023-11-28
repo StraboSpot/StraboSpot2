@@ -8,14 +8,6 @@ const initialProjectState = {
   selectedDatasetId: undefined,
   project: {},
   datasets: {},
-  databaseEndpoint: {
-    protocol: 'http://',
-    domain: '',
-    path: '/db',
-    url: '',
-    isSelected: false,
-    isVerified: false,
-  },
   deviceBackUpDirectoryExists: false,
   downloadsDirectory: false, //Android Only
   isTestingMode: false,
@@ -182,27 +174,6 @@ const projectSlice = createSlice({
       }
       state.project.modified_timestamp = Date.now();
     },
-    setDatabaseProtocol(state, action) {
-      const {domain, path} = state.databaseEndpoint;
-      state.databaseEndpoint.protocol = action.payload;
-      state.databaseEndpoint.url = action.payload + domain + path;
-    },
-    setDatabaseDomain(state, action) {
-      const {protocol, path} = state.databaseEndpoint;
-      state.databaseEndpoint.domain = action.payload;
-      state.databaseEndpoint.url = protocol + action.payload + path;
-    },
-    setDatabasePath(state, action) {
-      const {protocol, domain} = state.databaseEndpoint;
-      state.databaseEndpoint.path = action.payload;
-      state.databaseEndpoint.url = protocol + domain + action.payload;
-    },
-    setDatabaseVerify(state, action) {
-      state.databaseEndpoint.isVerified = action.payload;
-    },
-    setDatabaseIsSelected(state, action) {
-      state.databaseEndpoint.isSelected = action.payload;
-    },
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
     },
@@ -273,9 +244,6 @@ const projectSlice = createSlice({
       state.project[field] = value;
       state.project.modified_timestamp = Date.now();
     },
-    updatedProjectTransferProgress(state, action) {
-      state.projectTransferProgress = action.payload;
-    },
   },
 });
 
@@ -300,11 +268,6 @@ export const {
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,
-  setDatabaseProtocol,
-  setDatabaseDomain,
-  setDatabasePath,
-  setDatabaseIsSelected,
-  setDatabaseVerify,
   setSelectedDataset,
   setSelectedProject,
   setSelectedTag,
@@ -316,7 +279,6 @@ export const {
   updatedDatasets,
   updatedModifiedTimestampsBySpotsIds,
   updatedProject,
-  updatedProjectTransferProgress,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;
