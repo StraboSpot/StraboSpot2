@@ -65,7 +65,7 @@ const Map = React.forwardRef((props, ref) => {
   const datasets = useSelector(state => state.project.datasets);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
 
   // Data needing to be tracked when in editing mode

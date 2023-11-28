@@ -11,7 +11,7 @@ import styles from './documentation.styles';
 
 const Documentation = () => {
   const isOnline = useSelector(
-    state => state.home.isOnline.isInternetReachable,
+    state => state.connections.isOnline.isInternetReachable,
   );
 
   const helpUrl = STRABO_APIS.STRABO + '/help';

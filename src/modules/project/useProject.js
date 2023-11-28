@@ -40,7 +40,6 @@ const useProject = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const user = useSelector(state => state.user);
-  // const isOnline = useSelector(state => state.home.isOnline);
 
   const [serverRequests] = useServerRequests();
   const toast = useToast();

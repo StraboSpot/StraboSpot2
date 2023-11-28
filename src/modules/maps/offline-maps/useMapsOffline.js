@@ -23,7 +23,7 @@ const useMapsOffline = () => {
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
-  const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const user = useSelector(state => state.user);
 

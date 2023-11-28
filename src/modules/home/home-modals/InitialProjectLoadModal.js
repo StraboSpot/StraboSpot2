@@ -36,10 +36,9 @@ const InitialProjectLoadModal = (props) => {
 
   const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
-  const isLoading = useSelector(state => state.home.loading.modal);
   const selectedProject = useSelector(state => state.project.project);
   const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [displayName, setDisplayName] = useState('');

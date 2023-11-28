@@ -1,19 +1,19 @@
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
+import alert from '../shared/ui/alert';
 import {
   setDatabaseDomain,
   setDatabasePath,
   setDatabaseProtocol,
   setDatabaseVerify,
   updatedProjectTransferProgress,
-} from '../modules/project/projects.slice';
-import alert from '../shared/ui/alert';
+} from './connections.slice';
 import {STRABO_APIS} from './urls.constants';
 
 const useServerRequests = (props) => {
   const dispatch = useDispatch();
-  const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
 
   const {url, isSelected} = databaseEndpoint;
 

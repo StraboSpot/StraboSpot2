@@ -17,7 +17,7 @@
 //   const dispatch = useDispatch();
 //   const currentProject = useSelector(state => state.project.project);
 //   const isBackupOverwriteModalVisible = useSelector(state => state.home.isBackupOverwriteModalVisible);
-//   const isOnline = useSelector(state => state.home.isOnline);
+//   const isOnline = useSelector(state => state.connections.isOnline);
 //   // const selectedProject = useSelector(state => state.project.selectedProject);
 //   const user = useSelector(state => state.user);
 //

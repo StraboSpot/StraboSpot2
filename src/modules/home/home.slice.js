@@ -6,7 +6,6 @@ const initialHomeState = {
     imagesDownloadedCount: 0,
     neededImageIds: 0,
   },
-  isOnline: {},
   loading: {
     modal: false,
     home: false,
@@ -81,9 +80,6 @@ const homeSlice = createSlice({
     setOfflineMapsModalVisible(state, action) {
       state.isOfflineMapModalVisible = action.payload;
     },
-    setOnlineStatus(state, action) {
-      state.isOnline = action.payload;
-    },
     setProgressModalVisible(state, action) {
       state.isProgressModalVisible = action.payload;
     },
@@ -140,7 +136,6 @@ export const {
   setModalValues,
   setModalVisible,
   setOfflineMapsModalVisible,
-  setOnlineStatus,
   setProgressModalVisible,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,

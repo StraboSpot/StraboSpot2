@@ -13,6 +13,7 @@ import notebookSlice from '../modules/notebook-panel/notebook.slice';
 import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
+import connectionsSlice from '../services/connections.slice';
 import {REDUX} from '../shared/app.constants';
 import listenerMiddleware from './listenerMiddleware';
 
@@ -21,6 +22,12 @@ export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   blacklist: ['compass', 'notebook', 'home', 'mainMenu', 'map', 'spot'],
+  timeout: null,
+};
+
+const connectionsConfig = {
+  key: 'connections',
+  storage: AsyncStorage,
   timeout: null,
 };
 
@@ -82,6 +89,7 @@ const loggerMiddleware = createLogger({
 });
 
 const combinedReducers = combineReducers({
+  connections: persistReducer(connectionsConfig, connectionsSlice),
   compass: persistReducer(compassConfig, compassSlice),
   home: persistReducer(homeConfig, homeSlice),
   notebook: persistReducer(notebookConfig, notebookSlice),
@@ -96,25 +104,17 @@ const combinedReducers = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === REDUX.CLEAR_STORE) {
     state = {
+      connections: {...state.connections},
       compass: undefined,
-      home: {
-        ...state.home,
-        isOnline: state.home.isOnline,
-      },
+      home: undefined,
       notebook: undefined,
       map: undefined,
-      project: {
-        ...state.project,
-        project: {},
-        datasets: {},
-        databaseEndpoint: state.project.databaseEndpoint,
-      },
-      offlineMap: state.offlineMap,
+      project: undefined,
+      offlineMap: undefined,
       spot: undefined,
       user: undefined,
     };
   }
-
   return combinedReducers(state, action);
 };
 

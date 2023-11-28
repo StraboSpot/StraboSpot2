@@ -57,7 +57,7 @@ const SignUp = (props) => {
     },
   };
 
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
 
   const [serverRequests] = useServerRequests();
 

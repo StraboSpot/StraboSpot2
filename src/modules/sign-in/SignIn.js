@@ -16,8 +16,8 @@ import useSignInHook from './useSignIn';
 const SignIn = () => {
   console.log('Rendering SignIn...');
 
-  const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const isOnline = useSelector(state => state.connections.isOnline);
 
   const {isSelected, isVerified} = customDatabaseEndpoint;
 

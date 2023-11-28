@@ -16,7 +16,7 @@ import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
-  const databaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);

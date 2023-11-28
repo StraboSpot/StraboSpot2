@@ -10,7 +10,7 @@ const ConnectionStatusIcon = () => {
   const offlineIcon = require('../assets/icons/ConnectionStatusButton_offline.png');
   const accessPointIcon = require('../assets/icons/ConnectionStatusButton_connected.png');
 
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
 
   const getNetworkStatusIcon = () => {
     if (isOnline.isConnected && isOnline.isInternetReachable) return onlineIcon;

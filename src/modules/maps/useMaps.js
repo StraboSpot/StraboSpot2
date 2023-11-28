@@ -38,12 +38,12 @@ const useMaps = (mapRef) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const customDatabaseEndpoint = useSelector(state => state.project.databaseEndpoint);
+  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const stratSection = useSelector(state => state.map.stratSection);
   const customMaps = useSelector(state => state.map.customMaps);
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
-  const isOnline = useSelector(state => state.home.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const userMapboxToken = useSelector(state => state.user.mapboxToken);

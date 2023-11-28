@@ -17,7 +17,7 @@ import mainMenuPanelStyles from './mainMenuPanel.styles';
 
 const Documentation = () => {
 
-  const isOnline = useSelector(state => state.home.isOnline.isInternetReachable);
+  const isOnline = useSelector(state => state.connections.isOnline.isInternetReachable);
 
   const [visible, setVisible] = useState(false);
   const [doc, setDoc] = useState('');
