@@ -1,21 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import {Animated} from 'react-native';
 
+import {useToast} from 'react-native-toast-notifications';
 import {useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
-import UseMapsHook from '../maps/useMaps';
 import homeStyles from './home.style';
 import MapActionButtons from './MapActionButtons';
 
-const LeftSideButtons = ({clickHandler, dialogClickHandler, leftsideIconAnimation, toast, toggleHomeDrawer}) => {
+const LeftSideButtons = ({
+                           clickHandler,
+                           dialogClickHandler,
+                           leftsideIconAnimation,
+                           mapComponentRef,
+                           toggleHomeDrawer,
+                         }) => {
 
-  const [useMaps] = UseMapsHook();
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [userLocationButtonOn, setUserLocationButtonOn] = useState(false);
+
+  const toast = useToast();
 
   let timeout;
 
@@ -35,7 +42,7 @@ const LeftSideButtons = ({clickHandler, dialogClickHandler, leftsideIconAnimatio
   const clearLocationTimer = () => {
     setUserLocationButtonOn(false);
     clickHandler('toggleUserLocation', false);
-    toast('Geolocation turned off automatically to conserve battery.');
+    toast.show('Geolocation turned off automatically to conserve battery.');
     console.log('Location timer cleared');
   };
 
@@ -46,16 +53,17 @@ const LeftSideButtons = ({clickHandler, dialogClickHandler, leftsideIconAnimatio
           source={isMainMenuPanelVisible
             ? require('../../assets/icons/HomeButton_pressed.png')
             : require('../../assets/icons/HomeButton.png')}
-          onPress={() => toggleHomeDrawer()}
+          onPress={toggleHomeDrawer}
         />
       </Animated.View>
       <Animated.View style={[leftsideIconAnimation]}>
-      <MapActionButtons
-        dialogClickHandler={dialogClickHandler}
-      />
+        <MapActionButtons
+          dialogClickHandler={dialogClickHandler}
+          mapComponentRef={mapComponentRef}
+        />
       </Animated.View>
       <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
-      {!currentImageBasemap && !stratSection && (
+        {!currentImageBasemap && !stratSection && (
           <IconButton
             source={userLocationButtonOn
               ? require('../../assets/icons/MyLocationButton_pressed.png')
@@ -65,19 +73,19 @@ const LeftSideButtons = ({clickHandler, dialogClickHandler, leftsideIconAnimatio
               clickHandler('toggleUserLocation', !userLocationButtonOn);
             }}
           />
-      )}
-      {currentImageBasemap && (
+        )}
+        {currentImageBasemap && (
           <IconButton
             source={require('../../assets/icons/Close.png')}
             onPress={() => clickHandler('closeImageBasemap')}
           />
-      )}
-      {stratSection && (
+        )}
+        {stratSection && (
           <IconButton
             source={require('../../assets/icons/Close.png')}
             onPress={() => clickHandler('closeStratSection')}
           />
-      )}
+        )}
       </Animated.View>
     </React.Fragment>
   );

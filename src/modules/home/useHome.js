@@ -1,7 +1,7 @@
 import {useState} from 'react';
+import {Platform} from 'react-native';
 
 import {MAP_MODES} from '../maps/maps.constants';
-import {Platform} from 'react-native';
 
 const useHome = () => {
 

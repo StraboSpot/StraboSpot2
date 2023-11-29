@@ -13,7 +13,7 @@ import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
 import overlayStyles from './overlay.styles';
 
-const MapActionButtons = ({dialogClickHandler, leftsideIconAnimation, style, zoomToCustomMap, zoomToCenterOfflineTile}) => {
+const MapActionButtons = ({dialogClickHandler, mapComponentRef}) => {
   const [useMaps] = UseMapsHook();
 
   const [dialogs, setDialogs] = useState({
@@ -32,13 +32,9 @@ const MapActionButtons = ({dialogClickHandler, leftsideIconAnimation, style, zoo
     setDialogs(d => ({...d, [dialog]: !d[dialog]}));
   };
 
-  const buttonStyle = () => {
-    return SMALL_SCREEN ? homeStyles.smallScreenMapActionButtons : homeStyles.mapActionsContainer;
-  };
-
   return (
     <>
-      <View style={[buttonStyle(), style]}>
+      <View style={SMALL_SCREEN ? homeStyles.smallScreenMapActionButtons : homeStyles.mapActionsContainer}>
         <IconButton
           source={require('../../assets/icons/MapActionsButton.png')}
           onPress={() => toggleDialog('mapActionsMenuVisible')}
@@ -89,8 +85,7 @@ const MapActionButtons = ({dialogClickHandler, leftsideIconAnimation, style, zoo
         visible={dialogs.baseMapMenuVisible}
         overlayStyle={overlayStyles.baseMapPosition}
         close={() => toggleDialog('baseMapMenuVisible')}
-        zoomToCustomMap={zoomToCustomMap}
-        zoomToCenterOfflineTile={zoomToCenterOfflineTile}
+        mapComponentRef={mapComponentRef}
         onPress={(name) => {
           useMaps.setBasemap(name);
           toggleDialog('baseMapMenuVisible');

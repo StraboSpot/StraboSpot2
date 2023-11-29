@@ -29,7 +29,6 @@ const HomeView = ({
                     setDistance,
                     setMapMode,
                     startEdit,
-                    toast,
                     toggleHomeDrawer,
                   }) => {
   console.log('Rendering HomeView...');
@@ -72,7 +71,6 @@ const HomeView = ({
       <StatusBar/>
       <RightSideButtons
         clickHandler={clickHandler}
-        closeNotebookPanel={closeNotebookPanel}
         distance={distance}
         drawButtonsVisible={buttons.drawButtonsVisible}
         endDraw={endDraw}
@@ -83,14 +81,11 @@ const HomeView = ({
         toggleNotebookPanel={toggleNotebookPanel}
       />
       <LeftSideButtons
-        // rightsideIconAnimation={rightsideIconAnimation}
         clickHandler={clickHandler}
         dialogClickHandler={dialogClickHandler}
         leftsideIconAnimation={leftsideIconAnimation}
-        toast={message => toast.show(message, {type: 'warning'})}
+        mapComponentRef={mapComponentRef}
         toggleHomeDrawer={toggleHomeDrawer}
-        zoomToCenterOfflineTile={() => mapComponentRef.current?.zoomToCenterOfflineTile()}
-        zoomToCustomMap={(bbox, duration) => mapComponentRef.current?.zoomToCustomMap(bbox, duration)}
       />
       {renderNotebookPanel()}
     </>

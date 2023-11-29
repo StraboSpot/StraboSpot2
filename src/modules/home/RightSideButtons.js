@@ -22,8 +22,8 @@ const RightSideButtons = ({
                             clickHandler,
                             distance,
                             drawButtonsVisible,
-                            endMeasurement,
                             endDraw,
+                            endMeasurement,
                             mapMode,
                             openNotebookPanel,
                             rightsideIconAnimation,
@@ -33,23 +33,21 @@ const RightSideButtons = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [useImages] = useImagesHook();
-  const useLocation = useLocationHook();
-
+  const [useProject] = useProjectHook();
   const navigation = useNavigation();
   const toast = useToast();
+  const useLocation = useLocationHook();
 
   const [pointIconType, setPointIconType] = useState({
     point: MAP_MODES.DRAW.POINT,
     line: MAP_MODES.DRAW.LINE,
     polygon: MAP_MODES.DRAW.POLYGON,
   });
-
-  const [useProject] = useProjectHook();
 
   const changeDrawType = (name) => {
     switch (pointIconType[name]) {

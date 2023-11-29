@@ -537,7 +537,6 @@ const Home = ({navigation, route}) => {
     else openMainMenu();
   };
 
-
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
       animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
@@ -610,7 +609,6 @@ const Home = ({navigation, route}) => {
           setDistance={setDistance}
           setMapMode={setMapMode}
           startEdit={startEdit}
-          toast={toast}
           toggleHomeDrawer={toggleHomeDrawerButton}
         />
       )}

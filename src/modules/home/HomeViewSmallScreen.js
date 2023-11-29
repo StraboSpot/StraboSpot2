@@ -122,6 +122,9 @@ const HomeViewSmallScreen = ({
                 <View style={homeStyle.actionButtonsSmallScreenContainer}>
                   <ActionButtonsSmallScreen
                     clickHandler={clickHandler}
+                    dialogClickHandler={dialogClickHandler}
+                    mapComponentRef={mapComponentRef}
+                    mapMode={mapMode}
                   />
                 </View>
               </>
