@@ -286,6 +286,13 @@ const Home = ({navigation, route}) => {
     dispatch(setProjectLoadSelectionModalVisible(false));
   };
 
+  const closeMainMenu = () => {
+    dispatch(setMainMenuPanelVisible(false));
+    dispatch(setMenuSelectionPage({name: undefined}));
+    animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
+    animatePanels(leftsideIconAnimationValue, 0);
+  };
+
   const closeNotebookPanel = () => {
     console.log('Closing Notebook...');
     animatePanels(animation, notebookPanelWidth);
@@ -359,13 +366,23 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  const openMainMenu = () => {
+    dispatch(setMainMenuPanelVisible(true));
+    animatePanels(MainMenuPanelAnimation, 0);
+    animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
+  };
+
   const openNotebookPanel = (pageView) => {
     console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
+    dispatch(setNotebookPanelVisible(true));
     animatePanels(animation, 0);
     animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
-    dispatch(setNotebookPanelVisible(true));
+    if (SMALL_SCREEN) {
+      navigation.navigate('HomeScreen', {screen: 'Notebook'});
+      closeMainMenu();
+    }
   };
 
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
@@ -516,17 +533,8 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleHomeDrawerButton = () => {
-    if (isMainMenuPanelVisible) {
-      dispatch(setMainMenuPanelVisible(false));
-      dispatch(setMenuSelectionPage({name: undefined}));
-      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-      animatePanels(leftsideIconAnimationValue, 0);
-    }
-    else {
-      dispatch(setMainMenuPanelVisible(true));
-      animatePanels(MainMenuPanelAnimation, 0);
-      animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
-    }
+    if (isMainMenuPanelVisible) closeMainMenu();
+    else openMainMenu();
   };
 
 
@@ -568,19 +576,21 @@ const Home = ({navigation, route}) => {
   return (
     <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
       {SMALL_SCREEN ? (
-          <HomeViewSmallScreen
-            closeNotebookPanel={closeNotebookPanel}
-            clickHandler={(name, value) => clickHandler(name, value)}
-            endDraw={endDraw}
-            isSelectingForStereonet={isSelectingForStereonet}
-            isSelectingForTagging={isSelectingForTagging}
-            mapComponentRef={mapComponentRef}
-            mapMode={mapMode}
-            openNotebookPanel={openNotebookPanel}
-            setDistance={setDistance}
-            startEdit={startEdit}
-            toggleHomeDrawer={toggleHomeDrawerButton}
-          />
+        <HomeViewSmallScreen
+          clickHandler={(name, value) => clickHandler(name, value)}
+          closeNotebookPanel={closeNotebookPanel}
+          endDraw={endDraw}
+          isSelectingForStereonet={isSelectingForStereonet}
+          isSelectingForTagging={isSelectingForTagging}
+          mapComponentRef={mapComponentRef}
+          mapMode={mapMode}
+          navigation={navigation}
+          openNotebookPanel={openNotebookPanel}
+          setDistance={setDistance}
+          startEdit={startEdit}
+          toggleHomeDrawer={toggleHomeDrawerButton}
+          dialogClickHandler={dialogClickHandler}
+        />
       ) : (
         <HomeView
           animation={animation}

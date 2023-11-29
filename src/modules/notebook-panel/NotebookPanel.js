@@ -23,6 +23,8 @@ import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 
 const NotebookPanel = (props) => {
+  console.log('Rendering NotebookPanel...');
+
   const dispatch = useDispatch();
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
@@ -111,18 +113,22 @@ const NotebookPanel = (props) => {
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Spots in Active Datasets'}/>}
         />
-        <Button
-          title={'Close Notebook'}
-          type={'clear'}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={props.closeNotebookPanel}/>
+        {!SMALL_SCREEN && (
+          <Button
+            title={'Close Notebook'}
+            type={'clear'}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={props.closeNotebookPanel}
+          />
+        )}
       </View>
     );
   };
 
   return (
     <View style={SMALL_SCREEN ? notebookStyles.panelSmallScreen : notebookStyles.panel}>
-      {isNotebookPanelVisible && (!isEmpty(spot) ? renderNotebookContent() : renderNotebookContentNoSpot())}
+      {(SMALL_SCREEN || isNotebookPanelVisible) && (!isEmpty(spot) ? renderNotebookContent()
+        : renderNotebookContentNoSpot())}
     </View>
   );
 };

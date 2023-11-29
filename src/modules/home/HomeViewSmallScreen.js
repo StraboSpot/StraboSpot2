@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 
-import {Button, Header, Icon, Tab, TabView} from 'react-native-elements';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {Button, Header, Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
@@ -12,8 +13,9 @@ import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
 import homeStyle from './home.style';
 
 const HomeViewSmallScreen = ({
-                               closeNotebookPanel,
                                clickHandler,
+                               closeNotebookPanel,
+                               dialogClickHandler,
                                endDraw,
                                isSelectingForStereonet,
                                isSelectingForTagging,
@@ -30,6 +32,24 @@ const HomeViewSmallScreen = ({
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
+  const navigationOptions = {
+    gestureEnabled: false,
+    headerShown: false,
+    swipeEnabled: false,
+  };
+  const Tab = createMaterialTopTabNavigator();
+
+  const renderNotebookPanel = () => {
+    return (
+      <NotebookPanel
+        closeNotebookPanel={closeNotebookPanel}
+        createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
+        openMainMenu={toggleHomeDrawer}
+        zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
+      />
+    );
+  };
+
   const toggleSpotNavigator = () => {
     closeNotebookPanel();
     setIsShowingSpotNavigator(s => !s);
@@ -38,7 +58,7 @@ const HomeViewSmallScreen = ({
   return (
     <>
       <Header
-        backgroundColor={themes.PRIMARY_BACKGROUND_COLOR}
+        backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (
           <Icon
             color={themes.PRIMARY_TEXT_COLOR}
@@ -73,34 +93,23 @@ const HomeViewSmallScreen = ({
         }
       />
       {isShowingSpotNavigator && !isNotebookPanelVisible ? (
-        <View style={{height: '100%', width: '100%'}}>
-          <SpotNavigator
-            closeSpotsNavigator={toggleSpotNavigator}
-            openNotebookPanel={openNotebookPanel}
-          />
-        </View>
+        <SpotNavigator
+          closeSpotsNavigator={toggleSpotNavigator}
+          openNotebookPanel={openNotebookPanel}
+        />
       ) : (
-        <>
-          <Tab
-            indicatorStyle={{borderBottomColor: themes.BLACK, borderBottomWidth: 3}}
-            onChange={i => i === 0 ? closeNotebookPanel() : openNotebookPanel()}
-            value={isNotebookPanelVisible ? 1 : 0}
-          >
-            <Tab.Item
-              buttonStyle={{padding: 0, backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}
-              title={'MAP'}
-              titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
-            />
-            <Tab.Item
-              buttonStyle={{padding: 0, backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}
-              title={'NOTEBOOK'}
-              titleStyle={{color: themes.PRIMARY_TEXT_COLOR, fontSize: themes.PRIMARY_HEADER_TEXT_SIZE}}
-            />
-          </Tab>
-
-          <TabView value={isNotebookPanelVisible ? 1 : 0}>
-            <TabView.Item style={{width: '100%'}}>
-              <View style={{flex: 1}}>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarIndicatorStyle: {backgroundColor: themes.BLACK, height: 5},
+            tabBarItemStyle: {padding: 0},
+            tabBarLabelStyle: {fontSize: themes.PRIMARY_HEADER_TEXT_SIZE, color: themes.PRIMARY_TEXT_COLOR},
+          }}
+        >
+          <Tab.Screen
+            name={'Map'}
+            options={navigationOptions}>
+            {() =>
+              <>
                 <Map
                   endDraw={endDraw}
                   isSelectingForStereonet={isSelectingForStereonet}
@@ -115,19 +124,13 @@ const HomeViewSmallScreen = ({
                     clickHandler={clickHandler}
                   />
                 </View>
-              </View>
-
-            </TabView.Item>
-            <TabView.Item style={{width: '100%'}}>
-              <NotebookPanel
-                closeNotebookPanel={closeNotebookPanel}
-                createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
-                openMainMenu={toggleHomeDrawer}
-                zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
-              />
-            </TabView.Item>
-          </TabView>
-        </>
+              </>
+            }
+          </Tab.Screen>
+          <Tab.Screen name={'Notebook'} options={navigationOptions}>
+            {() => renderNotebookPanel()}
+          </Tab.Screen>
+        </Tab.Navigator>
       )}
     </>
   );
