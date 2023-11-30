@@ -32,7 +32,7 @@ import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import useSignInHook from '../sign-in/useSignIn';
-import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
+import {clearedSelectedSpots, setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import UserProfile from '../user/UserProfilePage';
@@ -385,6 +385,13 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  const openSpotInNotebook = (spot, notebookPage, attributes) => {
+    dispatch(setSelectedSpot(spot));
+    if (attributes) dispatch(setSelectedAttributes(attributes));
+    if (notebookPage) openNotebookPanel(notebookPage);
+    else openNotebookPanel(PAGE_KEYS.OVERVIEW);
+  };
+
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
 
   const renderFloatingView = () => {
@@ -564,6 +571,7 @@ const Home = ({navigation, route}) => {
         logout={onLogout}
         closeMainMenuPanel={toggleHomeDrawerButton}
         openNotebookPanel={openNotebookPanel}
+        openSpotInNotebook={openSpotInNotebook}
         zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
         zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
         toggleHomeDrawer={toggleHomeDrawerButton}
@@ -585,6 +593,7 @@ const Home = ({navigation, route}) => {
           mapMode={mapMode}
           navigation={navigation}
           openNotebookPanel={openNotebookPanel}
+          openSpotInNotebook={openSpotInNotebook}
           setDistance={setDistance}
           startEdit={startEdit}
           toggleHomeDrawer={toggleHomeDrawerButton}

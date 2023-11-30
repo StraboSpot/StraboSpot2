@@ -22,6 +22,7 @@ const HomeViewSmallScreen = ({
                                mapComponentRef,
                                mapMode,
                                openNotebookPanel,
+                               openSpotInNotebook,
                                setDistance,
                                startEdit,
                                toggleHomeDrawer,
@@ -96,6 +97,7 @@ const HomeViewSmallScreen = ({
         <SpotNavigator
           closeSpotsNavigator={toggleSpotNavigator}
           openNotebookPanel={openNotebookPanel}
+          openSpotInNotebook={openSpotInNotebook}
         />
       ) : (
         <Tab.Navigator
