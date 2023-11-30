@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -16,21 +15,18 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import userStyles from './user.styles';
 import useUserProfileHook from './useUserProfile';
 
-const UserProfile = (props) => {
+const UserProfile = ({logout}) => {
   const defaultAvatar = require('../../assets/images/splash.png');
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
-  const navigation = useNavigation();
   const useUserProfile = useUserProfileHook();
 
   const getAvatarSource = () => {
     if (!isEmpty(userData.image) && typeof userData.image.valueOf() === 'string') return {uri: userData.image};
     else if (isEmpty(userData.image) || (userData.image && typeof userData.image.valueOf() !== 'string')) {
       if ((!userData.name || userData.name === '')) return defaultAvatar;
-
-      // return defaultAvatar;
     }
   };
 
@@ -44,15 +40,14 @@ const UserProfile = (props) => {
   const doLogOut = (type) => {
     if (type === 'signIn') {
       dispatch(setMainMenuPanelVisible(false));
-      navigation.navigate('SignIn');
+      logout()
     }
     else if (type === 'clear') {
       setIsLogoutModalVisible(false);
       setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
         dispatch(setMainMenuPanelVisible(false));
         dispatch({type: REDUX.CLEAR_STORE});
-        props.logout();
-        navigation.navigate('SignIn');
+        logout();
       }, 200);
     }
   };

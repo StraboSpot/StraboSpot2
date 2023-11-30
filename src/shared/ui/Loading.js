@@ -5,16 +5,16 @@ import {BallIndicator} from 'react-native-indicators';
 
 import styles from './ui.styles';
 
-const Loading = (props) => {
+const Loading = ({color, count, isLoading, size, style}) => {
 
   return (
     <React.Fragment>
-      {props.isLoading && <View style={[styles.backdrop, props.style]}>
+      {isLoading && <View style={[styles.backdrop, style]}>
         {/*<View style={home.loadingContainer}>*/}
         <BallIndicator
-          color={props.color || 'darkgrey'}
-          count={props.count || 8}
-          size={props.size || 40}
+          color={color || 'darkgrey'}
+          count={count || 8}
+          size={size || 40}
         />
       </View>}
       {/*</View>*/}

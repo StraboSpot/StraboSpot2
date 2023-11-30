@@ -29,9 +29,17 @@ import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 
-const MainMenuPanel = (props) => {
+const MainMenuPanel = ({
+                         closeMainMenuPanel,
+                         logout,
+                         navigation,
+                         openNotebookPanel,
+                         openSidePanel,
+                         toggleHomeDrawer,
+                         zoomToCustomMap,
+                         zoomToCenterOfflineTile,
+                       }) => {
   console.log('Rendering MainMenuPanel...');
-  console.log('MainMenuPanel props:', props);
 
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
@@ -49,12 +57,12 @@ const MainMenuPanel = (props) => {
   const openSpotInNotebook = (spot, notebookPage, attributes) => {
     dispatch(setSelectedSpot(spot));
     if (attributes) dispatch(setSelectedAttributes(attributes));
-    if (notebookPage) props.openNotebookPanel(notebookPage);
-    else props.openNotebookPanel(PAGE_KEYS.OVERVIEW);
+    if (notebookPage) openNotebookPanel(notebookPage);
+    else openNotebookPanel(PAGE_KEYS.OVERVIEW);
   };
 
   const setVisibleMenu = (name) => {
-    if (name === MAIN_MENU_ITEMS.HELP.CLOSE_MENU) props.toggleHomeDrawer();
+    if (name === MAIN_MENU_ITEMS.HELP.CLOSE_MENU) toggleHomeDrawer();
     else dispatch(setMenuSelectionPage({name: name}));
   };
 
@@ -69,8 +77,8 @@ const MainMenuPanel = (props) => {
       page = (
         <View style={styles.mainMenuContainer}>
           <MyStraboSpot
-            openSidePanel={props.openSidePanel}
-            logout={props.logout}
+            openSidePanel={openSidePanel}
+            logout={logout}
           />
         </View>
       );
@@ -79,7 +87,6 @@ const MainMenuPanel = (props) => {
       page = (
         <View style={styles.mainMenuContainer}>
           <ActiveProject
-            // openSidePanel={(view) => props.openSidePanel(view)}
             title={!isEmpty(project) && project.description ? project.description.project_name : 'Un-named'}
           />
         </View>
@@ -88,7 +95,7 @@ const MainMenuPanel = (props) => {
     case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
       page = (
         <View style={styles.mainMenuContainer}>
-          <UploadBackupAndExport closeMainMenuPanel={props.closeMainMenuPanel}/>
+          <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>
         </View>
       );
       break;
@@ -104,7 +111,7 @@ const MainMenuPanel = (props) => {
         <View style={styles.mainMenuContainer}>
           <ImageGallery
             openSpotInNotebook={openSpotInNotebook}
-            navigation={props.navigation}
+            navigation={navigation}
           />
         </View>
       );
@@ -114,7 +121,7 @@ const MainMenuPanel = (props) => {
         <View style={styles.mainMenuContainer}>
           <SamplesMenuItem
             openSpotInNotebook={openSpotInNotebook}
-            openNotebookPanel={notebookPage => props.openNotebookPanel(notebookPage)}
+            openNotebookPanel={notebookPage => openNotebookPanel(notebookPage)}
           />
         </View>
       );
@@ -137,8 +144,7 @@ const MainMenuPanel = (props) => {
       page = (
         <View style={styles.mainMenuContainer}>
           <CustomMapsMenu
-            zoomToCustomMap={props.zoomToCustomMap}
-            // openSidePanel={(view, map) => props.openSidePanel(view, map)}
+            zoomToCustomMap={zoomToCustomMap}
           />
         </View>
       );
@@ -161,8 +167,8 @@ const MainMenuPanel = (props) => {
       page = (
         <View style={styles.mainMenuContainer}>
           <ManageOfflineMapsMenu
-            closeMainMenuPanel={props.closeMainMenuPanel}
-            zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}/>
+            closeMainMenuPanel={closeMainMenuPanel}
+            zoomToCenterOfflineTile={zoomToCenterOfflineTile}/>
         </View>
       );
       break;
