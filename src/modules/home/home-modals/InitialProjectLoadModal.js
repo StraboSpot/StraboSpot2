@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -25,16 +24,14 @@ import useUserProfileHook from '../../user/useUserProfile';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import overlayStyles from '../overlay.styles';
 
-const InitialProjectLoadModal = (props) => {
+const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) => {
   console.log('Rendering InitialProjectLoadModal...');
-  console.log('InitialProjectLoadModal props:', props);
 
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
     else return 'Guest';
   };
 
-  const navigation = useNavigation();
   const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
   const selectedProject = useSelector(state => state.project.project);
   const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
@@ -163,7 +160,7 @@ const InitialProjectLoadModal = (props) => {
             type={'clear'}
           />
           <Button
-            onPress={() => props.closeModal()}
+            onPress={() => closeModal()}
             title={'Done'}
             type={'clear'}
             disabled={isEmpty(activeDatasetsId)}
@@ -197,7 +194,7 @@ const InitialProjectLoadModal = (props) => {
     else {
       return (
         <Button
-          onPress={() => props.closeModal()}
+          onPress={() => closeModal()}
           type={'clear'}
           title={'Done'}
           disabled={isEmpty(activeDatasetsId)}
@@ -351,7 +348,7 @@ const InitialProjectLoadModal = (props) => {
           titleStyle={commonStyles.standardButtonText}
         />
         <View style={{height: 400}}>
-          <NewProject openMainMenu={props.openMainMenu} onPress={() => props.closeModal()}/>
+          <NewProject openMainMenu={openMainMenu} onPress={() => closeModal()}/>
         </View>
       </React.Fragment>
     );
@@ -375,9 +372,9 @@ const InitialProjectLoadModal = (props) => {
             onPress={() => {
               if (user.name) dispatch({type: REDUX.CLEAR_STORE});
               // dispatch(setSignedInStatus(false));
-              props.closeModal();
+              closeModal();
               setVisibleInitialSection('none');
-              navigation.navigate('SignIn');
+              logout()
             }}
           />
         </View>
@@ -388,7 +385,7 @@ const InitialProjectLoadModal = (props) => {
   return (
     <Overlay
       animationType={'slide'}
-      isVisible={props.visible}
+      isVisible={visible}
       overlayStyle={overlayStyles.overlayContainer}
       backdropStyle={overlayStyles.backdropStyles}
     >

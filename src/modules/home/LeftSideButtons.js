@@ -11,7 +11,7 @@ import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
 import overlayStyles from './overlay.styles';
 
-const LeftSideButtons = (props) => {
+const LeftSideButtons = ({clickHandler, dialogClickHandler, leftSideIconAnimation, toast, toggleHomeDrawer, zoomToCustomMap, zoomToCenterOfflineTile}) => {
 
   const [useMaps] = UseMapsHook();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -50,22 +50,22 @@ const LeftSideButtons = (props) => {
 
   const clearLocationTimer = () => {
     setUserLocationButtonOn(false);
-    props.clickHandler('toggleUserLocation', false);
-    props.toast('Geolocation turned off automatically to conserve battery.');
+    clickHandler('toggleUserLocation', false);
+    toast('Geolocation turned off automatically to conserve battery.');
     console.log('Location timer cleared');
   };
 
   return (
     <React.Fragment>
-      <Animated.View style={[homeStyles.homeIconContainer, props.leftsideIconAnimation]}>
+      <Animated.View style={[homeStyles.homeIconContainer, leftSideIconAnimation]}>
         <IconButton
           source={isMainMenuPanelVisible
             ? require('../../assets/icons/HomeButton_pressed.png')
             : require('../../assets/icons/HomeButton.png')}
-          onPress={() => props.toggleHomeDrawer()}
+          onPress={() => toggleHomeDrawer()}
         />
       </Animated.View>
-      <Animated.View style={[homeStyles.leftsideIcons, props.leftsideIconAnimation]}>
+      <Animated.View style={[homeStyles.leftsideIcons, leftSideIconAnimation]}>
         <IconButton
           source={require('../../assets/icons/MapActionsButton.png')}
           onPress={() => toggleDialog('mapActionsMenuVisible')}
@@ -94,7 +94,7 @@ const LeftSideButtons = (props) => {
         visible={dialogs.mapActionsMenuVisible}
         overlayStyle={overlayStyles.mapActionsPosition}
         onPress={(name) => {
-          props.dialogClickHandler('mapActionsMenuVisible', name);
+          dialogClickHandler('mapActionsMenuVisible', name);
           toggleDialog('mapActionsMenuVisible');
         }}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
@@ -103,7 +103,7 @@ const LeftSideButtons = (props) => {
         visible={dialogs.mapSymbolsMenuVisible}
         overlayStyle={overlayStyles.mapSymbolsPosition}
         onPress={(name) => {
-          props.dialogClickHandler('mapSymbolsMenuVisible', name);
+          dialogClickHandler('mapSymbolsMenuVisible', name);
           toggleDialog('mapSymbolsMenuVisible');
         }}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
@@ -112,8 +112,8 @@ const LeftSideButtons = (props) => {
         visible={dialogs.baseMapMenuVisible}
         overlayStyle={overlayStyles.baseMapPosition}
         close={() => toggleDialog('baseMapMenuVisible')}
-        zoomToCustomMap={props.zoomToCustomMap}
-        zoomToCenterOfflineTile={props.zoomToCenterOfflineTile}
+        zoomToCustomMap={zoomToCustomMap}
+        zoomToCenterOfflineTile={zoomToCenterOfflineTile}
         onPress={(name) => {
           useMaps.setBasemap(name);
           toggleDialog('baseMapMenuVisible');
@@ -121,7 +121,7 @@ const LeftSideButtons = (props) => {
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}
       />
       {!currentImageBasemap && !stratSection && (
-        <Animated.View style={[homeStyles.bottomLeftIcons, props.leftsideIconAnimation]}>
+        <Animated.View style={[homeStyles.bottomLeftIcons, leftSideIconAnimation]}>
           <IconButton
             style={{top: 5}}
             source={userLocationButtonOn
@@ -129,24 +129,24 @@ const LeftSideButtons = (props) => {
               : require('../../assets/icons/MyLocationButton.png')}
             onPress={() => {
               setUserLocationButtonOn(!userLocationButtonOn);
-              props.clickHandler('toggleUserLocation', !userLocationButtonOn);
+              clickHandler('toggleUserLocation', !userLocationButtonOn);
             }}
           />
         </Animated.View>
       )}
       {currentImageBasemap && (
-        <Animated.View style={[homeStyles.bottomLeftIcons, props.leftsideIconAnimation]}>
+        <Animated.View style={[homeStyles.bottomLeftIcons, leftSideIconAnimation]}>
           <IconButton
             source={require('../../assets/icons/Close.png')}
-            onPress={() => props.clickHandler('closeImageBasemap')}
+            onPress={() => clickHandler('closeImageBasemap')}
           />
         </Animated.View>
       )}
       {stratSection && (
-        <Animated.View style={[homeStyles.bottomLeftIcons, props.leftsideIconAnimation]}>
+        <Animated.View style={[homeStyles.bottomLeftIcons, leftSideIconAnimation]}>
           <IconButton
             source={require('../../assets/icons/Close.png')}
-            onPress={() => props.clickHandler('closeStratSection')}
+            onPress={() => clickHandler('closeStratSection')}
           />
         </Animated.View>
       )}

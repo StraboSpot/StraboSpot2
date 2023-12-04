@@ -1,22 +1,16 @@
 import React from 'react';
 import {Text} from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
-import {setWarningModalVisible} from '../home.slice';
 import overlayStyles from '../overlay.styles';
 
 
 const WarningModal = ({children, closeModal, showCancelButton, title, closeTitle, confirmText, confirmTitleStyle, onConfirmPress, isVisible, showConfirmButton}) => {
 
-  const dispatch = useDispatch();
   const isWarningModalVisible = useSelector(state => state.home.isWarningMessagesModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
-
-  const closeWarningModal = () => {
-    dispatch(setWarningModalVisible(false));
-  };
 
   return (
     <StatusDialogBox
