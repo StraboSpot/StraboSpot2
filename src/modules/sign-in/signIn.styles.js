@@ -54,6 +54,17 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: themes.MEDIUM_TEXT_SIZE,
   },
+  loadingSplashScreenContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightgrey',
+  },
+  loadingSplashScreenText: {
+    padding: 50,
+    fontWeight: themes.TEXT_WEIGHT,
+    fontSize: themes.LARGE_TEXT_SIZE,
+  },
   verifyButtonContainer: {
     paddingLeft: 10,
   },

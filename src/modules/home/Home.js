@@ -33,10 +33,10 @@ import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
-import useSignInHook from '../sign-in/useSignIn';
 import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
+import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
 import ErrorModal from './home-modals/ErrorModal';
@@ -81,7 +81,6 @@ const Home = ({navigation, route}) => {
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
   const useLocation = useLocationHook();
-  const useSignIn = useSignInHook();
   const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -131,8 +130,6 @@ const Home = ({navigation, route}) => {
   const mapComponentRef = useRef(null);
 
   useEffect(() => {
-    if (Platform.OS === 'web') useSignIn.autoLogin();
-
     let updateTimer;
     if (Platform.OS === 'android') {
       useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
@@ -562,6 +559,7 @@ const Home = ({navigation, route}) => {
   const onLogout = () => {
     toggleHomeDrawerButton();
     closeNotebookPanel();
+    dispatch(logout());
   };
 
   const toggleOfflineMapLabel = () => {
@@ -641,6 +639,7 @@ const Home = ({navigation, route}) => {
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
+          logout={() => onLogout()}
           openMainMenu={() => toggleHomeDrawerButton()}
           visible={isProjectLoadSelectionModalVisible}
           closeModal={() => closeInitialProjectLoadModal()}

@@ -1,65 +1,60 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 
-import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import Home from '../modules/home/Home';
-import ImageInfo from '../modules/images/ImageInfo';
-import ImageSlider from '../modules/images/ImageSlider';
-import SignIn from '../modules/sign-in/SignIn';
-import SignUp from '../modules/sign-up/SignUp';
-import Sketch from '../modules/sketch/Sketch';
+import LoadingSplashScreen from '../modules/sign-in/LoadingSplashScreen';
+import useSignInHook from '../modules/sign-in/useSignIn';
+import {login, logout} from '../modules/user/userProfile.slice';
+import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
+import AppStack from './AppStack';
+import AuthStack from './AuthStack';
 
 const Routes = () => {
   console.log('Rendering Routes...');
 
+  const useSignIn = useSignInHook();
+  const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
-  const user = useSelector(state => state.user);
+  const userInfo = useSelector(state => state.user);
 
-  const Stack = createStackNavigator();
-  const AppStack = createStackNavigator();
 
-  const navigationOptions = {
-    gestureEnabled: false,
-    headerShown: false,
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    autoSignIn().then(() => console.log('Should be signed in...', isSignedIn));
+  }, []);
+
+  const autoSignIn = async () => {
+    try {
+      if (Platform.OS === 'web') {
+        dispatch({type: REDUX.CLEAR_STORE});
+        await useSignIn.autoLogin();
+      }
+      else if (userInfo.name && !isEmpty(currentProject)) {
+        dispatch(login());
+      }
+      else dispatch(logout());
+    }
+    finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <AppStack.Navigator
-      initialRouteName={(user.name && !isEmpty(currentProject)) || Platform.OS === 'web' ? 'HomeScreen' : 'SignIn'}>
-      <Stack.Screen
-        name={'SignIn'}
-        component={SignIn}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'SignUp'}
-        component={SignUp}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'HomeScreen'}
-        component={Home}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'ImageInfo'}
-        component={ImageInfo}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'ImageSlider'}
-        component={ImageSlider}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'Sketch'}
-        component={Sketch}
-        options={navigationOptions}
-      />
-    </AppStack.Navigator>
+    <>
+      {isLoading ? (
+        <LoadingSplashScreen/>
+        ) : (
+        userInfo.isAuthenticated ? (
+        <AppStack/>
+      ) : (
+        <AuthStack/>
+      ))
+      }
+    </>
   );
 };
 
