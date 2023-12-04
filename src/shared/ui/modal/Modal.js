@@ -8,12 +8,14 @@ import compassStyles from '../../../modules/compass/compass.styles';
 import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
-import modalStyle from './modal.style';
+import useModalStyles from './modal.style';
 import ModalHeader from './ModalHeader';
 
 const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
+  const {modalStyle} = useModalStyles();
+
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
