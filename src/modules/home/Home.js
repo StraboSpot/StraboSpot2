@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -64,8 +64,6 @@ SystemNavigationBar.setNavigationColor('translucent');
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
 
-  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-  const deviceDimensions = Dimensions.get(platform);
   const homeMenuPanelWidth = 300;
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
@@ -445,7 +443,7 @@ const Home = ({navigation, route}) => {
   };
 
   const renderSidePanelView = () => {
-    if (deviceDimensions.width < 600) {
+    if (SMALL_SCREEN) {
       return (
         <Animated.View
           style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
