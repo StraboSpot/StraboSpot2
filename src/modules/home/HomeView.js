@@ -4,7 +4,6 @@ import {Animated} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import Map from '../maps/Map';
-import {MAP_MODES} from '../maps/maps.constants';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import LeftSideButtons from './LeftSideButtons';
@@ -13,12 +12,13 @@ import StatusBar from './StatusBar';
 
 const HomeView = ({
                     animation,
-                    buttons,
                     clickHandler,
                     closeNotebookPanel,
                     dialogClickHandler,
                     distance,
+                    drawButtonsVisible,
                     endDraw,
+                    endMeasurement,
                     isSelectingForStereonet,
                     isSelectingForTagging,
                     leftsideIconAnimationValue,
@@ -27,7 +27,6 @@ const HomeView = ({
                     openNotebookPanel,
                     rightsideIconAnimationValue,
                     setDistance,
-                    setMapMode,
                     startEdit,
                     toggleHomeDrawer,
                   }) => {
@@ -72,9 +71,9 @@ const HomeView = ({
       <RightSideButtons
         clickHandler={clickHandler}
         distance={distance}
-        drawButtonsVisible={buttons.drawButtonsVisible}
+        drawButtonsVisible={drawButtonsVisible}
         endDraw={endDraw}
-        endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
+        endMeasurement={endMeasurement}
         mapMode={mapMode}
         openNotebookPanel={openNotebookPanel}
         rightsideIconAnimation={rightsideIconAnimation}

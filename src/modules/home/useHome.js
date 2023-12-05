@@ -5,14 +5,14 @@ import {MAP_MODES} from '../maps/maps.constants';
 
 const useHome = () => {
 
-  const [pointIconType, setPointIconType] = useState({
+  const [drawTypes, setDrawTypes] = useState({
     point: MAP_MODES.DRAW.POINT,
     line: MAP_MODES.DRAW.LINE,
     polygon: MAP_MODES.DRAW.POLYGON,
   });
 
   const changeDrawType = (name, mapMode) => {
-    switch (pointIconType[name]) {
+    switch (drawTypes[name]) {
       case MAP_MODES.DRAW.POINT:
         return mapMode === MAP_MODES.DRAW.POINT
           ? require('../../assets/icons/PointButton_pressed.png')
@@ -40,31 +40,33 @@ const useHome = () => {
     }
   };
 
+  const getDrawTypes = ()=> drawTypes;
+
   const onLongPress = (type) => {
     if (Platform.OS === 'ios') {
       switch (type) {
         case 'point':
-          setPointIconType(prevState => ({
+          setDrawTypes(prevState => ({
               ...prevState,
-              point: pointIconType.point === MAP_MODES.DRAW.POINT
+              point: drawTypes.point === MAP_MODES.DRAW.POINT
                 ? MAP_MODES.DRAW.POINTLOCATION
                 : MAP_MODES.DRAW.POINT,
             }),
           );
           break;
         case 'line':
-          setPointIconType(prevState => ({
+          setDrawTypes(prevState => ({
               ...prevState,
-              line: pointIconType.line === MAP_MODES.DRAW.LINE
+              line: drawTypes.line === MAP_MODES.DRAW.LINE
                 ? MAP_MODES.DRAW.FREEHANDLINE
                 : MAP_MODES.DRAW.LINE,
             }),
           );
           break;
         case 'polygon':
-          setPointIconType(prevState => ({
+          setDrawTypes(prevState => ({
               ...prevState,
-              polygon: pointIconType.polygon === MAP_MODES.DRAW.POLYGON
+              polygon: drawTypes.polygon === MAP_MODES.DRAW.POLYGON
                 ? MAP_MODES.DRAW.FREEHANDPOLYGON
                 : MAP_MODES.DRAW.POLYGON,
             }),
@@ -76,6 +78,7 @@ const useHome = () => {
 
   return {
     changeDrawType: changeDrawType,
+    getDrawTypes: getDrawTypes,
     onLongPress: onLongPress,
   };
 };

@@ -1,37 +1,78 @@
 import React from 'react';
-import {Dimensions, Platform, View} from 'react-native';
+import {View} from 'react-native';
+
+import {useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
+import IconButton from '../../shared/ui/IconButton';
 import DrawActionButtons from './DrawActionButtons';
+import DrawInfo from './DrawInfo';
 import MapActionButtons from './MapActionButtons';
 
-const platform = Platform.OS === 'ios' ? 'screen' : 'window';
-const {width} = Dimensions.get(platform);
+const ActionButtonsSmallScreen = ({
+                                    clickHandler,
+                                    dialogClickHandler,
+                                    distance,
+                                    endDraw,
+                                    endMeasurement,
+                                    mapMode,
+                                    mapComponentRef,
+                                  }) => {
 
-const ActionButtonsSmallScreen = ({clickHandler, dialogClickHandler, mapMode, mapComponentRef}) => {
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const stratSection = useSelector(state => state.map.stratSection);
 
   return (
-    <View
-      style={{
-        alignItems: 'center',
-        backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-        borderRadius: 15,
-        flexDirection: 'row',
-        height: 70,
-        justifyContent: 'center',
-        width: width * 0.90,
-      }}
-    >
-      <View style={{borderRightWidth: 2}}>
-        <MapActionButtons
-          dialogClickHandler={dialogClickHandler}
-          mapComponentRef={mapComponentRef}
-        />
-      </View>
-      <DrawActionButtons
-        clickHandler={clickHandler}
+    <View style={{alignItems: 'flex-end'}}>
+      <DrawInfo
+        distance={distance}
+        endDraw={endDraw}
+        endMeasurement={endMeasurement}
         mapMode={mapMode}
       />
+      <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
+        {(currentImageBasemap || stratSection) && (
+          <View style={{paddingRight: 40}}>
+            {currentImageBasemap && (
+              <IconButton
+                source={require('../../assets/icons/Close.png')}
+                onPress={() => clickHandler('closeImageBasemap')}
+              />
+            )}
+            {stratSection && (
+              <IconButton
+                source={require('../../assets/icons/Close.png')}
+                onPress={() => clickHandler('closeStratSection')}
+              />
+            )}
+          </View>
+        )}
+        <View
+          style={{
+            alignItems: 'center',
+            backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+            borderRadius: 10,
+            flexDirection: 'row',
+            padding: 5,
+          }}
+        >
+          <View style={{borderRightWidth: 2}}>
+            <MapActionButtons
+              dialogClickHandler={dialogClickHandler}
+              mapComponentRef={mapComponentRef}
+            />
+          </View>
+          <View style={{paddingLeft: 10}}>
+            <DrawActionButtons
+              clickHandler={clickHandler}
+              distance={distance}
+              endDraw={endDraw}
+              endMeasurement={endMeasurement}
+              mapMode={mapMode}
+            />
+          </View>
+        </View>
+      </View>
     </View>
   );
 };

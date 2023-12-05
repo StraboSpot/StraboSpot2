@@ -322,6 +322,8 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  const endMeasurement = () => setMapMode(MAP_MODES.VIEW);
+
   const exportProject = async () => {
     const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${selectedProject.project.fileName}) has been exported!`
       : `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`;
@@ -420,24 +422,26 @@ const Home = ({navigation, route}) => {
   const renderSaveAndCancelDrawButtons = () => {
     return (
       <View>
-        {buttons.editButtonsVisible && <View style={homeStyles.editButtonsContainer}>
-          <Button
-            containerStyle={{padding: 5}}
-            buttonStyle={homeStyles.drawToolsButtons}
-            titleStyle={homeStyles.drawToolsTitle}
-            type={'clear'}
-            title={'Save Edits'}
-            onPress={() => clickHandler('saveEdits')}
-          />
-          <Button
-            containerStyle={{padding: 5}}
-            buttonStyle={{...homeStyles.drawToolsButtons, backgroundColor: 'white'}}
-            titleStyle={{color: 'black'}}
-            type={'clear'}
-            title={'Cancel'}
-            onPress={() => clickHandler('cancelEdits')}
-          />
-        </View>}
+        {buttons.editButtonsVisible && (
+          <View style={homeStyles.editButtonsContainer}>
+            <Button
+              containerStyle={{padding: 5}}
+              buttonStyle={homeStyles.drawToolsButtons}
+              titleStyle={homeStyles.drawToolsTitle}
+              type={'clear'}
+              title={'Save Edits'}
+              onPress={() => clickHandler('saveEdits')}
+            />
+            <Button
+              containerStyle={{padding: 5}}
+              buttonStyle={[homeStyles.drawToolsButtons, {backgroundColor: 'white'}]}
+              titleStyle={[homeStyles.drawToolsTitle, {color: 'black'}]}
+              type={'clear'}
+              title={'Cancel'}
+              onPress={() => clickHandler('cancelEdits')}
+            />
+          </View>
+        )}
       </View>
     );
   };
@@ -582,16 +586,18 @@ const Home = ({navigation, route}) => {
     <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
       {SMALL_SCREEN ? (
         <HomeViewSmallScreen
-          clickHandler={(name, value) => clickHandler(name, value)}
+          clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
+          distance={distance}
+          drawButtonsVisible={buttons.drawButtonsVisible}
           endDraw={endDraw}
+          endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
           leftsideIconAnimationValue={leftsideIconAnimationValue}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
-          navigation={navigation}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
           setDistance={setDistance}
@@ -601,12 +607,13 @@ const Home = ({navigation, route}) => {
       ) : (
         <HomeView
           animation={animation}
-          buttons={buttons}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           distance={distance}
+          drawButtonsVisible={buttons.drawButtonsVisible}
           endDraw={endDraw}
+          endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
           leftsideIconAnimationValue={leftsideIconAnimationValue}
@@ -615,7 +622,6 @@ const Home = ({navigation, route}) => {
           openNotebookPanel={openNotebookPanel}
           rightsideIconAnimationValue={rightsideIconAnimationValue}
           setDistance={setDistance}
-          setMapMode={setMapMode}
           startEdit={startEdit}
           toggleHomeDrawer={toggleHomeDrawerButton}
         />

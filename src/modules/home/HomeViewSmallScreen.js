@@ -16,7 +16,10 @@ const HomeViewSmallScreen = ({
                                clickHandler,
                                closeNotebookPanel,
                                dialogClickHandler,
+                               distance,
+                               drawButtonsVisible,
                                endDraw,
+                               endMeasurement,
                                isSelectingForStereonet,
                                isSelectingForTagging,
                                leftsideIconAnimationValue,
@@ -125,14 +128,19 @@ const HomeViewSmallScreen = ({
                   setDistance={setDistance}
                   startEdit={startEdit}
                 />
-                <View style={homeStyles.actionButtonsSmallScreenContainer}>
-                  <ActionButtonsSmallScreen
-                    clickHandler={clickHandler}
-                    dialogClickHandler={dialogClickHandler}
-                    mapComponentRef={mapComponentRef}
-                    mapMode={mapMode}
-                  />
-                </View>
+                {drawButtonsVisible && (
+                  <View style={homeStyles.actionButtonsSmallScreenContainer}>
+                    <ActionButtonsSmallScreen
+                      clickHandler={clickHandler}
+                      dialogClickHandler={dialogClickHandler}
+                      distance={distance}
+                      endDraw={endDraw}
+                      endMeasurement={endMeasurement}
+                      mapComponentRef={mapComponentRef}
+                      mapMode={mapMode}
+                    />
+                  </View>
+                )}
               </>
             }
           </Tab.Screen>

@@ -92,7 +92,7 @@ const homeStyles = StyleSheet.create({
     right: 10,
     backgroundColor: themes.LIGHTGREY,
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     shadowColor: 'black',
     shadowOpacity: 0.3,
     shadowRadius: 4,
