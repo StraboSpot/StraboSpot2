@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {ActivityIndicator, Dimensions, Platform, View} from 'react-native';
+import {ActivityIndicator, Platform, useWindowDimensions, View} from 'react-native';
 
 import {Button, Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,7 +16,7 @@ import useImagesHook from './useImages';
 
 const ImageSlider = ({route, navigation}) => {
   console.log('Rendering ImageSlider...');
-
+  const {width, height} = useWindowDimensions();
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
 
@@ -78,8 +78,8 @@ const ImageSlider = ({route, navigation}) => {
           source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageId)}
             : {uri: useImages.getLocalImageURI(imageId)}}
           style={Platform.OS === 'web' ? {
-              width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height,
+              width: width,
+              height: height,
             }
             : {width: '100%', height: '100%'}}
           resizeMode={'contain'}

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Dimensions, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Platform, Text, TextInput, View, useWindowDimensions} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -67,11 +67,8 @@ SystemNavigationBar.setNavigationColor('translucent');
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
 
-  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-  const deviceDimensions = Dimensions.get(platform);
-  const homeMenuPanelWidth = 300;
-  const mainMenuSidePanelWidth = 300;
-  const notebookPanelWidth = 400;
+  const deviceDimensions = useWindowDimensions();
+
   const mainMenuDrawerWidth = 300;
   const mainMenuSideDrawerWidth = 300;
   const notebookDrawerWidth = 400;

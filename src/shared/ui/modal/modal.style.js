@@ -1,16 +1,9 @@
-import {StyleSheet, useWindowDimensions} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import * as themes from '../../styles.constants';
 
-const useModalStyles = () => {
-  const {width, height} = useWindowDimensions();
-  console.log('Window Width', width);
-  console.log('Window Height', height);
-
   const modalStyle = StyleSheet.create({
     modalContainer: {
-      maxWidth: width,
-      maxHeight: height - 50,
       width: 300,
       maxHeight:'90%',
       backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,

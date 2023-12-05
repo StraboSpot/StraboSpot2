@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, FlatList, Platform, Switch, Text, View} from 'react-native';
+import {FlatList, Switch, Text, useWindowDimensions, View} from 'react-native';
 
 import {ButtonGroup, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,9 +14,9 @@ import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import overlayStyles from './overlay.styles';
 
-const deviceHeight = Dimensions.get(Platform.OS === 'ios' ? 'window' : 'screen').height;
-
 const MapSymbolsDialog = (props) => {
+  const deviceHeight = useWindowDimensions().height;
+
   const dispatch = useDispatch();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
