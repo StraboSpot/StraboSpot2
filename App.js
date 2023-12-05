@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, SafeAreaView} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
@@ -13,6 +13,7 @@ import ConnectionStatus from './src/services/ConnectionStatus';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
+import uiStyles from './src/shared/ui/ui.styles';
 import store from './src/store/ConfigureStore';
 import config from './src/utils/config';
 
@@ -45,6 +46,7 @@ const App = () => {
   // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
 
   return (
+    <SafeAreaView style={uiStyles.androidSafeAreaView}>
     <Toast>
       <Provider store={store}>
         <PersistGate loading={<Loading/>} persistor={persistor}>
@@ -57,6 +59,7 @@ const App = () => {
         </PersistGate>
       </Provider>
     </Toast>
+    </SafeAreaView>
   );
 };
 
