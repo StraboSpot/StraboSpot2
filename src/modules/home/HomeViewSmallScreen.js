@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {Animated, View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Button, Header, Icon} from 'react-native-elements';
@@ -10,7 +10,7 @@ import Map from '../maps/Map';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SpotNavigator from '../spots/SpotNavigator';
 import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
-import homeStyle from './home.style';
+import homeStyles from './home.style';
 
 const HomeViewSmallScreen = ({
                                clickHandler,
@@ -19,6 +19,7 @@ const HomeViewSmallScreen = ({
                                endDraw,
                                isSelectingForStereonet,
                                isSelectingForTagging,
+                               leftsideIconAnimationValue,
                                mapComponentRef,
                                mapMode,
                                openNotebookPanel,
@@ -29,9 +30,12 @@ const HomeViewSmallScreen = ({
                              }) => {
   console.log('Rendering HomeViewSmallScreen...');
 
-  const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+
+  const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
+
+  const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
 
   const navigationOptions = {
     gestureEnabled: false,
@@ -57,7 +61,7 @@ const HomeViewSmallScreen = ({
   };
 
   return (
-    <>
+    <Animated.View style={[homeStyles.container, leftsideIconAnimation]}>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (
@@ -121,7 +125,7 @@ const HomeViewSmallScreen = ({
                   setDistance={setDistance}
                   startEdit={startEdit}
                 />
-                <View style={homeStyle.actionButtonsSmallScreenContainer}>
+                <View style={homeStyles.actionButtonsSmallScreenContainer}>
                   <ActionButtonsSmallScreen
                     clickHandler={clickHandler}
                     dialogClickHandler={dialogClickHandler}
@@ -137,7 +141,7 @@ const HomeViewSmallScreen = ({
           </Tab.Screen>
         </Tab.Navigator>
       )}
-    </>
+    </Animated.View>
   );
 };
 

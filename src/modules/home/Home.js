@@ -586,9 +586,11 @@ const Home = ({navigation, route}) => {
         <HomeViewSmallScreen
           clickHandler={(name, value) => clickHandler(name, value)}
           closeNotebookPanel={closeNotebookPanel}
+          dialogClickHandler={dialogClickHandler}
           endDraw={endDraw}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
+          leftsideIconAnimationValue={leftsideIconAnimationValue}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           navigation={navigation}
@@ -597,7 +599,6 @@ const Home = ({navigation, route}) => {
           setDistance={setDistance}
           startEdit={startEdit}
           toggleHomeDrawer={toggleHomeDrawerButton}
-          dialogClickHandler={dialogClickHandler}
         />
       ) : (
         <HomeView
