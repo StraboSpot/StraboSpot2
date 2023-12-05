@@ -7,10 +7,7 @@ const TagsShortcutModal = (props) => {
 
   const renderTagsShortcutModal = () => {
     return (
-      <Modal
-        style={{width: 285}}
-        onPress={props.onPress}
-      >
+      <Modal onPress={props.onPress}>
         <TagsModal goToCurrentLocation={props.goToCurrentLocation}/>
       </Modal>
     );

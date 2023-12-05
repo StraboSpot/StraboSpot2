@@ -8,13 +8,12 @@ import compassStyles from '../../../modules/compass/compass.styles';
 import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
-import useModalStyles from './modal.style';
+import modalStyle from './modal.style';
 import ModalHeader from './ModalHeader';
 
 const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
-  const {modalStyle} = useModalStyles();
 
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
@@ -63,7 +62,7 @@ const Modal = (props) => {
     return (
       <Overlay
         isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT}
-        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}
+        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]}
       >
         <ModalHeader {...props}/>
         {props.children}
@@ -72,7 +71,7 @@ const Modal = (props) => {
     );
   }
   return (
-    <View style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}>
+    <View style={[modalStyle.modalContainer, modalStyle.modalPosition]}>
       <ModalHeader {...props}/>
       {props.children}
       {!isEmpty(selectedSpot) && renderModalBottom()}

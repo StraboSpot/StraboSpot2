@@ -9,13 +9,11 @@ const useModalStyles = () => {
 
   const modalStyle = StyleSheet.create({
     modalContainer: {
-      flex: 1,
-      width: 250,
       maxWidth: width,
       maxHeight: height - 50,
+      width: 300,
+      maxHeight:'90%',
       backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-      borderColor: themes.MEDIUMGREY,
-      borderWidth: 0.5,
       borderRadius: 20,
       overflow: 'hidden',
       zIndex: 1,
@@ -54,7 +52,4 @@ const useModalStyles = () => {
     },
   });
 
-  return {modalStyle};
-};
-
-export default useModalStyles;
+export default modalStyle;

@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import overlayStyles from '../home/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
 
@@ -63,13 +64,7 @@ const TagDetailModal = (props) => {
   return (
     <Overlay
       isVisible={props.isVisible}
-      overlayStyle={{
-        maxHeight: '90%',
-        width: 350,
-        borderRadius: 20,
-        backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-        padding: 0,
-      }}
+      overlayStyle={overlayStyles.overlayContainer}
     >
       <>
         {renderCancelSaveButtons()}

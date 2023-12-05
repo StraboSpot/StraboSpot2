@@ -12,7 +12,7 @@ import AddButton from '../../shared/ui/AddButton';
 import SaveButton from '../../shared/ui/ButtonRounded';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import useModalStyles from '../../shared/ui/modal/modal.style';
+import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
 import {setLoadingStatus, setModalVisible} from '../home/home.slice';
 import useLocationHook from '../maps/useLocation';
@@ -23,7 +23,6 @@ import {TagDetailModal, useTagsHook} from '../tags';
 
 const TagsModal = (props) => {
   const toast = useToast();
-  const {modalStyle} = useModalStyles();
   const [useTags] = useTagsHook();
   const useLocation = useLocationHook();
 
