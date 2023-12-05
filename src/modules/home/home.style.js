@@ -3,6 +3,9 @@ import {Platform, StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const homeStyles = StyleSheet.create({
+  buttonContainer: {
+    alignContent: 'center',
+  },
   container: {
     flex: 1,
     overflow: 'hidden',
@@ -18,6 +21,9 @@ const homeStyles = StyleSheet.create({
     width: '100%',
     zIndex: -1,
     justifyContent: 'center',
+  },
+  iconButton: {
+    top: 5,
   },
   imageSliderContainer: {
     flex: 1,
@@ -35,6 +41,9 @@ const homeStyles = StyleSheet.create({
   mapboxLogoPosition: {
     left: 10,
     bottom: Platform.OS === 'ios' ? -15 : 7,
+  },
+  buttonTextAlign: {
+    textAlign: 'center',
   },
   toastContainer: {
     alignItems: 'center',

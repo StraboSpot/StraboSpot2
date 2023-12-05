@@ -195,23 +195,23 @@ const RightSideButtons = ({
             && (
               <View style={homeStyles.selectedDatasetContainer}>
                 {mapMode === MAP_MODES.DRAW.MEASURE ? (
-                    <Text style={{textAlign: 'center'}}>Total Distance: {distance.toFixed(3)}km</Text>
+                    <Text style={homeStyles.buttonTextAlign}>Total Distance: {distance.toFixed(3)}km</Text>
                   )
                   : (
                     <React.Fragment>
-                      <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
-                      <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+                      <Text style={homeStyles.buttonTextAlign}>Selected Dataset:</Text>
+                      <Text style={{...homeStyles.buttonTextAlign, fontWeight: 'bold'}}>
                         {truncateText(useProject.getSelectedDatasetFromId().name, 20)}
                       </Text>
                     </React.Fragment>
                   )}
-                <View style={commonStyles.buttonContainer}>
+                <View>
                   {mapMode === MAP_MODES.DRAW.POINT ? (
-                      <Text style={{textAlign: 'center'}}>Place a point on the map</Text>
+                      <Text style={homeStyles.buttonTextAlign}>Place a point on the map</Text>
                     )
                     : mapMode === MAP_MODES.DRAW.MEASURE ? (
                         <Button
-                          containerStyle={{alignContent: 'center'}}
+                          containerStyle={homeStyles.buttonContainer}
                           buttonStyle={homeStyles.drawToolsButtons}
                           titleStyle={homeStyles.drawToolsTitle}
                           title={'End Measurement'}
@@ -221,7 +221,7 @@ const RightSideButtons = ({
                       )
                       : (
                         <Button
-                          containerStyle={{alignContent: 'center'}}
+                          containerStyle={homeStyles.buttonContainer}
                           buttonStyle={homeStyles.drawToolsButtons}
                           titleStyle={homeStyles.drawToolsTitle}
                           title={'End Draw'}
@@ -236,7 +236,7 @@ const RightSideButtons = ({
           <View style={{flexDirection: 'row'}}>
             {(currentImageBasemap || stratSection) ? (
                 <IconButton
-                  style={{top: 5}}
+                  style={homeStyles.iconButton}
                   source={mapMode === MAP_MODES.DRAW.POINT
                     ? require('../../assets/icons/PointButton_pressed.png')
                     : require('../../assets/icons/PointButton.png')}
@@ -246,7 +246,7 @@ const RightSideButtons = ({
                 />)
               : (
                 <IconButton
-                  style={{top: 5}}
+                  style={homeStyles.iconButton}
                   source={changeDrawType(MAP_MODES.DRAW.POINT)}
                   onPress={() => {
                     if (pointIconType.point === MAP_MODES.DRAW.POINT) clickHandler(MAP_MODES.DRAW.POINT);
@@ -255,7 +255,7 @@ const RightSideButtons = ({
                   onLongPress={() => onLongPress('point')}
                 />)}
             <IconButton
-              style={{top: 5}}
+              style={homeStyles.iconButton}
               source={changeDrawType(MAP_MODES.DRAW.LINE)}
               onPress={() => {
                 if (pointIconType.line === MAP_MODES.DRAW.LINE) clickHandler(MAP_MODES.DRAW.LINE);
@@ -264,7 +264,7 @@ const RightSideButtons = ({
               onLongPress={() => onLongPress('line')}
             />
             <IconButton
-              style={{top: 5}}
+              style={homeStyles.iconButton}
               source={changeDrawType(MAP_MODES.DRAW.POLYGON)}
               onPress={() => {
                 if (pointIconType.polygon === MAP_MODES.DRAW.POLYGON) clickHandler(MAP_MODES.DRAW.POLYGON);
