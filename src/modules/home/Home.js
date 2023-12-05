@@ -125,8 +125,8 @@ const Home = ({navigation, route}) => {
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
 
   const animation = useRef(new Animated.Value(notebookPanelWidth)).current;
-  const leftsideIconAnimationValue = useRef(new Animated.Value(0)).current;
-  const rightsideIconAnimationValue = useRef(new Animated.Value(0)).current;
+  const leftSideIconAnimationValue = useRef(new Animated.Value(0)).current;
+  const rightSideIconAnimationValue = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
 
   useEffect(() => {
@@ -298,7 +298,7 @@ const Home = ({navigation, route}) => {
   const closeNotebookPanel = () => {
     console.log('Closing Notebook...');
     animatePanels(animation, notebookPanelWidth);
-    animatePanels(rightsideIconAnimationValue, 0);
+    animatePanels(rightSideIconAnimationValue, 0);
     dispatch(setNotebookPanelVisible(false));
     if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
       dispatch(setModalVisible({modal: null}));
@@ -373,7 +373,7 @@ const Home = ({navigation, route}) => {
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
     animatePanels(animation, 0);
-    animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
+    animatePanels(rightSideIconAnimationValue, -notebookPanelWidth);
     dispatch(setNotebookPanelVisible(true));
   };
 
@@ -529,12 +529,12 @@ const Home = ({navigation, route}) => {
       dispatch(setMainMenuPanelVisible(false));
       dispatch(setMenuSelectionPage({name: undefined}));
       animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-      animatePanels(leftsideIconAnimationValue, 0);
+      animatePanels(leftSideIconAnimationValue, 0);
     }
     else {
       dispatch(setMainMenuPanelVisible(true));
       animatePanels(MainMenuPanelAnimation, 0);
-      animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
+      animatePanels(leftSideIconAnimationValue, homeMenuPanelWidth);
     }
   };
 
@@ -569,8 +569,8 @@ const Home = ({navigation, route}) => {
   const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
   const animateNotebookMenu = {transform: [{translateX: animation}]};
   const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
-  const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
-  const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
+  const leftSideIconAnimation = {transform: [{translateX: leftSideIconAnimationValue}]};
+  const rightSideIconAnimation = {transform: [{translateX: rightSideIconAnimationValue}]};
 
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
@@ -620,7 +620,7 @@ const Home = ({navigation, route}) => {
         drawButtonsVisible={buttons.drawButtonsVisible}
         mapMode={mapMode}
         endDraw={() => endDraw()}
-        rightsideIconAnimation={rightsideIconAnimation}
+        rightSideIconAnimation={rightSideIconAnimation}
         distance={distance}
         endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
       />
@@ -628,8 +628,8 @@ const Home = ({navigation, route}) => {
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
         dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
         clickHandler={(name, value) => clickHandler(name, value)}
-        // rightsideIconAnimation={rightsideIconAnimation}
-        leftsideIconAnimation={leftsideIconAnimation}
+        // rightSideIconAnimation={rightSideIconAnimation}
+        leftSideIconAnimation={leftSideIconAnimation}
         zoomToCustomMap={(bbox, duration) => mapComponentRef.current.zoomToCustomMap(bbox, duration)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         toast={message => toast.show(message, {type: 'warning'})}
