@@ -12,7 +12,7 @@ import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
-import {animatePanels, isEmpty} from '../../shared/Helpers';
+import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -48,7 +48,6 @@ import WarningModal from './home-modals/WarningModal';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setImageModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
   setModalVisible,
@@ -73,6 +72,9 @@ const Home = ({navigation, route}) => {
   const homeMenuPanelWidth = 300;
   const mainMenuSidePanelWidth = 300;
   const notebookPanelWidth = 400;
+  const mainMenuDrawerWidth = 300;
+  const mainMenuSideDrawerWidth = 300;
+  const notebookDrawerWidth = 400;
 
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
@@ -89,7 +91,6 @@ const Home = ({navigation, route}) => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isHomeLoading = useSelector(state => state.home.loading.home);
-  const isImageModalVisible = useSelector(state => state.home.isImageModalVisible);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
@@ -116,18 +117,24 @@ const Home = ({navigation, route}) => {
   });
   const [distance, setDistance] = useState(0);
   const [showUpdateLabel, setShowUpdateLabel] = useState(false);
-  const [homeTextInputAnimate] = useState(new Animated.Value(0));
-  const [imageSlideshowData, setImageSlideshowData] = useState([]);
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
-  const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
-  const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
 
-  const animation = useRef(new Animated.Value(notebookPanelWidth)).current;
-  const leftSideIconAnimationValue = useRef(new Animated.Value(0)).current;
-  const rightSideIconAnimationValue = useRef(new Animated.Value(0)).current;
+  const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
+  const animatedValueMainMenuDrawer = useRef(new Animated.Value(-mainMenuDrawerWidth)).current;
+  const animatedValueMainMenuSideDrawer = useRef(new Animated.Value(-mainMenuSideDrawerWidth)).current;
+  const animatedValueNotebookDrawer = useRef(new Animated.Value(notebookDrawerWidth)).current;
+  const animatedValueRightSide = useRef(new Animated.Value(0)).current;
+  const animatedValueTextInputs = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
+
+  const animateMainMenuDrawer = {transform: [{translateX: animatedValueMainMenuDrawer}]};
+  const animateMainMenuSubDrawer = {transform: [{translateX: animatedValueMainMenuSideDrawer}]};
+  const animateNotebookDrawer = {transform: [{translateX: animatedValueNotebookDrawer}]};
+  const animateTextInputs = {transform: [{translateY: animatedValueTextInputs}]};
+  const animateLeftSide = {transform: [{translateX: animatedValueLeftSide}]};
+  const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
 
   useEffect(() => {
     let updateTimer;
@@ -205,9 +212,9 @@ const Home = ({navigation, route}) => {
   }, [mapMode]);
 
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
-    homeTextInputAnimate);
+    animatedValueTextInputs);
 
-  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
+  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(animatedValueTextInputs);
 
   const cancelEdits = async () => {
     await mapComponentRef.current.cancelEdits();
@@ -297,8 +304,8 @@ const Home = ({navigation, route}) => {
 
   const closeNotebookPanel = () => {
     console.log('Closing Notebook...');
-    animatePanels(animation, notebookPanelWidth);
-    animatePanels(rightSideIconAnimationValue, 0);
+    animateDrawer(animatedValueNotebookDrawer, notebookDrawerWidth);
+    animateDrawer(animatedValueRightSide, 0);
     dispatch(setNotebookPanelVisible(false));
     if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
       dispatch(setModalVisible({modal: null}));
@@ -372,8 +379,8 @@ const Home = ({navigation, route}) => {
     console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
-    animatePanels(animation, 0);
-    animatePanels(rightSideIconAnimationValue, -notebookPanelWidth);
+    animateDrawer(animatedValueNotebookDrawer, 0);
+    animateDrawer(animatedValueRightSide, -notebookDrawerWidth);
     dispatch(setNotebookPanelVisible(true));
   };
 
@@ -433,16 +440,16 @@ const Home = ({navigation, route}) => {
     if (deviceDimensions.width < 600) {
       return (
         <Animated.View
-          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
-          <Animated.View style={{flex: 1, transform: [{translateY: homeTextInputAnimate}]}}>
+          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
+          <Animated.View style={{flex: 1, animateTextInputs}}>
             {renderSidePanelContent()}
           </Animated.View>
         </Animated.View>
       );
     }
     return (
-      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-        <Animated.View style={{flex: 1, transform: [{translateY: homeTextInputAnimate}]}}>
+      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
+        <Animated.View style={{flex: 1, transform: [{translateY: animatedValueTextInputs}]}}>
           {renderSidePanelContent()}
         </Animated.View>
       </Animated.View>
@@ -528,18 +535,14 @@ const Home = ({navigation, route}) => {
     if (isMainMenuPanelVisible) {
       dispatch(setMainMenuPanelVisible(false));
       dispatch(setMenuSelectionPage({name: undefined}));
-      animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-      animatePanels(leftSideIconAnimationValue, 0);
+      animateDrawer(animatedValueMainMenuDrawer, -mainMenuDrawerWidth);
+      animateDrawer(animatedValueLeftSide, 0);
     }
     else {
       dispatch(setMainMenuPanelVisible(true));
-      animatePanels(MainMenuPanelAnimation, 0);
-      animatePanels(leftSideIconAnimationValue, homeMenuPanelWidth);
+      animateDrawer(animatedValueMainMenuDrawer, 0);
+      animateDrawer(animatedValueLeftSide, mainMenuDrawerWidth);
     }
-  };
-
-  const toggleImageModal = () => {
-    dispatch(setImageModalVisible(!isImageModalVisible));
   };
 
   const toggleNotebookPanel = () => {
@@ -549,10 +552,10 @@ const Home = ({navigation, route}) => {
 
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
-      animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
+      animateDrawer(animatedValueMainMenuSideDrawer, mainMenuSideDrawerWidth);
       return renderSidePanelView();
     }
-    else animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+    else animateDrawer(animatedValueMainMenuSideDrawer, -mainMenuSideDrawerWidth);
     return renderSidePanelView();
   };
 
@@ -566,14 +569,8 @@ const Home = ({navigation, route}) => {
     return Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
   };
 
-  const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
-  const animateNotebookMenu = {transform: [{translateX: animation}]};
-  const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
-  const leftSideIconAnimation = {transform: [{translateX: leftSideIconAnimationValue}]};
-  const rightSideIconAnimation = {transform: [{translateX: rightSideIconAnimationValue}]};
-
   const MainMenu = (
-    <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
+    <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
       <MainMenuPanel
         logout={() => onLogout()}
         closeMainMenuPanel={() => toggleHomeDrawerButton()}
@@ -588,7 +585,7 @@ const Home = ({navigation, route}) => {
 
   const renderNotebookPanel = () => {
     return (
-      <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
+      <Animated.View style={[notebookStyles.panel, animateNotebookDrawer]}>
         <NotebookPanel
           closeNotebookPanel={closeNotebookPanel}
           createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
@@ -620,7 +617,7 @@ const Home = ({navigation, route}) => {
         drawButtonsVisible={buttons.drawButtonsVisible}
         mapMode={mapMode}
         endDraw={() => endDraw()}
-        rightSideIconAnimation={rightSideIconAnimation}
+        animateRightSide={animateRightSide}
         distance={distance}
         endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
       />
@@ -628,8 +625,7 @@ const Home = ({navigation, route}) => {
         toggleHomeDrawer={() => toggleHomeDrawerButton()}
         dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
         clickHandler={(name, value) => clickHandler(name, value)}
-        // rightSideIconAnimation={rightSideIconAnimation}
-        leftSideIconAnimation={leftSideIconAnimation}
+        animateLeftSide={animateLeftSide}
         zoomToCustomMap={(bbox, duration) => mapComponentRef.current.zoomToCustomMap(bbox, duration)}
         zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
         toast={message => toast.show(message, {type: 'warning'})}

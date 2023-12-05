@@ -6,7 +6,6 @@ import {Button} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
@@ -18,7 +17,17 @@ import {clearedSelectedSpots} from '../spots/spots.slice';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 
-const RightSideButtons = ({clickHandler, distance, drawButtonsVisible, endDraw, endMeasurement, mapMode, openNotebookPanel, rightSideIconAnimation, toggleNotebookPanel}) => {
+const RightSideButtons = ({
+                            animateRightSide,
+                            clickHandler,
+                            distance,
+                            drawButtonsVisible,
+                            endDraw,
+                            endMeasurement,
+                            mapMode,
+                            openNotebookPanel,
+                            toggleNotebookPanel,
+                          }) => {
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -136,7 +145,7 @@ const RightSideButtons = ({clickHandler, distance, drawButtonsVisible, endDraw, 
 
     return (
       <Animated.View
-        style={[homeStyles.shortcutButtons, rightSideIconAnimation]}>
+        style={[homeStyles.shortcutButtons, animateRightSide]}>
         {SHORTCUT_MODALS.reduce((acc, sm) => {
             return (
               shortcutSwitchPosition[sm.key] ? [...acc, (
@@ -158,7 +167,7 @@ const RightSideButtons = ({clickHandler, distance, drawButtonsVisible, endDraw, 
     <React.Fragment>
       {stratSection && (
         <Animated.View
-          style={[homeStyles.addIntervalButton, rightSideIconAnimation]}>
+          style={[homeStyles.addIntervalButton, animateRightSide]}>
           <IconButton
             source={isNotebookPanelVisible
               ? require('../../assets/icons/AddIntervalButton_pressed.png')
@@ -168,7 +177,7 @@ const RightSideButtons = ({clickHandler, distance, drawButtonsVisible, endDraw, 
         </Animated.View>
       )}
       <Animated.View
-        style={[homeStyles.notebookButton, rightSideIconAnimation]}>
+        style={[homeStyles.notebookButton, animateRightSide]}>
         <IconButton
           source={isNotebookPanelVisible
             ? require('../../assets/icons/NotebookViewButton_pressed.png')
@@ -179,7 +188,7 @@ const RightSideButtons = ({clickHandler, distance, drawButtonsVisible, endDraw, 
       {!currentImageBasemap && !stratSection && !isNotebookPanelVisible && renderShortcutIcons()}
       {drawButtonsVisible && (
         <Animated.View
-          style={[homeStyles.drawToolsContainer, rightSideIconAnimation]}>
+          style={[homeStyles.drawToolsContainer, animateRightSide]}>
           {!isEmpty(selectedDatasetId)
             && [MAP_MODES.DRAW.POINT, MAP_MODES.DRAW.LINE, MAP_MODES.DRAW.FREEHANDLINE, MAP_MODES.DRAW.FREEHANDPOLYGON,
               MAP_MODES.DRAW.POLYGON, MAP_MODES.DRAW.MEASURE].includes(mapMode)

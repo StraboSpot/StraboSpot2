@@ -277,7 +277,7 @@ export function toTitleCase(str) {
 }
 
 // Used to animate open and close of Settings Panel and Notebook Panel
-export const animatePanels = (animatedState, toValue) => {
+export const animateDrawer = (animatedState, toValue) => {
   Animated.timing(animatedState, {
     toValue: toValue,
     duration: 300,
