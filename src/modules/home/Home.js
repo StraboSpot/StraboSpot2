@@ -597,7 +597,7 @@ const Home = ({navigation, route}) => {
   };
 
   return (
-    <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
+    <Animated.View style={[homeStyles.container, animateTextInputs]}>
       <Map
         mapComponentRef={mapComponentRef}
         mapMode={mapMode}
