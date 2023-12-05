@@ -119,11 +119,7 @@ const NotebookPanel = (props) => {
     );
   };
 
-  return (
-    <View style={notebookStyles.panel}>
-      {isNotebookPanelVisible && (!isEmpty(spot) ? renderNotebookContent() : renderNotebookContentNoSpot())}
-    </View>
-  );
+  return isNotebookPanelVisible && (!isEmpty(spot) ? renderNotebookContent() : renderNotebookContentNoSpot());
 };
 
 export default NotebookPanel;

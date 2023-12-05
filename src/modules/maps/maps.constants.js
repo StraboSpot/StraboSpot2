@@ -1,15 +1,8 @@
-import {Dimensions} from 'react-native';
-
 import {STRABO_APIS} from '../../services/urls.constants';
 import config from '../../utils/config';
 
-const {width, height} = Dimensions.get('window');
-
-const ASPECT_RATIO = width / height;
 export const LATITUDE = 39.828175;      // Geographic center of US;
 export const LONGITUDE = -98.5795;      // Geographic center of US;
-export const LATITUDE_DELTA = 0.0922;
-export const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export const GEO_LAT_LNG_PROJECTION = 'EPSG:4326';
 export const PIXEL_PROJECTION = 'EPSG:3857';
 export const STRAT_SECTION_CENTER = [0.001, 0.0007];

@@ -122,11 +122,6 @@ export const deepObjectExtend = (target, source) => {
   return target;
 };
 
-export const getDimensions = () => {
-  const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-  return Dimensions.get(platform);
-};
-
 export const getNewId = () => {
   return Math.floor((new Date().getTime() + Math.random()) * 10);
   // return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
