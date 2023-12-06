@@ -35,3 +35,8 @@ export const MODAL_TEXT_SIZE = Platform.OS === 'web' ? 10 : 14;
 
 export const UPDATE_LABEL_WIDTH = 150;
 export const UPDATE_LABEL_HEIGHT = 150;
+
+// Home Menu and Notebook widths
+export const MAIN_MENU_DRAWER_WIDTH = 300;
+export const MAIN_MENU_SIDE_DRAWER_WIDTH = 300;
+export const NOTEBOOK_DRAWER_WIDTH = 400;

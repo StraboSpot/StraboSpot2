@@ -13,6 +13,11 @@ import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
+import {
+  MAIN_MENU_DRAWER_WIDTH,
+  MAIN_MENU_SIDE_DRAWER_WIDTH,
+  NOTEBOOK_DRAWER_WIDTH,
+} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -69,10 +74,6 @@ const Home = ({navigation, route}) => {
 
   const deviceDimensions = useWindowDimensions();
 
-  const mainMenuDrawerWidth = 300;
-  const mainMenuSideDrawerWidth = 300;
-  const notebookDrawerWidth = 400;
-
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
@@ -119,9 +120,9 @@ const Home = ({navigation, route}) => {
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
 
   const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
-  const animatedValueMainMenuDrawer = useRef(new Animated.Value(-mainMenuDrawerWidth)).current;
-  const animatedValueMainMenuSideDrawer = useRef(new Animated.Value(-mainMenuSideDrawerWidth)).current;
-  const animatedValueNotebookDrawer = useRef(new Animated.Value(notebookDrawerWidth)).current;
+  const animatedValueMainMenuDrawer = useRef(new Animated.Value(-MAIN_MENU_DRAWER_WIDTH)).current;
+  const animatedValueMainMenuSideDrawer = useRef(new Animated.Value(-MAIN_MENU_SIDE_DRAWER_WIDTH)).current;
+  const animatedValueNotebookDrawer = useRef(new Animated.Value(NOTEBOOK_DRAWER_WIDTH)).current;
   const animatedValueRightSide = useRef(new Animated.Value(0)).current;
   const animatedValueTextInputs = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
@@ -301,7 +302,7 @@ const Home = ({navigation, route}) => {
 
   const closeNotebookPanel = () => {
     console.log('Closing Notebook...');
-    animateDrawer(animatedValueNotebookDrawer, notebookDrawerWidth);
+    animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
     dispatch(setNotebookPanelVisible(false));
     if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
@@ -377,7 +378,7 @@ const Home = ({navigation, route}) => {
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
     animateDrawer(animatedValueNotebookDrawer, 0);
-    animateDrawer(animatedValueRightSide, -notebookDrawerWidth);
+    animateDrawer(animatedValueRightSide, -NOTEBOOK_DRAWER_WIDTH);
     dispatch(setNotebookPanelVisible(true));
   };
 
@@ -532,13 +533,13 @@ const Home = ({navigation, route}) => {
     if (isMainMenuPanelVisible) {
       dispatch(setMainMenuPanelVisible(false));
       dispatch(setMenuSelectionPage({name: undefined}));
-      animateDrawer(animatedValueMainMenuDrawer, -mainMenuDrawerWidth);
+      animateDrawer(animatedValueMainMenuDrawer, -MAIN_MENU_DRAWER_WIDTH);
       animateDrawer(animatedValueLeftSide, 0);
     }
     else {
       dispatch(setMainMenuPanelVisible(true));
       animateDrawer(animatedValueMainMenuDrawer, 0);
-      animateDrawer(animatedValueLeftSide, mainMenuDrawerWidth);
+      animateDrawer(animatedValueLeftSide, MAIN_MENU_DRAWER_WIDTH);
     }
   };
 
@@ -549,10 +550,10 @@ const Home = ({navigation, route}) => {
 
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
-      animateDrawer(animatedValueMainMenuSideDrawer, mainMenuSideDrawerWidth);
+      animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
       return renderSidePanelView();
     }
-    else animateDrawer(animatedValueMainMenuSideDrawer, -mainMenuSideDrawerWidth);
+    else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
     return renderSidePanelView();
   };
 
