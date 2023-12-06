@@ -439,7 +439,7 @@ const Home = ({navigation, route}) => {
       return (
         <Animated.View
           style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
-          <Animated.View style={{flex: 1, animateTextInputs}}>
+          <Animated.View style={[{flex: 1}, animateTextInputs]}>
             {renderSidePanelContent()}
           </Animated.View>
         </Animated.View>
@@ -447,7 +447,7 @@ const Home = ({navigation, route}) => {
     }
     return (
       <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
-        <Animated.View style={{flex: 1, transform: [{translateY: animatedValueTextInputs}]}}>
+        <Animated.View style={[{flex: 1}, animateTextInputs]}>
           {renderSidePanelContent()}
         </Animated.View>
       </Animated.View>
