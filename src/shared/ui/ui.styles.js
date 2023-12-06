@@ -1,4 +1,4 @@
-import {Platform, StyleSheet, useWindowDimensions} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../styles.constants';
 

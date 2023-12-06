@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, Text, TextInput, View, useWindowDimensions} from 'react-native';
+import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -63,8 +63,6 @@ SystemNavigationBar.setNavigationColor('translucent');
 
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
-
-  const deviceDimensions = useWindowDimensions();
 
   const mainMenuDrawerWidth = 300;
   const mainMenuSideDrawerWidth = 300;
@@ -356,10 +354,6 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const openImageSlider = (selectedImage) => {
-    navigation.navigate('ImageSlider', {selectedImage: selectedImage});
-  };
-
   const modalHandler = (modalKey) => {
     if (isNotebookPanelVisible) {
       closeNotebookPanel();
@@ -457,7 +451,7 @@ const Home = ({navigation, route}) => {
       return (
         <Animated.View
           style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
-          <Animated.View style={{flex: 1, animateTextInputs}}>
+          <Animated.View style={[{flex: 1}, animateTextInputs]}>
             {renderSidePanelContent()}
           </Animated.View>
         </Animated.View>
@@ -465,7 +459,7 @@ const Home = ({navigation, route}) => {
     }
     return (
       <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
-        <Animated.View style={{flex: 1, transform: [{translateY: animatedValueTextInputs}]}}>
+        <Animated.View style={[{flex: 1}, animateTextInputs]}>
           {renderSidePanelContent()}
         </Animated.View>
       </Animated.View>
@@ -574,14 +568,13 @@ const Home = ({navigation, route}) => {
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
       <MainMenuPanel
-        logout={onLogout}
         closeMainMenuPanel={toggleHomeDrawerButton}
+        logout={onLogout}
         openNotebookPanel={openNotebookPanel}
         openSpotInNotebook={openSpotInNotebook}
+        toggleHomeDrawer={toggleHomeDrawerButton}
         zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
         zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
-        toggleHomeDrawer={toggleHomeDrawerButton}
-        imageSliderNavigation={openImageSlider}
       />
     </Animated.View>
   );
@@ -590,6 +583,7 @@ const Home = ({navigation, route}) => {
     <Animated.View style={[homeStyles.container, animateTextInputs]}>
       {SMALL_SCREEN ? (
         <HomeViewSmallScreen
+          animateLeftSide={animateLeftSide}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
@@ -610,7 +604,9 @@ const Home = ({navigation, route}) => {
         />
       ) : (
         <HomeView
-          animatedValueNotebookDrawer={animatedValueNotebookDrawer}
+          animateLeftSide={animateLeftSide}
+          animateNotebookDrawer={animateNotebookDrawer}
+          animateRightSide={animateRightSide}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
@@ -620,11 +616,9 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          animatedValueLeftSide={animatedValueLeftSide}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           openNotebookPanel={openNotebookPanel}
-          animatedValueRightSide={animatedValueRightSide}
           setDistance={setDistance}
           startEdit={startEdit}
           toggleHomeDrawer={toggleHomeDrawerButton}

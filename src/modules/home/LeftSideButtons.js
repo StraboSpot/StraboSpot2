@@ -12,7 +12,6 @@ const LeftSideButtons = ({
                            clickHandler,
                            dialogClickHandler,
                            toast,
-                           animatedValueLeftSide,
                            mapComponentRef,
                            toggleHomeDrawer,
                          }) => {

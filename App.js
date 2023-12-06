@@ -47,18 +47,18 @@ const App = () => {
 
   return (
     <SafeAreaView style={uiStyles.androidSafeAreaView}>
-    <Toast>
-      <Provider store={store}>
-        <PersistGate loading={<Loading/>} persistor={persistor}>
-          {/*<Sentry.TouchEventBoundary>*/}
-          <ConnectionStatus/>
-          <NavigationContainer>
-            <Routes/>
-          </NavigationContainer>
-          {/*</Sentry.TouchEventBoundary>*/}
-        </PersistGate>
-      </Provider>
-    </Toast>
+      <Toast>
+        <Provider store={store}>
+          <PersistGate loading={<Loading/>} persistor={persistor}>
+            {/*<Sentry.TouchEventBoundary>*/}
+            <ConnectionStatus/>
+            <NavigationContainer>
+              <Routes/>
+            </NavigationContainer>
+            {/*</Sentry.TouchEventBoundary>*/}
+          </PersistGate>
+        </Provider>
+      </Toast>
     </SafeAreaView>
   );
 };

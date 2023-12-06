@@ -13,6 +13,7 @@ import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
 import homeStyles from './home.style';
 
 const HomeViewSmallScreen = ({
+                               animateLeftSide,
                                clickHandler,
                                closeNotebookPanel,
                                dialogClickHandler,
@@ -22,7 +23,6 @@ const HomeViewSmallScreen = ({
                                endMeasurement,
                                isSelectingForStereonet,
                                isSelectingForTagging,
-                               leftsideIconAnimationValue,
                                mapComponentRef,
                                mapMode,
                                openNotebookPanel,
@@ -37,8 +37,6 @@ const HomeViewSmallScreen = ({
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
-
-  const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
 
   const navigationOptions = {
     gestureEnabled: false,
@@ -64,7 +62,7 @@ const HomeViewSmallScreen = ({
   };
 
   return (
-    <Animated.View style={[homeStyles.container, leftsideIconAnimation]}>
+    <Animated.View style={[homeStyles.container, animateLeftSide]}>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (

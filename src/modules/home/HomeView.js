@@ -11,7 +11,9 @@ import RightSideButtons from './RightSideButtons';
 import StatusBar from './StatusBar';
 
 const HomeView = ({
-                    animation,
+                    animateLeftSide,
+                    animateNotebookDrawer,
+                    animateRightSide,
                     clickHandler,
                     closeNotebookPanel,
                     dialogClickHandler,
@@ -21,11 +23,9 @@ const HomeView = ({
                     endMeasurement,
                     isSelectingForStereonet,
                     isSelectingForTagging,
-                    leftsideIconAnimationValue,
                     mapComponentRef,
                     mapMode,
                     openNotebookPanel,
-                    rightsideIconAnimationValue,
                     setDistance,
                     startEdit,
                     toggleHomeDrawer,
@@ -34,10 +34,6 @@ const HomeView = ({
 
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
 
-  const animateNotebookMenu = {transform: [{translateX: animation}]};
-  const leftsideIconAnimation = {transform: [{translateX: leftsideIconAnimationValue}]};
-  const rightsideIconAnimation = {transform: [{translateX: rightsideIconAnimationValue}]};
-
   const toggleNotebookPanel = () => {
     if (isNotebookPanelVisible) closeNotebookPanel();
     else openNotebookPanel();
@@ -45,7 +41,7 @@ const HomeView = ({
 
   const renderNotebookPanel = () => {
     return (
-      <Animated.View style={[notebookStyles.panel, animateNotebookMenu]}>
+      <Animated.View style={[notebookStyles.panel, animateNotebookDrawer]}>
         <NotebookPanel
           closeNotebookPanel={closeNotebookPanel}
           createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
@@ -69,6 +65,7 @@ const HomeView = ({
       />
       <StatusBar/>
       <RightSideButtons
+        animateRightSide={animateRightSide}
         clickHandler={clickHandler}
         distance={distance}
         drawButtonsVisible={drawButtonsVisible}
@@ -76,13 +73,12 @@ const HomeView = ({
         endMeasurement={endMeasurement}
         mapMode={mapMode}
         openNotebookPanel={openNotebookPanel}
-        rightsideIconAnimation={rightsideIconAnimation}
         toggleNotebookPanel={toggleNotebookPanel}
       />
       <LeftSideButtons
+        animateLeftSide={animateLeftSide}
         clickHandler={clickHandler}
         dialogClickHandler={dialogClickHandler}
-        leftsideIconAnimation={leftsideIconAnimation}
         mapComponentRef={mapComponentRef}
         toggleHomeDrawer={toggleHomeDrawer}
       />

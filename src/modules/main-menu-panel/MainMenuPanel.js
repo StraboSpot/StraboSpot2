@@ -31,10 +31,10 @@ const MainMenuPanel = ({
                          closeMainMenuPanel,
                          logout,
                          openNotebookPanel,
-                         openSidePanel,
+                         openSpotInNotebook,
                          toggleHomeDrawer,
-                         zoomToCustomMap,
                          zoomToCenterOfflineTile,
+                         zoomToCustomMap,
                        }) => {
   console.log('Rendering MainMenuPanel...');
 
@@ -66,10 +66,7 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
       page = (
         <View style={styles.mainMenuContainer}>
-          <MyStraboSpot
-            openSidePanel={openSidePanel}
-            logout={logout}
-          />
+          <MyStraboSpot logout={logout}/>
         </View>
       );
       break;

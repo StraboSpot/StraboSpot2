@@ -19,7 +19,6 @@ const Routes = () => {
   const currentProject = useSelector(state => state.project.project);
   const userInfo = useSelector(state => state.user);
 
-
   const [isLoading, setIsLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
@@ -33,9 +32,7 @@ const Routes = () => {
         dispatch({type: REDUX.CLEAR_STORE});
         await useSignIn.autoLogin();
       }
-      else if (userInfo.name && !isEmpty(currentProject)) {
-        dispatch(login());
-      }
+      else if (userInfo.name && !isEmpty(currentProject)) dispatch(login());
       else dispatch(logout());
     }
     finally {
@@ -43,19 +40,8 @@ const Routes = () => {
     }
   };
 
-  return (
-    <>
-      {isLoading ? (
-        <LoadingSplashScreen/>
-        ) : (
-        userInfo.isAuthenticated ? (
-        <AppStack/>
-      ) : (
-        <AuthStack/>
-      ))
-      }
-    </>
-  );
+  return isLoading ? <LoadingSplashScreen/>
+    : userInfo.isAuthenticated ? <AppStack/> : <AuthStack/>;
 };
 
 export default Routes;
