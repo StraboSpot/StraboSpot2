@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialUserState = {
+  isAuthenticated: false,
   encoded_login: null,
   name: null,
   email: null,
@@ -23,9 +24,15 @@ const userProfileSlice = createSlice({
       state.encoded_login = encoded_login;
       state.image = image;
     },
+    login(state) {
+      state.isAuthenticated = true;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+    },
   },
 });
 
-export const {setUserData} = userProfileSlice.actions;
+export const {login, logout, setUserData} = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;

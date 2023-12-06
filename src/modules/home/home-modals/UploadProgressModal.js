@@ -16,7 +16,7 @@ import {setSelectedProject} from '../../project/projects.slice';
 import {addedStatusMessage, setProgressModalVisible} from '../home.slice';
 
 
-const UploadProgressModal = (props) => {
+const UploadProgressModal = () => {
 
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
@@ -33,7 +33,7 @@ const UploadProgressModal = (props) => {
   const useUpload = useUploadHook();
 
   useEffect(() => {
-    if (isProgressModalVisible) renderUploadProgressModal().catch(err => console.error('Error in UploadProgressModal'));
+    if (isProgressModalVisible) renderUploadProgressModal().catch(err => console.error('Error in UploadProgressModal', err));
   }, [isProgressModalVisible]);
 
   const handleCompletePress = async () => {
@@ -63,7 +63,7 @@ const UploadProgressModal = (props) => {
     }
   };
 
-  const renderList = (dataset) => {
+  const renderDatasetsNotUploadedList = (dataset) => {
     return (
       <Text style={{textAlign: 'left'}}>{dataset.name}</Text>
     );
@@ -99,7 +99,7 @@ const UploadProgressModal = (props) => {
             on the server is the same or newer:</Text>
           <FlatList
             data={datasetsNotUploaded}
-            renderItem={({item}) => renderList(item)}
+            renderItem={({item}) => renderDatasetsNotUploadedList(item)}
             ListEmptyComponent={<Text>All datasets were uploaded.</Text>}
           />
         </View>

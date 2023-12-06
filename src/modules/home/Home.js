@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Platform, Text, TextInput, View, useWindowDimensions} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -12,7 +12,7 @@ import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
-import {animatePanels, isEmpty} from '../../shared/Helpers';
+import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useImagesHook from '../images/useImages';
@@ -31,10 +31,10 @@ import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
-import useSignInHook from '../sign-in/useSignIn';
 import {clearedSelectedSpots, setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
+import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 import BackupModal from './home-modals/BackupModal';
 import ErrorModal from './home-modals/ErrorModal';
@@ -64,9 +64,11 @@ SystemNavigationBar.setNavigationColor('translucent');
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
 
-  const homeMenuPanelWidth = 300;
-  const mainMenuSidePanelWidth = 300;
-  const notebookPanelWidth = 400;
+  const deviceDimensions = useWindowDimensions();
+
+  const mainMenuDrawerWidth = 300;
+  const mainMenuSideDrawerWidth = 300;
+  const notebookDrawerWidth = 400;
 
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
@@ -75,7 +77,6 @@ const Home = ({navigation, route}) => {
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
   const useLocation = useLocationHook();
-  const useSignIn = useSignInHook();
   const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -98,27 +99,32 @@ const Home = ({navigation, route}) => {
   const user = useSelector(state => state.user);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
-  const [MainMenuPanelAnimation] = useState(new Animated.Value(-homeMenuPanelWidth));
   const [buttons, setButtons] = useState(
     {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
   const [dialogs, setDialogs] = useState(
     {mapActionsMenuVisible: false, mapSymbolsMenuVisible: false, baseMapMenuVisible: false});
   const [distance, setDistance] = useState(0);
-  const [homeTextInputAnimate] = useState(new Animated.Value(0));
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
-  const [mainMenuSidePanelAnimation] = useState(new Animated.Value(-mainMenuSidePanelWidth));
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [showUpdateLabel, setShowUpdateLabel] = useState(false);
 
-  const animation = useRef(new Animated.Value(notebookPanelWidth)).current;
-  const leftsideIconAnimationValue = useRef(new Animated.Value(0)).current;
+  const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
+  const animatedValueMainMenuDrawer = useRef(new Animated.Value(-mainMenuDrawerWidth)).current;
+  const animatedValueMainMenuSideDrawer = useRef(new Animated.Value(-mainMenuSideDrawerWidth)).current;
+  const animatedValueNotebookDrawer = useRef(new Animated.Value(notebookDrawerWidth)).current;
+  const animatedValueRightSide = useRef(new Animated.Value(0)).current;
+  const animatedValueTextInputs = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
-  const rightsideIconAnimationValue = useRef(new Animated.Value(0)).current;
+
+  const animateMainMenuDrawer = {transform: [{translateX: animatedValueMainMenuDrawer}]};
+  const animateMainMenuSubDrawer = {transform: [{translateX: animatedValueMainMenuSideDrawer}]};
+  const animateNotebookDrawer = {transform: [{translateX: animatedValueNotebookDrawer}]};
+  const animateTextInputs = {transform: [{translateY: animatedValueTextInputs}]};
+  const animateLeftSide = {transform: [{translateX: animatedValueLeftSide}]};
+  const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
 
   useEffect(() => {
-    if (Platform.OS === 'web') useSignIn.autoLogin();
-
     let updateTimer;
     if (Platform.OS === 'android') {
       useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
@@ -194,9 +200,9 @@ const Home = ({navigation, route}) => {
   }, [mapMode]);
 
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
-    homeTextInputAnimate);
+    animatedValueTextInputs);
 
-  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(homeTextInputAnimate);
+  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(animatedValueTextInputs);
 
   const cancelEdits = async () => {
     await mapComponentRef.current?.cancelEdits();
@@ -287,14 +293,14 @@ const Home = ({navigation, route}) => {
   const closeMainMenu = () => {
     dispatch(setMainMenuPanelVisible(false));
     dispatch(setMenuSelectionPage({name: undefined}));
-    animatePanels(MainMenuPanelAnimation, -homeMenuPanelWidth);
-    animatePanels(leftsideIconAnimationValue, 0);
+    animateDrawer(animatedValueMainMenuDrawer, -mainMenuDrawerWidth);
+    animateDrawer(animatedValueLeftSide, 0);
   };
 
   const closeNotebookPanel = () => {
     console.log('Closing Notebook...');
-    animatePanels(animation, notebookPanelWidth);
-    animatePanels(rightsideIconAnimationValue, 0);
+    animateDrawer(animatedValueNotebookDrawer, notebookDrawerWidth);
+    animateDrawer(animatedValueRightSide, 0);
     dispatch(setNotebookPanelVisible(false));
     if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
       dispatch(setModalVisible({modal: null}));
@@ -368,8 +374,8 @@ const Home = ({navigation, route}) => {
 
   const openMainMenu = () => {
     dispatch(setMainMenuPanelVisible(true));
-    animatePanels(MainMenuPanelAnimation, 0);
-    animatePanels(leftsideIconAnimationValue, homeMenuPanelWidth);
+    animateDrawer(animatedValueMainMenuDrawer, 0);
+    animateDrawer(animatedValueLeftSide, mainMenuDrawerWidth);
   };
 
   const openNotebookPanel = (pageView) => {
@@ -377,8 +383,8 @@ const Home = ({navigation, route}) => {
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
     dispatch(setNotebookPanelVisible(true));
-    animatePanels(animation, 0);
-    animatePanels(rightsideIconAnimationValue, -notebookPanelWidth);
+    animateDrawer(animatedValueNotebookDrawer, 0);
+    animateDrawer(animatedValueRightSide, -notebookDrawerWidth);
     if (SMALL_SCREEN) {
       navigation.navigate('HomeScreen', {screen: 'Notebook'});
       closeMainMenu();
@@ -450,16 +456,16 @@ const Home = ({navigation, route}) => {
     if (SMALL_SCREEN) {
       return (
         <Animated.View
-          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSidePanel]}>
-          <Animated.View style={{flex: 1, transform: [{translateY: homeTextInputAnimate}]}}>
+          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
+          <Animated.View style={{flex: 1, animateTextInputs}}>
             {renderSidePanelContent()}
           </Animated.View>
         </Animated.View>
       );
     }
     return (
-      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSidePanel]}>
-        <Animated.View style={{flex: 1, transform: [{translateY: homeTextInputAnimate}]}}>
+      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
+        <Animated.View style={{flex: 1, transform: [{translateY: animatedValueTextInputs}]}}>
           {renderSidePanelContent()}
         </Animated.View>
       </Animated.View>
@@ -548,27 +554,25 @@ const Home = ({navigation, route}) => {
 
   const toggleSidePanel = () => {
     if (isSidePanelVisible) {
-      animatePanels(mainMenuSidePanelAnimation, mainMenuSidePanelWidth);
+      animateDrawer(animatedValueMainMenuSideDrawer, mainMenuSideDrawerWidth);
       return renderSidePanelView();
     }
-    else animatePanels(mainMenuSidePanelAnimation, -mainMenuSidePanelWidth);
+    else animateDrawer(animatedValueMainMenuSideDrawer, -mainMenuSideDrawerWidth);
     return renderSidePanelView();
   };
 
   const onLogout = () => {
     toggleHomeDrawerButton();
     closeNotebookPanel();
+    dispatch(logout());
   };
 
   const toggleOfflineMapLabel = () => {
     return Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
   };
 
-  const animateMainMenuSidePanel = {transform: [{translateX: mainMenuSidePanelAnimation}]};
-  const animateSettingsPanel = {transform: [{translateX: MainMenuPanelAnimation}]};
-
   const MainMenu = (
-    <Animated.View style={[settingPanelStyles.settingsDrawer, animateSettingsPanel]}>
+    <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
       <MainMenuPanel
         logout={onLogout}
         closeMainMenuPanel={toggleHomeDrawerButton}
@@ -583,7 +587,7 @@ const Home = ({navigation, route}) => {
   );
 
   return (
-    <Animated.View style={[homeStyles.container, {transform: [{translateY: homeTextInputAnimate}]}]}>
+    <Animated.View style={[homeStyles.container, animateTextInputs]}>
       {SMALL_SCREEN ? (
         <HomeViewSmallScreen
           clickHandler={clickHandler}
@@ -595,7 +599,7 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          leftsideIconAnimationValue={leftsideIconAnimationValue}
+          animatedValueLeftSide={animatedValueLeftSide}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           openNotebookPanel={openNotebookPanel}
@@ -606,7 +610,7 @@ const Home = ({navigation, route}) => {
         />
       ) : (
         <HomeView
-          animation={animation}
+          animatedValueNotebookDrawer={animatedValueNotebookDrawer}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
@@ -616,11 +620,11 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          leftsideIconAnimationValue={leftsideIconAnimationValue}
+          animatedValueLeftSide={animatedValueLeftSide}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           openNotebookPanel={openNotebookPanel}
-          rightsideIconAnimationValue={rightsideIconAnimationValue}
+          animatedValueRightSide={animatedValueRightSide}
           setDistance={setDistance}
           startEdit={startEdit}
           toggleHomeDrawer={toggleHomeDrawerButton}
@@ -633,6 +637,7 @@ const Home = ({navigation, route}) => {
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
           closeModal={closeInitialProjectLoadModal}
+          logout={onLogout}
           openMainMenu={toggleHomeDrawerButton}
           visible={isProjectLoadSelectionModalVisible}
         />

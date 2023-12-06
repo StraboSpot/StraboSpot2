@@ -35,7 +35,6 @@ const TagsNotebookModal = (props) => {
     return (
       <React.Fragment>
         <Modal
-          style={{width: 285}}
           close={props.close}
           onPress={props.onPress}
         >

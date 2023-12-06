@@ -16,6 +16,7 @@ import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 
 const RightSideButtons = ({
+                            animateRightSide,
                             clickHandler,
                             distance,
                             drawButtonsVisible,
@@ -23,7 +24,6 @@ const RightSideButtons = ({
                             endMeasurement,
                             mapMode,
                             openNotebookPanel,
-                            rightsideIconAnimation,
                             toggleNotebookPanel,
                           }) => {
   const dispatch = useDispatch();
@@ -69,7 +69,7 @@ const RightSideButtons = ({
 
     return (
       <Animated.View
-        style={[homeStyles.shortcutButtons, rightsideIconAnimation]}>
+        style={[homeStyles.shortcutButtons, animateRightSide]}>
         {SHORTCUT_MODALS.reduce((acc, sm) => {
             return (
               shortcutSwitchPosition[sm.key] ? [...acc, (
@@ -91,7 +91,7 @@ const RightSideButtons = ({
     <React.Fragment>
       {stratSection && (
         <Animated.View
-          style={[homeStyles.addIntervalButton, rightsideIconAnimation]}>
+          style={[homeStyles.addIntervalButton, animateRightSide]}>
           <IconButton
             source={isNotebookPanelVisible
               ? require('../../assets/icons/AddIntervalButton_pressed.png')
@@ -101,7 +101,7 @@ const RightSideButtons = ({
         </Animated.View>
       )}
       <Animated.View
-        style={[homeStyles.notebookButton, rightsideIconAnimation]}>
+        style={[homeStyles.notebookButton, animateRightSide]}>
         <IconButton
           source={isNotebookPanelVisible
             ? require('../../assets/icons/NotebookViewButton_pressed.png')
@@ -111,7 +111,7 @@ const RightSideButtons = ({
       </Animated.View>
       {!currentImageBasemap && !stratSection && !isNotebookPanelVisible && renderShortcutIcons()}
       {drawButtonsVisible && (
-        <Animated.View style={[homeStyles.drawContainer, rightsideIconAnimation]}>
+        <Animated.View style={[homeStyles.drawContainer, animateRightSide]}>
           <DrawInfo
             distance={distance}
             endDraw={endDraw}

@@ -1,10 +1,7 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
-
-const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-const deviceDimensions = Dimensions.get(platform);
 
 const styles = StyleSheet.create({
   animationContainer: {
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
   overlayContainer: {
     paddingBottom: 10,
     width: 300,
-    maxHeight: deviceDimensions.height * 0.95,
+    maxHeight: '90%',
     borderRadius: 20,
   },
   overlayContent: {

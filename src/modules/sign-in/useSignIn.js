@@ -7,7 +7,6 @@ import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
-import {REDUX} from '../../shared/app.constants';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -18,7 +17,7 @@ import {
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import useProjectHook from '../project/useProject';
-import {setUserData} from '../user/userProfile.slice';
+import {login, setUserData} from '../user/userProfile.slice';
 
 const useSignIn = () => {
   const dispatch = useDispatch();
@@ -51,7 +50,6 @@ const useSignIn = () => {
     console.log('Credentials', credentialsEncoded, 'Project Id', projectId);
     console.log('Auto Login Here...');
     console.log('First, force logout and destroy project');
-    dispatch({type: REDUX.CLEAR_STORE});
 
     console.log('Credentials set, check for validity.');
 
@@ -64,7 +62,7 @@ const useSignIn = () => {
         login.password = credentials.split('*****')[1];
         login.encoded_login = btoa(login.email + ':' + login.password);
 
-        await signIn(login.email, login.password);
+        return await signIn(login.email, login.password);
       }
       catch (err) {
         autoLoginError(err);
@@ -104,12 +102,10 @@ const useSignIn = () => {
     });
     if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
-    navigation.navigate('HomeScreen');
     setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
   };
 
   const signIn = async (username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible) => {
-    dispatch(setLoadingStatus({view: 'home', bool: true}));
     console.log(`Authenticating ${username} and signing in...`);
     try {
       const userAuthResponse = await serverRequests.authenticateUser(username, password);
@@ -127,7 +123,7 @@ const useSignIn = () => {
         }
         if (setUsername) setUsername('');
         if (setPassword) setPassword('');
-        navigation.navigate('HomeScreen');
+        dispatch(login());
       }
       else {
         if (setErrorMessage) setErrorMessage('Login Failure!\n\nIncorrect username and/or password');
@@ -135,6 +131,8 @@ const useSignIn = () => {
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         if (setPassword) setPassword('');
       }
+
+      return userAuthResponse?.valid;
     }
     catch (err) {
       console.log('error:', err);

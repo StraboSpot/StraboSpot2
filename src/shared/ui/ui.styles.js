@@ -1,4 +1,4 @@
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet, useWindowDimensions} from 'react-native';
 
 import * as themes from '../styles.constants';
 
@@ -9,6 +9,15 @@ const styles = StyleSheet.create({
   },
   alignItemsToCenter: {
     alignItems: 'center',
+  },
+  androidSafeAreaView: {
+    flex: 1,
+    backgroundColor: themes.BLACK,
+    paddingTop: Platform.select({
+      android: 35,
+      ios: 0,
+      web: 0,
+    }),
   },
   backdrop: {
     position: 'absolute',

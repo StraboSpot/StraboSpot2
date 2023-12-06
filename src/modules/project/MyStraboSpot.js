@@ -20,7 +20,7 @@ import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 
-const MyStraboSpot = (props) => {
+const MyStraboSpot = ({logout}) => {
   const [showSection, setShowSection] = useState('none');
   const [importedProject, setImportedProject] = useState({});
   const [importComplete] = useState(false);
@@ -86,7 +86,7 @@ const MyStraboSpot = (props) => {
       case 'none':
         return (
           <View style={{padding: 10}}>
-            <UserProfile logout={props.logout}/>
+            <UserProfile logout={logout}/>
             {Platform.OS !== 'web' && (
               <>
                 <Spacer/>

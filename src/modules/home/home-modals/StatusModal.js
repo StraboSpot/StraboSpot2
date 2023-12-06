@@ -15,7 +15,7 @@ import {setSelectedProject} from '../../project/projects.slice';
 import {setStatusMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlay.styles';
 
-const StatusModal = (props) => {
+const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
   const dispatch = useDispatch();
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isModalLoading = useSelector(state => state.home.loading.modal);
@@ -41,7 +41,7 @@ const StatusModal = (props) => {
     }
     else {
       dispatch(setStatusMessagesModalVisible(false));
-      props.openMainMenu();
+      openMainMenu();
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
     }
   };
@@ -89,7 +89,7 @@ const StatusModal = (props) => {
               title={'Export Project?'}
               containerStyle={{padding: 10}}
               type={'clear'}
-              onPress={props.exportProject}
+              onPress={exportProject}
             />
           )}
           <Button
@@ -102,7 +102,7 @@ const StatusModal = (props) => {
             }}
             title={'Visit account at StraboSpot.org'}
             type={'clear'}
-            onPress={props.openUrl}/>
+            onPress={openUrl}/>
         </View>
         }
       </View>

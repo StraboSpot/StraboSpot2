@@ -1,12 +1,7 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {PRIMARY_TEXT_SIZE} from '../../shared/styles.constants';
 
-const platform = Platform.OS === 'ios' ? 'screen' : 'window';
-const windowWidth = Dimensions.get(platform).width;
-const windowHeight = Dimensions.get(platform).height;
-console.log('width', windowWidth);
-console.log('height', windowHeight);
 const splashscreenStyles = StyleSheet.create({
   backgroundImage: {
     flex: 1,

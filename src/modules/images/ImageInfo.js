@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Text, Dimensions, Platform, View} from 'react-native';
+import {ActivityIndicator, Text, Platform, View, useWindowDimensions} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
@@ -18,6 +18,8 @@ import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
   console.log('Rendering ImageInfo...');
+
+  const {width, height} = useWindowDimensions();
 
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
@@ -80,7 +82,7 @@ const ImageInfo = (props) => {
       <Image
         source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageId)}
           : {uri: useImages.getLocalImageURI(imageId)}}
-        style={Platform.OS === 'web' ? {width: Dimensions.get('window').width, height: Dimensions.get('window').height}
+        style={Platform.OS === 'web' ? {width: width, height: height}
           : {width: '100%', height: '100%'}}
         resizeMode={'contain'}
         PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>

@@ -3,6 +3,7 @@ import {FlatList, Text, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -21,6 +22,7 @@ import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice'
 import {TagDetailModal, useTagsHook} from '../tags';
 
 const TagsModal = (props) => {
+  const toast = useToast();
   const [useTags] = useTagsHook();
   const useLocation = useLocationHook();
 
@@ -67,8 +69,8 @@ const TagsModal = (props) => {
   };
 
   const save = async () => {
-    dispatch(setLoadingStatus({view: 'home', bool: true}));
     try {
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       let tagsToUpdate = [];
       if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
         useLocation.setPointAtCurrentLocation().then((spot) => {
@@ -83,12 +85,15 @@ const TagsModal = (props) => {
       }
       else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
       // if (props.close) props.close();
-      // dispatch(setLoadingStatus({view: 'home', bool: false}));
       dispatch(setModalVisible({modal: null}));
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      toast.show('Tags Saved!', {type: 'success'});
     }
     catch (err) {
       console.error('Error saving Tag', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
+      toast.show('Tags Saved Error!', {type: 'danger'});
+
     }
   };
 

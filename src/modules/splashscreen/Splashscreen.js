@@ -12,12 +12,12 @@ import Loading from '../../shared/ui/Loading';
 import splashscreenStyles from './splashscreen.styles';
 
 const Splashscreen = (props) => {
-  const windowDimensions = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
 
-  const fontSize = getFontSizeByWindowWidth(windowDimensions, 40);
+  const fontSize = getFontSizeByWindowWidth({width, height}, 40);
   const titleStyles = [splashscreenStyles.title, {fontSize}];
 
-  const loading = useSelector((state) => state.home.loading.home);
+  const loading = useSelector(state => state.home.loading.home);
 
   return (
     <ImageBackground
@@ -44,10 +44,10 @@ const Splashscreen = (props) => {
             </Text>
             <Text style={splashscreenStyles.dimensionsText}>
               {' '}
-              H: {windowDimensions.height.toFixed(0)}{' '}
+              H: {height.toFixed(0)}{' '}
             </Text>
             <Text style={splashscreenStyles.dimensionsText}>
-              W: {windowDimensions.width.toFixed(0)}{' '}
+              W: {width.toFixed(0)}{' '}
             </Text>
           </View>
         )}

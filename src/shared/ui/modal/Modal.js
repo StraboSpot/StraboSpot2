@@ -14,6 +14,7 @@ import ModalHeader from './ModalHeader';
 const {State: TextInputState} = TextInput;
 
 const Modal = (props) => {
+
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -61,7 +62,7 @@ const Modal = (props) => {
     return (
       <Overlay
         isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT}
-        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}
+        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]}
       >
         <ModalHeader {...props}/>
         {props.children}
@@ -70,7 +71,7 @@ const Modal = (props) => {
     );
   }
   return (
-    <View style={[modalStyle.modalContainer, modalStyle.modalPosition, props.style]}>
+    <View style={[modalStyle.modalContainer, modalStyle.modalPosition]}>
       <ModalHeader {...props}/>
       {props.children}
       {!isEmpty(selectedSpot) && renderModalBottom()}

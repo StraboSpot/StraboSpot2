@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Animated} from 'react-native';
 
-import {useToast} from 'react-native-toast-notifications';
 import {useSelector} from 'react-redux';
 
 import IconButton from '../../shared/ui/IconButton';
@@ -9,9 +8,11 @@ import homeStyles from './home.style';
 import MapActionButtons from './MapActionButtons';
 
 const LeftSideButtons = ({
+                           animateLeftSide,
                            clickHandler,
                            dialogClickHandler,
-                           leftsideIconAnimation,
+                           toast,
+                           animatedValueLeftSide,
                            mapComponentRef,
                            toggleHomeDrawer,
                          }) => {
@@ -21,8 +22,6 @@ const LeftSideButtons = ({
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [userLocationButtonOn, setUserLocationButtonOn] = useState(false);
-
-  const toast = useToast();
 
   let timeout;
 
@@ -42,13 +41,13 @@ const LeftSideButtons = ({
   const clearLocationTimer = () => {
     setUserLocationButtonOn(false);
     clickHandler('toggleUserLocation', false);
-    toast.show('Geolocation turned off automatically to conserve battery.');
+    toast('Geolocation turned off automatically to conserve battery.');
     console.log('Location timer cleared');
   };
 
   return (
     <React.Fragment>
-      <Animated.View style={[homeStyles.homeIconContainer, leftsideIconAnimation]}>
+      <Animated.View style={[homeStyles.homeIconContainer, animateLeftSide]}>
         <IconButton
           source={isMainMenuPanelVisible
             ? require('../../assets/icons/HomeButton_pressed.png')
@@ -56,13 +55,13 @@ const LeftSideButtons = ({
           onPress={toggleHomeDrawer}
         />
       </Animated.View>
-      <Animated.View style={[leftsideIconAnimation]}>
+      <Animated.View style={[animateLeftSide]}>
         <MapActionButtons
           dialogClickHandler={dialogClickHandler}
           mapComponentRef={mapComponentRef}
         />
       </Animated.View>
-      <Animated.View style={[homeStyles.bottomLeftIcons, leftsideIconAnimation]}>
+      <Animated.View style={[homeStyles.bottomLeftIcons, animateLeftSide]}>
         {!currentImageBasemap && !stratSection && (
           <IconButton
             source={userLocationButtonOn

@@ -1,4 +1,4 @@
-import {Dimensions, Image, PermissionsAndroid, Platform} from 'react-native';
+import {Image, PermissionsAndroid, Platform, useWindowDimensions} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -27,6 +27,8 @@ import {
 } from '../spots/spots.slice';
 
 const useImages = () => {
+  const {width, height} = useWindowDimensions();
+
   const navigation = useNavigation();
   const toast = useToast();
   const useDevice = useDeviceHook();
@@ -219,8 +221,8 @@ const useImages = () => {
 
   const getImageHeightAndWidth = (imageURI) => {
     return new Promise((resolve, reject) => {
-      Image.getSize(imageURI, (width, height) => {
-        resolve({height: height, width: width});
+      Image.getSize(imageURI, (imageWidth, imageHeight) => {
+        resolve({height: imageHeight, width: imageWidth});
       }, (err) => {
         console.log('Error getting size of image:', err.message);
         reject(err);
@@ -233,7 +235,6 @@ const useImages = () => {
   };
 
   const getImageScreenSizedURI = (id) => {
-    const {width, height} = Dimensions.get('window');
     return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
   };
 
@@ -266,23 +267,23 @@ const useImages = () => {
   };
 
   const resizeImageIfNecessary = async (imageData) => {
-    let height = imageData.height;
-    let width = imageData.width;
+    let imgHeight = imageData.height;
+    let imgWidth = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    if (!imgHeight || !imgWidth) ({imgHeight, imgWidth} = await getImageHeightAndWidth(tempImageURI));
     let resizedImage, createResizedImageProps;
-    createResizedImageProps = (height > 4096 || width > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
-      : [tempImageURI, width, height, 'JPEG', 100, 0];
+    createResizedImageProps = (imgHeight > 4096 || imgWidth > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
+      : [tempImageURI, imgWidth, imgHeight, 'JPEG', 100, 0];
     resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
     return resizedImage;
   };
 
   const saveFile = async (imageData) => {
     console.log('New image data:', imageData);
-    let height = imageData.height;
-    let width = imageData.width;
+    let imgHeight = imageData.height;
+    let imgWidth = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!height || !width) ({height, width} = await getImageHeightAndWidth(tempImageURI));
+    if (!imgHeight || !imgWidth) ({imgHeight, imgWidth} = await getImageHeightAndWidth(tempImageURI));
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
@@ -293,8 +294,8 @@ const useImages = () => {
       // imageCount++;
       return {
         id: imageId,
-        height: height,
-        width: width,
+        height: imgHeight,
+        width: imgWidth,
       };
     }
     catch (err) {

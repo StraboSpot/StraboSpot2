@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Dimensions, Text, View} from 'react-native';
+import {Text, useWindowDimensions, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
@@ -11,6 +11,8 @@ import ModalHeader from '../../shared/ui/modal/ModalHeader';
 import {Form, formStyles, MainButtons, useFormHook} from '../form';
 
 const AddRockMetamorphicModal = (props) => {
+  const {width} = useWindowDimensions();
+
   const [isFaciesModalVisible, setIsFaciesModalVisible] = useState(false);
 
   const [useForm] = useFormHook();
@@ -65,7 +67,6 @@ const AddRockMetamorphicModal = (props) => {
   };
 
   const renderFaciesModal = () => {
-    const {width} = Dimensions.get('window');
     const faciesModalWidth = width > 520 ? 500 : '90%';
     return (
       <Overlay
