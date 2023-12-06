@@ -51,7 +51,7 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
       title={'Status'}
       isVisible={isStatusMessagesModalVisible}
       closeModal={() => dispatch(setStatusMessagesModalVisible(false))}
-      showConfirmButton={true}
+      showConfirmButton={!isModalLoading}
       onConfirmPress={() => dispatch(setStatusMessagesModalVisible(false))}
     >
       <View>
