@@ -3,6 +3,7 @@ import {Animated, Keyboard, Platform, Text, TextInput, View, useWindowDimensions
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -64,6 +65,7 @@ import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import StatusBar from './StatusBar';
+import uiStyles from '../../shared/ui/ui.styles';
 
 const {State: TextInputState} = TextInput;
 SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
@@ -595,6 +597,7 @@ const Home = ({navigation, route}) => {
   };
 
   return (
+    <SafeAreaView style={uiStyles.safeAreaView}>
     <Animated.View style={[homeStyles.container, animateTextInputs]}>
       <Map
         mapComponentRef={mapComponentRef}
@@ -659,6 +662,7 @@ const Home = ({navigation, route}) => {
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
       {showUpdateLabel && <VersionCheckLabel/>}
     </Animated.View>
+    </SafeAreaView>
   );
 };
 
