@@ -3,6 +3,7 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import {MAP_MODES} from '../maps/maps.constants';
 import homeStyles from './home.style';
@@ -20,7 +21,8 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
       <IconButton
         source={mapMode === MAP_MODES.DRAW.POINT
           ? require('../../assets/icons/PointButton_pressed.png')
-          : require('../../assets/icons/PointButton.png')}
+          : SMALL_SCREEN ? require('../../assets/icons/PointButton_Transparent.png')
+            : require('../../assets/icons/PointButton.png')}
         onPress={() => clickHandler(MAP_MODES.DRAW.POINT)}
       />
     ) : (

@@ -30,7 +30,7 @@ const ActionButtonsSmallScreen = ({
         endMeasurement={endMeasurement}
         mapMode={mapMode}
       />
-      <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
+      <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 0, backgroundColor: themes.LIGHTGREY, borderRadius: 15}}>
         {(currentImageBasemap || stratSection) && (
           <View style={{paddingRight: 40}}>
             {currentImageBasemap && (
@@ -50,7 +50,7 @@ const ActionButtonsSmallScreen = ({
         <View
           style={{
             alignItems: 'center',
-            backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+            // backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
             borderRadius: 10,
             flexDirection: 'row',
             padding: 5,
