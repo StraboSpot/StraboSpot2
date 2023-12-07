@@ -160,14 +160,14 @@ const Basemap = (props) => {
   };
 
   const scaleBarPosition = () => {
-    return SMALL_SCREEN ? {top: 20, left: 30} : {bottom: 20, left: 80};
+    return SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
   };
 
   return (
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
-        <View style={homeStyles.zoomAndScaleBarContainer}>
-          <Text style={zoomTextStyle}>Zoom:</Text>
+        <View style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}>
+          <Text style={zoomTextStyle}>Zoom:  </Text>
           <Text style={zoomTextStyle}>{zoomText.toFixed(1)}</Text>
         </View>
       )}

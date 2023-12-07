@@ -177,7 +177,6 @@ const homeStyles = StyleSheet.create({
     fontWeight: '600',
     textShadowColor: themes.LIGHTGREY,
     textShadowRadius: 10,
-    marginLeft: 40,
   },
   currentZoomTextWhite: {
     color: themes.LIGHTGREY,
@@ -185,7 +184,6 @@ const homeStyles = StyleSheet.create({
     fontWeight: '600',
     textShadowColor: themes.BLACK,
     textShadowRadius: 10,
-    marginLeft: 40,
   },
   addIntervalButton: {
     position: 'absolute',
@@ -206,8 +204,14 @@ const homeStyles = StyleSheet.create({
   zoomAndScaleBarContainer: {
     zIndex: 1,
     position: 'absolute',
-    bottom: 60,
-    left: 40,
+    bottom: 40,
+    left: 100,
+  },
+  zoomAndScaleBarContainerSmallScreen: {
+    zIndex: 1,
+    position: 'absolute',
+    top: 10,
+    left: 10,
   },
   webScaleControl: {
     position: 'absolute',
