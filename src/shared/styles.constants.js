@@ -44,4 +44,6 @@ export const MAIN_MENU_DRAWER_WIDTH = 300;
 export const MAIN_MENU_SIDE_DRAWER_WIDTH = 300;
 export const NOTEBOOK_DRAWER_WIDTH = 400;
 
-export const SMALL_SCREEN = width < 768 || height < 768;
+export const SMALL_SCREEN = width < 600 || height < 480;
+export const MEDIUM_SCREEN = (width >= 600 && width < 840) || (height >= 480 && height < 900);
+export const LARGE_SCREEN = width > 840 || height > 900;

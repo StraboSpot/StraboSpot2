@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -205,10 +205,12 @@ const MainMenuPanel = ({
   }
 
   return (
+    <SafeAreaView style={{flex: 1}}>
     <View style={styles.container}>
       {mainMenuHeader}
       {page}
     </View>
+    </SafeAreaView>
   );
 };
 

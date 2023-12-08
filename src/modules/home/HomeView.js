@@ -1,6 +1,7 @@
 import React from 'react';
 import {Animated} from 'react-native';
 
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 
 import LeftSideButtons from './LeftSideButtons';
@@ -42,7 +43,7 @@ const HomeView = ({
   };
 
   return (
-    <>
+    <SafeAreaView style={{flex: 1}}>
       <Map
         endDraw={endDraw}
         isSelectingForStereonet={isSelectingForStereonet}
@@ -87,7 +88,7 @@ const HomeView = ({
           zoomToSpot={mapComponentRef.current?.zoomToSpot}
         />
       </Animated.View>
-    </>
+    </SafeAreaView>
   );
 };
 

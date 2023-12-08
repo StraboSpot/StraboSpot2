@@ -588,7 +588,6 @@ const Home = ({navigation, route}) => {
   );
 
   return (
-    <SafeAreaView style={uiStyles.safeAreaView}>
       <Animated.View style={[homeStyles.container, animateTextInputs]}>
         {SMALL_SCREEN ? (
           <HomeViewSmallScreen
@@ -668,7 +667,6 @@ const Home = ({navigation, route}) => {
         {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
         {showUpdateLabel && <VersionCheckLabel/>}
       </Animated.View>
-    </SafeAreaView>
   );
 };
 
