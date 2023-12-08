@@ -15,7 +15,7 @@ import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
 import overlayStyles from './overlay.styles';
 
-const BaseMapDialog = (props) => {
+const BaseMapDialog = ({mapComponentRef, ...props}) => {
 
   const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
@@ -205,7 +205,7 @@ const BaseMapDialog = (props) => {
       // onPress={async () => {
       //   const baseMap = await useMaps.setBasemap(customMap.id);
       //   props.close();
-      //   setTimeout(() => props.zoomToCustomMap(baseMap.bbox), 1000);
+      //   setTimeout(() => mapComponentRef.current?.zoomToCustomMap(baseMap.bbox), 1000);
       // }}
     >
       <ListItem.Content>
@@ -227,12 +227,12 @@ const BaseMapDialog = (props) => {
     if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
       if (!customMap.url) baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
       else baseMap = await useMaps.setBasemap(customMap.id);
-      baseMap.bbox && setTimeout(() => props.zoomToCustomMap(baseMap?.bbox), 1000);
+      baseMap.bbox && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {
       await useMapsOffline.setOfflineMapTiles(customMap);
-      offlineMaps[customMap.id].bbox && setTimeout(() => props.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10),
-        1000);
+      offlineMaps[customMap.id].bbox
+      && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
     }
   };
 
@@ -252,19 +252,17 @@ const BaseMapDialog = (props) => {
   return (
     <Overlay
       animationType={'slide'}
-      isVisible={props.visible}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
-      onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
+      fullScreen={true}
+      isVisible={props.visible}
+      onBackdropPress={props.onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>
       </View>
-      <View>
-        {renderDefaultBasemapsList()}
-        {determineWhatCustomMapListToRender()}
-        <View/>
-      </View>
+      {renderDefaultBasemapsList()}
+      {determineWhatCustomMapListToRender()}
     </Overlay>
   );
 };

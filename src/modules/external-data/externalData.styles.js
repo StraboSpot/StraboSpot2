@@ -43,7 +43,6 @@ const externalDataStyles = StyleSheet.create({
   },
   textStyle: {
     color: 'black',
-    backgroundColor: 'pink',
     fontWeight: 'bold',
     textAlign: 'center',
   },

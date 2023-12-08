@@ -6,13 +6,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
-import styles from '../measurements/measurements.styles';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import overlayStyles from './overlay.styles';
+import * as themes from '../../shared/styles.constants';
+import styles from '../measurements/measurements.styles';
 
 const MapSymbolsDialog = (props) => {
   const deviceHeight = useWindowDimensions().height;
@@ -62,66 +61,65 @@ const MapSymbolsDialog = (props) => {
   return (
     <Overlay
       animationType={'slide'}
-      isVisible={props.visible}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
-      onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
+      fullScreen={true}
+      isVisible={props.visible}
+      onBackdropPress={props.onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
     >
       <View style={[overlayStyles.titleContainer]}>
         <Text style={[overlayStyles.titleText]}>Map Symbols</Text>
       </View>
-      <View>
-        {!isEmpty(mapSymbols) && (
-          <View style={{maxHeight: deviceHeight * 0.60}}>
-            <FlatList
-              keyExtractor={item => item}
-              data={mapSymbols}
-              renderItem={renderSymbolsList}
-              ItemSeparatorComponent={FlatListItemSeparator}
-            />
-          </View>
-        )}
-        <ListItem
-          key={'all'}
-          containerStyle={commonStyles.listItem}
-        >
-          <ListItem.Content>
-            <ListItem.Title>{'All Symbols'}</ListItem.Title>
-          </ListItem.Content>
-          <Switch onValueChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
-        </ListItem>
-        <FlatListItemSeparator/>
-        <ListItem
-          key={'spotLabels'}
-          containerStyle={commonStyles.listItem}
-        >
-          <ListItem.Content>
-            <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
-          </ListItem.Content>
-          <Switch onValueChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))}
-                  value={isShowSpotLabelsOn}/>
-        </ListItem>
-        <FlatListItemSeparator/>
-        <ListItem
-          key={'tag_color'}
-          containerStyle={commonStyles.listItem}
-        >
-          <ListItem.Content>
-            <ListItem.Title>{'Show Tag Color'}</ListItem.Title>
-          </ListItem.Content>
-          <Switch onValueChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
-        </ListItem>
-        {tagTypeForColor && (
-          <ButtonGroup
-            onPress={i => dispatch(setTagTypeForColor(i === 0 ? 'geologic_unit' : 'concept'))}
-            selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
-            buttons={['Geologic Unit', 'Conceptual']}
-            containerStyle={styles.measurementDetailSwitches}
-            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-            textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
+      {!isEmpty(mapSymbols) && (
+        <View style={{maxHeight: deviceHeight * 0.60}}>
+          <FlatList
+            keyExtractor={item => item}
+            data={mapSymbols}
+            renderItem={renderSymbolsList}
+            ItemSeparatorComponent={FlatListItemSeparator}
           />
-        )}
-      </View>
+        </View>
+      )}
+      <ListItem
+        key={'all'}
+        containerStyle={commonStyles.listItem}
+      >
+        <ListItem.Content>
+          <ListItem.Title>{'All Symbols'}</ListItem.Title>
+        </ListItem.Content>
+        <Switch onValueChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
+      </ListItem>
+      <FlatListItemSeparator/>
+      <ListItem
+        key={'spotLabels'}
+        containerStyle={commonStyles.listItem}
+      >
+        <ListItem.Content>
+          <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
+        </ListItem.Content>
+        <Switch onValueChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))}
+                value={isShowSpotLabelsOn}/>
+      </ListItem>
+      <FlatListItemSeparator/>
+      <ListItem
+        key={'tag_color'}
+        containerStyle={commonStyles.listItem}
+      >
+        <ListItem.Content>
+          <ListItem.Title>{'Show Tag Color'}</ListItem.Title>
+        </ListItem.Content>
+        <Switch onValueChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
+      </ListItem>
+      {tagTypeForColor && (
+        <ButtonGroup
+          onPress={i => dispatch(setTagTypeForColor(i === 0 ? 'geologic_unit' : 'concept'))}
+          selectedIndex={tagTypeForColor === 'geologic_unit' ? 0 : 1}
+          buttons={['Geologic Unit', 'Conceptual']}
+          containerStyle={styles.measurementDetailSwitches}
+          selectedButtonStyle={{backgroundColor: themes.PRIMARY_ACCENT_COLOR}}
+          textStyle={{color: themes.PRIMARY_ACCENT_COLOR}}
+        />
+      )}
     </Overlay>
   );
 };

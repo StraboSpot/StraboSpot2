@@ -91,22 +91,21 @@ const NotebookPanelMenu = (props) => {
   return (
     <View>
       <Overlay
-        overlayStyle={[overlayStyles.overlayContainer, notebookStyles.dialogBoxPosition]}
+        fullScreen={true}
         isVisible={props.visible}
         onBackdropPress={props.onTouchOutside}
+        overlayStyle={[overlayStyles.overlayContainer, notebookStyles.dialogBoxPosition]}
       >
         <View style={overlayStyles.titleContainer}>
           <Text style={overlayStyles.titleText}>Spot Actions</Text>
         </View>
-        <View>
-          <FlatList
-            key={'notebookActions'}
-            data={actions}
-            contentContainerStyle={{alignItems: 'center'}}
-            renderItem={({item}) => renderActionItem(item)}
-            ItemSeparatorComponent={FlatListItemSeparator}
-          />
-        </View>
+        <FlatList
+          key={'notebookActions'}
+          data={actions}
+          contentContainerStyle={{alignItems: 'center'}}
+          renderItem={({item}) => renderActionItem(item)}
+          ItemSeparatorComponent={FlatListItemSeparator}
+        />
       </Overlay>
       <WarningModal
         title={'Delete Spot?'}

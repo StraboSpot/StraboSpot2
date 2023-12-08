@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   animationContainer: {
@@ -12,8 +13,8 @@ const styles = StyleSheet.create({
   },
   baseMapPosition: {
     position: 'absolute',
-    left: 75,
-    bottom: 40,
+    left: SMALL_SCREEN ? 10 : 75,
+    bottom: SMALL_SCREEN ? 70 : 40,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -46,16 +47,15 @@ const styles = StyleSheet.create({
   },
   mapActionsPosition: {
     position: 'absolute',
-    left: 75,
-    bottom: 100,
+    left: SMALL_SCREEN ? 10 : 75,
+    bottom: SMALL_SCREEN ? 10 : 100,
   },
   mapSymbolsPosition: {
     position: 'absolute',
-    left: 75,
-    bottom: 100,
+    left: SMALL_SCREEN ? 10 :  75,
+    bottom: SMALL_SCREEN ? 10 : 100,
   },
   titleContainer: {
-    margin: 10,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
@@ -80,10 +80,15 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   overlayContainer: {
-    paddingBottom: 10,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderColor: themes.MEDIUMGREY,
+    borderRadius: 10,
+    borderWidth: .5,
+    elevation: 2,
+    maxHeight: '60%',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
     width: 300,
-    maxHeight: '90%',
-    borderRadius: 20,
   },
   overlayContent: {
     marginTop: 5,

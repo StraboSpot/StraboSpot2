@@ -3,13 +3,16 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const notebookStyles = StyleSheet.create({
-  panel: {
-    width: 400,
+  notebookDrawer: {
     height: '100%',
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     position: 'absolute',
     right: 0,
+    width: 400,
     zIndex: -1,
+  },
+  notebookPanel: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    flex: 1,
   },
   headerContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

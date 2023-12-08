@@ -8,7 +8,6 @@ const homeStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    overflow: 'hidden',
   },
   connectionStatusIconContainer: {
     paddingEnd: 5,
@@ -72,14 +71,16 @@ const homeStyles = StyleSheet.create({
 
   // --- Drawer Styles ---
   // --- Bottom icons (line, polygon, and point) ---
-  drawToolsContainer: {
-    flex: 1,
+  drawContainer: {
     position: 'absolute',
     bottom: 30,
     right: 10,
-    alignItems: 'center',
     zIndex: -1,
   },
+  drawToolsContainer: {
+    flexDirection: 'row',
+  },
+
   drawToolsButtons: {
     borderRadius: 30,
     borderWidth: 1,
@@ -99,27 +100,45 @@ const homeStyles = StyleSheet.create({
     right: 10,
     backgroundColor: themes.LIGHTGREY,
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     shadowColor: 'black',
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 2,
   },
   selectedDatasetContainer: {
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderRadius: 10,
     padding: 15,
-    width: 185,
+    width: 160,
     shadowColor: 'black',
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 2,
   },
 
+  //Small Screen Icon Box
+  actionButtonsSmallScreenContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 50,
+    alignItems: 'center',
+  },
+  smallScreenMapActionButtons: {
+    flexDirection: 'row',
+    paddingRight: 10,
+  },
+  smallScreenDrawActionButtons: {
+    flexDirection: 'row',
+    paddingLeft: 10,
+  },
+
   // --- Left and right icon absolute positions from top ---
-  leftsideIcons: {
+  mapActionsContainer: {
     position: 'absolute',
     bottom: 150,
+    left: 10,
     zIndex: -1,
   },
   shortcutButtons: {
@@ -135,18 +154,19 @@ const homeStyles = StyleSheet.create({
   },
   notebookButton: {
     position: 'absolute',
+    right: 10,
     top: 10,
-    right: 0,
   },
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
     position: 'absolute',
     bottom: 30,
+    left: 10,
     zIndex: -1,
   },
   homeIconContainer: {
     position: 'absolute',
-    left: 0,
+    left: 10,
     top: 10,
     zIndex: -1,
   },
@@ -156,7 +176,6 @@ const homeStyles = StyleSheet.create({
     fontWeight: '600',
     textShadowColor: themes.LIGHTGREY,
     textShadowRadius: 10,
-    marginLeft: 40,
   },
   currentZoomTextWhite: {
     color: themes.LIGHTGREY,
@@ -164,7 +183,6 @@ const homeStyles = StyleSheet.create({
     fontWeight: '600',
     textShadowColor: themes.BLACK,
     textShadowRadius: 10,
-    marginLeft: 40,
   },
   addIntervalButton: {
     position: 'absolute',
@@ -185,8 +203,21 @@ const homeStyles = StyleSheet.create({
   zoomAndScaleBarContainer: {
     zIndex: 1,
     position: 'absolute',
-    bottom: 60,
-    left: 40,
+    bottom: 40,
+    left: 100,
+  },
+  zoomAndScaleBarContainerSmallScreen: {
+    zIndex: 1,
+    position: 'absolute',
+    top: 10,
+    left: 10,
+  },
+  webScaleControl: {
+    position: 'absolute',
+    left: 50,
+    bottom: 20,
+    background: 'red',
+    fontWeight: 'bold',
   },
 });
 

@@ -7,6 +7,7 @@ import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
@@ -158,11 +159,15 @@ const Basemap = (props) => {
     props.stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
   };
 
+  const scaleBarPosition = () => {
+    return SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
+  };
+
   return (
     <View style={{flex: 1}}>
       {!props.stratSection && !props.imageBasemap && (
-        <View style={homeStyles.zoomAndScaleBarContainer}>
-          <Text style={zoomTextStyle}>Zoom:</Text>
+        <View style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}>
+          <Text style={zoomTextStyle}>Zoom:  </Text>
           <Text style={zoomTextStyle}>{zoomText.toFixed(1)}</Text>
         </View>
       )}
@@ -189,7 +194,7 @@ const Basemap = (props) => {
         onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
         onDidFinishLoadingMap={onDidFinishLoadingMap}
         scaleBarEnabled={!props.imageBasemap && !props.stratSection}
-        scaleBarPosition={{bottom: 20, left: 80}}
+        scaleBarPosition={scaleBarPosition()}
       >
 
         {/* Blue dot for user location */}

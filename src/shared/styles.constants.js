@@ -1,4 +1,7 @@
-import {Platform} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
+
+const platform = Platform.OS === 'ios' ? 'screen' : 'window';
+const {width, height} = Dimensions.get(platform);
 
 //See https://facebook.github.io/react-native/docs/colors
 export const LIGHTGREY = '#f7f7f7'; //(lightgrey)
@@ -40,3 +43,5 @@ export const UPDATE_LABEL_HEIGHT = 150;
 export const MAIN_MENU_DRAWER_WIDTH = 300;
 export const MAIN_MENU_SIDE_DRAWER_WIDTH = 300;
 export const NOTEBOOK_DRAWER_WIDTH = 400;
+
+export const SMALL_SCREEN = width < 768 || height < 768;

@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, FlatList, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -22,6 +23,8 @@ import {setNotebookPageVisible} from './notebook.slice';
 import notebookStyles from './notebookPanel.styles';
 
 const NotebookPanel = (props) => {
+  console.log('Rendering NotebookPanel...');
+
   const dispatch = useDispatch();
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
@@ -32,8 +35,6 @@ const NotebookPanel = (props) => {
 
   const [useSpots] = useSpotsHook();
   const usePage = usePageHoook();
-
-  const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
     console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);
@@ -110,16 +111,24 @@ const NotebookPanel = (props) => {
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Spots in Active Datasets'}/>}
         />
-        <Button
-          title={'Close Notebook'}
-          type={'clear'}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={props.closeNotebookPanel}/>
+        {!SMALL_SCREEN && (
+          <Button
+            title={'Close Notebook'}
+            type={'clear'}
+            titleStyle={commonStyles.standardButtonText}
+            onPress={props.closeNotebookPanel}
+          />
+        )}
       </View>
     );
   };
 
-  return isNotebookPanelVisible && (!isEmpty(spot) ? renderNotebookContent() : renderNotebookContentNoSpot());
+  return (
+    <View style={notebookStyles.notebookPanel}>
+      {(SMALL_SCREEN || isNotebookPanelVisible) && (!isEmpty(spot) ? renderNotebookContent()
+        : renderNotebookContentNoSpot())}
+    </View>
+  );
 };
 
 export default NotebookPanel;

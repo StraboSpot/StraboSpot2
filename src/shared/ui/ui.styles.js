@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
   },
   safeAreaView: {
     flex: 1,
+    overflow: 'hidden',
     backgroundColor: themes.BLACK,
   },
   backdrop: {
@@ -79,8 +80,8 @@ const styles = StyleSheet.create({
     width: 48,
   },
   imageIcon: {
-    width: Platform.OS === 'web' ? 50 : 65,
-    height: Platform.OS === 'web' ? 50 : 65,
+    width: Platform.OS === 'web' ? 50 : 55,
+    height: Platform.OS === 'web' ? 50 : 55,
   },
   itemSeparator: {
     borderTopWidth: 1,

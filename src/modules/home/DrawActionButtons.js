@@ -1,0 +1,59 @@
+import React from 'react';
+import {View} from 'react-native';
+
+import {useSelector} from 'react-redux';
+
+import {SMALL_SCREEN} from '../../shared/styles.constants';
+import IconButton from '../../shared/ui/IconButton';
+import {MAP_MODES} from '../maps/maps.constants';
+import homeStyles from './home.style';
+import useHomeHook from './useHome';
+
+const DrawActionButtons = ({clickHandler, mapMode}) => {
+
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const stratSection = useSelector(state => state.map.stratSection);
+
+  const useHome = useHomeHook();
+
+  return (
+    (currentImageBasemap || stratSection) ? (
+      <IconButton
+        source={mapMode === MAP_MODES.DRAW.POINT
+          ? require('../../assets/icons/PointButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/PointButton_Transparent.png')
+            : require('../../assets/icons/PointButton.png')}
+        onPress={() => clickHandler(MAP_MODES.DRAW.POINT)}
+      />
+    ) : (
+      <View style={homeStyles.drawToolsContainer}>
+        <IconButton
+          source={useHome.changeDrawType(MAP_MODES.DRAW.POINT, mapMode)}
+          onPress={() => {
+            if (useHome.getDrawTypes().point === MAP_MODES.DRAW.POINT) clickHandler(MAP_MODES.DRAW.POINT);
+            else clickHandler(MAP_MODES.DRAW.POINTLOCATION);
+          }}
+          onLongPress={() => useHome.onLongPress('point')}
+        />
+        <IconButton
+          source={useHome.changeDrawType(MAP_MODES.DRAW.LINE, mapMode)}
+          onPress={() => {
+            if (useHome.getDrawTypes().line === MAP_MODES.DRAW.LINE) clickHandler(MAP_MODES.DRAW.LINE);
+            else clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
+          }}
+          onLongPress={() => useHome.onLongPress('line')}
+        />
+        <IconButton
+          source={useHome.changeDrawType(MAP_MODES.DRAW.POLYGON, mapMode)}
+          onPress={() => {
+            if (useHome.getDrawTypes().polygon === MAP_MODES.DRAW.POLYGON) clickHandler(MAP_MODES.DRAW.POLYGON);
+            else clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
+          }}
+          onLongPress={() => useHome.onLongPress('polygon')}
+        />
+      </View>
+    )
+  );
+};
+
+export default DrawActionButtons;

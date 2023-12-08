@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
     left: 0,
-    right: 0,
     zIndex: 0,
   },
   mainMenuContainer: {
@@ -29,6 +28,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
     textAlign: 'center',
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   documentListItem: {
     margin: 5,

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, Text, TextInput, View, useWindowDimensions} from 'react-native';
+import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
@@ -18,6 +18,7 @@ import {
   MAIN_MENU_DRAWER_WIDTH,
   MAIN_MENU_SIDE_DRAWER_WIDTH,
   NOTEBOOK_DRAWER_WIDTH,
+  SMALL_SCREEN,
 } from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import uiStyles from '../../shared/ui/ui.styles';
@@ -29,19 +30,16 @@ import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
-import Map from '../maps/Map';
 import {MAP_MODES} from '../maps/maps.constants';
 import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useLocationHook from '../maps/useLocation';
 import VertexDrag from '../maps/VertexDrag';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
-import NotebookPanel from '../notebook-panel/NotebookPanel';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
-import {clearedSelectedSpots, setSelectedSpot} from '../spots/spots.slice';
+import {clearedSelectedSpots, setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
 import {logout} from '../user/userProfile.slice';
@@ -64,9 +62,8 @@ import {
   setProjectLoadSelectionModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
-import LeftSideButtons from './LeftSideButtons';
-import RightSideButtons from './RightSideButtons';
-import StatusBar from './StatusBar';
+import HomeView from './HomeView';
+import HomeViewSmallScreen from './HomeViewSmallScreen';
 
 const {State: TextInputState} = TextInput;
 SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
@@ -74,8 +71,6 @@ SystemNavigationBar.setNavigationColor('translucent');
 
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
-
-  const deviceDimensions = useWindowDimensions();
 
   const useHome = useHomeHook();
   const [useImages] = useImagesHook();
@@ -107,21 +102,15 @@ const Home = ({navigation, route}) => {
   const user = useSelector(state => state.user);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
-  const [buttons, setButtons] = useState({
-    drawButtonsVisible: true,
-    editButtonsVisible: false,
-    userLocationButtonOn: false,
-  });
-  const [dialogs, setDialogs] = useState({
-    mapActionsMenuVisible: false,
-    mapSymbolsMenuVisible: false,
-    baseMapMenuVisible: false,
-  });
+  const [buttons, setButtons] = useState(
+    {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
+  const [dialogs, setDialogs] = useState(
+    {mapActionsMenuVisible: false, mapSymbolsMenuVisible: false, baseMapMenuVisible: false});
   const [distance, setDistance] = useState(0);
-  const [showUpdateLabel, setShowUpdateLabel] = useState(false);
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
+  const [showUpdateLabel, setShowUpdateLabel] = useState(false);
 
   const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
   const animatedValueMainMenuDrawer = useRef(new Animated.Value(-MAIN_MENU_DRAWER_WIDTH)).current;
@@ -202,7 +191,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
-      mapComponentRef.current.zoomToSpotsExtent();
+      mapComponentRef.current?.zoomToSpotsExtent();
       dispatch(setProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
@@ -210,7 +199,7 @@ const Home = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE Home [mapMode]', mapMode);
-    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current.endMapMeasurement();
+    if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current?.endMapMeasurement();
   }, [mapMode]);
 
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
@@ -219,7 +208,7 @@ const Home = ({navigation, route}) => {
   const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(animatedValueTextInputs);
 
   const cancelEdits = async () => {
-    await mapComponentRef.current.cancelEdits();
+    await mapComponentRef.current?.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
       'editButtonsVisible': false,
@@ -260,7 +249,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'toggleUserLocation':
         if (value) goToCurrentLocation().catch(console.error);
-        mapComponentRef.current.toggleUserLocation(value);
+        mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
@@ -270,7 +259,7 @@ const Home = ({navigation, route}) => {
         break;
       // Map Actions
       case 'zoom':
-        mapComponentRef.current.zoomToSpotsExtent();
+        mapComponentRef.current?.zoomToSpotsExtent();
         break;
       case 'saveMap':
         dispatch(setOfflineMapsModalVisible(!isOfflineMapModalVisible));
@@ -278,7 +267,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'addTag':
         console.log(`${name}`, ' was clicked');
-        mapComponentRef.current.clearSelectedSpots();
+        mapComponentRef.current?.clearSelectedSpots();
         setIsSelectingForTagging(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
@@ -286,7 +275,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'stereonet':
         console.log(`${name}`, ' was clicked');
-        mapComponentRef.current.clearSelectedSpots();
+        mapComponentRef.current?.clearSelectedSpots();
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
@@ -303,6 +292,13 @@ const Home = ({navigation, route}) => {
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
     dispatch(setProjectLoadSelectionModalVisible(false));
+  };
+
+  const closeMainMenu = () => {
+    dispatch(setMainMenuPanelVisible(false));
+    dispatch(setMenuSelectionPage({name: undefined}));
+    animateDrawer(animatedValueMainMenuDrawer, -MAIN_MENU_DRAWER_WIDTH);
+    animateDrawer(animatedValueLeftSide, 0);
   };
 
   const closeNotebookPanel = () => {
@@ -323,7 +319,7 @@ const Home = ({navigation, route}) => {
   const endDraw = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      const newOrEditedSpot = await mapComponentRef.current.endDraw();
+      const newOrEditedSpot = await mapComponentRef.current?.endDraw();
       setMapMode(MAP_MODES.VIEW);
       if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(PAGE_KEYS.OVERVIEW);
       setIsSelectingForStereonet(false);
@@ -335,6 +331,8 @@ const Home = ({navigation, route}) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
+
+  const endMeasurement = () => setMapMode(MAP_MODES.VIEW);
 
   const exportProject = async () => {
     const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${selectedProject.project.fileName}) has been exported!`
@@ -352,7 +350,7 @@ const Home = ({navigation, route}) => {
   const goToCurrentLocation = async () => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     try {
-      await mapComponentRef.current.goToCurrentLocation();
+      await mapComponentRef.current?.goToCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -360,10 +358,6 @@ const Home = ({navigation, route}) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(`${err.toString()}`);
     }
-  };
-
-  const openImageSlider = (selectedImage) => {
-    navigation.navigate('ImageSlider', {selectedImage: selectedImage});
   };
 
   const modalHandler = (modalKey) => {
@@ -378,13 +372,30 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  const openMainMenu = () => {
+    dispatch(setMainMenuPanelVisible(true));
+    animateDrawer(animatedValueMainMenuDrawer, 0);
+    animateDrawer(animatedValueLeftSide, MAIN_MENU_DRAWER_WIDTH);
+  };
+
   const openNotebookPanel = (pageView) => {
     console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
+    dispatch(setNotebookPanelVisible(true));
     animateDrawer(animatedValueNotebookDrawer, 0);
     animateDrawer(animatedValueRightSide, -NOTEBOOK_DRAWER_WIDTH);
-    dispatch(setNotebookPanelVisible(true));
+    if (SMALL_SCREEN) {
+      navigation.navigate('HomeScreen', {screen: 'Notebook'});
+      closeMainMenu();
+    }
+  };
+
+  const openSpotInNotebook = (spot, notebookPage, attributes) => {
+    dispatch(setSelectedSpot(spot));
+    if (attributes) dispatch(setSelectedAttributes(attributes));
+    if (notebookPage) openNotebookPanel(notebookPage);
+    else openNotebookPanel(PAGE_KEYS.OVERVIEW);
   };
 
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
@@ -417,30 +428,32 @@ const Home = ({navigation, route}) => {
   const renderSaveAndCancelDrawButtons = () => {
     return (
       <View>
-        {buttons.editButtonsVisible && <View style={homeStyles.editButtonsContainer}>
-          <Button
-            containerStyle={{padding: 5}}
-            buttonStyle={homeStyles.drawToolsButtons}
-            titleStyle={homeStyles.drawToolsTitle}
-            type={'clear'}
-            title={'Save Edits'}
-            onPress={() => clickHandler('saveEdits')}
-          />
-          <Button
-            containerStyle={{padding: 5}}
-            buttonStyle={{...homeStyles.drawToolsButtons, backgroundColor: 'white'}}
-            titleStyle={{color: 'black'}}
-            type={'clear'}
-            title={'Cancel'}
-            onPress={() => clickHandler('cancelEdits')}
-          />
-        </View>}
+        {buttons.editButtonsVisible && (
+          <View style={homeStyles.editButtonsContainer}>
+            <Button
+              containerStyle={{padding: 5}}
+              buttonStyle={homeStyles.drawToolsButtons}
+              titleStyle={homeStyles.drawToolsTitle}
+              type={'clear'}
+              title={'Save Edits'}
+              onPress={() => clickHandler('saveEdits')}
+            />
+            <Button
+              containerStyle={{padding: 5}}
+              buttonStyle={[homeStyles.drawToolsButtons, {backgroundColor: 'white'}]}
+              titleStyle={[homeStyles.drawToolsTitle, {color: 'black'}]}
+              type={'clear'}
+              title={'Cancel'}
+              onPress={() => clickHandler('cancelEdits')}
+            />
+          </View>
+        )}
       </View>
     );
   };
 
   const renderSidePanelView = () => {
-    if (deviceDimensions.width < 600) {
+    if (SMALL_SCREEN) {
       return (
         <Animated.View
           style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
@@ -479,7 +492,7 @@ const Home = ({navigation, route}) => {
   };
 
   const setDraw = async (mapModeToSet) => {
-    mapComponentRef.current.cancelDraw();
+    mapComponentRef.current?.cancelDraw();
     if (mapMode === mapModeToSet
       || (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON && mapModeToSet === MAP_MODES.DRAW.POLYGON)
       || (mapMode === MAP_MODES.DRAW.FREEHANDLINE && mapModeToSet === MAP_MODES.DRAW.LINE)
@@ -488,7 +501,7 @@ const Home = ({navigation, route}) => {
   };
 
   const saveEdits = async () => {
-    mapComponentRef.current.saveEdits();
+    mapComponentRef.current?.saveEdits();
     //cancelEdits();
     setMapMode(MAP_MODES.VIEW);
     setButtons({
@@ -537,22 +550,8 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleHomeDrawerButton = () => {
-    if (isMainMenuPanelVisible) {
-      dispatch(setMainMenuPanelVisible(false));
-      dispatch(setMenuSelectionPage({name: undefined}));
-      animateDrawer(animatedValueMainMenuDrawer, -MAIN_MENU_DRAWER_WIDTH);
-      animateDrawer(animatedValueLeftSide, 0);
-    }
-    else {
-      dispatch(setMainMenuPanelVisible(true));
-      animateDrawer(animatedValueMainMenuDrawer, 0);
-      animateDrawer(animatedValueLeftSide, MAIN_MENU_DRAWER_WIDTH);
-    }
-  };
-
-  const toggleNotebookPanel = () => {
-    if (isNotebookPanelVisible) closeNotebookPanel();
-    else openNotebookPanel();
+    if (isMainMenuPanelVisible) closeMainMenu();
+    else openMainMenu();
   };
 
   const toggleSidePanel = () => {
@@ -577,96 +576,98 @@ const Home = ({navigation, route}) => {
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
       <MainMenuPanel
-        logout={() => onLogout()}
-        closeMainMenuPanel={() => toggleHomeDrawerButton()}
-        openNotebookPanel={pageView => openNotebookPanel(pageView)}
-        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
-        zoomToCustomMap={bbox => mapComponentRef.current.zoomToCustomMap(bbox)}
-        toggleHomeDrawer={() => toggleHomeDrawerButton()}
-        imageSliderNavigation={val => openImageSlider(val)}
+        closeMainMenuPanel={toggleHomeDrawerButton}
+        logout={onLogout}
+        openNotebookPanel={openNotebookPanel}
+        openSpotInNotebook={openSpotInNotebook}
+        toggleHomeDrawer={toggleHomeDrawerButton}
+        zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
+        zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
       />
     </Animated.View>
   );
 
-  const renderNotebookPanel = () => {
-    return (
-      <Animated.View style={[notebookStyles.panel, animateNotebookDrawer]}>
-        <NotebookPanel
-          closeNotebookPanel={closeNotebookPanel}
-          createDefaultGeom={() => mapComponentRef.current.createDefaultGeom()}
-          openMainMenu={() => toggleHomeDrawerButton()}
-          zoomToSpot={() => mapComponentRef.current.zoomToSpot()}
-        />
-      </Animated.View>
-    );
-  };
-
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
-    <Animated.View style={[homeStyles.container, animateTextInputs]}>
-      <Map
-        mapComponentRef={mapComponentRef}
-        mapMode={mapMode}
-        startEdit={startEdit}
-        endDraw={endDraw}
-        isSelectingForStereonet={isSelectingForStereonet}
-        isSelectingForTagging={isSelectingForTagging}
-        setDistance={d => setDistance(d)}
-      />
-      <StatusBar/>
-      {vertexStartCoords && <VertexDrag/>}
-      <RightSideButtons
-        closeNotebookPanel={closeNotebookPanel}
-        openNotebookPanel={openNotebookPanel}
-        toggleNotebookPanel={toggleNotebookPanel}
-        clickHandler={name => clickHandler(name)}
-        drawButtonsVisible={buttons.drawButtonsVisible}
-        mapMode={mapMode}
-        endDraw={() => endDraw()}
-        animateRightSide={animateRightSide}
-        distance={distance}
-        endMeasurement={() => setMapMode(MAP_MODES.VIEW)}
-      />
-      <LeftSideButtons
-        toggleHomeDrawer={() => toggleHomeDrawerButton()}
-        dialogClickHandler={(dialog, name) => dialogClickHandler(dialog, name)}
-        clickHandler={(name, value) => clickHandler(name, value)}
-        animateLeftSide={animateLeftSide}
-        zoomToCustomMap={(bbox, duration) => mapComponentRef.current.zoomToCustomMap(bbox, duration)}
-        zoomToCenterOfflineTile={() => mapComponentRef.current.zoomToCenterOfflineTile()}
-        toast={message => toast.show(message, {type: 'warning'})}
-      />
-      {/*Modals for Home Page*/}
-      <BackupModal/>
-      {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
-      {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
-        <InitialProjectLoadModal
-          logout={() => onLogout()}
-          openMainMenu={() => toggleHomeDrawerButton()}
-          visible={isProjectLoadSelectionModalVisible}
-          closeModal={() => closeInitialProjectLoadModal()}
+      <Animated.View style={[homeStyles.container, animateTextInputs]}>
+        {SMALL_SCREEN ? (
+          <HomeViewSmallScreen
+            animateLeftSide={animateLeftSide}
+            clickHandler={clickHandler}
+            closeNotebookPanel={closeNotebookPanel}
+            dialogClickHandler={dialogClickHandler}
+            dialogs={dialogs}
+            distance={distance}
+            drawButtonsVisible={buttons.drawButtonsVisible}
+            endDraw={endDraw}
+            endMeasurement={endMeasurement}
+            isSelectingForStereonet={isSelectingForStereonet}
+            isSelectingForTagging={isSelectingForTagging}
+            animatedValueLeftSide={animatedValueLeftSide}
+            mapComponentRef={mapComponentRef}
+            mapMode={mapMode}
+            openNotebookPanel={openNotebookPanel}
+            openSpotInNotebook={openSpotInNotebook}
+            setDistance={setDistance}
+            startEdit={startEdit}
+            toggleDialog={toggleDialog}
+            toggleHomeDrawer={toggleHomeDrawerButton}
+          />
+        ) : (
+          <HomeView
+            animateLeftSide={animateLeftSide}
+            animateNotebookDrawer={animateNotebookDrawer}
+            animateRightSide={animateRightSide}
+            clickHandler={clickHandler}
+            closeNotebookPanel={closeNotebookPanel}
+            dialogClickHandler={dialogClickHandler}
+            dialogs={dialogs}
+            distance={distance}
+            drawButtonsVisible={buttons.drawButtonsVisible}
+            endDraw={endDraw}
+            endMeasurement={endMeasurement}
+            isSelectingForStereonet={isSelectingForStereonet}
+            isSelectingForTagging={isSelectingForTagging}
+            mapComponentRef={mapComponentRef}
+            mapMode={mapMode}
+            openNotebookPanel={openNotebookPanel}
+            setDistance={setDistance}
+            startEdit={startEdit}
+            toggleDialog={toggleDialog}
+            toggleHomeDrawer={toggleHomeDrawerButton}
+          />
+        )}
+        {vertexStartCoords && <VertexDrag/>}
+        {/*Modals for Home Page*/}
+        <BackupModal/>
+        {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
+        {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
+          <InitialProjectLoadModal
+            closeModal={closeInitialProjectLoadModal}
+            logout={onLogout}
+            openMainMenu={toggleHomeDrawerButton}
+            visible={isProjectLoadSelectionModalVisible}
+          />
+        )}
+        <ErrorModal/>
+        <StatusModal
+          exportProject={exportProject}
+          openMainMenu={!isMainMenuPanelVisible && toggleHomeDrawerButton}
+          openUrl={openStraboSpotURL}
         />
-      )}
-      <ErrorModal/>
-      <StatusModal
-        openUrl={openStraboSpotURL}
-        exportProject={() => exportProject()}
-        openMainMenu={() => !isMainMenuPanelVisible && toggleHomeDrawerButton()}
-      />
-      <UploadModal toggleHomeDrawer={() => toggleHomeDrawerButton()}/>
-      <UploadProgressModal/>
-      <WarningModal/>
-      {/*------------------------*/}
-      <LoadingSpinner isLoading={isHomeLoading}/>
-      {renderNotebookPanel()}
-      {MainMenu}
-      {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
-      {renderSaveAndCancelDrawButtons()}
-      {isMainMenuPanelVisible && toggleSidePanel()}
-      {modalVisible && renderFloatingView()}
-      {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
-      {showUpdateLabel && <VersionCheckLabel/>}
-    </Animated.View>
+        <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
+        <UploadProgressModal/>
+        <WarningModal/>
+        {/*------------------------*/}
+        <LoadingSpinner isLoading={isHomeLoading}/>
+        {MainMenu}
+        {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
+        {renderSaveAndCancelDrawButtons()}
+        {isMainMenuPanelVisible && toggleSidePanel()}
+        {modalVisible && renderFloatingView()}
+        {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
+        {showUpdateLabel && <VersionCheckLabel/>}
+      </Animated.View>
     </SafeAreaView>
   );
 };

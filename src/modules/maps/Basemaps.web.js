@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {useWindowDimensions, Platform, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -41,6 +41,7 @@ const Basemap = (props) => {
 
   const {mapRef} = props.forwardedRef;
 
+  const useDimensions = useWindowDimensions();
   const [useImages] = useImagesHook();
   const [useMapSymbology] = useMapSymbologyHook();
   const [useMaps] = useMapsHook(mapRef);
@@ -77,6 +78,7 @@ const Basemap = (props) => {
 
   useEffect(() => {
       console.log('UE Basemap', viewState);
+      console.log('Dimensions', useDimensions);
       setInitialViewState();
     }, [props.imageBasemap, props.stratSection],
   );
@@ -207,13 +209,10 @@ const Basemap = (props) => {
         {!props.stratSection && !props.imageBasemap && (
           <View>
             <ScaleControl
+              maxWidth={useDimensions.width * 0.25}
               unit={'imperial'}
-              style={{position: 'absolute', left: 50, bottom: 20}}
+              style={{position: 'absolute', left: 50, bottom: 20, background: 'transparent', fontWeight: 'bold'}}
             />
-            {/*<ScaleControl*/}
-            {/*  unit={'metric'}*/}
-            {/*  style={{position: 'absolute', left: 50, bottom: 40}}*/}
-            {/*/>*/}
           </View>
         )}
 

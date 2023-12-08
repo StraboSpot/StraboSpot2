@@ -10,7 +10,6 @@ import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBasemaps from '../maps/ImageBasemaps';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import StratSectionsList from '../maps/strat-section/StratSectionsList';
-import {PAGE_KEYS} from '../page/page.constants';
 import Miscellaneous from '../preferences/Miscellaneous';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
@@ -19,7 +18,6 @@ import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {SpotsList} from '../spots';
-import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import Tags from '../tags/Tags';
 import About from './About';
 import Documentation from './Documentation';
@@ -32,12 +30,11 @@ import MainMenuPanelList from './MainMenuPanelList';
 const MainMenuPanel = ({
                          closeMainMenuPanel,
                          logout,
-                         navigation,
                          openNotebookPanel,
-                         openSidePanel,
+                         openSpotInNotebook,
                          toggleHomeDrawer,
-                         zoomToCustomMap,
                          zoomToCenterOfflineTile,
+                         zoomToCustomMap,
                        }) => {
   console.log('Rendering MainMenuPanel...');
 
@@ -54,13 +51,6 @@ const MainMenuPanel = ({
   );
   let page;
 
-  const openSpotInNotebook = (spot, notebookPage, attributes) => {
-    dispatch(setSelectedSpot(spot));
-    if (attributes) dispatch(setSelectedAttributes(attributes));
-    if (notebookPage) openNotebookPanel(notebookPage);
-    else openNotebookPanel(PAGE_KEYS.OVERVIEW);
-  };
-
   const setVisibleMenu = (name) => {
     if (name === MAIN_MENU_ITEMS.HELP.CLOSE_MENU) toggleHomeDrawer();
     else dispatch(setMenuSelectionPage({name: name}));
@@ -76,10 +66,7 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
       page = (
         <View style={styles.mainMenuContainer}>
-          <MyStraboSpot
-            openSidePanel={openSidePanel}
-            logout={logout}
-          />
+          <MyStraboSpot logout={logout}/>
         </View>
       );
       break;
@@ -109,10 +96,7 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageGallery
-            openSpotInNotebook={openSpotInNotebook}
-            navigation={navigation}
-          />
+          <ImageGallery openSpotInNotebook={openSpotInNotebook}/>
         </View>
       );
       break;
