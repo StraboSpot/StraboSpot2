@@ -5,6 +5,8 @@ import * as turf from '@turf/turf';
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import headerStyles from './notebookHeader.styles';
+import NotebookPanelMenu from './NotebookPanelMenu';
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import {PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
@@ -15,8 +17,6 @@ import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice'
 import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
-import headerStyles from './notebookHeader.styles';
-import NotebookPanelMenu from './NotebookPanelMenu';
 
 const NotebookHeader = (props) => {
   const [useSpots] = useSpotsHook();

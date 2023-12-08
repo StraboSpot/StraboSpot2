@@ -1,8 +1,8 @@
 import React from 'react';
 
+import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 import {isEmpty} from '../../shared/Helpers';
 import {Form, MainButtons} from '../form';
-import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 
 const AddRockIgneousModal = (props) => {
 

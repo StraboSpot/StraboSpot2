@@ -1,9 +1,9 @@
 import React from 'react';
 import {Platform, View} from 'react-native';
 
+import homeStyles from './home.style';
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
-import homeStyles from './home.style';
 
 const StatusBar = () => {
   if (Platform.OS !== 'web') {

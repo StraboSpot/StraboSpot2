@@ -4,6 +4,7 @@ import {FlatList, Platform, Switch, Text, View} from 'react-native';
 import {Button, Icon, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import customMapStyles from './customMaps.styles';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
@@ -26,7 +27,6 @@ import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {selectedCustomMapToEdit} from '../maps.slice';
 import useMapHook from '../useMaps';
-import customMapStyles from './customMaps.styles';
 
 const AddCustomMaps = () => {
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';

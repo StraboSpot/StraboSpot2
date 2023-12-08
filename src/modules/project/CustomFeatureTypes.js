@@ -4,6 +4,8 @@ import { FlatList, View} from 'react-native';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {DEFAULT_GEOLOGIC_TYPES} from './project.constants';
+import {addedCustomFeatureTypes} from './projects.slice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
@@ -11,8 +13,6 @@ import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {useSpotsHook} from '../spots';
-import {DEFAULT_GEOLOGIC_TYPES} from './project.constants';
-import {addedCustomFeatureTypes} from './projects.slice';
 
 
 const CustomFeatureTypes = () => {

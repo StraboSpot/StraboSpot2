@@ -4,12 +4,12 @@ import {FlatList, View} from 'react-native';
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import useSpotsHook from './useSpots';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import useNestingHook from '../nesting/useNesting';
 import usePageHoook from '../page/usePage';
 import {useTagsHook} from '../tags';
-import useSpotsHook from './useSpots';
 
 const SpotsListItem = (props) => {
   console.log('Rendering SpotsListItem', props.spot.properties?.name, props.spot.properties?.id?.toString(), '...');

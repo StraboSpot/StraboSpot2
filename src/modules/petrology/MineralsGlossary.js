@@ -3,10 +3,10 @@ import {FlatList, Linking, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
+import {MINERAL_GLOSSARY_INFO} from './petrology.constants';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import styles from '../page/ui/ui.styles';
-import {MINERAL_GLOSSARY_INFO} from './petrology.constants';
 
 const MineralsGlossary = (props) => {
   const [activeMineralInfo, setActiveMineralInfo] = useState({});

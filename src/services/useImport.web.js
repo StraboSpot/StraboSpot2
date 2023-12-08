@@ -1,6 +1,8 @@
 // import {unzip} from 'react-native-zip-archive';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from './directories.constants';
+import useDeviceHook from './useDevice';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -21,8 +23,6 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
 
 const useImport = () => {
   let fileCount = 0;

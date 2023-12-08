@@ -2,10 +2,10 @@ import React from 'react';
 
 import {ListItem} from 'react-native-elements';
 
+import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
-import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 
 const FabricListItem = (props) => {
   const [useForm] = useFormHook();

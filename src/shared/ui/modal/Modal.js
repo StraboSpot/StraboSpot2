@@ -4,12 +4,12 @@ import {Animated, TextInput, View} from 'react-native';
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import modalStyle from './modal.style';
+import ModalHeader from './ModalHeader';
 import compassStyles from '../../../modules/compass/compass.styles';
 import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
-import modalStyle from './modal.style';
-import ModalHeader from './ModalHeader';
 
 const {State: TextInputState} = TextInput;
 

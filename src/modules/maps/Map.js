@@ -6,6 +6,15 @@ import proj4 from 'proj4';
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {MapLayer} from './Basemaps';
+import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
+import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
+import useOfflineMapsHook from './offline-maps/useMapsOffline';
+import useMapSymbology from './symbology/useMapSymbology';
+import useLocationHook from './useLocation';
+import useMapFeaturesHook from './useMapFeatures';
+import useMapsHook from './useMaps';
+import useMapViewHook from './useMapView';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import IconButton from '../../shared/ui/IconButton';
@@ -27,15 +36,6 @@ import {
   setSelectedSpot,
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {MapLayer} from './Basemaps';
-import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
-import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
-import useOfflineMapsHook from './offline-maps/useMapsOffline';
-import useMapSymbology from './symbology/useMapSymbology';
-import useLocationHook from './useLocation';
-import useMapFeaturesHook from './useMapFeatures';
-import useMapsHook from './useMaps';
-import useMapViewHook from './useMapView';
 
 const Map = React.forwardRef((props, ref) => {
   console.log('Rendering Map...');

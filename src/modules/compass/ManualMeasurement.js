@@ -5,6 +5,8 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
+import compassStyles from './compass.styles';
 import commonStyles from '../../shared/common.styles';
 import SaveButton from '../../shared/SaveButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -12,8 +14,6 @@ import Slider from '../../shared/ui/SliderBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import {NumberInputField} from '../form';
 import {MODAL_KEYS} from '../page/page.constants';
-import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
-import compassStyles from './compass.styles';
 
 const ManualMeasurement = (props) => {
   const modalVisible = useSelector(state => state.home.modalVisible);

@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import MeasurementLabel from './MeasurementLabel';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
-import MeasurementLabel from './MeasurementLabel';
 
 // Render a measurement item in a list
 const MeasurementItem = (props) => {

@@ -5,13 +5,13 @@ import {useNavigation} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {setModalVisible} from './home.slice';
+import homeStyles from './home.style';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
 import useLocationHook from '../maps/useLocation';
 import {SHORTCUT_MODALS} from '../page/page.constants';
 import {clearedSelectedSpots} from '../spots/spots.slice';
-import {setModalVisible} from './home.slice';
-import homeStyles from './home.style';
 
 const ShortcutButtons = ({openNotebookPanel}) => {
   console.log('Rendering ShortcutButtons...');

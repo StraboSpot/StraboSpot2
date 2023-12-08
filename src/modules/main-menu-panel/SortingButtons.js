@@ -3,9 +3,9 @@ import React from 'react';
 import {ButtonGroup} from 'react-native-elements';
 import {connect, useDispatch, useSelector} from 'react-redux';
 
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import {SORTED_VIEWS} from './mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
+import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 
 const SortingButtons = (props) => {
   const dispatch = useDispatch();

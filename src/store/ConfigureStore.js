@@ -4,6 +4,7 @@ import {combineReducers} from 'redux';
 import {createLogger} from 'redux-logger';
 import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
 
+import listenerMiddleware from './listenerMiddleware';
 import compassSlice from '../modules/compass/compass.slice';
 import homeSlice from '../modules/home/home.slice';
 import mainMenuSlice from '../modules/main-menu-panel/mainMenuPanel.slice';
@@ -15,7 +16,6 @@ import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
 import connectionsSlice from '../services/connections.slice';
 import {REDUX} from '../shared/app.constants';
-import listenerMiddleware from './listenerMiddleware';
 
 // Redux Persist
 export const persistConfig = {

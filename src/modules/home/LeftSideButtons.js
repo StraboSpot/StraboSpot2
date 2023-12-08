@@ -3,10 +3,10 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import IconButton from '../../shared/ui/IconButton';
 import {UserLocationButton} from './buttons';
 import homeStyles from './home.style';
 import MapActionButtons from './MapActionButtons';
+import IconButton from '../../shared/ui/IconButton';
 
 const LeftSideButtons = ({
                            clickHandler,

@@ -3,6 +3,7 @@ import {FlatList} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import FeatureTagsAtSpotList from './FeatureTagsAtSpotList';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
@@ -10,7 +11,6 @@ import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';
-import FeatureTagsAtSpotList from './FeatureTagsAtSpotList';
 
 const TagsNotebook = (props) => {
   const dispatch = useDispatch();

@@ -4,6 +4,7 @@ import {FlatList, View} from 'react-native';
 import {Field} from 'formik';
 import {ListItem} from 'react-native-elements';
 
+import AcknowledgeInput from './AcknowledgeInput';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -11,7 +12,6 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
-import AcknowledgeInput from './AcknowledgeInput';
 
 const Form = (props) => {
   const [useForm] = useFormHook();

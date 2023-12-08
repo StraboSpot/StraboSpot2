@@ -3,6 +3,7 @@ import {SectionList, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import ThreeDStructureItem from './ThreeDStructureItem';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -13,7 +14,6 @@ import {useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import ThreeDStructureItem from './ThreeDStructureItem';
 
 const ThreeDStructuresPage = (props) => {
   const dispatch = useDispatch();

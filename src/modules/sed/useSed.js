@@ -1,6 +1,13 @@
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {
+  INTERPRETATIONS_SUBPAGES,
+  LITHOLOGY_SUBPAGES,
+  ROCK_SECOND_ORDER_TYPE_FIELDS,
+  STRUCTURE_SUBPAGES,
+} from './sed.constants';
+import useSedValidationHook from './useSedValidation';
 import {getNewId, getNewUUID, isEmpty, roundToDecimalPlaces, toTitleCase} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {useFormHook} from '../form';
@@ -10,13 +17,6 @@ import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
-import {
-  INTERPRETATIONS_SUBPAGES,
-  LITHOLOGY_SUBPAGES,
-  ROCK_SECOND_ORDER_TYPE_FIELDS,
-  STRUCTURE_SUBPAGES,
-} from './sed.constants';
-import useSedValidationHook from './useSedValidation';
 
 const useSed = () => {
   const dispatch = useDispatch();

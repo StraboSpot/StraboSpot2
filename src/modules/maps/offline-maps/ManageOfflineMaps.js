@@ -4,6 +4,9 @@ import { Animated, FlatList, Text, View} from 'react-native';
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
+import styles from './offlineMaps.styles';
+import useMapsOfflineHook from './useMapsOffline';
 import useDeviceHook from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
@@ -15,9 +18,6 @@ import SectionDivider from '../../../shared/ui/SectionDivider';
 import WarningModal from '../../home/home-modals/WarningModal';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import useMapsHook from '../useMaps';
-import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
-import styles from './offlineMaps.styles';
-import useMapsOfflineHook from './useMapsOffline';
 
 const ManageOfflineMaps = (props) => {
   console.log('Rendering ManageOfflineMaps...');

@@ -3,8 +3,8 @@ import {Text, View} from 'react-native';
 
 import Slider from '@react-native-community/slider';
 
-import * as themes from '../styles.constants';
 import styles from './ui.styles';
+import * as themes from '../styles.constants';
 
 const SliderBar = (props) => {
   console.log('Rendering Slider...');

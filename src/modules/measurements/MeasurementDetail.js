@@ -5,6 +5,9 @@ import {Formik} from 'formik';
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import MeasurementItem from './MeasurementItem';
+import styles from './measurements.styles';
+import useMeasurementsHook from './useMeasurements';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
@@ -19,9 +22,6 @@ import {setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import MeasurementItem from './MeasurementItem';
-import styles from './measurements.styles';
-import useMeasurementsHook from './useMeasurements';
 
 const MeasurementDetail = (props) => {
   const dispatch = useDispatch();

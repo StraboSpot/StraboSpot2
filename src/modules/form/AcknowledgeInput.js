@@ -3,8 +3,8 @@ import {Switch, Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
 
-import * as themes from '../../shared/styles.constants';
 import {formStyles} from './index';
+import * as themes from '../../shared/styles.constants';
 
 const AcknowledgeInput = (props) => {
   return (

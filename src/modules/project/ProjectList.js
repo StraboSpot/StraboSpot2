@@ -5,6 +5,8 @@ import moment from 'moment';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
+import useProjectHook from './useProject';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
@@ -22,8 +24,6 @@ import {
   setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
 } from '../home/home.slice';
-import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
-import useProjectHook from './useProject';
 
 const ProjectList = (props) => {
   const currentProject = useSelector(state => state.project.project);
@@ -166,8 +166,7 @@ const ProjectList = (props) => {
         close={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
         projectDeleted={value => reloadingList(value)}
-      >
-      </ProjectOptionsDialogBox>
+       />
     );
   };
 

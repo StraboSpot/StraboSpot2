@@ -3,12 +3,12 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import * as themes from '../../shared/styles.constants';
-import IconButton from '../../shared/ui/IconButton';
 import {UserLocationButton} from './buttons';
 import DrawActionButtons from './DrawActionButtons';
 import DrawInfo from './DrawInfo';
 import MapActionButtons from './MapActionButtons';
+import * as themes from '../../shared/styles.constants';
+import IconButton from '../../shared/ui/IconButton';
 
 const ActionButtonsSmallScreen = ({
                                     clickHandler,

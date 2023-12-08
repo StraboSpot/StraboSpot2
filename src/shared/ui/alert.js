@@ -4,12 +4,12 @@ const alertPolyfill = (title, description, options, extra) => {
   const result = window.confirm([title, description].filter(Boolean).join('\n'));
 
   if (result) {
-    console.log('OK pressed')
+    console.log('OK pressed');
     const confirmOption = options.find(({style}) => style !== 'cancel');
     confirmOption && confirmOption.onPress();
   }
   else {
-    console.log('Cancel pressed')
+    console.log('Cancel pressed');
     const cancelOption = options.find(({style}) => style === 'cancel');
     cancelOption && cancelOption.onPress();
   }

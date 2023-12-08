@@ -9,6 +9,8 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import userStyles from './user.styles';
+import {setUserData} from './userProfile.slice';
 import useServerRequestsHook from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
 import {REDUX} from '../../shared/app.constants';
@@ -21,8 +23,6 @@ import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible}
 import overlayStyles from '../home/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import userStyles from './user.styles';
-import {setUserData} from './userProfile.slice';
 
 const UserProfile = (props) => {
   const formRef = useRef(null);

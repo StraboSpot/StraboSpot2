@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {isEmpty} from '../../shared/Helpers';
-import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 import TablesData from './TablesData';
 import UrlData from './URLData';
 import useExternalDataHook from './useExternalData';
+import {isEmpty} from '../../shared/Helpers';
+import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 
 function DataWrapper(props) {
   const [itemToDelete, setItemToDelete] = useState({});

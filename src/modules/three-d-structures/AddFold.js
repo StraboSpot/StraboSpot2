@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 
-import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 import {FoldGeometryButtons} from './fold-geometry';
 import {
   FOLD_MEASUREMENTS_KEYS,
   ThreeDStructuresMeasurementsButtons,
   ThreeDStructuresMeasurementsModal,
 } from './measurements';
+import LittleSpacer from '../../shared/ui/LittleSpacer';
+import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const AddFold = (props) => {
   const [useForm] = useFormHook();

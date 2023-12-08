@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
 import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
@@ -17,7 +18,6 @@ import {
 } from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
-import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
 
 const useSpots = () => {
   const [useProject] = useProjectHook();

@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import ThreeDStructureLabel from './ThreeDStructureLabel';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
-import ThreeDStructureLabel from './ThreeDStructureLabel';
 
 function ThreeDStructureItem(props) {
   const [useTags] = useTagsHook();

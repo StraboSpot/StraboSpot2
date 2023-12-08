@@ -2,9 +2,9 @@ import React from 'react';
 
 import {useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
 import TablesData from './TablesData';
 import UrlData from './URLData';
+import {isEmpty} from '../../shared/Helpers';
 
 const DataOverview = () => {
   const spot = useSelector(state => state.spot.selectedSpot);

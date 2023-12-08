@@ -1,9 +1,9 @@
 import * as turf from '@turf/turf';
 
+import useStratSectionCalculationsHook from './useStratSectionCalculations';
 import {isEmpty} from '../../../shared/Helpers';
 import {useFormHook} from '../../form';
 import {useSpotsHook} from '../../spots';
-import useStratSectionCalculationsHook from './useStratSectionCalculations';
 
 const useStratSection = () => {
   const [useForm] = useFormHook();

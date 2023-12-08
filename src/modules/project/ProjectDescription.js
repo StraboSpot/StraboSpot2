@@ -5,14 +5,14 @@ import {Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import DailyNotesSection from './description/DailyNotesSection';
+import {updatedProject} from './projects.slice';
 import commonStyles from '../../shared/common.styles';
 import alert from '../../shared/ui/alert';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import DailyNotesSection from './description/DailyNotesSection';
-import {updatedProject} from './projects.slice';
 
 const ProjectDescription = (props) => {
   const dispatch = useDispatch();

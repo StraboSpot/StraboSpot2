@@ -4,12 +4,12 @@ import {FlatList, ScrollView, Text, View} from 'react-native';
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import {Rows, Table} from 'react-native-reanimated-table';
 
+import externalDataStyles from './externalData.styles';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
-import externalDataStyles from './externalData.styles';
 
 function TablesData(props) {
   const [isTableVisible, setIsTableVisible] = useState(false);

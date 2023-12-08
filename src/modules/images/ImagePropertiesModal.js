@@ -4,11 +4,11 @@ import {FlatList, Switch, Text, View} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
+import styles from './images.styles';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import styles from './images.styles';
 
 const ImagePropertiesModal = (props) => {
   const dispatch = useDispatch();

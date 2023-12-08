@@ -5,6 +5,7 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import usePetrologyHook from './usePetrology';
 import commonStyles from '../../shared/common.styles';
 import {getNewCopyId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -18,7 +19,6 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import usePetrologyHook from './usePetrology';
 
 const MineralsPage = (props) => {
   const dispatch = useDispatch();

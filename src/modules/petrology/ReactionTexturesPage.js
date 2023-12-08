@@ -4,6 +4,7 @@ import {FlatList, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import usePetrologyHook from './usePetrology';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -15,7 +16,6 @@ import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import usePetrologyHook from './usePetrology';
 
 const ReactionTexturesPage = (props) => {
   const dispatch = useDispatch();

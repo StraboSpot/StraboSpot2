@@ -3,13 +3,13 @@ import {Platform} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import AppStack from './AppStack';
+import AuthStack from './AuthStack';
 import LoadingSplashScreen from '../modules/sign-in/LoadingSplashScreen';
 import useSignInHook from '../modules/sign-in/useSignIn';
 import {login, logout} from '../modules/user/userProfile.slice';
 import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
-import AppStack from './AppStack';
-import AuthStack from './AuthStack';
 
 const Routes = () => {
   console.log('Rendering Routes...');

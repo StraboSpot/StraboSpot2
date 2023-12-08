@@ -5,6 +5,9 @@ import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
+import ImagePropertiesModal from './ImagePropertiesModal';
+import styles from './images.styles';
+import useImagesHook from './useImages';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
@@ -12,9 +15,6 @@ import WarningModal from '../home/home-modals/WarningModal';
 import overlayStyles from '../home/overlay.styles';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import ImagePropertiesModal from './ImagePropertiesModal';
-import styles from './images.styles';
-import useImagesHook from './useImages';
 
 const ImageInfo = (props) => {
   console.log('Rendering ImageInfo...');

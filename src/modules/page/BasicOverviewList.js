@@ -3,14 +3,14 @@ import {FlatList} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import BasicListItem from './BasicListItem';
+import {PAGE_KEYS, PET_PAGES, SED_PAGES} from './page.constants';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import BasicListItem from './BasicListItem';
-import {PAGE_KEYS, PET_PAGES, SED_PAGES} from './page.constants';
 
 const BasicOverviewList = (props) => {
   const dispatch = useDispatch();

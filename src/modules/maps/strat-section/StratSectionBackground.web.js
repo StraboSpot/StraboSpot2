@@ -4,12 +4,12 @@ import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {Layer, Source} from 'react-map-gl';
 
+import XAxis from './XAxis';
 import useImagesHook from '../../images/useImages';
 import useSpotsHook from '../../spots/useSpots';
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from '../maps.constants';
 import useMapSymbologyHook from '../symbology/useMapSymbology';
 import useMapsHook from '../useMaps';
-import XAxis from './XAxis';
 
 const StratSectionBackground = (props) => {
   const [useImages] = useImagesHook();

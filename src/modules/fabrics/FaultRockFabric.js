@@ -1,8 +1,8 @@
 import React from 'react';
 
+import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
-import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 
 const FaultRockFabric = (props) => {
   const [useForm] = useFormHook();

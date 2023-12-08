@@ -1,3 +1,5 @@
+import BasicOverviewList from './BasicOverviewList';
+import Overview from './Overview';
 import DataOverview from '../external-data/DataOverview';
 import ExternalData from '../external-data/ExternalData';
 import AddFabricModal from '../fabrics/AddFabricModal';
@@ -50,8 +52,6 @@ import TephraPage from '../tephra/TephraPage';
 import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
 import ThreeDStructuresPage from '../three-d-structures/ThreeDStructuresPage';
-import BasicOverviewList from './BasicOverviewList';
-import Overview from './Overview';
 
 export const PAGE_KEYS = {
   BEDDING: 'bedding',

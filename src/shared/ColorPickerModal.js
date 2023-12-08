@@ -4,9 +4,9 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {Button, Icon, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import Spacer from './ui/Spacer';
 import overlayStyles from '../modules/home/overlay.styles';
 import {useTagsHook} from '../modules/tags';
-import Spacer from './ui/Spacer';
 
 const ColorPickerModal = (props) => {
   const [useTags] = useTagsHook();

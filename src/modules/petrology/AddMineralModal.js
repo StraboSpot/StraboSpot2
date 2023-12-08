@@ -5,6 +5,9 @@ import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import MineralsByRockClass from './MineralsByRockClass';
+import MineralsGlossary from './MineralsGlossary';
+import usePetrologyHook from './usePetrology';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
@@ -14,9 +17,6 @@ import {ChoiceButtons, Form, MainButtons, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import Templates from '../templates/Templates';
-import MineralsByRockClass from './MineralsByRockClass';
-import MineralsGlossary from './MineralsGlossary';
-import usePetrologyHook from './usePetrology';
 
 const AddMineralModal = (props) => {
   const dispatch = useDispatch();

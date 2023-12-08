@@ -4,10 +4,10 @@ import {Linking, View} from 'react-native';
 import {Button, Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import styles from './documentation.styles';
 import {STRABO_APIS} from '../../services/urls.constants';
 import {BLUE} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
-import styles from './documentation.styles';
 
 const Documentation = () => {
   const isOnline = useSelector(

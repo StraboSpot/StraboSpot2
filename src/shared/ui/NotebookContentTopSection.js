@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import ButtonRounded from './ButtonRounded';
 import {setModalVisible} from '../../modules/home/home.slice';
 import {imageStyles} from '../../modules/images';
 import {setNotebookPageVisible} from '../../modules/notebook-panel/notebook.slice';
@@ -11,7 +12,6 @@ import ReturnToOverviewButton from '../../modules/page/ui/ReturnToOverviewButton
 import {setMultipleFeaturesTaggingEnabled} from '../../modules/project/projects.slice';
 import {setSelectedAttributes} from '../../modules/spots/spots.slice';
 import commonStyles from '../common.styles';
-import ButtonRounded from './ButtonRounded';
 
 const NotebookContentTopSection = (props) => {
   const dispatch = useDispatch();

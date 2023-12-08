@@ -3,9 +3,9 @@ import React from 'react';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useSedHook from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
-import useSedHook from './useSed';
 
 const IntervalOverview = (props) => {
   const dispatch = useDispatch();

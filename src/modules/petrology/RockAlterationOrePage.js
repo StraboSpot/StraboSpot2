@@ -2,8 +2,8 @@ import React, {useEffect} from 'react';
 
 import {useDispatch} from 'react-redux';
 
-import {setSelectedAttributes} from '../spots/spots.slice';
 import RockPage from './RockPage';
+import {setSelectedAttributes} from '../spots/spots.slice';
 
 const RockAlterationOrePage = (props) => {
   const dispatch = useDispatch();

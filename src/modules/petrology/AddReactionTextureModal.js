@@ -4,6 +4,7 @@ import {FlatList, Text, View} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
+import usePetrologyHook from './usePetrology';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
@@ -11,7 +12,6 @@ import Modal from '../../shared/ui/modal/Modal';
 import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import usePetrologyHook from './usePetrology';
 
 const AddReactionTextureModal = (props) => {
   const dispatch = useDispatch();

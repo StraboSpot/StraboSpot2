@@ -1,9 +1,9 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
+import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 import IconButton from '../../../shared/ui/IconButton';
 import {formStyles, useFormHook} from '../../form';
-import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 
 const FoldGeometryChoices = (props) => {
   const [useForm] = useFormHook();

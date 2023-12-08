@@ -3,11 +3,11 @@ import {FlatList, Platform} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 
+import {MAIN_MENU_ITEMS} from './mainMenu.constants';
 import commonStyles from '../../shared/common.styles';
 import {toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {MAIN_MENU_ITEMS} from './mainMenu.constants';
 
 const MainMenuPanelList = (props) => {
 

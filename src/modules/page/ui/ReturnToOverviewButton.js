@@ -4,9 +4,9 @@ import {View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
+import styles from './ui.styles';
 import {setNotebookPageVisible} from '../../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page.constants';
-import styles from './ui.styles';
 
 const ReturnToOverviewButton = () => {
   const dispatch = useDispatch();

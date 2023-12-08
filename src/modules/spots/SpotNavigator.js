@@ -5,13 +5,13 @@ import {Picker} from '@react-native-picker/picker';
 import {Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import {SpotsList, SpotsListItem} from './index';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from '../../shared/ui/ui.styles';
 import {ImageGallery} from '../images';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
-import {SpotsList, SpotsListItem} from './index';
 
 const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebook}) => {
   console.log('Rendering SpotsNavigator...');

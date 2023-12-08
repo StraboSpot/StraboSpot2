@@ -5,13 +5,13 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {Button, Header, Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
+import homeStyles from './home.style';
+import ShortcutButtons from './ShortcutButtons';
 import * as themes from '../../shared/styles.constants';
 import Map from '../maps/Map';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SpotNavigator from '../spots/SpotNavigator';
-import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
-import homeStyles from './home.style';
-import ShortcutButtons from './ShortcutButtons';
 
 const HomeViewSmallScreen = ({
                                animateLeftSide,

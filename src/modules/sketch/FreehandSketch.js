@@ -4,8 +4,8 @@ import {View} from 'react-native';
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
-import {setFreehandFeatureCoords} from '../maps/maps.slice';
 import styles from './sketch.styles';
+import {setFreehandFeatureCoords} from '../maps/maps.slice';
 
 let freehandFeatureCoords = [];
 const FreehandSketch = () => {

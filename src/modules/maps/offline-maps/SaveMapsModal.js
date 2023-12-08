@@ -6,6 +6,8 @@ import {Button, Icon, Overlay} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
+import offlineMapsStyles from './offlineMaps.styles';
+import useMapsOfflineHook from './useMapsOffline';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import useDeviceHook from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
@@ -20,8 +22,6 @@ import {
 // import ProgressBar from '../../../shared/ui/ProgressBar';
 import overlayStyles from '../../home/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
-import offlineMapsStyles from './offlineMaps.styles';
-import useMapsOfflineHook from './useMapsOffline';
 
 const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
   console.log('Rendering SaveMapsModal...');

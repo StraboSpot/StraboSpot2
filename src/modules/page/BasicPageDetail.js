@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {PAGE_KEYS} from './page.constants';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -17,7 +18,6 @@ import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
-import {PAGE_KEYS} from './page.constants';
 
 const BasicPageDetail = (props) => {
   const dispatch = useDispatch();

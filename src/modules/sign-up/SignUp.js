@@ -4,13 +4,13 @@ import {Text, TextInput, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import styles from './signUp.styles';
 import useServerRequests from '../../services/useServerRequests';
 import {validate} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
 import Splashscreen from '../splashscreen/Splashscreen';
-import styles from './signUp.styles';
 
 const SignUp = (props) => {
   const initialState = {

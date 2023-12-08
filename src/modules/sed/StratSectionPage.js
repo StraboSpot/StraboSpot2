@@ -5,6 +5,8 @@ import {Formik} from 'formik';
 import {Avatar, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import AddImageOverlayModal from './AddImageOverlayModal';
+import useSedHook from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -17,8 +19,6 @@ import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import AddImageOverlayModal from './AddImageOverlayModal';
-import useSedHook from './useSed';
 
 const StratSectionPage = (props) => {
   console.log('Rendering StratSectionPage...');

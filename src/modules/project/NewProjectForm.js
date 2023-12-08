@@ -5,14 +5,14 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {setSelectedProject} from './projects.slice';
+import useProjectHook from './useProject';
 import {isEmpty} from '../../shared/Helpers';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import {Form, useFormHook} from '../form';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
-import {setSelectedProject} from './projects.slice';
-import useProjectHook from './useProject';
 
 const NewProjectForm = (props) => {
   const dispatch = useDispatch();
@@ -60,8 +60,7 @@ const NewProjectForm = (props) => {
         visible={isProjectOptionsModalVisible}
         close={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
-      >
-      </ProjectOptionsDialogBox>
+       />
     );
   };
 

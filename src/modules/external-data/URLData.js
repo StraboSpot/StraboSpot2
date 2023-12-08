@@ -4,6 +4,8 @@ import {FlatList, View} from 'react-native';
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
+import externalDataStyles from './externalData.styles';
+import useExternalDataHook from './useExternalData';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {truncateText, urlValidator} from '../../shared/Helpers';
@@ -14,8 +16,6 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import externalDataStyles from './externalData.styles';
-import useExternalDataHook from './useExternalData';
 
 const UrlData = (props) => {
   const useDevice = useDeviceHook();

@@ -3,11 +3,11 @@ import {FlatList} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import ThreeDStructureItem from './ThreeDStructureItem';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import ThreeDStructureItem from './ThreeDStructureItem';
 
 const ThreeDStructuresOverview = (props) => {
   const dispatch = useDispatch();

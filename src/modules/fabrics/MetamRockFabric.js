@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
+import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const MetamRockFabric = (props) => {
   const [useForm] = useFormHook();

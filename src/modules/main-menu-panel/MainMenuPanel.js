@@ -3,6 +3,13 @@ import {View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import About from './About';
+import Documentation from './Documentation';
+import {MAIN_MENU_ITEMS} from './mainMenu.constants';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
+import styles from './mainMenuPanel.styles';
+import MainMenuPanelHeader from './MainMenuPanelHeader';
+import MainMenuPanelList from './MainMenuPanelList';
 import {isEmpty} from '../../shared/Helpers';
 import {shortcutSwitchPosition} from '../home/home.slice';
 import ImageGallery from '../images/ImageGallery';
@@ -19,13 +26,6 @@ import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {SpotsList} from '../spots';
 import Tags from '../tags/Tags';
-import About from './About';
-import Documentation from './Documentation';
-import {MAIN_MENU_ITEMS} from './mainMenu.constants';
-import {setMenuSelectionPage} from './mainMenuPanel.slice';
-import styles from './mainMenuPanel.styles';
-import MainMenuPanelHeader from './MainMenuPanelHeader';
-import MainMenuPanelList from './MainMenuPanelList';
 
 const MainMenuPanel = ({
                          closeMainMenuPanel,

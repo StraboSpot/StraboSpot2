@@ -1,6 +1,7 @@
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {addMapFromDevice, clearedMapsFromRedux, setOfflineMap} from './offlineMaps.slice';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
@@ -12,7 +13,6 @@ import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slic
 import {DEFAULT_MAPS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
 import useMapsHook from '../useMaps';
-import {addMapFromDevice, clearedMapsFromRedux, setOfflineMap} from './offlineMaps.slice';
 
 const useMapsOffline = () => {
   let zipUID;

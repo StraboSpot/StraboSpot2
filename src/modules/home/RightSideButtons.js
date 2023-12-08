@@ -3,13 +3,13 @@ import {View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import IconButton from '../../shared/ui/IconButton';
-import {MODAL_KEYS} from '../page/page.constants';
 import DrawActionButtons from './DrawActionButtons';
 import DrawInfo from './DrawInfo';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import ShortcutButtons from './ShortcutButtons';
+import IconButton from '../../shared/ui/IconButton';
+import {MODAL_KEYS} from '../page/page.constants';
 
 const RightSideButtons = ({
                             clickHandler,

@@ -5,6 +5,7 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -22,7 +23,6 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
 
 const RockPage = (props) => {
   const dispatch = useDispatch();

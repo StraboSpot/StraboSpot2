@@ -3,8 +3,8 @@ import {FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
-import SectionDivider from '../../shared/ui/SectionDivider';
 import {MINERALS_BY_CLASS} from './petrology.constants';
+import SectionDivider from '../../shared/ui/SectionDivider';
 
 const MineralsByRockClass = (props) => {
   return (

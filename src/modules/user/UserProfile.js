@@ -4,6 +4,8 @@ import {Platform, Text, View} from 'react-native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import userStyles from './user.styles';
+import useUserProfileHook from './useUserProfile';
 import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -12,8 +14,6 @@ import {setMainMenuPanelVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import userStyles from './user.styles';
-import useUserProfileHook from './useUserProfile';
 
 const UserProfile = ({logout}) => {
   const defaultAvatar = require('../../assets/images/splash.png');
@@ -40,7 +40,7 @@ const UserProfile = ({logout}) => {
   const doLogOut = (type) => {
     if (type === 'signIn') {
       dispatch(setMainMenuPanelVisible(false));
-      logout()
+      logout();
     }
     else if (type === 'clear') {
       setIsLogoutModalVisible(false);

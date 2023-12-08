@@ -5,6 +5,13 @@ import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import AddRockAlterationOreModal from './AddRockAlterationOreModal';
+import AddRockFaultModal from './AddRockFaultModal';
+import AddRockIgneousModal from './AddRockIgneousModal';
+import AddRockMetamorphicModal from './AddRockMetamorphicModal';
+import AddRockSedimentaryModal from './AddRockSedimentaryModal';
+import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
+import usePetrologyHook from './usePetrology';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
@@ -14,13 +21,6 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSedHook from '../sed/useSed';
 import Templates from '../templates/Templates';
-import AddRockAlterationOreModal from './AddRockAlterationOreModal';
-import AddRockFaultModal from './AddRockFaultModal';
-import AddRockIgneousModal from './AddRockIgneousModal';
-import AddRockMetamorphicModal from './AddRockMetamorphicModal';
-import AddRockSedimentaryModal from './AddRockSedimentaryModal';
-import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
-import usePetrologyHook from './usePetrology';
 
 const AddRockModal = (props) => {
   const dispatch = useDispatch();

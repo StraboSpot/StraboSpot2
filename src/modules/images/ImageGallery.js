@@ -5,6 +5,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import imageStyles from './images.styles';
+import useImagesHook from './useImages';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -16,8 +18,6 @@ import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
-import imageStyles from './images.styles';
-import useImagesHook from './useImages';
 
 const ImageGallery = ({openSpotInNotebook}) => {
   console.log('Rendering ImageGallery...');

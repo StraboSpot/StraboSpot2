@@ -5,6 +5,10 @@ import {Formik} from 'formik';
 import {Button, ButtonGroup, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import AddLine from './AddLine';
+import AddManualMeasurements from './AddManualMeasurements';
+import AddPlane from './AddPlane';
+import {MEASUREMENT_KEYS, MEASUREMENT_TYPES} from './measurements.constants';
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
@@ -23,10 +27,6 @@ import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
-import AddLine from './AddLine';
-import AddManualMeasurements from './AddManualMeasurements';
-import AddPlane from './AddPlane';
-import {MEASUREMENT_KEYS, MEASUREMENT_TYPES} from './measurements.constants';
 
 const AddMeasurementModal = (props) => {
   const dispatch = useDispatch();

@@ -4,10 +4,10 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import modalStyle from './modal.style';
 import {setModalVisible} from '../../../modules/home/home.slice';
 import {MODALS, NOTEBOOK_PAGES, PAGE_KEYS} from '../../../modules/page/page.constants';
 import * as themes from '../../styles.constants';
-import modalStyle from './modal.style';
 
 const ModalHeader = (props) => {
   const dispatch = useDispatch();

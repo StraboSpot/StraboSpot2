@@ -4,6 +4,8 @@ import {Platform, Text, View} from 'react-native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import NoteForm from './NoteForm';
+import noteStyle from './notes.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import uiStyles from '../../shared/ui/ui.styles';
@@ -15,8 +17,6 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
-import NoteForm from './NoteForm';
-import noteStyle from './notes.styles';
 
 const Notes = (props) => {
   const dispatch = useDispatch();

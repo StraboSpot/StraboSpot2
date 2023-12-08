@@ -4,6 +4,10 @@ import {FlatList, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import NotebookFooter from './notebook-footer/NotebookFooter';
+import NotebookHeader from './notebook-header/NotebookHeader';
+import {setNotebookPageVisible} from './notebook.slice';
+import notebookStyles from './notebookPanel.styles';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -17,10 +21,6 @@ import usePageHoook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
-import NotebookFooter from './notebook-footer/NotebookFooter';
-import NotebookHeader from './notebook-header/NotebookHeader';
-import {setNotebookPageVisible} from './notebook.slice';
-import notebookStyles from './notebookPanel.styles';
 
 const NotebookPanel = (props) => {
   console.log('Rendering NotebookPanel...');

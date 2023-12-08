@@ -2,11 +2,11 @@ import React from 'react';
 
 import {ListItem} from 'react-native-elements';
 
+import {PAGE_KEYS} from './page.constants';
 import commonStyles from '../../shared/common.styles';
 import {useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
 import useSedHook from '../sed/useSed';
-import {PAGE_KEYS} from './page.constants';
 
 const BasicListItem = (props) => {
   const usePetrology = usePetrologyHook();

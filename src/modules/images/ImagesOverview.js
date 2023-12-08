@@ -4,6 +4,8 @@ import {ActivityIndicator,  FlatList, Platform, Switch, Text, View} from 'react-
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import imageStyles from './images.styles';
+import useImagesHook from './useImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -11,8 +13,6 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import overlayStyles from '../home/overlay.styles';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {clearedSelectedSpots} from '../spots/spots.slice';
-import imageStyles from './images.styles';
-import useImagesHook from './useImages';
 
 const placeholderImage = require('../../assets/images/noimage.jpg');
 

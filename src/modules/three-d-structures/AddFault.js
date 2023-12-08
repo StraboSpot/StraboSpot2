@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 
-import {Form, MainButtons, useFormHook} from '../form';
 import {
   FAULT_MEASUREMENTS_KEYS,
   ThreeDStructuresMeasurementsButtons,
   ThreeDStructuresMeasurementsModal,
 } from './measurements';
+import {Form, MainButtons, useFormHook} from '../form';
 
 const AddFault = (props) => {
   const [useForm] = useFormHook();

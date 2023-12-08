@@ -3,11 +3,11 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import homeStyles from './home.style';
+import useHomeHook from './useHome';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import {MAP_MODES} from '../maps/maps.constants';
-import homeStyles from './home.style';
-import useHomeHook from './useHome';
 
 const DrawActionButtons = ({clickHandler, mapMode}) => {
 

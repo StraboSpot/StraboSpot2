@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 
-import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, MainButtons} from '../form';
 import {
   BOUDINAGE_MEASUREMENTS_KEYS,
   MULLION_MEASUREMENTS_KEYS,
   ThreeDStructuresMeasurementsButtons,
   ThreeDStructuresMeasurementsModal,
 } from './measurements';
+import LittleSpacer from '../../shared/ui/LittleSpacer';
+import {Form, MainButtons} from '../form';
 
 const AddOther = (props) => {
   const [isOtherMeasurementsModalVisible, setIsOtherMeasurementsModalVisible] = useState(false);

@@ -1,15 +1,15 @@
 import {useDispatch} from 'react-redux';
 
-import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
-import {useFormHook} from '../form';
-import {PAGE_KEYS} from '../page/page.constants';
-import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {editedSpotProperties} from '../spots/spots.slice';
 import {
   ABBREVIATIONS_WITH_LABELS,
   LABELS_WITH_ABBREVIATIONS,
   ROCK_FIRST_ORDER_CLASS_FIELDS,
 } from './petrology.constants';
+import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
+import {useFormHook} from '../form';
+import {PAGE_KEYS} from '../page/page.constants';
+import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {editedSpotProperties} from '../spots/spots.slice';
 
 const usePetrology = () => {
   const dispatch = useDispatch();

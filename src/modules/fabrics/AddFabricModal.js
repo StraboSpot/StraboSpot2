@@ -5,6 +5,10 @@ import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {FABRIC_TYPES} from './fabric.constants';
+import FaultRockFabric from './FaultRockFabric';
+import IgneousRockFabric from './IgneousRockFabric';
+import MetamRockFabric from './MetamRockFabric';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
@@ -13,10 +17,6 @@ import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {FABRIC_TYPES} from './fabric.constants';
-import FaultRockFabric from './FaultRockFabric';
-import IgneousRockFabric from './IgneousRockFabric';
-import MetamRockFabric from './MetamRockFabric';
 
 const AddFabricModal = (props) => {
   const dispatch = useDispatch();

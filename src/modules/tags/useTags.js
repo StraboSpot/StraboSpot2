@@ -4,6 +4,7 @@ import {Text, View} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {tagsStyles} from './index';
 import {deepFindFeatureById, getNewId, isEmpty, truncateText} from '../../shared/Helpers';
 import {Form, useFormHook} from '../form';
 import MeasurementLabel from '../measurements/MeasurementLabel';
@@ -12,7 +13,6 @@ import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';
-import {tagsStyles} from './index';
 
 const useTags = () => {
   const dispatch = useDispatch();

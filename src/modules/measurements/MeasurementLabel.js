@@ -1,10 +1,10 @@
 import React from 'react';
 import {Text} from 'react-native';
 
-import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
-import useFormHook from '../form/useForm';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from './measurements.constants';
 import useMeasurementsHook from './useMeasurements';
+import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
+import useFormHook from '../form/useForm';
 
 const MeasurementLabel = (props) => {
   const [useMeasurements] = useMeasurementsHook();

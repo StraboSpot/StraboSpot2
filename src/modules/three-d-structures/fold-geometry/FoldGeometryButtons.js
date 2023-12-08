@@ -3,10 +3,10 @@ import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
+import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 import {SECONDARY_BACKGROUND_COLOR} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import {formStyles} from '../../form';
-import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 
 const FoldGeometryButtons = (props) => {
 

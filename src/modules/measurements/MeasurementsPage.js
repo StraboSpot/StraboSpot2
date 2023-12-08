@@ -4,6 +4,10 @@ import { SectionList, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import MeasurementDetail from './MeasurementDetail';
+import MeasurementItem from './MeasurementItem';
+import styles from './measurements.styles';
+import useMeasurementsHook from './useMeasurements';
 import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -16,10 +20,6 @@ import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
 import {setModalVisible} from '../home/home.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import MeasurementDetail from './MeasurementDetail';
-import MeasurementItem from './MeasurementItem';
-import styles from './measurements.styles';
-import useMeasurementsHook from './useMeasurements';
 
 const MeasurementsPage = (props) => {
   const dispatch = useDispatch();

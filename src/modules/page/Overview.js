@@ -5,6 +5,8 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
+import usePageHoook from './usePage';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -17,8 +19,6 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
-import usePageHoook from './usePage';
 
 const Overview = (props) => {
   const dispatch = useDispatch();

@@ -1,12 +1,12 @@
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 import alert from '../../../shared/ui/alert';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
 import useSedValidationHook from '../../sed/useSedValidation';
 import {editedOrCreatedSpot, editedSpots} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
-import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 
 const useStratSectionCalculations = () => {
   const dispatch = useDispatch();

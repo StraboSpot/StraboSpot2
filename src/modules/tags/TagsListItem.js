@@ -3,11 +3,11 @@ import React from 'react';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {useTagsHook} from './index';
 import commonStyles from '../../shared/common.styles';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
-import {useTagsHook} from './index';
 
 const TagsListItem = (props) => {
   const [useTags] = useTagsHook();

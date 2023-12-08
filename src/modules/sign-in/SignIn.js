@@ -4,14 +4,14 @@ import {Platform, Text, TextInput, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import signInStyles from './signIn.styles';
+import useSignInHook from './useSignIn';
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import useDeviceHook from '../../services/useDevice';
 import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import ErrorModal from '../home/home-modals/ErrorModal';
 import Splashscreen from '../splashscreen/Splashscreen';
-import signInStyles from './signIn.styles';
-import useSignInHook from './useSignIn';
 import {login} from '../user/userProfile.slice';
 
 const SignIn = ({navigation, route}) => {
@@ -33,21 +33,22 @@ const SignIn = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE SignIn []');
-    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(err => console.error('Error creating app directories', err));
+    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+      err => console.error('Error creating app directories', err));
     Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
       .catch(err => console.error('Error getting permissions', err));
   }, []);
 
   const handleSignIn = async () => {
     const res = await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage,
-      setIsErrorModalVisible)
+      setIsErrorModalVisible);
     dispatch(login());
     // res === 'true' && setIsSignedIn(res);
-      // res === 'true' && navigation.navigate('HomeScreen')
-  }
+    // res === 'true' && navigation.navigate('HomeScreen')
+  };
 
   const handleGuestSignIn = async () => {
-    await useSignIn.guestSignIn()
+    await useSignIn.guestSignIn();
     dispatch(login());
     // setIsSignedIn('true');
   };

@@ -4,13 +4,13 @@ import {FlatList, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import OtherFeatureDetail from './OtherFeatureDetail';
+import OtherFeatureItem from './OtherFeatureItem';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import OtherFeatureDetail from './OtherFeatureDetail';
-import OtherFeatureItem from './OtherFeatureItem';
 
 const OtherFeaturesPage = () => {
   const [isFeatureDetailVisible, setIsFeatureDetailVisible] = useState(false);

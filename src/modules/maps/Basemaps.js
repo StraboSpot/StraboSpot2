@@ -6,11 +6,6 @@ import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
-import {SMALL_SCREEN} from '../../shared/styles.constants';
-import homeStyles from '../home/home.style';
-import useImagesHook from '../images/useImages';
-import FreehandSketch from '../sketch/FreehandSketch';
 import {
   BACKGROUND,
   GEO_LAT_LNG_PROJECTION,
@@ -29,6 +24,11 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
+import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
+import homeStyles from '../home/home.style';
+import useImagesHook from '../images/useImages';
+import FreehandSketch from '../sketch/FreehandSketch';
 
 MapboxGL.setWellKnownTileServer('mapbox');
 MapboxGL.setAccessToken(MAPBOX_TOKEN);

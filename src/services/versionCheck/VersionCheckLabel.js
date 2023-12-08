@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
-import VersionCheckHook from '../versionCheck/useVersionCheck';
 import styles from './versionCheck.styles';
+import VersionCheckHook from '../versionCheck/useVersionCheck';
 
 const VersionCheckLabel = (props) => {
   const [versionObj, setVersionObj] = useState({});

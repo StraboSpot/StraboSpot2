@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Modal from '../../shared/ui/modal/Modal';
 import {TagsModal} from './index';
+import Modal from '../../shared/ui/modal/Modal';
 
 const AddTagsToSpotsShortcutModal = (props) => {
 

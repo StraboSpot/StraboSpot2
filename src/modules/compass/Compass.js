@@ -14,16 +14,14 @@ import {
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
-import DeviceSound from '../../utils/sounds/sound';
-import {formStyles} from '../form';
-import {setModalVisible} from '../home/home.slice';
-import useMeasurementsHook from '../measurements/useMeasurements';
-import {MODAL_KEYS} from '../page/page.constants';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements} from './compass.slice';
 import compassStyles from './compass.styles';
-import ManualMeasurement from './ManualMeasurement';
+import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
+import DeviceSound from '../../utils/sounds/sound';
+import {setModalVisible} from '../home/home.slice';
+import useMeasurementsHook from '../measurements/useMeasurements';
+import {MODAL_KEYS} from '../page/page.constants';
 
 const Compass = (props) => {
   const dispatch = useDispatch();

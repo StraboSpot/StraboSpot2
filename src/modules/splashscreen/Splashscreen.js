@@ -3,13 +3,13 @@ import {ImageBackground, Platform, ScrollView, Text, useWindowDimensions, View} 
 
 import {useSelector} from 'react-redux';
 
+import splashscreenStyles from './splashscreen.styles';
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
-import splashscreenStyles from './splashscreen.styles';
 
 const Splashscreen = (props) => {
   const {width, height} = useWindowDimensions();

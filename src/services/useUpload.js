@@ -4,6 +4,9 @@ import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {updatedProjectTransferProgress} from './connections.slice';
+import {APP_DIRECTORIES} from './directories.constants';
+import useServerRequestsHook from './useServerRequests';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {
@@ -15,9 +18,6 @@ import useSpotsHook from '../modules/spots/useSpots';
 import useDeviceHook from '../services/useDevice';
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
-import {updatedProjectTransferProgress} from './connections.slice';
-import {APP_DIRECTORIES} from './directories.constants';
-import useServerRequestsHook from './useServerRequests';
 
 const useUpload = () => {
   const datasetsNotUploaded = [];

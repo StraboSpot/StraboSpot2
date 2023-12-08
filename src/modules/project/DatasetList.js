@@ -4,6 +4,7 @@ import {FlatList, Platform, Switch, Text, View} from 'react-native';
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {updatedDatasetProperties} from './projects.slice';
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
@@ -14,7 +15,6 @@ import StandardModal from '../../shared/ui/StandardModal';
 import {setProjectLoadComplete} from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
 import useProjectHook from '../project/useProject';
-import {updatedDatasetProperties} from './projects.slice';
 
 const DatasetList = () => {
   console.log('Rendering DatasetList...');

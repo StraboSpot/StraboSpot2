@@ -4,11 +4,11 @@ import {FlatList} from 'react-native';
 import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import useProjectHook from './useProject';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import useProjectHook from './useProject';
 
 const ActiveDatasetsList = () => {
   const [useProject] = useProjectHook();

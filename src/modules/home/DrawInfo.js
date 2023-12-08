@@ -4,10 +4,10 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import homeStyles from './home.style';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import {MAP_MODES} from '../maps/maps.constants';
 import useProjectHook from '../project/useProject';
-import homeStyles from './home.style';
 
 const DrawInfo = ({distance, endDraw, endMeasurement, mapMode}) => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);

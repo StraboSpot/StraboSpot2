@@ -1,8 +1,8 @@
 import {useSelector} from 'react-redux';
 
+import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from './page.constants';
 import {isEmpty} from '../../shared/Helpers';
 import {useTagsHook} from '../tags';
-import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from './page.constants';
 
 const usePage = () => {
   const isTestingMode = useSelector(state => state.project.isTestingMode);

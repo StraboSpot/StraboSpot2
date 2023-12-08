@@ -4,6 +4,7 @@ import {ActivityIndicator,  FlatList, Platform, Text, View} from 'react-native';
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
+import {setCurrentImageBasemap} from './maps.slice';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -13,7 +14,6 @@ import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {setCurrentImageBasemap} from './maps.slice';
 
 const ImageBasemaps = () => {
   console.log('Rendering ImageBasemaps...');

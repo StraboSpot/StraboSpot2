@@ -4,13 +4,13 @@ import {Platform, Text, TextInput, View} from 'react-native';
 import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import DataWrapper from './DataWrapper';
+import useExternalDataHook from './useExternalData';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {formStyles} from '../form';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import DataWrapper from './DataWrapper';
-import useExternalDataHook from './useExternalData';
 
 const ExternalData = () => {
   const inputRef = useRef(null);

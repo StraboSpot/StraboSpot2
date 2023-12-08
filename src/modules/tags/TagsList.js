@@ -4,6 +4,7 @@ import {FlatList, SectionList, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {useTagsHook} from './index';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -14,7 +15,6 @@ import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedTag} from '../project/projects.slice';
-import {useTagsHook} from './index';
 
 const TagsList = ({type, selectedIndex}) => {
   console.log('Rendering TagsList...');

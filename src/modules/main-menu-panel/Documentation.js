@@ -5,6 +5,8 @@ import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import Pdf from 'react-native-pdf';
 import {useSelector} from 'react-redux';
 
+import styles from './documentation.styles';
+import mainMenuPanelStyles from './mainMenuPanel.styles';
 import {STRABO_APIS} from '../../services/urls.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -12,8 +14,6 @@ import {BLACK, BLUE} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import styles from './documentation.styles';
-import mainMenuPanelStyles from './mainMenuPanel.styles';
 
 const Documentation = () => {
 

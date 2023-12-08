@@ -4,13 +4,13 @@ import {Switch, Text, View} from 'react-native';
 import {Button, Icon, Input} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import uiStyles from './ui.styles';
 import signInStyles from '../../modules/sign-in/signIn.styles';
 import {setDatabaseIsSelected, setDatabaseVerify} from '../../services/connections.slice';
 import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 import * as themes from '../styles.constants';
-import uiStyles from './ui.styles';
 
 const CustomEndpoint = (props) => {
   const dispatch = useDispatch();

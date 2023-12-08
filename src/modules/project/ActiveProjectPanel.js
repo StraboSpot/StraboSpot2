@@ -4,6 +4,12 @@ import {Platform, Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import ActiveDatasetsList from './ActiveDatasetsList';
+import ActiveProjectList from './ActiveProjectList';
+import CustomFeatureTypes from './CustomFeatureTypes';
+import DatasetList from './DatasetList';
+import {setActiveDatasets, setSelectedDataset} from './projects.slice';
+import useProjectHook from './useProject';
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -13,12 +19,6 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import WarningModal from '../home/home-modals/WarningModal';
 import {clearedStatusMessages} from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
-import ActiveDatasetsList from './ActiveDatasetsList';
-import ActiveProjectList from './ActiveProjectList';
-import CustomFeatureTypes from './CustomFeatureTypes';
-import DatasetList from './DatasetList';
-import {setActiveDatasets, setSelectedDataset} from './projects.slice';
-import useProjectHook from './useProject';
 
 const ActiveProjectPanel = () => {
   const dispatch = useDispatch();

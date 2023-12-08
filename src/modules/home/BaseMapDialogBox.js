@@ -4,6 +4,7 @@ import {FlatList, Switch, Text, View} from 'react-native';
 import {Icon, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import overlayStyles from './overlay.styles';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
@@ -13,7 +14,6 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {BASEMAPS} from '../maps/maps.constants';
 import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
 import useMapsHook from '../maps/useMaps';
-import overlayStyles from './overlay.styles';
 
 const BaseMapDialog = ({mapComponentRef, ...props}) => {
 

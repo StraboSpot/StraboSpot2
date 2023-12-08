@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import alert from '../shared/ui/alert';
 import {
   setDatabaseDomain,
   setDatabasePath,
@@ -10,6 +9,7 @@ import {
   updatedProjectTransferProgress,
 } from './connections.slice';
 import {STRABO_APIS} from './urls.constants';
+import alert from '../shared/ui/alert';
 
 const useServerRequests = (props) => {
   const dispatch = useDispatch();

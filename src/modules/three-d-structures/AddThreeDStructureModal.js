@@ -5,6 +5,11 @@ import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import AddFault from './AddFault';
+import AddOther from './AddOther';
+import AddTensor from './AddTensor';
+import {AddFold, FoldGeometryChoices} from './fold-geometry';
+import {THREE_D_STRUCTURE_TYPES} from './threeDStructures.constants';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
@@ -13,11 +18,6 @@ import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import AddFault from './AddFault';
-import AddOther from './AddOther';
-import AddTensor from './AddTensor';
-import {AddFold, FoldGeometryChoices} from './fold-geometry';
-import {THREE_D_STRUCTURE_TYPES} from './threeDStructures.constants';
 
 const AddThreeDStructureModal = (props) => {
   const dispatch = useDispatch();

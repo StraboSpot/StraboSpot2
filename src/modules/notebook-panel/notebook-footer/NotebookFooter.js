@@ -4,12 +4,12 @@ import {View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import MorePagesMenu from './MorePagesMenu';
+import footerStyle from './notebookFooter.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
 import {NOTEBOOK_PAGES} from '../../page/page.constants';
 import usePageHoook from '../../page/usePage';
-import MorePagesMenu from './MorePagesMenu';
-import footerStyle from './notebookFooter.styles';
 
 const NotebookFooter = (props) => {
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);

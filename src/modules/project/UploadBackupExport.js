@@ -4,6 +4,7 @@ import { Linking, Platform, Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {setSelectedProject} from './projects.slice';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
@@ -19,7 +20,6 @@ import {
   setUploadModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlay.styles';
-import {setSelectedProject} from './projects.slice';
 
 const UploadBackAndExport = () => {
 

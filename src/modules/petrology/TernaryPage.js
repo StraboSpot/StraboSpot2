@@ -4,11 +4,11 @@ import {Text, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import {TERNARY_MINERALS} from './petrology.constants';
 import {roundToDecimalPlaces} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {TERNARY_MINERALS} from './petrology.constants';
 
 const TernaryPage = () => {
   const spot = useSelector(state => state.spot.selectedSpot);

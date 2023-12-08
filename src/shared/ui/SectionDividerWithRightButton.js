@@ -3,9 +3,9 @@ import {View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 
+import SectionDivider from './SectionDivider';
 import styles from '../../shared/ui/ui.styles';
 import commonStyles from '../common.styles';
-import SectionDivider from './SectionDivider';
 
 const SectionDividerWithRightButton = (props) => {
   return (

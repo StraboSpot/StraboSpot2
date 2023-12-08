@@ -4,6 +4,7 @@ import {FlatList, View} from 'react-native';
 import {ButtonGroup} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {TEPHRA_SUBPAGES} from './tephra.constants';
 import {getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -15,7 +16,6 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {TEPHRA_SUBPAGES} from './tephra.constants';
 
 const TephraPage = (props) => {
   const dispatch = useDispatch();

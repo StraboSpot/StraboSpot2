@@ -3,13 +3,13 @@ import {View} from 'react-native';
 
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import SamplesList from './SamplesList';
 import {isEmpty} from '../../shared/Helpers';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import SamplesList from './SamplesList';
 
 const SamplesPage = (props) => {
   const dispatch = useDispatch();

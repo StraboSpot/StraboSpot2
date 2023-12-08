@@ -1,11 +1,12 @@
 import {useState} from 'react';
 import {Platform} from 'react-native';
 
+import Orientation, {PORTRAIT, PORTRAIT_UPSIDE_DOWN, useDeviceOrientationChange} from 'react-native-orientation-locker';
+import {useToast} from 'react-native-toast-notifications';
+
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import {MAP_MODES} from '../maps/maps.constants';
 
-import Orientation, {PORTRAIT, PORTRAIT_UPSIDE_DOWN, useDeviceOrientationChange} from 'react-native-orientation-locker';
-import {useToast} from 'react-native-toast-notifications';
 
 const useHome = () => {
   const [drawTypes, setDrawTypes] = useState({

@@ -6,6 +6,7 @@ import {Button, CheckBox, Dialog, Input} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import projectOptionsModalStyle from './projectOptionsModal.style';
 import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/home/home.slice';
 import overlayStyles from '../../../../modules/home/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
@@ -20,8 +21,6 @@ import commonStyles from '../../../common.styles';
 import {isEmpty} from '../../../Helpers';
 import Spacer from '../../Spacer';
 import uiStyles from '../../ui.styles';
-import useAnimationsHook from '../../useAnimations';
-import projectOptionsModalStyle from './projectOptionsModal.style';
 
 const ProjectOptionsDialogBox = (props) => {
   const dispatch = useDispatch();
@@ -43,7 +42,6 @@ const ProjectOptionsDialogBox = (props) => {
   // const [projectsArr, setProjectsArr] = useState([]);
   const [projectNameToDelete, setProjectNameToToDelete] = useState('');
 
-  const useAnimations = useAnimationsHook();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
   const [useProject] = useProjectHook();

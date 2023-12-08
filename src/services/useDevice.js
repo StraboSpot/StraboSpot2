@@ -5,10 +5,10 @@ import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
-import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
+import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
+import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 
 const useDevice = (props) => {
   const dispatch = useDispatch();

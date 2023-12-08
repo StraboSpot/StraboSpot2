@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Modal from '../../shared/ui/modal/Modal';
 import Notes from './Notes';
+import Modal from '../../shared/ui/modal/Modal';
 
 const ShortcutNotesModal = (props) => {
 

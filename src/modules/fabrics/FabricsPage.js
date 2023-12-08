@@ -3,6 +3,7 @@ import {SectionList, View} from 'react-native';
 
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import FabricListItem from './FabricListItem';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -13,7 +14,6 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import FabricListItem from './FabricListItem';
 
 const FabricsPage = (props) => {
   const dispatch = useDispatch();

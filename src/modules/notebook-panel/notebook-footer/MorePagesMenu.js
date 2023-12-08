@@ -4,12 +4,12 @@ import {Platform, Pressable, ScrollView, Switch, Text, View} from 'react-native'
 import {Avatar, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import footerStyles from './notebookFooter.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import overlayStyles from '../../home/overlay.styles';
 import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
-import footerStyles from './notebookFooter.styles';
 
 const MorePagesMenu = (props) => {
   const dispatch = useDispatch();

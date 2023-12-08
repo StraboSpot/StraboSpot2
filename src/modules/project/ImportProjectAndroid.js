@@ -5,12 +5,12 @@ import {Button, Icon} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import projectStyles from './project.styles';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import alert from '../../shared/ui/alert';
 import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
-import projectStyles from './project.styles';
 
 const ImportProjectAndroid = (props) => {
   const dispatch = useDispatch();

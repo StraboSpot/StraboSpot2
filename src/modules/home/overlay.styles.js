@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderColor: themes.MEDIUMGREY,
     borderRadius: 10,
-    borderWidth: .5,
+    borderWidth: 0.5,
     elevation: 2,
     maxHeight: '60%',
     shadowOpacity: 0.3,

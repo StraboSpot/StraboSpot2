@@ -5,6 +5,11 @@ import {Button} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch} from 'react-redux';
 
+import ActiveProjectList from './ActiveProjectList';
+import ImportProjectAndroid from './ImportProjectAndroid';
+import NewProjectForm from './NewProjectForm';
+import ProjectList from './ProjectList';
+import ProjectTypesButtons from './ProjectTypesButtons';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
@@ -14,11 +19,6 @@ import alert from '../../shared/ui/alert';
 import Spacer from '../../shared/ui/Spacer';
 import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
-import ActiveProjectList from './ActiveProjectList';
-import ImportProjectAndroid from './ImportProjectAndroid';
-import NewProjectForm from './NewProjectForm';
-import ProjectList from './ProjectList';
-import ProjectTypesButtons from './ProjectTypesButtons';
 
 const MyStraboSpot = ({logout}) => {
   const [showSection, setShowSection] = useState('none');

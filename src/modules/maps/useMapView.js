@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEqual} from '../../shared/Helpers';
 import {setCenter, setZoom} from './maps.slice';
+import {isEqual} from '../../shared/Helpers';
 
 const useMapView = () => {
   const dispatch = useDispatch();

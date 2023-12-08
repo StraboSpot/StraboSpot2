@@ -4,6 +4,7 @@ import {FlatList, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useNestingHook from './useNesting';
 import {isEmpty} from '../../shared/Helpers';
 import * as SharedUI from '../../shared/ui';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -14,7 +15,6 @@ import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {SpotsListItem} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
-import useNestingHook from './useNesting';
 
 const Nesting = () => {
   const dispatch = useDispatch();

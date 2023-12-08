@@ -2,9 +2,9 @@ import React from 'react';
 
 import {useDispatch} from 'react-redux';
 
+import SamplesList from './SamplesList';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import SamplesList from './SamplesList';
 
 const SamplesOverview = (props) => {
   const dispatch = useDispatch();

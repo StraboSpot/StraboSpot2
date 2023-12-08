@@ -2,6 +2,9 @@ import {Platform} from 'react-native';
 
 import {batch, useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from './directories.constants';
+import useDeviceHook from './useDevice';
+import useServerRequestsHook from './useServerRequests';
 import initialProjectLoadModal from '../modules/home/home-modals/InitialProjectLoadModal';
 import {
   addedStatusMessage,
@@ -29,9 +32,6 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpotsFromServer, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
-import useServerRequestsHook from './useServerRequests';
 
 const useDownload = () => {
   let imagesDownloadedCount = 0;

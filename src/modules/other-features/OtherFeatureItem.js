@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import OtherFeatureLabel from './OtherFeatureLabel';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
-import OtherFeatureLabel from './OtherFeatureLabel';
 
 const OtherFeatureItem = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);

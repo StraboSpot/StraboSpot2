@@ -3,12 +3,12 @@ import {Animated} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import Map from '../maps/Map';
-import NotebookPanel from '../notebook-panel/NotebookPanel';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import StatusBar from './StatusBar';
+import Map from '../maps/Map';
+import NotebookPanel from '../notebook-panel/NotebookPanel';
+import notebookStyles from '../notebook-panel/notebookPanel.styles';
 
 const HomeView = ({
                     animateLeftSide,

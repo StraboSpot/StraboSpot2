@@ -3,6 +3,8 @@ import {PermissionsAndroid, Platform} from 'react-native';
 import {zip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {APP_DIRECTORIES} from './directories.constants';
+import useDeviceHook from './useDevice';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -13,8 +15,6 @@ import {
 } from '../modules/home/home.slice';
 import {setSelectedProject} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
-import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
 
 const useExport = () => {
   const dispatch = useDispatch();

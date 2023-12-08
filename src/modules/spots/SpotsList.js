@@ -3,12 +3,12 @@ import {FlatList, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import {SpotsListItem, useSpotsHook} from './index';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
-import {SpotsListItem, useSpotsHook} from './index';
 
 const SpotsList = (props) => {
   console.log('Rendering SpotsList...');

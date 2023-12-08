@@ -6,6 +6,7 @@ import {Button, Card, Icon, Image} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
@@ -19,7 +20,6 @@ import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {clearedSelectedSpots, editedSpotImages} from '../spots/spots.slice';
-import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 
 const ImagesViewPage = () => {
   console.log('Rendering ImagesViewPage...');

@@ -3,10 +3,10 @@ import React from 'react';
 import * as turf from '@turf/turf';
 import {Layer, Source} from 'react-map-gl';
 
+import {BASIC_LITHOLOGIES_LABELS, CARBONATE_KEYS, GRAIN_SIZE_KEYS, LITHOLOGIES_KEYS} from './stratSection.constants';
 import {useFormHook} from '../../form';
 import useMapSymbologyHook from '../symbology/useMapSymbology';
 import useMapsHook from '../useMaps';
-import {BASIC_LITHOLOGIES_LABELS, CARBONATE_KEYS, GRAIN_SIZE_KEYS, LITHOLOGIES_KEYS} from './stratSection.constants';
 
 function XAxis(props) {
   const [useMaps] = useMapsHook();

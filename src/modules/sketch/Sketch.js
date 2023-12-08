@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {useDispatch, useSelector} from 'react-redux';
 
+import styles from './sketch.styles';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
@@ -12,7 +13,6 @@ import useLocationHook from '../maps/useLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';
-import styles from './sketch.styles';
 
 const Sketch = (props) => {
   const dispatch = useDispatch();

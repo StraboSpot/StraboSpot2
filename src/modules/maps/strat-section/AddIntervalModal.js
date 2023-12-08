@@ -5,6 +5,8 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useStratSectionHook from './useStratSection';
+import useStratSectionCalculationsHook from './useStratSectionCalculations';
 import commonStyles from '../../../shared/common.styles';
 import {deepObjectExtend} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
@@ -14,8 +16,6 @@ import {setModalValues, setModalVisible} from '../../home/home.slice';
 import {updatedProject} from '../../project/projects.slice';
 import {setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
-import useStratSectionHook from './useStratSection';
-import useStratSectionCalculationsHook from './useStratSectionCalculations';
 
 const AddIntervalModal = () => {
   const dispatch = useDispatch();

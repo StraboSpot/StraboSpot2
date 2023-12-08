@@ -4,6 +4,18 @@ import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_MODES, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
+import {
+  addedCustomMap,
+  clearedStratSection,
+  deletedCustomMap,
+  selectedCustomMapToEdit,
+  setCurrentBasemap,
+  setCurrentImageBasemap,
+  setMapSymbols,
+  setStratSection,
+} from './maps.slice';
+import useStratSectionHook from './strat-section/useStratSection';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
@@ -18,18 +30,6 @@ import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../project/projects.slice';
 import useSpotsHook from '../spots/useSpots';
-import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_MODES, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
-import {
-  addedCustomMap,
-  clearedStratSection,
-  deletedCustomMap,
-  selectedCustomMapToEdit,
-  setCurrentBasemap,
-  setCurrentImageBasemap,
-  setMapSymbols,
-  setStratSection,
-} from './maps.slice';
-import useStratSectionHook from './strat-section/useStratSection';
 
 const useMaps = (mapRef) => {
   const [useServerRequests] = useServerRequestsHook();

@@ -3,14 +3,14 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import {SMALL_SCREEN} from '../../shared/styles.constants';
-import IconButton from '../../shared/ui/IconButton';
-import UseMapsHook from '../maps/useMaps';
 import BaseMapDialog from './BaseMapDialogBox';
 import homeStyles from './home.style';
 import MapActionsDialog from './MapActionsDialogBox';
 import MapSymbolsDialog from './MapSymbolsDialogBox';
 import overlayStyles from './overlay.styles';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
+import IconButton from '../../shared/ui/IconButton';
+import UseMapsHook from '../maps/useMaps';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
   const [useMaps] = UseMapsHook();
@@ -52,13 +52,13 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
       <MapActionsDialog
         visible={dialogs.mapActionsMenuVisible}
         overlayStyle={overlayStyles.mapActionsPosition}
-        onPress={(name) => dialogClickHandler('mapActionsMenuVisible', name)}
+        onPress={name => dialogClickHandler('mapActionsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
       />
       <MapSymbolsDialog
         visible={dialogs.mapSymbolsMenuVisible}
         overlayStyle={overlayStyles.mapSymbolsPosition}
-        onPress={(name) => dialogClickHandler('mapSymbolsMenuVisible', name)}
+        onPress={name => dialogClickHandler('mapSymbolsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
       <BaseMapDialog

@@ -3,10 +3,10 @@ import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 
+import shortcutMenuStyles from './shortcutsMenu.styles';
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import {SHORTCUT_MODALS} from '../../page/page.constants';
-import shortcutMenuStyles from './shortcutsMenu.styles';
 
 const ShortcutMenu = (props) => {
 

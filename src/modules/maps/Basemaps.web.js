@@ -7,9 +7,6 @@ import proj4 from 'proj4';
 import {Layer, Map, Source, ScaleControl} from 'react-map-gl';
 import {useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
-import homeStyles from '../home/home.style';
-import useImagesHook from '../images/useImages';
 import {
   BACKGROUND,
   GEO_LAT_LNG_PROJECTION,
@@ -29,6 +26,8 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
+import {isEmpty} from '../../shared/Helpers';
+import useImagesHook from '../images/useImages';
 
 const Basemap = (props) => {
   console.log('Rendering Basemap...');

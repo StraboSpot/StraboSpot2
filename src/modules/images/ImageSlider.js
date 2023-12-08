@@ -4,15 +4,15 @@ import {ActivityIndicator, Platform, useWindowDimensions, View} from 'react-nati
 import {Button, Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import styles from './images.styles';
+import imageSliderStyles from './imageSlider.styles';
+import useImagesHook from './useImages';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
 import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
-import styles from './images.styles';
-import imageSliderStyles from './imageSlider.styles';
-import useImagesHook from './useImages';
 
 const ImageSlider = ({route, navigation}) => {
   console.log('Rendering ImageSlider...');

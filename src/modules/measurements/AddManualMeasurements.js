@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
+import {MEASUREMENT_KEYS} from './measurements.constants';
 import commonStyles from '../../shared/common.styles';
 import Slider from '../../shared/ui/SliderBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import compassStyles from '../compass/compass.styles';
 import {Form, useFormHook} from '../form';
-import {MEASUREMENT_KEYS} from './measurements.constants';
 
 const AddManualMeasurements = (props) => {
   const [useForm] = useFormHook();
