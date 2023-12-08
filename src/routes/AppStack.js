@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from '../modules/home/Home';
 import ImageInfo from '../modules/images/ImageInfo';
 import ImageSlider from '../modules/images/ImageSlider';
-import Sketch from '../modules/sketch/Sketch.web';
+import Sketch from '../modules/sketch/Sketch';
 
 const AppStack = (props) => {
 
