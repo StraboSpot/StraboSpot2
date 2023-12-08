@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux';
 
 import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
+import {UserLocationButton} from './buttons';
 import DrawActionButtons from './DrawActionButtons';
 import DrawInfo from './DrawInfo';
 import MapActionButtons from './MapActionButtons';
@@ -26,7 +27,9 @@ const ActionButtonsSmallScreen = ({
 
   return (
     <View>
-      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
+        <UserLocationButton clickHandler={clickHandler}/>
+
         <DrawInfo
           distance={distance}
           endDraw={endDraw}
@@ -57,7 +60,7 @@ const ActionButtonsSmallScreen = ({
             backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
             borderColor: themes.MEDIUMGREY,
             borderRadius: 10,
-            borderWidth: .5,
+            borderWidth: 0.5,
             elevation: 2,
             flexDirection: 'row',
             padding: 0,
