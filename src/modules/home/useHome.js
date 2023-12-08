@@ -1,5 +1,35 @@
+import {useState} from 'react';
+
+import Orientation, {PORTRAIT, PORTRAIT_UPSIDE_DOWN, useDeviceOrientationChange} from 'react-native-orientation-locker';
+import {useToast} from 'react-native-toast-notifications';
+
 const useHome = () => {
-  return [{}];
+
+  const toast = useToast();
+
+  const [orientation, setOrientation] = useState(null);
+
+  useDeviceOrientationChange((o) => {
+    console.log('Orientation Change', o);
+    setOrientation(o);
+  });
+
+  const lockOrientation = () => {
+    console.log('Orientation', orientation);
+    if (orientation === PORTRAIT || orientation === PORTRAIT_UPSIDE_DOWN) Orientation.lockToPortrait();
+    else Orientation.lockToLandscape();
+    toast.show('Screen orientation LOCKED in EDIT mode');
+  };
+
+  const unlockOrientation = () => {
+    Orientation.unlockAllOrientations();
+    toast.show('Screen orientation UNLOCKED');
+  };
+
+  return {
+    lockOrientation: lockOrientation,
+    unlockOrientation: unlockOrientation,
+  };
 };
 
 export default useHome;

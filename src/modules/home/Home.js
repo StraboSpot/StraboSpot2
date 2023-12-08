@@ -20,6 +20,8 @@ import {
   NOTEBOOK_DRAWER_WIDTH,
 } from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
+import uiStyles from '../../shared/ui/ui.styles';
+import useHomeHook from '../home/useHome';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
@@ -65,7 +67,6 @@ import homeStyles from './home.style';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import StatusBar from './StatusBar';
-import uiStyles from '../../shared/ui/ui.styles';
 
 const {State: TextInputState} = TextInput;
 SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
@@ -76,6 +77,7 @@ const Home = ({navigation, route}) => {
 
   const deviceDimensions = useWindowDimensions();
 
+  const useHome = useHomeHook();
   const [useImages] = useImagesHook();
   const [useProject] = useProjectHook();
   const [useSpots] = useSpotsHook();
@@ -223,6 +225,7 @@ const Home = ({navigation, route}) => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
+    useHome.unlockOrientation();
   };
 
   const clickHandler = async (name, value) => {
@@ -492,6 +495,7 @@ const Home = ({navigation, route}) => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
+    useHome.unlockOrientation();
   };
 
   const setPointAtCurrentLocation = async () => {
@@ -514,6 +518,7 @@ const Home = ({navigation, route}) => {
   };
 
   const startEdit = () => {
+    useHome.lockOrientation();
     setMapMode(MAP_MODES.EDIT);
     setButtons({
       editButtonsVisible: true,
