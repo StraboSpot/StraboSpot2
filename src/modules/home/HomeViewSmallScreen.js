@@ -11,6 +11,7 @@ import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SpotNavigator from '../spots/SpotNavigator';
 import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
 import homeStyles from './home.style';
+import ShortcutButtons from './ShortcutButtons';
 
 const HomeViewSmallScreen = ({
                                animateLeftSide,
@@ -35,8 +36,10 @@ const HomeViewSmallScreen = ({
                              }) => {
   console.log('Rendering HomeViewSmallScreen...');
 
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const stratSection = useSelector(state => state.map.stratSection);
 
   const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
 
@@ -117,6 +120,11 @@ const HomeViewSmallScreen = ({
                   setDistance={setDistance}
                   startEdit={startEdit}
                 />
+
+                {!currentImageBasemap && !stratSection && (
+                  <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
+                )}
+
                 {drawButtonsVisible && (
                   <View style={homeStyles.actionButtonsSmallScreenContainer}>
                     <ActionButtonsSmallScreen

@@ -1,8 +1,8 @@
 import {useState} from 'react';
 import {Platform} from 'react-native';
 
-import {MAP_MODES} from '../maps/maps.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
+import {MAP_MODES} from '../maps/maps.constants';
 
 const useHome = () => {
 

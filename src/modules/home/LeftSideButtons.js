@@ -16,6 +16,7 @@ const LeftSideButtons = ({
                            toggleDialog,
                            toggleHomeDrawer,
                          }) => {
+  console.log('Rendering LeftSideButtons...');
 
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
