@@ -48,23 +48,22 @@ const MapActionsDialog = (props) => {
   return (
     <Overlay
       animationType={'slide'}
-      isVisible={props.visible}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
-      onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
+      fullScreen={true}
+      isVisible={props.visible}
+      onBackdropPress={props.onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
     >
       <View style={[overlayStyles.titleContainer]}>
         <Text style={[overlayStyles.titleText]}>Map Actions</Text>
       </View>
-      <View>
-        <FlatList
-          key={'mapActions'}
-          data={actions}
-          contentContainerStyle={{alignItems: 'center'}}
-          renderItem={({item}) => mapActionItem(item)}
-          ItemSeparatorComponent={FlatListItemSeparator}
-        />
-      </View>
+      <FlatList
+        key={'mapActions'}
+        data={actions}
+        contentContainerStyle={{alignItems: 'center'}}
+        renderItem={({item}) => mapActionItem(item)}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
     </Overlay>
   );
 };

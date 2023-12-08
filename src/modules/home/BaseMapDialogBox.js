@@ -252,19 +252,17 @@ const BaseMapDialog = ({mapComponentRef, ...props}) => {
   return (
     <Overlay
       animationType={'slide'}
-      isVisible={props.visible}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
-      onBackdropPress={props.onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
+      fullScreen={true}
+      isVisible={props.visible}
+      onBackdropPress={props.onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>
       </View>
-      <View>
-        {renderDefaultBasemapsList()}
-        {determineWhatCustomMapListToRender()}
-        <View/>
-      </View>
+      {renderDefaultBasemapsList()}
+      {determineWhatCustomMapListToRender()}
     </Overlay>
   );
 };

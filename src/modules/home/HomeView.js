@@ -17,6 +17,7 @@ const HomeView = ({
                     clickHandler,
                     closeNotebookPanel,
                     dialogClickHandler,
+                    dialogs,
                     distance,
                     drawButtonsVisible,
                     endDraw,
@@ -28,6 +29,7 @@ const HomeView = ({
                     openNotebookPanel,
                     setDistance,
                     startEdit,
+                    toggleDialog,
                     toggleHomeDrawer,
                   }) => {
   console.log('Rendering HomeView...');
@@ -37,19 +39,6 @@ const HomeView = ({
   const toggleNotebookPanel = () => {
     if (isNotebookPanelVisible) closeNotebookPanel();
     else openNotebookPanel();
-  };
-
-  const renderNotebookPanel = () => {
-    return (
-      <Animated.View style={[notebookStyles.panel, animateNotebookDrawer]}>
-        <NotebookPanel
-          closeNotebookPanel={closeNotebookPanel}
-          createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
-          openMainMenu={toggleHomeDrawer}
-          zoomToSpot={mapComponentRef.current?.zoomToSpot}
-        />
-      </Animated.View>
-    );
   };
 
   return (
@@ -63,26 +52,41 @@ const HomeView = ({
         setDistance={setDistance}
         startEdit={startEdit}
       />
+
       <StatusBar/>
-      <RightSideButtons
-        animateRightSide={animateRightSide}
-        clickHandler={clickHandler}
-        distance={distance}
-        drawButtonsVisible={drawButtonsVisible}
-        endDraw={endDraw}
-        endMeasurement={endMeasurement}
-        mapMode={mapMode}
-        openNotebookPanel={openNotebookPanel}
-        toggleNotebookPanel={toggleNotebookPanel}
-      />
-      <LeftSideButtons
-        animateLeftSide={animateLeftSide}
-        clickHandler={clickHandler}
-        dialogClickHandler={dialogClickHandler}
-        mapComponentRef={mapComponentRef}
-        toggleHomeDrawer={toggleHomeDrawer}
-      />
-      {renderNotebookPanel()}
+
+      <Animated.View style={[{position: 'absolute', height: '100%', right: 0}, animateRightSide]}>
+        <RightSideButtons
+          clickHandler={clickHandler}
+          distance={distance}
+          drawButtonsVisible={drawButtonsVisible}
+          endDraw={endDraw}
+          endMeasurement={endMeasurement}
+          mapMode={mapMode}
+          openNotebookPanel={openNotebookPanel}
+          toggleNotebookPanel={toggleNotebookPanel}
+        />
+      </Animated.View>
+
+      <Animated.View style={[{position: 'absolute', height: '100%', left: 0}, animateLeftSide]}>
+        <LeftSideButtons
+          clickHandler={clickHandler}
+          dialogClickHandler={dialogClickHandler}
+          dialogs={dialogs}
+          mapComponentRef={mapComponentRef}
+          toggleHomeDrawer={toggleHomeDrawer}
+          toggleDialog={toggleDialog}
+        />
+      </Animated.View>
+
+      <Animated.View style={[notebookStyles.notebookDrawer, animateNotebookDrawer]}>
+        <NotebookPanel
+          closeNotebookPanel={closeNotebookPanel}
+          createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
+          openMainMenu={toggleHomeDrawer}
+          zoomToSpot={mapComponentRef.current?.zoomToSpot}
+        />
+      </Animated.View>
     </>
   );
 };

@@ -8,7 +8,6 @@ const homeStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    overflow: 'hidden',
   },
   connectionStatusIconContainer: {
     paddingEnd: 5,
@@ -108,7 +107,7 @@ const homeStyles = StyleSheet.create({
     elevation: 2,
   },
   selectedDatasetContainer: {
-    backgroundColor: themes.LIGHTGREY,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderRadius: 10,
     padding: 15,
     width: 160,
@@ -155,8 +154,8 @@ const homeStyles = StyleSheet.create({
   },
   notebookButton: {
     position: 'absolute',
+    right: 10,
     top: 10,
-    right: 0,
   },
   // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {

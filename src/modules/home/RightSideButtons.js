@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animated} from 'react-native';
+import {View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
@@ -16,7 +16,6 @@ import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 
 const RightSideButtons = ({
-                            animateRightSide,
                             clickHandler,
                             distance,
                             drawButtonsVisible,
@@ -68,8 +67,7 @@ const RightSideButtons = ({
     };
 
     return (
-      <Animated.View
-        style={[homeStyles.shortcutButtons, animateRightSide]}>
+      <View style={homeStyles.shortcutButtons}>
         {SHORTCUT_MODALS.reduce((acc, sm) => {
             return (
               shortcutSwitchPosition[sm.key] ? [...acc, (
@@ -83,35 +81,34 @@ const RightSideButtons = ({
             );
           }, [],
         )}
-      </Animated.View>
+      </View>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {stratSection && (
-        <Animated.View
-          style={[homeStyles.addIntervalButton, animateRightSide]}>
-          <IconButton
-            source={isNotebookPanelVisible
-              ? require('../../assets/icons/AddIntervalButton_pressed.png')
-              : require('../../assets/icons/AddIntervalButton.png')}
-            onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_INTERVAL}))}
-          />
-        </Animated.View>
-      )}
-      <Animated.View
-        style={[homeStyles.notebookButton, animateRightSide]}>
         <IconButton
           source={isNotebookPanelVisible
-            ? require('../../assets/icons/NotebookViewButton_pressed.png')
-            : require('../../assets/icons/NotebookViewButton.png')}
-          onPress={toggleNotebookPanel}
+            ? require('../../assets/icons/AddIntervalButton_pressed.png')
+            : require('../../assets/icons/AddIntervalButton.png')}
+          onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_INTERVAL}))}
+          style={homeStyles.addIntervalButton}
         />
-      </Animated.View>
+      )}
+
+      <IconButton
+        source={isNotebookPanelVisible
+          ? require('../../assets/icons/NotebookViewButton_pressed.png')
+          : require('../../assets/icons/NotebookViewButton.png')}
+        onPress={toggleNotebookPanel}
+        style={homeStyles.notebookButton}
+      />
+
       {!currentImageBasemap && !stratSection && !isNotebookPanelVisible && renderShortcutIcons()}
+
       {drawButtonsVisible && (
-        <Animated.View style={[homeStyles.drawContainer, animateRightSide]}>
+        <View style={homeStyles.drawContainer}>
           <DrawInfo
             distance={distance}
             endDraw={endDraw}
@@ -122,9 +119,9 @@ const RightSideButtons = ({
             clickHandler={clickHandler}
             mapMode={mapMode}
           />
-        </Animated.View>
+        </View>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

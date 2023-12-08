@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated} from 'react-native';
+import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -8,11 +8,12 @@ import homeStyles from './home.style';
 import MapActionButtons from './MapActionButtons';
 
 const LeftSideButtons = ({
-                           animateLeftSide,
                            clickHandler,
                            dialogClickHandler,
+                           dialogs,
                            toast,
                            mapComponentRef,
+                           toggleDialog,
                            toggleHomeDrawer,
                          }) => {
 
@@ -45,22 +46,23 @@ const LeftSideButtons = ({
   };
 
   return (
-    <React.Fragment>
-      <Animated.View style={[homeStyles.homeIconContainer, animateLeftSide]}>
-        <IconButton
-          source={isMainMenuPanelVisible
-            ? require('../../assets/icons/HomeButton_pressed.png')
-            : require('../../assets/icons/HomeButton.png')}
-          onPress={toggleHomeDrawer}
-        />
-      </Animated.View>
-      <Animated.View style={[animateLeftSide]}>
-        <MapActionButtons
-          dialogClickHandler={dialogClickHandler}
-          mapComponentRef={mapComponentRef}
-        />
-      </Animated.View>
-      <Animated.View style={[homeStyles.bottomLeftIcons, animateLeftSide]}>
+    <>
+      <IconButton
+        source={isMainMenuPanelVisible
+          ? require('../../assets/icons/HomeButton_pressed.png')
+          : require('../../assets/icons/HomeButton.png')}
+        onPress={toggleHomeDrawer}
+        style={homeStyles.homeIconContainer}
+      />
+
+      <MapActionButtons
+        dialogClickHandler={dialogClickHandler}
+        dialogs={dialogs}
+        mapComponentRef={mapComponentRef}
+        toggleDialog={toggleDialog}
+      />
+
+      <View style={homeStyles.bottomLeftIcons}>
         {!currentImageBasemap && !stratSection && (
           <IconButton
             source={userLocationButtonOn
@@ -84,8 +86,8 @@ const LeftSideButtons = ({
             onPress={() => clickHandler('closeStratSection')}
           />
         )}
-      </Animated.View>
-    </React.Fragment>
+      </View>
+    </>
   );
 };
 

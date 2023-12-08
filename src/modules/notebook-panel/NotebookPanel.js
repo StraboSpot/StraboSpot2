@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, FlatList, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {FlatList, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,8 +35,6 @@ const NotebookPanel = (props) => {
 
   const [useSpots] = useSpotsHook();
   const usePage = usePageHoook();
-
-  const [textInputAnimate] = useState(new Animated.Value(0));
 
   useEffect(() => {
     console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);
@@ -126,7 +124,7 @@ const NotebookPanel = (props) => {
   };
 
   return (
-    <View style={SMALL_SCREEN ? notebookStyles.panelSmallScreen : notebookStyles.panel}>
+    <View style={notebookStyles.notebookPanel}>
       {(SMALL_SCREEN || isNotebookPanelVisible) && (!isEmpty(spot) ? renderNotebookContent()
         : renderNotebookContentNoSpot())}
     </View>

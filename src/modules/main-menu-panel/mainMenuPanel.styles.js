@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
     left: 0,
-    right: 0,
     zIndex: 0,
   },
   mainMenuContainer: {

@@ -17,6 +17,7 @@ const HomeViewSmallScreen = ({
                                clickHandler,
                                closeNotebookPanel,
                                dialogClickHandler,
+                               dialogs,
                                distance,
                                drawButtonsVisible,
                                endDraw,
@@ -29,6 +30,7 @@ const HomeViewSmallScreen = ({
                                openSpotInNotebook,
                                setDistance,
                                startEdit,
+                               toggleDialog,
                                toggleHomeDrawer,
                              }) => {
   console.log('Rendering HomeViewSmallScreen...');
@@ -44,17 +46,6 @@ const HomeViewSmallScreen = ({
     swipeEnabled: false,
   };
   const Tab = createMaterialTopTabNavigator();
-
-  const renderNotebookPanel = () => {
-    return (
-      <NotebookPanel
-        closeNotebookPanel={closeNotebookPanel}
-        createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
-        openMainMenu={toggleHomeDrawer}
-        zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
-      />
-    );
-  };
 
   const toggleSpotNavigator = () => {
     closeNotebookPanel();
@@ -131,11 +122,13 @@ const HomeViewSmallScreen = ({
                     <ActionButtonsSmallScreen
                       clickHandler={clickHandler}
                       dialogClickHandler={dialogClickHandler}
+                      dialogs={dialogs}
                       distance={distance}
                       endDraw={endDraw}
                       endMeasurement={endMeasurement}
                       mapComponentRef={mapComponentRef}
                       mapMode={mapMode}
+                      toggleDialog={toggleDialog}
                     />
                   </View>
                 )}
@@ -143,7 +136,14 @@ const HomeViewSmallScreen = ({
             }
           </Tab.Screen>
           <Tab.Screen name={'Notebook'} options={navigationOptions}>
-            {() => renderNotebookPanel()}
+            {() =>
+              <NotebookPanel
+                closeNotebookPanel={closeNotebookPanel}
+                createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
+                openMainMenu={toggleHomeDrawer}
+                zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
+              />
+            }
           </Tab.Screen>
         </Tab.Navigator>
       )}

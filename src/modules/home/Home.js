@@ -587,6 +587,7 @@ const Home = ({navigation, route}) => {
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
+          dialogs={dialogs}
           distance={distance}
           drawButtonsVisible={buttons.drawButtonsVisible}
           endDraw={endDraw}
@@ -600,6 +601,7 @@ const Home = ({navigation, route}) => {
           openSpotInNotebook={openSpotInNotebook}
           setDistance={setDistance}
           startEdit={startEdit}
+          toggleDialog={toggleDialog}
           toggleHomeDrawer={toggleHomeDrawerButton}
         />
       ) : (
@@ -610,6 +612,7 @@ const Home = ({navigation, route}) => {
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
+          dialogs={dialogs}
           distance={distance}
           drawButtonsVisible={buttons.drawButtonsVisible}
           endDraw={endDraw}
@@ -621,6 +624,7 @@ const Home = ({navigation, route}) => {
           openNotebookPanel={openNotebookPanel}
           setDistance={setDistance}
           startEdit={startEdit}
+          toggleDialog={toggleDialog}
           toggleHomeDrawer={toggleHomeDrawerButton}
         />
       )}

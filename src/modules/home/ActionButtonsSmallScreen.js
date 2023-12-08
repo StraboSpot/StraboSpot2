@@ -12,25 +12,29 @@ import MapActionButtons from './MapActionButtons';
 const ActionButtonsSmallScreen = ({
                                     clickHandler,
                                     dialogClickHandler,
+                                    dialogs,
                                     distance,
                                     endDraw,
                                     endMeasurement,
                                     mapMode,
                                     mapComponentRef,
+                                    toggleDialog,
                                   }) => {
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
   return (
-    <View style={{alignItems: 'flex-end'}}>
-      <DrawInfo
-        distance={distance}
-        endDraw={endDraw}
-        endMeasurement={endMeasurement}
-        mapMode={mapMode}
-      />
-      <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 0, backgroundColor: themes.LIGHTGREY, borderRadius: 15}}>
+    <View>
+      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <DrawInfo
+          distance={distance}
+          endDraw={endDraw}
+          endMeasurement={endMeasurement}
+          mapMode={mapMode}
+        />
+      </View>
+      <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
         {(currentImageBasemap || stratSection) && (
           <View style={{paddingRight: 40}}>
             {currentImageBasemap && (
@@ -50,16 +54,23 @@ const ActionButtonsSmallScreen = ({
         <View
           style={{
             alignItems: 'center',
-            // backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+            backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+            borderColor: themes.MEDIUMGREY,
             borderRadius: 10,
+            borderWidth: .5,
+            elevation: 2,
             flexDirection: 'row',
-            padding: 5,
+            padding: 0,
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
           }}
         >
-          <View style={{borderRightWidth: 2}}>
+          <View style={{borderColor: themes.MEDIUMGREY, borderRightWidth: 1}}>
             <MapActionButtons
               dialogClickHandler={dialogClickHandler}
+              dialogs={dialogs}
               mapComponentRef={mapComponentRef}
+              toggleDialog={toggleDialog}
             />
           </View>
           <View style={{paddingLeft: 10}}>

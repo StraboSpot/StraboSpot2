@@ -12,12 +12,7 @@ const styles = StyleSheet.create({
   },
   androidSafeAreaView: {
     flex: 1,
-    backgroundColor: themes.BLACK,
-    paddingTop: Platform.select({
-      android: 35,
-      ios: 0,
-      web: 0,
-    }),
+    overflow: 'hidden',
   },
   backdrop: {
     position: 'absolute',
