@@ -3,7 +3,6 @@ import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native'
 
 import * as Sentry from '@sentry/react-native';
 import {Button} from 'react-native-elements';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -41,7 +40,6 @@ import {
   SMALL_SCREEN,
 } from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
-import uiStyles from '../../shared/ui/ui.styles';
 import useHomeHook from '../home/useHome';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
@@ -588,85 +586,85 @@ const Home = ({navigation, route}) => {
   );
 
   return (
-      <Animated.View style={[homeStyles.container, animateTextInputs]}>
-        {SMALL_SCREEN ? (
-          <HomeViewSmallScreen
-            animateLeftSide={animateLeftSide}
-            clickHandler={clickHandler}
-            closeNotebookPanel={closeNotebookPanel}
-            dialogClickHandler={dialogClickHandler}
-            dialogs={dialogs}
-            distance={distance}
-            drawButtonsVisible={buttons.drawButtonsVisible}
-            endDraw={endDraw}
-            endMeasurement={endMeasurement}
-            isSelectingForStereonet={isSelectingForStereonet}
-            isSelectingForTagging={isSelectingForTagging}
-            animatedValueLeftSide={animatedValueLeftSide}
-            mapComponentRef={mapComponentRef}
-            mapMode={mapMode}
-            openNotebookPanel={openNotebookPanel}
-            openSpotInNotebook={openSpotInNotebook}
-            setDistance={setDistance}
-            startEdit={startEdit}
-            toggleDialog={toggleDialog}
-            toggleHomeDrawer={toggleHomeDrawerButton}
-          />
-        ) : (
-          <HomeView
-            animateLeftSide={animateLeftSide}
-            animateNotebookDrawer={animateNotebookDrawer}
-            animateRightSide={animateRightSide}
-            clickHandler={clickHandler}
-            closeNotebookPanel={closeNotebookPanel}
-            dialogClickHandler={dialogClickHandler}
-            dialogs={dialogs}
-            distance={distance}
-            drawButtonsVisible={buttons.drawButtonsVisible}
-            endDraw={endDraw}
-            endMeasurement={endMeasurement}
-            isSelectingForStereonet={isSelectingForStereonet}
-            isSelectingForTagging={isSelectingForTagging}
-            mapComponentRef={mapComponentRef}
-            mapMode={mapMode}
-            openNotebookPanel={openNotebookPanel}
-            setDistance={setDistance}
-            startEdit={startEdit}
-            toggleDialog={toggleDialog}
-            toggleHomeDrawer={toggleHomeDrawerButton}
-          />
-        )}
-        {vertexStartCoords && <VertexDrag/>}
-        {/*Modals for Home Page*/}
-        <BackupModal/>
-        {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
-        {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
-          <InitialProjectLoadModal
-            closeModal={closeInitialProjectLoadModal}
-            logout={onLogout}
-            openMainMenu={toggleHomeDrawerButton}
-            visible={isProjectLoadSelectionModalVisible}
-          />
-        )}
-        <ErrorModal/>
-        <StatusModal
-          exportProject={exportProject}
-          openMainMenu={!isMainMenuPanelVisible && toggleHomeDrawerButton}
-          openUrl={openStraboSpotURL}
+    <Animated.View style={[homeStyles.container, animateTextInputs]}>
+      {SMALL_SCREEN ? (
+        <HomeViewSmallScreen
+          animateLeftSide={animateLeftSide}
+          clickHandler={clickHandler}
+          closeNotebookPanel={closeNotebookPanel}
+          dialogClickHandler={dialogClickHandler}
+          dialogs={dialogs}
+          distance={distance}
+          drawButtonsVisible={buttons.drawButtonsVisible}
+          endDraw={endDraw}
+          endMeasurement={endMeasurement}
+          isSelectingForStereonet={isSelectingForStereonet}
+          isSelectingForTagging={isSelectingForTagging}
+          animatedValueLeftSide={animatedValueLeftSide}
+          mapComponentRef={mapComponentRef}
+          mapMode={mapMode}
+          openNotebookPanel={openNotebookPanel}
+          openSpotInNotebook={openSpotInNotebook}
+          setDistance={setDistance}
+          startEdit={startEdit}
+          toggleDialog={toggleDialog}
+          toggleHomeDrawer={toggleHomeDrawerButton}
         />
-        <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
-        <UploadProgressModal/>
-        <WarningModal/>
-        {/*------------------------*/}
-        <LoadingSpinner isLoading={isHomeLoading}/>
-        {MainMenu}
-        {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
-        {renderSaveAndCancelDrawButtons()}
-        {isMainMenuPanelVisible && toggleSidePanel()}
-        {modalVisible && renderFloatingView()}
-        {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
-        {showUpdateLabel && <VersionCheckLabel/>}
-      </Animated.View>
+      ) : (
+        <HomeView
+          animateLeftSide={animateLeftSide}
+          animateNotebookDrawer={animateNotebookDrawer}
+          animateRightSide={animateRightSide}
+          clickHandler={clickHandler}
+          closeNotebookPanel={closeNotebookPanel}
+          dialogClickHandler={dialogClickHandler}
+          dialogs={dialogs}
+          distance={distance}
+          drawButtonsVisible={buttons.drawButtonsVisible}
+          endDraw={endDraw}
+          endMeasurement={endMeasurement}
+          isSelectingForStereonet={isSelectingForStereonet}
+          isSelectingForTagging={isSelectingForTagging}
+          mapComponentRef={mapComponentRef}
+          mapMode={mapMode}
+          openNotebookPanel={openNotebookPanel}
+          setDistance={setDistance}
+          startEdit={startEdit}
+          toggleDialog={toggleDialog}
+          toggleHomeDrawer={toggleHomeDrawerButton}
+        />
+      )}
+      {vertexStartCoords && <VertexDrag/>}
+      {/*Modals for Home Page*/}
+      <BackupModal/>
+      {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
+      {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
+        <InitialProjectLoadModal
+          closeModal={closeInitialProjectLoadModal}
+          logout={onLogout}
+          openMainMenu={toggleHomeDrawerButton}
+          visible={isProjectLoadSelectionModalVisible}
+        />
+      )}
+      <ErrorModal/>
+      <StatusModal
+        exportProject={exportProject}
+        openMainMenu={!isMainMenuPanelVisible && toggleHomeDrawerButton}
+        openUrl={openStraboSpotURL}
+      />
+      <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
+      <UploadProgressModal/>
+      <WarningModal/>
+      {/*------------------------*/}
+      <LoadingSpinner isLoading={isHomeLoading}/>
+      {MainMenu}
+      {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
+      {renderSaveAndCancelDrawButtons()}
+      {isMainMenuPanelVisible && toggleSidePanel()}
+      {modalVisible && renderFloatingView()}
+      {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
+      {showUpdateLabel && <VersionCheckLabel/>}
+    </Animated.View>
   );
 };
 

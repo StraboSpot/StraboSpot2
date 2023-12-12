@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, SafeAreaView} from 'react-native';
+import {Platform} from 'react-native';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';

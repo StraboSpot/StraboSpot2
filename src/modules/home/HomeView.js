@@ -7,6 +7,7 @@ import {useSelector} from 'react-redux';
 import LeftSideButtons from './LeftSideButtons';
 import RightSideButtons from './RightSideButtons';
 import StatusBar from './StatusBar';
+import uiStyles from '../../shared/ui/ui.styles';
 import Map from '../maps/Map';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
@@ -43,7 +44,7 @@ const HomeView = ({
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={uiStyles.safeAreaView}>
       <Map
         endDraw={endDraw}
         isSelectingForStereonet={isSelectingForStereonet}
