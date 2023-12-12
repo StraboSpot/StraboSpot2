@@ -26,6 +26,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
           source={SMALL_SCREEN ? require('../../assets/icons/MapActions_Transparent.png')
             : require('../../assets/icons/MapActionsButton.png')}
           onPress={() => toggleDialog('mapActionsMenuVisible')}
+          imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
         />
         {isAllSymbolsOn
           ? (
@@ -33,11 +34,13 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
               source={SMALL_SCREEN ? require('../../assets/icons/Symbols_Transparent.png')
                 : require('../../assets/icons/SymbolsButton.png')}
               onPress={() => toggleDialog('mapSymbolsMenuVisible')}
+              imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
             />
           ) : (
             <IconButton
               source={require('../../assets/icons/SymbolsButton_pressed.png')}
               onPress={() => toggleDialog('mapSymbolsMenuVisible')}
+              imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
             />
           )
         }
@@ -46,6 +49,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
             source={SMALL_SCREEN ? require('../../assets/icons/Layers_Transparent.png')
               : require('../../assets/icons/LayersButton.png')}
             onPress={() => toggleDialog('baseMapMenuVisible')}
+            imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
           />
         )}
       </View>

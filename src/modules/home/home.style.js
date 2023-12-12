@@ -133,6 +133,9 @@ const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 10,
   },
+  iconSizeSmallScreen: {
+    height: 40,
+  },
 
   // --- Left and right icon absolute positions from top ---
   mapActionsContainer: {
