@@ -12,6 +12,12 @@ import * as themes from '../../styles.constants';
       zIndex: 1,
       padding: 0,
     },
+    modalContainerFullScreen: {
+      backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+      overflow: 'hidden',
+      zIndex: 1,
+      padding: 0,
+    },
     modalPosition: {
       position: 'absolute',
       left: 70,
@@ -33,7 +39,6 @@ import * as themes from '../../styles.constants';
       alignItems: 'center',
       flexDirection: 'row',
       backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-      minHeight: 40,
     },
     textStyle: {
       fontSize: themes.MODAL_TEXT_SIZE,

@@ -25,31 +25,24 @@ const ModalHeader = (props) => {
 
   return (
     <View style={modalStyle.modalTop}>
-      <View
-        style={{flex: 1, flexDirection: 'column', padding: 10, paddingTop: 5}}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{flex: 1, alignItems: 'flex-start'}}>
-            <Button
-              titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-              title={props.buttonTitleLeft}
-              type={'clear'}
-              onPress={props.cancel}
-              buttonStyle={{padding: 0}}
-            />
-          </View>
-          <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <Button
-              titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-              title={props.buttonTitleRight === '' ? '' : props.buttonTitleRight || 'Close'}
-              type={'clear'}
-              onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
-              buttonStyle={{padding: 0}}
-            />
-          </View>
+      <View style={{flex: 1, flexDirection: 'column', padding: 10, paddingTop: 5}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+            title={props.buttonTitleLeft}
+            type={'clear'}
+            onPress={props.cancel}
+            buttonStyle={{padding: 0}}
+          />
+          <Button
+            titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
+            title={props.buttonTitleRight === '' ? '' : props.buttonTitleRight || 'Close'}
+            type={'clear'}
+            onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
+            buttonStyle={{padding: 0}}
+          />
         </View>
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={modalStyle.modalTitle}>{props.title || getTitle()}</Text>
-        </View>
+        <Text style={modalStyle.modalTitle}>{props.title || getTitle()}</Text>
       </View>
     </View>
   );

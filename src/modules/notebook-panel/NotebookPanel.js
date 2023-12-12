@@ -44,7 +44,8 @@ const NotebookPanel = (props) => {
   const openPage = (key) => {
     dispatch(setNotebookPageVisible(key));
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
-    if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
+    if (SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
+    else if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
     else if (page.modal_component) dispatch(setModalVisible({modal: page.key}));
     else dispatch(setModalVisible({modal: null}));
   };
@@ -90,7 +91,7 @@ const NotebookPanel = (props) => {
   };
 
   const renderRecentSpotsList = () => {
-    modalVisible !== null && dispatch(setModalVisible({modal: null}));
+    if (modalVisible !== null && !SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
     let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
       if (spots?.[key]) obj.push(spots[key]);
       return obj;

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Animated, TextInput, View} from 'react-native';
+import {Animated, View} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -10,8 +10,7 @@ import compassStyles from '../../../modules/compass/compass.styles';
 import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
-
-const {State: TextInputState} = TextInput;
+import {SMALL_SCREEN} from '../../styles.constants';
 
 const Modal = (props) => {
 
@@ -58,11 +57,13 @@ const Modal = (props) => {
     }
   };
 
-  if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
+  if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT
+    || SMALL_SCREEN) {
     return (
       <Overlay
-        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT}
-        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]}
+        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || SMALL_SCREEN}
+        overlayStyle={SMALL_SCREEN ? modalStyle.modalContainerFullScreen : [modalStyle.modalContainer, modalStyle.modalPosition]}
+        fullScreen={SMALL_SCREEN}
       >
         <ModalHeader {...props}/>
         {props.children}
