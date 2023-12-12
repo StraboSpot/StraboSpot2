@@ -359,8 +359,8 @@ const Home = ({navigation, route}) => {
   };
 
   const modalHandler = (modalKey) => {
-    if (isNotebookPanelVisible) {
-      closeNotebookPanel();
+    if (isNotebookPanelVisible || SMALL_SCREEN) {
+      if (isNotebookPanelVisible) closeNotebookPanel();
       if (Object.values(MODAL_KEYS.SHORTCUTS).includes(modalKey)) dispatch(clearedSelectedSpots());
       dispatch(setModalVisible({modal: modalKey}));
     }
