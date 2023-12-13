@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
+import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import WarningModal from '../../home/home-modals/WarningModal';
 import overlayStyles from '../../home/overlay.styles';
@@ -22,6 +24,7 @@ const NotebookPanelMenu = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [useSpots] = useSpotsHook();
+  const navigation = useNavigation();
   const useStratSection = useStratSectionHook();
 
   const actions = [
@@ -51,7 +54,10 @@ const NotebookPanelMenu = (props) => {
       useSpots.copySpot().catch(err => console.log('Error copying Spot!', err));
       dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
     }
-    else if (key === 'zoom') props.zoomToSpot();
+    else if (key === 'zoom') {
+      props.zoomToSpot();
+      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+    }
     else if (key === 'delete') deleteSelectedSpot();
     else if (key === 'nesting') dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
     else props.closeNotebookPanel();
@@ -80,7 +86,7 @@ const NotebookPanelMenu = (props) => {
           </View>
         )
         : (
-          <View>
+          <View style={{flex: 1}}>
             <Text style={notebookStyles.deleteSpotWarningText}>Are you sure you want to delete
               Spot: {spot.properties.name}?</Text>
           </View>
