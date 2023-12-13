@@ -1,6 +1,7 @@
 import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const homeStyles = StyleSheet.create({
   buttonContainer: {
@@ -195,7 +196,12 @@ const homeStyles = StyleSheet.create({
   addIntervalButton: {
     position: 'absolute',
     top: 10,
-    right: 60,
+    right: SMALL_SCREEN ? 10 : 60,
+  },
+  closeButtonSmallScreen: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
   },
 
   // --- Modal Style ---

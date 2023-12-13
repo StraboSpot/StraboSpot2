@@ -1,14 +1,11 @@
 import React from 'react';
 import {useWindowDimensions, View} from 'react-native';
 
-import {useSelector} from 'react-redux';
-
 import {UserLocationButton} from './buttons';
 import DrawActionButtons from './DrawActionButtons';
 import DrawInfo from './DrawInfo';
 import MapActionButtons from './MapActionButtons';
 import * as themes from '../../shared/styles.constants';
-import IconButton from '../../shared/ui/IconButton';
 
 const ActionButtonsSmallScreen = ({
                                     clickHandler,
@@ -21,9 +18,6 @@ const ActionButtonsSmallScreen = ({
                                     mapComponentRef,
                                     toggleDialog,
                                   }) => {
-
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const stratSection = useSelector(state => state.map.stratSection);
 
   const {height, width} = useWindowDimensions();
 
@@ -42,22 +36,6 @@ const ActionButtonsSmallScreen = ({
       <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
         {height < width && <UserLocationButton clickHandler={clickHandler}/>}
 
-        {(currentImageBasemap || stratSection) && (
-          <View style={{paddingRight: 40}}>
-            {currentImageBasemap && (
-              <IconButton
-                source={require('../../assets/icons/Close.png')}
-                onPress={() => clickHandler('closeImageBasemap')}
-              />
-            )}
-            {stratSection && (
-              <IconButton
-                source={require('../../assets/icons/Close.png')}
-                onPress={() => clickHandler('closeStratSection')}
-              />
-            )}
-          </View>
-        )}
         <View
           style={{
             alignItems: 'center',

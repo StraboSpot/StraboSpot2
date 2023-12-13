@@ -4,6 +4,7 @@ import {FlatList, Switch, View} from 'react-native';
 import {Formik} from 'formik';
 import {Avatar, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 import AddImageOverlayModal from './AddImageOverlayModal';
 import useSedHook from './useSed';
@@ -19,6 +20,7 @@ import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const StratSectionPage = (props) => {
   console.log('Rendering StratSectionPage...');
@@ -31,6 +33,7 @@ const StratSectionPage = (props) => {
   const stratSectionRef = useRef(null);
 
   const [useForm] = useFormHook();
+  const navigation = useNavigation();
   const useSed = useSedHook();
 
   const stratSection = spot.properties?.sed?.strat_section || {};
@@ -138,7 +141,10 @@ const StratSectionPage = (props) => {
             <ListItem
               containerStyle={commonStyles.listItem}
               key={'strat_section'}
-              onPress={() => dispatch(setStratSection(stratSection))}
+              onPress={() => {
+                dispatch(setStratSection(stratSection));
+                if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+              }}
             >
               <Avatar
                 source={require('../../assets/icons/SedStratColumn_transparent.png')}

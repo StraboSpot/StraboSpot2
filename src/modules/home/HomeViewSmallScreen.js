@@ -3,7 +3,7 @@ import {Animated, useWindowDimensions, View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Button, Header, Icon} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
 import homeStyles from './home.style';
@@ -12,6 +12,9 @@ import * as themes from '../../shared/styles.constants';
 import Map from '../maps/Map';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import SpotNavigator from '../spots/SpotNavigator';
+import IconButton from '../../shared/ui/IconButton';
+import {setModalVisible} from './home.slice';
+import {MODAL_KEYS} from '../page/page.constants';
 
 const HomeViewSmallScreen = ({
                                animateLeftSide,
@@ -36,6 +39,7 @@ const HomeViewSmallScreen = ({
                              }) => {
   console.log('Rendering HomeViewSmallScreen...');
 
+  const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -111,7 +115,13 @@ const HomeViewSmallScreen = ({
         >
           <Tab.Screen
             name={'Map'}
-            options={navigationOptions}>
+            options={{
+              ...navigationOptions,
+              tabBarLabel: stratSection ? 'Strat Section'
+                : currentImageBasemap ? 'Image Basemap'
+                  : 'Map',
+            }}
+          >
             {() =>
               <>
                 <Map
@@ -123,6 +133,29 @@ const HomeViewSmallScreen = ({
                   setDistance={setDistance}
                   startEdit={startEdit}
                 />
+
+                {currentImageBasemap && (
+                  <IconButton
+                    source={require('../../assets/icons/Close.png')}
+                    onPress={() => clickHandler('closeImageBasemap')}
+                    style={homeStyles.closeButtonSmallScreen}
+                  />
+                )}
+                {stratSection && (
+                  <IconButton
+                    source={require('../../assets/icons/Close.png')}
+                    onPress={() => clickHandler('closeStratSection')}
+                    style={homeStyles.closeButtonSmallScreen}
+                  />
+                )}
+
+                {stratSection && (
+                  <IconButton
+                    source={require('../../assets/icons/AddIntervalButton.png')}
+                    onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_INTERVAL}))}
+                    style={homeStyles.addIntervalButton}
+                  />
+                )}
 
                 {!currentImageBasemap && !stratSection && (
                   <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
