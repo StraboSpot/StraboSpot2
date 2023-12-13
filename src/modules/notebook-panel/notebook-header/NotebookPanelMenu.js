@@ -32,7 +32,6 @@ const NotebookPanelMenu = (props) => {
     {key: 'zoom', title: 'Zoom to this Spot'},
     {key: 'delete', title: 'Delete this Spot'},
     {key: 'nesting', title: 'Show Nesting'},
-    {key: 'close', title: 'Close Notebook'},
   ];
 
   useEffect(() => {
@@ -60,7 +59,6 @@ const NotebookPanelMenu = (props) => {
     }
     else if (key === 'delete') deleteSelectedSpot();
     else if (key === 'nesting') dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
-    else props.closeNotebookPanel();
     props.closeNotebookPanelMenu();
   };
 

@@ -183,7 +183,6 @@ const NotebookHeader = (props) => {
       <NotebookPanelMenu
         visible={isNotebookPanelMenuVisible}
         onTouchOutside={() => setIsNotebookPanelMenuVisible(false)}
-        closeNotebookPanel={props.closeNotebookPanel}
         closeNotebookPanelMenu={() => setIsNotebookPanelMenuVisible(false)}
         zoomToSpot={props.zoomToSpot}
       />
