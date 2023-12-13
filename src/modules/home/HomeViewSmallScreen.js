@@ -104,6 +104,7 @@ const HomeViewSmallScreen = ({
             tabBarIndicatorStyle: {backgroundColor: themes.BLACK, height: 5},
             tabBarItemStyle: {padding: 0},
             tabBarLabelStyle: {fontSize: themes.PRIMARY_HEADER_TEXT_SIZE, color: themes.PRIMARY_TEXT_COLOR},
+            tabBarStyle: {backgroundColor: themes.SECONDARY_BACKGROUND_COLOR},
           }}
         >
           <Tab.Screen
