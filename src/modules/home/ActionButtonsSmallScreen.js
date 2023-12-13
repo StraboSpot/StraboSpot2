@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {useWindowDimensions, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -25,10 +25,12 @@ const ActionButtonsSmallScreen = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
+  const {height, width} = useWindowDimensions();
+
   return (
     <View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-        <UserLocationButton clickHandler={clickHandler}/>
+        {width < height && <UserLocationButton clickHandler={clickHandler}/>}
 
         <DrawInfo
           distance={distance}
@@ -38,6 +40,8 @@ const ActionButtonsSmallScreen = ({
         />
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
+        {height < width && <UserLocationButton clickHandler={clickHandler}/>}
+
         {(currentImageBasemap || stratSection) && (
           <View style={{paddingRight: 40}}>
             {currentImageBasemap && (

@@ -122,8 +122,13 @@ const homeStyles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 50,
     alignItems: 'center',
+  },
+  actionButtonsSmallScreenContainerPortrait: {
+    bottom: 30,
+  },
+  actionButtonsSmallScreenContainerLandscape: {
+    bottom: 10,
   },
   smallScreenMapActionButtons: {
     flexDirection: 'row',

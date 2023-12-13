@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Animated, View} from 'react-native';
+import {Animated, useWindowDimensions, View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Button, Header, Icon} from 'react-native-elements';
@@ -42,6 +42,8 @@ const HomeViewSmallScreen = ({
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [isShowingSpotNavigator, setIsShowingSpotNavigator] = useState(false);
+
+  const {height, width} = useWindowDimensions();
 
   const navigationOptions = {
     gestureEnabled: false,
@@ -127,7 +129,11 @@ const HomeViewSmallScreen = ({
                 )}
 
                 {drawButtonsVisible && (
-                  <View style={homeStyles.actionButtonsSmallScreenContainer}>
+                  <View
+                    style={[homeStyles.actionButtonsSmallScreenContainer,
+                      width < height ? homeStyles.actionButtonsSmallScreenContainerPortrait
+                        : homeStyles.actionButtonsSmallScreenContainerLandscape]}
+                  >
                     <ActionButtonsSmallScreen
                       clickHandler={clickHandler}
                       dialogClickHandler={dialogClickHandler}
