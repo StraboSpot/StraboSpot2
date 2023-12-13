@@ -78,19 +78,8 @@ const NotebookPanelMenu = (props) => {
 
   const renderDeleteMessage = () => {
     return (
-      errorMessage
-        ? (
-          <View>
-            <Text style={notebookStyles.deleteSpotWarningText}>Unable to delete spot!</Text>
-            <Text style={notebookStyles.deleteSpotWarningText}>{errorMessage}</Text>
-          </View>
-        )
-        : (
-          <View style={{flex: 1}}>
-            <Text style={notebookStyles.deleteSpotWarningText}>Are you sure you want to delete
-              Spot: {spot.properties.name}?</Text>
-          </View>
-        )
+      errorMessage ? <Text>Unable to delete spot.{'\n'}{errorMessage}</Text>
+        : <Text>Are you sure you want to delete Spot: {spot.properties.name}?</Text>
     );
   };
 
@@ -116,8 +105,9 @@ const NotebookPanelMenu = (props) => {
       <WarningModal
         title={'Delete Spot?'}
         isVisible={isDeleteSpotModalVisible}
-        closeTitle={errorMessage && 'Ok'}
+        closeTitle={errorMessage ? 'Ok' : 'Cancel'}
         closeModal={() => setIsDeleteSpotModalVisible(false)}
+        showCancelButton={true}
         showConfirmButton={isDeleteSpotModalVisible && !errorMessage}
         confirmText={'DELETE'}
         confirmTitleStyle={overlayStyles.importantText}

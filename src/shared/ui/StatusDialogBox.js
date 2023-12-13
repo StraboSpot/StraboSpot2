@@ -13,7 +13,6 @@ const StatusDialogBox = ({
                            confirmTitleStyle,
                            onConfirmPress,
                            onTouchOutside,
-                           overlayContent,
                            overlayTitleText,
                            showCancelButton,
                            showConfirmButton,
@@ -37,22 +36,26 @@ const StatusDialogBox = ({
         ref={scrollView}
         onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}
       >
-        <View style={[overlayStyles.overlayContent, overlayContent]}>
+        <View style={overlayStyles.overlayContent}>
           {children}
         </View>
       </ScrollView>
       <View style={overlayStyles.buttonContainer}>
-        {(showCancelButton || false) && <Button
-          title={closeTitle || 'Close'}
-          type={'clear'}
-          onPress={closeModal}
-        />}
-        {showConfirmButton && <Button
-          title={confirmText || 'Ok'}
-          titleStyle={confirmTitleStyle}
-          type={'clear'}
-          onPress={onConfirmPress}
-        />}
+        {(showCancelButton || false) && (
+          <Button
+            title={closeTitle || 'Close'}
+            type={'clear'}
+            onPress={closeModal}
+          />
+        )}
+        {showConfirmButton && (
+          <Button
+            title={confirmText || 'Ok'}
+            titleStyle={confirmTitleStyle}
+            type={'clear'}
+            onPress={onConfirmPress}
+          />
+        )}
       </View>
     </Overlay>
   );
