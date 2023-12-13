@@ -578,7 +578,6 @@ const Home = ({navigation, route}) => {
         logout={onLogout}
         openNotebookPanel={openNotebookPanel}
         openSpotInNotebook={openSpotInNotebook}
-        toggleHomeDrawer={toggleHomeDrawerButton}
         zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
         zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
       />

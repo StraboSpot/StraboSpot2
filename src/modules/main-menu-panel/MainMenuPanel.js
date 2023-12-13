@@ -32,7 +32,6 @@ const MainMenuPanel = ({
                          logout,
                          openNotebookPanel,
                          openSpotInNotebook,
-                         toggleHomeDrawer,
                          zoomToCenterOfflineTile,
                          zoomToCustomMap,
                        }) => {
@@ -52,8 +51,7 @@ const MainMenuPanel = ({
   let page;
 
   const setVisibleMenu = (name) => {
-    if (name === MAIN_MENU_ITEMS.HELP.CLOSE_MENU) toggleHomeDrawer();
-    else dispatch(setMenuSelectionPage({name: name}));
+    dispatch(setMenuSelectionPage({name: name}));
   };
 
   const toggleSwitch = (switchName) => {
