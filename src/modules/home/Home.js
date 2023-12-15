@@ -597,6 +597,7 @@ const Home = ({navigation, route}) => {
           drawButtonsVisible={buttons.drawButtonsVisible}
           endDraw={endDraw}
           endMeasurement={endMeasurement}
+          isMainMenuPanelVisible={isMainMenuPanelVisible}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
           animatedValueLeftSide={animatedValueLeftSide}
