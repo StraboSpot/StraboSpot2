@@ -23,7 +23,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
     <>
       <View style={SMALL_SCREEN ? homeStyles.smallScreenMapActionButtons : homeStyles.mapActionsContainer}>
         <IconButton
-          source={SMALL_SCREEN ? require('../../assets/icons/MapActions_Transparent.png')
+          source={SMALL_SCREEN ? require('../../assets/icons/MapActions.png')
             : require('../../assets/icons/MapActionsButton.png')}
           onPress={() => toggleDialog('mapActionsMenuVisible')}
           imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
@@ -31,14 +31,15 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         {isAllSymbolsOn
           ? (
             <IconButton
-              source={SMALL_SCREEN ? require('../../assets/icons/Symbols_Transparent.png')
+              source={SMALL_SCREEN ? require('../../assets/icons/Symbols.png')
                 : require('../../assets/icons/SymbolsButton.png')}
               onPress={() => toggleDialog('mapSymbolsMenuVisible')}
               imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
             />
           ) : (
             <IconButton
-              source={require('../../assets/icons/SymbolsButton_pressed.png')}
+              source={SMALL_SCREEN ? require('../../assets/icons/Symbols_pressed.png')
+              : require('../../assets/icons/SymbolsButton_pressed.png')}
               onPress={() => toggleDialog('mapSymbolsMenuVisible')}
               imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
             />
@@ -46,7 +47,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         }
         {!currentImageBasemap && !stratSection && (
           <IconButton
-            source={SMALL_SCREEN ? require('../../assets/icons/Layers_Transparent.png')
+            source={SMALL_SCREEN ? require('../../assets/icons/Layers.png')
               : require('../../assets/icons/LayersButton.png')}
             onPress={() => toggleDialog('baseMapMenuVisible')}
             imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}

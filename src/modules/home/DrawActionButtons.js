@@ -20,8 +20,9 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
     (currentImageBasemap || stratSection) ? (
       <IconButton
         source={mapMode === MAP_MODES.DRAW.POINT
-          ? require('../../assets/icons/PointButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/PointButton_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/Point_pressed_1.png')
+            : require('../../assets/icons/PointButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/Point.png')
             : require('../../assets/icons/PointButton.png')}
         onPress={() => clickHandler(MAP_MODES.DRAW.POINT)}
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}

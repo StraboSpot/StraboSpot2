@@ -107,8 +107,8 @@ export const PRIMARY_PAGES = [
   }, {
     key: PAGE_KEYS.NOTES,
     label: 'Notes',
-    icon_src: require('../../assets/icons/Note.png'),
-    icon_pressed_src: require('../../assets/icons/Note_pressed.png'),
+    icon_src: require('../../assets/icons/Notes.png'),
+    icon_pressed_src: require('../../assets/icons/Notes_pressed.png'),
     overview_component: NotesOverview,
     page_component: NotesPage,
   }, {
@@ -426,8 +426,8 @@ export const SHORTCUT_MODALS = [
     key: MODAL_KEYS.SHORTCUTS.NOTE,
     label: 'Note',
     action_label: 'Shortcut Mode: \nAdd a Note',
-    icon_src: require('../../assets/icons/NoteButtonShortcut.png'),
-    icon_pressed_src: require('../../assets/icons/NoteButtonShortcut_pressed.png'),
+    icon_src: require('../../assets/icons/NotesButtonShortcut.png'),
+    icon_pressed_src: require('../../assets/icons/NotesButtonShortcut_pressed.png'),
     modal_component: ShortcutNotesModal,
     notebook_modal_key: PAGE_KEYS.NOTES,
   }, {

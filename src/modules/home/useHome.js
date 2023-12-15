@@ -22,33 +22,39 @@ const useHome = () => {
     switch (drawTypes[name]) {
       case MAP_MODES.DRAW.POINT:
         return mapMode === MAP_MODES.DRAW.POINT
-          ? require('../../assets/icons/PointButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/PointButton_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/Point_pressed_1.png')
+            : require('../../assets/icons/PointButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/Point.png')
             : require('../../assets/icons/PointButton.png');
       case MAP_MODES.DRAW.POINTLOCATION:
         return mapMode === MAP_MODES.DRAW.POINTLOCATION
-          ? require('../../assets/icons/PointButtonCurrentLocation_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/PointButtonCurrentLocation_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/PointCurrentLocation_pressed.png')
+            : require('../../assets/icons/PointButtonCurrentLocation_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/PointCurrentLocation.png')
           : require('../../assets/icons/PointButtonCurrentLocation.png');
       case MAP_MODES.DRAW.LINE:
         return mapMode === MAP_MODES.DRAW.LINE
-          ? require('../../assets/icons/LineButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/Line_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/Line_pressed_1.png')
+            : require('../../assets/icons/LineButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/Line.png')
             : require('../../assets/icons/LineButton.png');
       case MAP_MODES.DRAW.FREEHANDLINE:
         return mapMode === MAP_MODES.DRAW.FREEHANDLINE
-          ? require('../../assets/icons/LineFreehandButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/LineFreehand_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/LineFreehand_pressed.png')
+            : require('../../assets/icons/LineFreehandButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/LineFreehand.png')
             : require('../../assets/icons/LineFreehandButton.png');
       case MAP_MODES.DRAW.POLYGON:
         return mapMode === MAP_MODES.DRAW.POLYGON
-          ? require('../../assets/icons/PolygonButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/Polygon_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/Polygon_pressed_1.png')
+            : require('../../assets/icons/PolygonButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/Polygon.png')
             : require('../../assets/icons/PolygonButton.png');
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
         return mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
-          ? require('../../assets/icons/PolygonFreehandButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/PolygonFreehand_Transparent.png')
+          ? SMALL_SCREEN ? require('../../assets/icons/PolygonFreehand_pressed.png')
+            : require('../../assets/icons/PolygonFreehandButton_pressed.png')
+          : SMALL_SCREEN ? require('../../assets/icons/PolygonFreehand.png')
             : require('../../assets/icons/PolygonFreehandButton.png');
     }
   };

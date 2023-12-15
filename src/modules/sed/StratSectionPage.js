@@ -1,15 +1,16 @@
 import React, {useRef, useState} from 'react';
 import {FlatList, Switch, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import {Avatar, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
 
 import AddImageOverlayModal from './AddImageOverlayModal';
 import useSedHook from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
@@ -20,7 +21,6 @@ import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const StratSectionPage = (props) => {
   console.log('Rendering StratSectionPage...');
@@ -147,7 +147,7 @@ const StratSectionPage = (props) => {
               }}
             >
               <Avatar
-                source={require('../../assets/icons/SedStratColumn_transparent.png')}
+                source={require('../../assets/icons/SedStratColumn.png')}
                 size={20}
                 containerStyle={{alignSelf: 'center'}}
               />
