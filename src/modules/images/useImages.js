@@ -32,7 +32,6 @@ const useImages = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const useDevice = useDeviceHook();
-  // const [useSpots] = useSpotsHook();
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -250,7 +249,7 @@ const useImages = () => {
             const imageUri = getLocalImageURI(image.id);
             const exists = await useDevice.doesDeviceDirExist(imageUri);
             if (exists) {
-              const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
+              const createResizedImageProps = [imageUri, 100, 100, 'JPEG', 100, 0];
               const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
               imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
             }
@@ -265,6 +264,20 @@ const useImages = () => {
       // throw Error(err);
     }
   };
+
+  const getProjectImages = (spotsWithImages) => {
+    let totalImagesArr = [];
+
+    spotsWithImages.map((spot) => {
+      return totalImagesArr.push(spot.properties.images);
+    })
+    console.log(totalImagesArr)
+    totalImagesArr = totalImagesArr.reduce((acc, curValue) => {
+      return acc.concat(curValue);
+    })
+    console.log('New Array', totalImagesArr)
+    return totalImagesArr.length;
+  }
 
   const resizeImageIfNecessary = async (imageData) => {
     let imgHeight = imageData.height;
@@ -400,6 +413,7 @@ const useImages = () => {
     getImageScreenSizedURI: getImageScreenSizedURI,
     getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
+    getProjectImages: getProjectImages,
     launchCameraFromNotebook: launchCameraFromNotebook,
     requestCameraPermission: requestCameraPermission,
     saveFile: saveFile,

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, SectionList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Pressable, SectionList, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
@@ -18,6 +18,8 @@ import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
+import FastImage from 'react-native-fast-image';
+import Loading from '../../shared/ui/Loading';
 
 const ImageGallery = ({openSpotInNotebook}) => {
   console.log('Rendering ImageGallery...');
@@ -35,22 +37,32 @@ const ImageGallery = ({openSpotInNotebook}) => {
 
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
+  const [numberOfImages, setNumberOfImages] = useState(0);
 
   let sortedSpotsWithImages = [];
 
   useEffect(() => {
     console.log('UE ImageGallery []');
     getImageThumbnailURIs().catch(err => console.error(err));
+    return () => {
+      FastImage.clearDiskCache().then(() => console.log('Disk Cache Cleared'))
+      FastImage.clearMemoryCache().then(() => console.log('Memory Cleared'))
+    }
   }, []);
 
   const getImageThumbnailURIs = async () => {
     try {
       const spotsWithImages = useSpots.getSpotsWithImages();
+      const totalNumberOfImages = useImages.getProjectImages(spotsWithImages);
+      setNumberOfImages(totalNumberOfImages);
       console.log('Getting Image URI Thumbnails!');
+      setIsLoading(true)
       const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
       setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
       console.log('Image URI Thumbnails are done!');
+      setIsLoading(false)
       setImageThumbnails(imageThumbnailURIsTemp);
       setIsError(false);
     }
@@ -81,20 +93,41 @@ const ImageGallery = ({openSpotInNotebook}) => {
   const renderImage = (image, i) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
-        <Image
-          style={imageStyles.thumbnail}
-          onPress={() => handleImagePressed(image, i)}
-          source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
-          PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
-            : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
-          placeholderStyle={commonStyles.imagePlaceholder}
-          onError={() => {
-            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));
-          }}
-          onLoadEnd={() => {
-            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));
-          }}
-        />
+        <Pressable onPress={() => handleImagePressed(image, i)}>
+          <FastImage
+            fallback
+            style={imageStyles.thumbnail}
+            source={{
+              uri: imageThumbnails[image.id],
+              priority: FastImage.priority.high,
+            }}
+            resizeMode={FastImage.resizeMode.contain}
+            // onLoadStart={() => setIsLoading(true)}
+            // onLoadStart={() => dispatch(setLoadingStatus({view: 'home', bool: true}))}
+            onLoadEnd={() => {
+              // dispatch(setLoadingStatus({view: 'home', bool: false}));
+              // setIsLoading(false)
+              if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));
+            }}
+            onError={() => {
+              if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));
+            }}
+          />
+        </Pressable>
+        {/*<Image*/}
+        {/*  style={imageStyles.thumbnail}*/}
+        {/*  onPress={() => handleImagePressed(image, i)}*/}
+        {/*  source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}*/}
+        {/*  PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>*/}
+        {/*    : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}*/}
+        {/*  placeholderStyle={commonStyles.imagePlaceholder}*/}
+        {/*  onError={() => {*/}
+        {/*    if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));*/}
+        {/*  }}*/}
+        {/*  onLoadEnd={() => {*/}
+        {/*    if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(j => ({...j, [image.id]: true}));*/}
+        {/*  }}*/}
+        {/*/>*/}
       </View>
     );
   };
@@ -158,6 +191,12 @@ const ImageGallery = ({openSpotInNotebook}) => {
       {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
         : !isError ? renderSpotsWithImages()
           : renderError()}
+      <View style={imageStyles.imagesCountContainer}>
+        <Text style={imageStyles.imagesCountText}>Total Number of Images: {numberOfImages}</Text>
+      </View>
+      {isLoading && (
+        <Loading isLoading={isLoading}/>
+      )}
     </React.Fragment>
   );
 };

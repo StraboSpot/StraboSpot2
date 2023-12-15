@@ -40,6 +40,14 @@ const imageStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  imagesCountContainer: {
+    paddingBottom: 5,
+    paddingTop: 5,
+    alignItems: 'center',
+  },
+  imagesCountText: {
+    // fontWeight: 'bold',
+  },
   imageInfoButtons: {
     marginTop: 20,
   },
