@@ -25,8 +25,8 @@ const ModalHeader = (props) => {
 
   return (
     <View style={modalStyle.modalTop}>
-      <View style={{flex: 1, flexDirection: 'column', padding: 10, paddingTop: 5}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={modalStyle.modalHeaderContainer}>
+        <View style={modalStyle.modalHeaderButtonsContainer}>
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
             title={props.buttonTitleLeft}
@@ -39,7 +39,6 @@ const ModalHeader = (props) => {
             title={props.buttonTitleRight === '' ? '' : props.buttonTitleRight || 'Close'}
             type={'clear'}
             onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
-            buttonStyle={{padding: 0}}
           />
         </View>
         <Text style={modalStyle.modalTitle}>{props.title || getTitle()}</Text>
