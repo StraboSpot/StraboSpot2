@@ -319,7 +319,6 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
             importedProject={importedProjectData}
             setImportComplete={value => setImportComplete(value)}
             importComplete={importComplete}
-            setLoading={value => dispatch(setLoadingStatus({bool: value, view: 'modal'}))}
           />
         );
       default:

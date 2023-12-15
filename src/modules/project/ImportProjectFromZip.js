@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
-import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import projectStyles from './project.styles';
@@ -10,18 +9,20 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import alert from '../../shared/ui/alert';
+import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
   setErrorMessagesModalVisible,
-  setProjectLoadSelectionModalVisible,
+  setProjectLoadSelectionModalVisible, setStatusMessageModalTitle,
 } from '../home/home.slice';
 
 const ImportProjectFromZip = (props) => {
   const dispatch = useDispatch();
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const useDevice = useDeviceHook();
-  const toast = useToast();
 
   const renderImportComplete = () => {
     return (
@@ -59,19 +60,20 @@ const ImportProjectFromZip = (props) => {
 
   const saveToDevice = async () => {
     try {
-      props?.setLoading(true);
+      setIsLoading(true);
+      dispatch(setStatusMessageModalTitle('Importing Project...'));
       const project = props.importedProject;
       await useDevice.unZipAndCopyImportedData(project);
       props?.setImportComplete(true);
-      toast.show('Data and Images Have Been Saved!');
-      props?.setLoading(false);
+      dispatch(setStatusMessageModalTitle('Project Imported'));
+      setIsLoading(false);
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
       dispatch(setErrorMessagesModalVisible(true));
       dispatch(addedStatusMessage(err.toString()));
-      props?.setLoading(false);
       props?.setImportComplete(false);
+      setIsLoading(false);
       throw Error();
     }
   };
@@ -105,7 +107,7 @@ const ImportProjectFromZip = (props) => {
 
   return (
     <View style={{padding: 10}}>
-      {isProjectLoadSelectionModalVisible
+      {isProjectLoadSelectionModalVisible && !isLoading
         && (
           <Button
             onPress={() => props.goBackToMain()}
@@ -126,20 +128,27 @@ const ImportProjectFromZip = (props) => {
         )
       }
 
-
       {props.importComplete ? renderImportComplete()
-        : (
-          <View style={{alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold'}}>Selected Project to Import:</Text>
-            <Text>{props.importedProject.name}</Text>
-            <Button
-              title={'Unzip and Save'}
-              type={'clear'}
-              containerStyle={{marginTop: 20}}
-              onPress={() => verifyFileExistence('data')}
-            />
-          </View>
-        )
+        : isLoading ? (
+            <View style={{flex: 1, margin: 60}}>
+              <Loading
+                isLoading={isLoading}
+                style={{}}
+              />
+            </View>
+          )
+          : (
+            <View style={{alignItems: 'center'}}>
+              <Text style={{fontWeight: 'bold'}}>Selected Project to Import:</Text>
+              <Text>{props.importedProject.name}</Text>
+              <Button
+                title={'Unzip and Save'}
+                type={'clear'}
+                containerStyle={{marginTop: 20}}
+                onPress={() => verifyFileExistence('data')}
+              />
+            </View>
+          )
       }
     </View>
   );
