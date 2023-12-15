@@ -29,7 +29,7 @@ const modalStyle = StyleSheet.create({
   modalHeaderButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: SMALL_SCREEN ? 35 : 0,
+    marginTop: SMALL_SCREEN && Platform.OS === 'ios' ? 35 : 0,
     marginLeft: 10,
   },
   modalPosition: {
