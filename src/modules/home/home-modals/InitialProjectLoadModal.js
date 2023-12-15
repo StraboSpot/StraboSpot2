@@ -12,7 +12,7 @@ import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
-import ImportProjectAndroid from '../../project/ImportProjectAndroid';
+import ImportProjectFromZip from '../../project/ImportProjectFromZip';
 import NewProject from '../../project/NewProjectForm';
 import projectStyles from '../../project/project.styles';
 import ProjectList from '../../project/ProjectList';
@@ -312,7 +312,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
         );
       case 'importData':
         return (
-          <ImportProjectAndroid
+          <ImportProjectFromZip
             visibleSection={section => setVisibleInitialSection(section)}
             goBackToMain={() => goBackToMain()}
             source={source => setSource(source)}

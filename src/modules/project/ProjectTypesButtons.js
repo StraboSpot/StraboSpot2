@@ -69,8 +69,7 @@ const ProjectTypesButtons = (props) => {
         titleStyle={commonStyles.standardButtonText}
         onPress={() => props.onLoadProjectsFromDevice()}
       />}
-      {Platform.OS === 'android' && downloadsDirectoryExists
-        && <View>
+       <View>
           <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>When importing, select the data.json
             file
             before selecting any images or maps.</Text>
@@ -82,7 +81,6 @@ const ProjectTypesButtons = (props) => {
             onPress={() => props.onLoadProjectsFromDownloadsFolder()}
           />
         </View>
-      }
     </View>
   );
 };

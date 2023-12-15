@@ -16,7 +16,7 @@ import {
   setProjectLoadSelectionModalVisible,
 } from '../home/home.slice';
 
-const ImportProjectAndroid = (props) => {
+const ImportProjectFromZip = (props) => {
   const dispatch = useDispatch();
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
@@ -145,4 +145,4 @@ const ImportProjectAndroid = (props) => {
   );
 };
 
-export default ImportProjectAndroid;
+export default ImportProjectFromZip;

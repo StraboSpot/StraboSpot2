@@ -6,7 +6,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch} from 'react-redux';
 
 import ActiveProjectList from './ActiveProjectList';
-import ImportProjectAndroid from './ImportProjectAndroid';
+import ImportProjectFromZip from './ImportProjectFromZip';
 import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
@@ -132,7 +132,7 @@ const MyStraboSpot = ({logout}) => {
         );
       case 'importData':
         return (
-          <ImportProjectAndroid
+          <ImportProjectFromZip
             importedProject={importedProject}
             visibleSection={section => setShowSection(section)}
             setImportComplete={handleImportComplete}
