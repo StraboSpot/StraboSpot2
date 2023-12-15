@@ -6,15 +6,15 @@ import {Button, Header, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
+import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import ShortcutButtons from './ShortcutButtons';
 import * as themes from '../../shared/styles.constants';
+import IconButton from '../../shared/ui/IconButton';
 import Map from '../maps/Map';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
-import SpotNavigator from '../spots/SpotNavigator';
-import IconButton from '../../shared/ui/IconButton';
-import {setModalVisible} from './home.slice';
 import {MODAL_KEYS} from '../page/page.constants';
+import SpotNavigator from '../spots/SpotNavigator';
 
 const HomeViewSmallScreen = ({
                                animateLeftSide,
@@ -26,6 +26,7 @@ const HomeViewSmallScreen = ({
                                drawButtonsVisible,
                                endDraw,
                                endMeasurement,
+                               isMainMenuPanelVisible,
                                isSelectingForStereonet,
                                isSelectingForTagging,
                                mapComponentRef,
@@ -73,11 +74,19 @@ const HomeViewSmallScreen = ({
             type={'ionicon'}
           />
         ) : (
-          <Icon
-            color={themes.PRIMARY_TEXT_COLOR}
-            name={'menu'}
-            onPress={toggleHomeDrawer}
-          />
+          isMainMenuPanelVisible ? (
+            <IconButton
+              source={require('../../assets/icons/Home_pressed.png')}
+              onPress={toggleHomeDrawer}
+              imageStyle={homeStyles.homeIconSmallScreen}
+            />
+          ) : (
+            <IconButton
+              source={require('../../assets/icons/Home.png')}
+              onPress={toggleHomeDrawer}
+              imageStyle={homeStyles.homeIconSmallScreen}
+            />
+          )
         )}
         centerComponent={
           <Button

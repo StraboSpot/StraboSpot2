@@ -203,6 +203,9 @@ const homeStyles = StyleSheet.create({
     top: 10,
     left: 10,
   },
+  homeIconSmallScreen: {
+    height: 30,
+  },
 
   // --- Modal Style ---
   modal: {
