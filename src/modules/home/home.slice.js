@@ -14,7 +14,6 @@ const initialHomeState = {
   modalValues: {},
   modalVisible: null,
   isBackupModalVisible: false,
-  isBackupOverwriteModalVisible: false,
   isStatusMessagesModalVisible: false,
   isErrorMessagesModalVisible: false,
   isWarningMessagesModalVisible: false,
@@ -54,9 +53,6 @@ const homeSlice = createSlice({
     },
     setBackupModalVisible(state, action) {
       state.isBackupModalVisible = action.payload;
-    },
-    setBackupOverwriteModalVisible(state, action) {
-      state.isBackupOverwriteModalVisible = action.payload;
     },
     setErrorMessagesModalVisible(state, action) {
       state.isErrorMessagesModalVisible = action.payload;
@@ -127,7 +123,6 @@ export const {
   clearedStatusMessages,
   removedLastStatusMessage,
   setBackupModalVisible,
-  setBackupOverwriteModalVisible,
   setErrorMessagesModalVisible,
   setImageModalVisible,
   setInfoMessagesModalVisible,

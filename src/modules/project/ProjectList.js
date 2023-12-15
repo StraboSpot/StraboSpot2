@@ -20,7 +20,6 @@ import Loading from '../../shared/ui/Loading';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {
-  setBackupOverwriteModalVisible,
   setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
@@ -139,7 +138,6 @@ const ProjectList = (props) => {
     setLoading(true);
     if (!isEmpty(currentProject)) {
       dispatch(setSelectedProject({project: project, source: props.source}));
-      dispatch(setBackupOverwriteModalVisible(true));
     }
     else {
       console.log('Getting project...');

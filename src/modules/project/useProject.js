@@ -266,7 +266,6 @@ const useProject = () => {
   const switchProject = async (action) => {
     try {
       console.log('User wants to:', action);
-      dispatch(setBackupOverwriteModalVisible(false));
       if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setProgressModalVisible(true));
       else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
       else if (action === ProjectActions.OVERWRITE) {
