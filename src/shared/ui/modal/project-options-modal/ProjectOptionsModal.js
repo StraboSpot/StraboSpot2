@@ -99,12 +99,12 @@ const ProjectOptionsDialogBox = (props) => {
     }
   };
 
-  const handleOnPress = async (action) => {
-    if (action === BACKUP_TO_DEVICE) {
+  const handleOnPress = async (userAction) => {
+    if (userAction === BACKUP_TO_DEVICE) {
       await saveProject();
       console.log('Project Saved!');
     }
-    else if (action === OVERWRITE) {
+    else if (userAction === OVERWRITE) {
       props.close();
       await useProject.switchProject(OVERWRITE);
       console.log('Project overwritten!');

@@ -110,6 +110,10 @@ const useDevice = (props) => {
     return await RNFS.exists(dir);
   };
 
+  const doesFileExist = async (path, file) => {
+    return await RNFS.exists(path + file);
+  };
+
   const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
     if (isExternal && Platform.OS === 'android') {
       console.log('Checking Downloads dir', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
@@ -302,17 +306,20 @@ const useDevice = (props) => {
 
   const unZipAndCopyImportedData = async (zipFile) => {
     try {
-      const fileName = zipFile.name.replace('.zip', '');
-      // const file = zipFile.name.replace(' ', '_');
-      const source = APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
-      console.log(source);
-      const dest = APP_DIRECTORIES.BACKUP_DIR + fileName;
+      let fileName = '';
+      if (Platform.OS === 'android') {
+        await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
+        fileName = zipFile.name.replace('.zip', '');
+        console.log('Files copied to export folder!');
+      }
 
-      await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
-      console.log('Files copied to export folder!');
+      const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+      const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR : APP_DIRECTORIES.BACKUP_DIR + fileName;
 
-      const unzippedFilePath = await unzip(source, dest);
-      return unzippedFilePath;
+      console.log('SOURCE', source);
+      console.log('DEST', dest);
+
+      await unzip(source, dest);
     }
     catch (err) {
       console.error('Error unzipping imported file', err);
@@ -350,6 +357,7 @@ const useDevice = (props) => {
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceDirExist: doesDeviceDirExist,
+    doesFileExist: doesFileExist,
     downloadAndSaveImage: downloadAndSaveImage,
     downloadAndSaveMap: downloadAndSaveMap,
     getExternalProjectData: getExternalProjectData,

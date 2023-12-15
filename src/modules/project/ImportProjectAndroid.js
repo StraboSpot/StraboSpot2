@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
@@ -10,7 +10,11 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import alert from '../../shared/ui/alert';
-import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  setErrorMessagesModalVisible,
+  setProjectLoadSelectionModalVisible,
+} from '../home/home.slice';
 
 const ImportProjectAndroid = (props) => {
   const dispatch = useDispatch();
@@ -54,20 +58,18 @@ const ImportProjectAndroid = (props) => {
   };
 
   const saveToDevice = async () => {
-    try {// dispatch(setLoadingStatus({bool: true, view: 'modal'}));
+    try {
       props?.setLoading(true);
       const project = props.importedProject;
-      const exists = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
-      if (exists) {
-        const path = await useDevice.unZipAndCopyImportedData(project);
-        props?.setImportComplete(true);
-        console.log('Unzipped and saved file to', path);
-        toast.show('Data and Images Have Been Saved!');
-        props?.setLoading(false);
-      }
+      await useDevice.unZipAndCopyImportedData(project);
+      props?.setImportComplete(true);
+      toast.show('Data and Images Have Been Saved!');
+      props?.setLoading(false);
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
+      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(addedStatusMessage(err.toString()));
       props?.setLoading(false);
       props?.setImportComplete(false);
       throw Error();

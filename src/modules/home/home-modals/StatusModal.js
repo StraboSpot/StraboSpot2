@@ -30,7 +30,7 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
       console.log('FROM DEVICE', selectedProject.project);
       dispatch(setSelectedProject({source: '', project: ''}));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      const res = await useImport.loadProjectFromDevice(selectedProject.project);
+      const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
       console.log('Done loading project', res);
     }
     else if (selectedProject.source === 'server') {

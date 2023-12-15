@@ -23,6 +23,7 @@ import {
   setBackupOverwriteModalVisible,
   setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
+  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 
 const ProjectList = (props) => {
@@ -122,12 +123,12 @@ const ProjectList = (props) => {
     else console.log('Project was not deleted.');
   };
 
-  const initializeProjectOptions = (project) => {
+  const initializeProjectOptions = async (project) => {
     // const projectName;
     dispatch(setSelectedProject({project: project, source: props.source}));
     if (isInitialProjectLoadModalVisible) {
       dispatch(setSelectedProject({project: '', source: ''}));
-      const res = loadSelectedProject(project);
+      const res = await loadSelectedProject(project);
       console.log('Done loading project from InitialProjectModal', res);
     }
     else setIsProjectOptionsModalVisible(true);
@@ -135,11 +136,7 @@ const ProjectList = (props) => {
 
   const loadSelectedProject = async (project) => {
     console.log('Selected Project:', project);
-    if (project?.fileName?.includes('.zip')) {
-      const unzippedFile = await useImport.unzipBackupFile(project.fileName);
-      console.log(unzippedFile);
-      project = unzippedFile;
-    }
+    setLoading(true);
     if (!isEmpty(currentProject)) {
       dispatch(setSelectedProject({project: project, source: props.source}));
       dispatch(setBackupOverwriteModalVisible(true));
@@ -149,8 +146,10 @@ const ProjectList = (props) => {
       if (!isEmpty(project)) useProject.destroyOldProject();
       if (props.source === 'device') {
         dispatch(setProjectLoadSelectionModalVisible(false));
-        const res = await useImport.loadProjectFromDevice(project);
+        const res = await useImport.loadProjectFromDevice(project.fileName);
+        setLoading(false);
         dispatch(setStatusMessageModalTitle(res.project.description.project_name));
+        dispatch(setStatusMessagesModalVisible(false));
         console.log('Done loading project', res);
       }
       else await useDownload.initializeDownload(project);
@@ -182,7 +181,7 @@ const ProjectList = (props) => {
     const modifiedTimeAndDate = moment.unix(item.modified_timestamp).format('MMMM Do YYYY, h:mm:ss a');
     return (
       <ListItem
-        key={props.source === 'device' ? item.id : item.id}
+        key={item.id}
         onPress={() => initializeProjectOptions(item)}
         containerStyle={commonStyles.listItem}
         disabled={!isOnline.isConnected && props.source !== 'device'}

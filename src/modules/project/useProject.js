@@ -24,7 +24,6 @@ import {
   clearedStatusMessages,
   removedLastStatusMessage,
   setBackupModalVisible,
-  setBackupOverwriteModalVisible,
   setErrorMessagesModalVisible,
   setLoadingStatus,
   setProgressModalVisible,
@@ -49,7 +48,7 @@ const useProject = () => {
 
   const addDataset = async (name) => {
     const datasetObj = createDataset(name);
-    await dispatch(addedDataset(datasetObj));
+    dispatch(addedDataset(datasetObj));
     console.log('Added datasets', datasets);
     return Promise.resolve();
   };
@@ -224,7 +223,7 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    await destroyOldProject();
+    destroyOldProject();
     await createProject(descriptionData);
     return Promise.resolve();
   };
@@ -274,7 +273,7 @@ const useProject = () => {
         if (selectedProject.source === 'device') {
           dispatch(clearedStatusMessages());
           dispatch(setStatusMessagesModalVisible(true));
-          const res = await useImport.loadProjectFromDevice(selectedProject.project);
+          const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
           console.log('Done loading project', res);
         }
         else if (selectedProject.source === 'server') {
