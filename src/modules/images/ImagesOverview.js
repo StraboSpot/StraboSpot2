@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator,  FlatList, Platform, Switch, Text, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -8,6 +9,7 @@ import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import overlayStyles from '../home/overlay.styles';
@@ -20,6 +22,7 @@ const ImagesOverview = () => {
   console.log('Rendering ImagesOverview...');
 
   const [useImages] = useImagesHook();
+  const navigation = useNavigation();
 
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
@@ -49,6 +52,7 @@ const ImagesOverview = () => {
   const handleImageBasemapPressed = (image) => {
     console.log('Pressed image basemap:', image);
     if (Platform.OS === 'web') {
+      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
       dispatch(clearedSelectedSpots());
       dispatch(setCurrentImageBasemap(image));
     }
@@ -56,6 +60,7 @@ const ImagesOverview = () => {
       useImages.doesImageExistOnDevice(image.id)
         .then((doesExist) => {
           if (doesExist) {
+            if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
             dispatch(clearedSelectedSpots());
             dispatch(setCurrentImageBasemap(image));
           }
