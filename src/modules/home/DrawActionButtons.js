@@ -17,18 +17,18 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
   const useHome = useHomeHook();
 
   return (
-    (currentImageBasemap || stratSection) ? (
-      <IconButton
-        source={mapMode === MAP_MODES.DRAW.POINT
-          ? SMALL_SCREEN ? require('../../assets/icons/Point_pressed_1.png')
-            : require('../../assets/icons/PointButton_pressed.png')
-          : SMALL_SCREEN ? require('../../assets/icons/Point.png')
-            : require('../../assets/icons/PointButton.png')}
-        onPress={() => clickHandler(MAP_MODES.DRAW.POINT)}
-        imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
-      />
-    ) : (
-      <View style={homeStyles.drawToolsContainer}>
+    <View style={homeStyles.drawToolsContainer}>
+      {(currentImageBasemap || stratSection) ? (
+        <IconButton
+          source={mapMode === MAP_MODES.DRAW.POINT
+            ? SMALL_SCREEN ? require('../../assets/icons/Point_pressed_1.png')
+              : require('../../assets/icons/PointButton_pressed.png')
+            : SMALL_SCREEN ? require('../../assets/icons/Point.png')
+              : require('../../assets/icons/PointButton.png')}
+          onPress={() => clickHandler(MAP_MODES.DRAW.POINT)}
+          imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
+        />
+      ) : (
         <IconButton
           source={useHome.changeDrawType(MAP_MODES.DRAW.POINT, mapMode)}
           onPress={() => {
@@ -38,26 +38,26 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
           onLongPress={() => useHome.onLongPress('point')}
           imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
         />
-        <IconButton
-          source={useHome.changeDrawType(MAP_MODES.DRAW.LINE, mapMode)}
-          onPress={() => {
-            if (useHome.getDrawTypes().line === MAP_MODES.DRAW.LINE) clickHandler(MAP_MODES.DRAW.LINE);
-            else clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
-          }}
-          onLongPress={() => useHome.onLongPress('line')}
-          imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
-        />
-        <IconButton
-          source={useHome.changeDrawType(MAP_MODES.DRAW.POLYGON, mapMode)}
-          onPress={() => {
-            if (useHome.getDrawTypes().polygon === MAP_MODES.DRAW.POLYGON) clickHandler(MAP_MODES.DRAW.POLYGON);
-            else clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
-          }}
-          onLongPress={() => useHome.onLongPress('polygon')}
-          imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
-        />
-      </View>
-    )
+      )}
+      <IconButton
+        source={useHome.changeDrawType(MAP_MODES.DRAW.LINE, mapMode)}
+        onPress={() => {
+          if (useHome.getDrawTypes().line === MAP_MODES.DRAW.LINE) clickHandler(MAP_MODES.DRAW.LINE);
+          else clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
+        }}
+        onLongPress={() => useHome.onLongPress('line')}
+        imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
+      />
+      <IconButton
+        source={useHome.changeDrawType(MAP_MODES.DRAW.POLYGON, mapMode)}
+        onPress={() => {
+          if (useHome.getDrawTypes().polygon === MAP_MODES.DRAW.POLYGON) clickHandler(MAP_MODES.DRAW.POLYGON);
+          else clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
+        }}
+        onLongPress={() => useHome.onLongPress('polygon')}
+        imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
+      />
+    </View>
   );
 };
 
