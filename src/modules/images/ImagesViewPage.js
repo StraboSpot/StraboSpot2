@@ -11,6 +11,7 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -26,8 +27,8 @@ const ImagesViewPage = () => {
 
   const inputRef = useRef(null);
 
-  const navigation = useNavigation();
   const [useImages] = useImagesHook();
+  const navigation = useNavigation();
   const toast = useToast();
   const useUpload = useUploadHook();
 
@@ -149,6 +150,7 @@ const ImagesViewPage = () => {
   const handleImageBasemapPressed = (image) => {
     console.log('Pressed image basemap:', image);
     if (Platform.OS === 'web') {
+      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
       dispatch(clearedSelectedSpots());
       dispatch(setCurrentImageBasemap(image));
     }
@@ -156,6 +158,7 @@ const ImagesViewPage = () => {
       useImages.doesImageExistOnDevice(image.id)
         .then((doesExist) => {
           if (doesExist) {
+            if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
             dispatch(clearedSelectedSpots());
             dispatch(setCurrentImageBasemap(image));
           }
