@@ -77,9 +77,7 @@ const Basemap = (props) => {
 
   useEffect(() => {
       console.log('UE Basemap');
-      const center = getCenterCoordinates();
-      console.log(center)
-      setInitialCenter(center);
+      setInitialCenter(getCenterCoordinates());
       setInitialZoom(getZoomLevel());
     }, [props.imageBasemap, props.stratSection],
   );
@@ -178,8 +176,8 @@ const Basemap = (props) => {
           : props.basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        // styleURL={props.imageBasemap || props.stratSection ? JSON.stringify(BACKGROUND)
-        //   : JSON.stringify(props.basemap)}
+        styleURL={props.imageBasemap || props.stratSection ? JSON.stringify(BACKGROUND)
+          : JSON.stringify(props.basemap)}
         animated={true}
         localizeLabels={true}
         logoEnabled={true}
