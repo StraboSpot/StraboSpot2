@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {useWindowDimensions, Platform, View} from 'react-native';
+import React, {forwardRef, useEffect, useState} from 'react';
+import {Platform, useWindowDimensions, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import proj4 from 'proj4';
-import {Layer, Map, Source, ScaleControl} from 'react-map-gl';
+import {Layer, Map, ScaleControl, Source} from 'react-map-gl';
 import {useSelector} from 'react-redux';
 
 import {
@@ -29,16 +29,30 @@ import useMapViewHook from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
 import useImagesHook from '../images/useImages';
 
-const Basemap = (props) => {
+const Basemap = ({
+                   allowMapViewMove,
+                   basemap,
+                   drawFeatures,
+                   editFeatureVertex,
+                   imageBasemap,
+                   mapMode,
+                   measureFeatures,
+                   onMapLongPress,
+                   onMapPress,
+                   spotsNotSelected,
+                   spotsSelected,
+                   stratSection,
+                   updateSpotsInMapExtent,
+                   zoomToSpot,
+                 }, forwardedRef) => {
   console.log('Rendering Basemap...');
-  console.log('Basemap props:', props);
 
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
-  const {mapRef} = props.forwardedRef;
+  const {mapRef} = forwardedRef;
 
   const useDimensions = useWindowDimensions();
   const [useImages] = useImagesHook();
@@ -47,7 +61,7 @@ const Basemap = (props) => {
   const useMapView = useMapViewHook();
 
   const [cursor, setCursor] = useState('');
-  const [prevMapMode, setPrevMapMode] = useState(props.mapMode);
+  const [prevMapMode, setPrevMapMode] = useState(mapMode);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [viewState, setViewState] = React.useState({});
 
@@ -59,13 +73,13 @@ const Basemap = (props) => {
     'polygonLayerSelectedBorder', 'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
 
-  const coordQuad = useMaps.getCoordQuad(props.imageBasemap);
+  const coordQuad = useMaps.getCoordQuad(imageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
-    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(props.spotsNotSelected)));
+    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
   const featuresSelected = turf.featureCollection(
-    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(props.spotsSelected)));
+    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
 
   // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
   const featuresNotSelectedUniq = turf.featureCollection(
@@ -79,13 +93,13 @@ const Basemap = (props) => {
       console.log('UE Basemap', viewState);
       console.log('Dimensions', useDimensions);
       setInitialViewState();
-    }, [props.imageBasemap, props.stratSection],
+    }, [imageBasemap, stratSection],
   );
 
-  if (props.mapMode !== prevMapMode) {
-    console.log('MapMode changed from', prevMapMode, 'to', props.mapMode);
-    setPrevMapMode(props.mapMode);
-    if (useMaps.isDrawMode(props.mapMode) || props.mapMode === MAP_MODES.EDIT) setCursor('pointer');
+  if (mapMode !== prevMapMode) {
+    console.log('MapMode changed from', prevMapMode, 'to', mapMode);
+    setPrevMapMode(mapMode);
+    if (useMaps.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
     else setCursor('');
   }
 
@@ -112,9 +126,9 @@ const Basemap = (props) => {
   const setInitialViewState = () => {
     console.log('Getting initial center...');
     let initialCenter = center;
-    if (props.zoomToSpot && !isEmpty(selectedSpot)) {
-      if ((props.imageBasemap && selectedSpot.properties.image_basemap === props.imageBasemap.id)
-        || (props.stratSection && selectedSpot.properties.strat_section_id === props.stratSection.strat_section_id)) {
+    if (zoomToSpot && !isEmpty(selectedSpot)) {
+      if ((imageBasemap && selectedSpot.properties.image_basemap === imageBasemap.id)
+        || (stratSection && selectedSpot.properties.strat_section_id === stratSection.strat_section_id)) {
         initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
           turf.centroid(selectedSpot).geometry.coordinates);
       }
@@ -122,16 +136,16 @@ const Basemap = (props) => {
         initialCenter = turf.centroid(selectedSpot).geometry.coordinates;
       }
     }
-    else if (props.imageBasemap) {
+    else if (imageBasemap) {
       initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [(props.imageBasemap.width) / 2, (props.imageBasemap.height) / 2]);
+        [(imageBasemap.width) / 2, (imageBasemap.height) / 2]);
     }
-    else if (props.stratSection) initialCenter = STRAT_SECTION_CENTER;
+    else if (stratSection) initialCenter = STRAT_SECTION_CENTER;
 
     console.log('Getting initial zoom...');
     let initialZoom = zoom;
-    if (props.imageBasemap) initialZoom = ZOOM;
-    else if (props.stratSection) initialZoom = ZOOM_STRAT_SECTION;
+    if (imageBasemap) initialZoom = ZOOM;
+    else if (stratSection) initialZoom = ZOOM_STRAT_SECTION;
 
     const initialViewState = {
       longitude: initialCenter[0],
@@ -145,7 +159,7 @@ const Basemap = (props) => {
 
   // Get max X and max Y for strat intervals
   const getStratIntervalsMaxXY = () => {
-    const intervals = [...props.spotsSelected, ...props.spotsNotSelected].filter(
+    const intervals = [...spotsSelected, ...spotsNotSelected].filter(
       feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
     return intervals.reduce((acc, i) => {
       const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
@@ -160,8 +174,8 @@ const Basemap = (props) => {
   // Update spots in extent and saved view (center and zoom)
   const onMove = (evt) => {
     console.log('Event onMove', evt);
-    props.updateSpotsInMapExtent();
-    if (props.imageBasemap || props.stratSection) setViewState(evt.viewState);
+    updateSpotsInMapExtent();
+    if (imageBasemap || stratSection) setViewState(evt.viewState);
     else {
       console.log('evt.viewState', evt.viewState);
       setViewState(evt.viewState);
@@ -172,31 +186,31 @@ const Basemap = (props) => {
   };
 
   const onMouseEnter = () => {
-    if (props.mapMode === MAP_MODES.VIEW) setCursor('pointer');
+    if (mapMode === MAP_MODES.VIEW) setCursor('pointer');
   };
 
   const onMouseLeave = () => {
-    if (props.mapMode === MAP_MODES.VIEW) setCursor('');
-    else if (useMaps.isDrawMode(props.mapMode) || props.mapMode === MAP_MODES.EDIT) setCursor('pointer');
+    if (mapMode === MAP_MODES.VIEW) setCursor('');
+    else if (useMaps.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
   };
 
   return (
     <View style={{flex: 1}}>
       <Map
         {...viewState}
-        id={props.imageBasemap ? props.imageBasemap.id : props.stratSection ? props.stratSection.strat_section_id
-          : props.basemap.id}
+        id={imageBasemap ? imageBasemap.id : stratSection ? stratSection.strat_section_id
+          : basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        mapStyle={props.imageBasemap || props.stratSection ? BACKGROUND : props.basemap}
-        boxZoom={props.allowMapViewMove}
-        dragRotate={props.allowMapViewMove}
-        dragPan={props.allowMapViewMove}
+        mapStyle={imageBasemap || stratSection ? BACKGROUND : basemap}
+        boxZoom={allowMapViewMove}
+        dragRotate={allowMapViewMove}
+        dragPan={allowMapViewMove}
         pitchWithRotate={false}
-        touchPitch={!(props.stratSection || props.imageBasemap)}
+        touchPitch={!(stratSection || imageBasemap)}
         touchZoomRotate={false}
-        onClick={props.onMapPress}
-        onDblClick={props.onMapLongPress}
+        onClick={onMapPress}
+        onDblClick={onMapLongPress}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onMove={onMove}   // Update spots in extent and saved view (center and zoom)
@@ -205,7 +219,7 @@ const Basemap = (props) => {
         interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
         styleDiffing={false}
       >
-        {!props.stratSection && !props.imageBasemap && (
+        {!stratSection && !imageBasemap && (
           <View>
             <ScaleControl
               maxWidth={useDimensions.width * 0.25}
@@ -239,18 +253,18 @@ const Basemap = (props) => {
         })}
 
         {/* Strat Section background Layer */}
-        {props.stratSection && (
-          <StratSectionBackground maxXY={getStratIntervalsMaxXY()} stratSection={props.stratSection}/>
+        {stratSection && (
+          <StratSectionBackground maxXY={getStratIntervalsMaxXY()} stratSection={stratSection}/>
         )}
 
         {/* Image Basemap Layer */}
-        {props.imageBasemap && !isEmpty(coordQuad) && (
+        {imageBasemap && !isEmpty(coordQuad) && (
           <Source
             id={'imageBasemap'}
             type={'image'}
             coordinates={coordQuad}
-            url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(props.imageBasemap.id)
-              : useImages.getLocalImageURI(props.imageBasemap.id)}
+            url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(imageBasemap.id)
+              : useImages.getLocalImageURI(imageBasemap.id)}
           >
             <Layer
               type={'raster'}
@@ -437,7 +451,7 @@ const Basemap = (props) => {
         <Source
           id={'drawFeatures'}
           type={'geojson'}
-          data={turf.featureCollection(props.drawFeatures)}
+          data={turf.featureCollection(drawFeatures)}
         >
           <Layer
             type={'circle'}
@@ -463,7 +477,7 @@ const Basemap = (props) => {
         <Source
           id={'editFeatureVertex'}
           type={'geojson'}
-          data={turf.featureCollection(props.editFeatureVertex)}
+          data={turf.featureCollection(editFeatureVertex)}
         >
           <Layer
             type={'circle'}
@@ -474,15 +488,15 @@ const Basemap = (props) => {
         </Source>
 
         {/* Strat Section X Lines Layer for Covered/Uncovered or Not Measured Intervals */}
-        {props.stratSection && (
-          <CoveredIntervalsXLines spotsDisplayed={[...props.spotsNotSelected, ...props.spotsSelected]}/>
+        {stratSection && (
+          <CoveredIntervalsXLines spotsDisplayed={[...spotsNotSelected, ...spotsSelected]}/>
         )}
 
         {/* Measure Layer */}
         <Source
           id={'mapMeasure'}
           type={'geojson'}
-          data={turf.featureCollection(props.measureFeatures)}
+          data={turf.featureCollection(measureFeatures)}
         >
           <Layer
             type={'circle'}
@@ -503,7 +517,4 @@ const Basemap = (props) => {
   );
 };
 
-export const MapLayer = React.forwardRef((props, ref2) => (
-  <Basemap {...props} forwardedRef={ref2}/>
-));
-MapLayer.displayName = 'MapLayer';
+export default forwardRef(Basemap);
