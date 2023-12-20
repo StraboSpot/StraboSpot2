@@ -22,7 +22,7 @@ import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 
-const NotebookPanel = (props) => {
+const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoomToSpot}) => {
   console.log('Rendering NotebookPanel...');
 
   const dispatch = useDispatch();
@@ -61,15 +61,15 @@ const NotebookPanel = (props) => {
     let pageKey = isRelevantPage ? pageVisible : PAGE_KEYS.OVERVIEW;
     const page = NOTEBOOK_PAGES.find(p => p.key === pageKey);
     const Page = page?.page_component || Overview;
-    let pageProps = {page: page, openMainMenu: props.openMainMenu};
+    let pageProps = {page: page, openMainMenu: openMainMenu};
     if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
     return (
       <React.Fragment>
         <View style={notebookStyles.headerContainer}>
           <NotebookHeader
-            closeNotebookPanel={props.closeNotebookPanel}
-            createDefaultGeom={props.createDefaultGeom}
-            zoomToSpot={props.zoomToSpot}
+            closeNotebookPanel={closeNotebookPanel}
+            createDefaultGeom={createDefaultGeom}
+            zoomToSpot={zoomToSpot}
           />
         </View>
         <View style={{...notebookStyles.centerContainer}}>
@@ -117,7 +117,7 @@ const NotebookPanel = (props) => {
             title={'Close Notebook'}
             type={'clear'}
             titleStyle={commonStyles.standardButtonText}
-            onPress={props.closeNotebookPanel}
+            onPress={closeNotebookPanel}
           />
         )}
       </View>

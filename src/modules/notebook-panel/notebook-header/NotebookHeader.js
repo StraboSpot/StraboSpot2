@@ -6,7 +6,7 @@ import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import headerStyles from './notebookHeader.styles';
-import NotebookPanelMenu from './NotebookPanelMenu';
+import NotebookMenu from './NotebookMenu';
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import {PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
@@ -18,13 +18,14 @@ import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
 
-const NotebookHeader = (props) => {
-  const [useSpots] = useSpotsHook();
+const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => {
   const dispatch = useDispatch();
-  const useLocation = useLocationHook();
-
   const spot = useSelector(state => state.spot.selectedSpot);
-  const [isNotebookPanelMenuVisible, setIsNotebookPanelMenuVisible] = useState(false);
+
+  const [isNotebookMenuVisible, setIsNotebookMenuVisible] = useState(false);
+
+  const [useSpots] = useSpotsHook();
+  const useLocation = useLocationHook();
 
   const getSpotCoordText = () => {
     if (spot.geometry && spot.geometry.type) {
@@ -135,8 +136,8 @@ const NotebookHeader = (props) => {
           titleStyle={{fontSize: SMALL_TEXT_SIZE, color: PRIMARY_TEXT_COLOR}}
           buttonStyle={{padding: 0}}
           onPress={() => {
-            props.createDefaultGeom();
-            props.closeNotebookPanel();
+            createDefaultGeom();
+            closeNotebookPanel();
           }}
         />
       </View>
@@ -175,16 +176,15 @@ const NotebookHeader = (props) => {
       </View>
       <View>
         <IconButton
-          onPress={() => setIsNotebookPanelMenuVisible(prevState => !prevState)}
+          onPress={() => setIsNotebookMenuVisible(prevState => !prevState)}
           source={require('../../../assets/icons/MapActions.png')}
           style={headerStyles.threeDotMenu}
         />
       </View>
-      <NotebookPanelMenu
-        visible={isNotebookPanelMenuVisible}
-        onTouchOutside={() => setIsNotebookPanelMenuVisible(false)}
-        closeNotebookPanelMenu={() => setIsNotebookPanelMenuVisible(false)}
-        zoomToSpot={props.zoomToSpot}
+      <NotebookMenu
+        isNotebookMenuVisible={isNotebookMenuVisible}
+        closeNotebookMenu={() => setIsNotebookMenuVisible(false)}
+        zoomToSpot={zoomToSpot}
       />
     </React.Fragment>
   );

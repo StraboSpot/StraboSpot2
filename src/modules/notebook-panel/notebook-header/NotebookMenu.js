@@ -17,7 +17,7 @@ import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
 import notebookStyles from '../notebookPanel.styles';
 
-const NotebookPanelMenu = (props) => {
+const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpot}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -58,13 +58,13 @@ const NotebookPanelMenu = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
       setTimeout(() => {
-        props.zoomToSpot();
+        zoomToSpot();
         dispatch(setLoadingStatus({view: 'home', bool: false}));
       }, 500);
     }
     else if (key === 'delete') deleteSelectedSpot();
     else if (key === 'nesting') dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
-    props.closeNotebookPanelMenu();
+    closeNotebookMenu();
   };
 
   const renderActionItem = (item) => {
@@ -87,11 +87,11 @@ const NotebookPanelMenu = (props) => {
   };
 
   return (
-    <View>
+    <>
       <Overlay
         fullScreen={true}
-        isVisible={props.visible}
-        onBackdropPress={props.onTouchOutside}
+        isVisible={isNotebookMenuVisible}
+        onBackdropPress={closeNotebookMenu}
         overlayStyle={[overlayStyles.overlayContainer, notebookStyles.dialogBoxPosition]}
       >
         <View style={overlayStyles.titleContainer}>
@@ -118,8 +118,8 @@ const NotebookPanelMenu = (props) => {
       >
         {renderDeleteMessage()}
       </WarningModal>
-    </View>
+    </>
   );
 };
 
-export default NotebookPanelMenu;
+export default NotebookMenu;
