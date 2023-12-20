@@ -17,6 +17,7 @@ import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {Form, useFormHook} from '../form';
+import {setLoadingStatus} from '../home/home.slice';
 import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -142,8 +143,12 @@ const StratSectionPage = (props) => {
               containerStyle={commonStyles.listItem}
               key={'strat_section'}
               onPress={() => {
-                dispatch(setStratSection(stratSection));
+                dispatch(setLoadingStatus({view: 'home', bool: true}));
                 if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+                setTimeout(() => {
+                  dispatch(setStratSection(stratSection));
+                  dispatch(setLoadingStatus({view: 'home', bool: false}));
+                }, 500);
               }}
             >
               <Avatar
