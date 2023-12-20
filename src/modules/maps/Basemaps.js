@@ -179,7 +179,7 @@ const Basemap = ({
   };
 
   return (
-    <View style={{flex: 1}}>
+    <>
       {!stratSection && !imageBasemap && (
         <View
           style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}
@@ -520,7 +520,7 @@ const Basemap = ({
           />
         </MapboxGL.ShapeSource>
       </MapboxGL.MapView>
-    </View>
+    </>
   );
 };
 

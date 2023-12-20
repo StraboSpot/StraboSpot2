@@ -195,7 +195,7 @@ const Basemap = ({
   };
 
   return (
-    <View style={{flex: 1}}>
+    <>
       <Map
         {...viewState}
         id={imageBasemap ? imageBasemap.id : stratSection ? stratSection.strat_section_id
@@ -513,7 +513,7 @@ const Basemap = ({
         </Source>
 
       </Map>
-    </View>
+    </>
   );
 };
 
