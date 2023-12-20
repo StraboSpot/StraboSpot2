@@ -9,6 +9,7 @@ const homeStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    overflow: 'hidden',
   },
   connectionStatusIconContainer: {
     paddingEnd: 5,
