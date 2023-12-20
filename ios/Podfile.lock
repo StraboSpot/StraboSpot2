@@ -75,12 +75,12 @@ PODS:
   - lottie-react-native (5.1.6):
     - lottie-ios (~> 3.4.0)
     - React-Core
-  - MapboxCommon (23.8.5)
-  - MapboxCoreMaps (10.16.3):
-    - MapboxCommon (~> 23.8)
-  - MapboxMaps (10.16.3):
-    - MapboxCommon (= 23.8.5)
-    - MapboxCoreMaps (= 10.16.3)
+  - MapboxCommon (23.7.0)
+  - MapboxCoreMaps (10.15.0):
+    - MapboxCommon (~> 23.7)
+  - MapboxMaps (10.15.0):
+    - MapboxCommon (= 23.7.0)
+    - MapboxCoreMaps (= 10.15.0)
     - MapboxMobileEvents (= 1.0.10)
     - Turf (~> 2.0)
   - MapboxMobileEvents (1.0.10)
@@ -501,14 +501,14 @@ PODS:
     - React-Core
   - RNGestureHandler (2.13.1):
     - React-Core
-  - rnmapbox-maps (10.1.2):
-    - MapboxMaps (~> 10.16.2)
+  - rnmapbox-maps (10.0.12):
+    - MapboxMaps (~> 10.15.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.1.2)
+    - rnmapbox-maps/DynamicLibrary (= 10.0.12)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.1.2):
-    - MapboxMaps (~> 10.16.2)
+  - rnmapbox-maps/DynamicLibrary (10.0.12):
+    - MapboxMaps (~> 10.15.0)
     - React
     - React-Core
     - Turf
@@ -846,9 +846,9 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
-  MapboxCommon: 677dd4449e9f7d863a4712cf271c198ed1753494
-  MapboxCoreMaps: 304d4ff1de0b5873e4ce359a7ed107fe65f89bd6
-  MapboxMaps: 89322569ce8b0e98ed2a84c3289e6bc402df6073
+  MapboxCommon: dcbdb86acbcfc1a23efd341ed097c6c63ab532a9
+  MapboxCoreMaps: bcbaac14467616940187f79bba49ca491cd37906
+  MapboxMaps: 1fd9d97d0e8eceb7a45b9ac8bf87a8922da881a8
   MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
@@ -903,7 +903,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: bf8a32acbcb875f568217285d1793b0e8588c974
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 38aa38413896620338948fbb5c90579a7b1c3fde
-  rnmapbox-maps: 74d652f4e6711c95aa064c6829dfcf4eeb3536a6
+  rnmapbox-maps: 3afcd9081d3cc5a53af23bbbf908d087b951023b
   RNReanimated: 5ce298660a0eb7ae36448a1237788a86b1310530
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
