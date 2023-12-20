@@ -6,6 +6,7 @@ import {Button, Header, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
+import EditCancelSaveButtons from './buttons/EditCancelSaveButtons';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import ShortcutButtons from './ShortcutButtons';
@@ -18,6 +19,7 @@ import SpotNavigator from '../spots/SpotNavigator';
 
 const HomeViewSmallScreen = ({
                                animateLeftSide,
+                               areEditButtonsVisible,
                                clickHandler,
                                closeNotebookPanel,
                                dialogClickHandler,
@@ -189,6 +191,11 @@ const HomeViewSmallScreen = ({
                     />
                   </View>
                 )}
+
+                <EditCancelSaveButtons
+                  areEditButtonsVisible={areEditButtonsVisible}
+                  clickHandler={clickHandler}
+                />
               </>
             }
           </Tab.Screen>

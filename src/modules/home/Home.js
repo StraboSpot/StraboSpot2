@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import {Button} from 'react-native-elements';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -420,33 +419,6 @@ const Home = ({navigation, route}) => {
     );
   };
 
-  const renderSaveAndCancelDrawButtons = () => {
-    return (
-      <View>
-        {buttons.editButtonsVisible && (
-          <View style={homeStyles.editButtonsContainer}>
-            <Button
-              containerStyle={{padding: 5}}
-              buttonStyle={homeStyles.drawToolsButtons}
-              titleStyle={homeStyles.drawToolsTitle}
-              type={'clear'}
-              title={'Save Edits'}
-              onPress={() => clickHandler('saveEdits')}
-            />
-            <Button
-              containerStyle={{padding: 5}}
-              buttonStyle={[homeStyles.drawToolsButtons, {backgroundColor: 'white'}]}
-              titleStyle={[homeStyles.drawToolsTitle, {color: 'black'}]}
-              type={'clear'}
-              title={'Cancel'}
-              onPress={() => clickHandler('cancelEdits')}
-            />
-          </View>
-        )}
-      </View>
-    );
-  };
-
   const renderSidePanelView = () => {
     if (SMALL_SCREEN) {
       return (
@@ -587,6 +559,7 @@ const Home = ({navigation, route}) => {
         <HomeViewSmallScreen
           animateLeftSide={animateLeftSide}
           animatedValueLeftSide={animatedValueLeftSide}
+          areEditButtonsVisible={buttons.editButtonsVisible}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
@@ -612,6 +585,7 @@ const Home = ({navigation, route}) => {
           animateLeftSide={animateLeftSide}
           animateNotebookDrawer={animateNotebookDrawer}
           animateRightSide={animateRightSide}
+          areEditButtonsVisible={buttons.editButtonsVisible}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
@@ -656,7 +630,6 @@ const Home = ({navigation, route}) => {
       <LoadingSpinner isLoading={isHomeLoading}/>
       {MainMenu}
       {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
-      {renderSaveAndCancelDrawButtons()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}

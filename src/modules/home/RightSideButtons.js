@@ -3,6 +3,7 @@ import {View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import EditCancelSaveButtons from './buttons/EditCancelSaveButtons';
 import DrawActionButtons from './DrawActionButtons';
 import DrawInfo from './DrawInfo';
 import {setModalVisible} from './home.slice';
@@ -12,6 +13,7 @@ import IconButton from '../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../page/page.constants';
 
 const RightSideButtons = ({
+                            areEditButtonsVisible,
                             clickHandler,
                             distance,
                             drawButtonsVisible,
@@ -66,6 +68,11 @@ const RightSideButtons = ({
           />
         </View>
       )}
+
+      <EditCancelSaveButtons
+        areEditButtonsVisible={areEditButtonsVisible}
+        clickHandler={clickHandler}
+      />
     </>
   );
 };

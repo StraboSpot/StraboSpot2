@@ -16,6 +16,7 @@ const HomeView = ({
                     animateLeftSide,
                     animateNotebookDrawer,
                     animateRightSide,
+                    areEditButtonsVisible,
                     clickHandler,
                     closeNotebookPanel,
                     dialogClickHandler,
@@ -59,6 +60,7 @@ const HomeView = ({
 
       <Animated.View style={[{position: 'absolute', height: '100%', right: 0}, animateRightSide]}>
         <RightSideButtons
+          areEditButtonsVisible={areEditButtonsVisible}
           clickHandler={clickHandler}
           distance={distance}
           drawButtonsVisible={drawButtonsVisible}
