@@ -22,7 +22,7 @@ const TagsNotebookModal = (props) => {
   const [useTags] = useTagsHook();
 
   const addTag = async () => {
-    await useTags.addTag();
+    useTags.addTag();
     setIsDetailModalVisible(true);
   };
 
@@ -35,7 +35,6 @@ const TagsNotebookModal = (props) => {
     return (
       <React.Fragment>
         <Modal
-          close={props.close}
           onPress={props.onPress}
         >
           <View style={[modalStyle.textContainer]}>
@@ -46,12 +45,12 @@ const TagsNotebookModal = (props) => {
             />
           </View>
           <TagsModal isFeatureLevelTagging={props.isFeatureLevelTagging}/>
+          <TagDetailModal
+            isVisible={isDetailModalVisible}
+            closeModal={closeTagDetailModal}
+            type={pageVisible === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
+          />
         </Modal>
-        <TagDetailModal
-          isVisible={isDetailModalVisible}
-          closeModal={closeTagDetailModal}
-          type={pageVisible === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
-        />
       </React.Fragment>
     );
   };
