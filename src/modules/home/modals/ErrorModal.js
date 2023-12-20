@@ -5,8 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import {setErrorMessagesModalVisible} from '../home.slice';
-import overlayStyles from '../overlay.styles';
-
+import overlayStyles from '../overlays/overlay.styles';
 
 const ErrorModal = ({closeModal, children, isVisible}) => {
   const dispatch = useDispatch();

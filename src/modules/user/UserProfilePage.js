@@ -20,7 +20,7 @@ import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 

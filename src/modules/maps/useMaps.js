@@ -488,8 +488,8 @@ const useMaps = (mapRef) => {
   // This method is required when the draw features at press returns empty
   // We explode the features and identify the closest vertex from the screen point (x,y) on the spot
   // returns an array of vertex and its index.
-  const identifyClosestVertexOnSpotPress = async (spotFound, screenPointX, screenPointY, editingModeData) => {
-    let editedSpot = editingModeData.spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
+  const identifyClosestVertexOnSpotPress = async (spotFound, screenPointX, screenPointY, spotsEdited) => {
+    let editedSpot = spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
     spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
     if (currentImageBasemap || stratSection) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);

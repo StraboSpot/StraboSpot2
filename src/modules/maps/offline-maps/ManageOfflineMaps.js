@@ -15,8 +15,8 @@ import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../../shared/ui/GeneralTextInputModal';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import WarningModal from '../../home/home-modals/WarningModal';
 import {setOfflineMapsModalVisible} from '../../home/home.slice';
+import {WarningModal} from '../../home/modals';
 import useMapsHook from '../useMaps';
 
 const ManageOfflineMaps = (props) => {

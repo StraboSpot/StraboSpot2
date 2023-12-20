@@ -3,14 +3,12 @@ import {View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import EditCancelSaveButtons from './buttons/EditCancelSaveButtons';
-import DrawActionButtons from './DrawActionButtons';
-import DrawInfo from './DrawInfo';
-import {setModalVisible} from './home.slice';
-import homeStyles from './home.style';
-import ShortcutButtons from './ShortcutButtons';
-import IconButton from '../../shared/ui/IconButton';
-import {MODAL_KEYS} from '../page/page.constants';
+import {EditCancelSaveButtons, DrawActionButtons, ShortcutButtons} from './index';
+import IconButton from '../../../shared/ui/IconButton';
+import {MODAL_KEYS} from '../../page/page.constants';
+import DrawInfo from '../dialogs/DrawInfo';
+import {setModalVisible} from '../home.slice';
+import homeStyles from '../home.style';
 
 const RightSideButtons = ({
                             areEditButtonsVisible,
@@ -35,8 +33,8 @@ const RightSideButtons = ({
       {stratSection && (
         <IconButton
           source={isNotebookPanelVisible
-            ? require('../../assets/icons/AddIntervalButton_pressed.png')
-            : require('../../assets/icons/AddIntervalButton.png')}
+            ? require('../../../assets/icons/AddIntervalButton_pressed.png')
+            : require('../../../assets/icons/AddIntervalButton.png')}
           onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_INTERVAL}))}
           style={homeStyles.addIntervalButton}
         />
@@ -44,8 +42,8 @@ const RightSideButtons = ({
 
       <IconButton
         source={isNotebookPanelVisible
-          ? require('../../assets/icons/NotebookViewButton_pressed.png')
-          : require('../../assets/icons/NotebookViewButton.png')}
+          ? require('../../../assets/icons/NotebookViewButton_pressed.png')
+          : require('../../../assets/icons/NotebookViewButton.png')}
         onPress={toggleNotebookPanel}
         style={homeStyles.notebookButton}
       />

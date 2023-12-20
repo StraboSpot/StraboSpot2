@@ -11,7 +11,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
 import {setMainMenuPanelVisible} from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 

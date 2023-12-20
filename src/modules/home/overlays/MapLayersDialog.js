@@ -5,17 +5,17 @@ import {Icon, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import overlayStyles from './overlay.styles';
-import commonStyles from '../../shared/common.styles';
-import {isEmpty, truncateText} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import ListEmptyText from '../../shared/ui/ListEmptyText';
-import SectionDivider from '../../shared/ui/SectionDivider';
-import {BASEMAPS} from '../maps/maps.constants';
-import useMapsOfflineHook from '../maps/offline-maps/useMapsOffline';
-import useMapsHook from '../maps/useMaps';
+import commonStyles from '../../../shared/common.styles';
+import {isEmpty, truncateText} from '../../../shared/Helpers';
+import * as themes from '../../../shared/styles.constants';
+import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import ListEmptyText from '../../../shared/ui/ListEmptyText';
+import SectionDivider from '../../../shared/ui/SectionDivider';
+import {BASEMAPS} from '../../maps/maps.constants';
+import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline.web';
+import useMapsHook from '../../maps/useMaps';
 
-const BaseMapDialog = ({mapComponentRef, ...props}) => {
+const MapLayersDialog = ({mapComponentRef, ...props}) => {
 
   const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
@@ -267,4 +267,4 @@ const BaseMapDialog = ({mapComponentRef, ...props}) => {
   );
 };
 
-export default BaseMapDialog;
+export default MapLayersDialog;

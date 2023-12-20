@@ -5,7 +5,6 @@ import {batch, useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
-import initialProjectLoadModal from '../modules/home/home-modals/InitialProjectLoadModal';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -16,6 +15,7 @@ import {
   setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
+import {initialProjectLoadModal} from '../modules/home/modals';
 import useImagesHook from '../modules/images/useImages';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';

@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
 

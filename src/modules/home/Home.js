@@ -6,13 +6,6 @@ import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import BackupModal from './home-modals/BackupModal';
-import ErrorModal from './home-modals/ErrorModal';
-import InitialProjectLoadModal from './home-modals/InitialProjectLoadModal';
-import StatusModal from './home-modals/StatusModal';
-import UploadModal from './home-modals/UploadModal';
-import UploadProgressModal from './home-modals/UploadProgressModal';
-import WarningModal from './home-modals/WarningModal';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -26,6 +19,15 @@ import {
 import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
+import {
+  BackupModal,
+  ErrorModal,
+  InitialProjectLoadModal,
+  StatusModal,
+  UploadModal,
+  UploadProgressModal,
+  WarningModal,
+} from './modals';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';

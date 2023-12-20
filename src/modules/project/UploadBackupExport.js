@@ -19,7 +19,7 @@ import {
   setErrorMessagesModalVisible,
   setUploadModalVisible,
 } from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 
 const UploadBackAndExport = () => {
 

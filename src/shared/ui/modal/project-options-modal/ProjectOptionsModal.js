@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import projectOptionsModalStyle from './projectOptionsModal.style';
 import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/home/home.slice';
-import overlayStyles from '../../../../modules/home/overlay.styles';
+import overlayStyles from '../../../../modules/home/overlays/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import {setSelectedProject} from '../../../../modules/project/projects.slice';
 import useProjectHook from '../../../../modules/project/useProject';

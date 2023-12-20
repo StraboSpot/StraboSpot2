@@ -5,11 +5,9 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {Button, Header, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import ActionButtonsSmallScreen from './ActionButtonsSmallScreen';
-import EditCancelSaveButtons from './buttons/EditCancelSaveButtons';
+import {EditCancelSaveButtons, ShortcutButtons, ActionButtonsSmallScreen} from './buttons';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
-import ShortcutButtons from './ShortcutButtons';
 import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import Map from '../maps/Map';

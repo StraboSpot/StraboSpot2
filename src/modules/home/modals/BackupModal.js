@@ -8,7 +8,7 @@ import useExportHook from '../../../services/useExport';
 import {isEmpty} from '../../../shared/Helpers';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import {setBackupModalVisible} from '../home.slice';
-import overlayStyles from '../overlay.styles';
+import overlayStyles from '../overlays/overlay.styles';
 
 const BackupModal = () => {
   const dispatch = useDispatch();

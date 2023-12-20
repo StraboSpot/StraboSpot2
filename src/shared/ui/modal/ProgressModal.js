@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 
 // import ProgressBar from 'react-native-progress/Bar';
-import overlayStyles from '../../../modules/home/overlay.styles';
+import overlayStyles from '../../../modules/home/overlays/overlay.styles';
 
 const ProgressModal = (props) => {
 

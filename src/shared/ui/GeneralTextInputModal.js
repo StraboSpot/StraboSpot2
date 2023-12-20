@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 
 import {Button, Input, Overlay} from 'react-native-elements';
 
-import overlayStyles from '../../modules/home/overlay.styles';
+import overlayStyles from '../../modules/home/overlays/overlay.styles';
 import * as themes from '../styles.constants';
 
 const TextInputModal = (props) => {

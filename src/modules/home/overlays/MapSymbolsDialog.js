@@ -5,13 +5,13 @@ import {ButtonGroup, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import overlayStyles from './overlay.styles';
-import commonStyles from '../../shared/common.styles';
-import {isEmpty, toTitleCase} from '../../shared/Helpers';
-import * as themes from '../../shared/styles.constants';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../maps/maps.slice';
-import styles from '../measurements/measurements.styles';
-import useMeasurementsHook from '../measurements/useMeasurements';
+import commonStyles from '../../../shared/common.styles';
+import {isEmpty, toTitleCase} from '../../../shared/Helpers';
+import * as themes from '../../../shared/styles.constants';
+import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../../maps/maps.slice';
+import styles from '../../measurements/measurements.styles';
+import useMeasurementsHook from '../../measurements/useMeasurements';
 
 const MapSymbolsDialog = (props) => {
   const deviceHeight = useWindowDimensions().height;

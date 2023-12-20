@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import footerStyles from './notebookFooter.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import overlayStyles from '../../home/overlay.styles';
+import overlayStyles from '../../home/overlays/overlay.styles';
 import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 

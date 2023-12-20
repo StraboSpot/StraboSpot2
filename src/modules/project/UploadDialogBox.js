@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 
 import * as ProjectActions from './project.constants';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 
 const UploadDialogBox = (props) => {
   return (

@@ -21,7 +21,7 @@ import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import compassStyles from '../compass/compass.styles';
 import {Form, formStyles, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import useLocationHook from '../maps/useLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';

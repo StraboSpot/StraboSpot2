@@ -3,10 +3,9 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import {UserLocationButton} from './buttons';
-import homeStyles from './home.style';
-import MapActionButtons from './MapActionButtons';
-import IconButton from '../../shared/ui/IconButton';
+import {UserLocationButton, MapActionButtons} from './index';
+import IconButton from '../../../shared/ui/IconButton';
+import homeStyles from '../home.style';
 
 const LeftSideButtons = ({
                            clickHandler,
@@ -26,8 +25,8 @@ const LeftSideButtons = ({
     <>
       <IconButton
         source={isMainMenuPanelVisible
-          ? require('../../assets/icons/HomeButton_pressed.png')
-          : require('../../assets/icons/HomeButton.png')}
+          ? require('../../../assets/icons/HomeButton_pressed.png')
+          : require('../../../assets/icons/HomeButton.png')}
         onPress={toggleHomeDrawer}
         style={homeStyles.homeIconContainer}
       />
@@ -44,13 +43,13 @@ const LeftSideButtons = ({
 
         {currentImageBasemap && (
           <IconButton
-            source={require('../../assets/icons/Close.png')}
+            source={require('../../../assets/icons/Close.png')}
             onPress={() => clickHandler('closeImageBasemap')}
           />
         )}
         {stratSection && (
           <IconButton
-            source={require('../../assets/icons/Close.png')}
+            source={require('../../../assets/icons/Close.png')}
             onPress={() => clickHandler('closeStratSection')}
           />
         )}

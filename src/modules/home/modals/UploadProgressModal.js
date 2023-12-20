@@ -15,7 +15,6 @@ import LottieAnimation from '../../../utils/animations/LottieAnimations';
 import {setSelectedProject} from '../../project/projects.slice';
 import {addedStatusMessage, setProgressModalVisible} from '../home.slice';
 
-
 const UploadProgressModal = () => {
 
   const dispatch = useDispatch();

@@ -4,8 +4,7 @@ import {Animated} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 
-import LeftSideButtons from './LeftSideButtons';
-import RightSideButtons from './RightSideButtons';
+import {LeftSideButtons, RightSideButtons} from './buttons';
 import StatusBar from './StatusBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import Map from '../maps/Map';

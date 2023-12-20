@@ -5,8 +5,8 @@ import {ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import overlayStyles from './overlay.styles';
-import commonStyles from '../../shared/common.styles';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
+import commonStyles from '../../../shared/common.styles';
+import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 
 const MapActionsDialog = (props) => {
 

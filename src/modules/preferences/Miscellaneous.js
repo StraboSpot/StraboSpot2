@@ -11,7 +11,7 @@ import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {

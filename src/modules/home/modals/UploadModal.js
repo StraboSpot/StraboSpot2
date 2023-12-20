@@ -9,7 +9,7 @@ import Spacer from '../../../shared/ui/Spacer';
 import UploadDialogBox from '../../project/UploadDialogBox';
 import useProjectHook from '../../project/useProject';
 import {setProgressModalVisible, setUploadModalVisible} from '../home.slice';
-import overlayStyles from '../overlay.styles';
+import overlayStyles from '../overlays/overlay.styles';
 
 const UploadModal = () => {
   const dispatch = useDispatch();

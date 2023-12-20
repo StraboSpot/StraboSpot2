@@ -1,11 +1,9 @@
 import React from 'react';
 import {useWindowDimensions, View} from 'react-native';
 
-import {UserLocationButton} from './buttons';
-import DrawActionButtons from './DrawActionButtons';
-import DrawInfo from './DrawInfo';
-import MapActionButtons from './MapActionButtons';
-import * as themes from '../../shared/styles.constants';
+import {DrawActionButtons, MapActionButtons, UserLocationButton} from './index';
+import * as themes from '../../../shared/styles.constants';
+import DrawInfo from '../dialogs/DrawInfo';
 
 const ActionButtonsSmallScreen = ({
                                     clickHandler,

@@ -13,7 +13,7 @@ import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedProject} from '../../project/projects.slice';
 import {setStatusMessagesModalVisible} from '../home.slice';
-import overlayStyles from '../overlay.styles';
+import overlayStyles from '../overlays/overlay.styles';
 
 const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
   const dispatch = useDispatch();

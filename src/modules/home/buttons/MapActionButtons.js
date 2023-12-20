@@ -3,17 +3,14 @@ import {View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import BaseMapDialog from './BaseMapDialogBox';
-import homeStyles from './home.style';
-import MapActionsDialog from './MapActionsDialogBox';
-import MapSymbolsDialog from './MapSymbolsDialogBox';
-import overlayStyles from './overlay.styles';
-import {SMALL_SCREEN} from '../../shared/styles.constants';
-import IconButton from '../../shared/ui/IconButton';
-import UseMapsHook from '../maps/useMaps';
+import {SMALL_SCREEN} from '../../../shared/styles.constants';
+import IconButton from '../../../shared/ui/IconButton';
+import useMapsHook from '../../maps/useMaps';
+import homeStyles from '../home.style';
+import {MapActionsDialog, MapLayersDialog, MapSymbolsDialog, overlayStyles} from '../overlays';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
-  const [useMaps] = UseMapsHook();
+  const [useMaps] = useMapsHook();
 
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -23,23 +20,23 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
     <>
       <View style={SMALL_SCREEN ? homeStyles.smallScreenMapActionButtons : homeStyles.mapActionsContainer}>
         <IconButton
-          source={SMALL_SCREEN ? require('../../assets/icons/MapActions.png')
-            : require('../../assets/icons/MapActionsButton.png')}
+          source={SMALL_SCREEN ? require('../../../assets/icons/MapActions.png')
+            : require('../../../assets/icons/MapActionsButton.png')}
           onPress={() => toggleDialog('mapActionsMenuVisible')}
           imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
         />
         {isAllSymbolsOn
           ? (
             <IconButton
-              source={SMALL_SCREEN ? require('../../assets/icons/Symbols.png')
-                : require('../../assets/icons/SymbolsButton.png')}
+              source={SMALL_SCREEN ? require('../../../assets/icons/Symbols.png')
+                : require('../../../assets/icons/SymbolsButton.png')}
               onPress={() => toggleDialog('mapSymbolsMenuVisible')}
               imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
             />
           ) : (
             <IconButton
-              source={SMALL_SCREEN ? require('../../assets/icons/Symbols_pressed.png')
-              : require('../../assets/icons/SymbolsButton_pressed.png')}
+              source={SMALL_SCREEN ? require('../../../assets/icons/Symbols_pressed.png')
+                : require('../../../assets/icons/SymbolsButton_pressed.png')}
               onPress={() => toggleDialog('mapSymbolsMenuVisible')}
               imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
             />
@@ -47,8 +44,8 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         }
         {!currentImageBasemap && !stratSection && (
           <IconButton
-            source={SMALL_SCREEN ? require('../../assets/icons/Layers.png')
-              : require('../../assets/icons/LayersButton.png')}
+            source={SMALL_SCREEN ? require('../../../assets/icons/Layers.png')
+              : require('../../../assets/icons/LayersButton.png')}
             onPress={() => toggleDialog('baseMapMenuVisible')}
             imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
           />
@@ -66,7 +63,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         onPress={name => dialogClickHandler('mapSymbolsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
-      <BaseMapDialog
+      <MapLayersDialog
         visible={dialogs.baseMapMenuVisible}
         overlayStyle={overlayStyles.baseMapPosition}
         close={() => toggleDialog('baseMapMenuVisible')}

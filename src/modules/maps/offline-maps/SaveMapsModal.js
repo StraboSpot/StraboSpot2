@@ -20,7 +20,7 @@ import {
   setOfflineMapsModalVisible,
 } from '../../home/home.slice';
 // import ProgressBar from '../../../shared/ui/ProgressBar';
-import overlayStyles from '../../home/overlay.styles';
+import overlayStyles from '../../home/overlays/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
 
 const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {

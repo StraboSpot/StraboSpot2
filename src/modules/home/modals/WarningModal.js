@@ -4,8 +4,7 @@ import {Text} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
-import overlayStyles from '../overlay.styles';
-
+import overlayStyles from '../overlays/overlay.styles';
 
 const WarningModal = ({children, closeModal, showCancelButton, title, closeTitle, confirmText, confirmTitleStyle, onConfirmPress, isVisible, showConfirmButton}) => {
 

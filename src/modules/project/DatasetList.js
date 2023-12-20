@@ -13,7 +13,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import StandardModal from '../../shared/ui/StandardModal';
 import {setProjectLoadComplete} from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import useProjectHook from '../project/useProject';
 
 const DatasetList = () => {

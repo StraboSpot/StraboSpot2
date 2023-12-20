@@ -22,7 +22,7 @@ import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
-import overlayStyles from '../overlay.styles';
+import overlayStyles from '../overlays/overlay.styles';
 
 const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) => {
   console.log('Rendering InitialProjectLoadModal...');

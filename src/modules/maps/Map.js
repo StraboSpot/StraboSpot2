@@ -25,7 +25,7 @@ import {
   setErrorMessagesModalVisible,
   setModalVisible,
 } from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 import useImagesHook from '../images/useImages';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';

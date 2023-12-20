@@ -10,7 +10,7 @@ import useImagesHook from './useImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import overlayStyles from '../home/overlay.styles';
+import overlayStyles from '../home/overlays/overlay.styles';
 
 const placeholderImage = require('../../assets/images/noimage.jpg');
 
