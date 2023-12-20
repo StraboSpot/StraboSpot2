@@ -75,6 +75,16 @@ const Map = ({
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
+
+  // Data needing to be tracked when in editing mode
+  const initialEditingModeData = {
+    spotEditing: {},
+    spotsEdited: [],
+    spotsNotEdited: [],
+    vertexToEdit: [],
+    vertexIndex: [],
+  };
+
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
   // Props that change that needed to pass to the map component
