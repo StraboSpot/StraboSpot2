@@ -236,9 +236,6 @@ const Home = ({navigation, route}) => {
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');
         break;
-      case 'endDraw':
-        await endDraw();
-        break;
       case 'cancelEdits':
         await cancelEdits();
         break;
@@ -314,7 +311,7 @@ const Home = ({navigation, route}) => {
     toggleDialog(dialog);
   };
 
-  const endDraw = async () => {
+  const onEndDrawPressed = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       const newOrEditedSpot = await mapComponentRef.current?.endDraw();
@@ -325,7 +322,7 @@ const Home = ({navigation, route}) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
-      console.error('Error at endDraw()', err);
+      console.error('Error at endDraw', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
@@ -589,20 +586,20 @@ const Home = ({navigation, route}) => {
       {SMALL_SCREEN ? (
         <HomeViewSmallScreen
           animateLeftSide={animateLeftSide}
+          animatedValueLeftSide={animatedValueLeftSide}
           clickHandler={clickHandler}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           dialogs={dialogs}
           distance={distance}
           drawButtonsVisible={buttons.drawButtonsVisible}
-          endDraw={endDraw}
           endMeasurement={endMeasurement}
           isMainMenuPanelVisible={isMainMenuPanelVisible}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          animatedValueLeftSide={animatedValueLeftSide}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
+          onEndDrawPressed={onEndDrawPressed}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
           setDistance={setDistance}
@@ -621,12 +618,12 @@ const Home = ({navigation, route}) => {
           dialogs={dialogs}
           distance={distance}
           drawButtonsVisible={buttons.drawButtonsVisible}
-          endDraw={endDraw}
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
+          onEndDrawPressed={onEndDrawPressed}
           openNotebookPanel={openNotebookPanel}
           setDistance={setDistance}
           startEdit={startEdit}

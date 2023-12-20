@@ -12,7 +12,7 @@ const ActionButtonsSmallScreen = ({
                                     dialogClickHandler,
                                     dialogs,
                                     distance,
-                                    endDraw,
+                                    onEndDrawPressed,
                                     endMeasurement,
                                     mapMode,
                                     mapComponentRef,
@@ -28,9 +28,9 @@ const ActionButtonsSmallScreen = ({
 
         <DrawInfo
           distance={distance}
-          endDraw={endDraw}
           endMeasurement={endMeasurement}
           mapMode={mapMode}
+          onEndDrawPressed={onEndDrawPressed}
         />
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
@@ -61,9 +61,6 @@ const ActionButtonsSmallScreen = ({
           <View style={{paddingLeft: 10}}>
             <DrawActionButtons
               clickHandler={clickHandler}
-              distance={distance}
-              endDraw={endDraw}
-              endMeasurement={endMeasurement}
               mapMode={mapMode}
             />
           </View>

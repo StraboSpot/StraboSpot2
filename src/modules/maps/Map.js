@@ -1,5 +1,5 @@
-import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
-import { PixelRatio, Platform, Text, View} from 'react-native';
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import {PixelRatio, Platform, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
@@ -37,9 +37,16 @@ import {
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
-const Map = React.forwardRef((props, ref) => {
+const Map = ({
+               isSelectingForStereonet,
+               isSelectingForTagging,
+               mapComponentRef,
+               mapMode,
+               onEndDrawPressed,
+               setDistance,
+               startEdit,
+             }, forwardedRef) => {
   console.log('Rendering Map...');
-  console.log('Map props:', props);
 
   const dispatch = useDispatch();
 
@@ -106,14 +113,14 @@ const Map = React.forwardRef((props, ref) => {
   // Props that needed to pass to the map component
   const mapProps = {
     ...mapPropsMutable,
-    freehandSketchMode: (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
-      || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE),
-    allowMapViewMove: !useMaps.isDrawMode(props.mapMode) && props.mapMode !== MAP_MODES.EDIT,
+    freehandSketchMode: (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
+      || mapMode === MAP_MODES.DRAW.FREEHANDLINE),
+    allowMapViewMove: !useMaps.isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT,
     ref: {mapRef: mapRef, cameraRef: cameraRef},
     onMapPress: e => onMapPress(e),
     onMapLongPress: e => onMapLongPress(e),
     updateSpotsInMapExtent: () => updateSpotsInMapExtent(),
-    mapMode: props.mapMode,
+    mapMode: mapMode,
   };
 
   useEffect(() => {
@@ -180,19 +187,19 @@ const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
     //conditional call to avoid multiple renders during edit mode.
-    if (props.mapMode !== MAP_MODES.EDIT) {
+    if (mapMode !== MAP_MODES.EDIT) {
       setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
     }
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
     console.log('UE Map [vertexEndCoords]', vertexEndCoords);
-    if (!isEmpty(vertexEndCoords && props.mapMode === MAP_MODES.EDIT)) moveVertex();
+    if (!isEmpty(vertexEndCoords && mapMode === MAP_MODES.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
     console.log('UE Map [mapPropsMutable.drawFeatures]', mapPropsMutable.drawFeatures);
-    if (props.mapMode === MAP_MODES.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) props.endDraw();
+    if (mapMode === MAP_MODES.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) onEndDrawPressed();
   }, [mapPropsMutable.drawFeatures]);
 
   useEffect(() => {
@@ -247,7 +254,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const endMapMeasurement = () => {
-    props.setDistance(0);
+    setDistance(0);
     setMapPropsMutable(m => ({
       ...m,
       measureFeatures: [],
@@ -388,15 +395,15 @@ const Map = React.forwardRef((props, ref) => {
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
     console.log('Map press detected:', e);
-    console.log('Map mode:', props.mapMode);
-    if (props.mapMode === MAP_MODES.DRAW.MEASURE) {
+    console.log('Map mode:', mapMode);
+    if (mapMode === MAP_MODES.DRAW.MEASURE) {
       const updatedMeasureFeatures = await useMaps.getMeasureFeatures(e, [...mapProps.measureFeatures],
-        props.setDistance);
+        setDistance);
       setMapPropsMutable(m => ({...m, measureFeatures: updatedMeasureFeatures}));
     }
-    else if (props.mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && props.mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
+    else if (mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       // Select/Unselect a feature
-      if (props.mapMode === MAP_MODES.VIEW) {
+      if (mapMode === MAP_MODES.VIEW) {
         console.log('Selecting or unselect a feature ...');
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
@@ -409,15 +416,15 @@ const Map = React.forwardRef((props, ref) => {
         else clearSelectedSpots();
       }
       // Draw a feature
-      else if (useMaps.isDrawMode(props.mapMode)) {
-        console.log('Drawing', props.mapMode, '...');
+      else if (useMaps.isDrawMode(mapMode)) {
+        console.log('Drawing', mapMode, '...');
         let feature = {};
         const newCoord = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
         // Draw a point for the last coordinate touched
         // const lastVertexPlaced = MapboxGL.geoUtils.makeFeature(e.geometry);
         const lastVertexPlaced = turf.point(newCoord);
         // Draw a point (if set point to current location not working)
-        if (props.mapMode === MAP_MODES.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
+        if (mapMode === MAP_MODES.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
         else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
         // Draw a line given a point and a new point
         else if (mapPropsMutable.drawFeatures.length === 1) {
@@ -427,13 +434,13 @@ const Map = React.forwardRef((props, ref) => {
           setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
         // Draw a line given a line and a new point
-        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MAP_MODES.DRAW.LINE) {
+        else if (mapPropsMutable.drawFeatures.length > 1 && mapMode === MAP_MODES.DRAW.LINE) {
           const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
           const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
           feature = turf.lineString([...lineCoords, newCoord]);
           setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
-        else if (mapPropsMutable.drawFeatures.length > 1 && props.mapMode === MAP_MODES.DRAW.POLYGON) {
+        else if (mapPropsMutable.drawFeatures.length > 1 && mapMode === MAP_MODES.DRAW.POLYGON) {
           const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
           const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
 
@@ -452,7 +459,7 @@ const Map = React.forwardRef((props, ref) => {
         }
       }
       // Edit a Spot
-      else if (props.mapMode === MAP_MODES.EDIT) {
+      else if (mapMode === MAP_MODES.EDIT) {
         // Select/Unselect new vertex to edit
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
@@ -527,7 +534,7 @@ const Map = React.forwardRef((props, ref) => {
         }
       }
       else {
-        console.log('Error. Unknown map mode:', props.mapMode);
+        console.log('Error. Unknown map mode:', mapMode);
       }
     }
   };
@@ -805,7 +812,7 @@ const Map = React.forwardRef((props, ref) => {
   const endDraw = async () => {
     // console.log('endDraw mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
     let newOrEditedSpot = {};
-    if (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || props.mapMode === MAP_MODES.DRAW.FREEHANDLINE) {
+    if (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE) {
       if (freehandFeatureCoords && freehandFeatureCoords.length > 2) {
         let screenCoordinates = freehandFeatureCoords;
         let featureCoordinates = [];
@@ -818,7 +825,7 @@ const Map = React.forwardRef((props, ref) => {
           featureCoordinates.push(geoCoordinates);
         }
         let feature;
-        if (props.mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON) {
+        if (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON) {
           featureCoordinates.push(featureCoordinates[0]); // First and Last coordinates of polygon should match
           feature = turf.polygon([featureCoordinates]);
         }
@@ -831,8 +838,8 @@ const Map = React.forwardRef((props, ref) => {
           feature = useMaps.convertFeatureGeometryToImagePixels(feature);
           feature.properties.strat_section_id = stratSection.strat_section_id;
         }
-        if (props.isSelectingForStereonet) await getStereonetForFeature(feature);
-        else if (props.isSelectingForTagging) selectSpotsForTagging(feature);
+        if (isSelectingForStereonet) await getStereonetForFeature(feature);
+        else if (isSelectingForTagging) selectSpotsForTagging(feature);
         else {
           const symbology = useSymbology.getSymbology(feature);
           feature.properties.symbology = symbology;
@@ -860,8 +867,8 @@ const Map = React.forwardRef((props, ref) => {
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.strat_section_id = stratSection.strat_section_id;
       }
-      if (props.isSelectingForStereonet) await getStereonetForFeature(newFeature);
-      if (props.isSelectingForTagging) selectSpotsForTagging(newFeature);
+      if (isSelectingForStereonet) await getStereonetForFeature(newFeature);
+      if (isSelectingForTagging) selectSpotsForTagging(newFeature);
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
         dispatch(setSelectedSpot(newOrEditedSpot));
@@ -933,7 +940,7 @@ const Map = React.forwardRef((props, ref) => {
   };
 
   const startEditing = (spotToEdit, vertexToEdit, index) => {
-    props.startEdit();
+    startEdit();
     clearEditing();
     const mappedSpots = useMaps.getAllMappedSpots();
     setEditingModeData(d => ({
@@ -970,7 +977,7 @@ const Map = React.forwardRef((props, ref) => {
         : [e.properties.screenPointX, e.properties.screenPointY];
     const spotToEdit = await useMaps.getSpotAtPress(screenPointX, screenPointY);
     const mappedSpots = useMaps.getAllMappedSpots();
-    if (props.mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
+    if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots)) {
       if (isEmpty(spotToEdit)) startEditing({});
       else {
         let closestVertexDetails = {};
@@ -984,7 +991,7 @@ const Map = React.forwardRef((props, ref) => {
         }
       }
     }
-    else if (props.mapMode === MAP_MODES.EDIT) {
+    else if (mapMode === MAP_MODES.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
       else if (!isEmpty(editingModeData.spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
@@ -1252,7 +1259,7 @@ const Map = React.forwardRef((props, ref) => {
     }));
   };
 
-  useImperativeHandle(props.mapComponentRef, () => {
+  useImperativeHandle(mapComponentRef, () => {
     return {
       cancelDraw: cancelDraw,
       cancelEdits: cancelEdits,
@@ -1268,20 +1275,19 @@ const Map = React.forwardRef((props, ref) => {
       moveVertex: moveVertex,
       saveEdits: saveEdits,
       toggleUserLocation: toggleUserLocation,
-      zoomToSpot: zoomToSpot,
-      zoomToSpotsExtent: zoomToSpotsExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
       zoomToCustomMap: zoomToCustomMap,
+      zoomToSpot: zoomToSpot,
+      zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {mapProps.basemap && <Basemap {...mapProps} forwardedRef={ref}/>}
+      {mapProps.basemap && <Basemap {...mapProps} forwardedRef={forwardedRef}/>}
       {renderSetInCurrentViewModal()}
     </View>
   );
-});
-Map.displayName = 'Map';
+};
 
-export default (Map);
+export default forwardRef(Map);

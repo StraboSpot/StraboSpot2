@@ -24,13 +24,13 @@ const HomeViewSmallScreen = ({
                                dialogs,
                                distance,
                                drawButtonsVisible,
-                               endDraw,
                                endMeasurement,
                                isMainMenuPanelVisible,
                                isSelectingForStereonet,
                                isSelectingForTagging,
                                mapComponentRef,
                                mapMode,
+                               onEndDrawPressed,
                                openNotebookPanel,
                                openSpotInNotebook,
                                setDistance,
@@ -134,11 +134,11 @@ const HomeViewSmallScreen = ({
             {() =>
               <>
                 <Map
-                  endDraw={endDraw}
                   isSelectingForStereonet={isSelectingForStereonet}
                   isSelectingForTagging={isSelectingForTagging}
                   mapComponentRef={mapComponentRef}
                   mapMode={mapMode}
+                  onEndDrawPressed={onEndDrawPressed}
                   setDistance={setDistance}
                   startEdit={startEdit}
                 />
@@ -181,10 +181,10 @@ const HomeViewSmallScreen = ({
                       dialogClickHandler={dialogClickHandler}
                       dialogs={dialogs}
                       distance={distance}
-                      endDraw={endDraw}
                       endMeasurement={endMeasurement}
                       mapComponentRef={mapComponentRef}
                       mapMode={mapMode}
+                      onEndDrawPressed={onEndDrawPressed}
                       toggleDialog={toggleDialog}
                     />
                   </View>

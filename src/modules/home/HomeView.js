@@ -22,12 +22,12 @@ const HomeView = ({
                     dialogs,
                     distance,
                     drawButtonsVisible,
-                    endDraw,
                     endMeasurement,
                     isSelectingForStereonet,
                     isSelectingForTagging,
                     mapComponentRef,
                     mapMode,
+                    onEndDrawPressed,
                     openNotebookPanel,
                     setDistance,
                     startEdit,
@@ -46,7 +46,7 @@ const HomeView = ({
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
       <Map
-        endDraw={endDraw}
+        onEndDrawPressed={onEndDrawPressed}
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
         mapComponentRef={mapComponentRef}
@@ -62,9 +62,9 @@ const HomeView = ({
           clickHandler={clickHandler}
           distance={distance}
           drawButtonsVisible={drawButtonsVisible}
-          endDraw={endDraw}
           endMeasurement={endMeasurement}
           mapMode={mapMode}
+          onEndDrawPressed={onEndDrawPressed}
           openNotebookPanel={openNotebookPanel}
           toggleNotebookPanel={toggleNotebookPanel}
         />

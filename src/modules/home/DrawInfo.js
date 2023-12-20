@@ -9,7 +9,7 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import {MAP_MODES} from '../maps/maps.constants';
 import useProjectHook from '../project/useProject';
 
-const DrawInfo = ({distance, endDraw, endMeasurement, mapMode}) => {
+const DrawInfo = ({distance, endMeasurement, mapMode, onEndDrawPressed}) => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   const [useProject] = useProjectHook();
@@ -52,7 +52,7 @@ const DrawInfo = ({distance, endDraw, endMeasurement, mapMode}) => {
                 <Button
                   buttonStyle={homeStyles.drawToolsButtons}
                   containerStyle={{alignContent: 'center'}}
-                  onPress={endDraw}
+                  onPress={onEndDrawPressed}
                   title={'End Draw'}
                   titleStyle={homeStyles.drawToolsTitle}
                   type={'clear'}

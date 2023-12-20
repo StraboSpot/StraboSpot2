@@ -15,9 +15,9 @@ const RightSideButtons = ({
                             clickHandler,
                             distance,
                             drawButtonsVisible,
-                            endDraw,
                             endMeasurement,
                             mapMode,
+                            onEndDrawPressed,
                             openNotebookPanel,
                             toggleNotebookPanel,
                           }) => {
@@ -56,9 +56,9 @@ const RightSideButtons = ({
         <View style={homeStyles.drawContainer}>
           <DrawInfo
             distance={distance}
-            endDraw={endDraw}
             endMeasurement={endMeasurement}
             mapMode={mapMode}
+            onEndDrawPressed={onEndDrawPressed}
           />
           <DrawActionButtons
             clickHandler={clickHandler}
