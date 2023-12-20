@@ -3,6 +3,7 @@ import { Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import styles from './sketch.styles';
@@ -78,7 +79,7 @@ const Sketch = (props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={{flex: 1, flexDirection: 'row'}}>
         <RNSketchCanvas
           containerStyle={{backgroundColor: 'transparent', flex: 1}}
@@ -136,7 +137,7 @@ const Sketch = (props) => {
           }}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
