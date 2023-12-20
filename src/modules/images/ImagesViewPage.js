@@ -147,27 +147,6 @@ const ImagesViewPage = () => {
     </View>
   );
 
-  const handleImageBasemapPressed = (image) => {
-    console.log('Pressed image basemap:', image);
-    if (Platform.OS === 'web') {
-      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-      dispatch(clearedSelectedSpots());
-      dispatch(setCurrentImageBasemap(image));
-    }
-    else {
-      useImages.doesImageExistOnDevice(image.id)
-        .then((doesExist) => {
-          if (doesExist) {
-            if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-            dispatch(clearedSelectedSpots());
-            dispatch(setCurrentImageBasemap(image));
-          }
-          else alert('Missing Image!', 'Unable to find image file on this device.');
-        })
-        .catch(e => console.error('Image not found', e));
-    }
-  };
-
   const renderImage = (image) => {
     return (
       <Card containerStyle={imageStyles.cardContainer}>
@@ -197,7 +176,7 @@ const ImagesViewPage = () => {
         </View>
         <Button
           type={'clear'}
-          onPress={() => handleImageBasemapPressed(image)}
+          onPress={() => useImages.getImageBasemap(image)}
           title={'View as Image Basemap'}
           disabled={!image.annotated}
           disabledTitleStyle={{color: 'white'}}

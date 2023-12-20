@@ -134,14 +134,14 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageBasemaps/>
+          <ImageBasemaps closeManMenuPanel={closeMainMenuPanel}/>
         </View>
       );
       break;
     case MAIN_MENU_ITEMS.MAPS.STRAT_SECTIONS :
       page = (
         <View style={styles.mainMenuContainer}>
-          <StratSectionsList/>
+          <StratSectionsList closeManMenuPanel={closeMainMenuPanel}/>
         </View>
       );
       break;

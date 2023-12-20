@@ -1,26 +1,41 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {Alert, FlatList, View} from 'react-native';
 
+import {useNavigation} from '@react-navigation/native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
+import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
+import {setLoadingStatus} from '../../home/home.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setStratSection} from '../maps.slice';
 
-const StratSectionsList = () => {
+const StratSectionsList = ({closeManMenuPanel}) => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const [useSpots] = useSpotsHook();
 
   const spotsWithStratSection = useSpots.getSpotsWithStratSection();
   console.log('Spots with Strat Section:', spotsWithStratSection);
 
   const handleStratSectionPressed = (spot) => {
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
     const stratSectionSettings = spot?.properties?.sed?.strat_section;
-    dispatch(setStratSection(stratSectionSettings));
+    if (stratSectionSettings) {
+      closeManMenuPanel();
+      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+      setTimeout(() => {
+        dispatch(setStratSection(stratSectionSettings));
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+      }, 500);
+    }
+    else {
+      Alert.alert('Strat Section not found!');
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
   };
 
   const renderStratSectionItem = (spot) => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator,  FlatList, Platform, Switch, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Button, Image} from 'react-native-elements';
@@ -9,12 +9,8 @@ import imageStyles from './images.styles';
 import useImagesHook from './useImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
-import {SMALL_SCREEN} from '../../shared/styles.constants';
-import alert from '../../shared/ui/alert';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import overlayStyles from '../home/overlay.styles';
-import {setCurrentImageBasemap} from '../maps/maps.slice';
-import {clearedSelectedSpots} from '../spots/spots.slice';
 
 const placeholderImage = require('../../assets/images/noimage.jpg');
 
@@ -49,27 +45,6 @@ const ImagesOverview = () => {
     }
   };
 
-  const handleImageBasemapPressed = (image) => {
-    console.log('Pressed image basemap:', image);
-    if (Platform.OS === 'web') {
-      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-      dispatch(clearedSelectedSpots());
-      dispatch(setCurrentImageBasemap(image));
-    }
-    else {
-      useImages.doesImageExistOnDevice(image.id)
-        .then((doesExist) => {
-          if (doesExist) {
-            if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-            dispatch(clearedSelectedSpots());
-            dispatch(setCurrentImageBasemap(image));
-          }
-          else alert('Missing Image!', 'Unable to find image file on this device.');
-        })
-        .catch(e => console.error('Image not found', e));
-    }
-  };
-
   const renderImage = (image) => {
     return (
       <View>
@@ -101,7 +76,7 @@ const ImagesOverview = () => {
                 <Button
                   title={'View as Image Basemap'}
                   type={'clear'}
-                  onPress={() => handleImageBasemapPressed(image)}
+                  onPress={() => useImages.getImageBasemap(image)}
                 />
               )}
             </View>

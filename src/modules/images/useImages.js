@@ -10,6 +10,8 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useDeviceHook from '../../services/useDevice';
 import {getNewId} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -19,6 +21,7 @@ import {
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
+  clearedSelectedSpots,
   editedSpotImage,
   editedSpotImages,
   editedSpotProperties,
@@ -182,6 +185,37 @@ const useImages = () => {
     const imagesInDir = await useDevice.readDirectory(APP_DIRECTORIES.IMAGES);
     console.log('images in app directory', imagesInDir);
     // return imageRes;
+  };
+
+  const getImageBasemap = (image) => {
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
+    console.log('Pressed image basemap:', image);
+    if (Platform.OS === 'web') {
+      if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+      dispatch(clearedSelectedSpots());
+      dispatch(setCurrentImageBasemap(image));
+    }
+    else {
+      doesImageExistOnDevice(image.id)
+        .then((doesExist) => {
+          if (doesExist) {
+            if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+            setTimeout(() => {
+              dispatch(clearedSelectedSpots());
+              dispatch(setCurrentImageBasemap(image));
+              dispatch(setLoadingStatus({view: 'home', bool: false}));
+            }, 500);
+          }
+          else {
+            dispatch(setLoadingStatus({view: 'home', bool: false}));
+            alert('Missing Image!', 'Unable to find image file on this device.');
+          }
+        })
+        .catch((e) => {
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+          console.error('Image not found', e);
+        });
+    }
   };
 
   const getImagesFromCameraRoll = async () => {
@@ -395,6 +429,7 @@ const useImages = () => {
     gatherNeededImages: gatherNeededImages,
     getLocalImageURI: getLocalImageURI,
     saveImageFromDownloadsDir: saveImageFromDownloadsDir,
+    getImageBasemap: getImageBasemap,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,

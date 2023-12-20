@@ -9,6 +9,7 @@ import commonStyles from '../../../shared/common.styles';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import WarningModal from '../../home/home-modals/WarningModal';
+import {setLoadingStatus} from '../../home/home.slice';
 import overlayStyles from '../../home/overlay.styles';
 import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
@@ -54,8 +55,12 @@ const NotebookPanelMenu = (props) => {
       dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
     }
     else if (key === 'zoom') {
-      props.zoomToSpot();
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+      setTimeout(() => {
+        props.zoomToSpot();
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+      }, 500);
     }
     else if (key === 'delete') deleteSelectedSpot();
     else if (key === 'nesting') dispatch(setNotebookPageVisible(PAGE_KEYS.NESTING));
