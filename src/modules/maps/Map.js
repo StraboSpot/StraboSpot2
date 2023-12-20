@@ -15,6 +15,7 @@ import useLocationHook from './useLocation';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
+import VertexDrag from './VertexDrag';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import IconButton from '../../shared/ui/IconButton';
@@ -74,15 +75,7 @@ const Map = ({
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
-
-  // Data needing to be tracked when in editing mode
-  const initialEditingModeData = {
-    spotEditing: {},
-    spotsEdited: [],
-    spotsNotEdited: [],
-    vertexToEdit: [],
-    vertexIndex: [],
-  };
+  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
   // Props that change that needed to pass to the map component
   const initialMapPropsMutable = {
@@ -1286,6 +1279,7 @@ const Map = ({
     <View style={{flex: 1, zIndex: -1}}>
       {mapProps.basemap && <Basemap {...mapProps} forwardedRef={forwardedRef}/>}
       {renderSetInCurrentViewModal()}
+      {vertexStartCoords && <VertexDrag/>}
     </View>
   );
 };

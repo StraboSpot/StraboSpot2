@@ -51,7 +51,6 @@ import {MAP_MODES} from '../maps/maps.constants';
 import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useLocationHook from '../maps/useLocation';
-import VertexDrag from '../maps/VertexDrag';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
@@ -97,7 +96,6 @@ const Home = ({navigation, route}) => {
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
-  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
   const [buttons, setButtons] = useState(
     {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
@@ -605,7 +603,6 @@ const Home = ({navigation, route}) => {
           toggleHomeDrawer={toggleHomeDrawerButton}
         />
       )}
-      {vertexStartCoords && <VertexDrag/>}
       {/*Modals for Home Page*/}
       <BackupModal/>
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
