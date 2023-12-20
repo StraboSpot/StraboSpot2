@@ -1058,7 +1058,7 @@ const Map = React.forwardRef((props, ref) => {
               else console.log('Not enough vertices in selected feature to delete one.');
               if (isModified) {
                 spotEditingCopy.properties.modified_timestamp = Date.now();
-                console.log('Finished deleting vetex. Edited Spot:', spotEditingCopy);
+                console.log('Finished deleting vertex. Edited Spot:', spotEditingCopy);
               }
               else console.warn('Problem editing Spot');
             }

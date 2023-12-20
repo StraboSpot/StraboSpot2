@@ -99,10 +99,10 @@ const Basemap = ({
 
   useEffect(() => {
     console.log('UE Basemap [imageBasemap]', imageBasemap);
-    if (imageBasemap && imageBasemap.id) checkImageExistance().catch(console.error);
+    if (imageBasemap && imageBasemap.id) checkImageExistence().catch(console.error);
   }, [imageBasemap]);
 
-  const checkImageExistance = async () => {
+  const checkImageExistence = async () => {
     return useImages.doesImageExistOnDevice(imageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
