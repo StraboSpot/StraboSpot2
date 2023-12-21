@@ -341,7 +341,7 @@ const ProjectOptionsDialogBox = (props) => {
       >
         <ModalHeader
           close={onClose}
-          title={header + '\n' + projectName}
+          title={(header ?  header + '\n' : '') + projectName}
         />
         {selectedProject.source === 'new'
           && (
