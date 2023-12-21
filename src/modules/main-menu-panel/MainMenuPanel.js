@@ -44,7 +44,7 @@ const MainMenuPanel = ({
 
   const mainMenuHeader = (
     <MainMenuPanelHeader
-      onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
+      onPress={() => dispatch(setMenuSelectionPage({name: null}))}>
       {settingsPageVisible}
     </MainMenuPanelHeader>
   );
