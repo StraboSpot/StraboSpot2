@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Switch, View} from 'react-native';
+import {Switch} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';

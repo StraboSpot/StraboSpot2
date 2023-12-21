@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, Input, ListItem} from 'react-native-elements';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import customMapStyles from './customMaps.styles';
@@ -264,7 +265,7 @@ const AddCustomMaps = () => {
   };
 
   return (
-    <View style={[{flex: 1, justifyContent: 'space-between'}]}>
+    <SafeAreaView style={[{flex: 1, justifyContent: 'space-between'}]}>
       <View>
         {renderSidePanelHeader()}
         {renderTitle()}
@@ -296,7 +297,7 @@ const AddCustomMaps = () => {
           onPress={() => confirmDeleteMap()}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
