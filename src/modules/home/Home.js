@@ -43,7 +43,7 @@ import useHomeHook from '../home/useHome';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
@@ -288,7 +288,8 @@ const Home = ({navigation, route}) => {
 
   const closeMainMenu = () => {
     dispatch(setMainMenuPanelVisible(false));
-    dispatch(setMenuSelectionPage({name: undefined}));
+    dispatch(setMenuSelectionPage({name: null}));
+    SMALL_SCREEN && dispatch(setSidePanelVisible(false));
     animateDrawer(animatedValueMainMenuDrawer, -MAIN_MENU_DRAWER_WIDTH);
     animateDrawer(animatedValueLeftSide, 0);
   };
@@ -418,18 +419,12 @@ const Home = ({navigation, route}) => {
   };
 
   const renderSidePanelView = () => {
-    if (SMALL_SCREEN) {
-      return (
-        <Animated.View
-          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
-          <Animated.View style={[{flex: 1}, animateTextInputs]}>
-            {renderSidePanelContent()}
-          </Animated.View>
-        </Animated.View>
-      );
-    }
     return (
-      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
+      <Animated.View style={[
+        (SMALL_SCREEN ? sidePanelStyles.sidePanelContainerPhones
+          : sidePanelStyles.sidePanelContainer),
+        animateMainMenuSubDrawer]}
+      >
         <Animated.View style={[{flex: 1}, animateTextInputs]}>
           {renderSidePanelContent()}
         </Animated.View>
