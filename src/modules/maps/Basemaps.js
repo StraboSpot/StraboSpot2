@@ -246,6 +246,7 @@ const Basemap = ({
                     && customMap.opacity >= 0 && customMap.opacity <= 1 ? customMap.opacity : 1,
                     visibility: customMap.isViewable ? 'visible' : 'none',
                   }}
+                  // layerIndex={10}
                 />
               </MapboxGL.RasterSource>
             )
@@ -266,7 +267,7 @@ const Basemap = ({
             <MapboxGL.RasterLayer
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}
-              belowLayerID={'pointLayerColorHalo'}
+              aboveLayerID={'background'}
             />
           </MapboxGL.ImageSource>
         )}
