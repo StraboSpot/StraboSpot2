@@ -17,8 +17,7 @@ const modalStyle = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     overflow: 'hidden',
     zIndex: 1,
-    // paddingTop: Platform.OS === 'ios' && SMALL_SCREEN ? 30 : 0,
-    paddingTop: 0,
+    paddingTop: Platform.OS === 'ios' && SMALL_SCREEN ? 30 : 0,
   },
   modalHeaderContainer: {
     flex: 1,
