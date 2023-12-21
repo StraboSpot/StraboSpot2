@@ -89,7 +89,6 @@ const FabricsPage = (props) => {
         <View style={uiStyles.sectionHeaderBackground}>
           <SectionDividerWithRightButton
             dividerText={sectionTitle}
-            buttonTitle={'Add'}
             onPress={() => addFabric(sectionKey)}
           />
         </View>
