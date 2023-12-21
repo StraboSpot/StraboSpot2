@@ -206,7 +206,6 @@ const RockPage = (props) => {
         <View style={uiStyles.sectionHeaderBackground}>
           <SectionDividerWithRightButton
             dividerText={sectionTitle}
-            buttonTitle={'Add'}
             onPress={() => addRock(sectionKey)}
           />
         </View>

@@ -104,7 +104,6 @@ const ActiveProjectPanel = () => {
           <View style={{flex: 1, flexGrow: 1, overflow: 'hidden'}}>
             <SectionDividerWithRightButton
               dividerText={'Project Datasets'}
-              buttonTitle={'Add'}
               onPress={() => setIsAddDatasetModalVisible(true)}
             />
             <DatasetList/>

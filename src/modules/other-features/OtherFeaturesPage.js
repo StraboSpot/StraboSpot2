@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import OtherFeatureDetail from './OtherFeatureDetail';
@@ -10,6 +9,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection';
+import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
 const OtherFeaturesPage = () => {
@@ -57,9 +57,8 @@ const OtherFeaturesPage = () => {
         <View>
           <NotebookContentTopSection/>
           {!isMultipleFeaturesTaggingEnabled && (
-            <Button
-              title={'+ Add Feature'}
-              type={'clear'}
+            <SectionDividerWithRightButton
+              dividerText={'Other Features'}
               onPress={addFeature}
             />
           )}

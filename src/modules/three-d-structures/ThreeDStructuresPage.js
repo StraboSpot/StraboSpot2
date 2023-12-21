@@ -78,7 +78,6 @@ const ThreeDStructuresPage = (props) => {
       <View style={uiStyles.sectionHeaderBackground}>
         <SectionDividerWithRightButton
           dividerText={sectionTitle}
-          buttonTitle={'Add'}
           onPress={() => add3dStructure(sectionKey)}
           disabled={isMultipleFeaturesTaggingEnabled}
         />

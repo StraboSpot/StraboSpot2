@@ -59,7 +59,6 @@ const SamplesPage = (props) => {
           <ReturnToOverviewButton/>
           <SectionDividerWithRightButton
             dividerText={props.page.label}
-            buttonTitle={'Add'}
             onPress={() => dispatch(setModalVisible({modal: props.page.key}))}
           />
         </React.Fragment>

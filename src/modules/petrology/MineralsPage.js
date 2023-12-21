@@ -120,7 +120,6 @@ const MineralsPage = (props) => {
       <React.Fragment>
         <SectionDividerWithRightButton
           dividerText={props.page.label}
-          buttonTitle={'Add'}
           onPress={addMineral}
         />
         <FlatList
