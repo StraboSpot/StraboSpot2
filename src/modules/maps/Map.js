@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {PixelRatio, Platform, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
@@ -46,108 +46,62 @@ const Map = ({
                onEndDrawPressed,
                setDistance,
                startEdit,
-             }, forwardedRef) => {
+             }) => {
   console.log('Rendering Map...');
 
-  const dispatch = useDispatch();
+  const cameraRef = useRef(null);
+  const mapRef = useRef(null);
 
   const [useImages] = useImagesHook();
   const [useMapFeatures] = useMapFeaturesHook();
+  const [useMaps] = useMapsHook(mapRef);
   const [useSpots] = useSpotsHook();
   const [useSymbology] = useMapSymbology();
   const useLocation = useLocationHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
 
-  const center = useSelector(state => state.map.center);
-  const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const customBasemap = useSelector(state => state.map.customMaps);
-  const stratSection = useSelector(state => state.map.stratSection);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
-  const spots = useSelector(state => state.spot.spots);
-  const freehandFeatureCoords = useSelector(state => state.map.freehandFeatureCoords);
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const customBasemap = useSelector(state => state.map.customMaps);
   const datasets = useSelector(state => state.project.datasets);
-  const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
+  const freehandFeatureCoords = useSelector(state => state.map.freehandFeatureCoords);
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isOnline = useSelector(state => state.connections.isOnline);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
+  const spots = useSelector(state => state.spot.spots);
+  const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
-
-  // Data needing to be tracked when in editing mode
-  const initialEditingModeData = {
-    spotEditing: {},
-    spotsEdited: [],
-    spotsNotEdited: [],
-    vertexToEdit: [],
-    vertexIndex: [],
-  };
-
+  const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
-  // Props that change that needed to pass to the map component
-  const initialMapPropsMutable = {
-    allowMapViewMove: true,
-    basemap: currentBasemap,
-    centerCoordinate: center,
-    drawFeatures: [],
-    editFeatureVertex: [],
-    imageBasemap: currentImageBasemap,
-    spotsNotSelected: [],
-    spotsSelected: [],
-    showUserLocation: false,
-    freehandSketchMode: false,
-    measureFeatures: [],
-  };
-
-  const [editingModeData, setEditingModeData] = useState(initialEditingModeData);
-  const [mapPropsMutable, setMapPropsMutable] = useState(initialMapPropsMutable);
-  const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
+  const [allowMapViewMove, setAllowMapViewMove] = useState(!useMaps.isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT);
+  const [basemap, setBasemap] = useState(currentBasemap);
   const [defaultGeomType, setDefaultGeomType] = useState();
+  const [drawFeatures, setDrawFeatures] = useState([]);
+  const [editFeatureVertex, setEditFeatureVertex] = useState([]);
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
-
-  const mapRef = useRef(null);
-  const cameraRef = useRef(null);
-
-  const [useMaps] = useMapsHook(mapRef);
-
-  // Props that needed to pass to the map component
-  const mapProps = {
-    ...mapPropsMutable,
-    freehandSketchMode: (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON
-      || mapMode === MAP_MODES.DRAW.FREEHANDLINE),
-    allowMapViewMove: !useMaps.isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT,
-    ref: {mapRef: mapRef, cameraRef: cameraRef},
-    onMapPress: e => onMapPress(e),
-    onMapLongPress: e => onMapLongPress(e),
-    updateSpotsInMapExtent: () => updateSpotsInMapExtent(),
-    mapMode: mapMode,
-  };
+  const [measureFeatures, setMeasureFeatures] = useState([]);
+  const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
+  const [showUserLocation, setShowUserLocation] = useState(false);
+  const [spotEditing, setSpotEditing] = useState({});
+  const [spotsEdited, setSpotsEdited] = useState([]);
+  const [spotsNotEdited, setSpotsNotEdited] = useState([]);
+  const [spotsNotSelected, setSpotsNotSelected] = useState([]);
+  const [spotsSelected, setSpotsSelected] = useState([]);
+  const [vertexIndex, setVertexIndex] = useState([]);
+  const [vertexToEdit, setVertexToEdit] = useState([]);
 
   useEffect(() => {
     console.log('UE Map [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
-    else {
-      setMapPropsMutable(m => ({
-        ...m,
-        imageBasemap: currentImageBasemap,
-        stratSection: currentImageBasemap ? undefined : m.stratSection,
-      }));
-    }
   }, [currentImageBasemap]);
-
-  useEffect(() => {
-    console.log('UE Map [stratSection]', stratSection);
-    setMapPropsMutable(m => ({
-      ...m,
-      imageBasemap: stratSection ? undefined : m.imageBasemap,
-      stratSection: stratSection,
-    }));
-  }, [stratSection]);
 
   useEffect(() => {
     console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
@@ -201,9 +155,9 @@ const Map = ({
   }, [vertexEndCoords]);
 
   useEffect(() => {
-    console.log('UE Map [mapPropsMutable.drawFeatures]', mapPropsMutable.drawFeatures);
-    if (mapMode === MAP_MODES.DRAW.POINT && mapPropsMutable.drawFeatures.length === 1) onEndDrawPressed();
-  }, [mapPropsMutable.drawFeatures]);
+    console.log('UE Map [drawFeatures]', drawFeatures);
+    if (mapMode === MAP_MODES.DRAW.POINT && drawFeatures.length === 1) onEndDrawPressed();
+  }, [drawFeatures]);
 
   useEffect(() => {
     console.log('UE Map [defaultGeomType]', defaultGeomType);
@@ -258,10 +212,7 @@ const Map = ({
 
   const endMapMeasurement = () => {
     setDistance(0);
-    setMapPropsMutable(m => ({
-      ...m,
-      measureFeatures: [],
-    }));
+    setMeasureFeatures([]);
   };
 
   const updateMapView = async () => {
@@ -271,10 +222,7 @@ const Map = ({
       const newZoom = 12;
       useMapView.setMapView(newCenter, newZoom);
     }
-    setMapPropsMutable(m => ({
-      ...m,
-      basemap: currentBasemap,
-    }));
+    setBasemap(currentBasemap);
     setIsZoomToCenterOffline(false);
   };
 
@@ -282,8 +230,7 @@ const Map = ({
     try { // on imagebasemap, if spot is not point, conversion happens in editSpotCoordinates.
       const newVertexCoords = Platform.OS === 'web' ? mapRef.current.unproject(vertexEndCoords).toArray()
         : await mapRef.current.getCoordinateFromView(vertexEndCoords);
-      if ((currentImageBasemap || stratSection) && editingModeData.spotEditing
-        && turf.getType(editingModeData.spotEditing) === 'Point') {
+      if ((currentImageBasemap || stratSection) && spotEditing && turf.getType(spotEditing) === 'Point') {
         const vertexCoordinates = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
         console.log('Move vertex to:', vertexCoordinates);
@@ -309,18 +256,12 @@ const Map = ({
       selectedMappableSpotsCopy = selectedMappableSpotsCopy.map(spot => useMaps.convertImagePixelsToLatLong(spot));
       notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.map(
         spot => useMaps.convertImagePixelsToLatLong(spot));
-      setMapPropsMutable(m => ({
-        ...m,
-        spotsSelected: [...selectedMappableSpotsCopy],
-        spotsNotSelected: [...notSelectedMappableSpotsCopy],
-      }));
+      setSpotsSelected([...selectedMappableSpotsCopy]);
+      setSpotsNotSelected([...notSelectedMappableSpotsCopy]);
     }
     else {
-      setMapPropsMutable(m => ({
-        ...m,
-        spotsSelected: [...selectedDisplayedSpots],
-        spotsNotSelected: [...notSelectedDisplayedSpots],
-      }));
+      setSpotsSelected([...selectedDisplayedSpots]);
+      setSpotsNotSelected([...notSelectedDisplayedSpots]);
     }
   };
 
@@ -332,11 +273,8 @@ const Map = ({
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
     if (!currentImageBasemap && !stratSection) {
-      setMapPropsMutable(m => ({
-        ...m,
-        spotsSelected: isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}],
-        spotsNotSelected: [...spotsEditedTmp, ...spotsNotEditedTmp],
-      }));
+      setSpotsSelected(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]);
+      setSpotsNotSelected([...spotsEditedTmp, ...spotsNotEditedTmp]);
     }
     else { // if imagebasemap, then all the coordinates have to be converted.
       let spotsEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsEditedTmp) ? [] : spotsEditedTmp));
@@ -345,20 +283,9 @@ const Map = ({
       spotsEditedCopy = spotsEditedCopy.map(spot => useMaps.convertImagePixelsToLatLong(spot));
       spotsNotEditedCopy = spotsNotEditedCopy.map(spot => useMaps.convertImagePixelsToLatLong(spot));
       spotEditingCopy = spotEditingCopy.map(spot => useMaps.convertImagePixelsToLatLong(spot));
-      setMapPropsMutable(m => ({
-        ...m,
-        spotsSelected: isEmpty(spotEditingCopy) ? [] : spotEditingCopy,
-        spotsNotSelected: [...spotsEditedCopy, ...spotsNotEditedCopy],
-      }));
+      setSpotsSelected(isEmpty(spotEditingCopy) ? [] : spotEditingCopy);
+      setSpotsNotSelected([...spotsEditedCopy, ...spotsNotEditedCopy]);
     }
-  };
-
-  const setDrawFeatures = (features) => {
-    console.log('Set draw features:', features);
-    setMapPropsMutable(m => ({
-      ...m,
-      drawFeatures: features,
-    }));
   };
 
   const setEditFeatures = (spotToEdit) => {
@@ -391,7 +318,7 @@ const Map = ({
 
   const clearSelectedSpotsWhileEditing = () => {
     console.log('Clear selected Spots.');
-    setDisplayedSpotsWhileEditing([], editingModeData.spotsEdited, editingModeData.spotsNotEdited);
+    setDisplayedSpotsWhileEditing([], spotsEdited, spotsNotEdited);
     dispatch(clearedSelectedSpots());
   };
 
@@ -400,9 +327,9 @@ const Map = ({
     console.log('Map press detected:', e);
     console.log('Map mode:', mapMode);
     if (mapMode === MAP_MODES.DRAW.MEASURE) {
-      const updatedMeasureFeatures = await useMaps.getMeasureFeatures(e, [...mapProps.measureFeatures],
+      const updatedMeasureFeatures = await useMaps.getMeasureFeatures(e, [...measureFeatures],
         setDistance);
-      setMapPropsMutable(m => ({...m, measureFeatures: updatedMeasureFeatures}));
+      setMeasureFeatures(updatedMeasureFeatures);
     }
     else if (mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       // Select/Unselect a feature
@@ -428,33 +355,33 @@ const Map = ({
         const lastVertexPlaced = turf.point(newCoord);
         // Draw a point (if set point to current location not working)
         if (mapMode === MAP_MODES.DRAW.POINT) setDrawFeatures([lastVertexPlaced]);
-        else if (isEmpty(mapPropsMutable.drawFeatures)) setDrawFeatures([lastVertexPlaced]);
+        else if (isEmpty(drawFeatures)) setDrawFeatures([lastVertexPlaced]);
         // Draw a line given a point and a new point
-        else if (mapPropsMutable.drawFeatures.length === 1) {
-          const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
+        else if (drawFeatures.length === 1) {
+          const firstVertexPlaced = drawFeatures[0];
           const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
           feature = turf.lineString([firstVertexPlacedCoords, newCoord]);
           setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
         // Draw a line given a line and a new point
-        else if (mapPropsMutable.drawFeatures.length > 1 && mapMode === MAP_MODES.DRAW.LINE) {
-          const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
-          const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
+        else if (drawFeatures.length > 1 && mapMode === MAP_MODES.DRAW.LINE) {
+          const firstVertexPlaced = drawFeatures[0];
+          const lineCoords = turf.getCoords(drawFeatures[1]);
           feature = turf.lineString([...lineCoords, newCoord]);
           setDrawFeatures([firstVertexPlaced, feature, lastVertexPlaced]);
         }
-        else if (mapPropsMutable.drawFeatures.length > 1 && mapMode === MAP_MODES.DRAW.POLYGON) {
-          const firstVertexPlaced = mapPropsMutable.drawFeatures[0];
+        else if (drawFeatures.length > 1 && mapMode === MAP_MODES.DRAW.POLYGON) {
+          const firstVertexPlaced = drawFeatures[0];
           const firstVertexPlacedCoords = turf.getCoords(firstVertexPlaced);
 
           // Draw a polygon given a line and a new point
-          if (turf.getType(mapPropsMutable.drawFeatures[1]) === 'LineString') {
-            const lineCoords = turf.getCoords(mapPropsMutable.drawFeatures[1]);
+          if (turf.getType(drawFeatures[1]) === 'LineString') {
+            const lineCoords = turf.getCoords(drawFeatures[1]);
             feature = turf.polygon([[...lineCoords, newCoord, firstVertexPlacedCoords]]);
           }
           // Draw a polygon given a polygon and a new point
           else {
-            let polyCoords = turf.getCoords(mapPropsMutable.drawFeatures[1])[0];
+            let polyCoords = turf.getCoords(drawFeatures[1])[0];
             polyCoords.pop();
             feature = turf.polygon([[...polyCoords, newCoord, firstVertexPlacedCoords]]);
           }
@@ -484,7 +411,7 @@ const Map = ({
         const spotFound = await useMaps.getSpotAtPress(screenPointX, screenPointY);
         // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
-        if (isEmpty(editingModeData.spotEditing)) {
+        if (isEmpty(spotEditing)) {
           if (isEmpty(spotFound)) console.log('No feature selected.');
           else setSelectedSpotToEdit(spotFound);
         }
@@ -502,15 +429,15 @@ const Map = ({
             if (isEmpty(vertexSelected)) {
               // draw features did not return anything - generally a scenario of selecting a vertex on a spot press.
               closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotFound, screenPointX,
-                screenPointY, editingModeData);
+                screenPointY, spotsEdited);
               vertexSelected = closestVertexDetails[0];
               isVertexIdentifiedAtSpotPress = true;
             }
             if (isEmpty(vertexSelected)) {
-              if (editingModeData.spotEditing.properties.id === spotFound.properties.id) clearSelectedFeatureToEdit();
+              if (spotEditing.properties.id === spotFound.properties.id) clearSelectedFeatureToEdit();
               else {
                 //if the spot is in already edited list, then get the spot from that list.
-                let editedSpot = editingModeData.spotsEdited.find(
+                let editedSpot = spotsEdited.find(
                   spot => spot.properties.id === spotFound.properties.id);
                 setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
               }
@@ -519,15 +446,12 @@ const Map = ({
               //if the vertex is not empty, check if it's identified at spot press or vertex press
               if (isVertexIdentifiedAtSpotPress) {
                 //  this is the case when the spot and vertex are chosen to be edited at once.
-                let editedSpot = editingModeData.spotsEdited.find(
+                let editedSpot = spotsEdited.find(
                   spot => spot.properties.id === spotFound.properties.id);
                 setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
                 if (spotFound.geometry.type !== 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
                   setSelectedVertexToEdit(vertexSelected);
-                  setEditingModeData(d => ({
-                    ...d,
-                    vertexIndex: closestVertexDetails[1],
-                  }));
+                  setVertexIndex(closestVertexDetails[1]);
                 }
               }
               else setSelectedVertexToEdit(vertexSelected);
@@ -544,12 +468,9 @@ const Map = ({
 
   const setSelectedSpotToEdit = (spotToEdit) => {
     console.log('setSelectedSpotToEdit spotToEdit', spotToEdit);
-    setEditingModeData(d => ({
-      ...d,
-      spotEditing: spotToEdit,
-    }));
+    setSpotEditing(spotToEdit);
     console.log('Set Spot to edit:', spotToEdit);
-    setDisplayedSpotsWhileEditing(spotToEdit, editingModeData.spotsEdited, editingModeData.spotsNotEdited);
+    setDisplayedSpotsWhileEditing(spotToEdit, spotsEdited, spotsNotEdited);
     setEditFeatures(spotToEdit);
     if (turf.getType(spotToEdit) === 'Point') setSelectedVertexToEdit(spotToEdit);
   };
@@ -565,28 +486,21 @@ const Map = ({
   const setSelectedVertexToEdit = async (vertex) => {
     console.log('setSelectedVertexToEdit, vertex:', vertex);
     clearVertexes();
-    setEditingModeData(d => ({
-      ...d,
-      vertexToEdit: vertex,
-      vertexIndex: undefined,
-    }));
+    setVertexToEdit(vertex);
+    setVertexIndex(undefined);
     console.log('Set vertex to edit:', vertex);
-    setMapPropsMutable(m => ({
-      ...m,
-      editFeatureVertex: [vertex],
-      allowMapViewMove: false,
-    }));
+    setEditFeatureVertex([vertex]);
+    setAllowMapViewMove(false);
     let vertexGeoCoords = vertex.geometry.coordinates;
     if ((currentImageBasemap || stratSection)
-      && ((isEmpty(editingModeData.spotEditing) || ((!isEmpty(editingModeData.spotEditing)
-        && editingModeData.spotEditing.geometry.type === 'Point')) || (!isEmpty(editingModeData.spotEditing)
-        && editingModeData.spotEditing.properties.name !== vertex.properties.name)))) {
+      && ((isEmpty(spotEditing) || ((!isEmpty(spotEditing) && spotEditing.geometry.type === 'Point'))
+        || (!isEmpty(spotEditing) && spotEditing.properties.name !== vertex.properties.name)))) {
       // spotEditing will be empty for Point (may not be empty if the same spot is selected again for edit) and
       // not empty for polygon or linestring, because, only Point can select the vertex on first long press.
       // For polygon or line, long press would identify the spot.
       // For polygon or LineString, the vertex comes from the draw feature, so, the coordinates are already in lat lng projection, so no more conversion necessary.
 
-      // !isEmpty(editingModeData.spotEditing) && editingModeData.spotEditing.properties.name != vertex.properties.name)), this check is required
+      // !isEmpty(spotEditing) && spotEditing.properties.name != vertex.properties.name)), this check is required
       // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
       vertexGeoCoords = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, vertexGeoCoords);
     }
@@ -600,15 +514,9 @@ const Map = ({
   };
 
   const clearSelectedVertexToEdit = () => {
-    setEditingModeData(d => ({
-      ...d,
-      vertexToEdit: {},
-    }));
-    setMapPropsMutable(m => ({
-      ...m,
-      editFeatureVertex: [],
-      allowMapViewMove: true,
-    }));
+    setVertexToEdit({});
+    setEditFeatureVertex([]);
+    setAllowMapViewMove(true);
     console.log('Cleared selected vertex to edit.');
     //if (turf.getType(spotsEditing[0]) === 'Point') clearSelectedFeatureToEdit();
     clearVertexes();
@@ -620,8 +528,8 @@ const Map = ({
       return {};
     }
     let indexOfCoordinatesToUpdate = [];
-    for (let index = 0; index < mapPropsMutable.drawFeatures.length; index++) {
-      if (mapPropsMutable.drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId) {
+    for (let index = 0; index < drawFeatures.length; index++) {
+      if (drawFeatures[index].properties.tempEditId === vertex.properties.tempEditId) {
         indexOfCoordinatesToUpdate.push(index);
       }
     }
@@ -631,12 +539,12 @@ const Map = ({
   // Edit the coordinates of a selected feature
   const editSpotCoordinates = (newCoord) => {
     console.log('In editSpotCoordinates', newCoord);
-    if (isEmpty(editingModeData.spotEditing)) console.log('No Spot to edit selected');
+    if (isEmpty(spotEditing)) console.log('No Spot to edit selected');
     else {
-      if (!editingModeData.vertexToEdit) console.log('No vertex to edit selected');
+      if (!vertexToEdit) console.log('No vertex to edit selected');
       else {
         console.log('Editing Coordinate');
-        let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
+        let spotEditingCopy = JSON.parse(JSON.stringify(spotEditing));
         console.log('Feature Editing:', spotEditingCopy);
         let coords;
         try {
@@ -655,25 +563,15 @@ const Map = ({
           // the index on drawFeatures array that matches with vertex to edit is the index of the coordinates to be edited
         // on the actual polygon or linestring.
         else {
-          let indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(editingModeData.vertexToEdit);
+          let indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexToEdit);
           if (!isEmpty(indexOfCoordinatesToUpdate)) {
-            if (indexOfCoordinatesToUpdate.includes(0)) {
-              setEditingModeData(d => ({
-                ...d,
-                vertexIndex: 0,
-              }));
-            }
-            else {
-              setEditingModeData(d => ({
-                ...d,
-                vertexIndex: indexOfCoordinatesToUpdate,
-              }));
-            }
+            if (indexOfCoordinatesToUpdate.includes(0)) setVertexIndex(0);
+            else setVertexIndex(indexOfCoordinatesToUpdate);
           }
           if (currentImageBasemap || stratSection) newCoord = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION, newCoord);
           if (turf.getType(spotEditingCopy) === 'LineString') {
-            if (!isEmpty(editingModeData.vertexIndex)) {
-              spotEditingCopy.geometry.coordinates[editingModeData.vertexIndex] = newCoord;
+            if (!isEmpty(vertexIndex)) {
+              spotEditingCopy.geometry.coordinates[vertexIndex] = newCoord;
             }
             else {
               for (let j = 0; j < coords.length; j++) {
@@ -685,22 +583,16 @@ const Map = ({
             isModified = true;
           }
           else if (turf.getType(spotEditingCopy) === 'Polygon') {
-            if (!isEmpty(editingModeData.vertexIndex)) {
-              spotEditingCopy.geometry.coordinates[0][editingModeData.vertexIndex] = newCoord;
-              if (editingModeData.vertexIndex === 0) {
-                spotEditingCopy.geometry.coordinates[0][mapPropsMutable.drawFeatures.length] = newCoord;
-              }
-              else if (editingModeData.vertexIndex === mapPropsMutable.drawFeatures.length) {
-                spotEditingCopy.geometry.coordinates[0][0] = newCoord;
-              }
+            if (!isEmpty(vertexIndex)) {
+              spotEditingCopy.geometry.coordinates[0][vertexIndex] = newCoord;
+              if (vertexIndex === 0) spotEditingCopy.geometry.coordinates[0][drawFeatures.length] = newCoord;
+              else if (vertexIndex === drawFeatures.length) spotEditingCopy.geometry.coordinates[0][0] = newCoord;
               isModified = true;
             }
             else {
-              if (indexOfCoordinatesToUpdate.includes(0)) {
-                indexOfCoordinatesToUpdate.push(mapPropsMutable.drawFeatures.length);
-                // if its first index, that needs to be edited, for a polygon, the last and first coordinates
-                //point to the same one, so both should be updated.
-              }
+              // if its first index, that needs to be edited, for a polygon, the last and first coordinates
+              //point to the same one, so both should be updated.
+              if (indexOfCoordinatesToUpdate.includes(0)) indexOfCoordinatesToUpdate.push(drawFeatures.length);
               for (let i = 0; i < coords.length; i++) {
                 for (let j = 0; j < coords[i].length; j++) {
                   if (indexOfCoordinatesToUpdate.includes(j)) {
@@ -714,8 +606,7 @@ const Map = ({
         }
         if (isModified) {
           spotEditingCopy.properties.modified_timestamp = Date.now();
-          console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'mapProps.spotsSelected',
-            mapProps.spotsSelected);
+          console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'spotsSelected', spotsSelected);
         }
         else console.warn('Problem editing Spot');
         console.log('Edited coords:', turf.getCoords(spotEditingCopy));
@@ -737,23 +628,17 @@ const Map = ({
           }
         }
         setDrawFeatures(explodedFeatures);
-        const spotsEditedTmp = editingModeData.spotsEdited.filter(
+        const spotsEditedTmp = spotsEdited.filter(
           spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
         spotsEditedTmp.push(spotEditingCopy);
-        const spotsNotEditedTmp = editingModeData.spotsNotEdited.filter(
+        const spotsNotEditedTmp = spotsNotEdited.filter(
           spotNotEdited => spotNotEdited.properties.id !== spotEditingCopy.properties.id);
-        setEditingModeData(d => ({
-          ...d,
-          spotEditing: spotEditingCopy,
-          spotsEdited: spotsEditedTmp,
-          spotsNotEdited: spotsNotEditedTmp,
-        }));
+        setSpotEditing(spotEditingCopy);
+        setSpotsEdited(spotsEditedTmp);
+        setSpotsNotEdited(spotsNotEditedTmp);
         setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
-        setMapPropsMutable(m => ({
-          // this clears the initial feature vertex that is selected.
-          ...m,
-          editFeatureVertex: [],
-        }));
+        // this clears the initial feature vertex that is selected.
+        setEditFeatureVertex([]);
         console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
       }
     }
@@ -813,7 +698,6 @@ const Map = ({
   };
 
   const endDraw = async () => {
-    // console.log('endDraw mapProps', mapProps); // Commented out because it throws an error about circular structure in JSON
     let newOrEditedSpot = {};
     if (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE) {
       if (freehandFeatureCoords && freehandFeatureCoords.length > 2) {
@@ -844,24 +728,20 @@ const Map = ({
         if (isSelectingForStereonet) await getStereonetForFeature(feature);
         else if (isSelectingForTagging) selectSpotsForTagging(feature);
         else {
-          const symbology = useSymbology.getSymbology(feature);
-          feature.properties.symbology = symbology;
+          feature.properties.symbology = useSymbology.getSymbology(feature);
           newOrEditedSpot = await useSpots.createSpot(feature);
           dispatch(setSelectedSpot(newOrEditedSpot));
-          dispatch(setFreehandFeatureCoords(undefined));// reset the freeHandCoordinates
+          dispatch(setFreehandFeatureCoords(undefined));  // reset the freeHandCoordinates
         }
       }
     }
-    else if (!isEmpty(mapPropsMutable.drawFeatures)) {
-      let newFeature = mapPropsMutable.drawFeatures[0];  // If one draw feature the Spot is just a point
+    else if (!isEmpty(drawFeatures)) {
+      let newFeature = drawFeatures[0];  // If one draw feature the Spot is just a point
       // If there is more than one draw feature (should be no more than three) the first is the first vertex
       // placed, the second is the line or polygon between the vertices, and the third is the last vertex placed
       // Grab the second feature to create the Spot
-      if (mapPropsMutable.drawFeatures.length > 1) {
-        newFeature = mapPropsMutable.drawFeatures.splice(1, 1)[0];
-      }
-      const symbology = useSymbology.getSymbology(newFeature);
-      newFeature.properties.symbology = symbology;
+      if (drawFeatures.length > 1) newFeature = drawFeatures.splice(1, 1)[0];
+      newFeature.properties.symbology = useSymbology.getSymbology(newFeature);
       if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;
@@ -883,7 +763,7 @@ const Map = ({
   };
 
   const selectSpotsForTagging = async (feature) => {
-    const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
+    const selectedSpots = useMapFeatures.getLassoedSpots(spotsNotSelected, feature);
     if (selectedSpots.length > 0) {
       dispatch(setIntersectedSpotsForTagging(selectedSpots));
       dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS}));
@@ -897,7 +777,7 @@ const Map = ({
   };
 
   const getStereonetForFeature = async (feature) => {
-    const selectedSpots = await useMapFeatures.getLassoedSpots(mapPropsMutable.spotsNotSelected, feature);
+    const selectedSpots = useMapFeatures.getLassoedSpots(spotsNotSelected, feature);
     console.log('Selected Spots', selectedSpots);
     await useMapFeatures.getStereonet(selectedSpots);
   };
@@ -909,27 +789,26 @@ const Map = ({
 
   const cancelEdits = async () => {
     console.log('Canceling editing...');
-    if (!isEmpty(editingModeData.spotEditing)) {
-      const spotOrig = spots[editingModeData.spotEditing.properties.id];
+    if (!isEmpty(spotEditing)) {
+      const spotOrig = spots[spotEditing.properties.id];
       setDisplayedSpots([spotOrig]);
-      await dispatch(setSelectedSpot(spotOrig));
+      dispatch(setSelectedSpot(spotOrig));
     }
     else setDisplayedSpots([]);
     clearEditing();
   };
 
   const saveEdits = async () => {
-    console.log('Saving edits...', 'spotsNotEdited', editingModeData.spotsNotEdited, 'spotsEdited',
-      editingModeData.spotsEdited);
-    if (isEmpty(editingModeData.spotEditing)) setDisplayedSpots([]);
+    console.log('Saving edits...', 'spotsNotEdited', spotsNotEdited, 'spotsEdited', spotsEdited);
+    if (isEmpty(spotEditing)) setDisplayedSpots([]);
     else {
-      setDisplayedSpots([editingModeData.spotEditing]);
-      await dispatch(setSelectedSpot(editingModeData.spotEditing));
+      setDisplayedSpots([spotEditing]);
+      await dispatch(setSelectedSpot(spotEditing));
     }
-    if (!isEmpty(editingModeData.spotsEdited)) {
-      const spotIds = editingModeData.spotsEdited.map(s => s.properties.id);
+    if (!isEmpty(spotsEdited)) {
+      const spotIds = spotsEdited.map(s => s.properties.id);
       dispatch(updatedModifiedTimestampsBySpotsIds(spotIds));
-      dispatch(editedSpots(editingModeData.spotsEdited));
+      dispatch(editedSpots(spotsEdited));
     }
     clearEditing();
   };
@@ -937,21 +816,22 @@ const Map = ({
   const clearEditing = () => {
     console.log('Clearing editing data...');
     clearVertexes();
-    setEditingModeData(initialEditingModeData);
+    setSpotEditing({});
+    setSpotsEdited([]);
+    setSpotsNotEdited([]);
+    setVertexToEdit([]);
+    setVertexIndex([]);
     setDrawFeatures([]);
     clearSelectedVertexToEdit();
   };
 
-  const startEditing = (spotToEdit, vertexToEdit, index) => {
+  const startEditing = (spotToEdit, vertexToEditTemp, index) => {
     startEdit();
     clearEditing();
     const mappedSpots = useMaps.getAllMappedSpots();
-    setEditingModeData(d => ({
-      ...d,
-      spotEditing: spotToEdit ? spotToEdit : {},
-      spotsEdited: [],
-      spotsNotEdited: mappedSpots,
-    }));
+    setSpotEditing(spotToEdit ? spotToEdit : {});
+    setSpotsEdited([]);
+    setSpotsNotEdited(mappedSpots);
     spotToEdit ? console.log('Set Spot to edit:', spotToEdit) : console.log('No Spot selected to edit.');
     // #114, editing a spot should immediately identify it as the selected spot and hence update the notebook panel.
     setDisplayedSpotsWhileEditing(spotToEdit, [], mappedSpots);
@@ -960,13 +840,10 @@ const Map = ({
       setEditFeatures(spotToEdit);
     }
     // while starting to edit the spot, set the vertex active to move immediately, if available
-    if (vertexToEdit) {
+    if (vertexToEditTemp) {
       if (spotToEdit.geometry.type !== 'Point') {
-        setSelectedVertexToEdit(vertexToEdit);
-        setEditingModeData(d => ({
-          ...d,
-          vertexIndex: index,
-        }));
+        setSelectedVertexToEdit(vertexToEditTemp);
+        setVertexIndex(index);
       }
     }
     if (turf.getType(spotToEdit) === 'Point') setSelectedVertexToEdit(spotToEdit);
@@ -988,7 +865,7 @@ const Map = ({
         if (isEmpty(closestVertexToSelect)) {
           // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
           closestVertexDetails = await useMaps.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
-            editingModeData);
+            spotsEdited);
           closestVertexToSelect = closestVertexDetails[0];
           startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
         }
@@ -996,8 +873,8 @@ const Map = ({
     }
     else if (mapMode === MAP_MODES.EDIT) {
       if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
-      else if (!isEmpty(editingModeData.spotEditing)) {
-        let spotEditingCopy = JSON.parse(JSON.stringify(editingModeData.spotEditing));
+      else if (!isEmpty(spotEditing)) {
+        let spotEditingCopy = JSON.parse(JSON.stringify(spotEditing));
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
           const vertexSelected = await useMaps.getDrawFeatureAtPress(screenPointX, screenPointY);
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
@@ -1016,10 +893,7 @@ const Map = ({
                   [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, e.geometry);
                   setSelectedSpotToEdit(vertexAdded);
                 }
-                setEditingModeData(d => ({
-                  ...d,
-                  vertexIndex: vertexAdded.properties.index + 1,
-                }));
+                setVertexIndex(vertexAdded.properties.index + 1);
               }
               else if (turf.getType(spotEditingCopy) === 'Polygon' && !isEmpty(spotToEdit)) {
                 if (currentImageBasemap || stratSection) {
@@ -1032,10 +906,7 @@ const Map = ({
                   [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, e.geometry);
                   setSelectedSpotToEdit(vertexAdded);
                 }
-                setEditingModeData(d => ({
-                  ...d,
-                  vertexIndex: vertexAdded.properties.index + 1,
-                }));
+                setVertexIndex(vertexAdded.properties.index + 1);
               }
             }
             else {
@@ -1091,17 +962,14 @@ const Map = ({
               }
             }
             setDrawFeatures(explodedFeatures);
-            const spotsEditedTmp = editingModeData.spotsEdited.filter(
+            const spotsEditedTmp = spotsEdited.filter(
               spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
             spotsEditedTmp.push(spotEditingCopy);
-            const spotsNotEditedTmp = editingModeData.spotsNotEdited.filter(
+            const spotsNotEditedTmp = spotsNotEdited.filter(
               spotNotEdited => spotNotEdited.properties.id !== spotEditingCopy.properties.id);
-            setEditingModeData(d => ({
-              ...d,
-              spotEditing: spotEditingCopy,
-              spotsEdited: spotsEditedTmp,
-              spotsNotEdited: spotsNotEditedTmp,
-            }));
+            setSpotEditing(spotEditingCopy);
+            setSpotsEdited(spotsEditedTmp);
+            setSpotsNotEdited(spotsNotEditedTmp);
             setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
             clearSelectedVertexToEdit();
             //setSelectedVertexToEdit(vertexToEditThisScope);
@@ -1216,16 +1084,14 @@ const Map = ({
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const gotSpotsInMapExtent = await useMapFeatures.getLassoedSpots(
-        [...mapProps.spotsSelected, ...mapProps.spotsNotSelected],
-        bboxPoly);
+      const gotSpotsInMapExtent = useMapFeatures.getLassoedSpots([...spotsSelected, ...spotsNotSelected], bboxPoly);
       dispatch(setSpotsInMapExtent(gotSpotsInMapExtent));
     }
   };
 
   // Zoom map to the extent of the mapped Spots
   const zoomToSpotsExtent = () => {
-    const spotsToZoomTo = [...mapProps.spotsSelected, ...mapProps.spotsNotSelected];
+    const spotsToZoomTo = [...spotsSelected, ...spotsNotSelected];
     useMaps.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
@@ -1256,10 +1122,7 @@ const Map = ({
   };
 
   const toggleUserLocation = (value) => {
-    setMapPropsMutable(m => ({
-      ...m,
-      showUserLocation: value,
-    }));
+    setShowUserLocation(value);
   };
 
   useImperativeHandle(mapComponentRef, () => {
@@ -1287,11 +1150,28 @@ const Map = ({
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {mapProps.basemap && <Basemap {...mapProps} forwardedRef={forwardedRef}/>}
+      {basemap && (
+        <Basemap
+          allowMapViewMove={allowMapViewMove}
+          basemap={basemap}
+          drawFeatures={drawFeatures}
+          editFeatureVertex={editFeatureVertex}
+          mapMode={mapMode}
+          measureFeatures={measureFeatures}
+          onMapLongPress={onMapLongPress}
+          onMapPress={onMapPress}
+          ref={{mapRef: mapRef, cameraRef: cameraRef}}
+          showUserLocation={showUserLocation}
+          spotsNotSelected={spotsNotSelected}
+          spotsSelected={spotsSelected}
+          updateSpotsInMapExtent={updateSpotsInMapExtent}
+          zoomToSpot={zoomToSpot}
+        />
+      )}
       {renderSetInCurrentViewModal()}
       {vertexStartCoords && <VertexDrag/>}
     </View>
   );
 };
 
-export default forwardRef(Map);
+export default Map;

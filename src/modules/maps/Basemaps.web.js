@@ -34,30 +34,30 @@ const Basemap = ({
                    basemap,
                    drawFeatures,
                    editFeatureVertex,
-                   imageBasemap,
                    mapMode,
                    measureFeatures,
                    onMapLongPress,
                    onMapPress,
                    spotsNotSelected,
                    spotsSelected,
-                   stratSection,
                    updateSpotsInMapExtent,
                    zoomToSpot,
                  }, forwardedRef) => {
   console.log('Rendering Basemap...');
 
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const stratSection = useSelector(state => state.map.stratSection);
   const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef} = forwardedRef;
 
-  const useDimensions = useWindowDimensions();
   const [useImages] = useImagesHook();
   const [useMapSymbology] = useMapSymbologyHook();
   const [useMaps] = useMapsHook(mapRef);
+  const useDimensions = useWindowDimensions();
   const useMapView = useMapViewHook();
 
   const [cursor, setCursor] = useState('');
@@ -73,7 +73,7 @@ const Basemap = ({
     'polygonLayerSelectedBorder', 'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
 
-  const coordQuad = useMaps.getCoordQuad(imageBasemap);
+  const coordQuad = useMaps.getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
@@ -93,7 +93,7 @@ const Basemap = ({
       console.log('UE Basemap', viewState);
       console.log('Dimensions', useDimensions);
       setInitialViewState();
-    }, [imageBasemap, stratSection],
+    }, [currentImageBasemap, stratSection],
   );
 
   if (mapMode !== prevMapMode) {
@@ -127,7 +127,7 @@ const Basemap = ({
     console.log('Getting initial center...');
     let initialCenter = center;
     if (zoomToSpot && !isEmpty(selectedSpot)) {
-      if ((imageBasemap && selectedSpot.properties.image_basemap === imageBasemap.id)
+      if ((currentImageBasemap && selectedSpot.properties.image_basemap === currentImageBasemap.id)
         || (stratSection && selectedSpot.properties.strat_section_id === stratSection.strat_section_id)) {
         initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
           turf.centroid(selectedSpot).geometry.coordinates);
@@ -136,15 +136,15 @@ const Basemap = ({
         initialCenter = turf.centroid(selectedSpot).geometry.coordinates;
       }
     }
-    else if (imageBasemap) {
+    else if (currentImageBasemap) {
       initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [(imageBasemap.width) / 2, (imageBasemap.height) / 2]);
+        [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]);
     }
     else if (stratSection) initialCenter = STRAT_SECTION_CENTER;
 
     console.log('Getting initial zoom...');
     let initialZoom = zoom;
-    if (imageBasemap) initialZoom = ZOOM;
+    if (currentImageBasemap) initialZoom = ZOOM;
     else if (stratSection) initialZoom = ZOOM_STRAT_SECTION;
 
     const initialViewState = {
@@ -175,7 +175,7 @@ const Basemap = ({
   const onMove = (evt) => {
     console.log('Event onMove', evt);
     updateSpotsInMapExtent();
-    if (imageBasemap || stratSection) setViewState(evt.viewState);
+    if (currentImageBasemap || stratSection) setViewState(evt.viewState);
     else {
       console.log('evt.viewState', evt.viewState);
       setViewState(evt.viewState);
@@ -198,16 +198,16 @@ const Basemap = ({
     <>
       <Map
         {...viewState}
-        id={imageBasemap ? imageBasemap.id : stratSection ? stratSection.strat_section_id
+        id={currentImageBasemap ? currentImageBasemap.id : stratSection ? stratSection.strat_section_id
           : basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        mapStyle={imageBasemap || stratSection ? BACKGROUND : basemap}
+        mapStyle={currentImageBasemap || stratSection ? BACKGROUND : basemap}
         boxZoom={allowMapViewMove}
         dragRotate={allowMapViewMove}
         dragPan={allowMapViewMove}
         pitchWithRotate={false}
-        touchPitch={!(stratSection || imageBasemap)}
+        touchPitch={!(stratSection || currentImageBasemap)}
         touchZoomRotate={false}
         onClick={onMapPress}
         onDblClick={onMapLongPress}
@@ -219,7 +219,7 @@ const Basemap = ({
         interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
         styleDiffing={false}
       >
-        {!stratSection && !imageBasemap && (
+        {!stratSection && !currentImageBasemap && (
           <View>
             <ScaleControl
               maxWidth={useDimensions.width * 0.25}
@@ -258,13 +258,13 @@ const Basemap = ({
         )}
 
         {/* Image Basemap Layer */}
-        {imageBasemap && !isEmpty(coordQuad) && (
+        {currentImageBasemap && !isEmpty(coordQuad) && (
           <Source
-            id={'imageBasemap'}
+            id={'currentImageBasemap'}
             type={'image'}
             coordinates={coordQuad}
-            url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(imageBasemap.id)
-              : useImages.getLocalImageURI(imageBasemap.id)}
+            url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(currentImageBasemap.id)
+              : useImages.getLocalImageURI(currentImageBasemap.id)}
           >
             <Layer
               type={'raster'}

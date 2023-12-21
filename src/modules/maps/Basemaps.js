@@ -11,6 +11,7 @@ import {
   GEO_LAT_LNG_PROJECTION,
   LATITUDE,
   LONGITUDE,
+  MAP_MODES,
   MAPBOX_TOKEN,
   PIXEL_PROJECTION,
   STRAT_SECTION_CENTER,
@@ -38,15 +39,13 @@ const Basemap = ({
                    basemap,
                    drawFeatures,
                    editFeatureVertex,
-                   freehandSketchMode,
-                   imageBasemap,
+                   mapMode,
                    measureFeatures,
                    onMapLongPress,
                    onMapPress,
                    showUserLocation,
                    spotsNotSelected,
                    spotsSelected,
-                   stratSection,
                    updateSpotsInMapExtent,
                    zoomToSpot,
                  }, forwardedRef) => {
@@ -55,8 +54,10 @@ const Basemap = ({
     : homeStyles.currentZoomTextBlack;
 
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const stratSection = useSelector(state => state.map.stratSection);
   const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef, cameraRef} = forwardedRef;
@@ -74,7 +75,7 @@ const Basemap = ({
   const [initialCenter, setInitialCenter] = useState(center);
   const [initialZoom, setInitialZoom] = useState(zoom);
 
-  const coordQuad = useMaps.getCoordQuad(imageBasemap);
+  const coordQuad = useMaps.getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
@@ -94,23 +95,23 @@ const Basemap = ({
       console.log('UE Basemap');
       setInitialCenter(getCenterCoordinates());
       setInitialZoom(getZoomLevel());
-    }, [imageBasemap, stratSection],
+    }, [currentImageBasemap, stratSection],
   );
 
   useEffect(() => {
-    console.log('UE Basemap [imageBasemap]', imageBasemap);
-    if (imageBasemap && imageBasemap.id) checkImageExistence().catch(console.error);
-  }, [imageBasemap]);
+    console.log('UE Basemap [currentImageBasemap]', currentImageBasemap);
+    if (currentImageBasemap && currentImageBasemap.id) checkImageExistence().catch(console.error);
+  }, [currentImageBasemap]);
 
   const checkImageExistence = async () => {
-    return useImages.doesImageExistOnDevice(imageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
+    return useImages.doesImageExistOnDevice(currentImageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
     console.log('Getting initial map center...');
     if (zoomToSpot && !isEmpty(selectedSpot)) {
-      if ((imageBasemap && selectedSpot.properties.image_basemap === imageBasemap.id)
+      if ((currentImageBasemap && selectedSpot.properties.image_basemap === currentImageBasemap.id)
         || (stratSection && selectedSpot.properties.strat_section_id === stratSection.strat_section_id)) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
       }
@@ -118,9 +119,9 @@ const Basemap = ({
         return turf.centroid(selectedSpot).geometry.coordinates;
       }
     }
-    else if (imageBasemap) {
+    else if (currentImageBasemap) {
       return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [(imageBasemap.width) / 2, (imageBasemap.height) / 2]);
+        [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]);
     }
     else if (stratSection) return STRAT_SECTION_CENTER;
     return center;
@@ -142,7 +143,7 @@ const Basemap = ({
 
   const getZoomLevel = () => {
     console.log('Getting initial zoom...');
-    if (imageBasemap) return ZOOM;
+    if (currentImageBasemap) return ZOOM;
     else if (stratSection) return ZOOM_STRAT_SECTION;
     return zoom;
   };
@@ -151,7 +152,7 @@ const Basemap = ({
   const onMapIdle = async (e) => {
     // console.log('Event onMapIdle', e);
     await updateSpotsInMapExtent();
-    if (!imageBasemap && !stratSection && mapRef?.current) {
+    if (!currentImageBasemap && !stratSection && mapRef?.current) {
       const newCenter = await mapRef.current.getCenter();
       const newZoom = await mapRef.current.getZoom();
       useMapView.setMapView(newCenter, newZoom);
@@ -161,7 +162,7 @@ const Basemap = ({
   // Update scale bar and zoom text
   const onCameraChanged = async (e) => {
     console.log('Event onCameraChanged', e);
-    if (!imageBasemap && !stratSection && mapRef?.current) {
+    if (!currentImageBasemap && !stratSection && mapRef?.current) {
       const newZoom = await mapRef.current.getZoom();
       setZoomText(newZoom);
     }
@@ -180,7 +181,7 @@ const Basemap = ({
 
   return (
     <>
-      {!stratSection && !imageBasemap && (
+      {!stratSection && !currentImageBasemap && (
         <View
           style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}
         >
@@ -189,18 +190,18 @@ const Basemap = ({
         </View>
       )}
       <MapboxGL.MapView
-        id={imageBasemap ? imageBasemap.id : stratSection ? stratSection.strat_section_id
+        id={currentImageBasemap ? currentImageBasemap.id : stratSection ? stratSection.strat_section_id
           : basemap.id}
         ref={mapRef}
         style={{flex: 1}}
-        styleURL={imageBasemap || stratSection ? JSON.stringify(BACKGROUND)
+        styleURL={currentImageBasemap || stratSection ? JSON.stringify(BACKGROUND)
           : JSON.stringify(basemap)}
         animated={true}
         localizeLabels={true}
         logoEnabled={true}
         logoPosition={homeStyles.mapboxLogoPosition}
         rotateEnabled={false}
-        pitchEnabled={!(stratSection || imageBasemap)}
+        pitchEnabled={!(stratSection || currentImageBasemap)}
         attributionEnabled={true}
         attributionPosition={homeStyles.mapboxAttributionPosition}
         onPress={onMapPress}
@@ -210,14 +211,14 @@ const Basemap = ({
         onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
         onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
         onDidFinishLoadingMap={onDidFinishLoadingMap}
-        scaleBarEnabled={!imageBasemap && !stratSection}
+        scaleBarEnabled={!currentImageBasemap && !stratSection}
         scaleBarPosition={scaleBarPosition()}
       >
 
         {/* Blue dot for user location */}
         <MapboxGL.UserLocation
           animated={false}
-          visible={!imageBasemap && !stratSection && showUserLocation}
+          visible={!currentImageBasemap && !stratSection && showUserLocation}
         />
 
         <MapboxGL.Camera
@@ -258,11 +259,11 @@ const Basemap = ({
         )}
 
         {/* Image Basemap Layer */}
-        {imageBasemap && !isEmpty(coordQuad) && doesImageExist && (
+        {currentImageBasemap && !isEmpty(coordQuad) && doesImageExist && (
           <MapboxGL.ImageSource
-            id={'imageBasemap'}
+            id={'currentImageBasemap'}
             coordinates={coordQuad}
-            url={useImages.getLocalImageURI(imageBasemap.id)}>
+            url={useImages.getLocalImageURI(currentImageBasemap.id)}>
             <MapboxGL.RasterLayer
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}
@@ -272,7 +273,7 @@ const Basemap = ({
         )}
 
         {/* Sketch Layer */}
-        {(freehandSketchMode)
+        {(mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE)
           && (
             <FreehandSketch>
               <MapboxGL.RasterLayer id={'sketchLayer'}/>
