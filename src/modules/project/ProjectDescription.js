@@ -3,6 +3,7 @@ import { FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import DailyNotesSection from './description/DailyNotesSection';
@@ -70,7 +71,7 @@ const ProjectDescription = (props) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <SidePanelHeader
         title={'Active Project (save changes)'}
         headerTitle={'Project Description'}
@@ -132,7 +133,7 @@ const ProjectDescription = (props) => {
           }
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
