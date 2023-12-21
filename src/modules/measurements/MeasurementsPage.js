@@ -37,17 +37,17 @@ const MeasurementsPage = (props) => {
 
   const SECTIONS = {
     PLANAR: {
-      title: 'Planar Measurements',
+      title: 'Planar \nMeasurements',
       keys: ['planar_orientation', 'tabular_orientation'],
       compass_toggles: [COMPASS_TOGGLE_BUTTONS.PLANAR],
     },
     LINEAR: {
-      title: 'Linear Measurements',
+      title: 'Linear \nMeasurements',
       keys: ['linear_orientation'],
       compass_toggles: [COMPASS_TOGGLE_BUTTONS.LINEAR],
     },
     PLANARLINEAR: {
-      title: 'P + L Measurements',
+      title: 'Planar + Linear \nMeasurements',
       keys: ['linear_orientation', 'planar_orientation', 'tabular_orientation'],
       compass_toggles: [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR],
     },
@@ -181,16 +181,7 @@ const MeasurementsPage = (props) => {
             />
           )}
           {!multiSelectMode && (
-            <View style={{flexDirection: 'row'}}>
-              {!modalVisible && (
-                <Button
-                  titleStyle={styles.measurementsSectionDividerButtonText}
-                  title={'Add'}
-                  type={'clear'}
-                  onPress={() => addMeasurement(sectionType)}
-                  disabled={isMultipleFeaturesTaggingEnabled}
-                />
-              )}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <React.Fragment>
                 <Button
                   disabled={data.length < 1 || isMultipleFeaturesTaggingEnabled}
