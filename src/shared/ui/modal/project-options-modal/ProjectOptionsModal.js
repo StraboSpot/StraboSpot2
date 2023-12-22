@@ -18,7 +18,7 @@ import useDeviceHook from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
 import LottieAnimations from '../../../../utils/animations/LottieAnimations';
 import commonStyles from '../../../common.styles';
-import {isEmpty} from '../../../Helpers';
+import {isEmpty, truncateText} from '../../../Helpers';
 import Spacer from '../../Spacer';
 import uiStyles from '../../ui.styles';
 import modalStyle from '../modal.style';
@@ -222,7 +222,8 @@ const ProjectOptionsDialogBox = (props) => {
     return (
       <View>
         <View style={overlayStyles.overlayContent}>
-          <Text style={overlayStyles.statusMessageText}>Saves current project to local storage.</Text>
+          <Text style={overlayStyles.statusMessageText}>Save current project to local storage:</Text>
+          <Text style={overlayStyles.statusMessageText}>{truncateText(currentProjectName, 30)} as:</Text>
           <Input
             value={backupFileName.replace(/\s/g, '')}
             onChangeText={text => setBackupFileName(text)}
@@ -263,8 +264,8 @@ const ProjectOptionsDialogBox = (props) => {
   const renderOverwriteView = () => {
     return (
       <View style={overlayStyles.overlayContent}>
-        <Text>Switching projects will
-          <Text style={[overlayStyles.importantText]}> DELETE </Text>
+        <Text style={overlayStyles.contentText}>Switching projects will
+          <Text style={[overlayStyles.importantText]}> OVERWRITE </Text>
           the local copy of the current project:
         </Text>
         <Text style={[overlayStyles.importantText, overlayStyles.contentText]}>
@@ -273,8 +274,7 @@ const ProjectOptionsDialogBox = (props) => {
             props.currentProject.description) ? props.currentProject.description.project_name.toUpperCase() : 'UN-NAMED'}
         </Text>
         <Text style={overlayStyles.contentText}>Including all datasets and Spots contained within this project. Make
-          sure you have already
-          uploaded the project to the server if you wish to preserve the data. Continue?
+          sure you have already uploaded the project to the server or backed it up to the device if you wish to preserve the data.
         </Text>
       </View>
     );

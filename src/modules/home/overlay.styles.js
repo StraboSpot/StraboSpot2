@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: 250,
-    borderBottomWidth: 1,
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    borderWidth: 1,
   },
   mapActionsPosition: {
     position: 'absolute',
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
   contentText: {
     padding: 5,
     textAlign: 'center',
+    fontSize: themes.MEDIUM_TEXT_SIZE
   },
   // Extra Specific Modal Styles
   selectGeometryTypeContent: {
