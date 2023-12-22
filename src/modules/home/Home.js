@@ -81,6 +81,7 @@ const Home = ({navigation, route}) => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isHomeLoading = useSelector(state => state.home.loading.home);
@@ -328,16 +329,16 @@ const Home = ({navigation, route}) => {
   const endMeasurement = () => setMapMode(MAP_MODES.VIEW);
 
   const exportProject = async () => {
-    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${selectedProject.project.fileName}) has been exported!`
+    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${backupFileName}) has been exported!`
       : `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`;
+
     dispatch(clearedStatusMessages());
     console.log('Exporting Project');
-    dispatch(addedStatusMessage(`Exporting ${selectedProject.project.fileName}!`));
-    await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, selectedProject.project.fileName,
-      true);
+    dispatch(addedStatusMessage(`Exporting ${backupFileName}!`));
+    await useExport.zipAndExportProjectFolder(true);
     dispatch(addedStatusMessage(exportCompleteMessage));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
-    console.log(`Project ${selectedProject.project.fileName} has been exported!`);
+    console.log(`Project ${backupFileName} has been exported!`);
   };
 
   const goToCurrentLocation = async () => {

@@ -9,6 +9,7 @@ const initialProjectState = {
   project: {},
   datasets: {},
   deviceBackUpDirectoryExists: false,
+  backupFileName: '',
   downloadsDirectory: false, //Android Only
   isTestingMode: false,
   selectedProject: {
@@ -174,6 +175,9 @@ const projectSlice = createSlice({
       }
       state.project.modified_timestamp = Date.now();
     },
+    setBackupFileName(state, action) {
+      state.backupFileName = action.payload;
+    },
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
     },
@@ -268,6 +272,7 @@ export const {
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,
+  setBackupFileName,
   setSelectedDataset,
   setSelectedProject,
   setSelectedTag,
