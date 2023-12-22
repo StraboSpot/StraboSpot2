@@ -3,7 +3,12 @@ import * as turf from '@turf/turf';
 import moment from 'moment';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
-import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setStatusMessagesModalVisible,
+} from '../home/home.slice';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
 import useNestingHook from '../nesting/useNesting';
 import useSpotsHook from '../spots/useSpots';
@@ -186,11 +191,11 @@ const useMapFeatures = () => {
     }
 
     if (hasData) {
-      await Clipboard.setString(out);
+      Clipboard.setString(out);
       batch(() => {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Success!\n\nData has been copied to clipboard.'));
-        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setStatusMessagesModalVisible(true));
       });
     }
     else {
