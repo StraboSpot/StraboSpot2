@@ -46,8 +46,8 @@ const projectSlice = createSlice({
         ? {...state.datasets[datasetId].images, ...images}
         : images;
       if (!datasetTimestamp) {
-        console.log('Modified Timestamp:', datasetTimestamp);
         datasetTimestamp = timestamp;
+        console.log('Modified Timestamp:', datasetTimestamp);
         state.project.modified_timestamp = timestamp;
       }
       state.datasets = {
@@ -68,7 +68,7 @@ const projectSlice = createSlice({
       state.project = action.payload;
     },
     addedSpotsIdsToDataset(state, action) {
-      const {datasetId, spotIds, modified_timestamp} = action.payload;
+      const {datasetId, spotIds, modified_timestamp, images} = action.payload;
       let datasetTimestamp = modified_timestamp;
       const timestamp = Date.now();
       const spotIdsInDataset = state.datasets[datasetId].spotIds
@@ -76,11 +76,17 @@ const projectSlice = createSlice({
         : spotIds;
       const spotIdsUnique = [...new Set(spotIdsInDataset)];
       if (!datasetTimestamp) {
-        console.log('Modified Timestamp:', datasetTimestamp);
         datasetTimestamp = timestamp;
+        console.log('Modified Timestamp:', datasetTimestamp);
         state.project.modified_timestamp = timestamp;
       }
-      const dataset = {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, spotIds: spotIdsUnique};
+      let dataset = {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, spotIds: spotIdsUnique};
+      if (images) {
+        const imagesInDataset = state.datasets[datasetId].images
+          ? {...state.datasets[datasetId].images, ...images}
+          : images;
+        dataset = {...dataset, images: imagesInDataset};
+      }
       state.datasets = {...state.datasets, [datasetId]: dataset};
     },
     addedTagToSelectedSpot(state, action) {

@@ -20,24 +20,26 @@ import useImagesHook from '../modules/images/useImages';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
-import {addedCustomMap, clearedMaps} from '../modules/maps/maps.slice';
+import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
 import {
+  addedDatasets,
   addedNeededImagesToDataset,
   addedProject,
-  addedSpotsIdsToDataset,
   clearedDatasets,
   setActiveDatasets,
   setSelectedDataset,
-  updatedDatasets,
 } from '../modules/project/projects.slice';
 import {addedSpotsFromServer, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useDownload = () => {
+  let customMapsToSave = {};
+  let datasetsObjToSave = {};
+  let imageCount = 0;
   let imagesDownloadedCount = 0;
   let imagesFailedCount = 0;
   let savedImagesCount = 0;
-  let imageCount = 0;
+  let spotsToSave = [];
 
   const dispatch = useDispatch();
   const encodedLogin = useSelector(state => state.user.encoded_login);
@@ -69,8 +71,7 @@ const useDownload = () => {
       console.log('Finished Downloading Project Properties.', projectResponse);
       if (projectResponse.other_maps && !isEmpty(projectResponse.other_maps)) loadCustomMaps(customMaps);
       dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished Downloading Project Properties.'));
-      return projectResponse;
+      dispatch(addedStatusMessage('Finished Downloading Project Properties'));
     }
     catch (err) {
       console.error('Error Downloading Project Properties.', err);
@@ -83,21 +84,20 @@ const useDownload = () => {
   const downloadSpots = async (dataset) => {
     try {
       console.log(dataset.name, ':', 'Downloading Spots...');
-      const downloadDatasetInfo = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
+      const featureCollection = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
       console.log(dataset.name, ':', 'Finished Downloading Spots.');
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage(`Finished Downloading Spots for ${dataset.name}.`));
-      if (!isEmpty(downloadDatasetInfo) && downloadDatasetInfo.features) {
-        const spotsOnServer = downloadDatasetInfo.features;
-        console.log(dataset.name, ':', 'Spots Downloaded', spotsOnServer);
-        dispatch(addedSpotsFromServer(spotsOnServer));
-        const spotIds = Object.values(spotsOnServer).map(spot => spot.properties.id);
-        dispatch(addedSpotsIdsToDataset(
-          {datasetId: dataset.id, spotIds: spotIds, modified_timestamp: dataset.modified_timestamp}));
-        await gatherNeededImages(spotsOnServer, dataset);
+      if (isEmpty(featureCollection) || !featureCollection.features) {
+        console.log(dataset.name, ': No Spots in dataset.');
       }
-      console.log(dataset.name, ':', 'downloadDatasetInfo', downloadDatasetInfo);
-      return downloadDatasetInfo;
+      else {
+        const spots = featureCollection.features;
+        const spotImages = await gatherNeededImages(spots, dataset);
+        if (spotImages) datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], images: spotImages};
+        spotsToSave.push(...spots);
+        const spotIds = Object.values(spots).map(spot => spot.properties.id);
+        datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], spotIds: spotIds};
+        console.log(dataset.name, ':', 'Got Spots', spots);
+      }
     }
     catch (err) {
       console.error(dataset.name, ':', 'Error Downloading Spots.', err);
@@ -106,14 +106,19 @@ const useDownload = () => {
     }
   };
 
-  const gatherNeededImages = async (spotsOnServer, dataset) => {
+  const gatherNeededImages = async (spots, dataset) => {
     try {
       console.log(dataset.name, ':', 'Gathering Needed Images...');
-      const spotImages = await useImages.gatherNeededImages(spotsOnServer);
-      console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of',
-        spotImages?.imageIds.length);
-      dispatch(addedNeededImagesToDataset(
-        {datasetId: dataset.id, images: spotImages, modified_timestamp: dataset.modified_timestamp}));
+      const spotImages = await useImages.gatherNeededImages(spots);
+      if (spotImages?.imageIds.length > 0) {
+        console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of',
+          spotImages?.imageIds.length);
+        return spotImages;
+      }
+      else {
+        console.log(dataset.name, ':', 'No Images in dataset.');
+        return undefined;
+      }
     }
     catch (err) {
       console.error(dataset.name, ':', 'Error Gathering Images. Error:', err);
@@ -122,21 +127,19 @@ const useDownload = () => {
 
   const downloadDatasets = async (selectedProject) => {
     try {
-      dispatch(addedStatusMessage('Downloading datasets from server...'));
-      const projectDatasetsFromServer = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished downloading datasets from server.'));
-      if (projectDatasetsFromServer.datasets.length === 1) {
-        dispatch(setActiveDatasets({bool: true, dataset: projectDatasetsFromServer.datasets[0].id}));
-        dispatch(setSelectedDataset(projectDatasetsFromServer.datasets[0].id));
+      dispatch(addedStatusMessage('Downloading Datasets...'));
+      const res = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
+      const datasets = res.datasets;
+      if (datasets.length === 1) {
+        dispatch(setActiveDatasets({bool: true, dataset: datasets[0].id}));
+        dispatch(setSelectedDataset(datasets[0].id));
       }
-      const datasetsReassigned = Object.assign({},
-        ...projectDatasetsFromServer.datasets.map(item => ({[item.id]: item})));
-      dispatch(updatedDatasets(datasetsReassigned));
-      await getDatasetSpots(datasetsReassigned);
-      dispatch(addedStatusMessage('Finished gathering Needed Images...'));
-      dispatch(addedStatusMessage('Finished downloading spots in dataset(s).'));
-      return datasetsReassigned;
+      datasetsObjToSave = Object.assign({},
+        ...datasets.map(item => ({[item.id]: {...item, modified_timestamp: item.modified_timestamp || Date.now()}})));
+      await getDatasetSpots(datasets);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Downloaded ' + spotsToSave.length + ' Spots\nDownloaded '
+        + Object.keys(datasetsObjToSave).length + ' Datasets\nFinished Downloading Datasets'));
     }
     catch (e) {
       console.log('Error getting datasets...' + e);
@@ -145,17 +148,13 @@ const useDownload = () => {
   };
 
   const getDatasetSpots = async (datasets) => {
-    if (Object.values(datasets).length >= 1) {
+    if (datasets.length >= 1) {
       console.log('Starting Dataset Spots Download!');
-      dispatch(addedStatusMessage('Downloading Spots in datasets...'));
-      dispatch(addedStatusMessage('Gathering Needed Images...'));
 
       // Synchronous download
-      return await Object.values(datasets).reduce(async (previousPromise, dataset, i) => {
+      await datasets.reduce(async (previousPromise, dataset, i) => {
         await previousPromise;
-        const datasetSpots = await downloadSpots(dataset);
-        console.log(dataset.name, ':', 'Finished downloading and saving Spots', datasetSpots);
-        return {dataset: dataset, spots: datasetSpots};
+        await downloadSpots(dataset);
       }, Promise.resolve());
     }
   };
@@ -176,10 +175,13 @@ const useDownload = () => {
       console.log('Download Complete! Spots Downloaded!');
       batch(() => {
         dispatch(addedStatusMessage('------------------'));
-        dispatch(addedStatusMessage('Downloading Datasets Complete!'));
+        dispatch(addedStatusMessage('Download Complete!'));
+        dispatch(addedSpotsFromServer(spotsToSave));
+        dispatch(addedDatasets(datasetsObjToSave));
+        dispatch(addedCustomMapsFromBackup(customMapsToSave));
+        dispatch(addedStatusMessage('Project Saved!'));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        // dispatch(setStatusMessagesModalVisible(false));
       });
     }
     catch (err) {
@@ -267,7 +269,7 @@ const useDownload = () => {
       const providerInfo = MAP_PROVIDERS[map.source];
       const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
       console.log(customMap);
-      dispatch(addedCustomMap(customMap));
+      customMapsToSave = {...customMapsToSave, [customMap.id]: customMap};
     });
   };
 
