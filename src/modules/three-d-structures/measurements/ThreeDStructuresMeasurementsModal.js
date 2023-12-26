@@ -10,8 +10,7 @@ import {isEmpty} from '../../../shared/Helpers';
 import {WARNING_COLOR} from '../../../shared/styles.constants';
 import modalStyle from '../../../shared/ui/modal/modal.style';
 import ModalHeader from '../../../shared/ui/modal/ModalHeader';
-import Slider from '../../../shared/ui/SliderBar';
-import uiStyles from '../../../shared/ui/ui.styles';
+import SliderBar from '../../../shared/ui/SliderBar';
 import Compass from '../../compass/Compass';
 import compassStyles from '../../compass/compass.styles';
 import ManualMeasurement from '../../compass/ManualMeasurement';
@@ -92,14 +91,13 @@ const ThreeDStructuresMeasurementsModal = (props) => {
           />
           <View style={compassStyles.sliderContainer}>
             <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-            <Slider
+            <SliderBar
               onSlidingComplete={setSliderValue}
               value={sliderValue}
               step={1}
               maximumValue={6}
               minimumValue={1}
               labels={['Low', '', '', '', 'High', 'N/R']}
-              labelStyle={uiStyles.sliderLabel}
             />
           </View>
         </>

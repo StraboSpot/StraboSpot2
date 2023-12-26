@@ -132,21 +132,16 @@ const styles = StyleSheet.create({
   sectionHeaderBackground: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
-  sliderContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
   slider: {
     width: '100%',
   },
   sliderTextContainer: {
-    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
   sliderLabel: {
     fontSize: themes.SMALL_TEXT_SIZE,
-    // marginRight: 10,
+    color: themes.PRIMARY_TEXT_COLOR
   },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,

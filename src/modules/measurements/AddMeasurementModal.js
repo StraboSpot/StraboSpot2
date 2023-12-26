@@ -14,8 +14,7 @@ import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
-import Slider from '../../shared/ui/SliderBar';
-import uiStyles from '../../shared/ui/ui.styles';
+import SliderBar from '../../shared/ui/SliderBar';
 import Compass from '../compass/Compass';
 import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import compassStyles from '../compass/compass.styles';
@@ -256,14 +255,13 @@ const AddMeasurementModal = (props) => {
                   />
                   <View style={compassStyles.sliderContainer}>
                     <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-                    <Slider
+                    <SliderBar
                       onSlidingComplete={setSliderValue}
                       value={sliderValue}
                       step={1}
                       maximumValue={6}
                       minimumValue={1}
                       labels={['Low', '', '', '', 'High', 'N/R']}
-                      labelStyle={uiStyles.sliderLabel}
                     />
                   </View>
                 </>
@@ -495,7 +493,8 @@ const AddMeasurementModal = (props) => {
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       linearCompassFields.forEach((compassFieldKey) => {
-        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], data?.[compassFieldKey] || undefined);
+        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey],
+          data?.[compassFieldKey] || undefined);
       });
     }
     saveMeasurement().catch(console.error);
