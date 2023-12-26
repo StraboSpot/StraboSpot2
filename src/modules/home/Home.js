@@ -419,9 +419,9 @@ const Home = ({navigation, route}) => {
   const renderSidePanelView = () => {
     return (
       <Animated.View style={[
-        (SMALL_SCREEN ? sidePanelStyles.sidePanelContainerPhones
-          : sidePanelStyles.sidePanelContainer),
-        animateMainMenuSubDrawer]}
+        sidePanelStyles.sidePanelContainer,
+        animateMainMenuSubDrawer
+      ]}
       >
         <Animated.View style={[{flex: 1}, animateTextInputs]}>
           {renderSidePanelContent()}
@@ -513,6 +513,7 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleSidePanel = () => {
+    console.log('rendering side panel')
     if (isSidePanelVisible) {
       animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
       return renderSidePanelView();
