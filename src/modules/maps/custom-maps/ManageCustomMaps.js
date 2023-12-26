@@ -62,7 +62,7 @@ const ManageCustomMaps = (props) => {
     <React.Fragment>
       <AddButton
         onPress={() => useMaps.customMapDetails({})}
-        title={'Add new Custom Map'}
+        title={'Add New Custom Map'}
         type={'outline'}
       />
       <SectionDivider dividerText={'Current Custom Maps'}/>
