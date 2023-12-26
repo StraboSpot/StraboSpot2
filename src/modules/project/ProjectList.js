@@ -147,7 +147,6 @@ const ProjectList = (props) => {
         const res = await useImport.loadProjectFromDevice(project.fileName);
         setLoading(false);
         dispatch(setStatusMessageModalTitle(res.project.description.project_name));
-        dispatch(setStatusMessagesModalVisible(false));
         console.log('Done loading project', res);
       }
       else await useDownload.initializeDownload(project);
