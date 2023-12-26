@@ -265,7 +265,7 @@ const AddCustomMaps = () => {
   };
 
   return (
-    <SafeAreaView style={[{flex: 1, justifyContent: 'space-between'}]}>
+    <>
       <View>
         {renderSidePanelHeader()}
         {renderTitle()}
@@ -297,7 +297,7 @@ const AddCustomMaps = () => {
           onPress={() => confirmDeleteMap()}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

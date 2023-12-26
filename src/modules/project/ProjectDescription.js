@@ -71,7 +71,7 @@ const ProjectDescription = (props) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <>
       <SidePanelHeader
         title={'Active Project (save changes)'}
         headerTitle={'Project Description'}
@@ -133,7 +133,7 @@ const ProjectDescription = (props) => {
           }
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

@@ -28,7 +28,7 @@ const TagDetailSidePanel = (props) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <SidePanelHeader
@@ -81,7 +81,7 @@ const TagDetailSidePanel = (props) => {
         isVisible={isColorPickerModalVisibile}
         closeModal={() => setIsColorPickerModalVisible(false)}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

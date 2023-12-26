@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -424,7 +425,9 @@ const Home = ({navigation, route}) => {
       ]}
       >
         <Animated.View style={[{flex: 1}, animateTextInputs]}>
-          {renderSidePanelContent()}
+          <SafeAreaView style={{flex: 1}}>
+            {renderSidePanelContent()}
+          </SafeAreaView>
         </Animated.View>
       </Animated.View>
     );
@@ -514,10 +517,7 @@ const Home = ({navigation, route}) => {
 
   const toggleSidePanel = () => {
     console.log('rendering side panel')
-    if (isSidePanelVisible) {
-      animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
-      return renderSidePanelView();
-    }
+    if (isSidePanelVisible) animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
     else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
     return renderSidePanelView();
   };
