@@ -68,6 +68,7 @@ const HomeViewSmallScreen = ({
     <Animated.View style={[homeStyles.container, animateLeftSide]}>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
+        barStyle={'dark-content'}
         leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (
           <Icon
             color={themes.PRIMARY_TEXT_COLOR}

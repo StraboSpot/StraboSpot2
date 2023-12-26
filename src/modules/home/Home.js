@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -62,8 +61,6 @@ import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 
 const {State: TextInputState} = TextInput;
-SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
-SystemNavigationBar.setNavigationColor('translucent');
 
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
