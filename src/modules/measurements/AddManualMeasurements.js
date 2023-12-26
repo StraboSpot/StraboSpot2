@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 
 import {MEASUREMENT_KEYS} from './measurements.constants';
 import commonStyles from '../../shared/common.styles';
-import Slider from '../../shared/ui/SliderBar';
+import SliderBar from '../../shared/ui/SliderBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import compassStyles from '../compass/compass.styles';
 import {Form, useFormHook} from '../form';
@@ -58,14 +58,13 @@ const AddManualMeasurements = (props) => {
           )}
         <View style={compassStyles.sliderContainer}>
           <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-          <Slider
+          <SliderBar
             onSlidingComplete={setSliderValue}
             value={sliderValue}
             step={1}
             maximumValue={6}
             minimumValue={1}
             labels={['Low', '', '', '', 'High', 'N/R']}
-            labelStyle={uiStyles.sliderLabel}
           />
         </View>
       </React.Fragment>

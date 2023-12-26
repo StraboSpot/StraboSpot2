@@ -45,6 +45,7 @@ const modalStyle = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   modalTop: {
     alignItems: 'center',

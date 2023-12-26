@@ -8,12 +8,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import customMapStyles from './customMaps.styles';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import * as themes from '../../../shared/styles.constants';
+import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import Slider from '../../../shared/ui/SliderBar';
+import SliderBar from '../../../shared/ui/SliderBar';
 import {formStyles} from '../../form';
 import {
   addedStatusMessage,
@@ -236,7 +236,7 @@ const AddCustomMaps = () => {
               <ListItem.Subtitle style={{paddingLeft: 10}}>{sliderValuePercent}%</ListItem.Subtitle>
             </ListItem.Content>
             <View style={{flex: 2}}>
-              <Slider
+              <SliderBar
                 value={opacity}
                 onValueChange={val => setEditableCustomMapData(e => ({...e, opacity: val}))}
                 maximumValue={1}
