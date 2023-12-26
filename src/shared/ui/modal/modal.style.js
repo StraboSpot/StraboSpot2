@@ -6,7 +6,6 @@ import {SMALL_SCREEN} from '../../styles.constants';
 const modalStyle = StyleSheet.create({
   modalContainer: {
     width: 300,
-    maxHeight: '90%',
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderRadius: 20,
     overflow: 'hidden',
@@ -33,7 +32,7 @@ const modalStyle = StyleSheet.create({
   modalPosition: {
     position: 'absolute',
     left: 70,
-    bottom: 20,
+    bottom: 60,
     borderRadius: 20,
   },
   sideModalPosition: {

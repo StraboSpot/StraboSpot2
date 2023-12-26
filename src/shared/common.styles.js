@@ -14,7 +14,6 @@ const commonStyles = StyleSheet.create({
   },
   buttonContainer: {
     paddingTop: 10,
-    alignItems: 'center',
   },
   buttonPadding: {
     padding: 10,
