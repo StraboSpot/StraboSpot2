@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {View} from 'react-native';
 
 import {useToast} from 'react-native-toast-notifications';
 import {useSelector} from 'react-redux';
@@ -48,6 +49,7 @@ const UserLocationButton = ({clickHandler}) => {
       />
     );
   }
+  else return <View/>;  // Added so 'space-between' would work correctly for DrawInfo when no UserLocationButton
 };
 
 export default UserLocationButton;

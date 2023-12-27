@@ -24,7 +24,9 @@ const ActionButtonsSmallScreen = ({
   return (
     <View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-        {width < height && <UserLocationButton clickHandler={clickHandler}/>}
+        {width < height ? <UserLocationButton clickHandler={clickHandler}/>
+          : <View/> //Added so 'space-between' would work correctly for DrawInfo when no UserLocationButton
+        }
 
         <DrawInfo
           distance={distance}
