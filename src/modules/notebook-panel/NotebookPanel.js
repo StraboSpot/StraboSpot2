@@ -124,12 +124,13 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
     );
   };
 
-  return (
-    <View style={notebookStyles.notebookPanel}>
-      {(SMALL_SCREEN || isNotebookPanelVisible) && (!isEmpty(spot) ? renderNotebookContent()
-        : renderNotebookContentNoSpot())}
-    </View>
-  );
+  if (SMALL_SCREEN || isNotebookPanelVisible) {
+    return (
+      <View style={notebookStyles.notebookPanel}>
+        {isEmpty(spot) ? renderNotebookContentNoSpot() : renderNotebookContent()}
+      </View>
+    );
+  }
 };
 
 export default NotebookPanel;
