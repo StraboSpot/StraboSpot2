@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Platform, TextInput} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -89,7 +89,6 @@ const Home = ({navigation, route}) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
@@ -411,11 +410,7 @@ const Home = ({navigation, route}) => {
 
   const renderSidePanelView = () => {
     return (
-      <Animated.View style={[
-        sidePanelStyles.sidePanelContainer,
-        animateMainMenuSubDrawer
-      ]}
-      >
+      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
         <Animated.View style={[{flex: 1}, animateTextInputs]}>
           <SafeAreaView style={{flex: 1}}>
             {renderSidePanelContent()}
@@ -508,7 +503,7 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleSidePanel = () => {
-    console.log('rendering side panel')
+    console.log('Rendering side panel...');
     if (isSidePanelVisible) animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
     else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
     return renderSidePanelView();
@@ -518,10 +513,6 @@ const Home = ({navigation, route}) => {
     toggleHomeDrawerButton();
     closeNotebookPanel();
     dispatch(logout());
-  };
-
-  const toggleOfflineMapLabel = () => {
-    return Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
   };
 
   const MainMenu = (
