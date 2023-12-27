@@ -60,7 +60,10 @@ const homeStyles = StyleSheet.create({
   offlineMapLabelContainer: {
     position: 'absolute',
     top: 60,
-    right: '45%',
+    right: 0,
+    left: 0,
+    alignItems: 'center',
+    zIndex: -1,
   },
   offlineMapViewLabel: {
     padding: 10,

@@ -13,6 +13,7 @@ import ShortcutButtons from './ShortcutButtons';
 import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import Map from '../maps/Map';
+import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import {MODAL_KEYS} from '../page/page.constants';
 import SpotNavigator from '../spots/SpotNavigator';
@@ -200,6 +201,7 @@ const HomeViewSmallScreen = ({
                     <EditCancelSaveButtons clickHandler={clickHandler}/>
                   </View>
                 )}
+                <OfflineMapLabel/>
               </>
             }
           </Tab.Screen>

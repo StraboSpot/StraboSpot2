@@ -9,6 +9,7 @@ import RightSideButtons from './RightSideButtons';
 import StatusBar from './StatusBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import Map from '../maps/Map';
+import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import notebookStyles from '../notebook-panel/notebookPanel.styles';
 
@@ -57,6 +58,7 @@ const HomeView = ({
       />
 
       <StatusBar/>
+      <OfflineMapLabel/>
 
       <RightSideButtons
         animateRightSide={animateRightSide}

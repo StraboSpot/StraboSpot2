@@ -409,14 +409,6 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const renderOfflineMapViewLabel = () => {
-    return (
-      <View style={homeStyles.offlineMapLabelContainer}>
-        <Text style={homeStyles.offlineMapViewLabel}>Offline View</Text>
-      </View>
-    );
-  };
-
   const renderSidePanelView = () => {
     return (
       <Animated.View style={[
@@ -620,7 +612,6 @@ const Home = ({navigation, route}) => {
       {/*------------------------*/}
       <LoadingSpinner isLoading={isHomeLoading}/>
       {MainMenu}
-      {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
