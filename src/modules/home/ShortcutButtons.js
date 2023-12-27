@@ -4,7 +4,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {setModalVisible} from './home.slice';
+import {setLoadingStatus, setModalVisible} from './home.slice';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
 import useLocationHook from '../maps/useLocation';
@@ -24,31 +25,32 @@ const ShortcutButtons = ({openNotebookPanel}) => {
   const useLocation = useLocationHook();
 
   const toggleShortcutModal = async (key) => {
+    dispatch(setLoadingStatus({view: 'home', bool: true}));
     dispatch(clearedSelectedSpots());
     switch (key) {
       case 'photo': {
         const point = await useLocation.setPointAtCurrentLocation();
         if (point) {
-          console.log('New Spot at current location:', point);
-          const imagesSavedLength = await useImages.launchCameraFromNotebook();
+          const imagesSavedLength = await useImages.launchCameraFromNotebook(point.properties.id);
           imagesSavedLength > 0 && toast.show(
             imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot '
             + point.properties.name, {type: 'success'},
           );
-          openNotebookPanel();
+          if (!SMALL_SCREEN) openNotebookPanel();
         }
         break;
       }
       case 'sketch': {
         const point = await useLocation.setPointAtCurrentLocation();
         if (point) navigation.navigate('Sketch');
-        openNotebookPanel();
+        if (!SMALL_SCREEN) openNotebookPanel();
         break;
       }
       default:
         if (modalVisible === key) dispatch(setModalVisible({modal: null}));
         else dispatch(setModalVisible({modal: key}));
     }
+    dispatch(setLoadingStatus({view: 'home', bool: false}));
   };
 
   return (
