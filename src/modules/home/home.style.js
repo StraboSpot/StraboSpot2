@@ -133,6 +133,8 @@ const homeStyles = StyleSheet.create({
     bottom: 10,
   },
   smallScreenMapActionButtons: {
+    borderColor: themes.MEDIUMGREY,
+    borderRightWidth: 1,
     flexDirection: 'row',
     paddingRight: 10,
   },
@@ -153,7 +155,7 @@ const homeStyles = StyleSheet.create({
   },
   shortcutButtons: {
     position: 'absolute',
-    right: 0,
+    right: 10,
     top: 150,
     zIndex: -1,
   },

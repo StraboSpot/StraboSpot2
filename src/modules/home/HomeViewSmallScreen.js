@@ -170,7 +170,9 @@ const HomeViewSmallScreen = ({
                 )}
 
                 {!currentImageBasemap && !stratSection && (
-                  <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
+                  <View style={homeStyles.shortcutButtons}>
+                    <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
+                  </View>
                 )}
 
                 {drawButtonsVisible && (
@@ -193,10 +195,11 @@ const HomeViewSmallScreen = ({
                   </View>
                 )}
 
-                <EditCancelSaveButtons
-                  areEditButtonsVisible={areEditButtonsVisible}
-                  clickHandler={clickHandler}
-                />
+                {areEditButtonsVisible && (
+                  <View style={homeStyles.editButtonsContainer}>
+                    <EditCancelSaveButtons clickHandler={clickHandler}/>
+                  </View>
+                )}
               </>
             }
           </Tab.Screen>

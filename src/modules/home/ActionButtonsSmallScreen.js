@@ -4,6 +4,7 @@ import {useWindowDimensions, View} from 'react-native';
 import {UserLocationButton} from './buttons';
 import DrawActionButtons from './DrawActionButtons';
 import DrawInfo from './DrawInfo';
+import homeStyles from './home.style';
 import MapActionButtons from './MapActionButtons';
 import * as themes from '../../shared/styles.constants';
 
@@ -52,7 +53,7 @@ const ActionButtonsSmallScreen = ({
             shadowRadius: 4,
           }}
         >
-          <View style={{borderColor: themes.MEDIUMGREY, borderRightWidth: 1}}>
+          <View style={homeStyles.smallScreenMapActionButtons}>
             <MapActionButtons
               dialogClickHandler={dialogClickHandler}
               dialogs={dialogs}

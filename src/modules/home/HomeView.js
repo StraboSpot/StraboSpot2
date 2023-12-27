@@ -58,30 +58,28 @@ const HomeView = ({
 
       <StatusBar/>
 
-      <Animated.View style={[{position: 'absolute', height: '100%', right: 0}, animateRightSide]}>
-        <RightSideButtons
-          areEditButtonsVisible={areEditButtonsVisible}
-          clickHandler={clickHandler}
-          distance={distance}
-          drawButtonsVisible={drawButtonsVisible}
-          endMeasurement={endMeasurement}
-          mapMode={mapMode}
-          onEndDrawPressed={onEndDrawPressed}
-          openNotebookPanel={openNotebookPanel}
-          toggleNotebookPanel={toggleNotebookPanel}
-        />
-      </Animated.View>
+      <RightSideButtons
+        animateRightSide={animateRightSide}
+        areEditButtonsVisible={areEditButtonsVisible}
+        clickHandler={clickHandler}
+        distance={distance}
+        drawButtonsVisible={drawButtonsVisible}
+        endMeasurement={endMeasurement}
+        mapMode={mapMode}
+        onEndDrawPressed={onEndDrawPressed}
+        openNotebookPanel={openNotebookPanel}
+        toggleNotebookPanel={toggleNotebookPanel}
+      />
 
-      <Animated.View style={[{position: 'absolute', height: '100%', left: 0}, animateLeftSide]}>
-        <LeftSideButtons
-          clickHandler={clickHandler}
-          dialogClickHandler={dialogClickHandler}
-          dialogs={dialogs}
-          mapComponentRef={mapComponentRef}
-          toggleHomeDrawer={toggleHomeDrawer}
-          toggleDialog={toggleDialog}
-        />
-      </Animated.View>
+      <LeftSideButtons
+        animateLeftSide={animateLeftSide}
+        clickHandler={clickHandler}
+        dialogClickHandler={dialogClickHandler}
+        dialogs={dialogs}
+        mapComponentRef={mapComponentRef}
+        toggleDialog={toggleDialog}
+        toggleHomeDrawer={toggleHomeDrawer}
+      />
 
       <Animated.View style={[notebookStyles.notebookDrawer, animateNotebookDrawer]}>
         <NotebookPanel

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Animated} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -9,6 +9,7 @@ import MapActionButtons from './MapActionButtons';
 import IconButton from '../../shared/ui/IconButton';
 
 const LeftSideButtons = ({
+                           animateLeftSide,
                            clickHandler,
                            dialogClickHandler,
                            dialogs,
@@ -24,22 +25,25 @@ const LeftSideButtons = ({
 
   return (
     <>
-      <IconButton
-        source={isMainMenuPanelVisible
-          ? require('../../assets/icons/HomeButton_pressed.png')
-          : require('../../assets/icons/HomeButton.png')}
-        onPress={toggleHomeDrawer}
-        style={homeStyles.homeIconContainer}
-      />
+      <Animated.View style={[homeStyles.homeIconContainer, animateLeftSide]}>
+        <IconButton
+          source={isMainMenuPanelVisible
+            ? require('../../assets/icons/HomeButton_pressed.png')
+            : require('../../assets/icons/HomeButton.png')}
+          onPress={toggleHomeDrawer}
+        />
+      </Animated.View>
 
-      <MapActionButtons
-        dialogClickHandler={dialogClickHandler}
-        dialogs={dialogs}
-        mapComponentRef={mapComponentRef}
-        toggleDialog={toggleDialog}
-      />
+      <Animated.View style={[homeStyles.mapActionsContainer, animateLeftSide]}>
+        <MapActionButtons
+          dialogClickHandler={dialogClickHandler}
+          dialogs={dialogs}
+          mapComponentRef={mapComponentRef}
+          toggleDialog={toggleDialog}
+        />
+      </Animated.View>
 
-      <View style={homeStyles.bottomLeftIcons}>
+      <Animated.View style={[homeStyles.bottomLeftIcons, animateLeftSide]}>
         <UserLocationButton clickHandler={clickHandler}/>
 
         {currentImageBasemap && (
@@ -54,7 +58,7 @@ const LeftSideButtons = ({
             onPress={() => clickHandler('closeStratSection')}
           />
         )}
-      </View>
+      </Animated.View>
     </>
   );
 };

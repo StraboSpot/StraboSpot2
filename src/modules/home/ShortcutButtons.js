@@ -1,12 +1,10 @@
 import React from 'react';
-import {View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {setModalVisible} from './home.slice';
-import homeStyles from './home.style';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
 import useLocationHook from '../maps/useLocation';
@@ -54,7 +52,7 @@ const ShortcutButtons = ({openNotebookPanel}) => {
   };
 
   return (
-    <View style={homeStyles.shortcutButtons}>
+    <>
       {SHORTCUT_MODALS.reduce((acc, sm) => {
           return (
             shortcutSwitchPosition[sm.key] ? [...acc, (
@@ -68,7 +66,7 @@ const ShortcutButtons = ({openNotebookPanel}) => {
           );
         }, [],
       )}
-    </View>
+    </>
   );
 };
 
