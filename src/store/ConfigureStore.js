@@ -21,7 +21,14 @@ import {REDUX} from '../shared/app.constants';
 export const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['compass', 'notebook', 'home', 'mainMenu', 'map', 'spot'],
+  blacklist: [
+    'compass',
+    'home',
+    'mainMenu',
+    'map',
+    'notebook',
+    'spot',
+  ],
   timeout: null,
 };
 
@@ -41,24 +48,47 @@ const compassConfig = {
 const homeConfig = {
   key: 'home',
   storage: AsyncStorage,
-  blacklist: ['statusMessages', 'imageProgress', 'isOnline', 'loading', 'modalValues', 'modalVisible',
-    'isStatusMessagesModalVisible', 'isErrorMessagesModalVisible', 'isProjectLoadSelectionModalVisible',
-    'isOfflineMapModalVisible', 'isImageModalVisible', 'isMainMenuPanelVisible',
-    'isProjectLoadComplete', 'isProgressModalVisible'],
+  blacklist: [
+    'imageProgress',
+    'isBackupModalVisible',
+    'isErrorMessagesModalVisible',
+    'isImageModalVisible',
+    'isMainMenuPanelVisible',
+    'isOfflineMapModalVisible',
+    'isProgressModalVisible',
+    'isProjectLoadComplete',
+    'isProjectLoadSelectionModalVisible',
+    'isStatusMessagesModalVisible',
+    'isUploadModalVisible',
+    'isUploadProgressModalVisible',
+    'isWarningMessagesModalVisible',
+    'loading',
+    'modalValues',
+    'modalVisible',
+    'statusMessageModalTitle',
+    'statusMessages',
+  ],
   timeout: null,
 };
 
 const notebookConfig = {
   key: 'notebook',
   storage: AsyncStorage,
-  blacklist: ['visibleNotebookPagesStack', 'isNotebookPanelVisible'],
+  blacklist: [
+    'isNotebookPanelVisible',
+    'visibleNotebookPagesStack',
+  ],
   timeout: null,
 };
 
 const mainMenuConfig = {
   key: 'mainMenu',
   storage: AsyncStorage,
-  blacklist: ['mainMenuPageVisible', 'isSidePanelVisible', 'sidePanelView'],
+  blacklist: [
+    'isSidePanelVisible',
+    'mainMenuPageVisible',
+    'sidePanelView',
+  ],
   timeout: null,
 };
 
@@ -66,13 +96,21 @@ const mapConfig = {
   key: 'map',
   storage: AsyncStorage,
   timeout: null,
-  blacklist: ['selectedCustomMapToEdit', 'vertexStartCoords', 'vertexEndCoords', 'freehandFeatureCoords'],
+  blacklist: [
+    'freehandFeatureCoords',
+    'selectedCustomMapToEdit',
+    'vertexEndCoords',
+    'vertexStartCoords',
+  ],
 };
 
 const projectConfig = {
   key: 'project',
   storage: AsyncStorage,
-  blacklist: ['project', 'datasets'],
+  blacklist: [
+    'datasets',
+    'project',
+  ],
   timeout: null,
 };
 
@@ -89,14 +127,14 @@ const loggerMiddleware = createLogger({
 });
 
 const combinedReducers = combineReducers({
-  connections: persistReducer(connectionsConfig, connectionsSlice),
   compass: persistReducer(compassConfig, compassSlice),
+  connections: persistReducer(connectionsConfig, connectionsSlice),
   home: persistReducer(homeConfig, homeSlice),
-  notebook: persistReducer(notebookConfig, notebookSlice),
-  map: persistReducer(mapConfig, mapsSlice),
-  project: persistReducer(projectConfig, projectSlice),
   mainMenu: persistReducer(mainMenuConfig, mainMenuSlice),
+  map: persistReducer(mapConfig, mapsSlice),
+  notebook: persistReducer(notebookConfig, notebookSlice),
   offlineMap: offlineMapsSlice,
+  project: persistReducer(projectConfig, projectSlice),
   spot: persistReducer(spotsConfig, spotsSlice),
   user: userSlice,
 });
@@ -104,13 +142,13 @@ const combinedReducers = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === REDUX.CLEAR_STORE) {
     state = {
-      connections: {...state.connections},
       compass: undefined,
+      connections: {...state.connections},
       home: undefined,
-      notebook: undefined,
       map: undefined,
-      project: undefined,
+      notebook: undefined,
       offlineMap: undefined,
+      project: undefined,
       spot: undefined,
       user: undefined,
     };
