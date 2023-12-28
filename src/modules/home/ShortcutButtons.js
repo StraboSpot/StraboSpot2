@@ -1,4 +1,5 @@
 import React from 'react';
+import {Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
@@ -9,7 +10,7 @@ import {SMALL_SCREEN} from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import useImagesHook from '../images/useImages';
 import useLocationHook from '../maps/useLocation';
-import {SHORTCUT_MODALS} from '../page/page.constants';
+import {MODAL_KEYS, SHORTCUT_MODALS} from '../page/page.constants';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 
 const ShortcutButtons = ({openNotebookPanel}) => {
@@ -17,7 +18,7 @@ const ShortcutButtons = ({openNotebookPanel}) => {
 
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const shortcutSwitchPosition = useSelector(state => state.home.shortcutSwitchPosition);
+  const shortcutSwitchPositions = useSelector(state => state.home.shortcutSwitchPosition);
 
   const [useImages] = useImagesHook();
   const navigation = useNavigation();
@@ -56,18 +57,18 @@ const ShortcutButtons = ({openNotebookPanel}) => {
   return (
     <>
       {SHORTCUT_MODALS.reduce((acc, sm) => {
-          return (
-            shortcutSwitchPosition[sm.key] ? [...acc, (
-                <IconButton
-                  key={sm.key}
-                  source={modalVisible === sm.key ? sm.icon_pressed_src : sm.icon_src}
-                  onPress={() => toggleShortcutModal(sm.key)}
-                />
-              )]
-              : acc
-          );
-        }, [],
-      )}
+        if (shortcutSwitchPositions[sm.key] && (Platform.OS !== 'web' || (Platform.OS === 'web'
+          && sm.key !== MODAL_KEYS.SHORTCUTS.PHOTO && sm.key !== MODAL_KEYS.SHORTCUTS.SKETCH))) {
+          return [...acc, (
+            <IconButton
+              key={sm.key}
+              source={modalVisible === sm.key ? sm.icon_pressed_src : sm.icon_src}
+              onPress={() => toggleShortcutModal(sm.key)}
+            />
+          )];
+        }
+        else return acc;
+      }, [])}
     </>
   );
 };

@@ -1,35 +1,46 @@
 import React from 'react';
-import {FlatList, Switch, Text, View} from 'react-native';
+import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
+import {useDispatch, useSelector} from 'react-redux';
 
 import shortcutMenuStyles from './shortcutsMenu.styles';
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
-import {SHORTCUT_MODALS} from '../../page/page.constants';
+import {setShortcutSwitchPositions} from '../../home/home.slice';
+import {MODAL_KEYS, SHORTCUT_MODALS} from '../../page/page.constants';
 
-const ShortcutMenu = (props) => {
+const ShortcutMenu = () => {
+  const dispatch = useDispatch();
+  const shortcutSwitchPositions = useSelector(state => state.home.shortcutSwitchPosition);
+
+  const toggleSwitch = (switchName) => {
+    dispatch(setShortcutSwitchPositions({switchName: switchName}));
+  };
 
   const renderShortcutListItem = (toggleButton) => {
-    return (
-      <ListItem containerStyle={commonStyles.listItem}>
-        <Avatar
-          source={toggleButton.icon_src}
-          placeholderStyle={{backgroundColor: 'transparent'}}
-        />
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
-        </ListItem.Content>
-        <Switch
-          onValueChange={() => props.toggleSwitch(toggleButton.key)}
-          value={props.shortcutSwitchPosition[toggleButton.key]}
-        />
-      </ListItem>
-    );
+    if (Platform.OS !== 'web' || (Platform.OS === 'web'
+      && toggleButton.key !== MODAL_KEYS.SHORTCUTS.PHOTO && toggleButton.key !== MODAL_KEYS.SHORTCUTS.SKETCH)) {
+      return (
+        <ListItem containerStyle={commonStyles.listItem}>
+          <Avatar
+            source={toggleButton.icon_src}
+            placeholderStyle={{backgroundColor: 'transparent'}}
+          />
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
+          </ListItem.Content>
+          <Switch
+            onValueChange={() => toggleSwitch(toggleButton.key)}
+            value={shortcutSwitchPositions[toggleButton.key]}
+          />
+        </ListItem>
+      );
+    }
   };
 
   return (
-    <React.Fragment>
+    <>
       <View style={shortcutMenuStyles.textContainer}>
         <Text style={shortcutMenuStyles.textStyle}>Shortcuts will create a NEW spot</Text>
       </View>
@@ -38,8 +49,8 @@ const ShortcutMenu = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>All</ListItem.Title>
         </ListItem.Content>
         <Switch
-          onValueChange={() => props.toggleSwitch('all')}
-          value={props.shortcutSwitchPosition.all}
+          onValueChange={() => toggleSwitch('all')}
+          value={shortcutSwitchPositions.all}
         />
       </ListItem>
       <FlatList
@@ -48,7 +59,7 @@ const ShortcutMenu = (props) => {
         renderItem={({item}) => renderShortcutListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
-    </React.Fragment>
+    </>
   );
 };
 

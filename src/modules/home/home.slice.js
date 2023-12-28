@@ -94,20 +94,15 @@ const homeSlice = createSlice({
     setStatusMessageModalTitle(state, action) {
       state.statusMessageModalTitle = action.payload;
     },
-    shortcutSwitchPosition(state, action) {
+    setShortcutSwitchPositions(state, action) {
+      console.log('Toggling Shortcut', action.payload.switchName);
+      state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
       if (action.payload.switchName === 'all') {
-        console.log('ALL IS SWITCHED');
-        state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
-        console.log(Object.keys(state.shortcutSwitchPosition));
-        if (state.shortcutSwitchPosition[action.payload.switchName]) {
-          Object.keys(state.shortcutSwitchPosition).forEach(key => state.shortcutSwitchPosition[key] = true);
-        }
-        else Object.keys(state.shortcutSwitchPosition).forEach(key => state.shortcutSwitchPosition[key] = false);
+        Object.keys(state.shortcutSwitchPosition).forEach(
+          key => (state.shortcutSwitchPosition[key] = state.shortcutSwitchPosition.all));
       }
-      else {
-        state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
-        state.shortcutSwitchPosition.all = false;
-      }
+      else state.shortcutSwitchPosition.all = false;
+      console.log('Shortcut Switch Positions', JSON.stringify(Object.entries(state.shortcutSwitchPosition)));
     },
     setUploadModalVisible(state, action) {
       state.isUploadModalVisible = action.payload;
@@ -137,7 +132,7 @@ export const {
   // setSignedInStatus,
   setStatusMessagesModalVisible,
   setStatusMessageModalTitle,
-  shortcutSwitchPosition,
+  setShortcutSwitchPositions,
   setUploadModalVisible,
   setWarningModalVisible,
 } = homeSlice.actions;
