@@ -1,17 +1,22 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, useWindowDimensions, View} from 'react-native';
 
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
+import modalStyle from '../../shared/ui/modal/modal.style';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import overlayStyles from '../home/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
 
 const TagDetailModal = (props) => {
+  const {height} = useWindowDimensions();
+
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const [useTags] = useTagsHook();
@@ -64,7 +69,9 @@ const TagDetailModal = (props) => {
   return (
     <Overlay
       isVisible={props.isVisible}
-      overlayStyle={overlayStyles.overlayContainer}
+      overlayStyle={SMALL_SCREEN ? modalStyle.modalContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
+      fullScreen={SMALL_SCREEN}
+      animationType={'slide'}
     >
       <>
         {renderCancelSaveButtons()}
@@ -72,12 +79,12 @@ const TagDetailModal = (props) => {
           ListHeaderComponent={
             <React.Fragment>
               {useTags.renderTagForm(props.type)}
-              <Button
+              {!isEmpty(selectedTag) && <Button
                 titleStyle={{color: themes.RED}}
                 title={'Delete Tag'}
                 type={'clear'}
                 onPress={() => confirmDeleteTag()}
-              />
+              />}
             </React.Fragment>
           }
         />
