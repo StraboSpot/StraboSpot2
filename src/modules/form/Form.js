@@ -146,7 +146,6 @@ const Form = (props) => {
     alert(
       label,
       info,
-      [],
       );
   };
 
