@@ -72,9 +72,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   titleTextWarning: {
-    color: 'yellow',
-    textShadowColor: 'black',
-    textShadowRadius: 2,
+    color: 'orange',
   },
   statusMessageText: {
     textAlign: 'center',

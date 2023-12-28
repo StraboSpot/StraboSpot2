@@ -18,20 +18,21 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import WarningModal from '../home/home-modals/WarningModal';
 import {clearedStatusMessages} from '../home/home.slice';
-import overlayStyles from '../home/overlay.styles';
 
 const ActiveProjectPanel = () => {
-  const dispatch = useDispatch();
   const [useProject] = useProjectHook();
   const useDownload = useDownloadHook();
-  const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
+
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
-  const project = useSelector(state => state.project.project);
-  const user = useSelector(state => state.user);
-  const datasets = useSelector(state => state.project.datasets);
+  const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
+
+  const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
+  const datasets = useSelector(state => state.project.datasets);
+  const project = useSelector(state => state.project.project);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const user = useSelector(state => state.user);
 
   useEffect(() => {
     console.log('UE ActiveProjectPanel [datasets]', datasets);
@@ -77,18 +78,14 @@ const ActiveProjectPanel = () => {
   const renderWarningModal = () => {
     return (
       <WarningModal
-        title={'Overwrite Warning!'}
-        isVisible={isWarningModalVisible}
         closeModal={() => setIsWarningModalVisible(false)}
-        onConfirmPress={() => confirm()}
-        showConfirmButton={true}
+        isVisible={isWarningModalVisible}
+        onConfirmPress={confirm}
         showCancelButton={true}
+        showConfirmButton={true}
+        title={'Overwrite Warning!'}
       >
-        <View style={[overlayStyles.overlayContent, {marginBottom: 0}]}>
-          <Text style={overlayStyles.statusMessageText}>
-            This will OVERWRITE anything that has not been uploaded to the server
-          </Text>
-        </View>
+        <Text>This will OVERWRITE anything that has not been uploaded to the server</Text>
       </WarningModal>
     );
   };
