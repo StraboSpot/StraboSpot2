@@ -91,7 +91,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpot}) =>
       <Overlay
         isVisible={isNotebookMenuVisible}
         onBackdropPress={closeNotebookMenu}
-        overlayStyle={[overlayStyles.overlayContainer, !SMALL_SCREEN && notebookStyles.dialogBoxPosition]}
+        overlayStyle={notebookStyles.dialogContainer}
       >
         <View style={overlayStyles.titleContainer}>
           <Text style={overlayStyles.titleText}>Spot Actions</Text>
