@@ -242,8 +242,9 @@ const Basemap = ({
                   id={customMap.id + 'Layer'}
                   sourceID={customMap.id}
                   style={{
-                    rasterOpacity: customMap.opacity && typeof (customMap.opacity) === 'number'
-                    && customMap.opacity >= 0 && customMap.opacity <= 1 ? customMap.opacity : 1,
+                    rasterOpacity: customMap.opacity && parseFloat(customMap.opacity.toString())
+                    && parseFloat(customMap.opacity.toString()) >= 0 && parseFloat(customMap.opacity.toString()) <= 1
+                      ? parseFloat(customMap.opacity.toString()) : 1,
                     visibility: customMap.isViewable ? 'visible' : 'none',
                   }}
                   // layerIndex={10}
