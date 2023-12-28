@@ -8,7 +8,7 @@ const ToastPopup = (props) => {
   return (
     <ToastProvider
       placement={'top'}
-      offset={125}
+      offset={75}
       animationDuration={250}
       duration={3000}
       textStyle={{fontWeight: 'bold', paddingLeft: 5}}
