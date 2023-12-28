@@ -3,6 +3,7 @@ import {FlatList, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button, ButtonGroup, Overlay} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import AddLine from './AddLine';
@@ -12,7 +13,7 @@ import {MEASUREMENT_KEYS, MEASUREMENT_TYPES} from './measurements.constants';
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import SliderBar from '../../shared/ui/SliderBar';
 import Compass from '../compass/Compass';
@@ -51,6 +52,7 @@ const AddMeasurementModal = (props) => {
 
   const [useForm] = useFormHook();
   const useLocation = useLocationHook();
+  const toast = useToast();
 
   const formRef = useRef(null);
 
@@ -474,6 +476,8 @@ const AddMeasurementModal = (props) => {
         dispatch(setSelectedAttributes([editedMeasurementData]));
         onCloseButton();
       }
+      toast.show('Measurement Saved!', {type: 'success', duration: 2000});
+      SMALL_SCREEN && dispatch(setModalVisible({modal: null}));
     }
     catch (err) {
       console.log('Error submitting form', err);
