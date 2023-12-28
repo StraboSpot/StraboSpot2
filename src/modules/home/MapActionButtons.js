@@ -68,7 +68,6 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
         overlayStyle={{...overlayStyles.baseMapPosition, maxHeight: height * 0.80, flex: 1}}
-        close={() => toggleDialog('baseMapMenuVisible')}
         mapComponentRef={mapComponentRef}
         onPress={(name) => {
           useMaps.setBasemap(name);
