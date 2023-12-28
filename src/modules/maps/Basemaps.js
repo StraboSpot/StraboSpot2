@@ -230,7 +230,7 @@ const Basemap = ({
         />
 
         {/* Custom Overlay Layer */}
-        {Object.values(customMaps).map((customMap) => {
+        {!imageBasemap && !stratSection && Object.values(customMaps).map((customMap) => {
           return (
             customMap.overlay && (
               <MapboxGL.RasterSource
