@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {ListItem} from 'react-native-elements';
@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
+import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import {setLoadingStatus} from '../../home/home.slice';
@@ -33,7 +34,7 @@ const StratSectionsList = ({closeManMenuPanel}) => {
       }, 500);
     }
     else {
-      Alert.alert('Strat Section not found!');
+      alert('Strat Section not found!');
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
