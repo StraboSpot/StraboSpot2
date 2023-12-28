@@ -246,9 +246,7 @@ const projectSlice = createSlice({
     },
     updatedProject(state, action) {
       const {field, value} = action.payload;
-      if (field === 'description') state.project.description = value;
-      else if (field === 'preferences') state.project.preferences = value;
-      else if (field === 'tags' && !isEmpty(state.selectedTag)) {
+      if (field === 'tags' && !isEmpty(state.selectedTag)) {
         state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
       }
       state.project[field] = value;

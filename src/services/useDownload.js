@@ -267,7 +267,13 @@ const useDownload = () => {
         mapId = map.id.split('/').slice(3).join('/');
       }
       const providerInfo = MAP_PROVIDERS[map.source];
-      const customMap = {...map, ...providerInfo, id: mapId, key: map.accessToken, source: map.source};
+      const customMap = {
+        ...map,
+        ...providerInfo,
+        id: mapId,
+        key: map.accessToken || map.key,
+        source: map.source,
+      };
       console.log(customMap);
       customMapsToSave = {...customMapsToSave, [customMap.id]: customMap};
     });

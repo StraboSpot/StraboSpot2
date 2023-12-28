@@ -201,7 +201,7 @@ const useMaps = (mapRef) => {
   };
 
   const getBboxCoords = async (map) => {
-    if (map.source === 'strabospot_mymaps') {
+    if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
       const myMapsBbox = await useServerRequests.getMyMapsBbox(map.id);
       if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
     }
@@ -538,16 +538,17 @@ const useMaps = (mapRef) => {
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
     console.log('RES', testUrlResponse);
     if (testUrlResponse) {
-      if (!customMap.bbox) bbox = await getBboxCoords(map);
+      bbox = await getBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
         setBasemap(null);
       }
       if (project.other_maps) {
         const otherMapsInProject = project.other_maps;
-        if (customMap.source !== 'mapbox_styles') delete customMap.key;
+        const otherMapsInProjectFiltered = otherMapsInProject.filter(m => m.id !== customMap.id);
+        // if (customMap.source !== 'mapbox_styles') delete customMap.key;
         dispatch(updatedProject(
-          {field: 'other_maps', value: [...otherMapsInProject, customMap]}));
+          {field: 'other_maps', value: [...otherMapsInProjectFiltered, customMap]}));
       }
       else dispatch(updatedProject({field: 'other_maps', value: [map]}));
       dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
@@ -570,10 +571,8 @@ const useMaps = (mapRef) => {
         if (newBasemap) {
           newBasemap = buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
-          if (isOnline.isInternetReachable && !newBasemap.bbox && newBasemap.source === 'strabospot_mymaps') {
-            bbox = await getBboxCoords(newBasemap);
-            newBasemap = {...newBasemap, bbox: bbox};
-          }
+          bbox = await getBboxCoords(newBasemap);
+          if (bbox) newBasemap = {...newBasemap, bbox: bbox};
         }
         else {
           dispatch(clearedStatusMessages());
@@ -587,18 +586,19 @@ const useMaps = (mapRef) => {
       return newBasemap;
     }
     catch (err) {
-      console.warn('Error is setBasemap', err);
+      console.warn('Error in setBasemap', err);
     }
   };
 
   const setCustomMapSwitchValue = (value, map) => {
     console.log('Custom Map Switch Value:', value, 'Map Id:', map.id);
-    const customMapsCopy = JSON.parse(JSON.stringify(customMaps));
     let mapKey = map.id;
-    if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
-    if (customMapsCopy[mapKey]) {
-      dispatch(addedCustomMap({...customMapsCopy[mapKey], isViewable: value}));
-      if (!customMapsCopy[mapKey].overlay) viewCustomMap(map);
+    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
+      mapKey = map.id.split('/').slice(3).join('/');
+    }
+    if (customMaps[mapKey]) {
+      dispatch(addedCustomMap({...customMaps[mapKey], isViewable: value}));
+      if (!customMaps[mapKey].overlay) viewCustomMap(map);
     }
   };
 
