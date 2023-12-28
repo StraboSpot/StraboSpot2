@@ -69,7 +69,7 @@ const TagDetailModal = (props) => {
   return (
     <Overlay
       isVisible={props.isVisible}
-      overlayStyle={SMALL_SCREEN ? modalStyle.modalContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
+      overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
       fullScreen={SMALL_SCREEN}
       animationType={'slide'}
     >

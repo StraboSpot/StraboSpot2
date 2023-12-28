@@ -65,7 +65,7 @@ const Modal = (props) => {
     return (
       <Overlay
         isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || SMALL_SCREEN}
-        overlayStyle={SMALL_SCREEN ? modalStyle.modalContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
+        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
         fullScreen={SMALL_SCREEN}
         animationType={'slide'}
       >

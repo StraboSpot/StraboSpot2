@@ -1,23 +1,8 @@
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import * as themes from '../../styles.constants';
-import {SMALL_SCREEN} from '../../styles.constants';
 
 const modalStyle = StyleSheet.create({
-  modalContainer: {
-    width: 300,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    overflow: 'hidden',
-    zIndex: 1,
-    padding: 0,
-  },
-  modalContainerFullScreen: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    overflow: 'hidden',
-    zIndex: 1,
-    paddingTop: Platform.OS === 'ios' && SMALL_SCREEN ? 30 : 0,
-  },
   modalHeaderContainer: {
     flex: 1,
     flexDirection: 'column',
@@ -28,11 +13,6 @@ const modalStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginLeft: 10,
-  },
-  modalPosition: {
-    position: 'absolute',
-    left: 70,
-    bottom: 60,
   },
   sideModalPosition: {
     position: 'absolute',

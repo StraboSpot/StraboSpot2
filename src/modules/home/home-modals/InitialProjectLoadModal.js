@@ -387,7 +387,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
     <Overlay
       animationType={'slide'}
       isVisible={visible}
-      overlayStyle={SMALL_SCREEN ? modalStyle.modalContainerFullScreen : overlayStyles.overlayContainer}
+      overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : overlayStyles.overlayContainer}
       backdropStyle={overlayStyles.backdropStyles}
       fullScreen={SMALL_SCREEN}
     >
