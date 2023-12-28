@@ -1,4 +1,5 @@
 import React from 'react';
+import {useWindowDimensions} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -12,6 +13,7 @@ import IconButton from '../../shared/ui/IconButton';
 import UseMapsHook from '../maps/useMaps';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
+  const {height} = useWindowDimensions();
   const [useMaps] = UseMapsHook();
 
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -53,19 +55,19 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
       )}
       <MapActionsDialog
         visible={dialogs.mapActionsMenuVisible}
-        overlayStyle={overlayStyles.mapActionsPosition}
+        overlayStyle={{...overlayStyles.mapActionsPosition, maxHeight: height * 0.80, flex: 1}}
         onPress={name => dialogClickHandler('mapActionsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
       />
       <MapSymbolsDialog
         visible={dialogs.mapSymbolsMenuVisible}
-        overlayStyle={overlayStyles.mapSymbolsPosition}
+        overlayStyle={{...overlayStyles.mapSymbolsPosition, maxHeight: height * 0.80, flex: 1}}
         onPress={name => dialogClickHandler('mapSymbolsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
       <BaseMapDialog
         visible={dialogs.baseMapMenuVisible}
-        overlayStyle={overlayStyles.baseMapPosition}
+        overlayStyle={{...overlayStyles.baseMapPosition, maxHeight: height * 0.80, flex: 1}}
         close={() => toggleDialog('baseMapMenuVisible')}
         mapComponentRef={mapComponentRef}
         onPress={(name) => {

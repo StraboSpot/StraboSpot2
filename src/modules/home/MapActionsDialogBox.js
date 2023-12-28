@@ -49,7 +49,6 @@ const MapActionsDialog = (props) => {
     <Overlay
       animationType={'slide'}
       backdropStyle={{backgroundColor: 'transparent'}}
-      fullScreen={true}
       isVisible={props.visible}
       onBackdropPress={props.onTouchOutside}
       overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}

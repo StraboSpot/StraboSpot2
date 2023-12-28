@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -83,17 +83,27 @@ const styles = StyleSheet.create({
   overlayContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderColor: themes.MEDIUMGREY,
-    borderRadius: 10,
+    borderRadius: themes.MODAL_BORDER_RADIUS,
     borderWidth: 0.5,
     elevation: 2,
-    maxHeight: '80%',
     shadowOpacity: 0.3,
     shadowRadius: 4,
     width: 300,
   },
+  overlayContainerFullScreen: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    overflow: 'hidden',
+    zIndex: 1,
+    paddingTop: Platform.OS === 'ios' && SMALL_SCREEN ? 30 : 0,
+  },
   overlayContent: {
     marginTop: 5,
     alignItems: 'center',
+  },
+  overlayPosition: {
+    position: 'absolute',
+    left: 70,
+    bottom: 60,
   },
   contentText: {
     padding: 5,
