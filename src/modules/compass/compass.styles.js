@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   sliderContainer: {
-    flex: 1,
     padding: 10,
     justifyContent: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,

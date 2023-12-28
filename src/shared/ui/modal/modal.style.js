@@ -33,7 +33,6 @@ const modalStyle = StyleSheet.create({
     position: 'absolute',
     left: 70,
     bottom: 60,
-    borderRadius: 20,
   },
   sideModalPosition: {
     position: 'absolute',
@@ -51,6 +50,7 @@ const modalStyle = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderRadius: themes.MODAL_BORDER_RADIUS
   },
   textStyle: {
     fontSize: themes.MODAL_TEXT_SIZE,
