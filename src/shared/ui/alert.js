@@ -17,7 +17,7 @@ const alertPolyfill = (title, description, options, extra) => {
 
 const alert = (title, description, options, extra) => {
   Platform.OS === 'web' ? alertPolyfill(title, description, options, extra)
-    : Alert.alert(title,  description,[{ text: 'Ok', onPress: () => console.log('OK Pressed') }]);
+    : Alert.alert(title,  description,options || [{ text: 'Ok', onPress: () => console.log('OK Pressed') }]);
 }
 
 export default alert;
