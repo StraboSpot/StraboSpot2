@@ -109,11 +109,7 @@ const useMaps = (mapRef) => {
     console.log('map: ', mapId);
     const projectCopy = {...project};
     const customMapsCopy = {...customMaps};
-    if (mapId.includes('/')) {
-      const mapboxStylesId = mapId.split('/');
-      delete customMapsCopy[mapboxStylesId[1]];
-    }
-    else delete customMapsCopy[mapId];
+    delete customMapsCopy[mapId];
     if (projectCopy.other_maps) {
       const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
       dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
@@ -592,13 +588,9 @@ const useMaps = (mapRef) => {
 
   const setCustomMapSwitchValue = (value, map) => {
     console.log('Custom Map Switch Value:', value, 'Map Id:', map.id);
-    let mapKey = map.id;
-    if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
-      mapKey = map.id.split('/').slice(3).join('/');
-    }
-    if (customMaps[mapKey]) {
-      dispatch(addedCustomMap({...customMaps[mapKey], isViewable: value}));
-      if (!customMaps[mapKey].overlay) viewCustomMap(map);
+    if (customMaps[map.id]) {
+      dispatch(addedCustomMap({...customMaps[map.id], isViewable: value}));
+      if (!customMaps[map.id].overlay) viewCustomMap(map);
     }
   };
 
