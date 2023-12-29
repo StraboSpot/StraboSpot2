@@ -86,7 +86,8 @@ const BaseMapDialog = ({mapComponentRef, onTouchOutside, overlayStyle, visible})
 
   const renderOfflineCustomMapsList = () => {
     const sectionTitle = 'Offline Custom Basemaps';
-    const offlineCustomMapsToDisplay = getCustomMapsWithValidSources(offlineMaps);
+    const offlineCustomMapsToDisplay = getCustomMapsWithValidSources(customMaps).filter(
+      customMap => offlineMaps[customMap.id]);
 
     return (
       <View style={{maxHeight: 250}} key={'OfflineCustomMapsList'}>
@@ -122,7 +123,8 @@ const BaseMapDialog = ({mapComponentRef, onTouchOutside, overlayStyle, visible})
 
   const renderOfflineCustomOverlaysList = () => {
     const sectionTitle = 'Offline Custom Overlays';
-    const offlineCustomOverlaysToDisplay = getCustomOverlaysWithValidSources(offlineMaps);
+    const offlineCustomOverlaysToDisplay = getCustomOverlaysWithValidSources(customMaps).filter(
+      customOverlay => offlineMaps[customOverlay.id]);
 
     return (
       <View style={{maxHeight: 250}} key={'OfflineCustomOverlaysList'}>
