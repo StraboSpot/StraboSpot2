@@ -190,8 +190,11 @@ const useImages = () => {
     console.log('Pressed image basemap:', image);
     if (Platform.OS === 'web') {
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-      dispatch(clearedSelectedSpots());
-      dispatch(setCurrentImageBasemap(image));
+      batch(() => {
+        dispatch(clearedSelectedSpots());
+        dispatch(setCurrentImageBasemap(image));
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+      });
     }
     else {
       doesImageExistOnDevice(image.id)
