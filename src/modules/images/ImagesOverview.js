@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Platform, Switch, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Switch, Text, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {Button, Image} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import imageStyles from './images.styles';
 import useImagesHook from './useImages';
@@ -18,9 +17,7 @@ const ImagesOverview = () => {
   console.log('Rendering ImagesOverview...');
 
   const [useImages] = useImagesHook();
-  const navigation = useNavigation();
 
-  const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -100,21 +97,13 @@ const ImagesOverview = () => {
     );
   };
 
-  const renderImages = () => {
-    return (
-      <FlatList
-        data={images}
-        renderItem={({item}) => renderImage(item)}
-        keyExtractor={item => item.id.toString()}
-        ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
-      />
-    );
-  };
-
   return (
-    <React.Fragment>
-      {renderImages()}
-    </React.Fragment>
+    <FlatList
+      data={images}
+      renderItem={({item}) => renderImage(item)}
+      keyExtractor={item => item.id.toString()}
+      ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+    />
   );
 };
 

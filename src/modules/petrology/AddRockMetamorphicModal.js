@@ -5,10 +5,10 @@ import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 
 import {isEmpty} from '../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
-import modalStyle from '../../shared/ui/modal/modal.style';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import ModalHeader from '../../shared/ui/modal/ModalHeader';
 import {Form, formStyles, MainButtons, useFormHook} from '../form';
+import overlayStyles from '../home/overlays/overlay.styles';
 
 const AddRockMetamorphicModal = (props) => {
   const {width} = useWindowDimensions();
@@ -70,7 +70,7 @@ const AddRockMetamorphicModal = (props) => {
     const faciesModalWidth = width > 520 ? 500 : '90%';
     return (
       <Overlay
-        overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition, {width: faciesModalWidth, left: 20}]}
+        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : [overlayStyles.overlayContainer, overlayStyles.overlayPosition, {width: faciesModalWidth, left: 20}]}
         isVisible={true}
       >
         <ModalHeader

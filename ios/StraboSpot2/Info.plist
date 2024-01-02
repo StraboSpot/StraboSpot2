@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.51.0</string>
+	<string>2.1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>55</string>
+	<string>59</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -51,7 +51,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs permission to access camera</string>
 	<key>NSFileProviderDomainUsageDescription</key>
-	<string>$(PRODUCT_NAME) to access device's accelerometer</string>
+	<string>$(PRODUCT_NAME) to access device&apos;s accelerometer</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access you location for map usage</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

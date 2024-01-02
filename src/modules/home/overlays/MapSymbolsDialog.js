@@ -62,7 +62,6 @@ const MapSymbolsDialog = (props) => {
     <Overlay
       animationType={'slide'}
       backdropStyle={{backgroundColor: 'transparent'}}
-      fullScreen={true}
       isVisible={props.visible}
       onBackdropPress={props.onTouchOutside}
       overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
@@ -71,14 +70,12 @@ const MapSymbolsDialog = (props) => {
         <Text style={[overlayStyles.titleText]}>Map Symbols</Text>
       </View>
       {!isEmpty(mapSymbols) && (
-        <View style={{maxHeight: deviceHeight * 0.60}}>
           <FlatList
             keyExtractor={item => item}
             data={mapSymbols}
             renderItem={renderSymbolsList}
             ItemSeparatorComponent={FlatListItemSeparator}
           />
-        </View>
       )}
       <ListItem
         key={'all'}

@@ -10,8 +10,7 @@ import compassStyles from './compass.styles';
 import commonStyles from '../../shared/common.styles';
 import SaveButton from '../../shared/SaveButton';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import Slider from '../../shared/ui/SliderBar';
-import uiStyles from '../../shared/ui/ui.styles';
+import SliderBar from '../../shared/ui/SliderBar';
 import {NumberInputField} from '../form';
 import {MODAL_KEYS} from '../page/page.constants';
 
@@ -98,14 +97,13 @@ const ManualMeasurement = (props) => {
                 <>
                   <View style={compassStyles.sliderContainer}>
                     <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-                    <Slider
+                    <SliderBar
                       onSlidingComplete={props.setSliderValue}
                       value={props.sliderValue}
                       step={1}
                       maximumValue={6}
                       minimumValue={1}
                       labels={['Low', '', '', '', 'High', 'N/R']}
-                      labelStyle={uiStyles.sliderLabel}
                     />
                     <SaveButton
                       title={'Add to Attribute'}

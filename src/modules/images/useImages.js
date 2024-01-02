@@ -30,12 +30,10 @@ import {
 } from '../spots/spots.slice';
 
 const useImages = () => {
-  const {width, height} = useWindowDimensions();
-
   const navigation = useNavigation();
   const toast = useToast();
   const useDevice = useDeviceHook();
-  // const [useSpots] = useSpotsHook();
+  const {width, height} = useWindowDimensions();
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -97,20 +95,14 @@ const useImages = () => {
     navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
-  const launchCameraFromNotebook = async () => {
+  const launchCameraFromNotebook = async (newSpotId) => {
     try {
       const savedPhoto = await takePicture();
-      const photoProperties = {
-        id: savedPhoto.id,
-        image_type: 'photo',
-        height: savedPhoto.height,
-        width: savedPhoto.width,
-      };
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (savedPhoto === 'cancelled') {
         if (newImages.length > 0) {
           console.log('ALL PHOTOS SAVED', newImages);
-          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
+          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
           dispatch(editedSpotImages(newImages));
         }
         else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
@@ -118,9 +110,15 @@ const useImages = () => {
         return newImages.length;
       }
       else {
+        const photoProperties = {
+          id: savedPhoto.id,
+          image_type: 'photo',
+          height: savedPhoto.height,
+          width: savedPhoto.width,
+        };
         console.log('Photos to Save:', [...newImages, photoProperties]);
         newImages.push(photoProperties);
-        return launchCameraFromNotebook();
+        return launchCameraFromNotebook(newSpotId);
       }
     }
     catch (err) {

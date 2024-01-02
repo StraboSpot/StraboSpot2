@@ -34,7 +34,10 @@ export const SMALL_TEXT_SIZE = Platform.OS === 'web' ? 10 : 14;
 export const MEDIUM_TEXT_SIZE = Platform.OS === 'web' ? 12 : 16;
 export const LARGE_TEXT_SIZE = Platform.OS === 'web' ? 18 : 22;
 export const SPOT_NAME_SIZE = Platform.OS === 'web' ? 20 : 30;
+
+// MODALS AND OVERLAYS
 export const MODAL_TEXT_SIZE = Platform.OS === 'web' ? 10 : 14;
+export const MODAL_BORDER_RADIUS = 10;
 
 export const UPDATE_LABEL_WIDTH = 150;
 export const UPDATE_LABEL_HEIGHT = 150;

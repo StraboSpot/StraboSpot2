@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { SectionList, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button, Icon} from 'react-native-elements';
 import {batch, useDispatch, useSelector} from 'react-redux';
 
 import MeasurementDetail from './MeasurementDetail';
@@ -9,7 +9,7 @@ import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
 import useMeasurementsHook from './useMeasurements';
 import {isEmpty} from '../../shared/Helpers';
-import {WARNING_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -37,17 +37,17 @@ const MeasurementsPage = (props) => {
 
   const SECTIONS = {
     PLANAR: {
-      title: 'Planar Measurements',
+      title: 'Planar \nMeasurements',
       keys: ['planar_orientation', 'tabular_orientation'],
       compass_toggles: [COMPASS_TOGGLE_BUTTONS.PLANAR],
     },
     LINEAR: {
-      title: 'Linear Measurements',
+      title: 'Linear \nMeasurements',
       keys: ['linear_orientation'],
       compass_toggles: [COMPASS_TOGGLE_BUTTONS.LINEAR],
     },
     PLANARLINEAR: {
-      title: 'P + L Measurements',
+      title: 'Planar + Linear \nMeasurements',
       keys: ['linear_orientation', 'planar_orientation', 'tabular_orientation'],
       compass_toggles: [COMPASS_TOGGLE_BUTTONS.PLANAR, COMPASS_TOGGLE_BUTTONS.LINEAR],
     },
@@ -181,16 +181,7 @@ const MeasurementsPage = (props) => {
             />
           )}
           {!multiSelectMode && (
-            <View style={{flexDirection: 'row'}}>
-              {!modalVisible && (
-                <Button
-                  titleStyle={styles.measurementsSectionDividerButtonText}
-                  title={'Add'}
-                  type={'clear'}
-                  onPress={() => addMeasurement(sectionType)}
-                  disabled={isMultipleFeaturesTaggingEnabled}
-                />
-              )}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <React.Fragment>
                 <Button
                   disabled={data.length < 1 || isMultipleFeaturesTaggingEnabled}
@@ -207,6 +198,14 @@ const MeasurementsPage = (props) => {
                   onPress={() => onSelectingStart(sectionType)}
                 />
               </React.Fragment>
+              {!modalVisible && (
+                <Button
+                  icon={<Icon name={'add'} size={30} style={{paddingRight: 10, paddingLeft: 10}} color={PRIMARY_ACCENT_COLOR}/>}
+                  type={'clear'}
+                  onPress={() => addMeasurement(sectionType)}
+                  disabled={isMultipleFeaturesTaggingEnabled}
+                />
+              )}
             </View>
           )}
         </View>

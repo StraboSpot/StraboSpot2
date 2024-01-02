@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Platform, TextInput} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import SystemNavigationBar from 'react-native-system-navigation-bar';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -45,7 +45,7 @@ import useHomeHook from '../home/useHome';
 import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
-import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
@@ -64,8 +64,6 @@ import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 
 const {State: TextInputState} = TextInput;
-SystemNavigationBar.stickyImmersive().catch(err => console.log('Error hiding system bars', err));
-SystemNavigationBar.setNavigationColor('translucent');
 
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
@@ -83,6 +81,7 @@ const Home = ({navigation, route}) => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isHomeLoading = useSelector(state => state.home.loading.home);
@@ -92,7 +91,6 @@ const Home = ({navigation, route}) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
@@ -290,7 +288,8 @@ const Home = ({navigation, route}) => {
 
   const closeMainMenu = () => {
     dispatch(setMainMenuPanelVisible(false));
-    dispatch(setMenuSelectionPage({name: undefined}));
+    dispatch(setMenuSelectionPage({name: null}));
+    SMALL_SCREEN && dispatch(setSidePanelVisible(false));
     animateDrawer(animatedValueMainMenuDrawer, -MAIN_MENU_DRAWER_WIDTH);
     animateDrawer(animatedValueLeftSide, 0);
   };
@@ -329,16 +328,16 @@ const Home = ({navigation, route}) => {
   const endMeasurement = () => setMapMode(MAP_MODES.VIEW);
 
   const exportProject = async () => {
-    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${selectedProject.project.fileName}) has been exported!`
+    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${backupFileName}) has been exported!`
       : `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`;
+
     dispatch(clearedStatusMessages());
     console.log('Exporting Project');
-    dispatch(addedStatusMessage(`Exporting ${selectedProject.project.fileName}!`));
-    await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, selectedProject.project.fileName,
-      true);
+    dispatch(addedStatusMessage(`Exporting ${backupFileName}!`));
+    await useExport.zipAndExportProjectFolder(true);
     dispatch(addedStatusMessage(exportCompleteMessage));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
-    console.log(`Project ${selectedProject.project.fileName} has been exported!`);
+    console.log(`Project ${backupFileName} has been exported!`);
   };
 
   const goToCurrentLocation = async () => {
@@ -411,29 +410,13 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const renderOfflineMapViewLabel = () => {
-    return (
-      <View style={homeStyles.offlineMapLabelContainer}>
-        <Text style={homeStyles.offlineMapViewLabel}>Offline View</Text>
-      </View>
-    );
-  };
-
   const renderSidePanelView = () => {
-    if (SMALL_SCREEN) {
-      return (
-        <Animated.View
-          style={[sidePanelStyles.sidePanelContainerPhones, animateMainMenuSubDrawer]}>
-          <Animated.View style={[{flex: 1}, animateTextInputs]}>
-            {renderSidePanelContent()}
-          </Animated.View>
-        </Animated.View>
-      );
-    }
     return (
       <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
         <Animated.View style={[{flex: 1}, animateTextInputs]}>
-          {renderSidePanelContent()}
+          <SafeAreaView style={{flex: 1}}>
+            {renderSidePanelContent()}
+          </SafeAreaView>
         </Animated.View>
       </Animated.View>
     );
@@ -522,10 +505,8 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleSidePanel = () => {
-    if (isSidePanelVisible) {
-      animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
-      return renderSidePanelView();
-    }
+    console.log('Rendering side panel...');
+    if (isSidePanelVisible) animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
     else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
     return renderSidePanelView();
   };
@@ -534,10 +515,6 @@ const Home = ({navigation, route}) => {
     toggleHomeDrawerButton();
     closeNotebookPanel();
     dispatch(logout());
-  };
-
-  const toggleOfflineMapLabel = () => {
-    return Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
   };
 
   const MainMenu = (
@@ -628,7 +605,6 @@ const Home = ({navigation, route}) => {
       {/*------------------------*/}
       <LoadingSpinner isLoading={isHomeLoading}/>
       {MainMenu}
-      {toggleOfflineMapLabel() && renderOfflineMapViewLabel()}
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}

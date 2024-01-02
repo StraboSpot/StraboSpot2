@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, Text, View} from 'react-native';
+import {Platform, Text, useWindowDimensions, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
@@ -7,17 +7,18 @@ import {useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import {WARNING_COLOR} from '../../../shared/styles.constants';
-import modalStyle from '../../../shared/ui/modal/modal.style';
+import {SMALL_SCREEN, WARNING_COLOR} from '../../../shared/styles.constants';
 import ModalHeader from '../../../shared/ui/modal/ModalHeader';
-import Slider from '../../../shared/ui/SliderBar';
-import uiStyles from '../../../shared/ui/ui.styles';
+import SliderBar from '../../../shared/ui/SliderBar';
 import Compass from '../../compass/Compass';
 import compassStyles from '../../compass/compass.styles';
 import ManualMeasurement from '../../compass/ManualMeasurement';
 import {formStyles, useFormHook} from '../../form';
+import overlayStyles from '../../home/overlays/overlay.styles';
 
 const ThreeDStructuresMeasurementsModal = (props) => {
+  const {height} = useWindowDimensions();
+
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
 
   const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
@@ -60,7 +61,15 @@ const ThreeDStructuresMeasurementsModal = (props) => {
   };
 
   return (
-    <Overlay overlayStyle={[modalStyle.modalContainer, modalStyle.modalPosition]} isVisible={true}>
+    <Overlay
+      overlayStyle={
+        SMALL_SCREEN
+          ? overlayStyles.overlayContainerFullScreen
+          : [{...overlayStyles.overlayContainer, maxHeight: height * 0.80}, overlayStyles.overlayPosition]
+      }
+      isVisible={true}
+      fullScreen={SMALL_SCREEN}
+    >
       <ModalHeader
         buttonTitleRight={'Done'}
         title={props.measurementsGroupLabel}
@@ -92,14 +101,13 @@ const ThreeDStructuresMeasurementsModal = (props) => {
           />
           <View style={compassStyles.sliderContainer}>
             <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-            <Slider
+            <SliderBar
               onSlidingComplete={setSliderValue}
               value={sliderValue}
               step={1}
               maximumValue={6}
               minimumValue={1}
               labels={['Low', '', '', '', 'High', 'N/R']}
-              labelStyle={uiStyles.sliderLabel}
             />
           </View>
         </>

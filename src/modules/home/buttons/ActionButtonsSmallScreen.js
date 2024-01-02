@@ -4,6 +4,7 @@ import {useWindowDimensions, View} from 'react-native';
 import {DrawActionButtons, MapActionButtons, UserLocationButton} from './index';
 import * as themes from '../../../shared/styles.constants';
 import DrawInfo from '../dialogs/DrawInfo';
+import homeStyles from '../home.style';
 
 const ActionButtonsSmallScreen = ({
                                     clickHandler,
@@ -22,7 +23,9 @@ const ActionButtonsSmallScreen = ({
   return (
     <View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-        {width < height && <UserLocationButton clickHandler={clickHandler}/>}
+        {width < height ? <UserLocationButton clickHandler={clickHandler}/>
+          : <View/> //Added so 'space-between' would work correctly for DrawInfo when no UserLocationButton
+        }
 
         <DrawInfo
           distance={distance}
@@ -48,7 +51,7 @@ const ActionButtonsSmallScreen = ({
             shadowRadius: 4,
           }}
         >
-          <View style={{borderColor: themes.MEDIUMGREY, borderRightWidth: 1}}>
+          <View style={homeStyles.smallScreenMapActionButtons}>
             <MapActionButtons
               dialogClickHandler={dialogClickHandler}
               dialogs={dialogs}

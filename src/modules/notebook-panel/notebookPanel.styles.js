@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const notebookStyles = StyleSheet.create({
   notebookDrawer: {
@@ -30,6 +31,19 @@ const notebookStyles = StyleSheet.create({
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderTopWidth: 0.5,
     borderTopColor: themes.MEDIUMGREY,
+  },
+  dialogContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderColor: themes.MEDIUMGREY,
+    borderRadius: themes.MODAL_BORDER_RADIUS,
+    borderWidth: 0.5,
+    elevation: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    width: 300,
+    position: SMALL_SCREEN ? 'null' : 'absolute',
+    top: SMALL_SCREEN ? 0 : 20,
+    right: SMALL_SCREEN ? 0 : 20,
   },
   dialogBoxPosition: {
     position: 'absolute',

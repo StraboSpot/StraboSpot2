@@ -204,7 +204,7 @@ const ManageOfflineMaps = (props) => {
         title={'Map Not Available!'}
         isVisible={isWarningModalVisible}
       >
-        <Text>Not Available Selected map is not available for offline use. Switching to first available map: {selectedMap.name}</Text>
+        <Text>Selected map is not available for offline use. Switching to first available map: {selectedMap.name}</Text>
       </WarningModal>
     );
   };

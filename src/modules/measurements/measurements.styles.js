@@ -1,4 +1,4 @@
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
 
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   measurementsSectionDividerButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
-    fontSize: Platform.OS === 'ios' ? 11 : 15,
+    fontSize: themes.MEDIUM_TEXT_SIZE,
   },
   measurementsContentContainer: {
     flex: 1,

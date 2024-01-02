@@ -36,6 +36,7 @@ const TagsNotebookModal = (props) => {
       <React.Fragment>
         <Modal
           onPress={props.onPress}
+          close={props.close}
         >
           <View style={[modalStyle.textContainer]}>
             <AddButton

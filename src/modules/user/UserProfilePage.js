@@ -172,8 +172,12 @@ const UserProfile = (props) => {
         <View style={{alignItems: 'center'}}>
           <Avatar
             rounded
-            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')}
-                                             style={{width: '70%', height: '70%'}}/>}
+            renderPlaceholderContent={
+              <Image
+                source={require('../../assets/images/noimage.jpg')}
+                style={{width: '70%', height: '70%'}}
+              />
+            }
             source={{uri: avatar?.uri || avatar}}
             size={'xlarge'}
           />

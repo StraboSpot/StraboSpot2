@@ -67,7 +67,6 @@ const StratSectionPage = (props) => {
       <View>
         <SectionDividerWithRightButton
           dividerText={'Image Overlays'}
-          buttonTitle={'Add'}
           onPress={() => setSelectedImage({})}
         />
         <FlatList

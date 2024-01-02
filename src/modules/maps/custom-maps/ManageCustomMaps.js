@@ -39,20 +39,22 @@ const ManageCustomMaps = (props) => {
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
           <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
         </ListItem.Content>
-        <Icon
-          disabled={!isInternetReachable && !isConnected}
-          disabledStyle={{backgroundColor: 'transparent'}}
-          name={(isInternetReachable && isConnected) || !isInternetReachable && isConnected ? 'map-outline'
-            : !isInternetReachable && !isConnected ? 'cloud-offline' : null}
-          type={'ionicon'}
-          color={PRIMARY_ACCENT_COLOR}
-          onPress={async () => {
-            let customMapWithBbox;
-            if (item.overlay) customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
-            else customMapWithBbox = await useMaps.setBasemap(item.id);
-            customMapWithBbox.bbox && setTimeout(() => props.zoomToCustomMap(customMapWithBbox.bbox), 1000);
-          }}
-        />
+        {(item.source === 'mapbox_styles' || item.source === 'strabospot_mymaps') && (
+          <Icon
+            disabled={!isInternetReachable && !isConnected}
+            disabledStyle={{backgroundColor: 'transparent'}}
+            name={(isInternetReachable && isConnected) || !isInternetReachable && isConnected ? 'map-outline'
+              : !isInternetReachable && !isConnected ? 'cloud-offline' : null}
+            type={'ionicon'}
+            color={PRIMARY_ACCENT_COLOR}
+            onPress={async () => {
+              let customMapWithBbox;
+              if (item.overlay) customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
+              else customMapWithBbox = await useMaps.setBasemap(item.id);
+              customMapWithBbox.bbox && setTimeout(() => props.zoomToCustomMap(customMapWithBbox.bbox), 1000);
+            }}
+          />
+        )}
         <ListItem.Chevron/>
       </ListItem>
     );
@@ -62,7 +64,7 @@ const ManageCustomMaps = (props) => {
     <React.Fragment>
       <AddButton
         onPress={() => useMaps.customMapDetails({})}
-        title={'Add new Custom Map'}
+        title={'Add New Custom Map'}
         type={'outline'}
       />
       <SectionDivider dividerText={'Current Custom Maps'}/>

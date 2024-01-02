@@ -15,34 +15,28 @@ import {BASEMAPS} from '../../maps/maps.constants';
 import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline.web';
 import useMapsHook from '../../maps/useMaps';
 
-const MapLayersDialog = ({mapComponentRef, ...props}) => {
+const MapLayersDialog = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
 
   const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
 
   const [dialogTitle, setDialogTitle] = useState('Map Layers');
 
-  const customMaps = useSelector(state => state.map.customMaps);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const customEndpoint = useSelector(state => state.connections.databaseEndpoint);
-  const {isConnected, isInternetReachable} = useSelector(state => state.connections.isOnline);
+  const customMaps = useSelector(state => state.map.customMaps);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const {isConnected, isInternetReachable} = useSelector(state => state.connections.isOnline);
 
   useEffect(() => {
     if (customEndpoint.isSelected) setDialogTitle(`Map Layers - ${customEndpoint.url}`);
   }, []);
 
-  // const conditions = ['http', 'https'];
-  //
-  // const checkForOfflineCustomMaps = () => {
-  //   return Object.values(offlineMaps).some(map => {
-  //     return map.source === 'map_warper' || map.source === 'strabospot_mymaps';
-  //   });
-  // };
-  //
-  // const checkMapOverlay = () => {
-  //   return Object.values(customMaps).some(map => map.overlay === false);
-  // };
+  const isValidSource = map => map.source === 'mapbox_styles' || map.source === 'strabospot_mymaps';
+
+  const getCustomMapsWithValidSources = maps => Object.values(maps).filter(m => isValidSource(m) && !m.overlay);
+
+  const getCustomOverlaysWithValidSources = maps => Object.values(maps).filter(m => isValidSource(m) && m.overlay);
 
   const renderDefaultBasemapsList = () => {
     let sectionTitle = 'Default Basemaps';
@@ -71,18 +65,17 @@ const MapLayersDialog = ({mapComponentRef, ...props}) => {
     );
   };
 
-  const renderCustomBasemapsList = () => {
+  const renderCustomMapsList = () => {
     const sectionTitle = 'Custom Basemaps';
-    let customMapsToDisplay = customEndpoint.isSelected
-      ? Object.values(customMaps).filter(customMap => !customMap.overlay && customMap.url[0].includes('192.'))
-      : Object.values(customMaps).filter(customMap => !customMap.overlay && !customMap.url[0].includes('192.'));
+    let customMapsToDisplay = getCustomMapsWithValidSources(customMaps).filter(
+      customMap => customEndpoint.isSelected ? customMap.url[0].includes('192.') : !customMap.url[0].includes('192.'));
 
     return (
       <View style={{maxHeight: 250}} key={'CustomMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id + 'CustomMap'}
-          data={Object.values(customMapsToDisplay)}
+          data={customMapsToDisplay}
           renderItem={({item}) => renderCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -91,18 +84,17 @@ const MapLayersDialog = ({mapComponentRef, ...props}) => {
     );
   };
 
-  const renderOfflineCustomBasemapList = () => {
-    const customOfflineMapsToDisplay = Object.values(offlineMaps).filter((map) => {
-      if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm'
-        && map.id !== 'macrostrat' && !isEmpty(map)) return offlineMaps[map.id];
-    });
+  const renderOfflineCustomMapsList = () => {
     const sectionTitle = 'Offline Custom Basemaps';
+    const offlineCustomMapsToDisplay = getCustomMapsWithValidSources(customMaps).filter(
+      customMap => offlineMaps[customMap.id]);
+
     return (
       <View style={{maxHeight: 250}} key={'OfflineCustomMapsList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id + 'OfflineCustomMap'}
-          data={Object.values(customOfflineMapsToDisplay)}
+          data={offlineCustomMapsToDisplay}
           renderItem={({item}) => renderOfflineCustomMapItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
@@ -111,18 +103,17 @@ const MapLayersDialog = ({mapComponentRef, ...props}) => {
     );
   };
 
-  const renderCustomMapOverlaysList = () => {
+  const renderCustomOverlaysList = () => {
     let sectionTitle = 'Custom Overlays';
-    let customMapOverlaysToDisplay = customEndpoint.isSelected
-      ? Object.values(customMaps).filter(customMap => customMap.overlay && customMap.url[0].includes('192.'))
-      : Object.values(customMaps).filter(customMap => customMap.overlay && !customMap.url[0].includes('192.'));
+    let customOverlaysToDisplay = getCustomOverlaysWithValidSources(customMaps).filter(
+      customMap => customEndpoint.isSelected ? customMap.url[0].includes('192.') : !customMap.url[0].includes('192.'));
 
     return (
       <View style={{maxHeight: 250}} key={'CustomOverlaysList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id + 'CustomOverlay'}
-          data={customMapOverlaysToDisplay}
+          data={customOverlaysToDisplay}
           renderItem={({item}) => renderMapOverlayItem(item)}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
         />
@@ -130,17 +121,17 @@ const MapLayersDialog = ({mapComponentRef, ...props}) => {
     );
   };
 
-  const renderOfflineCustomMapOverlayList = () => {
-    let customMapOverlaysToDisplay = Object.values(customMaps).filter(
-      customMap => customMap.overlay);
-    const offlineCustomMapOverlaysToDisplay = customMapOverlaysToDisplay.filter(customMap => offlineMaps[customMap.id]);
+  const renderOfflineCustomOverlaysList = () => {
     const sectionTitle = 'Offline Custom Overlays';
+    const offlineCustomOverlaysToDisplay = getCustomOverlaysWithValidSources(customMaps).filter(
+      customOverlay => offlineMaps[customOverlay.id]);
+
     return (
       <View style={{maxHeight: 250}} key={'OfflineCustomOverlaysList'}>
         <SectionDivider dividerText={sectionTitle}/>
         <FlatList
           keyExtractor={item => item.id + 'OfflineCustomOverlay'}
-          data={offlineCustomMapOverlaysToDisplay}
+          data={offlineCustomOverlaysToDisplay}
           renderItem={({item}) => renderMapOverlayItem(item)}
           ListEmptyComponent={<ListEmptyText text={`No ${sectionTitle}`}/>}
         />
@@ -202,11 +193,6 @@ const MapLayersDialog = ({mapComponentRef, ...props}) => {
     <ListItem
       containerStyle={overlayStyles.overlayContent}
       key={customMap.id + 'CustomOverlayItem' + (isOffline ? 'Offline' : '')}
-      // onPress={async () => {
-      //   const baseMap = await useMaps.setBasemap(customMap.id);
-      //   props.close();
-      //   setTimeout(() => mapComponentRef.current?.zoomToCustomMap(baseMap.bbox), 1000);
-      // }}
     >
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
@@ -237,26 +223,25 @@ const MapLayersDialog = ({mapComponentRef, ...props}) => {
   };
 
   const determineWhatCustomMapListToRender = () => {
-    if (isInternetReachable && isConnected) return [renderCustomBasemapsList(), renderCustomMapOverlaysList()];
+    if (isInternetReachable && isConnected) return [renderCustomMapsList(), renderCustomOverlaysList()];
     else if (!isInternetReachable && isConnected) {
       return [
-        renderCustomBasemapsList(),
-        renderOfflineCustomBasemapList(),
-        renderCustomMapOverlaysList(),
-        renderOfflineCustomMapOverlayList(),
+        renderCustomMapsList(),
+        renderOfflineCustomMapsList(),
+        renderCustomOverlaysList(),
+        renderOfflineCustomOverlaysList(),
       ];
     }
-    else return [renderOfflineCustomBasemapList(), renderOfflineCustomMapOverlayList()];
+    else return [renderOfflineCustomMapsList(), renderOfflineCustomOverlaysList()];
   };
 
   return (
     <Overlay
       animationType={'slide'}
       backdropStyle={{backgroundColor: 'transparent'}}
-      fullScreen={true}
-      isVisible={props.visible}
-      onBackdropPress={props.onTouchOutside}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
+      isVisible={visible}
+      onBackdropPress={onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, overlayStyle]}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>

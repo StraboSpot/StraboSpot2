@@ -87,7 +87,6 @@ const TephraPage = (props) => {
         <ReturnToOverviewButton/>
         <SectionDividerWithRightButton
           dividerText={props.page.label}
-          buttonTitle={'Add'}
           onPress={addAttribute}
         />
         <FlatList

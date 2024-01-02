@@ -26,9 +26,7 @@ const mapsSlice = createSlice({
   initialState: initialMapsState,
   reducers: {
     addedCustomMap(state, action) {
-      let mapId = action.payload.id;
-      if (action.payload.source === 'mapbox_styles') mapId = action.payload.id.split('/')[1];
-      const newMapObject = Object.assign({}, {[mapId]: action.payload});
+      const newMapObject = Object.assign({}, {[action.payload.id]: action.payload});
       console.log('Setting custom maps: ', newMapObject);
       state.customMaps = {...state.customMaps, ...newMapObject};
     },

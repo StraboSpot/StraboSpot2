@@ -1,18 +1,20 @@
 import React, {useState} from 'react';
-import {Animated, View} from 'react-native';
+import {Animated, View, useWindowDimensions} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import modalStyle from './modal.style';
 import ModalHeader from './ModalHeader';
 import compassStyles from '../../../modules/compass/compass.styles';
+import overlayStyles from '../../../modules/home/overlays/overlay.styles';
 import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/page/page.constants';
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import {SMALL_SCREEN} from '../../styles.constants';
 
 const Modal = (props) => {
+
+  const {height} = useWindowDimensions();
 
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
@@ -62,8 +64,9 @@ const Modal = (props) => {
     return (
       <Overlay
         isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || SMALL_SCREEN}
-        overlayStyle={SMALL_SCREEN ? modalStyle.modalContainerFullScreen : [modalStyle.modalContainer, modalStyle.modalPosition]}
+        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
         fullScreen={SMALL_SCREEN}
+        animationType={'slide'}
       >
         <ModalHeader {...props}/>
         {props.children}
@@ -72,7 +75,7 @@ const Modal = (props) => {
     );
   }
   return (
-    <View style={[modalStyle.modalContainer, modalStyle.modalPosition]}>
+    <View style={{...overlayStyles.overlayContainer, ...overlayStyles.overlayPosition, maxHeight: height * 0.80}}>
       <ModalHeader {...props}/>
       {props.children}
       {!isEmpty(selectedSpot) && renderModalBottom()}

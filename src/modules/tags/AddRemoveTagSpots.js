@@ -22,7 +22,7 @@ const AddRemoveTagSpots = () => {
   };
 
   return (
-    <React.Fragment>
+    <View style={{flex: 1}}>
       <SidePanelHeader
         backButton={() => dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_DETAIL}))}
         title={`${selectedTag.name}`}
@@ -34,7 +34,7 @@ const AddRemoveTagSpots = () => {
           isCheckedList={true}
         />
       </View>
-    </React.Fragment>
+    </View>
   );
 };
 

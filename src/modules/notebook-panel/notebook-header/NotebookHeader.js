@@ -17,6 +17,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice'
 import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
+import notebookStyles from '../notebookPanel.styles';
 
 const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => {
   const dispatch = useDispatch();
@@ -182,6 +183,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => 
         />
       </View>
       <NotebookMenu
+        overlayStyle={notebookStyles.dialogBoxPosition}
         isNotebookMenuVisible={isNotebookMenuVisible}
         closeNotebookMenu={() => setIsNotebookMenuVisible(false)}
         zoomToSpot={zoomToSpot}

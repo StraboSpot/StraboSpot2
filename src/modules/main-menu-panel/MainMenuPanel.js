@@ -11,7 +11,6 @@ import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 import {isEmpty} from '../../shared/Helpers';
-import {shortcutSwitchPosition} from '../home/home.slice';
 import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBasemaps from '../maps/ImageBasemaps';
@@ -40,11 +39,10 @@ const MainMenuPanel = ({
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
-  const switchPosition = useSelector(state => state.home.shortcutSwitchPosition);
 
   const mainMenuHeader = (
     <MainMenuPanelHeader
-      onPress={() => dispatch(setMenuSelectionPage({name: undefined}))}>
+      onPress={() => dispatch(setMenuSelectionPage({name: null}))}>
       {settingsPageVisible}
     </MainMenuPanelHeader>
   );
@@ -52,12 +50,6 @@ const MainMenuPanel = ({
 
   const setVisibleMenu = (name) => {
     dispatch(setMenuSelectionPage({name: name}));
-  };
-
-  const toggleSwitch = (switchName) => {
-    console.log('Switch', switchName);
-    dispatch(shortcutSwitchPosition({switchName: switchName}));
-    console.log(shortcutSwitchPosition);
   };
 
   switch (settingsPageVisible) {
@@ -157,10 +149,7 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.PREFERENCES.SHORTCUTS:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ShortcutMenu
-            toggleSwitch={switchName => toggleSwitch(switchName)}
-            shortcutSwitchPosition={switchPosition}
-          />
+          <ShortcutMenu/>
         </View>
       );
       break;
@@ -204,10 +193,10 @@ const MainMenuPanel = ({
 
   return (
     <SafeAreaView style={{flex: 1}}>
-    <View style={styles.container}>
-      {mainMenuHeader}
-      {page}
-    </View>
+      <View style={styles.container}>
+        {mainMenuHeader}
+        {page}
+      </View>
     </SafeAreaView>
   );
 };

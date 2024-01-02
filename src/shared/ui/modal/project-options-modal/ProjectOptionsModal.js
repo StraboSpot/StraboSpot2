@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
 import moment from 'moment/moment';
-import {Button, CheckBox, Dialog, Input} from 'react-native-elements';
+import {Button, CheckBox, Input, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -18,9 +18,11 @@ import useDeviceHook from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
 import LottieAnimations from '../../../../utils/animations/LottieAnimations';
 import commonStyles from '../../../common.styles';
-import {isEmpty} from '../../../Helpers';
+import {isEmpty, truncateText} from '../../../Helpers';
 import Spacer from '../../Spacer';
 import uiStyles from '../../ui.styles';
+import modalStyle from '../modal.style';
+import ModalHeader from '../ModalHeader';
 
 const ProjectOptionsDialogBox = (props) => {
   const dispatch = useDispatch();
@@ -220,7 +222,8 @@ const ProjectOptionsDialogBox = (props) => {
     return (
       <View>
         <View style={overlayStyles.overlayContent}>
-          <Text style={overlayStyles.statusMessageText}>Saves current project to local storage.</Text>
+          <Text style={overlayStyles.statusMessageText}>Save current project to local storage:</Text>
+          <Text style={overlayStyles.statusMessageText}>{truncateText(currentProjectName, 30)} as:</Text>
           <Input
             value={backupFileName.replace(/\s/g, '')}
             onChangeText={text => setBackupFileName(text)}
@@ -261,8 +264,8 @@ const ProjectOptionsDialogBox = (props) => {
   const renderOverwriteView = () => {
     return (
       <View style={overlayStyles.overlayContent}>
-        <Text>Switching projects will
-          <Text style={[overlayStyles.importantText]}> DELETE </Text>
+        <Text style={overlayStyles.contentText}>Switching projects will
+          <Text style={[overlayStyles.importantText]}> OVERWRITE </Text>
           the local copy of the current project:
         </Text>
         <Text style={[overlayStyles.importantText, overlayStyles.contentText]}>
@@ -271,8 +274,7 @@ const ProjectOptionsDialogBox = (props) => {
             props.currentProject.description) ? props.currentProject.description.project_name.toUpperCase() : 'UN-NAMED'}
         </Text>
         <Text style={overlayStyles.contentText}>Including all datasets and Spots contained within this project. Make
-          sure you have already
-          uploaded the project to the server if you wish to preserve the data. Continue?
+          sure you have already uploaded the project to the server or backed it up to the device if you wish to preserve the data.
         </Text>
       </View>
     );
@@ -330,18 +332,16 @@ const ProjectOptionsDialogBox = (props) => {
   const projectName = `${selectedProject.source === 'server' ? selectedProject.project.name : selectedProject.source === 'device'
     ? selectedProject.project.fileName : 'New Project'}`;
   return (
-    <View>
-      <Dialog
+    <>
+      <Overlay
+        animationType={'slide'}
         overlayStyle={overlayStyles.overlayContainer}
+        backdropStyle={overlayStyles.backdropStyles}
         isVisible={props.visible}
-        useNativeDriver={true}
       >
-        <Dialog.Button title={'X'} containerStyle={overlayStyles.closeButton} buttonStyle={overlayStyles.buttonText}
-                       onPress={() => onClose()}/>
-        <Dialog.Title titleStyle={overlayStyles.titleText} title={header}/>
-        <Dialog.Title
-          titleStyle={overlayStyles.titleText}
-          title={projectName}
+        <ModalHeader
+          close={onClose}
+          title={(header ?  header + '\n' : '') + projectName}
         />
         {selectedProject.source === 'new'
           && (
@@ -377,14 +377,12 @@ const ProjectOptionsDialogBox = (props) => {
             onPress={() => handleOnPress(action)}
           />
         </View>}
-      </Dialog>
-      <Dialog
+      </Overlay>
+      <Overlay
         isVisible={isProgressModalVisible}
         overlayStyle={overlayStyles.overlayContainer}
-        useNativeDriver={true}
-
       >
-        <Dialog.Title titleStyle={overlayStyles.titleText} title={'Deleting...'}/>
+        <Text style={modalStyle.modalTitle}>{'Deleting...'}</Text>
         <View style={overlayStyles.overlayContent}>
           {deletingProjectStatus !== 'complete'
             ? <Text style={projectOptionsModalStyle.projectNameText}>Deleting {projectNameToDelete}</Text>
@@ -396,12 +394,15 @@ const ProjectOptionsDialogBox = (props) => {
             show={deletingProjectStatus === 'deleteProject'}
           />
         </View>
-        {deletingProjectStatus === 'complete' && <Dialog.Button
-          title={'Close'}
-          onPress={() => setIsProgressModalVisible(false)}
-        />}
-      </Dialog>
-    </View>
+        {deletingProjectStatus === 'complete' && (
+          <Button
+            onPress={() => setIsProgressModalVisible(false)}
+            title={'Close'}
+            type={'clear'}
+          />
+        )}
+      </Overlay>
+    </>
   );
 };
 

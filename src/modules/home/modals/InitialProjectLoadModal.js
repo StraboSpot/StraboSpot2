@@ -9,6 +9,8 @@ import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
+import {SMALL_SCREEN} from '../../../shared/styles.constants';
+import modalStyle from '../../../shared/ui/modal/modal.style';
 import Spacer from '../../../shared/ui/Spacer';
 import ActiveDatasetsList from '../../project/ActiveDatasetsList';
 import DatasetList from '../../project/DatasetList';
@@ -373,7 +375,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
               // dispatch(setSignedInStatus(false));
               closeModal();
               setVisibleInitialSection('none');
-              logout()
+              logout();
             }}
           />
         </View>
@@ -385,8 +387,9 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
     <Overlay
       animationType={'slide'}
       isVisible={visible}
-      overlayStyle={overlayStyles.overlayContainer}
+      overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : overlayStyles.overlayContainer}
       backdropStyle={overlayStyles.backdropStyles}
+      fullScreen={SMALL_SCREEN}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={overlayStyles.titleText}>{statusMessageModalTitle}</Text>

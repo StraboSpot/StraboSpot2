@@ -230,7 +230,7 @@ const Basemap = ({
         )}
 
         {/* Custom Overlay Layer */}
-        {Object.values(customMaps).map((customMap) => {
+        {!currentImageBasemap && !stratSection && Object.values(customMaps).map((customMap) => {
           return (
             customMap.overlay && customMap.isViewable && (
               <Source
@@ -243,8 +243,9 @@ const Basemap = ({
                   type={'raster'}
                   id={customMap.id + 'Layer'}
                   paint={{
-                    'raster-opacity': customMap.opacity && typeof (customMap.opacity) === 'number'
-                    && customMap.opacity >= 0 && customMap.opacity <= 1 ? customMap.opacity : 1,
+                    'raster-opacity': customMap.opacity && parseFloat(customMap.opacity.toString())
+                    && parseFloat(customMap.opacity.toString()) >= 0 && parseFloat(customMap.opacity.toString()) <= 1
+                      ? parseFloat(customMap.opacity.toString()) : 1,
                   }}
                 />
               </Source>

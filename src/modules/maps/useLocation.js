@@ -34,8 +34,8 @@ const useLocation = () => {
     if (currentLocation.altitude) feature.properties.altitude = currentLocation.altitude;
     if (currentLocation.accuracy) feature.properties.gps_accuracy = currentLocation.accuracy;
     const newSpot = await useSpots.createSpot(feature);
+    console.log('Created new Spot at current location:', newSpot);
     dispatch(setSelectedSpot(newSpot));
-    // return Promise.resolve(newSpot);
     return newSpot;
   };
 

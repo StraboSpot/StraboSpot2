@@ -1,6 +1,6 @@
 {
   "name": "strabospot2",
-  "version": "1.51.0",
+  "version": "2.1.1",
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
@@ -11,8 +11,8 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "upload-sourcemaps-ios": "sentry-cli releases files org.StraboSpot2-1.47.5 upload-sourcemaps .ios/main.jsbundle .ios/main.jsbundle.map --dist org.StraboSpot2-1.47.5",
-    "upload-sourcemaps-android": "sentry-cli releases files org.StraboSpot2-1.47.5 upload-sourcemaps index.android.bundle index.android.bundle.map --dist org.StraboSpot2-1.47.5",
+    "upload-sourcemaps-ios": "sentry-cli releases files org.StraboSpot2-2.1.1 upload-sourcemaps .ios/main.jsbundle .ios/main.jsbundle.map --dist org.StraboSpot2-2.1.1",
+    "upload-sourcemaps-android": "sentry-cli releases files org.StraboSpot2-2.1.1 upload-sourcemaps index.android.bundle index.android.bundle.map --dist org.StraboSpot2-2.1.1",
     "upload-sourcemaps": "concurrently --kill-others \"npm:upload-sourcemaps-android\" \"npm:upload-sourcemaps-ios\"",
     "bundle:ios": "react-native bundle --entry-file index.js --bundle-output ios/main.jsbundle --sourcemap-output ios/main.jsbundle.map  --dev false --platform ios --sourcemap-output ios/main.jsbundle.map --reset-cache",
     "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --sourcemap-output android/index.android.bundle.map --assets-dest android/app/src/main/res --reset-cache && rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw ",
@@ -21,6 +21,7 @@
     "bump-minor": "npm version minor --no-git-tag-version && bundle exec fastlane bump",
     "bump-major": "npm version major --no-git-tag-version && bundle exec fastlane bump",
     "deploy-beta": "bundle exec fastlane beta",
+    "create-changelog": "changelog generate-changelog",
     "web": "webpack serve --mode=development --config webpack.config.js"
   },
   "scriptComments": {
@@ -33,7 +34,7 @@
     "@react-native-community/datetimepicker": "7.6.2",
     "@react-native-community/geolocation": "3.1.0",
     "@react-native-community/netinfo": "9.4.1",
-    "@react-native-community/slider": "4.4.3",
+    "@react-native-community/slider": "4.5.0",
     "@react-native-picker/picker": "2.5.1",
     "@react-navigation/material-top-tabs": "6.6.5",
     "@react-navigation/native": "6.1.7",

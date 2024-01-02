@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
+import {Alert, Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
 import styles from './versionCheck.styles';
 import VersionCheckHook from '../versionCheck/useVersionCheck';
@@ -14,6 +14,7 @@ const VersionCheckLabel = (props) => {
     if (Platform.OS !== 'web') {
       useVersionCheck.animateLabel(animatedPulse);
       useVersionCheck.checkAppStoreVersion().then((res) => {
+        if (res.needsUpdate) showAlert();
         setVersionObj(res);
       });
     }
@@ -22,6 +23,18 @@ const VersionCheckLabel = (props) => {
   const handlePress = async () => {
     const res = await Linking.canOpenURL(versionObj.url);
     if (res) await Linking.openURL(versionObj.url);
+  };
+
+  const showAlert = () => {
+    Alert.alert('IMPORTANT',
+      'Please make sure your data is uploaded to your online account before upgrading. '
+      + ' It is best to delete and the reinstall the app',
+      [
+        {
+          text: 'OK', onPress: async () => {
+            console.log('OK Pressed');
+          },
+        }]);
   };
 
   return (

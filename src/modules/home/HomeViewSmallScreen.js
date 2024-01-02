@@ -11,6 +11,7 @@ import homeStyles from './home.style';
 import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
 import Map from '../maps/Map';
+import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import {MODAL_KEYS} from '../page/page.constants';
 import SpotNavigator from '../spots/SpotNavigator';
@@ -66,6 +67,7 @@ const HomeViewSmallScreen = ({
     <Animated.View style={[homeStyles.container, animateLeftSide]}>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
+        barStyle={'dark-content'}
         leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (
           <Icon
             color={themes.PRIMARY_TEXT_COLOR}
@@ -167,7 +169,9 @@ const HomeViewSmallScreen = ({
                 )}
 
                 {!currentImageBasemap && !stratSection && (
-                  <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
+                  <View style={homeStyles.shortcutButtons}>
+                    <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
+                  </View>
                 )}
 
                 {drawButtonsVisible && (
@@ -190,10 +194,12 @@ const HomeViewSmallScreen = ({
                   </View>
                 )}
 
-                <EditCancelSaveButtons
-                  areEditButtonsVisible={areEditButtonsVisible}
-                  clickHandler={clickHandler}
-                />
+                {areEditButtonsVisible && (
+                  <View style={homeStyles.editButtonsContainer}>
+                    <EditCancelSaveButtons clickHandler={clickHandler}/>
+                  </View>
+                )}
+                <OfflineMapLabel/>
               </>
             }
           </Tab.Screen>

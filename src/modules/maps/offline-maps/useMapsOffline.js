@@ -48,8 +48,7 @@ const useMapsOffline = () => {
 
   const addMapFromDeviceToRedux = async (mapId) => {
     const map = await createOfflineMapObject(mapId);
-    const mapSavedObject = Object.assign({}, map.source === 'mapbox_styles'
-      ? {[map.id.split('/')[1]]: map} : {[map.id]: map});
+    const mapSavedObject = Object.assign({}, {[map.id]: map});
     dispatch(addMapFromDevice(mapSavedObject));
   };
 
@@ -238,7 +237,6 @@ const useMapsOffline = () => {
         //first, figure out what kind of map we are downloading...
 
         let downloadMap = {};
-        if (mapKey.includes('/')) mapKey = mapKey.split('/')[1];
         if (customMaps[mapKey].id === currentBasemap.id) downloadMap = customMaps[mapKey];
 
         console.log('DownloadMap: ', downloadMap);
@@ -248,8 +246,8 @@ const useMapsOffline = () => {
           const parts = downloadMap.id.split('/');
           username = parts[0];
           id = parts[1];
-          const accessToken = user.mapboxToken && !isEmpty(user.mapboxToken) ? user.mapboxToken : config.get(
-            'mapbox_access_token');
+          const accessToken = user.mapboxToken && !isEmpty(user.mapboxToken) ? user.mapboxToken
+            : config.get('mapbox_access_token');
           startZipURL = tilehost + '/asynczip?layer=' + layer + '&extent=' + extentString + '&zoom=' + downloadZoom
             + '&username=' + username + '&id=' + id + '&access_token=' + accessToken;
         }
@@ -353,7 +351,6 @@ const useMapsOffline = () => {
     try {
       // let mapName;
       let mapID = mapId ? mapId : currentBasemap.id;
-      if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
       let currentOfflineMaps = Object.values(offlineMaps);
 
       //now check for existence of AsyncStorage offlineMapsData and store new count
@@ -362,8 +359,7 @@ const useMapsOffline = () => {
       }
 
       const customMap = Object.values(customMaps).filter((map) => {
-        const customMapID = map.source === 'mapbox_styles' ? map.id.split('/')[1] : map.id;
-        return mapID === customMapID;
+        return mapID === map.id;
       });
       console.log(customMap);
       const newOfflineMapsData = await createOfflineMapObject(mapID, customMap);

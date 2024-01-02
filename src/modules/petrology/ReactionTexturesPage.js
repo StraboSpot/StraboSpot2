@@ -91,7 +91,6 @@ const ReactionTexturesPage = (props) => {
         </View>
         <SectionDividerWithRightButton
           dividerText={props.page.label}
-          buttonTitle={'Add'}
           onPress={addReaction}
         />
         <FlatList

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
@@ -10,19 +10,15 @@ import styles from './sketch.styles';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import useImagesHook from '../images/useImages';
-import useLocationHook from '../maps/useLocation';
-import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';
 
 const Sketch = (props) => {
   const dispatch = useDispatch();
-  const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [useImages] = useImagesHook();
   const navigation = useNavigation();
-  const useLocation = useLocationHook();
 
   const [imageId, setImageId] = useState(null);
 
@@ -30,18 +26,6 @@ const Sketch = (props) => {
     console.log('UE Sketch [imageId]', imageId);
     if (props.route.params?.imageId) setImageId(props.route.params.imageId);
   }, [imageId]);
-
-  useEffect(() => {
-    console.log('UE Sketch []');
-    createSpot().catch(e => console.error(e));
-  }, []);
-
-  const createSpot = async () => {
-    if (modalVisible === MODAL_KEYS.SHORTCUTS.SKETCH) {
-      const pointSetAtCurrentLocation = await useLocation.setPointAtCurrentLocation();
-      console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
-    }
-  };
 
   const saveSketch = async (success, path) => {
     try {

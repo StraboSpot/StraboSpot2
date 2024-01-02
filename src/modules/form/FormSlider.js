@@ -5,7 +5,8 @@ import {ListItem} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 import {SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
-import Slider from '../../shared/ui/SliderBar';
+import SliderBar from '../../shared/ui/SliderBar';
+import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
 
 const FormSlider = (props) => {
@@ -51,7 +52,7 @@ const FormSlider = (props) => {
         </ListItem.Content>
       </ListItem>
       <View style={{backgroundColor: SECONDARY_BACKGROUND_COLOR, padding: 10, paddingTop: 0}}>
-        <Slider
+        <SliderBar
           onSlidingComplete={value => onSlideComplete(value)}
           // value={choices.map(c => c.name).indexOf(props.formProps?.values[props.fieldKey])}
           value={handleSliderValue()}
@@ -67,7 +68,7 @@ const FormSlider = (props) => {
         />
         {props.showSliderValue && (
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-            <Text>
+            <Text style={uiStyles.sliderLabel}>
               {props.formProps.values[props.fieldKey]
                 ? choices.find(c => c.name === props.formProps.values[props.fieldKey]).label
                 : 'Not Recorded'}

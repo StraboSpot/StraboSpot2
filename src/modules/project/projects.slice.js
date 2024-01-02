@@ -9,6 +9,7 @@ const initialProjectState = {
   project: {},
   datasets: {},
   deviceBackUpDirectoryExists: false,
+  backupFileName: '',
   downloadsDirectory: false, //Android Only
   isTestingMode: false,
   selectedProject: {
@@ -45,8 +46,8 @@ const projectSlice = createSlice({
         ? {...state.datasets[datasetId].images, ...images}
         : images;
       if (!datasetTimestamp) {
-        console.log('Modified Timestamp:', datasetTimestamp);
         datasetTimestamp = timestamp;
+        console.log('Modified Timestamp:', datasetTimestamp);
         state.project.modified_timestamp = timestamp;
       }
       state.datasets = {
@@ -67,7 +68,7 @@ const projectSlice = createSlice({
       state.project = action.payload;
     },
     addedSpotsIdsToDataset(state, action) {
-      const {datasetId, spotIds, modified_timestamp} = action.payload;
+      const {datasetId, spotIds, modified_timestamp, images} = action.payload;
       let datasetTimestamp = modified_timestamp;
       const timestamp = Date.now();
       const spotIdsInDataset = state.datasets[datasetId].spotIds
@@ -75,11 +76,17 @@ const projectSlice = createSlice({
         : spotIds;
       const spotIdsUnique = [...new Set(spotIdsInDataset)];
       if (!datasetTimestamp) {
-        console.log('Modified Timestamp:', datasetTimestamp);
         datasetTimestamp = timestamp;
+        console.log('Modified Timestamp:', datasetTimestamp);
         state.project.modified_timestamp = timestamp;
       }
-      const dataset = {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, spotIds: spotIdsUnique};
+      let dataset = {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, spotIds: spotIdsUnique};
+      if (images) {
+        const imagesInDataset = state.datasets[datasetId].images
+          ? {...state.datasets[datasetId].images, ...images}
+          : images;
+        dataset = {...dataset, images: imagesInDataset};
+      }
       state.datasets = {...state.datasets, [datasetId]: dataset};
     },
     addedTagToSelectedSpot(state, action) {
@@ -174,6 +181,9 @@ const projectSlice = createSlice({
       }
       state.project.modified_timestamp = Date.now();
     },
+    setBackupFileName(state, action) {
+      state.backupFileName = action.payload;
+    },
     setSelectedDataset(state, action) {
       state.selectedDatasetId = action.payload;
     },
@@ -236,9 +246,7 @@ const projectSlice = createSlice({
     },
     updatedProject(state, action) {
       const {field, value} = action.payload;
-      if (field === 'description') state.project.description = value;
-      else if (field === 'preferences') state.project.preferences = value;
-      else if (field === 'tags' && !isEmpty(state.selectedTag)) {
+      if (field === 'tags' && !isEmpty(state.selectedTag)) {
         state.selectedTag = value.find(tag => tag.id === state.selectedTag.id);
       }
       state.project[field] = value;
@@ -268,6 +276,7 @@ export const {
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,
+  setBackupFileName,
   setSelectedDataset,
   setSelectedProject,
   setSelectedTag,

@@ -7,7 +7,6 @@ import {useToast} from 'react-native-toast-notifications';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import {MAP_MODES} from '../maps/maps.constants';
 
-
 const useHome = () => {
   const [drawTypes, setDrawTypes] = useState({
     point: MAP_MODES.DRAW.POINT,

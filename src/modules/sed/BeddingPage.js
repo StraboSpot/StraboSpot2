@@ -130,7 +130,6 @@ const BeddingPage = (props) => {
         {renderBeddingShared()}
         <SectionDividerWithRightButton
           dividerText={'Beds'}
-          buttonTitle={'Add'}
           onPress={addAttribute}
         />
         <FlatList

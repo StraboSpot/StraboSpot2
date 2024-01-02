@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ColorPickerModal from '../../shared/ColorPickerModal';
@@ -27,7 +28,7 @@ const TagDetailSidePanel = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <View style={{flex: 1}}>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <SidePanelHeader
@@ -80,7 +81,7 @@ const TagDetailSidePanel = (props) => {
         isVisible={isColorPickerModalVisibile}
         closeModal={() => setIsColorPickerModalVisible(false)}
       />
-    </React.Fragment>
+    </View>
   );
 };
 

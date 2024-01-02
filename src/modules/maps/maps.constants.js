@@ -158,6 +158,7 @@ export const BACKGROUND = {
     id: 'background',
     type: 'background',
     paint: {'background-color': '#ffffff'},
+    layerIndex: 0,
   }],
   version: 8,
 };

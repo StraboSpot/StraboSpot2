@@ -11,6 +11,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import Routes from './src/routes/Routes';
 import ConnectionStatus from './src/services/ConnectionStatus';
+import SystemBars from './src/services/SystemBars';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
@@ -51,6 +52,7 @@ const App = () => {
         <Provider store={store}>
           <PersistGate loading={<Loading/>} persistor={persistor}>
             {/*<Sentry.TouchEventBoundary>*/}
+            <SystemBars/>
             <ConnectionStatus/>
             <NavigationContainer>
               <Routes/>
