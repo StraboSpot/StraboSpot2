@@ -1,4 +1,4 @@
-export {default as MapLayersDialog} from './MapLayersDialog';
-export {default as MapActionsDialog} from './MapActionsDialog';
-export {default as MapSymbolsDialog} from './MapSymbolsDialog';
+export {default as MapActionsOverlay} from './MapActionsOverlay';
+export {default as MapLayersOverlay} from './MapLayersOverlay';
+export {default as MapSymbolsOverlay} from './MapSymbolsOverlay';
 export {default as overlayStyles} from './overlay.styles';

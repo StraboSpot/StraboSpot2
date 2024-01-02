@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, Switch, Text, useWindowDimensions, View} from 'react-native';
+import {FlatList, Switch, Text, View} from 'react-native';
 
 import {ButtonGroup, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,12 +9,16 @@ import commonStyles from '../../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
-import {setAllSymbolsToggled, setIsShowSpotLabelsOn, setSymbolsDisplayed, setTagTypeForColor} from '../../maps/maps.slice';
+import {
+  setAllSymbolsToggled,
+  setIsShowSpotLabelsOn,
+  setSymbolsDisplayed,
+  setTagTypeForColor,
+} from '../../maps/maps.slice';
 import styles from '../../measurements/measurements.styles';
 import useMeasurementsHook from '../../measurements/useMeasurements';
 
-const MapSymbolsDialog = (props) => {
-  const deviceHeight = useWindowDimensions().height;
+const MapSymbolsOverlay = (props) => {
 
   const dispatch = useDispatch();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -70,12 +74,12 @@ const MapSymbolsDialog = (props) => {
         <Text style={[overlayStyles.titleText]}>Map Symbols</Text>
       </View>
       {!isEmpty(mapSymbols) && (
-          <FlatList
-            keyExtractor={item => item}
-            data={mapSymbols}
-            renderItem={renderSymbolsList}
-            ItemSeparatorComponent={FlatListItemSeparator}
-          />
+        <FlatList
+          keyExtractor={item => item}
+          data={mapSymbols}
+          renderItem={renderSymbolsList}
+          ItemSeparatorComponent={FlatListItemSeparator}
+        />
       )}
       <ListItem
         key={'all'}
@@ -121,4 +125,4 @@ const MapSymbolsDialog = (props) => {
   );
 };
 
-export default MapSymbolsDialog;
+export default MapSymbolsOverlay;

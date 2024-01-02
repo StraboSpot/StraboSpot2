@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 
 import overlayStyles from './overlay.styles';
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty, truncateText} from '../../../shared/Helpers';
+import {truncateText} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
@@ -15,7 +15,7 @@ import {BASEMAPS} from '../../maps/maps.constants';
 import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline.web';
 import useMapsHook from '../../maps/useMaps';
 
-const MapLayersDialog = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
+const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
 
   const [useMaps] = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
@@ -252,4 +252,4 @@ const MapLayersDialog = ({mapComponentRef, onTouchOutside, overlayStyle, visible
   );
 };
 
-export default MapLayersDialog;
+export default MapLayersOverlay;

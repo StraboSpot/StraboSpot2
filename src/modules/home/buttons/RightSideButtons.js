@@ -6,9 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {EditCancelSaveButtons, DrawActionButtons, ShortcutButtons} from './index';
 import IconButton from '../../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../../page/page.constants';
-import DrawInfo from '../dialogs/DrawInfo';
 import {setModalVisible} from '../home.slice';
 import homeStyles from '../home.style';
+import DrawInfo from '../pop-ups/DrawInfo';
 
 const RightSideButtons = ({
                             animateRightSide,

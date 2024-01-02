@@ -7,7 +7,7 @@ import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import useMapsHook from '../../maps/useMaps';
 import homeStyles from '../home.style';
-import {MapActionsDialog, MapLayersDialog, MapSymbolsDialog, overlayStyles} from '../overlays';
+import {MapActionsOverlay, MapLayersOverlay, MapSymbolsOverlay, overlayStyles} from '../overlays';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
   const {height} = useWindowDimensions();
@@ -50,19 +50,19 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
           imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
         />
       )}
-      <MapActionsDialog
+      <MapActionsOverlay
         visible={dialogs.mapActionsMenuVisible}
         overlayStyle={{...overlayStyles.mapActionsPosition, maxHeight: height * 0.80, flex: 1}}
         onPress={name => dialogClickHandler('mapActionsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
       />
-      <MapSymbolsDialog
+      <MapSymbolsOverlay
         visible={dialogs.mapSymbolsMenuVisible}
         overlayStyle={{...overlayStyles.mapSymbolsPosition, maxHeight: height * 0.80, flex: 1}}
         onPress={name => dialogClickHandler('mapSymbolsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
-      <MapLayersDialog
+      <MapLayersOverlay
         visible={dialogs.baseMapMenuVisible}
         overlayStyle={{...overlayStyles.baseMapPosition, maxHeight: height * 0.80, flex: 1}}
         mapComponentRef={mapComponentRef}

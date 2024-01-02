@@ -13,7 +13,7 @@ import MainMenuPanelList from './MainMenuPanelList';
 import {isEmpty} from '../../shared/Helpers';
 import ImageGallery from '../images/ImageGallery';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
-import ImageBasemaps from '../maps/ImageBasemaps';
+import ImageBasemapsList from '../maps/ImageBasemapsList';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import StratSectionsList from '../maps/strat-section/StratSectionsList';
 import Miscellaneous from '../preferences/Miscellaneous';
@@ -126,7 +126,7 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageBasemaps closeManMenuPanel={closeMainMenuPanel}/>
+          <ImageBasemapsList closeManMenuPanel={closeMainMenuPanel}/>
         </View>
       );
       break;

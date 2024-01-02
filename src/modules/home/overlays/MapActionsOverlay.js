@@ -8,7 +8,7 @@ import overlayStyles from './overlay.styles';
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 
-const MapActionsDialog = (props) => {
+const MapActionsOverlay = (props) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -67,4 +67,4 @@ const MapActionsDialog = (props) => {
   );
 };
 
-export default MapActionsDialog;
+export default MapActionsOverlay;

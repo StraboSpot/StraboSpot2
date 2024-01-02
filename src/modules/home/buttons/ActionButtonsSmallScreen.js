@@ -3,8 +3,8 @@ import {useWindowDimensions, View} from 'react-native';
 
 import {DrawActionButtons, MapActionButtons, UserLocationButton} from './index';
 import * as themes from '../../../shared/styles.constants';
-import DrawInfo from '../dialogs/DrawInfo';
 import homeStyles from '../home.style';
+import DrawInfo from '../pop-ups/DrawInfo';
 
 const ActionButtonsSmallScreen = ({
                                     clickHandler,

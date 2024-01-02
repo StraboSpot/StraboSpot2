@@ -1,9 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, Platform, Text, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
-import {useDispatch} from 'react-redux';
 
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
@@ -13,7 +11,7 @@ import imageStyles from '../images/images.styles';
 import useImagesHook from '../images/useImages';
 import useSpotsHook from '../spots/useSpots';
 
-const ImageBasemaps = ({closeManMenuPanel}) => {
+const ImageBasemapsList = ({closeManMenuPanel}) => {
   console.log('Rendering ImageBasemaps...');
 
   const [useSpots] = useSpotsHook();
@@ -78,4 +76,4 @@ const ImageBasemaps = ({closeManMenuPanel}) => {
   );
 };
 
-export default ImageBasemaps;
+export default ImageBasemapsList;
