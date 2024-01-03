@@ -435,13 +435,13 @@ export const SHORTCUT_MODALS = [
     label: 'Photo',
     action_label: 'Add a Photo',
     icon_src: require('../../assets/icons/PhotoButtonShortcut.png'),
-    icon_pressed_src: require('../../assets/icons/PhotoButtonShortcut.png'),
+    icon_pressed_src: require('../../assets/icons/PhotoButtonShortcut_pressed.png'),
   }, {
     key: MODAL_KEYS.SHORTCUTS.SKETCH,
     label: 'Sketch',
-    actiion_label: 'Add a Sketch',
+    action_label: 'Add a Sketch',
     icon_src: require('../../assets/icons/SketchButtonShortcut.png'),
-    icon_pressed_src: require('../../assets/icons/SketchButtonShortcut.png'),
+    icon_pressed_src: require('../../assets/icons/SketchButtonShortcut_pressed.png'),
   },
 ];
 
