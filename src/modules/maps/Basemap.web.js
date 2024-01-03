@@ -240,6 +240,7 @@ const Basemap = ({
                 tiles={[useMaps.buildTileUrl(customMap)]}
               >
                 <Layer
+                  beforeId={'pointLayerSelectedHalo'}
                   type={'raster'}
                   id={customMap.id + 'Layer'}
                   paint={{

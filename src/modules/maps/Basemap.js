@@ -240,6 +240,7 @@ const Basemap = ({
                 tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}
               >
                 <MapboxGL.RasterLayer
+                  belowLayerID={'pointLayerSelectedHalo'}
                   id={customMap.id + 'Layer'}
                   sourceID={customMap.id}
                   style={{
@@ -248,7 +249,6 @@ const Basemap = ({
                       ? parseFloat(customMap.opacity.toString()) : 1,
                     visibility: customMap.isViewable ? 'visible' : 'none',
                   }}
-                  // layerIndex={10}
                 />
               </MapboxGL.RasterSource>
             )
