@@ -5,7 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 
 import {LeftSideButtons, RightSideButtons} from './buttons';
-import StatusBar from './StatusBar';
+import DeviceInfo from './DeviceInfo';
 import uiStyles from '../../shared/ui/ui.styles';
 import Map from '../maps/Map';
 import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
@@ -56,7 +56,7 @@ const HomeView = ({
         startEdit={startEdit}
       />
 
-      <StatusBar/>
+      <DeviceInfo/>
       <OfflineMapLabel/>
 
       <RightSideButtons

@@ -5,7 +5,7 @@ import homeStyles from './home.style';
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 
-const StatusBar = () => {
+const DeviceInfo = () => {
   if (Platform.OS !== 'web') {
     return (
         <View style={homeStyles.statusBarContainer}>
@@ -20,4 +20,4 @@ const StatusBar = () => {
   }
 };
 
-export default StatusBar;
+export default DeviceInfo;
