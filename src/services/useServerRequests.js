@@ -47,44 +47,6 @@ const useServerRequests = (props) => {
     return handleResponse(response);
   };
 
-  const request = async (method, urlPart, login, ...otherParams) => {
-    try {
-      const response = await timeoutPromise(60000, fetch(baseUrl + urlPart, {
-        method: method,
-        headers: {
-          'Authorization': 'Basic ' + login + '/',
-          'Content-Type': 'application/json',
-        },
-        // body: JSON.stringify({data: data}),
-        ...otherParams,
-      }));
-      return handleResponse(response);
-    }
-    catch (err) {
-      console.error('Error Fetching', err);
-      alert('Error', `${err.toString()}`);
-      throw Error('Unable to Get Project from Server.');
-    }
-  };
-
-  const post = async (urlPart, login, data) => {
-    try {
-      const response = await fetch(baseUrl + urlPart, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Authorization': 'Basic ' + login,
-          'Content-Type': 'application/json',
-        },
-      });
-      return handleResponse(response);
-    }
-    catch (err) {
-      console.error('Error Posting', err);
-      alert('Error', `${err.toString()}`);
-    }
-  };
-
   const deleteAllSpotsInDataset = (datasetId, encodedLogin) => {
     return request('DELETE', '/datasetSpots/' + datasetId, encodedLogin);
   };
@@ -128,6 +90,10 @@ const useServerRequests = (props) => {
     }
   };
 
+  const downloadImage = (imageId, encodedLogin) => {
+    return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
+  };
+
   const getDataset = (datasetId) => {
     return request('GET', '/dataset/' + datasetId);
   };
@@ -136,13 +102,12 @@ const useServerRequests = (props) => {
     return request('GET', '/datasetSpots/' + datasetId, encodedLogin);
   };
 
-  const getDbUrl = () => {
-    return baseUrl;
+  const getDatasets = async (projectId, encodedLogin) => {
+    return request('GET', '/projectDatasets/' + projectId, encodedLogin);
   };
 
-  const getTilehostUrl = () => {
-    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/strabotiles');
-    return tilehost;
+  const getDbUrl = () => {
+    return baseUrl;
   };
 
   const getImageUrl = () => {
@@ -150,8 +115,9 @@ const useServerRequests = (props) => {
     return `${STRABO_APIS.STRABO}/pi/`;
   };
 
-  const downloadImage = (imageId, encodedLogin) => {
-    return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
+  const getMapTilesFromHost = async (zipUrl) => {
+    const response = await timeoutPromise(60000, fetch(zipUrl));
+    return await response.json();
   };
 
   const getMyMapsBbox = async (mapId) => {
@@ -163,6 +129,14 @@ const useServerRequests = (props) => {
     }
     const response = await fetch(straboMyMapsApi + mapId);
     return handleResponse(response);
+  };
+
+  const getMyProjects = (encodedLogin) => {
+    return request('GET', '/myProjects', encodedLogin);
+  };
+
+  const getProfile = (encodedLogin) => {
+    return request('GET', '/profile', encodedLogin);
   };
 
   const getProfileImage = async (encodedLogin) => {
@@ -189,25 +163,13 @@ const useServerRequests = (props) => {
     }
   };
 
-  const getProfile = (encodedLogin) => {
-    return request('GET', '/profile', encodedLogin);
-  };
-
   const getProject = async (projectId, encodedLogin) => {
     return await request('GET', '/project/' + projectId, encodedLogin);
   };
 
-  const getDatasets = async (projectId, encodedLogin) => {
-    return request('GET', '/projectDatasets/' + projectId, encodedLogin);
-  };
-
-  const getMyProjects = (encodedLogin) => {
-    return request('GET', '/myProjects', encodedLogin);
-  };
-
-  const getMapTilesFromHost = async (zipUrl) => {
-    const response = await timeoutPromise(60000, fetch(zipUrl));
-    return await response.json();
+  const getTilehostUrl = () => {
+    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/strabotiles');
+    return tilehost;
   };
 
   const handleError = async (response) => {
@@ -249,18 +211,42 @@ const useServerRequests = (props) => {
     else return handleError(response);
   };
 
-  const timeoutPromise = async (ms, promise) => {
-    const timeoutPromiseException = (err) => {
-      const timeoutError = Symbol();
-      if (err === timeoutError) throw new Error('Network timeout');
-      else throw 'Unable to Reach Server!';
-    };
+  const post = async (urlPart, login, data) => {
+    try {
+      const response = await fetch(baseUrl + urlPart, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': 'Basic ' + login,
+          'Content-Type': 'application/json',
+        },
+      });
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Posting', err);
+      alert('Error', `${err.toString()}`);
+    }
+  };
 
-    let timer;
-    return Promise.race([
-      promise,
-      new Promise((_r, rej) => timer = setTimeout(rej, ms))])
-      .catch(timeoutPromiseException).finally(() => clearTimeout(timer));
+  const request = async (method, urlPart, login, ...otherParams) => {
+    try {
+      const response = await timeoutPromise(60000, fetch(baseUrl + urlPart, {
+        method: method,
+        headers: {
+          'Authorization': 'Basic ' + login + '/',
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify({data: data}),
+        ...otherParams,
+      }));
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Fetching', err);
+      alert('Error', `${err.toString()}`);
+      throw Error('Unable to Get Project from Server.');
+    }
   };
 
   // Register user
@@ -282,7 +268,6 @@ const useServerRequests = (props) => {
     });
     return handleResponse(response);
   };
-
 
   const testCustomMapUrl = async (url) => {
     try {
@@ -307,12 +292,31 @@ const useServerRequests = (props) => {
     }
   };
 
+  const timeoutPromise = async (ms, promise) => {
+    const timeoutPromiseException = (err) => {
+      const timeoutError = Symbol();
+      if (err === timeoutError) throw new Error('Network timeout');
+      else throw 'Unable to Reach Server!';
+    };
+
+    let timer;
+    return Promise.race([
+      promise,
+      new Promise((_r, rej) => timer = setTimeout(rej, ms))])
+      .catch(timeoutPromiseException).finally(() => clearTimeout(timer));
+  };
+
   const updateDataset = (dataset, encodedLogin) => {
     return post('/dataset', encodedLogin, dataset);
   };
 
   const updateDatasetSpots = (datasetId, spotCollection, encodedLogin) => {
     return post('/datasetspots/' + datasetId, encodedLogin, spotCollection);
+  };
+
+  const updateProfile = (data) => {
+    console.log(data);
+    return post('/profile', user.encoded_login, data);
   };
 
   const uploadProgress = (event) => {
@@ -372,11 +376,6 @@ const useServerRequests = (props) => {
     return handleResponse(response);
   };
 
-  const updateProfile = (data) => {
-    console.log(data);
-    return post('/profile', user.encoded_login, data);
-  };
-
   const verifyEndpoint = async (protocolValue, domainValue, pathValue) => {
     const isVerified = await testEndpoint(protocolValue + domainValue);
     if (isVerified) {
@@ -417,22 +416,22 @@ const useServerRequests = (props) => {
   const serverRequests = {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
+    deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     deleteProfile: deleteProfile,
     deleteProject: deleteProject,
-    deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     downloadImage: downloadImage,
-    getMyProjects: getMyProjects,
-    getDatasets: getDatasets,
-    getDatasetSpots: getDatasetSpots,
     getDataset: getDataset,
+    getDatasetSpots: getDatasetSpots,
+    getDatasets: getDatasets,
     getDbUrl: getDbUrl,
     getImageUrl: getImageUrl,
-    getTilehostUrl: getTilehostUrl,
-    getMyMapsBbox: getMyMapsBbox,
-    getProfile: getProfile,
-    getProject: getProject,
-    getProfileImage: getProfileImage,
     getMapTilesFromHost: getMapTilesFromHost,
+    getMyMapsBbox: getMyMapsBbox,
+    getMyProjects: getMyProjects,
+    getProfile: getProfile,
+    getProfileImage: getProfileImage,
+    getProject: getProject,
+    getTilehostUrl: getTilehostUrl,
     registerUser: registerUser,
     testCustomMapUrl: testCustomMapUrl,
     testEndpoint: testEndpoint,

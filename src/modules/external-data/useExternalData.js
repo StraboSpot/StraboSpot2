@@ -23,6 +23,34 @@ const useExternalData = () => {
   let csvObject = {};
   let CSVData = '';
 
+  // INTERNAL
+  const createCSVObject = (CSVFile, data) => {
+    csvObject.name = CSVFile.name.substring(0, CSVFile.name.lastIndexOf('.'));
+    csvObject.size = CSVFile.size;
+    csvObject.id = getNewUUID();
+    csvObject.data = csvToArray(data);
+    console.log('CSV Object', csvObject);
+    return csvObject;
+  };
+
+  const deleteCVS = (tableToDelete) => {
+    const CSVcopy = JSON.parse(JSON.stringify(spot.properties.data.tables));
+    console.log(CSVcopy);
+    const filteredArr = CSVcopy.filter(table => table.id !== tableToDelete.id);
+    console.log(filteredArr);
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
+  };
+
+  const deleteURL = (urlToDelete) => {
+    const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
+    console.log(urlCopy);
+    const filteredArr = urlCopy.filter(url => url !== urlToDelete);
+    console.log(filteredArr);
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
+  };
+
   const pickCSV = async (dataFile) => {
     try {
       let CSVFile = {};
@@ -78,33 +106,6 @@ const useExternalData = () => {
     }
   };
 
-  const createCSVObject = (CSVFile, data) => {
-    csvObject.name = CSVFile.name.substring(0, CSVFile.name.lastIndexOf('.'));
-    csvObject.size = CSVFile.size;
-    csvObject.id = getNewUUID();
-    csvObject.data = csvToArray(data);
-    console.log('CSV Object', csvObject);
-    return csvObject;
-  };
-
-  const deleteCVS = (tableToDelete) => {
-    const CSVcopy = JSON.parse(JSON.stringify(spot.properties.data.tables));
-    console.log(CSVcopy);
-    const filteredArr = CSVcopy.filter(table => table.id !== tableToDelete.id);
-    console.log(filteredArr);
-    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-    dispatch(editedSpotProperties({field: 'data', value: {tables: filteredArr, urls: spot.properties.data.urls}}));
-  };
-
-  const deleteURL = (urlToDelete) => {
-    const urlCopy = JSON.parse(JSON.stringify(spot.properties.data.urls));
-    console.log(urlCopy);
-    const filteredArr = urlCopy.filter(url => url !== urlToDelete);
-    console.log(filteredArr);
-    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-    dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
-  };
-
   const saveCSV = () => {
     try {
       let savedTables;
@@ -154,12 +155,12 @@ const useExternalData = () => {
   };
 
   return {
-    pickCSV: pickCSV,
     deleteCVS: deleteCVS,
     deleteURL: deleteURL,
+    pickCSV: pickCSV,
+    saveCSV: saveCSV,
     saveEdits: saveEdits,
     saveURL: saveURL,
-    saveCSV: saveCSV,
   };
 };
 

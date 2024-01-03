@@ -26,6 +26,19 @@ const useDevice = (props) => {
     }
   };
 
+  // INTERNAL
+  const createAppDirectory = async (directory) => {
+    return RNFS.mkdir(directory)
+      .then(() => {
+        console.log('Directory:', directory, 'CREATED!');
+        return true;
+      })
+      .catch((err) => {
+        console.error('Unable to create directory', directory, 'ERROR:', err);
+        throw Error(err);
+      });
+  };
+
   const createProjectDirectories = async () => {
     await makeDirectory(APP_DIRECTORIES.APP_DIR);
     console.log('App Directory Created');
@@ -47,16 +60,11 @@ const useDevice = (props) => {
     console.log('Tile Cache Directory Created');
   };
 
-  const createAppDirectory = (directory) => {
-    return RNFS.mkdir(directory)
-      .then(() => {
-        console.log('Directory:', directory, 'CREATED!');
-        return true;
-      })
-      .catch((err) => {
-        console.error('Unable to create directory', directory, 'ERROR:', err);
-        throw Error(err);
-      });
+  const deleteFromDevice = async (dir, file) => {
+    console.log(dir + file);
+    const filepath = file ? dir + file : dir;
+    await RNFS.unlink(filepath);
+    console.log(`${file ? dir + file : dir} has been DELETED!`);
   };
 
   const deleteOfflineMap = async (map) => {
@@ -78,18 +86,42 @@ const useDevice = (props) => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
-  const deleteFromDevice = async (dir, file) => {
-    console.log(dir + file);
-    const filepath = file ? dir + file : dir;
-    await RNFS.unlink(filepath);
-    console.log(`${file ? dir + file : dir} has been DELETED!`);
-  };
-
   const doesBackupFileExist = (filename) => {
-    const exists = RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
-    return exists;
+    return RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
   };
 
+  const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
+    if (isExternal && Platform.OS === 'android') {
+      console.log('Checking Downloads dir', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      console.log('External Directory exists?:', exists);
+      // !exists && await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+      dispatch(doesDownloadsDirectoryExist(exists));
+    }
+    if (subDirectory !== undefined) {
+      if (isExternal) {
+        console.log('SUB-DIR isExternal', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
+        return await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
+      }
+      else {
+        const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+        console.log(APP_DIRECTORIES.BACKUP_DIR + subDirectory + ' Exists:' + exists);
+        return exists;
+      }
+    }
+    else {
+      const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
+      console.log('Backup Directory exists?:', exists);
+      dispatch(doesBackupDirectoryExist(exists));
+      return exists;
+    }
+  };
+
+  const doesDeviceDirExist = async (dir) => {
+    return await RNFS.exists(dir);
+  };
+
+  // TODO: Check to consolidate with doesDeviceDirExist();
   const doesDeviceDirectoryExist = async (directory) => {
     try {
       let checkDirSuccess = await RNFS.exists(directory);
@@ -106,40 +138,8 @@ const useDevice = (props) => {
     }
   };
 
-  const doesDeviceDirExist = async (dir) => {
-    return await RNFS.exists(dir);
-  };
-
   const doesFileExist = async (path, file) => {
     return await RNFS.exists(path + file);
-  };
-
-  const doesDeviceBackupDirExist = async (subDirectory, isExternal) => {
-    if (isExternal && Platform.OS === 'android') {
-      console.log('Checking Downloads dir', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      console.log('External Directory exists?:', exists);
-      // !exists && await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      dispatch(doesDownloadsDirectoryExist(exists));
-    }
-    if (subDirectory !== undefined) {
-      if (isExternal) {
-        console.log('SUBDIR isExternal', APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
-        const exists = await RNFS.exists(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID + subDirectory);
-        return exists;
-      }
-      else {
-        const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
-        console.log(APP_DIRECTORIES.BACKUP_DIR + subDirectory + ' Exists:' + exists);
-        return exists;
-      }
-    }
-    else {
-      const exists = await RNFS.exists(APP_DIRECTORIES.BACKUP_DIR);
-      console.log('Backup Directory exists?:', exists);
-      dispatch(doesBackupDirectoryExist(exists));
-      return exists;
-    }
   };
 
   const downloadAndSaveImage = async (imageId) => {
@@ -186,7 +186,6 @@ const useDevice = (props) => {
     }
   };
 
-
   const getExternalProjectData = async () => {
     // try {
     const res = await DocumentPicker.pick({type: [DocumentPicker.types.zip], copyTo: 'cachesDirectory'});
@@ -194,20 +193,8 @@ const useDevice = (props) => {
     return res[0];
   };
 
-  const openURL = async (url) => {
-    console.log(url + APP_DIRECTORIES.BACKUP_DIR);
-    try {
-      if (url === 'ProjectBackups') {
-        url = APP_DIRECTORIES.SHARED_DOCUMENTS_PATH_IOS + APP_DIRECTORIES.BACKUP_DIR + url;
-      }
-      const initialUrl = await Linking.canOpenURL(url);
-      console.log(initialUrl);
-      if (initialUrl) Linking.openURL(url).catch(err => console.error('ERROR', err));
-      else console.log('Could not open:', url);
-    }
-    catch (err) {
-      console.error('Error opening url', url, ':', err);
-    }
+  const isPickDocumentCanceled = (err) => {
+    return DocumentPicker.isCancel(err);
   };
 
   const makeDirectory = async (directory) => {
@@ -228,11 +215,42 @@ const useDevice = (props) => {
     }
   };
 
+  const openURL = async (url) => {
+    console.log(url + APP_DIRECTORIES.BACKUP_DIR);
+    try {
+      if (url === 'ProjectBackups') {
+        url = APP_DIRECTORIES.SHARED_DOCUMENTS_PATH_IOS + APP_DIRECTORIES.BACKUP_DIR + url;
+      }
+      const initialUrl = await Linking.canOpenURL(url);
+      console.log(initialUrl);
+      if (initialUrl) Linking.openURL(url).catch(err => console.error('ERROR', err));
+      else console.log('Could not open:', url);
+    }
+    catch (err) {
+      console.error('Error opening url', url, ':', err);
+    }
+  };
+
+  const pickCSV = async () => {
+    return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
+  };
+
   const readDirectory = async (directory) => {
     let files = [];
     files = await RNFS.readdir(directory);
     console.log('Directory files', files);
     return files;
+  };
+
+  const readDirectoryForMapFiles = async () => {
+    const exists = await RNFS.exists(APP_DIRECTORIES.TILES_DIRECTORY);
+    console.log('Offline maps directory exists? ', exists);
+    if (exists) {
+      const files = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE);
+      console.log(files);
+      return files;
+    }
+    else throw Error('Offline maps directory does not exist!');
   };
 
   const readDirectoryForMapTiles = async (directory, mapId) => {
@@ -250,17 +268,6 @@ const useDevice = (props) => {
     catch (err) {
       console.error('Error reading map tile directory', err);
     }
-  };
-
-  const readDirectoryForMapFiles = async () => {
-    const exists = await RNFS.exists(APP_DIRECTORIES.TILES_DIRECTORY);
-    console.log('Offline maps directory exists? ', exists);
-    if (exists) {
-      const files = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE);
-      console.log(files);
-      return files;
-    }
-    else throw Error('Offline maps directory does not exist!');
   };
 
   const readFile = async (source) => {
@@ -340,39 +347,32 @@ const useDevice = (props) => {
     }
   };
 
-  const pickCSV = async () => {
-    return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
-  };
-
-  const isPickDocumentCanceled = (err) => {
-    return DocumentPicker.isCancel(err);
-  };
 
   return {
     copyFiles: copyFiles,
     createProjectDirectories: createProjectDirectories,
-    deleteOfflineMap: deleteOfflineMap,
     deleteFromDevice: deleteFromDevice,
+    deleteOfflineMap: deleteOfflineMap,
     doesBackupFileExist: doesBackupFileExist,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
-    doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesDeviceDirExist: doesDeviceDirExist,
+    doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesFileExist: doesFileExist,
     downloadAndSaveImage: downloadAndSaveImage,
     downloadAndSaveMap: downloadAndSaveMap,
     getExternalProjectData: getExternalProjectData,
-    openURL: openURL,
+    isPickDocumentCanceled: isPickDocumentCanceled,
     makeDirectory: makeDirectory,
     moveFile: moveFile,
+    openURL: openURL,
+    pickCSV: pickCSV,
     readDirectory: readDirectory,
-    readDirectoryForMapTiles: readDirectoryForMapTiles,
     readDirectoryForMapFiles: readDirectoryForMapFiles,
+    readDirectoryForMapTiles: readDirectoryForMapTiles,
     readFile: readFile,
     requestReadDirectoryPermission: requestReadDirectoryPermission,
     unZipAndCopyImportedData: unZipAndCopyImportedData,
     writeFileToDevice: writeFileToDevice,
-    pickCSV: pickCSV,
-    isPickDocumentCanceled: isPickDocumentCanceled,
   };
 };
 

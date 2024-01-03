@@ -47,7 +47,6 @@ const useSedValidation = () => {
     }
   };
 
-
   const validateSedData = (spot, pageKey) => {
     let errorMessages = [];
     const isMappedInterval = useSpots.isStratInterval(spot);

@@ -49,6 +49,44 @@ const useUpload = () => {
     }
   };
 
+  // Downsize image for upload
+  const resizeImageForUpload = async (imageProps, imageURI, name) => {
+    try {
+      console.log(name + ': Resizing Image', imageProps?.id, '...');
+      let height = imageProps?.height;
+      let width = imageProps?.width;
+
+      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
+
+      if (width && height) {
+        const max_size = name === 'profileImage' ? 300 : 2000;
+        if (width > height && width > max_size) {
+          height = max_size * height / width;
+          width = max_size;
+        }
+        else if (height > max_size) {
+          width = max_size * width / height;
+          height = max_size;
+        }
+
+        await useDevice.makeDirectory(tempImagesDownsizedDirectory);
+        const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
+        const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+        let imageSizeText;
+        if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
+        else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
+        else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
+        else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
+        console.log(name + ': Finished Resizing Image', imageProps?.id, 'New Size', imageSizeText);
+        return resizedImage;
+      }
+    }
+    catch (err) {
+      console.error('Error Resizing Image.', err);
+      throw Error;
+    }
+  };
+
   const uploadDataset = async (dataset) => {
     try {
       dispatch(clearedStatusMessages());
@@ -120,72 +158,25 @@ const useUpload = () => {
     }
   };
 
-  // Upload Project Properties
-  const uploadProject = async () => {
+  const uploadFromWeb = async (imageId, imageFile) => {
     try {
-      dispatch(clearedStatusMessages());
-      console.log('Uploading Project Properties...');
-      dispatch(addedStatusMessage('Uploading Project Properties...'));
-      await useServerRequests.updateProject(project, user.encoded_login);
-      console.log('Finished Uploading Project Properties...');
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
+      dispatch(setIsImageTransferring(true));
+      let formData = new FormData();
+      formData.append('name', imageFile.name);
+      formData.append('image_file', imageFile);
+      formData.append('id', imageId);
+      formData.append('modified_timestamp', Date.now());
+
+      const res = await useServerRequests.uploadWebImage(formData, user.encoded_login);
+      console.log('Image Upload Res', res);
+      return res;
     }
     catch (err) {
-      console.error('Error Uploading Project Properties.', err);
-      dispatch(clearedStatusMessages());
-      let errMessage = 'Uploading Project Properties.';
-      errMessage = err ? errMessage + '\n\n' + err + '\n\n' : errMessage;
-      throw Error(errMessage);
+      console.log('Error Uploading Image', err);
+      dispatch(setIsImageTransferring(false));
+      throw Error;
     }
   };
-
-  // Upload Spots
-  const uploadSpots = async (dataset) => {
-    let spots;
-    dispatch(removedLastStatusMessage());
-    if (dataset.spotIds) {
-      spots = useSpots.getSpotsByIds(dataset.spotIds);
-      spots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
-    }
-    try {
-      if (isEmpty(spots)) {
-        console.log(dataset.name + ': No Spots to Upload.');
-        dispatch(addedStatusMessage('There are no spots to upload.'));
-        await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
-        console.log(dataset.name + ': Finished Removing All Spots from Dataset on Server.');
-      }
-      else {
-        const spotCollection = {
-          type: 'FeatureCollection',
-          features: Object.values(spots),
-        };
-        console.log(dataset.name + ': Uploading Spots...', spotCollection);
-        dispatch(addedStatusMessage(`\nUploading ${dataset.name} spots...`));
-        await useServerRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
-        console.log(`Finished uploading ${dataset.name} spots.`);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`\nFinished uploading ${dataset.name} spots.\n`));
-        await uploadImages(Object.values(spots), dataset.name);
-      }
-
-    }
-    catch (err) {
-      console.error(dataset.name + ': Error Uploading Project Spots.', err);
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
-      // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
-      if (err?.startsWith('Spot(s) already exist in another dataset')) {
-        const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
-        console.log('duppes', spotId);
-        dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
-        alert('Fixed Spot in Another Dataset Error',
-          'Spot removed from ' + dataset.name + '. Please try uploading again.');
-      }
-      throw Error(err);
-    }
-  };
-
 
   const uploadImages = async (spots, datasetName) => {
     let imagesFound = [];
@@ -333,71 +324,79 @@ const useUpload = () => {
     }
   };
 
-  // Downsize image for upload
-  const resizeImageForUpload = async (imageProps, imageURI, name) => {
+  // Upload Project Properties
+  const uploadProject = async () => {
     try {
-      console.log(name + ': Resizing Image', imageProps?.id, '...');
-      let height = imageProps?.height;
-      let width = imageProps?.width;
-
-      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
-
-      if (width && height) {
-        const max_size = name === 'profileImage' ? 300 : 2000;
-        if (width > height && width > max_size) {
-          height = max_size * height / width;
-          width = max_size;
-        }
-        else if (height > max_size) {
-          width = max_size * width / height;
-          height = max_size;
-        }
-
-        await useDevice.makeDirectory(tempImagesDownsizedDirectory);
-        const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
-        const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        let imageSizeText;
-        if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
-        else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
-        else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
-        else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-        console.log(name + ': Finished Resizing Image', imageProps?.id, 'New Size', imageSizeText);
-        return resizedImage;
-      }
+      dispatch(clearedStatusMessages());
+      console.log('Uploading Project Properties...');
+      dispatch(addedStatusMessage('Uploading Project Properties...'));
+      await useServerRequests.updateProject(project, user.encoded_login);
+      console.log('Finished Uploading Project Properties...');
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
     }
     catch (err) {
-      console.error('Error Resizing Image.', err);
-      throw Error;
+      console.error('Error Uploading Project Properties.', err);
+      dispatch(clearedStatusMessages());
+      let errMessage = 'Uploading Project Properties.';
+      errMessage = err ? errMessage + '\n\n' + err + '\n\n' : errMessage;
+      throw Error(errMessage);
     }
   };
 
-  const uploadFromWeb = async (imageId, imageFile) => {
+  // Upload Spots
+  const uploadSpots = async (dataset) => {
+    let spots;
+    dispatch(removedLastStatusMessage());
+    if (dataset.spotIds) {
+      spots = useSpots.getSpotsByIds(dataset.spotIds);
+      spots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
+    }
     try {
-      dispatch(setIsImageTransferring(true));
-      let formData = new FormData();
-      formData.append('name', imageFile.name);
-      formData.append('image_file', imageFile);
-      formData.append('id', imageId);
-      formData.append('modified_timestamp', Date.now());
+      if (isEmpty(spots)) {
+        console.log(dataset.name + ': No Spots to Upload.');
+        dispatch(addedStatusMessage('There are no spots to upload.'));
+        await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
+        console.log(dataset.name + ': Finished Removing All Spots from Dataset on Server.');
+      }
+      else {
+        const spotCollection = {
+          type: 'FeatureCollection',
+          features: Object.values(spots),
+        };
+        console.log(dataset.name + ': Uploading Spots...', spotCollection);
+        dispatch(addedStatusMessage(`\nUploading ${dataset.name} spots...`));
+        await useServerRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
+        console.log(`Finished uploading ${dataset.name} spots.`);
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage(`\nFinished uploading ${dataset.name} spots.\n`));
+        await uploadImages(Object.values(spots), dataset.name);
+      }
 
-      const res = await useServerRequests.uploadWebImage(formData, user.encoded_login);
-      console.log('Image Upload Res', res);
-      return res;
     }
     catch (err) {
-      console.log('Error Uploading Image', err);
-      dispatch(setIsImageTransferring(false));
-      throw Error;
+      console.error(dataset.name + ': Error Uploading Project Spots.', err);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
+      // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
+      if (err?.startsWith('Spot(s) already exist in another dataset')) {
+        const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
+        console.log('duppes', spotId);
+        dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
+        alert('Fixed Spot in Another Dataset Error',
+          'Spot removed from ' + dataset.name + '. Please try uploading again.');
+      }
+      throw Error(err);
     }
   };
 
   return {
     initializeUpload: initializeUpload,
+    resizeImageForUpload: resizeImageForUpload,
     uploadDatasets: uploadDatasets,
+    uploadFromWeb: uploadFromWeb,
     uploadProfile: uploadProfile,
     uploadProject: uploadProject,
-    resizeImageForUpload: resizeImageForUpload,
-    uploadFromWeb: uploadFromWeb,
   };
 };
 

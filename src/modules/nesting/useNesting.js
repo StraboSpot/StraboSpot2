@@ -138,6 +138,25 @@ const useNesting = () => {
     return childrenGenerations;
   }
 
+  // Get i generations of parent spots for thisSpot
+  const getParentGenerationsSpots = (thisSpot, i) => {
+    let parentGenerations = [];
+    let parentSpots = [thisSpot];
+
+    Array.from({length: i}, () => {
+      parentSpots = getParentsOfSpots(parentSpots);
+      // Remove a parent Spot if already in the list of parent generation Spots
+      parentSpots = parentSpots.filter((parentSpot) => {
+        return !parentGenerations.flat().find((knownParentSpot) => {
+          return parentSpot.properties.id === knownParentSpot.properties.id;
+        });
+      });
+      if (!isEmpty(parentSpots)) parentGenerations.push(parentSpots);
+    });
+    console.log('Found Parent Generations', parentGenerations);
+    return parentGenerations;
+  };
+
   // Get all the parent Spots of thisSpot, based on image basemaps, strat sections and geometry
   // & also Spots stored in spot.properties.nesting not nested through geometry
   function getParentSpots(thisSpot) {
@@ -191,25 +210,6 @@ const useNesting = () => {
     });
     return allParentSpots.flat();
   }
-
-  // Get i generations of parent spots for thisSpot
-  const getParentGenerationsSpots = (thisSpot, i) => {
-    let parentGenerations = [];
-    let parentSpots = [thisSpot];
-
-    Array.from({length: i}, () => {
-      parentSpots = getParentsOfSpots(parentSpots);
-      // Remove a parent Spot if already in the list of parent generation Spots
-      parentSpots = parentSpots.filter((parentSpot) => {
-        return !parentGenerations.flat().find((knownParentSpot) => {
-          return parentSpot.properties.id === knownParentSpot.properties.id;
-        });
-      });
-      if (!isEmpty(parentSpots)) parentGenerations.push(parentSpots);
-    });
-    console.log('Found Parent Generations', parentGenerations);
-    return parentGenerations;
-  };
 
   return [{
     getChildrenGenerationsSpots: getChildrenGenerationsSpots,

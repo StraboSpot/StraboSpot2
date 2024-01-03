@@ -65,40 +65,6 @@ const useExport = () => {
   };
 
   // For Android only.
-  const zipAndExportProjectFolder = async (isBeingExported) => {
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    await useDevice.makeDirectory(appExportDirectory + backupFileName);
-
-    // Make temp directory for the export files to be zipped up.
-    console.log('Directory made:', appExportDirectory);
-
-    // const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
-    const source = APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json';
-    const destination = appExportDirectory + backupFileName;
-    Platform.OS === 'android' && await requestWriteDirectoryPermission();
-    console.log(backupFileName);
-
-    const file = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
-    const exportedJSON = JSON.parse(file);
-    await useDevice.copyFiles(source, `${destination}/data.json`);
-    console.log('Files Copied', exportedJSON);
-    dispatch(removedLastStatusMessage());
-
-    console.log('DEST', await useDevice.readFile(destination + '/data.json'));
-    await gatherImagesForDistribution(exportedJSON, backupFileName, isBeingExported);
-    console.log('Images copied to:', destination);
-    await gatherMapsForDistribution(exportedJSON, backupFileName, isBeingExported);
-    console.log('Map tiles copied to:', destination);
-    await gatherOtherMapsForDistribution(backupFileName, isBeingExported);
-    const zipPath = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID;
-    const path = await zip(appExportDirectory + backupFileName,
-      zipPath + backupFileName + '.zip');
-
-    const deleteTempFolder = useDevice.deleteFromDevice(appExportDirectory, backupFileName);
-    console.log('Folder', deleteTempFolder);
-    console.log(`zip completed at ${path}`);
-    console.log('All Done Exporting');
-  };
 
   const gatherDataForBackup = async (filename) => {
     try {
@@ -301,10 +267,45 @@ const useExport = () => {
     }
   };
 
+  const zipAndExportProjectFolder = async (isBeingExported) => {
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    await useDevice.makeDirectory(appExportDirectory + backupFileName);
+
+    // Make temp directory for the export files to be zipped up.
+    console.log('Directory made:', appExportDirectory);
+
+    // const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
+    const source = APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json';
+    const destination = appExportDirectory + backupFileName;
+    Platform.OS === 'android' && await requestWriteDirectoryPermission();
+    console.log(backupFileName);
+
+    const file = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
+    const exportedJSON = JSON.parse(file);
+    await useDevice.copyFiles(source, `${destination}/data.json`);
+    console.log('Files Copied', exportedJSON);
+    dispatch(removedLastStatusMessage());
+
+    console.log('DEST', await useDevice.readFile(destination + '/data.json'));
+    await gatherImagesForDistribution(exportedJSON, backupFileName, isBeingExported);
+    console.log('Images copied to:', destination);
+    await gatherMapsForDistribution(exportedJSON, backupFileName, isBeingExported);
+    console.log('Map tiles copied to:', destination);
+    await gatherOtherMapsForDistribution(backupFileName, isBeingExported);
+    const zipPath = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID;
+    const path = await zip(appExportDirectory + backupFileName,
+      zipPath + backupFileName + '.zip');
+
+    const deleteTempFolder = useDevice.deleteFromDevice(appExportDirectory, backupFileName);
+    console.log('Folder', deleteTempFolder);
+    console.log(`zip completed at ${path}`);
+    console.log('All Done Exporting');
+  };
+
   return {
     backupProjectToDevice: backupProjectToDevice,
-    zipAndExportProjectFolder: zipAndExportProjectFolder,
     initializeBackup: initializeBackup,
+    zipAndExportProjectFolder: zipAndExportProjectFolder,
   };
 };
 

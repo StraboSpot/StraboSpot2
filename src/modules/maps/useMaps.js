@@ -104,20 +104,6 @@ const useMaps = (mapRef) => {
     return tileUrl;
   };
 
-  const deleteMap = async (mapId) => {
-    console.log('Deleting Map Here');
-    console.log('map: ', mapId);
-    const projectCopy = {...project};
-    const customMapsCopy = {...customMaps};
-    delete customMapsCopy[mapId];
-    if (projectCopy.other_maps) {
-      const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
-      dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
-    }
-    dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
-    dispatch(setSidePanelVisible({view: null, bool: false}));
-  };
-
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
   const convertCoords = (feature, fromProjection, toProjection) => {
     if (feature.geometry.type === 'Point') {
@@ -176,6 +162,20 @@ const useMaps = (mapRef) => {
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
+  const deleteMap = async (mapId) => {
+    console.log('Deleting Map Here');
+    console.log('map: ', mapId);
+    const projectCopy = {...project};
+    const customMapsCopy = {...customMaps};
+    delete customMapsCopy[mapId];
+    if (projectCopy.other_maps) {
+      const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
+      dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
+    }
+    dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
+    dispatch(setSidePanelVisible({view: null, bool: false}));
+  };
+
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
     const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
@@ -196,6 +196,7 @@ const useMaps = (mapRef) => {
     return mappedSpots;
   };
 
+  // INTERNAL
   const getBboxCoords = async (map) => {
     if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
       const myMapsBbox = await useServerRequests.getMyMapsBbox(map.id);
@@ -229,6 +230,26 @@ const useMaps = (mapRef) => {
     let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
     console.log('The coordinates identified for image-basemap :', coordQuad);
     return coordQuad;
+  };
+
+  // Get selected and not selected Spots to display when not editing
+  const getDisplayedSpots = (selectedSpots) => {
+    let mappedSpots = getAllMappedSpots();
+    mapSymbols(mappedSpots);
+
+    // If any map symbol toggle is ON filter out the Point features & Spots that are not visible
+    if (!isAllSymbolsOn) mappedSpots = getVisibleMappedSpots(mappedSpots);
+
+    // Separate selected Spots and not selected Spots (Point Spots need to be in both
+    // selected and not selected since the selected symbology is a halo around the point)
+    const selectedIds = selectedSpots.map(sel => sel.properties.id);
+    const selectedMappedSpots = mappedSpots.filter(spot => selectedIds.includes(spot.properties.id));
+    const notSelectedMappedSpots = mappedSpots.filter(spot => !selectedIds.includes(spot.properties.id)
+      || spot.geometry.type === 'Point');
+
+    // console.log('Selected Spots to Display on this Map:', selectedMappedSpots);
+    // console.log('Not Selected Spots to Display on this Map:', notSelectedMappedSpots);
+    return [selectedMappedSpots, notSelectedMappedSpots];
   };
 
   const getDistancesFromSpot = async (screenPointX, screenPointY, featuresInRect) => {
@@ -282,45 +303,6 @@ const useMaps = (mapRef) => {
     url = customDatabaseEndpoint.isSelected ? url + '/zipcount' : STRABO_APIS.TILE_COUNT;
     console.log(url + '?extent=' + extentString + '&zoom=' + zoomLevel);
     return url + '?extent=' + extentString + '&zoom=' + zoomLevel;
-  };
-
-  // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
-  const getNearestFeatureInBBox = async ([x, y], layers) => {
-
-    // Get a bounding box for a pressed point on screen [top, right, bottom, left]
-    const getBoundingBox = () => {
-      const r = 15;
-      const maxX = x + r;
-      const minX = x - r;
-      const maxY = y + r;
-      const minY = y - r;
-      return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]] : [maxY, maxX, minY, minX];
-    };
-
-    // Get all the features in the bounding box
-    const bbox = getBoundingBox();
-    const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
-      : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
-    let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
-
-    // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in the visible map bounds for
-    //  Android only. Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
-    // Android fix for queryRenderedFeaturesInRect returning all features in view
-    // Create a polygon from the bounding box and get features that intersect it
-    if (Platform.OS === 'android') {
-      const turfBbox = bbox.slice().reverse(); //turf bbox is minX, minY, maxX, maxY
-      const polyBbox = turf.bboxPolygon(turfBbox);
-      const geoPolyBbox = await Promise.all(
-        polyBbox.geometry.coordinates[0].map(async c => await mapRef.current.getCoordinateFromView(c)));
-      const poly = turf.polygon([geoPolyBbox]);
-      nearFeatures = nearFeaturesCollection.features.reduce(
-        (acc, nearFeature) => turf.booleanIntersects(nearFeature, poly) ? [...acc, nearFeature] : acc, []);
-    }
-    if (nearFeatures.length > 0) console.log('Near features:', nearFeatures);
-
-    // If more than one near feature is found, return a random one (user needs to zoom in if too many features found)
-    const randomIndex = Math.floor(Math.random() * nearFeatures.length);
-    return Promise.resolve(nearFeatures[randomIndex] || []);
   };
 
   const getMeasureFeatures = async (e, measureFeaturesTemp, setDistance) => {
@@ -380,6 +362,57 @@ const useMaps = (mapRef) => {
     return measureFeaturesTemp;
   };
 
+  // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
+  const getNearestFeatureInBBox = async ([x, y], layers) => {
+
+    // Get a bounding box for a pressed point on screen [top, right, bottom, left]
+    const getBoundingBox = () => {
+      const r = 15;
+      const maxX = x + r;
+      const minX = x - r;
+      const maxY = y + r;
+      const minY = y - r;
+      return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]] : [maxY, maxX, minY, minX];
+    };
+
+    // Get all the features in the bounding box
+    const bbox = getBoundingBox();
+    const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
+      : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
+    let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
+
+    // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in the visible map bounds for
+    //  Android only. Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
+    // Android fix for queryRenderedFeaturesInRect returning all features in view
+    // Create a polygon from the bounding box and get features that intersect it
+    if (Platform.OS === 'android') {
+      const turfBbox = bbox.slice().reverse(); //turf bbox is minX, minY, maxX, maxY
+      const polyBbox = turf.bboxPolygon(turfBbox);
+      const geoPolyBbox = await Promise.all(
+        polyBbox.geometry.coordinates[0].map(async c => await mapRef.current.getCoordinateFromView(c)));
+      const poly = turf.polygon([geoPolyBbox]);
+      nearFeatures = nearFeaturesCollection.features.reduce(
+        (acc, nearFeature) => turf.booleanIntersects(nearFeature, poly) ? [...acc, nearFeature] : acc, []);
+    }
+    if (nearFeatures.length > 0) console.log('Near features:', nearFeatures);
+
+    // If more than one near feature is found, return a random one (user needs to zoom in if too many features found)
+    const randomIndex = Math.floor(Math.random() * nearFeatures.length);
+    return Promise.resolve(nearFeatures[randomIndex] || []);
+  };
+
+  const getProviderInfo = (source) => {
+    let providerInfo = {...MAP_PROVIDERS[source]};
+    if (customDatabaseEndpoint.isSelected) {
+      const serverUrl = customDatabaseEndpoint.url;
+      const lastOccur = serverUrl.lastIndexOf('/');
+      providerInfo.url = [serverUrl.substring(0, lastOccur) + '/geotiff/tiles/'];
+      return providerInfo;
+    }
+    console.log(providerInfo);
+    return providerInfo;
+  };
+
   // Get the Spot where screen was pressed
   const getSpotAtPress = async (screenPointX, screenPointY) => {
     const nearestFeature = await getNearestFeatureInBBox([screenPointX, screenPointY], spotLayers);
@@ -430,50 +463,6 @@ const useMaps = (mapRef) => {
     );
   };
 
-  // Gather and set the feature types that are present in the mapped Spots
-  const mapSymbols = (mappedSpots) => {
-    const featureTypes = mappedSpots.reduce((acc, spot) => {
-      const spotFeatureTypes = spot.properties.orientation_data
-        && spot.properties.orientation_data.reduce((acc1, orientation) => {
-          return orientation.feature_type ? [...new Set([...acc1, orientation.feature_type])] : acc1;
-        }, []);
-      return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
-    }, []);
-    dispatch(setMapSymbols(featureTypes));
-  };
-
-  // Get selected and not selected Spots to display when not editing
-  const getDisplayedSpots = (selectedSpots) => {
-    let mappedSpots = getAllMappedSpots();
-    mapSymbols(mappedSpots);
-
-    // If any map symbol toggle is ON filter out the Point features & Spots that are not visible
-    if (!isAllSymbolsOn) mappedSpots = getVisibleMappedSpots(mappedSpots);
-
-    // Separate selected Spots and not selected Spots (Point Spots need to be in both
-    // selected and not selected since the selected symbology is a halo around the point)
-    const selectedIds = selectedSpots.map(sel => sel.properties.id);
-    const selectedMappedSpots = mappedSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappedSpots = mappedSpots.filter(spot => !selectedIds.includes(spot.properties.id)
-      || spot.geometry.type === 'Point');
-
-    // console.log('Selected Spots to Display on this Map:', selectedMappedSpots);
-    // console.log('Not Selected Spots to Display on this Map:', notSelectedMappedSpots);
-    return [selectedMappedSpots, notSelectedMappedSpots];
-  };
-
-  const getProviderInfo = (source) => {
-    let providerInfo = {...MAP_PROVIDERS[source]};
-    if (customDatabaseEndpoint.isSelected) {
-      const serverUrl = customDatabaseEndpoint.url;
-      const lastOccur = serverUrl.lastIndexOf('/');
-      providerInfo.url = [serverUrl.substring(0, lastOccur) + '/geotiff/tiles/'];
-      return providerInfo;
-    }
-    console.log(providerInfo);
-    return providerInfo;
-  };
-
   const handleError = (message, err) => {
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage(`${message} \n\n${err}`));
@@ -510,6 +499,18 @@ const useMaps = (mapRef) => {
   const isOnImageBasemap = feature => feature.properties?.image_basemap;
 
   const isOnStratSection = feature => feature.properties?.strat_section_id;
+
+  // Gather and set the feature types that are present in the mapped Spots
+  const mapSymbols = (mappedSpots) => {
+    const featureTypes = mappedSpots.reduce((acc, spot) => {
+      const spotFeatureTypes = spot.properties.orientation_data
+        && spot.properties.orientation_data.reduce((acc1, orientation) => {
+          return orientation.feature_type ? [...new Set([...acc1, orientation.feature_type])] : acc1;
+        }, []);
+      return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
+    }, []);
+    dispatch(setMapSymbols(featureTypes));
+  };
 
   const saveCustomMap = async (map) => {
     let mapId = map.id.trim();
@@ -680,8 +681,8 @@ const useMaps = (mapRef) => {
     getDisplayedSpots: getDisplayedSpots,
     getDrawFeatureAtPress: getDrawFeatureAtPress,
     getExtentAndZoomCall: getExtentAndZoomCall,
-    getNearestFeatureInBBox: getNearestFeatureInBBox,
     getMeasureFeatures: getMeasureFeatures,
+    getNearestFeatureInBBox: getNearestFeatureInBBox,
     getSpotAtPress: getSpotAtPress,
     getSpotsAsFeatures: getSpotsAsFeatures,
     handleError: handleError,

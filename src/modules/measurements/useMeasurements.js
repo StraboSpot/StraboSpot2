@@ -93,6 +93,30 @@ const useMeasurements = () => {
     else alert('No Measurement Type', 'Please select a measurement type using the toggles.');
   };
 
+  const deleteMeasurements = (measurementsToDelete) => {
+    console.log('Deleting measurements...', measurementsToDelete);
+    useTags.deleteFeatureTags(measurementsToDelete);
+    let flattenedMeasurementsToDelete = measurementsToDelete.reduce((acc, meas) => {
+      if (meas.associated_orientation) {
+        const assocOrientations = meas.associated_orientation.reduce((acc1, aO) => [...acc1, aO], []);
+        return [...acc, ...assocOrientations, meas];
+      }
+      else return [...acc, meas];
+    }, []);
+
+    let updatedOrientationData = JSON.parse(JSON.stringify(spot.properties.orientation_data));
+    flattenedMeasurementsToDelete.forEach((measurementToDelete) => {
+      updatedOrientationData = removeMeasurementFromObj(updatedOrientationData, measurementToDelete);
+    });
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));
+    dispatch(setSelectedAttributes([]));
+  };
+
+  const getLabel = (key) => {
+    return useForm.getLabel(key, ['measurement']);
+  };
+
   const removeMeasurementFromObj = (currentOrientationData, measurementToDelete) => {
     let aborted = false;
     let orientationDataCopy = JSON.parse(JSON.stringify(currentOrientationData));
@@ -118,30 +142,6 @@ const useMeasurements = () => {
       orientationDataCopy = orientationDataCopy.filter(measurement => !isEmpty(measurement));
       return orientationDataCopy;
     }
-  };
-
-  const deleteMeasurements = (measurementsToDelete) => {
-    console.log('Deleting measurements...', measurementsToDelete);
-    useTags.deleteFeatureTags(measurementsToDelete);
-    let flattenedMeasurementsToDelete = measurementsToDelete.reduce((acc, meas) => {
-      if (meas.associated_orientation) {
-        const assocOrientations = meas.associated_orientation.reduce((acc1, aO) => [...acc1, aO], []);
-        return [...acc, ...assocOrientations, meas];
-      }
-      else return [...acc, meas];
-    }, []);
-
-    let updatedOrientationData = JSON.parse(JSON.stringify(spot.properties.orientation_data));
-    flattenedMeasurementsToDelete.forEach((measurementToDelete) => {
-      updatedOrientationData = removeMeasurementFromObj(updatedOrientationData, measurementToDelete);
-    });
-    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-    dispatch(editedSpotProperties({field: 'orientation_data', value: updatedOrientationData}));
-    dispatch(setSelectedAttributes([]));
-  };
-
-  const getLabel = (key) => {
-    return useForm.getLabel(key, ['measurement']);
   };
 
   return [{

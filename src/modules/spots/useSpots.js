@@ -291,7 +291,7 @@ const useSpots = () => {
   };
 
 
-  const getSpotGemometryIconSource = (spot) => {
+  const getSpotGeometryIconSource = (spot) => {
     if (spot?.geometry?.type === 'Point') {
       if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
       else if (spot.properties?.strat_section_id) return require('../../assets/icons/StratPoint_pressed.png');
@@ -393,7 +393,7 @@ const useSpots = () => {
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
     getSpotByImageId: getSpotByImageId,
-    getSpotGemometryIconSource: getSpotGemometryIconSource,
+    getSpotGemometryIconSource: getSpotGeometryIconSource,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,

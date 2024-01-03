@@ -27,84 +27,6 @@ const useMapSymbology = () => {
     });
   };
 
-  // Get the rotation of the symbol, either strike, trend or failing both, 0
-  const getIconRotation = () => {
-    return [
-      'case',
-      ['has', 'strike', ['get', 'orientation']], ['get', 'strike', ['get', 'orientation']],
-      ['case',
-        ['has', 'dip_direction', ['get', 'orientation']], ['%', ['-', ['get', 'dip_direction', ['get', 'orientation']], 90], 360],
-        ['case',
-          ['has', 'trend', ['get', 'orientation']], ['get', 'trend', ['get', 'orientation']],
-          0,
-        ],
-      ],
-    ];
-  };
-
-  // Get the label for the point symbol, either dip, plunge or failing both, the Spot name
-  const getPointLabel = () => {
-    return [
-      'case', ['has', 'orientation'],
-      ['case',
-        ['has', 'plunge', ['get', 'orientation']], ['get', 'plunge', ['get', 'orientation']],
-        ['case',
-          ['has', 'dip', ['get', 'orientation']], ['get', 'dip', ['get', 'orientation']],
-          ['get', 'name'],
-        ],
-      ],
-      ['get', 'name'],
-    ];
-
-    // Does not work on iOS - iOS doesn't build if there is more than 1 condition and a fallback in a case expression
-    /*return ['case', ['has', 'orientation'],
-     ['case',
-     ['has', 'dip', ['get', 'orientation']], ['get', 'dip', ['get', 'orientation']],
-     ['has', 'plunge', ['get', 'orientation']], ['get', 'plunge', ['get', 'orientation']],
-     ['get', 'name'],
-     ],
-     ['get', 'name'],
-     ];*/
-  };
-
-  // Get the label offset, which is further to the right if the symbol rotation is between 60-120 or 240-300
-  const getLabelOffset = () => {
-    return ['case', ['has', 'orientation'],
-      // Variable bindings
-      ['let',
-        'rotation',
-        ['case',
-          ['has', 'strike', ['get', 'orientation']], ['get', 'strike', ['get', 'orientation']],
-          ['case',
-            ['has', 'dip_direction', ['get', 'orientation']], ['%', ['-', ['get', 'dip_direction', ['get', 'orientation']], 90], 360],
-            ['case',
-              ['has', 'trend', ['get', 'orientation']], ['get', 'trend', ['get', 'orientation']],
-              0,
-            ],
-          ],
-        ],
-
-        // Output
-        ['case',
-          // Symbol rotation between 60-120 or 240-300
-          ['any',
-            ['all',
-              ['>=', ['var', 'rotation'], 60],
-              ['<=', ['var', 'rotation'], 120],
-            ],
-            ['all',
-              ['>=', ['var', 'rotation'], 240],
-              ['<=', ['var', 'rotation'], 300],
-            ],
-          ], ['literal', [2, 0]],     // Need to specifiy 'literal' to return an array in expressions
-          // Default
-          ['literal', [0.75, 0]],
-        ],
-      ],
-      ['literal', [0.75, 0]],
-    ];
-  };
-
   // Get the image for the symbol
   const getIconImage = () => {
     return ['case', ['has', 'orientation'],
@@ -183,6 +105,88 @@ const useMapSymbology = () => {
     ];
   };
 
+  // Get the rotation of the symbol, either strike, trend or failing both, 0
+  const getIconRotation = () => {
+    return [
+      'case',
+      ['has', 'strike', ['get', 'orientation']], ['get', 'strike', ['get', 'orientation']],
+      ['case',
+        ['has', 'dip_direction', ['get', 'orientation']], ['%', ['-', ['get', 'dip_direction', ['get', 'orientation']], 90], 360],
+        ['case',
+          ['has', 'trend', ['get', 'orientation']], ['get', 'trend', ['get', 'orientation']],
+          0,
+        ],
+      ],
+    ];
+  };
+
+  // Get the label offset, which is further to the right if the symbol rotation is between 60-120 or 240-300
+  const getLabelOffset = () => {
+    return ['case', ['has', 'orientation'],
+      // Variable bindings
+      ['let',
+        'rotation',
+        ['case',
+          ['has', 'strike', ['get', 'orientation']], ['get', 'strike', ['get', 'orientation']],
+          ['case',
+            ['has', 'dip_direction', ['get', 'orientation']], ['%', ['-', ['get', 'dip_direction', ['get', 'orientation']], 90], 360],
+            ['case',
+              ['has', 'trend', ['get', 'orientation']], ['get', 'trend', ['get', 'orientation']],
+              0,
+            ],
+          ],
+        ],
+
+        // Output
+        ['case',
+          // Symbol rotation between 60-120 or 240-300
+          ['any',
+            ['all',
+              ['>=', ['var', 'rotation'], 60],
+              ['<=', ['var', 'rotation'], 120],
+            ],
+            ['all',
+              ['>=', ['var', 'rotation'], 240],
+              ['<=', ['var', 'rotation'], 300],
+            ],
+          ], ['literal', [2, 0]],     // Need to specifiy 'literal' to return an array in expressions
+          // Default
+          ['literal', [0.75, 0]],
+        ],
+      ],
+      ['literal', [0.75, 0]],
+    ];
+  };
+
+  const getLayoutSymbology = () => {
+    // Map of properties for native to web
+    const layoutPropertiesMap = {
+      iconAllowOverlap: 'icon-allow-overlap',
+      iconIgnorePlacement: 'icon-ignore-placement',
+      iconImage: 'icon-image',
+      iconRotate: 'icon-rotate',
+      iconSize: 'icon-size',
+      symbolPlacement: 'symbol-placement',
+      symbolSpacing: 'symbol-spacing',
+      textAnchor: 'text-anchor',
+      textField: 'text-field',
+      textIgnorePlacement: 'text-ignore-placement',
+      textOffset: 'text-offset',
+      textRotate: 'text-rotate',
+      textSize: 'text-size',
+    };
+
+    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      ...acc,
+      ...{
+        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
+            return layoutPropertiesMap[property] ? {...acc2, ...{[layoutPropertiesMap[property]]: style}} : acc2;
+          },
+          {}),
+      },
+    }), {});
+  };
+
   const getLinesFilteredByPattern = (pattern) => {
     return (
       ['all',
@@ -248,17 +252,58 @@ const useMapSymbology = () => {
     };
   };
 
-  // If feature has a tag of the type specified in the Map Symbols dialog (geologic unit or concept)
-  // and that tag has a color assigned to then apply that color first
-  const getTagColor = (feature) => {
-    let color;
-    let tagsAtSpot = useTags.getTagsAtSpot(feature.properties.id);
-    const tagsForColor = tagsAtSpot.filter(tag => tag.type === tagTypeForColor);
-    if (!isEmpty(tagsForColor) && tagsForColor[0].color) {
-      const rgbColor = hexToRgb(tagsForColor[0].color);
-      color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
-    }
-    return color;
+  const getMapSymbology = () => mapStyles;
+
+  const getPaintSymbology = () => {
+    // Map of properties for native to web
+    const paintPropertiesMap = {
+      circleColor: 'circle-color',
+      circleOpacity: 'circle-opacity',
+      circleRadius: 'circle-radius',
+      circleStrokeColor: 'circle-stroke-color',
+      circleStrokeWidth: 'circle-stroke-width',
+      fillColor: 'fill-color',
+      fillOpacity: 'fill-opacity',
+      fillOutlineColor: 'fill-outline-color',
+      fillPattern: 'fill-pattern',
+      lineColor: 'line-color',
+      lineDasharray: 'line-dasharray',
+      lineWidth: 'line-width',
+    };
+    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
+      ...acc,
+      ...{
+        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
+            return paintPropertiesMap[property] ? {...acc2, ...{[paintPropertiesMap[property]]: style}} : acc2;
+          },
+          {}),
+      },
+    }), {});
+  };
+
+  // Get the label for the point symbol, either dip, plunge or failing both, the Spot name
+  const getPointLabel = () => {
+    return [
+      'case', ['has', 'orientation'],
+      ['case',
+        ['has', 'plunge', ['get', 'orientation']], ['get', 'plunge', ['get', 'orientation']],
+        ['case',
+          ['has', 'dip', ['get', 'orientation']], ['get', 'dip', ['get', 'orientation']],
+          ['get', 'name'],
+        ],
+      ],
+      ['get', 'name'],
+    ];
+
+    // Does not work on iOS - iOS doesn't build if there is more than 1 condition and a fallback in a case expression
+    /*return ['case', ['has', 'orientation'],
+     ['case',
+     ['has', 'dip', ['get', 'orientation']], ['get', 'dip', ['get', 'orientation']],
+     ['has', 'plunge', ['get', 'orientation']], ['get', 'plunge', ['get', 'orientation']],
+     ['get', 'name'],
+     ],
+     ['get', 'name'],
+     ];*/
   };
 
   const getPointSymbology = (feature) => {
@@ -327,6 +372,19 @@ const useMapSymbology = () => {
       default:
         return {};
     }
+  };
+
+  // If feature has a tag of the type specified in the Map Symbols dialog (geologic unit or concept)
+  // and that tag has a color assigned to then apply that color first
+  const getTagColor = (feature) => {
+    let color;
+    let tagsAtSpot = useTags.getTagsAtSpot(feature.properties.id);
+    const tagsForColor = tagsAtSpot.filter(tag => tag.type === tagTypeForColor);
+    if (!isEmpty(tagsForColor) && tagsForColor[0].color) {
+      const rgbColor = hexToRgb(tagsForColor[0].color);
+      color = 'rgba(' + rgbColor.r + ', ' + rgbColor.g + ', ' + rgbColor.b + ', 0.4)';
+    }
+    return color;
   };
 
   const mapStyles = {
@@ -462,70 +520,12 @@ const useMapSymbology = () => {
     },
   };
 
-  const getPaintSymbology = () => {
-    // Map of properties for native to web
-    const paintPropertiesMap = {
-      circleColor: 'circle-color',
-      circleOpacity: 'circle-opacity',
-      circleRadius: 'circle-radius',
-      circleStrokeColor: 'circle-stroke-color',
-      circleStrokeWidth: 'circle-stroke-width',
-      fillColor: 'fill-color',
-      fillOpacity: 'fill-opacity',
-      fillOutlineColor: 'fill-outline-color',
-      fillPattern: 'fill-pattern',
-      lineColor: 'line-color',
-      lineDasharray: 'line-dasharray',
-      lineWidth: 'line-width',
-    };
-    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
-      ...acc,
-      ...{
-        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
-            return paintPropertiesMap[property] ? {...acc2, ...{[paintPropertiesMap[property]]: style}} : acc2;
-          },
-          {}),
-      },
-    }), {});
-  };
-
-  const getLayoutSymbology = () => {
-    // Map of properties for native to web
-    const layoutPropertiesMap = {
-      iconAllowOverlap: 'icon-allow-overlap',
-      iconIgnorePlacement: 'icon-ignore-placement',
-      iconImage: 'icon-image',
-      iconRotate: 'icon-rotate',
-      iconSize: 'icon-size',
-      symbolPlacement: 'symbol-placement',
-      symbolSpacing: 'symbol-spacing',
-      textAnchor: 'text-anchor',
-      textField: 'text-field',
-      textIgnorePlacement: 'text-ignore-placement',
-      textOffset: 'text-offset',
-      textRotate: 'text-rotate',
-      textSize: 'text-size',
-    };
-
-    return Object.entries(mapStyles).reduce((acc, [key, value]) => ({
-      ...acc,
-      ...{
-        [key]: Object.entries(value).reduce((acc2, [property, style]) => {
-            return layoutPropertiesMap[property] ? {...acc2, ...{[layoutPropertiesMap[property]]: style}} : acc2;
-          },
-          {}),
-      },
-    }), {});
-  };
-
-  const getMapSymbology = () => mapStyles;
-
   return [{
     addSymbology: addSymbology,
-    getPaintSymbology: getPaintSymbology,
     getLayoutSymbology: getLayoutSymbology,
-    getMapSymbology: getMapSymbology,
     getLinesFilteredByPattern: getLinesFilteredByPattern,
+    getMapSymbology: getMapSymbology,
+    getPaintSymbology: getPaintSymbology,
     getSymbology: getSymbology,
   }];
 };

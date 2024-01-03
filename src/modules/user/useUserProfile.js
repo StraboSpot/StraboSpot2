@@ -6,6 +6,12 @@ const useUserProfile = () => {
   const userData = useSelector(state => state.user);
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
 
+  const getEmail = () => {
+    let email = '';
+    !customDatabaseEndpoint.isSelected && !isEmpty(userData.email) && truncateText(userData.email, 16);
+    return email;
+  };
+
   const getInitials = () => {
     return userData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
   };
@@ -15,12 +21,6 @@ const useUserProfile = () => {
     if (customDatabaseEndpoint.isSelected) name = userData.name.split(' ')[0];
     else !isEmpty(userData.name) ? name = userData.name : 'Guest';
     return name;
-  };
-
-  const getEmail = () => {
-    let email = '';
-    !customDatabaseEndpoint.isSelected && !isEmpty(userData.email) && truncateText(userData.email, 16);
-    return email;
   };
 
   return {

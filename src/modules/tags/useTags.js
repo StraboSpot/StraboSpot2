@@ -31,26 +31,6 @@ const useTags = () => {
 
   const formName = ['project', 'tags'];
 
-  const addSpotsToTags = (tagsList, spotsList) => {
-    let tagsToUpdate = [];
-    tagsList.map((tag) => {
-      let spotsListForTagging = [];
-      spotsList.map((spot) => {
-        if (!tagSpotExists(tag, spot)) spotsListForTagging.push(spot.properties.id);
-      });
-      let tagCopy = JSON.parse(JSON.stringify(tag));
-      tagCopy.spots = isEmpty(tagCopy.spots) ? spotsListForTagging : tagCopy.spots.concat(spotsListForTagging);
-      tagsToUpdate.push(tagCopy);
-    });
-    saveTag(tagsToUpdate);
-  };
-
-  const addTag = () => {
-    dispatch(setSelectedTag({}));
-    if (modalVisible === MODAL_KEYS.NOTEBOOK.TAGS) dispatch(addedTagToSelectedSpot(true));
-    else dispatch(addedTagToSelectedSpot(false));
-  };
-
   // link unlink given tag and spot feature.
   const addRemoveSpotFeatureFromTag = (tag, feature, spotId) => {
     const featureData = feature.id;
@@ -83,14 +63,6 @@ const useTags = () => {
     saveTag(tag);
   };
 
-  // tag modal - add remove tags (wrapper method for feature level tagging and spot level tagging).
-  const addRemoveTag = (tag, spot, isFeatureLevelTagging, isAlreadyChecked) => {
-    const spotId = spot ? spot.properties.id : selectedSpot.properties.id;
-    if (!isFeatureLevelTagging) addRemoveSpotFromTag(spotId, tag);
-    else if (!isMultipleFeaturesTaggingEnabled) addRemoveSpotFeatureFromTag(tag, selectedFeaturesForTagging[0], spotId);
-    else addRemoveSpotFeaturesFromTag(tag, selectedFeaturesForTagging, spotId, isAlreadyChecked);
-  };
-
   const addRemoveSpotFromTag = (spotId, tag) => {
     let selectedTagCopy = JSON.parse(JSON.stringify(tag));
     if (selectedTagCopy.spots) {
@@ -106,10 +78,32 @@ const useTags = () => {
     saveTag(selectedTagCopy);
   };
 
-  const deleteTag = (tagToDelete) => {
-    let updatedTags = projectTags.filter(tag => tag.id !== tagToDelete.id);
-    dispatch(updatedProject({field: 'tags', value: updatedTags}));
+  // tag modal - add remove tags (wrapper method for feature level tagging and spot level tagging).
+  const addRemoveTag = (tag, spot, isFeatureLevelTagging, isAlreadyChecked) => {
+    const spotId = spot ? spot.properties.id : selectedSpot.properties.id;
+    if (!isFeatureLevelTagging) addRemoveSpotFromTag(spotId, tag);
+    else if (!isMultipleFeaturesTaggingEnabled) addRemoveSpotFeatureFromTag(tag, selectedFeaturesForTagging[0], spotId);
+    else addRemoveSpotFeaturesFromTag(tag, selectedFeaturesForTagging, spotId, isAlreadyChecked);
+  };
+
+  const addSpotsToTags = (tagsList, spotsList) => {
+    let tagsToUpdate = [];
+    tagsList.map((tag) => {
+      let spotsListForTagging = [];
+      spotsList.map((spot) => {
+        if (!tagSpotExists(tag, spot)) spotsListForTagging.push(spot.properties.id);
+      });
+      let tagCopy = JSON.parse(JSON.stringify(tag));
+      tagCopy.spots = isEmpty(tagCopy.spots) ? spotsListForTagging : tagCopy.spots.concat(spotsListForTagging);
+      tagsToUpdate.push(tagCopy);
+    });
+    saveTag(tagsToUpdate);
+  };
+
+  const addTag = () => {
     dispatch(setSelectedTag({}));
+    if (modalVisible === MODAL_KEYS.NOTEBOOK.TAGS) dispatch(addedTagToSelectedSpot(true));
+    else dispatch(addedTagToSelectedSpot(false));
   };
 
   const deleteFeatureTags = (features) => {
@@ -131,6 +125,13 @@ const useTags = () => {
     });
     saveTag(tagsToUpdate);
   };
+
+  const deleteTag = (tagToDelete) => {
+    let updatedTags = projectTags.filter(tag => tag.id !== tagToDelete.id);
+    dispatch(updatedProject({field: 'tags', value: updatedTags}));
+    dispatch(setSelectedTag({}));
+  };
+
 
   const filterTagsByTagType = (tags, tagType) => {
     if (isEmpty(tagType)) return tags;
@@ -216,6 +217,16 @@ const useTags = () => {
     return tagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
   };
 
+  const getTagFeaturesCount = (tag) => {
+    const validSpots = isEmpty(tag.features) ? [] : Object.keys(tag.features).filter(spotIds => spots[spotIds]);
+    return validSpots.reduce((acc, spotId) => acc + tag.features[spotId].length, 0);
+  };
+
+  const getTagSpotsCount = (tag) => {
+    const validSpots = isEmpty(tag.spots) ? [] : tag.spots.filter(spotIds => spots[spotIds]);
+    return validSpots.length;
+  };
+
   // to display all tags at given feature.
   const getTagsAtFeature = (spotId, featureId) => {
     if (!spotId && !isEmpty(selectedSpot)) spotId = selectedSpot.properties.id;
@@ -231,14 +242,20 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
-  const getTagFeaturesCount = (tag) => {
-    const validSpots = isEmpty(tag.features) ? [] : Object.keys(tag.features).filter(spotIds => spots[spotIds]);
-    return validSpots.reduce((acc, spotId) => acc + tag.features[spotId].length, 0);
-  };
-
-  const getTagSpotsCount = (tag) => {
-    const validSpots = isEmpty(tag.spots) ? [] : tag.spots.filter(spotIds => spots[spotIds]);
-    return validSpots.length;
+  const renderTagForm = (type) => {
+    return (
+      <View style={{flex: 1}}>
+        <Formik
+          innerRef={formRef}
+          onSubmit={() => console.log('Submitting form...')}
+          validate={values => useForm.validateForm({formName: formName, values: values})}
+          component={formProps => Form({formName: formName, ...formProps})}
+          initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
+          initialStatus={{formName: formName}}
+          enableReinitialize={true}
+        />
+      </View>
+    );
   };
 
   const renderTagInfo = () => {
@@ -258,22 +275,6 @@ const useTags = () => {
         {<Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
         {!isEmpty(rockUnitString) && <Text style={tagsStyles.listText}>{rockUnitString}</Text>}
         {notes && <Text style={tagsStyles.listText}>Notes: {notes}</Text>}
-      </View>
-    );
-  };
-
-  const renderTagForm = (type) => {
-    return (
-      <View style={{flex: 1}}>
-        <Formik
-          innerRef={formRef}
-          onSubmit={() => console.log('Submitting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
-          component={formProps => Form({formName: formName, ...formProps})}
-          initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
-          initialStatus={{formName: formName}}
-          enableReinitialize={true}
-        />
       </View>
     );
   };
@@ -342,13 +343,13 @@ const useTags = () => {
   };
 
   return [{
-    addSpotsToTags: addSpotsToTags,
-    addTag: addTag,
     addRemoveSpotFeatureFromTag: addRemoveSpotFeatureFromTag,
     addRemoveSpotFromTag: addRemoveSpotFromTag,
     addRemoveTag: addRemoveTag,
-    deleteTag: deleteTag,
+    addSpotsToTags: addSpotsToTags,
+    addTag: addTag,
     deleteFeatureTags: deleteFeatureTags,
+    deleteTag: deleteTag,
     filterTagsByTagType: filterTagsByTagType,
     getAllTaggedFeatures: getAllTaggedFeatures,
     getFeatureDisplayComponent: getFeatureDisplayComponent,
@@ -357,12 +358,12 @@ const useTags = () => {
     getLabel: getLabel,
     getNonGeologicUnitFeatureTagsAtSpot: getNonGeologicUnitFeatureTagsAtSpot,
     getNonGeologicUnitTagsAtSpot: getNonGeologicUnitTagsAtSpot,
-    getTagsAtFeature: getTagsAtFeature,
-    getTagsAtSpot: getTagsAtSpot,
     getTagFeaturesCount: getTagFeaturesCount,
     getTagSpotsCount: getTagSpotsCount,
-    renderTagInfo: renderTagInfo,
+    getTagsAtFeature: getTagsAtFeature,
+    getTagsAtSpot: getTagsAtSpot,
     renderTagForm: renderTagForm,
+    renderTagInfo: renderTagInfo,
     saveForm: saveForm,
     saveTag: saveTag,
     setFeaturesSelectedForMultiTagging: setFeaturesSelectedForMultiTagging,

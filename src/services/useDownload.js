@@ -59,6 +59,28 @@ const useDownload = () => {
     console.log('Destroy batch complete');
   };
 
+  const downloadDatasets = async (selectedProject) => {
+    try {
+      dispatch(addedStatusMessage('Downloading Datasets...'));
+      const res = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
+      const datasets = res.datasets;
+      if (datasets.length === 1) {
+        dispatch(setActiveDatasets({bool: true, dataset: datasets[0].id}));
+        dispatch(setSelectedDataset(datasets[0].id));
+      }
+      datasetsObjToSave = Object.assign({},
+        ...datasets.map(item => ({[item.id]: {...item, modified_timestamp: item.modified_timestamp || Date.now()}})));
+      await getDatasetSpots(datasets);
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Downloaded ' + spotsToSave.length + ' Spots\nDownloaded '
+        + Object.keys(datasetsObjToSave).length + ' Datasets\nFinished Downloading Datasets'));
+    }
+    catch (e) {
+      console.log('Error getting datasets...' + e);
+      throw Error;
+    }
+  };
+
   // Download Project Properties
   const downloadProject = async (selectedProject) => {
     try {
@@ -122,28 +144,6 @@ const useDownload = () => {
     }
     catch (err) {
       console.error(dataset.name, ':', 'Error Gathering Images. Error:', err);
-    }
-  };
-
-  const downloadDatasets = async (selectedProject) => {
-    try {
-      dispatch(addedStatusMessage('Downloading Datasets...'));
-      const res = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
-      const datasets = res.datasets;
-      if (datasets.length === 1) {
-        dispatch(setActiveDatasets({bool: true, dataset: datasets[0].id}));
-        dispatch(setSelectedDataset(datasets[0].id));
-      }
-      datasetsObjToSave = Object.assign({},
-        ...datasets.map(item => ({[item.id]: {...item, modified_timestamp: item.modified_timestamp || Date.now()}})));
-      await getDatasetSpots(datasets);
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Downloaded ' + spotsToSave.length + ' Spots\nDownloaded '
-        + Object.keys(datasetsObjToSave).length + ' Datasets\nFinished Downloading Datasets'));
-    }
-    catch (e) {
-      console.log('Error getting datasets...' + e);
-      throw Error;
     }
   };
 

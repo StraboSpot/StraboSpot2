@@ -95,51 +95,6 @@ const useImages = () => {
     navigation.navigate('ImageInfo', {imageId: image.id});
   };
 
-  const launchCameraFromNotebook = async (newSpotId) => {
-    try {
-      const savedPhoto = await takePicture();
-      dispatch(setLoadingStatus({view: 'home', bool: true}));
-      if (savedPhoto === 'cancelled') {
-        if (newImages.length > 0) {
-          console.log('ALL PHOTOS SAVED', newImages);
-          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
-          dispatch(editedSpotImages(newImages));
-        }
-        else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        return newImages.length;
-      }
-      else {
-        const photoProperties = {
-          id: savedPhoto.id,
-          image_type: 'photo',
-          height: savedPhoto.height,
-          width: savedPhoto.width,
-        };
-        console.log('Photos to Save:', [...newImages, photoProperties]);
-        newImages.push(photoProperties);
-        return launchCameraFromNotebook(newSpotId);
-      }
-    }
-    catch (err) {
-      console.error(`Error Taking picture ${err}`);
-      batch(() => {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
-        dispatch(setErrorMessagesModalVisible(true));
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-      });
-    }
-  };
-
-  const getAllImagesIds = (spotsArray) => {
-    let imageIds = [];
-    spotsArray.filter((spot) => {
-      if (spot.properties.images) spot.properties.images.map(image => imageIds.push(image.id));
-    });
-    return imageIds;
-  };
-
   const gatherNeededImages = async (spotsOnServer, dataset) => {
     try {
       let neededImagesIds = [];
@@ -168,30 +123,24 @@ const useImages = () => {
     }
   };
 
-  const getLocalImageURI = (id) => {
-    if (Platform.OS === 'web') return STRABO_APIS.PUBLIC_IMAGE + id;
-    else return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
-  };
-
-  const saveImageFromDownloadsDir = async (image) => {
-    const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
-    console.log('EXISTS', exists);
-    const source = image.fileCopyUri;
-    const dest = APP_DIRECTORIES.IMAGES + image.name;
-    console.log('source:', source, 'dest', dest);
-    await useDevice.moveFile(source, dest);
-    const imagesInDir = await useDevice.readDirectory(APP_DIRECTORIES.IMAGES);
-    console.log('images in app directory', imagesInDir);
-    // return imageRes;
+  // INTERNAL
+  const getAllImagesIds = (spotsArray) => {
+    let imageIds = [];
+    spotsArray.filter((spot) => {
+      if (spot.properties.images) spot.properties.images.map(image => imageIds.push(image.id));
+    });
+    return imageIds;
   };
 
   const getImageBasemap = (image) => {
+    dispatch(clearedSelectedSpots());
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     console.log('Pressed image basemap:', image);
     if (Platform.OS === 'web') {
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-      dispatch(clearedSelectedSpots());
+      // dispatch(clearedSelectedSpots());
       dispatch(setCurrentImageBasemap(image));
+      // dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     else {
       doesImageExistOnDevice(image.id)
@@ -201,11 +150,10 @@ const useImages = () => {
             setTimeout(() => {
               dispatch(clearedSelectedSpots());
               dispatch(setCurrentImageBasemap(image));
-              dispatch(setLoadingStatus({view: 'home', bool: false}));
             }, 500);
           }
           else {
-            dispatch(setLoadingStatus({view: 'home', bool: false}));
+            // dispatch(setLoadingStatus({view: 'home', bool: false}));
             alert('Missing Image!', 'Unable to find image file on this device.');
           }
         })
@@ -213,6 +161,54 @@ const useImages = () => {
           dispatch(setLoadingStatus({view: 'home', bool: false}));
           console.error('Image not found', e);
         });
+    }
+    dispatch(setLoadingStatus({view: 'home', bool: false}));
+  };
+
+  const getImageHeightAndWidth = (imageURI) => {
+    return new Promise((resolve, reject) => {
+      Image.getSize(imageURI, (imageWidth, imageHeight) => {
+        resolve({height: imageHeight, width: imageWidth});
+      }, (err) => {
+        console.log('Error getting size of image:', err.message);
+        reject(err);
+      });
+    });
+  };
+
+  const getImageScreenSizedURI = (id) => {
+    return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
+  };
+
+  const getImageThumbnailURI = (id) => {
+    return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
+  };
+
+  const getImageThumbnailURIs = async (spotsWithImages) => {
+    try {
+      let imageThumbnailURIs = {};
+      await Promise.all(spotsWithImages.map(async (spot) => {
+        await Promise.all(spot.properties.images.map(async (image) => {
+          if (Platform.OS === 'web') {
+            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: getImageThumbnailURI(image.id)};
+          }
+          else {
+            const imageUri = getLocalImageURI(image.id);
+            const exists = await useDevice.doesDeviceDirExist(imageUri);
+            if (exists) {
+              const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
+              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+              imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
+            }
+            else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
+          }
+        }));
+      }));
+      return imageThumbnailURIs;
+    }
+    catch (err) {
+      console.error('Error creating thumbnails', err);
+      // throw Error(err);
     }
   };
 
@@ -251,50 +247,71 @@ const useImages = () => {
     });
   };
 
-  const getImageHeightAndWidth = (imageURI) => {
-    return new Promise((resolve, reject) => {
-      Image.getSize(imageURI, (imageWidth, imageHeight) => {
-        resolve({height: imageHeight, width: imageWidth});
-      }, (err) => {
-        console.log('Error getting size of image:', err.message);
-        reject(err);
-      });
-    });
+  const getLocalImageURI = (id) => {
+    if (Platform.OS === 'web') return STRABO_APIS.PUBLIC_IMAGE + id;
+    else return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
   };
 
-  const getImageThumbnailURI = (id) => {
-    return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
-  };
-
-  const getImageScreenSizedURI = (id) => {
-    return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
-  };
-
-  const getImageThumbnailURIs = async (spotsWithImages) => {
+  const launchCameraFromNotebook = async (newSpotId) => {
     try {
-      let imageThumbnailURIs = {};
-      await Promise.all(spotsWithImages.map(async (spot) => {
-        await Promise.all(spot.properties.images.map(async (image) => {
-          if (Platform.OS === 'web') {
-            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: getImageThumbnailURI(image.id)};
-          }
-          else {
-            const imageUri = getLocalImageURI(image.id);
-            const exists = await useDevice.doesDeviceDirExist(imageUri);
-            if (exists) {
-              const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
-              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-              imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
-            }
-            else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
-          }
-        }));
-      }));
-      return imageThumbnailURIs;
+      const savedPhoto = await takePicture();
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
+      if (savedPhoto === 'cancelled') {
+        if (newImages.length > 0) {
+          console.log('ALL PHOTOS SAVED', newImages);
+          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
+          dispatch(editedSpotImages(newImages));
+        }
+        else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+        return newImages.length;
+      }
+      else {
+        const photoProperties = {
+          id: savedPhoto.id,
+          image_type: 'photo',
+          height: savedPhoto.height,
+          width: savedPhoto.width,
+        };
+        console.log('Photos to Save:', [...newImages, photoProperties]);
+        newImages.push(photoProperties);
+        return launchCameraFromNotebook(newSpotId);
+      }
     }
     catch (err) {
-      console.error('Error creating thumbnails', err);
-      // throw Error(err);
+      console.error(`Error Taking picture ${err}`);
+      batch(() => {
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
+        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+      });
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'StraboSpot needs access to your camera '
+            + 'so you can take pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      }
+      else {
+        console.log('Camera permission denied');
+      }
+    }
+    catch (err) {
+      console.warn(err);
     }
   };
 
@@ -338,6 +355,18 @@ const useImages = () => {
     }
   };
 
+  const saveImageFromDownloadsDir = async (image) => {
+    const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
+    console.log('EXISTS', exists);
+    const source = image.fileCopyUri;
+    const dest = APP_DIRECTORIES.IMAGES + image.name;
+    console.log('source:', source, 'dest', dest);
+    await useDevice.moveFile(source, dest);
+    const imagesInDir = await useDevice.readDirectory(APP_DIRECTORIES.IMAGES);
+    console.log('images in app directory', imagesInDir);
+    // return imageRes;
+  };
+
   const setAnnotation = (image, annotation) => {
     const imageCopy = JSON.parse(JSON.stringify(image));
     imageCopy.annotated = annotation;
@@ -367,32 +396,6 @@ const useImages = () => {
       }
     }
     else console.error('Error setting image height and width');
-  };
-
-  const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'Cool Photo App Camera Permission',
-          message:
-            'StraboSpot needs access to your camera '
-            + 'so you can take pictures.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
-      }
-      else {
-        console.log('Camera permission denied');
-      }
-    }
-    catch (err) {
-      console.warn(err);
-    }
   };
 
   // Called from Notebook Panel Footer and opens camera only
@@ -425,21 +428,21 @@ const useImages = () => {
     doesImageExistOnDevice: doesImageExistOnDevice,
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
-    getLocalImageURI: getLocalImageURI,
-    saveImageFromDownloadsDir: saveImageFromDownloadsDir,
     getImageBasemap: getImageBasemap,
-    getImagesFromCameraRoll: getImagesFromCameraRoll,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,
     getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
+    getImagesFromCameraRoll: getImagesFromCameraRoll,
+    getLocalImageURI: getLocalImageURI,
     launchCameraFromNotebook: launchCameraFromNotebook,
     requestCameraPermission: requestCameraPermission,
     saveFile: saveFile,
+    saveImageFromDownloadsDir: saveImageFromDownloadsDir,
     setAnnotation: setAnnotation,
     setImageHeightAndWidth: setImageHeightAndWidth,
     takePicture: takePicture,
-  }];
+  }]; //TODO: remove array and just call object;
 };
 
 export default useImages;

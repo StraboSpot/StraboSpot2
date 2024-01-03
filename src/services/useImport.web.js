@@ -35,6 +35,38 @@ const useImport = () => {
 
   const useDevice = useDeviceHook();
 
+  const copyImages = async (fileName) => {
+    try {
+      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+        + fileName + '/Images');
+      if (exists) {
+        const imageFiles = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR
+          + fileName + '/Images');
+        console.log(imageFiles);
+        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
+        if (!isEmpty(imageFiles)) {
+          imageFiles.map(async (image) => {
+            await useDevice.copyFiles(APP_DIRECTORIES.BACKUP_DIR
+              + fileName + '/Images/' + image, APP_DIRECTORIES.IMAGES + image);
+          });
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage('Finished importing image files.'));
+        }
+        else {
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage('No image files.'));
+        }
+      }
+      else {
+        dispatch(removedLastStatusMessage());
+        dispatch(addedStatusMessage('No image files.'));
+      }
+    }
+    catch (err) {
+      console.error('Error checking existance of backup images dir.', err);
+    }
+  };
+
   const copyZipMapsToProject = async (fileName, isExternal) => {
     try {
       const sourceDir = isExternal ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
@@ -132,46 +164,35 @@ const useImport = () => {
     console.log('Destroy batch complete');
   };
 
-  const unzipFile = async () => {
-    try {
-      const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
-      console.log(checkDirSuccess);
-      // if (checkDirSuccess) {
-      //   const fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_ZIP);
-      //   console.log(fileEntries);
-      //   await Promise.all(
-      //     fileEntries.map(async (file) => {
-      //       const fileExtension = file.substring(file.lastIndexOf('.') + 1);
-      //       if (fileExtension === 'zip') {
-      //         const source = APP_DIRECTORIES.TILE_ZIP + file;
-      //         const dest = APP_DIRECTORIES.TILE_TEMP;
-      //         await unzip(source, dest);
-      //         console.log('unzip completed', file, 'to destination:', dest);
-      //       }
-      //       else console.log('its not a zip file');
-      //     }),
-      //   );
-      // }
+  const loadProjectFromDevice = async (selectedProject, isExternal) => {
+    dispatch(clearedStatusMessages());
+    dispatch(setStatusMessagesModalVisible(true));
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
+    console.log('SELECTED PROJECT', selectedProject);
+    if (!isEmpty(project)) destroyOldProject();
+    console.log('Old project destroyed', project);
+    const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject.fileName);
+    if (dirExists) {
+      const dataFile = await readDeviceJSONFile(selectedProject.fileName);
+      const {projectDb, spotsDb} = dataFile;
+      console.log('DataFile', dataFile);
+      dispatch(addedSpotsFromDevice(spotsDb));
+      dispatch(addedProject(projectDb.project));
+      dispatch(addedDatasets(projectDb.datasets));
+      if (Object.values(projectDb.datasets).length > 0 && !isEmpty(Object.values(projectDb.datasets)[0])) {
+        dispatch(setActiveDatasets({bool: true, dataset: Object.values(projectDb.datasets)[0].id}));
+        dispatch(setSelectedDataset(Object.values(projectDb.datasets)[0].id));
+      }
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
+      dispatch(addedStatusMessage('Importing image files...'));
+      await copyImages(selectedProject.fileName);
+      await checkForMaps(dataFile, selectedProject, isExternal);
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setSelectedProject({project: '', source: ''}));
+      return Promise.resolve({project: dataFile.projectDb.project});
     }
-    catch (err) {
-      console.error('Error unzipping files', err);
-    }
-  };
-
-  const unzipBackupFile = async (zipFile) => {
-    // try {
-    //   const source = APP_DIRECTORIES.BACKUP_DIR + zipFile;
-    //   const target = APP_DIRECTORIES.BACKUP_DIR;
-    //
-    //   const unzippedFile = await unzip(source, target);
-    //   console.log('backup file unzipped successfully!');
-    //   await useDevice.deleteFromDevice(source);
-    //   console.log('.zip file removed successfully!');
-    //   return unzippedFile;
-    // }
-    // catch (err) {
-    //   console.error('Error unzipping backup files', err);
-    // }
   };
 
   const moveFiles = async (dataFile, zipId) => {
@@ -222,70 +243,6 @@ const useImport = () => {
     );
   };
 
-  const loadProjectFromDevice = async (selectedProject, isExternal) => {
-    dispatch(clearedStatusMessages());
-    dispatch(setStatusMessagesModalVisible(true));
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    dispatch(addedStatusMessage(`Importing ${selectedProject.fileName}...`));
-    console.log('SELECTED PROJECT', selectedProject);
-    if (!isEmpty(project)) destroyOldProject();
-    console.log('Old project destroyed', project);
-    const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject.fileName);
-    if (dirExists) {
-      const dataFile = await readDeviceJSONFile(selectedProject.fileName);
-      const {projectDb, spotsDb} = dataFile;
-      console.log('DataFile', dataFile);
-      dispatch(addedSpotsFromDevice(spotsDb));
-      dispatch(addedProject(projectDb.project));
-      dispatch(addedDatasets(projectDb.datasets));
-      if (Object.values(projectDb.datasets).length > 0 && !isEmpty(Object.values(projectDb.datasets)[0])) {
-        dispatch(setActiveDatasets({bool: true, dataset: Object.values(projectDb.datasets)[0].id}));
-        dispatch(setSelectedDataset(Object.values(projectDb.datasets)[0].id));
-      }
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage(`${selectedProject.fileName}\nProject loaded.`));
-      dispatch(addedStatusMessage('Importing image files...'));
-      await copyImages(selectedProject.fileName);
-      await checkForMaps(dataFile, selectedProject, isExternal);
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(setSelectedProject({project: '', source: ''}));
-      return Promise.resolve({project: dataFile.projectDb.project});
-    }
-  };
-
-  const copyImages = async (fileName) => {
-    try {
-      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
-        + fileName + '/Images');
-      if (exists) {
-        const imageFiles = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR
-          + fileName + '/Images');
-        console.log(imageFiles);
-        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
-        if (!isEmpty(imageFiles)) {
-          imageFiles.map(async (image) => {
-            await useDevice.copyFiles(APP_DIRECTORIES.BACKUP_DIR
-              + fileName + '/Images/' + image, APP_DIRECTORIES.IMAGES + image);
-          });
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage('Finished importing image files.'));
-        }
-        else {
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage('No image files.'));
-        }
-      }
-      else {
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage('No image files.'));
-      }
-    }
-    catch (err) {
-      console.error('Error checking existance of backup images dir.', err);
-    }
-  };
-
-
   const readDeviceJSONFile = async (fileName) => {
     try {
       // await requestReadDirectoryPermission();
@@ -304,6 +261,48 @@ const useImport = () => {
         dispatch(setErrorMessagesModalVisible(true));
       });
     }
+  };
+
+  const unzipFile = async () => {
+    try {
+      const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
+      console.log(checkDirSuccess);
+      // if (checkDirSuccess) {
+      //   const fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_ZIP);
+      //   console.log(fileEntries);
+      //   await Promise.all(
+      //     fileEntries.map(async (file) => {
+      //       const fileExtension = file.substring(file.lastIndexOf('.') + 1);
+      //       if (fileExtension === 'zip') {
+      //         const source = APP_DIRECTORIES.TILE_ZIP + file;
+      //         const dest = APP_DIRECTORIES.TILE_TEMP;
+      //         await unzip(source, dest);
+      //         console.log('unzip completed', file, 'to destination:', dest);
+      //       }
+      //       else console.log('its not a zip file');
+      //     }),
+      //   );
+      // }
+    }
+    catch (err) {
+      console.error('Error unzipping files', err);
+    }
+  };
+
+  const unzipBackupFile = async (zipFile) => {
+    // try {
+    //   const source = APP_DIRECTORIES.BACKUP_DIR + zipFile;
+    //   const target = APP_DIRECTORIES.BACKUP_DIR;
+    //
+    //   const unzippedFile = await unzip(source, target);
+    //   console.log('backup file unzipped successfully!');
+    //   await useDevice.deleteFromDevice(source);
+    //   console.log('.zip file removed successfully!');
+    //   return unzippedFile;
+    // }
+    // catch (err) {
+    //   console.error('Error unzipping backup files', err);
+    // }
   };
 
   return {

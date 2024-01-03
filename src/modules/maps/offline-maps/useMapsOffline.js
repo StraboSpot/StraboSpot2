@@ -34,6 +34,7 @@ const useMapsOffline = () => {
   const [useMaps] = useMapsHook();
   const [useServerRequests] = useServerRequesteHook();
 
+  //INTERNAL
   const adjustTileCount = async () => {
     Object.values(offlineMaps).map(async (map) => {
       const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, map.id);
@@ -50,6 +51,35 @@ const useMapsOffline = () => {
     const map = await createOfflineMapObject(mapId);
     const mapSavedObject = Object.assign({}, {[map.id]: map});
     dispatch(addMapFromDevice(mapSavedObject));
+  };
+
+  const checkIfTileZipFolderExists = async () => {
+    try {
+      let folderExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP);
+      console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
+      if (folderExists) {
+        //delete
+        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID);
+      }
+      else await useDevice.makeDirectory(APP_DIRECTORIES.TILE_ZIP);
+    }
+    catch (err) {
+      console.error('Error checking if zip Tile Temp Directory exists', err);
+    }
+  };
+
+  const checkTileZipFileExistance = async () => {
+    try {
+      let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
+      console.log('file Exists:', fileExists ? 'YES' : 'NO');
+      if (fileExists) {
+        //delete
+        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+      }
+    }
+    catch (err) {
+      console.error('Error checking if zip file exists', err);
+    }
   };
 
   const checkZipStatus = async (zipId) => {
@@ -99,33 +129,20 @@ const useMapsOffline = () => {
     return map;
   };
 
-  const getMapName = (map) => {
-    if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
-      || map.id === 'macrostrat' || map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
-      return map.name;
+  const doUnzip = async () => {
+    try {
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Preparing to install tiles...'));
+      const sourcePath = APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip';
+      await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
+      console.log('unzip completed');
+      console.log('move done.');
+      await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+      console.log('Zip', zipUID, 'has been deleted.');
     }
-    else return null;
-  };
-
-  const getMedian = (arr) => {
-    arr = arr.slice(0); // create copy
-    const middle = (arr.length + 1) / 2,
-      sorted = arr.sort(function (a, b) {
-        return a - b;
-      });
-    return (sorted.length % 2) ? sorted[middle - 1] : (sorted[middle - 1.5] + sorted[middle - 0.5]) / 2;
-  };
-
-
-  // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
-  const tile2long = (x, z) => {
-    return (x / Math.pow(2, z) * 360 - 180);
-  };
-
-  // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
-  const tile2lat = (y, z) => {
-    const n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
-    return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
+    catch (err) {
+      console.error('Unzip Error:', err);
+    }
   };
 
   const getMapCenterTile = async (mapid) => {
@@ -177,49 +194,21 @@ const useMapsOffline = () => {
     }
   };
 
-  const checkTileZipFileExistance = async () => {
-    try {
-      let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
-      console.log('file Exists:', fileExists ? 'YES' : 'NO');
-      if (fileExists) {
-        //delete
-        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
-      }
+  const getMapName = (map) => {
+    if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
+      || map.id === 'macrostrat' || map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
+      return map.name;
     }
-    catch (err) {
-      console.error('Error checking if zip file exists', err);
-    }
+    else return null;
   };
 
-  const checkIfTileZipFolderExists = async () => {
-    try {
-      let folderExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP);
-      console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
-      if (folderExists) {
-        //delete
-        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID);
-      }
-      else await useDevice.makeDirectory(APP_DIRECTORIES.TILE_ZIP);
+  const getMapNameFromId = (mapID) => {
+    const mapObj = DEFAULT_MAPS.find(mapType => mapType.id === mapID);
+    if (!mapObj) {
+      const name = customMaps[mapID]?.title ? customMaps[mapID].title : mapID;
+      return name;
     }
-    catch (err) {
-      console.error('Error checking if zip Tile Temp Directory exists', err);
-    }
-  };
-
-  const doUnzip = async () => {
-    try {
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Preparing to install tiles...'));
-      const sourcePath = APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip';
-      await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
-      console.log('unzip completed');
-      console.log('move done.');
-      await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
-      console.log('Zip', zipUID, 'has been deleted.');
-    }
-    catch (err) {
-      console.error('Unzip Error:', err);
-    }
+    return mapObj.title;
   };
 
   // Start getting the tiles to download by creating a zip url
@@ -274,6 +263,37 @@ const useMapsOffline = () => {
     catch (err) {
       console.error('Error Getting Map Tiles.', err);
       throw new Error(err);
+    }
+  };
+
+  const getMedian = (arr) => {
+    arr = arr.slice(0); // create copy
+    const middle = (arr.length + 1) / 2,
+      sorted = arr.sort(function (a, b) {
+        return a - b;
+      });
+    return (sorted.length % 2) ? sorted[middle - 1] : (sorted[middle - 1.5] + sorted[middle - 0.5]) / 2;
+  };
+
+  const getSavedMapsFromDevice = async () => {
+    try {
+      const files = await useDevice.readDirectoryForMapFiles();
+      if (!isEmpty(files)) {
+        files.map(async (file) => {
+          if (offlineMaps[file]) {
+            await adjustTileCount(file);
+            console.log('Tiles Adjusted');
+          }
+          else {
+            console.log(`Map ${file} not there`);
+            await addMapFromDeviceToRedux(file);
+          }
+        });
+      }
+      else dispatch(clearedMapsFromRedux());
+    }
+    catch (err) {
+      console.log('Error getting saved maps from device', err);
     }
   };
 
@@ -338,63 +358,6 @@ const useMapsOffline = () => {
     }
   };
 
-  const getMapNameFromId = (mapID) => {
-    const mapObj = DEFAULT_MAPS.find(mapType => mapType.id === mapID);
-    if (!mapObj) {
-      const name = customMaps[mapID]?.title ? customMaps[mapID].title : mapID;
-      return name;
-    }
-    return mapObj.title;
-  };
-
-  const updateMapTileCountWhenSaving = async (mapId) => {
-    try {
-      // let mapName;
-      let mapID = mapId ? mapId : currentBasemap.id;
-      let currentOfflineMaps = Object.values(offlineMaps);
-
-      //now check for existence of AsyncStorage offlineMapsData and store new count
-      if (!currentOfflineMaps) {
-        currentOfflineMaps = [];
-      }
-
-      const customMap = Object.values(customMaps).filter((map) => {
-        return mapID === map.id;
-      });
-      console.log(customMap);
-      const newOfflineMapsData = await createOfflineMapObject(mapID, customMap);
-      console.log(newOfflineMapsData);
-      await dispatch(setOfflineMap(newOfflineMapsData));
-      console.log('Map to save to Redux', newOfflineMapsData);
-    }
-    catch (err) {
-      console.error('Error updating map object', err);
-    }
-  };
-
-  const getSavedMapsFromDevice = async () => {
-    try {
-      const files = await useDevice.readDirectoryForMapFiles();
-      if (!isEmpty(files)) {
-        files.map(async (file) => {
-          if (offlineMaps[file]) {
-            await adjustTileCount(file);
-            console.log('Tiles Adjusted');
-          }
-          else {
-            console.log(`Map ${file} not there`);
-            await addMapFromDeviceToRedux(file);
-          }
-        });
-      }
-      else dispatch(clearedMapsFromRedux());
-    }
-    catch (err) {
-      console.log('Error getting saved maps from device', err);
-    }
-  };
-
-
   const setOfflineMapTiles = async (map) => {
     console.log('Switch To Offline Map: ', map);
     const tilePath = '/tiles/{z}_{x}_{y}.png';
@@ -424,23 +387,59 @@ const useMapsOffline = () => {
     }
   };
 
+  // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+  const tile2long = (x, z) => {
+    return (x / Math.pow(2, z) * 360 - 180);
+  };
+
+  // borrowed from http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+  const tile2lat = (y, z) => {
+    const n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+    return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
+  };
+
+  const updateMapTileCountWhenSaving = async (mapId) => {
+    try {
+      // let mapName;
+      let mapID = mapId ? mapId : currentBasemap.id;
+      let currentOfflineMaps = Object.values(offlineMaps);
+
+      //now check for existence of AsyncStorage offlineMapsData and store new count
+      if (!currentOfflineMaps) {
+        currentOfflineMaps = [];
+      }
+
+      const customMap = Object.values(customMaps).filter((map) => {
+        return mapID === map.id;
+      });
+      console.log(customMap);
+      const newOfflineMapsData = await createOfflineMapObject(mapID, customMap);
+      console.log(newOfflineMapsData);
+      await dispatch(setOfflineMap(newOfflineMapsData));
+      console.log('Map to save to Redux', newOfflineMapsData);
+    }
+    catch (err) {
+      console.error('Error updating map object', err);
+    }
+  };
+
   return {
     addMapFromDeviceToRedux: addMapFromDeviceToRedux,
-    checkTileZipFileExistance: checkTileZipFileExistance,
     checkIfTileZipFolderExists: checkIfTileZipFolderExists,
+    checkTileZipFileExistance: checkTileZipFileExistance,
     checkZipStatus: checkZipStatus,
     doUnzip: doUnzip,
     getMapCenterTile: getMapCenterTile,
     getMapName: getMapName,
     getMapTiles: getMapTiles,
+    getSavedMapsFromDevice: getSavedMapsFromDevice,
     initializeSaveMap: initializeSaveMap,
     moveFiles: moveFiles,
     moveTile: moveTile,
-    getSavedMapsFromDevice: getSavedMapsFromDevice,
     saveZipMap: saveZipMap,
     setOfflineMapTiles: setOfflineMapTiles,
-    updateMapTileCountWhenSaving: updateMapTileCountWhenSaving,
     switchToOfflineMap: switchToOfflineMap,
+    updateMapTileCountWhenSaving: updateMapTileCountWhenSaving,
   };
 };
 

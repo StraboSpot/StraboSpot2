@@ -164,44 +164,6 @@ const useStratSectionCalculations = () => {
     }, 0);
   };
 
-  // Move Spot up or down by a given number of pixels (a positive number for pixels to move up or negative for down)
-  const moveSpotByPixels = (spot, pixels) => {
-    const spotCopyGeom = JSON.parse(JSON.stringify(spot.geometry));
-    if (spot.geometry.type === 'Point') spotCopyGeom.coordinates[1] = spot.geometry.coordinates[1] + pixels;
-    else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
-      spot.geometry.coordinates.forEach((pointCoords, i) => {
-        spotCopyGeom.coordinates[i][1] = pointCoords[1] + pixels;
-      });
-    }
-    else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
-      spot.geometry.coordinates.forEach((lineCoords, l) => {
-        lineCoords.forEach((pointCoords, i) => {
-          spotCopyGeom.coordinates[l][i][1] = pointCoords[1] + pixels;
-        });
-      });
-    }
-    else if (spot.geometry.type === 'MultiPolygon') {
-      spot.geometry.coordinates.forEach((polygonCoords, p) => {
-        polygonCoords.forEach((lineCoords, l) => {
-          lineCoords.forEach((pointCoords, i) => {
-            spotCopyGeom.coordinates[p][l][i][1] = pointCoords[1] + pixels;
-          });
-        });
-      });
-    }
-    // Interbedded (Geometry Collections)
-    else if (spot.geometry.type === 'GeometryCollection') {
-      spot.geometry.geometries.forEach((geometry, g) => {
-        geometry.coordinates.forEach((lineCoords, l) => {
-          lineCoords.forEach((pointCoords, i) => {
-            spotCopyGeom.geometries[g].coordinates[l][i][1] = pointCoords[1] + pixels;
-          });
-        });
-      });
-    }
-    return {...spot, geometry: spotCopyGeom};
-  };
-
   // Move target interval to after given interval (the preceding interval)
   const moveIntervalToAfter = (targetInterval, precedingInterval) => {
     let targetIntervalExtent = turf.bbox(targetInterval);
@@ -242,6 +204,44 @@ const useStratSectionCalculations = () => {
     targetIntervalExtent = turf.bbox(targetIntervalModified);
     moveSpotsUpOrDownByPixels(targetIntervalModified.properties.strat_section_id, targetIntervalExtent[1],
       targetIntervalHeight, targetIntervalModified.properties.id);
+  };
+
+  // Move Spot up or down by a given number of pixels (a positive number for pixels to move up or negative for down)
+  const moveSpotByPixels = (spot, pixels) => {
+    const spotCopyGeom = JSON.parse(JSON.stringify(spot.geometry));
+    if (spot.geometry.type === 'Point') spotCopyGeom.coordinates[1] = spot.geometry.coordinates[1] + pixels;
+    else if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiPoint') {
+      spot.geometry.coordinates.forEach((pointCoords, i) => {
+        spotCopyGeom.coordinates[i][1] = pointCoords[1] + pixels;
+      });
+    }
+    else if (spot.geometry.type === 'Polygon' || spot.geometry.type === 'MultiLineString') {
+      spot.geometry.coordinates.forEach((lineCoords, l) => {
+        lineCoords.forEach((pointCoords, i) => {
+          spotCopyGeom.coordinates[l][i][1] = pointCoords[1] + pixels;
+        });
+      });
+    }
+    else if (spot.geometry.type === 'MultiPolygon') {
+      spot.geometry.coordinates.forEach((polygonCoords, p) => {
+        polygonCoords.forEach((lineCoords, l) => {
+          lineCoords.forEach((pointCoords, i) => {
+            spotCopyGeom.coordinates[p][l][i][1] = pointCoords[1] + pixels;
+          });
+        });
+      });
+    }
+    // Interbedded (Geometry Collections)
+    else if (spot.geometry.type === 'GeometryCollection') {
+      spot.geometry.geometries.forEach((geometry, g) => {
+        geometry.coordinates.forEach((lineCoords, l) => {
+          lineCoords.forEach((pointCoords, i) => {
+            spotCopyGeom.geometries[g].coordinates[l][i][1] = pointCoords[1] + pixels;
+          });
+        });
+      });
+    }
+    return {...spot, geometry: spotCopyGeom};
   };
 
   // Move all Spots (except excluded Spot, if given) in a specified Strat Section
