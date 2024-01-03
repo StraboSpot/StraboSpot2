@@ -58,7 +58,7 @@ const StratSectionBackground = (props) => {
     <React.Fragment>
 
       {/* Image Overlay Layers */}
-      {stratSectionImagesSorted.map((oI) => {
+      {stratSectionSpot && stratSectionImagesSorted.map((oI) => {
         // const coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
         const image = stratSectionSpot.properties.images.find(i => i.id === oI.id);
         let imageCopy = JSON.parse(JSON.stringify(image));
