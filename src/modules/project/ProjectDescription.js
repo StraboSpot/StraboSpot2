@@ -19,7 +19,7 @@ const ProjectDescription = (props) => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const formRef = useRef(null);
   const publicRef = useRef(null);

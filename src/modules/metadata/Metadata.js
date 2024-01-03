@@ -20,7 +20,7 @@ import {
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Metadata = () => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const dispatch = useDispatch();
   const datasets = useSelector(state => state.project.datasets);

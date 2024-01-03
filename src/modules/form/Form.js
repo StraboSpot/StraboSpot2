@@ -14,7 +14,7 @@ import {DateInputField, NumberInputField, SelectInputField, TextInputField, useF
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
 const Form = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const survey = props.surveyFragment || useForm.getSurvey(props.formName);
 

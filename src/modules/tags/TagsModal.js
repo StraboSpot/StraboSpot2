@@ -23,7 +23,7 @@ import {TagDetailModal, useTagsHook} from '../tags';
 
 const TagsModal = (props) => {
   const toast = useToast();
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
   const useLocation = useLocationHook();
 
   const dispatch = useDispatch();

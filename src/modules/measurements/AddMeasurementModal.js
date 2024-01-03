@@ -50,7 +50,7 @@ const AddMeasurementModal = (props) => {
   const [survey, setSurvey] = useState({});
   const [sliderValue, setSliderValue] = useState(6);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const useLocation = useLocationHook();
   const toast = useToast();
 

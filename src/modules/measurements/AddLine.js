@@ -4,7 +4,7 @@ import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, MainButtons, useFormHook} from '../form';
 
 const AddLine = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];

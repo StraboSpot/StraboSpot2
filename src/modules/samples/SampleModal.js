@@ -24,8 +24,8 @@ const SampleModal = (props) => {
   const preferences = useSelector(state => state.project.project.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const useForm = useFormHook();
+  const useSpots = useSpotsHook();
   const useLocation = useLocationHook();
 
   const [namePrefix, setNamePrefix] = useState(null);

@@ -28,7 +28,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();
-  const [useServerRequests] = useServerRequestHook();
+  const useServerRequests = useServerRequestHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);

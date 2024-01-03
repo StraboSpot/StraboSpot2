@@ -28,9 +28,9 @@ const useUpload = () => {
   const project = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
 
-  const [useServerRequests] = useServerRequestsHook();
-  const [useSpots] = useSpotsHook();
-  const [useImages] = useImagesHook();
+  const useServerRequests = useServerRequestsHook();
+  const useSpots = useSpotsHook();
+  const useImages = useImagesHook();
   const [useProject] = useProjectHook();
   const useDevice = useDeviceHook();
 

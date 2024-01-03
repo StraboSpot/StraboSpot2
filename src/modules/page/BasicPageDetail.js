@@ -23,8 +23,8 @@ const BasicPageDetail = (props) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useTags] = useTagsHook();
-  const [useForm] = useFormHook();
+  const useTags = useTagsHook();
+  const useForm = useFormHook();
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
 

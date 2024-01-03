@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import styles from './signUp.styles';
-import useServerRequests from '../../services/useServerRequests';
+import useServerRequestsHook from '../../services/useServerRequests';
 import {validate} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
@@ -59,7 +59,7 @@ const SignUp = (props) => {
 
   const isOnline = useSelector(state => state.connections.isOnline);
 
-  const [serverRequests] = useServerRequests();
+  const useServerRequests = useServerRequestsHook();
 
   const [isLoading, setIsLoading] = useState(false);
   const [statusDialog, setStatusDialog] = useState(false);
@@ -110,7 +110,7 @@ const SignUp = (props) => {
     console.log('ConnectedValue', userData.password.value);
     setIsLoading(true);
     try {
-      const newUser = await serverRequests.registerUser(userData);
+      const newUser = await useServerRequests.registerUser(userData);
       console.log('res', newUser);
       if (newUser.valid) {
         if (newUser.message.includes('A confirmation link has been emailed')) {

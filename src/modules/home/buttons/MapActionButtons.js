@@ -11,7 +11,7 @@ import {MapActionsOverlay, MapLayersOverlay, MapSymbolsOverlay, overlayStyles} f
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
   const {height} = useWindowDimensions();
-  const [useMaps] = useMapsHook();
+  const useMaps = useMapsHook();
 
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);

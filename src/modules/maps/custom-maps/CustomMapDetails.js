@@ -32,7 +32,7 @@ import useMapHook from '../useMaps';
 const AddCustomMaps = () => {
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
   const MWKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
-  const [useMaps] = useMapHook();
+  const useMaps = useMapHook();
 
   const dispatch = useDispatch();
   const MBAccessToken = useSelector(state => state.user.mapboxToken);

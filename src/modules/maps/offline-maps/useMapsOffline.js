@@ -31,8 +31,8 @@ const useMapsOffline = () => {
   const url = 'file://' + APP_DIRECTORIES.TILE_CACHE;
 
   const useDevice = useDeviceHook();
-  const [useMaps] = useMapsHook();
-  const [useServerRequests] = useServerRequesteHook();
+  const useMaps = useMapsHook();
+  const useServerRequests = useServerRequesteHook();
 
   //INTERNAL
   const adjustTileCount = async () => {

@@ -10,8 +10,8 @@ import {useSpotsHook} from '../spots';
 import {TagsListItem, useTagsHook} from '../tags';
 
 const FeatureTagsAtSpotList = (props) => {
-  const [useTags] = useTagsHook();
-  const [useSpots] = useSpotsHook();
+  const useTags = useTagsHook();
+  const useSpots = useSpotsHook();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const listEmptyText = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? 'No Geologic Units' : 'No Tags';

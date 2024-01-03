@@ -10,7 +10,7 @@ import Basemap from './Basemap';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
-import useMapSymbology from './symbology/useMapSymbology';
+import useMapSymbologyHook from './symbology/useMapSymbology';
 import useLocationHook from './useLocation';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapsHook from './useMaps';
@@ -52,11 +52,11 @@ const Map = ({
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
 
-  const [useImages] = useImagesHook();
-  const [useMapFeatures] = useMapFeaturesHook();
-  const [useMaps] = useMapsHook(mapRef);
-  const [useSpots] = useSpotsHook();
-  const [useSymbology] = useMapSymbology();
+  const useImages = useImagesHook();
+  const useMapFeatures = useMapFeaturesHook();
+  const useMaps = useMapsHook(mapRef);
+  const useSpots = useSpotsHook();
+  const useMapSymbology = useMapSymbologyHook();
   const useLocation = useLocationHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
@@ -728,7 +728,7 @@ const Map = ({
         if (isSelectingForStereonet) await getStereonetForFeature(feature);
         else if (isSelectingForTagging) selectSpotsForTagging(feature);
         else {
-          feature.properties.symbology = useSymbology.getSymbology(feature);
+          feature.properties.symbology = useMapSymbology.getSymbology(feature);
           newOrEditedSpot = await useSpots.createSpot(feature);
           dispatch(setSelectedSpot(newOrEditedSpot));
           dispatch(setFreehandFeatureCoords(undefined));  // reset the freeHandCoordinates
@@ -741,7 +741,7 @@ const Map = ({
       // placed, the second is the line or polygon between the vertices, and the third is the last vertex placed
       // Grab the second feature to create the Spot
       if (drawFeatures.length > 1) newFeature = drawFeatures.splice(1, 1)[0];
-      newFeature.properties.symbology = useSymbology.getSymbology(newFeature);
+      newFeature.properties.symbology = useMapSymbology.getSymbology(newFeature);
       if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
         newFeature = useMaps.convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;

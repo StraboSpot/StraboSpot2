@@ -28,7 +28,7 @@ const AddFabricModal = (props) => {
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const formRef = useRef(null);
 

@@ -20,7 +20,7 @@ const ShortcutButtons = ({openNotebookPanel}) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPositions = useSelector(state => state.home.shortcutSwitchPosition);
 
-  const [useImages] = useImagesHook();
+  const useImages = useImagesHook();
   const navigation = useNavigation();
   const toast = useToast();
   const useLocation = useLocationHook();

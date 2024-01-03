@@ -7,7 +7,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import {TagsListItem, useTagsHook} from '../tags';
 
 const TagsAtSpotList = (props) => {
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const data = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? useTags.getGeologicUnitTagsAtSpot()
     : useTags.getNonGeologicUnitTagsAtSpot();

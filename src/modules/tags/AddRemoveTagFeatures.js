@@ -17,8 +17,8 @@ import {useTagsHook} from '../tags';
 
 const AddRemoveTagFeatures = () => {
   const usePage = usePageHoook();
-  const [useTags] = useTagsHook();
-  const [useSpots] = useSpotsHook();
+  const useTags = useTagsHook();
+  const useSpots = useSpotsHook();
 
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);

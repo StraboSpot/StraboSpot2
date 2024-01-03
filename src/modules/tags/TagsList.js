@@ -24,7 +24,7 @@ const TagsList = ({type, selectedIndex}) => {
   const tags = useSelector(state => state.project.project.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
 
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const SECTIONS = type === PAGE_KEYS.GEOLOGIC_UNITS ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
     {title: 'Concepts', key: 'concept'},

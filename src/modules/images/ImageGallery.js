@@ -24,8 +24,8 @@ const ImageGallery = ({openSpotInNotebook}) => {
 
   const dispatch = useDispatch();
 
-  const [useImages] = useImagesHook();
-  const [useSpots] = useSpotsHook();
+  const useImages = useImagesHook();
+  const useSpots = useSpotsHook();
   const navigate = useNavigation();
 
   const recentViews = useSelector(state => state.spot.recentViews);

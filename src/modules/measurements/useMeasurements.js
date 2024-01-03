@@ -19,8 +19,8 @@ const useMeasurements = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
 
-  const [useForm] = useFormHook();
-  const [useTags] = useTagsHook();
+  const useForm = useFormHook();
+  const useTags = useTagsHook();
 
   const createNewMeasurement = () => {
     let measurements = [];
@@ -144,11 +144,11 @@ const useMeasurements = () => {
     }
   };
 
-  return [{
+  return {
     createNewMeasurement: createNewMeasurement,
     deleteMeasurements: deleteMeasurements,
     getLabel: getLabel,
-  }];
+  };
 };
 
 export default useMeasurements;

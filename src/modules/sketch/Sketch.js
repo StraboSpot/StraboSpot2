@@ -17,7 +17,7 @@ const Sketch = (props) => {
   const dispatch = useDispatch();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
-  const [useImages] = useImagesHook();
+  const useImages = useImagesHook();
   const navigation = useNavigation();
 
   const [imageId, setImageId] = useState(null);

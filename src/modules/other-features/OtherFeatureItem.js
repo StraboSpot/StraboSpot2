@@ -11,7 +11,7 @@ import {useTagsHook} from '../tags';
 
 const OtherFeatureItem = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);
 

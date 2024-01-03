@@ -37,7 +37,7 @@ const AddRockModal = (props) => {
   const [rockKey, setRockKey] = useState(null);
   const formRef = useRef(null);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
 

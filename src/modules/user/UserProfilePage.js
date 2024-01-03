@@ -36,7 +36,7 @@ const UserProfile = (props) => {
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const navigation = useNavigation();
   const toast = useToast();
   const useUpload = useUploadHook();

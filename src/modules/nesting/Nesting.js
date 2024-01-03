@@ -19,8 +19,8 @@ import {setSelectedSpot} from '../spots/spots.slice';
 const Nesting = () => {
   const dispatch = useDispatch();
 
-  const [useNesting] = useNestingHook();
-  const [useImages] = useImagesHook();
+  const useNesting = useNestingHook();
+  const useImages = useImagesHook();
 
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]

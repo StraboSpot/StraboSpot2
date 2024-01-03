@@ -27,7 +27,7 @@ const ImagesViewPage = () => {
 
   const inputRef = useRef(null);
 
-  const [useImages] = useImagesHook();
+  const useImages = useImagesHook();
   const navigation = useNavigation();
   const toast = useToast();
   const useUpload = useUploadHook();

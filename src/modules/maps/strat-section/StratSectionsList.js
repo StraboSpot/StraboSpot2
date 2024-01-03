@@ -17,7 +17,7 @@ import {setStratSection} from '../maps.slice';
 const StratSectionsList = ({closeManMenuPanel}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
 
   const spotsWithStratSection = useSpots.getSpotsWithStratSection();
   console.log('Spots with Strat Section:', spotsWithStratSection);

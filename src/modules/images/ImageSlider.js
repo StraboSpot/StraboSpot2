@@ -20,7 +20,7 @@ const ImageSlider = ({route, navigation}) => {
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
 
-  const [useImages] = useImagesHook();
+  const useImages = useImagesHook();
 
   const [imageIndex, setImageIndex] = useState(undefined);
   const [isImageLoaded, setIsImageLoaded] = useState(false);

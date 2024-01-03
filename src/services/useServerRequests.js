@@ -413,7 +413,7 @@ const useServerRequests = (props) => {
     }
   };
 
-  const serverRequests = {
+  return {
     addDatasetToProject: addDatasetToProject,
     authenticateUser: authenticateUser,
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
@@ -447,8 +447,6 @@ const useServerRequests = (props) => {
     verifyImageExistence: verifyImageExistence,
     zipURLStatus: zipURLStatus,
   };
-
-  return [serverRequests];
 };
 
 export default useServerRequests;

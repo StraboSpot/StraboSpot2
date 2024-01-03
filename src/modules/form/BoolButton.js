@@ -6,7 +6,7 @@ import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/sty
 import {formStyles, useFormHook} from '../form';
 
 const BoolButton = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   return (
     <Button

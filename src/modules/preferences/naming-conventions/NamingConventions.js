@@ -9,7 +9,7 @@ import {updatedProject} from '../../project/projects.slice';
 const NamingConventions = () => {
   const dispatch = useDispatch();
   const formName = ['preferences', 'naming_conventions'];
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const formRef = useRef(null);
   const preferences = useSelector(state => state.project.project.preferences) || {};
 

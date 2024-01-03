@@ -8,7 +8,7 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 
 const FabricListItem = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const getTitle = (fabric) => {
     if (fabric.type === 'fabric') {

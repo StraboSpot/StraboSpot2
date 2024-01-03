@@ -12,7 +12,7 @@ const useStratSectionCalculations = () => {
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const useSedValidation = useSedValidationHook();
 
   const xInterval = 10;  // Horizontal spacing between grain sizes/weathering tick marks

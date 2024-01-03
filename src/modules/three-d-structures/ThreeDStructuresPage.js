@@ -24,7 +24,7 @@ const ThreeDStructuresPage = (props) => {
   const [selected3dStructure, setSelected3dStructure] = useState({});
   const [isDetailView, setIsDetailView] = useState(false);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const SECTIONS = {
     // FABRICS: {title: 'Fabrics', key: 'fabric'}, // Hidden here and displayed on Fabrics page as deprecated

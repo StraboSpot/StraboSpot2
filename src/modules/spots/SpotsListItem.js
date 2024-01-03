@@ -14,9 +14,9 @@ import {useTagsHook} from '../tags';
 const SpotsListItem = (props) => {
   console.log('Rendering SpotsListItem', props.spot.properties?.name, props.spot.properties?.id?.toString(), '...');
 
-  const [useNesting] = useNestingHook();
-  const [useSpots] = useSpotsHook();
-  const [useTags] = useTagsHook();
+  const useNesting = useNestingHook();
+  const useSpots = useSpotsHook();
+  const useTags = useTagsHook();
   const usePage = usePageHoook();
 
   const selectedTag = useSelector(state => state.project.selectedTag);

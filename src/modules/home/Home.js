@@ -69,9 +69,9 @@ const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
 
   const useHome = useHomeHook();
-  const [useImages] = useImagesHook();
+  const useImages = useImagesHook();
   const [useProject] = useProjectHook();
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();

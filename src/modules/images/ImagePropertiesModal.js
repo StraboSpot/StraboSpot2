@@ -17,7 +17,7 @@ const ImagePropertiesModal = (props) => {
 
   const [annotated, setAnnotated] = useState(selectedImage.annotated);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const formRef = useRef(null);
 

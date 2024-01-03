@@ -32,8 +32,8 @@ import {addedProject, updatedProject} from '../project/projects.slice';
 import useSpotsHook from '../spots/useSpots';
 
 const useMaps = (mapRef) => {
-  const [useServerRequests] = useServerRequestsHook();
-  const [useSpots] = useSpotsHook();
+  const useServerRequests = useServerRequestsHook();
+  const useSpots = useSpotsHook();
   const useStratSection = useStratSectionHook();
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -669,7 +669,7 @@ const useMaps = (mapRef) => {
     else throw Error('Error Zooming To Extent of Spots');
   };
 
-  return [{
+  return {
     buildStyleURL: buildStyleURL,
     buildTileUrl: buildTileUrl,
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
@@ -695,7 +695,7 @@ const useMaps = (mapRef) => {
     viewCustomMap: viewCustomMap,
     zoomToSpot: zoomToSpot,
     zoomToSpots: zoomToSpots,
-  }];
+  };
 };
 
 export default useMaps;

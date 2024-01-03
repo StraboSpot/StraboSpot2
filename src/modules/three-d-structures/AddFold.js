@@ -10,7 +10,7 @@ import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const AddFold = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const [isFoldMeasurementsModalVisible, setIsFoldMeasurementsModalVisible] = useState(false);
   const [foldMeasurementsGroupField, setFoldMeasurementsGroupField] = useState({});

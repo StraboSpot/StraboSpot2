@@ -24,7 +24,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpot}) =>
   const [isDeleteSpotModalVisible, setIsDeleteSpotModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const navigation = useNavigation();
   const useStratSection = useStratSectionHook();
 

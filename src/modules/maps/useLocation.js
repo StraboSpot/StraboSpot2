@@ -6,7 +6,7 @@ import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
 const useLocation = () => {
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const dispatch = useDispatch();
 
   // Get the current location from the device and set it in the state

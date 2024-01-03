@@ -15,7 +15,7 @@ const AddRemoveTagSpots = () => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
 
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const handleSpotChecked = (spot) => {
     useTags.addRemoveSpotFromTag(spot.properties.id, selectedTag);

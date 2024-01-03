@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import uiStyles from './ui.styles';
 import signInStyles from '../../modules/sign-in/signIn.styles';
 import {setDatabaseIsSelected, setDatabaseVerify} from '../../services/connections.slice';
-import useServerRequests from '../../services/useServerRequests';
+import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 import * as themes from '../styles.constants';
@@ -26,8 +26,7 @@ const CustomEndpoint = (props) => {
   const [domainValue, setDomainValue] = useState(domain);
   const [pathValue, setPathValue] = useState(path);
 
-
-  const [serverRequests] = useServerRequests();
+  const useServerRequests = useServerRequestsHook();
 
   const handleEndpointSwitchValue = (value) => {
     dispatch(setDatabaseIsSelected(value));
@@ -43,7 +42,7 @@ const CustomEndpoint = (props) => {
 
   const verifyEndpoint = async () => {
     setIsLoadingEndpoint(true);
-    const isVerified = await serverRequests.verifyEndpoint(protocolValue, domainValue, pathValue);
+    const isVerified = await useServerRequests.verifyEndpoint(protocolValue, domainValue, pathValue);
     if (isVerified) setIsLoadingEndpoint(false);
     else {
       setErrorMessage('Not Reachable');

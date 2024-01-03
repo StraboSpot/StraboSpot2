@@ -19,7 +19,7 @@ const TagDetailModal = (props) => {
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const confirmDeleteTag = () => {
     alert(

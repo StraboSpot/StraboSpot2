@@ -33,7 +33,7 @@ const StratSectionPage = (props) => {
 
   const stratSectionRef = useRef(null);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const navigation = useNavigation();
   const useSed = useSedHook();
 

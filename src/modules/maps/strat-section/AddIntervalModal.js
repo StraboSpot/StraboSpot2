@@ -25,8 +25,8 @@ const AddIntervalModal = () => {
   const [initialFormValues, setInitialFormValues] = useState({});
   const [intervalToCopy, setIntervalToCopy] = useState(null);
 
-  const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const useForm = useFormHook();
+  const useSpots = useSpotsHook();
   const useStratSection = useStratSectionHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
 

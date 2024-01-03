@@ -8,7 +8,7 @@ import {
 import {Form, MainButtons, useFormHook} from '../form';
 
 const AddFault = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const [isFaultMeasurementsModalVisible, setIsFaultMeasurementsModalVisible] = useState(false);
   const [faultMeasurementsGroupField, setFaultMeasurementsGroupField] = useState({});

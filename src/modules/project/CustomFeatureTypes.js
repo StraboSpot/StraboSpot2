@@ -17,7 +17,7 @@ import {useSpotsHook} from '../spots';
 
 const CustomFeatureTypes = () => {
   const [refresh] = useState();
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const dispatch = useDispatch();
   const projectFeatures = useSelector(state => state.project.project.other_features);
   const customFeatureTypes = projectFeatures

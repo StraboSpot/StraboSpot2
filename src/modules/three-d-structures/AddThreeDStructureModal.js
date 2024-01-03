@@ -29,7 +29,7 @@ const AddThreeDStructureModal = (props) => {
   const [choices, setChoices] = useState({});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const formRef = useRef(null);
 

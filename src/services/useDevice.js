@@ -14,7 +14,7 @@ const useDevice = (props) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
 
-  const [useServerRequests] = useServerRequestsHook();
+  const useServerRequests = useServerRequestsHook();
 
   const copyFiles = async (source, target) => {
     try {

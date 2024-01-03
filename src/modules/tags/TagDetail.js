@@ -16,8 +16,8 @@ import {useTagsHook} from '../tags';
 
 const TagDetail = (props) => {
   const usePage = usePageHoook();
-  const [useSpots] = useSpotsHook();
-  const [useTags] = useTagsHook();
+  const useSpots = useSpotsHook();
+  const useTags = useTagsHook();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);

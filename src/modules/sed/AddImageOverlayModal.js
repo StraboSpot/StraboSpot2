@@ -20,7 +20,7 @@ const AddImageOverlayModal = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const overlayFormRef = useRef(null);
 

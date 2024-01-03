@@ -35,7 +35,7 @@ const ManageOfflineMaps = (props) => {
   const [selectedMap, setSelectedMap] = useState({});
 
   const useDevice = useDeviceHook();
-  const [useMaps] = useMapsHook();
+  const useMaps = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
 
   useEffect(() => {

@@ -29,7 +29,7 @@ const Overview = (props) => {
 
   const formRef = useRef(null);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const usePage = usePageHoook();
 
   useEffect(() => {

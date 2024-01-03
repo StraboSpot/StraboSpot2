@@ -22,8 +22,8 @@ const useSed = () => {
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const useForm = useFormHook();
+  const useSpots = useSpotsHook();
   const useSedValidation = useSedValidationHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
 

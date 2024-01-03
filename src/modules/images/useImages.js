@@ -425,7 +425,7 @@ const useImages = () => {
     });
   };
 
-  return [{
+  return {
     deleteImage: deleteImage,
     doesImageExistOnDevice: doesImageExistOnDevice,
     editImage: editImage,
@@ -444,7 +444,7 @@ const useImages = () => {
     setAnnotation: setAnnotation,
     setImageHeightAndWidth: setImageHeightAndWidth,
     takePicture: takePicture,
-  }]; //TODO: remove array and just call object;
+  }; //TODO: remove array and just call object;
 };
 
 export default useImages;

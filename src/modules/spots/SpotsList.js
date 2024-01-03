@@ -13,7 +13,7 @@ import SortingButtons from '../main-menu-panel/SortingButtons';
 const SpotsList = (props) => {
   console.log('Rendering SpotsList...');
 
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
 
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);

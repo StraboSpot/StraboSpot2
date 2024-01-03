@@ -13,7 +13,7 @@ import {formStyles, useFormHook} from '../../form';
 const ThreeDStructuresMeasurementsButtons = (props) => {
   const dispatch = useDispatch();
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const groupFields = Object.keys(props.measurementsKeys).map(k => props.survey.find(f => f.name === k));
 

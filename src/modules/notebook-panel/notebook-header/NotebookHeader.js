@@ -25,7 +25,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => 
 
   const [isNotebookMenuVisible, setIsNotebookMenuVisible] = useState(false);
 
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const useLocation = useLocationHook();
 
   const getSpotCoordText = () => {

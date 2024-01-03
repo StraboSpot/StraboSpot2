@@ -29,8 +29,8 @@ const MeasurementDetail = (props) => {
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useForm] = useFormHook();
-  const [useMeasurements] = useMeasurementsHook();
+  const useForm = useFormHook();
+  const useMeasurements = useMeasurementsHook();
 
   const formRef = useRef(null);
 

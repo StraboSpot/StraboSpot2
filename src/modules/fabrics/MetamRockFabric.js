@@ -4,7 +4,7 @@ import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const MetamRockFabric = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];

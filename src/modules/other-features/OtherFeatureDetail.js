@@ -20,8 +20,8 @@ import {useTagsHook} from '../tags';
 
 const OtherFeatureDetail = (props) => {
   const dispatch = useDispatch();
-  const [useForm] = useFormHook();
-  const [useTags] = useTagsHook();
+  const useForm = useFormHook();
+  const useTags = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const projectFeatures = useSelector(state => state.project.project.other_features);
 

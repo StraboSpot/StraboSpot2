@@ -10,7 +10,7 @@ import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
 
 function ThreeDStructureItem(props) {
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);

@@ -21,7 +21,7 @@ import {useTagsHook} from '../tags';
 
 const useSpots = () => {
   const [useProject] = useProjectHook();
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const dispatch = useDispatch();
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
@@ -379,7 +379,7 @@ const useSpots = () => {
 
   };
 
-  return [{
+  return {
     checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
     createSpot: createSpot,
@@ -406,7 +406,7 @@ const useSpots = () => {
     getSpotsWithStratSection: getSpotsWithStratSection,
     isStratInterval: isStratInterval,
     saveSpot: saveSpot,
-  }];
+  };
 };
 
 export default useSpots;

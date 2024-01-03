@@ -9,9 +9,9 @@ import useMapSymbologyHook from '../symbology/useMapSymbology';
 import useMapsHook from '../useMaps';
 
 function XAxis(props) {
-  const [useMaps] = useMapsHook();
-  const [useForm] = useFormHook();
-  const [useMapSymbology] = useMapSymbologyHook();
+  const useMaps = useMapsHook();
+  const useForm = useFormHook();
+  const useMapSymbology = useMapSymbologyHook();
 
   const xCl = 10;  // Horizontal spacing between clastic tick marks
   const xCa = 23.3; // Horizonatal space between carbonate tick marks

@@ -18,7 +18,7 @@ const SiteSafetyPage = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const formRef = useRef(null);
   const page = SECONDARY_PAGES.find(p => p.key === PAGE_KEYS.SITE_SAFETY);

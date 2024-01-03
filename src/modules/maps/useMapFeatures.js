@@ -17,8 +17,8 @@ const useMapFeatures = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
 
-  const [useNesting] = useNestingHook();
-  const [useSpots] = useSpotsHook();
+  const useNesting = useNestingHook();
+  const useSpots = useSpotsHook();
 
   // Get Spots within (points) or intersecting (line or polygon) the drawn polygon
   const getLassoedSpots = (features, drawnPolygon) => {
@@ -216,10 +216,10 @@ const useMapFeatures = () => {
     };
   };
 
-  return [{
+  return {
     getLassoedSpots: getLassoedSpots,
     getStereonet: getStereonet,
-  }];
+  };
 };
 
 export default useMapFeatures;

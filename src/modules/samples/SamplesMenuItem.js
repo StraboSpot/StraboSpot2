@@ -16,7 +16,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
 
 const SamplesMenuItem = (props) => {
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
 
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);

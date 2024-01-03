@@ -33,7 +33,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const usePage = usePageHoook();
 
   useEffect(() => {

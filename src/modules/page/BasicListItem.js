@@ -11,7 +11,7 @@ import useSedHook from '../sed/useSed';
 const BasicListItem = (props) => {
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const getTitle = () => {
     switch (props.page.key) {

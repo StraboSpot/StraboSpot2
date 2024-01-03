@@ -26,7 +26,7 @@ const MapSymbolsOverlay = (props) => {
   const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
-  const [useMeasurements] = useMeasurementsHook();
+  const useMeasurements = useMeasurementsHook();
 
   const getSymbolTitle = (symbol) => {
     return toTitleCase(useMeasurements.getLabel(symbol));

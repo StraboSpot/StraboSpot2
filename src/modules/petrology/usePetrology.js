@@ -14,7 +14,7 @@ import {editedSpotProperties} from '../spots/spots.slice';
 const usePetrology = () => {
   const dispatch = useDispatch();
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const deletePetFeature = (key, spot, selectedFeature) => {
     let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};

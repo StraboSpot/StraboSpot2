@@ -31,7 +31,7 @@ const MineralsPage = (props) => {
 
   const preFormRef = useRef(null);
 
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const usePetrology = usePetrologyHook();
 
   useEffect(() => {

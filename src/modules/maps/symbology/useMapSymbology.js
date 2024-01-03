@@ -5,7 +5,7 @@ import useTagsHook from '../../tags/useTags';
 import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
 
 const useMapSymbology = () => {
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
   const useStratSymbology = useStratSymbologyHook();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
@@ -520,14 +520,14 @@ const useMapSymbology = () => {
     },
   };
 
-  return [{
+  return {
     addSymbology: addSymbology,
     getLayoutSymbology: getLayoutSymbology,
     getLinesFilteredByPattern: getLinesFilteredByPattern,
     getMapSymbology: getMapSymbology,
     getPaintSymbology: getPaintSymbology,
     getSymbology: getSymbology,
-  }];
+  };
 };
 
 export default useMapSymbology;

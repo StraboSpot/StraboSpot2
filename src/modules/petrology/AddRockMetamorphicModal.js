@@ -15,7 +15,7 @@ const AddRockMetamorphicModal = (props) => {
 
   const [isFaciesModalVisible, setIsFaciesModalVisible] = useState(false);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['metamorphic_rock_type'];

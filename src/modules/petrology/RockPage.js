@@ -29,8 +29,8 @@ const RockPage = (props) => {
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const useForm = useFormHook();
+  const useSpots = useSpotsHook();
 
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedRock, setSelectedRock] = useState({});

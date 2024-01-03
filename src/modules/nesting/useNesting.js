@@ -5,7 +5,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {useSpotsHook} from '../spots';
 
 const useNesting = () => {
-  const [useSpots] = useSpotsHook();
+  const useSpots = useSpotsHook();
   const spots = useSelector(state => state.spot.spots);
 
   // Is spot 1 completely within spot 2?
@@ -211,10 +211,10 @@ const useNesting = () => {
     return allParentSpots.flat();
   }
 
-  return [{
+  return {
     getChildrenGenerationsSpots: getChildrenGenerationsSpots,
     getParentGenerationsSpots: getParentGenerationsSpots,
-  }];
+  };
 };
 
 export default useNesting;

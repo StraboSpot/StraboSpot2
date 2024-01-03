@@ -21,7 +21,7 @@ const AddReactionTextureModal = (props) => {
 
   const formRef = useRef(null);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const usePetrology = usePetrologyHook();
 
   // Relevant keys for quick-entry modal

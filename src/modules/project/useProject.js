@@ -17,7 +17,7 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
-import useServerRequests from '../../services/useServerRequests';
+import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -40,7 +40,7 @@ const useProject = () => {
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const user = useSelector(state => state.user);
 
-  const [serverRequests] = useServerRequests();
+  const useServerRequests = useServerRequestsHook();
   const toast = useToast();
   const useDownload = useDownloadHook();
   const useDevice = useDeviceHook();
@@ -54,7 +54,7 @@ const useProject = () => {
   };
 
   const checkUserAuthorization = async (password) => {
-    return await serverRequests.authenticateUser(user.email, password.trim());
+    return await useServerRequests.authenticateUser(user.email, password.trim());
   };
 
   const checkValidDateTime = (spot) => {
@@ -106,7 +106,7 @@ const useProject = () => {
   };
 
   const deleteProject = async (project) => {
-    await serverRequests.deleteProject(project);
+    await useServerRequests.deleteProject(project);
   };
 
   const destroyDataset = async (id) => {
@@ -197,7 +197,7 @@ const useProject = () => {
 
   const getAllServerProjects = async () => {
     try {
-      return await serverRequests.getMyProjects(user.encoded_login);
+      return await useServerRequests.getMyProjects(user.encoded_login);
     }
     catch (err) {
       return err.ok;

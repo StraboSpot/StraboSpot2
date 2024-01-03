@@ -5,7 +5,7 @@ import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 
 const FaultRockFabric = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];

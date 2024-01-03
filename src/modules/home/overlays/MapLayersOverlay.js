@@ -17,7 +17,7 @@ import useMapsHook from '../../maps/useMaps';
 
 const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
 
-  const [useMaps] = useMapsHook();
+  const useMaps = useMapsHook();
   const useMapsOffline = useMapsOfflineHook();
 
   const [dialogTitle, setDialogTitle] = useState('Map Layers');

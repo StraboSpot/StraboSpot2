@@ -28,7 +28,7 @@ const AddMineralModal = (props) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
   const [isShowTemplates, setIsShowTemplates] = useState(false);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const usePetrology = usePetrologyHook();
 
   const formRef = useRef(null);

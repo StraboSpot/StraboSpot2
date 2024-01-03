@@ -7,7 +7,7 @@ import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/sty
 import {formStyles, useFormHook} from '../form';
 
 const ChoiceButtons = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const buttonStyle = props.size === 'small' ? formStyles.formButtonSmall
     : props.size === 'large' ? formStyles.formButtonLarge

@@ -30,7 +30,7 @@ const BeddingPage = (props) => {
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedAttribute, setSelectedAttribute] = useState({});
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const useSed = useSedHook();
 
   const beddingSharedRef = useRef(null);

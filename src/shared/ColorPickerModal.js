@@ -9,7 +9,7 @@ import overlayStyles from '../modules/home/overlays/overlay.styles';
 import {useTagsHook} from '../modules/tags';
 
 const ColorPickerModal = (props) => {
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const COLOR_CHOICES = [
     ['#330000', '#331900', '#333300', '#193300', '#003300', '#003319', '#003333', '#001933', '#000033', '#190033', '#330033', '#330019', '#000000'],

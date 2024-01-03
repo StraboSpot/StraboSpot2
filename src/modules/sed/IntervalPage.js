@@ -20,7 +20,7 @@ const IntervalPage = (props) => {
 
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const useSed = useSedHook();
 
   const intervalRef = useRef(null);

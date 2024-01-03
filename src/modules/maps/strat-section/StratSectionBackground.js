@@ -14,10 +14,10 @@ import useMapsHook from '../useMaps';
 const StratSectionBackground = (props) => {
   console.log('Rendering StratSectionBackground...');
 
-  const [useImages] = useImagesHook();
-  const [useMaps] = useMapsHook();
-  const [useMapSymbology] = useMapSymbologyHook();
-  const [useSpots] = useSpotsHook();
+  const useImages = useImagesHook();
+  const useMaps = useMapsHook();
+  const useMapSymbology = useMapSymbologyHook();
+  const useSpots = useSpotsHook();
 
   const stratSectionSpot = useSpots.getSpotWithThisStratSection(props.stratSection.strat_section_id);
   const stratSectionImagesSorted = JSON.parse(JSON.stringify(props.stratSection.images || [])).sort(

@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useServerRequests from '../../services/useServerRequests';
+import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -25,7 +25,7 @@ const useSignIn = () => {
   const user = useSelector(state => state.user);
   const encodedLogin = useSelector(state => state.user.encoded_login);
 
-  const [serverRequests] = useServerRequests();
+  const useServerRequests = useServerRequestsHook();
   const navigation = useNavigation();
   const [useProject] = useProjectHook();
 
@@ -108,7 +108,7 @@ const useSignIn = () => {
   const signIn = async (username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible) => {
     console.log(`Authenticating ${username} and signing in...`);
     try {
-      const userAuthResponse = await serverRequests.authenticateUser(username, password);
+      const userAuthResponse = await useServerRequests.authenticateUser(username, password);
       // login with provider
       if (userAuthResponse?.valid === 'true') {
         Sentry.configureScope((scope) => {
@@ -144,8 +144,8 @@ const useSignIn = () => {
 
   const updateUserResponse = async (newEncodedLogin) => {
     try {
-      let userProfileRes = await serverRequests.getProfile(newEncodedLogin);
-      const userProfileImage = await serverRequests.getProfileImage(newEncodedLogin);
+      let userProfileRes = await useServerRequests.getProfile(newEncodedLogin);
+      const userProfileImage = await useServerRequests.getProfileImage(newEncodedLogin);
       console.log('userProfileImage', userProfileImage);
       if (!isEmpty(userProfileImage)) {
         const profileImage = await getUserImage(userProfileImage);

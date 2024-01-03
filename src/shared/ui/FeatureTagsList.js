@@ -9,7 +9,7 @@ import {isEmpty} from '../Helpers';
 
 function FeatureTagsList(props) {
   const usePage = usePageHoook();
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const tags = useTags.getTagsAtFeature(props.spotId, props.featureId);
   const tagsString = tags.map(tag => tag.name).sort().join(', ');

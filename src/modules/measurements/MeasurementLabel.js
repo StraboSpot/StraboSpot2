@@ -7,8 +7,8 @@ import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
 import useFormHook from '../form/useForm';
 
 const MeasurementLabel = (props) => {
-  const [useMeasurements] = useMeasurementsHook();
-  const [useForm] = useFormHook();
+  const useMeasurements = useMeasurementsHook();
+  const useForm = useFormHook();
 
   const getMeasurementText = (item) => {
     let measurementText = '';

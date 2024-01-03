@@ -20,7 +20,7 @@ const NewProjectForm = (props) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
   const [useProject] = useProjectHook();
 
   const formRef = useRef(null);

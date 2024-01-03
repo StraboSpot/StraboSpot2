@@ -19,8 +19,8 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Geography = () => {
-  const [useForm] = useFormHook();
-  const [useMaps] = useMapsHooks();
+  const useForm = useFormHook();
+  const useMaps = useMapsHooks();
   const useLocation = useLocationHook();
 
   const dispatch = useDispatch();

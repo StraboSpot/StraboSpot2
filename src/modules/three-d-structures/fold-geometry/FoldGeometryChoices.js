@@ -6,7 +6,7 @@ import IconButton from '../../../shared/ui/IconButton';
 import {formStyles, useFormHook} from '../../form';
 
 const FoldGeometryChoices = (props) => {
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const onGeometryChoiceButtonPress = (key, value) => {
     let updatedFormData = JSON.parse(JSON.stringify(props.formProps.values));

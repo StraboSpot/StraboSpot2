@@ -27,7 +27,7 @@ const useTags = () => {
 
   const formRef = useRef(null);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const formName = ['project', 'tags'];
 
@@ -342,7 +342,7 @@ const useTags = () => {
     saveTag(tagCopy);
   };
 
-  return [{
+  return {
     addRemoveSpotFeatureFromTag: addRemoveSpotFeatureFromTag,
     addRemoveSpotFromTag: addRemoveSpotFromTag,
     addRemoveTag: addRemoveTag,
@@ -369,7 +369,7 @@ const useTags = () => {
     setFeaturesSelectedForMultiTagging: setFeaturesSelectedForMultiTagging,
     tagSpotExists: tagSpotExists,
     toggleContinuousTagging: toggleContinuousTagging,
-  }];
+  };
 };
 
 export default useTags;

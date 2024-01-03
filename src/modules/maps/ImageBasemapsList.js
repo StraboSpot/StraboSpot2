@@ -14,8 +14,8 @@ import useSpotsHook from '../spots/useSpots';
 const ImageBasemapsList = ({closeManMenuPanel}) => {
   console.log('Rendering ImageBasemaps...');
 
-  const [useSpots] = useSpotsHook();
-  const [useImages] = useImagesHook();
+  const useSpots = useSpotsHook();
+  const useImages = useImagesHook();
 
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
 

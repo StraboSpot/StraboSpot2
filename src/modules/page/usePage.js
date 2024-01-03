@@ -8,7 +8,7 @@ const usePage = () => {
   const isTestingMode = useSelector(state => state.project.isTestingMode);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   // Return the keys for the Spot pages that are populated with data
   const getPopulatedPagesKeys = (spot) => {

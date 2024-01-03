@@ -62,9 +62,9 @@ const Basemap = ({
 
   const {mapRef, cameraRef} = forwardedRef;
 
-  const [useImages] = useImagesHook();
-  const [useMapSymbology] = useMapSymbologyHook();
-  const [useMaps] = useMapsHook();
+  const useImages = useImagesHook();
+  const useMapSymbology = useMapSymbologyHook();
+  const useMaps = useMapsHook();
   const useMapView = useMapViewHook();
 
   const [doesImageExist, setDoesImageExist] = useState(false);

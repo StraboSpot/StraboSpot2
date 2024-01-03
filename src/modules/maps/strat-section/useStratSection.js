@@ -6,8 +6,8 @@ import {useFormHook} from '../../form';
 import {useSpotsHook} from '../../spots';
 
 const useStratSection = () => {
-  const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const useForm = useFormHook();
+  const useSpots = useSpotsHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
 
   // Create a new strat section interval, separating the fields to their respective objects

@@ -45,8 +45,8 @@ const useDownload = () => {
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const project = useSelector(state => state.project.project);
 
-  const [useImages] = useImagesHook();
-  const [useServerRequests] = useServerRequestsHook();
+  const useImages = useImagesHook();
+  const useServerRequests = useServerRequestsHook();
   const useDevice = useDeviceHook();
 
   const destroyOldProject = () => {

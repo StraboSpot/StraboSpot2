@@ -16,7 +16,7 @@ const placeholderImage = require('../../assets/images/noimage.jpg');
 const ImagesOverview = () => {
   console.log('Rendering ImagesOverview...');
 
-  const [useImages] = useImagesHook();
+  const useImages = useImagesHook();
 
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
   const spot = useSelector(state => state.spot.selectedSpot);

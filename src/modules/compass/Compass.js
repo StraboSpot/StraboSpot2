@@ -48,7 +48,7 @@ const Compass = (props) => {
   const [buttonSound, setButtonSound] = useState(null);
   const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
 
-  const [useMeasurements] = useMeasurementsHook();
+  const useMeasurements = useMeasurementsHook();
 
   const CompassEvents = new NativeEventEmitter(NativeModules.Compass);
 

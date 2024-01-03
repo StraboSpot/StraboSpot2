@@ -33,7 +33,7 @@ const MeasurementsPage = (props) => {
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
-  const [useMeasurements] = useMeasurementsHook();
+  const useMeasurements = useMeasurementsHook();
 
   const SECTIONS = {
     PLANAR: {

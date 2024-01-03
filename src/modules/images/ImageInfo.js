@@ -24,8 +24,8 @@ const ImageInfo = (props) => {
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageId] = useState(props.route.params.imageId);
-  const [useImages] = useImagesHook();
-  const [useSpots] = useSpotsHook();
+  const useImages = useImagesHook();
+  const useSpots = useSpotsHook();
   const navigation = useNavigation();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);

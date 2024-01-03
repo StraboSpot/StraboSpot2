@@ -5,8 +5,8 @@ import {PAGE_KEYS} from '../page/page.constants';
 import {useSpotsHook} from '../spots';
 
 const useSedValidation = () => {
-  const [useForm] = useFormHook();
-  const [useSpots] = useSpotsHook();
+  const useForm = useFormHook();
+  const useSpots = useSpotsHook();
 
   const getBasicLithologyIndex = (lithology) => {
     if (lithology.primary_lithology === 'organic_coal') return 1;

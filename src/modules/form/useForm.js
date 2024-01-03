@@ -188,7 +188,7 @@ const useForm = () => {
     return errors;
   };
 
-  return [{
+  return {
     getChoices: getChoices,
     getChoicesByKey: getChoicesByKey,
     getGroupFields: getGroupFields,
@@ -200,7 +200,7 @@ const useForm = () => {
     isRelevant: isRelevant,
     showErrors: showErrors,
     validateForm: validateForm,
-  }];
+  };
 };
 
 export default useForm;

@@ -54,9 +54,9 @@ const Basemap = ({
 
   const {mapRef} = forwardedRef;
 
-  const [useImages] = useImagesHook();
-  const [useMapSymbology] = useMapSymbologyHook();
-  const [useMaps] = useMapsHook(mapRef);
+  const useImages = useImagesHook();
+  const useMapSymbology = useMapSymbologyHook();
+  const useMaps = useMapsHook(mapRef);
   const useDimensions = useWindowDimensions();
   const useMapView = useMapViewHook();
 

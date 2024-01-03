@@ -24,7 +24,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
   const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
   const [sliderValue, setSliderValue] = useState(6);
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const addAttributeMeasurement = (data) => {
     const sliderQuality = sliderValue ? {quality: sliderValue.toString()} : undefined;

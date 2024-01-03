@@ -19,7 +19,7 @@ const TagsNotebookModal = (props) => {
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
 
   const addTag = async () => {
     useTags.addTag();

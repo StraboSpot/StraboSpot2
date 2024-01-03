@@ -10,7 +10,7 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import {setSelectedTag} from '../project/projects.slice';
 
 const TagsListItem = (props) => {
-  const [useTags] = useTagsHook();
+  const useTags = useTagsHook();
   const dispatch = useDispatch();
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
 

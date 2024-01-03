@@ -12,7 +12,7 @@ import {useFormHook} from '../form';
 const FormSlider = (props) => {
   console.log('Rendering FormSlider...');
 
-  const [useForm] = useFormHook();
+  const useForm = useFormHook();
 
   const field = props.survey.find(f => f.name === props.fieldKey);
   const choices = useForm.getChoicesByKey(props.survey, props.choices, props.fieldKey);
