@@ -157,20 +157,6 @@ const Basemap = ({
     setViewState(initialViewState);
   };
 
-  // Get max X and max Y for strat intervals
-  const getStratIntervalsMaxXY = () => {
-    const intervals = [...spotsSelected, ...spotsNotSelected].filter(
-      feature => feature?.properties?.surface_feature?.surface_feature_type === 'strat_interval');
-    return intervals.reduce((acc, i) => {
-      const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
-      const xs = coords.flat().map(c => c[0]);
-      const maxX = Math.max(...xs);
-      const ys = coords.flat().map(c => c[1]);
-      const maxY = Math.max(...ys);
-      return [Math.max(acc[0], maxX), Math.max(acc[1], maxY)];
-    }, [0, 0]);
-  };
-
   // Update spots in extent and saved view (center and zoom)
   const onMove = (evt) => {
     console.log('Event onMove', evt);
@@ -219,6 +205,7 @@ const Basemap = ({
         interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
         styleDiffing={false}
       >
+
         {!stratSection && !currentImageBasemap && (
           <View>
             <ScaleControl
@@ -256,7 +243,7 @@ const Basemap = ({
 
         {/* Strat Section background Layer */}
         {stratSection && (
-          <StratSectionBackground maxXY={getStratIntervalsMaxXY()} stratSection={stratSection}/>
+          <StratSectionBackground spotsDisplayed={[...spotsNotSelected, ...spotsSelected]}/>
         )}
 
         {/* Image Basemap Layer */}

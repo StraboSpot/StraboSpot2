@@ -2,48 +2,48 @@ import React from 'react';
 
 import {Layer, Source} from 'react-map-gl';
 
-import useXAxisHook from './useXAxis';
+import useYAxisHook from './useYAxis';
 import useMapSymbologyHook from '../symbology/useMapSymbology';
 
-const XAxis = ({n = 1}) => {
+const YAxis = ({spotsDisplayed}) => {
   const useMapSymbology = useMapSymbologyHook();
-  const useXAxis = useXAxisHook(n);
+  const useYAxis = useYAxisHook(spotsDisplayed);
 
   return (
     <>
-      {/* X Axis Line*/}
+      {/* Y Axis Line */}
       <Source
-        id={'xAxisSource' + n}
+        id={'yAxisSource'}
         type={'geojson'}
-        data={useXAxis.getXAxis()}
+        data={useYAxis.getYAxis()}
       >
         <Layer
           type={'line'}
-          id={'xAxisLayer' + n}
+          id={'yAxisLayer'}
           minZoomLevel={1}
         />
       </Source>
 
-      {/* X Axis Tick Marks */}
+      {/* Y Axis Tick Marks */}
       <Source
-        id={'xAxisTickMarksSource' + n}
+        id={'yAxisTickMarksSource'}
         type={'geojson'}
-        data={useXAxis.getXAxisTickMarks()}
+        data={useYAxis.getYAxisTickMarks()}
       >
         <Layer
           type={'line'}
-          id={'xAxisTickMarksLayer' + n}
+          id={'yAxisTickMarksLayer'}
           minZoomLevel={1}
         />
         <Layer
           type={'symbol'}
-          id={'xAxisTickMarksLabelLayer' + n}
+          id={'yAxisTickMarksLabelLayer'}
           minZoomLevel={1}
-          layout={useMapSymbology.getLayoutSymbology().xAxisTickMarkLabels}
+          layout={useMapSymbology.getLayoutSymbology().yAxisTickMarkLabels}
         />
       </Source>
     </>
   );
 };
 
-export default XAxis;
+export default YAxis;

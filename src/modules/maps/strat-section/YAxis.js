@@ -2,43 +2,43 @@ import React from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
 
-import useXAxisHook from './useXAxis';
+import useYAxisHook from './useYAxis';
 import useMapSymbologyHook from '../symbology/useMapSymbology';
 
-const XAxis = ({n = 1}) => {
+const YAxis = ({spotsDisplayed}) => {
   const useMapSymbology = useMapSymbologyHook();
-  const useXAxis = useXAxisHook(n);
+  const useYAxis = useYAxisHook(spotsDisplayed);
 
   return (
     <>
-      {/* X Axis Line*/}
+      {/* Y Axis Line */}
       <MapboxGL.ShapeSource
-        id={'xAxisSource' + n}
-        shape={useXAxis.getXAxis()}
+        id={'yAxisSource'}
+        shape={useYAxis.getYAxis()}
       >
         <MapboxGL.LineLayer
-          id={'xAxisLayer' + n}
+          id={'yAxisLayer'}
           minZoomLevel={1}
         />
       </MapboxGL.ShapeSource>
 
-      {/* X Axis Tick Marks */}
+      {/* Y Axis Tick Marks */}
       <MapboxGL.ShapeSource
-        id={'xAxisTickMarksSource' + n}
-        shape={useXAxis.getXAxisTickMarks()}
+        id={'yAxisTickMarksSource'}
+        shape={useYAxis.getYAxisTickMarks()}
       >
         <MapboxGL.LineLayer
-          id={'xAxisTickMarksLayer' + n}
+          id={'yAxisTickMarksLayer'}
           minZoomLevel={1}
         />
         <MapboxGL.SymbolLayer
-          id={'xAxisTickMarksLabelLayer' + n}
+          id={'yAxisTickMarksLabelLayer'}
           minZoomLevel={1}
-          style={useMapSymbology.getMapSymbology().xAxisTickMarkLabels}
+          style={useMapSymbology.getMapSymbology().yAxisTickMarkLabels}
         />
       </MapboxGL.ShapeSource>
     </>
   );
 };
 
-export default XAxis;
+export default YAxis;

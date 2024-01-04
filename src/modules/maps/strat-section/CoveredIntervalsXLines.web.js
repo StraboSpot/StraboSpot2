@@ -3,28 +3,16 @@ import React from 'react';
 import * as turf from '@turf/turf';
 import {Layer, Source} from 'react-map-gl';
 
-function CoveredIntervalsXLines(props) {
+import useCoveredIntervalXLinesHook from './useCoveredIntevalsXLines';
 
-  // Create the X lines for Strat Intervals that are Covered/Unexposed or Not Measured
-  const getIntervalsWithX = () => {
-    const spotsX = props.spotsDisplayed.filter(
-      s => s.properties?.sed?.character === 'unexposed_cove' || s.properties?.sed?.character === 'not_measured');
-    const xLines = [];
-    spotsX.forEach((s) => {
-      const bbox = turf.bbox(s);
-      const poly = turf.bboxPolygon(bbox);
-      const coords = turf.getCoords(poly);
-      xLines.push(turf.lineString([coords[0][0], coords[0][2]]));
-      xLines.push(turf.lineString([coords[0][1], coords[0][3]]));
-    });
-    return xLines;
-  };
+const CoveredIntervalsXLines = ({spotsDisplayed}) => {
+  const useCoveredIntervalXLines = useCoveredIntervalXLinesHook(spotsDisplayed);
 
   return (
     <Source
       id={'coveredIntervalLines'}
       type={'geojson'}
-      data={turf.featureCollection(getIntervalsWithX())}
+      data={turf.featureCollection(useCoveredIntervalXLines.getIntervalsWithX())}
     >
       <Layer
         type={'line'}
@@ -33,6 +21,6 @@ function CoveredIntervalsXLines(props) {
       />
     </Source>
   );
-}
+};
 
-export default (CoveredIntervalsXLines);
+export default CoveredIntervalsXLines;
