@@ -11,16 +11,13 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import useUploadHook from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {SMALL_SCREEN} from '../../shared/styles.constants';
-import alert from '../../shared/ui/alert';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setLoadingStatus} from '../home/home.slice';
 import {imageStyles, useImagesHook} from '../images';
-import {setCurrentImageBasemap} from '../maps/maps.slice';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {clearedSelectedSpots, editedSpotImages} from '../spots/spots.slice';
+import {editedSpotImages} from '../spots/spots.slice';
 
 const ImagesViewPage = () => {
   console.log('Rendering ImagesViewPage...');
@@ -92,7 +89,7 @@ const ImagesViewPage = () => {
 
       if (metaData.fileSize > 3000000) {
         console.log('Target BEFORE resizing', e.target.files[0]);
-        const before = useImages.getSize(e.target.files[0]);
+        const before = getSize(e.target.files[0]);
         console.log('Target size BEFORE resizing', before);
 
         // setSelectedImageFile(e.target.files[0]);
