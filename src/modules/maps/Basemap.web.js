@@ -161,7 +161,11 @@ const Basemap = ({
   const onMove = (evt) => {
     console.log('Event onMove', evt);
     updateSpotsInMapExtent();
-    if (currentImageBasemap || stratSection) setViewState(evt.viewState);
+    if (currentImageBasemap || stratSection) {
+      // TODO Next line is a hack to fix image basemaps and strat section zooming issue on fresh load
+      const newZoom = evt.viewState.zoom < 1 ? ZOOM_STRAT_SECTION : evt.viewState.zoom;
+      setViewState({...evt.viewState, zoom: newZoom});
+    }
     else {
       console.log('evt.viewState', evt.viewState);
       setViewState(evt.viewState);
