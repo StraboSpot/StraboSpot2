@@ -5,7 +5,7 @@ import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import proj4 from 'proj4';
 import {Layer, Map, ScaleControl, Source} from 'react-map-gl';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {
   BACKGROUND,
@@ -19,6 +19,7 @@ import {
   ZOOM,
   ZOOM_STRAT_SECTION,
 } from './maps.constants';
+import {setIsMapMoved} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -40,11 +41,11 @@ const Basemap = ({
                    onMapPress,
                    spotsNotSelected,
                    spotsSelected,
-                   updateSpotsInMapExtent,
                    zoomToSpot,
                  }, forwardedRef) => {
   console.log('Rendering Basemap...');
 
+  const dispatch = useDispatch();
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
@@ -54,11 +55,11 @@ const Basemap = ({
 
   const {mapRef} = forwardedRef;
 
+  const useDimensions = useWindowDimensions();
   const useImages = useImagesHook();
   const useMapSymbology = useMapSymbologyHook();
-  const useMaps = useMapsHook(mapRef);
-  const useDimensions = useWindowDimensions();
   const useMapView = useMapViewHook();
+  const useMaps = useMapsHook(mapRef);
 
   const [cursor, setCursor] = useState('');
   const [prevMapMode, setPrevMapMode] = useState(mapMode);
@@ -160,7 +161,7 @@ const Basemap = ({
   // Update spots in extent and saved view (center and zoom)
   const onMove = (evt) => {
     console.log('Event onMove', evt);
-    updateSpotsInMapExtent();
+    dispatch(setIsMapMoved(true));
     if (currentImageBasemap || stratSection) {
       // TODO Next line is a hack to fix image basemaps and strat section zooming issue on fresh load
       const newZoom = evt.viewState.zoom < 1 ? ZOOM_STRAT_SECTION : evt.viewState.zoom;

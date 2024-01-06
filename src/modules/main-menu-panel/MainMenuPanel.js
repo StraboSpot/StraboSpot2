@@ -29,8 +29,8 @@ import Tags from '../tags/Tags';
 const MainMenuPanel = ({
                          closeMainMenuPanel,
                          logout,
-                         openNotebookPanel,
                          openSpotInNotebook,
+                         updateSpotsInMapExtent,
                          zoomToCenterOfflineTile,
                          zoomToCustomMap,
                        }) => {
@@ -79,14 +79,20 @@ const MainMenuPanel = ({
     case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
       page = (
         <View style={styles.mainMenuContainer}>
-          <SpotsList onPress={openSpotInNotebook}/>
+          <SpotsList
+            onPress={openSpotInNotebook}
+            updateSpotsInMapExtent={updateSpotsInMapExtent}
+          />
         </View>
       );
       break;
     case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
       page = (
         <View style={styles.mainMenuContainer}>
-          <ImageGallery openSpotInNotebook={openSpotInNotebook}/>
+          <ImageGallery
+            openSpotInNotebook={openSpotInNotebook}
+            updateSpotsInMapExtent={updateSpotsInMapExtent}
+          />
         </View>
       );
       break;
@@ -95,7 +101,7 @@ const MainMenuPanel = ({
         <View style={styles.mainMenuContainer}>
           <SamplesMenuItem
             openSpotInNotebook={openSpotInNotebook}
-            openNotebookPanel={notebookPage => openNotebookPanel(notebookPage)}
+            updateSpotsInMapExtent={updateSpotsInMapExtent}
           />
         </View>
       );

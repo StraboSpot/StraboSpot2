@@ -53,13 +53,13 @@ const Map = ({
   const mapRef = useRef(null);
 
   const useImages = useImagesHook();
-  const useMapFeatures = useMapFeaturesHook();
-  const useMaps = useMapsHook(mapRef);
-  const useSpots = useSpotsHook();
-  const useMapSymbology = useMapSymbologyHook();
   const useLocation = useLocationHook();
+  const useMapFeatures = useMapFeaturesHook();
+  const useMapSymbology = useMapSymbologyHook();
   const useMapView = useMapViewHook();
+  const useMaps = useMapsHook(mapRef);
   const useOfflineMaps = useOfflineMapsHook();
+  const useSpots = useSpotsHook();
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
@@ -1141,6 +1141,7 @@ const Map = ({
       moveVertex: moveVertex,
       saveEdits: saveEdits,
       toggleUserLocation: toggleUserLocation,
+      updateSpotsInMapExtent: updateSpotsInMapExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
       zoomToCustomMap: zoomToCustomMap,
       zoomToSpot: zoomToSpot,
@@ -1164,7 +1165,6 @@ const Map = ({
           showUserLocation={showUserLocation}
           spotsNotSelected={spotsNotSelected}
           spotsSelected={spotsSelected}
-          updateSpotsInMapExtent={updateSpotsInMapExtent}
           zoomToSpot={zoomToSpot}
         />
       )}

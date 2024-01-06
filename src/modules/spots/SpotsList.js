@@ -7,10 +7,11 @@ import {SpotsListItem, useSpotsHook} from './index';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 
-const SpotsList = (props) => {
+const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
   console.log('Rendering SpotsList...');
 
   const useSpots = useSpotsHook();
@@ -38,6 +39,12 @@ const SpotsList = (props) => {
     return (
       <View style={{flex: 1}}>
         <SortingButtons/>
+        {sortedView === SORTED_VIEWS.MAP_EXTENT && (
+          <UpdateSpotsInMapExtentButton
+            title={'Update Spots in Map Extent'}
+            updateSpotsInMapExtent={updateSpotsInMapExtent}
+          />
+        )}
         <View style={{flex: 1}}>
           <FlatList
             keyExtractor={spot => spot.properties.id.toString()}
@@ -45,10 +52,11 @@ const SpotsList = (props) => {
             renderItem={({item}) => (
               <SpotsListItem
                 doShowTags={true}
-                isCheckedList={props.isCheckedList}
-                onPress={props.onPress}
+                isCheckedList={isCheckedList}
+                onPress={onPress}
                 spot={item}
-              />)}
+              />
+            )}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={noSpotsText}/>}
           />
@@ -58,9 +66,9 @@ const SpotsList = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {isEmpty(useSpots.getActiveSpotsObj()) ? renderNoSpotsText() : renderSpotsList()}
-    </React.Fragment>
+    </>
   );
 };
 

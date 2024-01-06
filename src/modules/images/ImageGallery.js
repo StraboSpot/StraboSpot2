@@ -13,21 +13,21 @@ import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
+import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
 import {setLoadingStatus} from '../home/home.slice';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
 
-const ImageGallery = ({openSpotInNotebook}) => {
+const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   console.log('Rendering ImageGallery...');
 
-  const dispatch = useDispatch();
-
+  const navigate = useNavigation();
   const useImages = useImagesHook();
   const useSpots = useSpotsHook();
-  const navigate = useNavigation();
 
+  const dispatch = useDispatch();
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
   const spots = useSelector(state => state.spot.spots);
@@ -137,8 +137,14 @@ const ImageGallery = ({openSpotInNotebook}) => {
     const spotsAsSections = sortedSpotsWithImages.reduce(
       (acc, spot) => [...acc, {spot: spot, data: [spot.properties.images]}], []);
     return (
-      <React.Fragment>
+      <>
         <SortingButtons/>
+        {sortedView === SORTED_VIEWS.MAP_EXTENT && (
+          <UpdateSpotsInMapExtentButton
+            title={'Update Samples in Map Extent'}
+            updateSpotsInMapExtent={updateSpotsInMapExtent}
+          />
+        )}
         <View style={imageStyles.galleryImageContainer}>
           <SectionList
             keyExtractor={(item, index) => item + index}
@@ -149,16 +155,16 @@ const ImageGallery = ({openSpotInNotebook}) => {
             stickySectionHeadersEnabled={true}
           />
         </View>
-      </React.Fragment>
+      </>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
         : !isError ? renderSpotsWithImages()
           : renderError()}
-    </React.Fragment>
+    </>
   );
 };
 

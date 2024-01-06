@@ -10,12 +10,13 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
+import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
 
-const SamplesMenuItem = (props) => {
+const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   const useSpots = useSpotsHook();
 
   const recentViews = useSelector(state => state.spot.recentViews);
@@ -32,7 +33,7 @@ const SamplesMenuItem = (props) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={sample.id}
-        onPress={() => props.openSpotInNotebook(spot, PAGE_KEYS.SAMPLES, [sample])}
+        onPress={() => openSpotInNotebook(spot, PAGE_KEYS.SAMPLES, [sample])}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{sample.sample_id_name || 'Unknown'}</ListItem.Title>
@@ -60,6 +61,12 @@ const SamplesMenuItem = (props) => {
     return (
       <View style={{flex: 1}}>
         <SortingButtons/>
+        {sortedView === SORTED_VIEWS.MAP_EXTENT && (
+          <UpdateSpotsInMapExtentButton
+            title={'Update Samples in Map Extent'}
+            updateSpotsInMapExtent={updateSpotsInMapExtent}
+          />
+        )}
         <View style={{flex: 1}}>
           <SectionList
             keyExtractor={(item, index) => item + index}
@@ -81,16 +88,16 @@ const SamplesMenuItem = (props) => {
         <SectionDividerWithRightButton
           dividerText={title}
           buttonTitle={'View In Spot'}
-          onPress={() => props.openSpotInNotebook(spot, PAGE_KEYS.SAMPLES)}
+          onPress={() => openSpotInNotebook(spot, PAGE_KEYS.SAMPLES)}
         />
       </View>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {isEmpty(useSpots.getSpotsWithSamples()) ? renderNoSamplesText() : renderSamplesList()}
-    </React.Fragment>
+    </>
   );
 };
 

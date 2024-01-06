@@ -14,6 +14,7 @@ const initialMapsState = {
   spotsInMapExtent: [],
   symbolsOn: [],
   isAllSymbolsOn: true,
+  isMapMoved: true,
   mapSymbols: [],
   tagTypeForColor: undefined,
   isShowSpotLabelsOn: true,
@@ -69,6 +70,9 @@ const mapsSlice = createSlice({
     setFreehandFeatureCoords(state, action) {
       state.freehandFeatureCoords = action.payload;
     },
+    setIsMapMoved(state, action) {
+      state.isMapMoved = action.payload;
+    },
     setIsShowSpotLabelsOn(state, action) {
       state.isShowSpotLabelsOn = action.payload;
     },
@@ -118,11 +122,12 @@ export const {
   setCurrentBasemap,
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
-  setMapSymbols,
+  setIsMapMoved: setIsMapMoved,
   setIsShowSpotLabelsOn,
+  setMapSymbols,
   setSpotsInMapExtent,
-  setSymbolsDisplayed,
   setStratSection,
+  setSymbolsDisplayed,
   setTagTypeForColor,
   setVertexEndCoords,
   setVertexStartCoords,

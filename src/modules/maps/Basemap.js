@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {
   BACKGROUND,
@@ -18,6 +18,7 @@ import {
   ZOOM,
   ZOOM_STRAT_SECTION,
 } from './maps.constants';
+import {setIsMapMoved} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -46,13 +47,13 @@ const Basemap = ({
                    showUserLocation,
                    spotsNotSelected,
                    spotsSelected,
-                   updateSpotsInMapExtent,
                    zoomToSpot,
                  }, forwardedRef) => {
   console.log('Rendering Basemap...');
   const zoomTextStyle = basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
     : homeStyles.currentZoomTextBlack;
 
+  const dispatch = useDispatch();
   const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
@@ -64,8 +65,8 @@ const Basemap = ({
 
   const useImages = useImagesHook();
   const useMapSymbology = useMapSymbologyHook();
-  const useMaps = useMapsHook();
   const useMapView = useMapViewHook();
+  const useMaps = useMapsHook();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
@@ -137,7 +138,7 @@ const Basemap = ({
   // Update spots in extent and saved view (center and zoom)
   const onMapIdle = async (e) => {
     // console.log('Event onMapIdle', e);
-    await updateSpotsInMapExtent();
+    dispatch(setIsMapMoved(true));
     if (!currentImageBasemap && !stratSection && mapRef?.current) {
       const newCenter = await mapRef.current.getCenter();
       const newZoom = await mapRef.current.getZoom();

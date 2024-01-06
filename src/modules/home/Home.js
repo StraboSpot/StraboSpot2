@@ -522,8 +522,8 @@ const Home = ({navigation, route}) => {
       <MainMenuPanel
         closeMainMenuPanel={toggleHomeDrawerButton}
         logout={onLogout}
-        openNotebookPanel={openNotebookPanel}
         openSpotInNotebook={openSpotInNotebook}
+        updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
         zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
         zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
       />
