@@ -59,7 +59,7 @@ import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots, setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {TagAddRemoveFeatures, TagAddRemoveSpots, TagDetailSidePanel} from '../tags';
+import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel} from '../tags';
 import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 
@@ -431,9 +431,9 @@ const Home = ({navigation, route}) => {
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
         return <TagDetailSidePanel openNotebookPanel={pageView => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
-        return <TagAddRemoveSpots updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}/>;
+        return <AddRemoveTagSpots updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
-        return <TagAddRemoveFeatures/>;
+        return <AddRemoveTagFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
         return <UserProfile toast={(message, type) =>
           toast.show(message, {type: type})

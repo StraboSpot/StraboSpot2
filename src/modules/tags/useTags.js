@@ -17,16 +17,15 @@ import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';
 const useTags = () => {
   const dispatch = useDispatch();
   const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
+  const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectTags = useSelector(state => state.project.project.tags) || [];
+  const selectedFeaturesForTagging = useSelector(state => state.spot.selectedAttributes);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
-  const selectedFeaturesForTagging = useSelector(state => state.spot.selectedAttributes);
   const spots = useSelector(state => state.spot.spots);
 
   const formRef = useRef(null);
-
   const useForm = useFormHook();
 
   const formName = ['project', 'tags'];

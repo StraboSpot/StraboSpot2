@@ -1,7 +1,7 @@
 import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
-import useTagsHook from '../../tags/useTags';
+import {useTagsHook} from '../../tags';
 import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
 
 const useMapSymbology = () => {

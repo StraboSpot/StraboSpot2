@@ -24,7 +24,7 @@ import MyStraboSpot from '../project/MyStraboSpot';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {SpotsList} from '../spots';
-import Tags from '../tags/Tags';
+import {Tags} from '../tags';
 
 const MainMenuPanel = ({
                          closeMainMenuPanel,

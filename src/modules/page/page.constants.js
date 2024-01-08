@@ -44,10 +44,10 @@ import {
   AddTagsToSpotsShortcutModal,
   FeatureTagsModal,
   TagsAtSpotList,
+  TagsNotebook,
   TagsNotebookModal,
   TagsShortcutModal,
 } from '../tags';
-import TagsNotebook from '../tags/TagsNotebook';
 import TephraPage from '../tephra/TephraPage';
 import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';

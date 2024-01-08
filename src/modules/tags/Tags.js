@@ -19,8 +19,9 @@ const Tags = (props) => {
   const dispatch = useDispatch();
   const tags = useSelector(state => state.project.project.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const addTag = () => {
     dispatch(setSelectedTag({}));

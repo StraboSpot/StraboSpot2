@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ColorPickerModal from '../../shared/ColorPickerModal';
@@ -18,8 +17,9 @@ const TagDetailSidePanel = (props) => {
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
+
   const [isColorPickerModalVisibile, setIsColorPickerModalVisible] = useState(false);
+  const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
 
   const openFeatureDetail = (spot, feature, featureType) => {
     dispatch(setSelectedSpot(spot));

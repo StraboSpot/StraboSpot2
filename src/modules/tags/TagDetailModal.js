@@ -8,7 +8,6 @@ import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
-import modalStyle from '../../shared/ui/modal/modal.style';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -69,7 +68,8 @@ const TagDetailModal = (props) => {
   return (
     <Overlay
       isVisible={props.isVisible}
-      overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
+      overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen
+        : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
       fullScreen={SMALL_SCREEN}
       animationType={'slide'}
     >
