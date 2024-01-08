@@ -13,10 +13,18 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
-const Form = (props) => {
+const Form = ({
+                errors,
+                formName,
+                onMyChange,
+                setFieldValue,
+                subkey,
+                surveyFragment,
+                values,
+              }) => {
   const useForm = useFormHook();
 
-  const survey = props.surveyFragment || useForm.getSurvey(props.formName);
+  const survey = surveyFragment || useForm.getSurvey(formName);
 
   const renderAcknowledgeInput = (field) => {
     return (
@@ -26,7 +34,7 @@ const Form = (props) => {
         onShowFieldInfo={showFieldInfo}
         label={field.label}
         key={field.name}
-        setFieldValue={props.setFieldValue}
+        setFieldValue={setFieldValue}
       />
     );
   };
@@ -52,12 +60,12 @@ const Form = (props) => {
     return (
       <Field
         component={TextInputField}
-        name={props.subkey ? props.subkey + '[0].' + field.name : field.name}
+        name={subkey ? subkey + '[0].' + field.name : field.name}
         label={field.label}
-        key={props.subkey ? props.subkey + '[0].' + field.name : field.name}
+        key={subkey ? subkey + '[0].' + field.name : field.name}
         appearance={field.appearance}
         placeholder={field.hint}
-        onMyChange={props.onMyChange}
+        onMyChange={onMyChange}
         onShowFieldInfo={showFieldInfo}
       />
     );
@@ -67,11 +75,11 @@ const Form = (props) => {
     return (
       <Field
         component={NumberInputField}
-        name={props.subkey ? props.subkey + '[0].' + field.name : field.name}
+        name={subkey ? subkey + '[0].' + field.name : field.name}
         label={field.label}
-        key={props.subkey ? props.subkey + '[0].' + field.name : field.name}
+        key={subkey ? subkey + '[0].' + field.name : field.name}
         placeholder={field.hint}
-        onMyChange={props.onMyChange}
+        onMyChange={onMyChange}
         onShowFieldInfo={showFieldInfo}
       />
     );
@@ -79,7 +87,7 @@ const Form = (props) => {
 
   const renderSelectInput = (field, isExpanded) => {
     const [fieldType, choicesListName] = field.type.split(' ');
-    const fieldChoices = useForm.getChoices(props.formName).filter(choice => choice.list_name === choicesListName);
+    const fieldChoices = useForm.getChoices(formName).filter(choice => choice.list_name === choicesListName);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
@@ -88,25 +96,25 @@ const Form = (props) => {
     });
 
     // Set default values
-    if (isEmpty(props.values[field.name]) && field.default
+    if (isEmpty(values[field.name]) && field.default
       && fieldChoicesCopy.map(c => c.value).includes(field.default)) {
-      props.setFieldValue(field.name, field.default, false);
+      setFieldValue(field.name, field.default, false);
     }
 
     return (
       <Field
         as={SelectInputField}
-        name={props.subkey ? props.subkey + '[0].' + field.name : field.name}
+        name={subkey ? subkey + '[0].' + field.name : field.name}
         label={field.label}
-        key={props.subkey ? props.subkey + '[0].' + field.name : field.name}
+        key={subkey ? subkey + '[0].' + field.name : field.name}
         choices={fieldChoicesCopy}
-        setFieldValue={props.setFieldValue}
+        setFieldValue={setFieldValue}
         single={fieldType === 'select_one'}
         placeholder={field.hint}
         onShowFieldInfo={showFieldInfo}
         showExpandedChoices={isExpanded}
-        errors={props.errors}
-        onMyChange={props.onMyChange}
+        errors={errors}
+        onMyChange={onMyChange}
       />
     );
   };
@@ -119,13 +127,13 @@ const Form = (props) => {
         {(fieldType === 'text' || fieldType === 'integer' || fieldType === 'decimal' || fieldType === 'select_one'
           || fieldType === 'select_multiple' || fieldType === 'date' || fieldType === 'acknowledge') && (
           <React.Fragment>
-            {props.surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple')
+            {surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple')
               && renderSelectInput(field, true)}
             <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>
                 {fieldType === 'text' && renderTextInput(field)}
                 {(fieldType === 'integer' || fieldType === 'decimal') && renderNumberInput(field)}
-                {(!props.surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple'))
+                {(!surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple'))
                   && renderSelectInput(field)}
                 {fieldType === 'date' && renderDateInput(field)}
                 {fieldType === 'acknowledge' && renderAcknowledgeInput(field)}
@@ -154,7 +162,7 @@ const Form = (props) => {
       <FlatList
         listKey={JSON.stringify(survey)}
         keyExtractor={(item, index) => index.toString()}
-        data={Object.values(survey.filter(item => useForm.isRelevant(item, props.values)))}
+        data={Object.values(survey.filter(item => useForm.isRelevant(item, values)))}
         renderItem={({item}) => renderField(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
       />

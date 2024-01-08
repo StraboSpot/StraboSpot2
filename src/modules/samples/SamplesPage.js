@@ -11,7 +11,7 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const SamplesPage = (props) => {
+const SamplesPage = ({page}) => {
   const dispatch = useDispatch();
 
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
@@ -46,7 +46,7 @@ const SamplesPage = (props) => {
     return (
       <BasicPageDetail
         closeDetailView={() => setIsDetailView(false)}
-        page={props.page}
+        page={page}
         selectedFeature={selectedSample}
       />
     );
@@ -58,13 +58,13 @@ const SamplesPage = (props) => {
         <React.Fragment>
           <ReturnToOverviewButton/>
           <SectionDividerWithRightButton
-            dividerText={props.page.label}
-            onPress={() => dispatch(setModalVisible({modal: props.page.key}))}
+            dividerText={page.label}
+            onPress={() => dispatch(setModalVisible({modal: page.key}))}
           />
         </React.Fragment>
         <SamplesList
           onPress={editSample}
-          page={props.page}
+          page={page}
         />
       </View>
     );

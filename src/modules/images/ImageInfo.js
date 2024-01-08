@@ -16,14 +16,14 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
-const ImageInfo = (props) => {
+const ImageInfo = ({route}) => {
   console.log('Rendering ImageInfo...');
 
   const {width, height} = useWindowDimensions();
 
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
-  const [imageId] = useState(props.route.params.imageId);
+  const [imageId] = useState(route.params.imageId);
   const useImages = useImagesHook();
   const useSpots = useSpotsHook();
   const navigation = useNavigation();
@@ -97,7 +97,7 @@ const ImageInfo = (props) => {
       />
       {isImagePropertiesModalVisible && (
         <ImagePropertiesModal
-          close={() => closeModal()} // Saves and closes modal
+          closeModal={() => closeModal()} // Saves and closes modal
           cancel={() => closeModal()} // Closes without saving
         />
       )}

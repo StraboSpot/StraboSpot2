@@ -9,7 +9,13 @@ import {setModalVisible} from '../../../modules/home/home.slice';
 import {MODALS, NOTEBOOK_PAGES, PAGE_KEYS} from '../../../modules/page/page.constants';
 import * as themes from '../../styles.constants';
 
-const ModalHeader = (props) => {
+const ModalHeader = ({
+                       buttonTitleLeft,
+                       buttonTitleRight,
+                       cancel,
+                       closeModal,
+                       title,
+                     }) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
@@ -29,19 +35,19 @@ const ModalHeader = (props) => {
         <View style={modalStyle.modalHeaderButtonsContainer}>
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleLeft}
+            title={buttonTitleLeft}
             type={'clear'}
-            onPress={props.cancel}
+            onPress={cancel}
             buttonStyle={{padding: 0}}
           />
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={props.buttonTitleRight === '' ? '' : props.buttonTitleRight || 'Close'}
+            title={buttonTitleRight === '' ? '' : buttonTitleRight || 'Close'}
             type={'clear'}
-            onPress={props.close || (() => dispatch(setModalVisible({modal: null})))}
+            onPress={closeModal || (() => dispatch(setModalVisible({modal: null})))}
           />
         </View>
-        <Text style={modalStyle.modalTitle}>{props.title || getTitle()}</Text>
+        <Text style={modalStyle.modalTitle}>{title || getTitle()}</Text>
       </View>
     </View>
   );

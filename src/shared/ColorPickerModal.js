@@ -8,7 +8,10 @@ import Spacer from './ui/Spacer';
 import overlayStyles from '../modules/home/overlays/overlay.styles';
 import {useTagsHook} from '../modules/tags';
 
-const ColorPickerModal = (props) => {
+const ColorPickerModal = ({
+                            closeModal,
+                            isVisible,
+                          }) => {
   const useTags = useTagsHook();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const COLOR_CHOICES = [
@@ -27,17 +30,17 @@ const ColorPickerModal = (props) => {
     let selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
     if (selectedTagCopy.color) delete selectedTagCopy.color;
     useTags.saveTag(selectedTagCopy);
-    props.closeModal();
+    closeModal();
   };
 
   const setColor = (color) => {
     useTags.saveTag({...selectedTag, color: color});
-    props.closeModal();
+    closeModal();
   };
 
   return (
     <Overlay
-      isVisible={props.isVisible}
+      isVisible={isVisible}
       animationType={'slide'}
       windowBackgroundColor={'rgba(0, 0, 0, .5)'}
       backdropStyle={{backgroundColor: 'transparent'}}
@@ -49,7 +52,7 @@ const ColorPickerModal = (props) => {
           type={'ionicon'}
           size={20}
           color={'darkgrey'}
-          onPress={() => props.closeModal()}
+          onPress={() => closeModal()}
           containerStyle={overlayStyles.closeButton}
         />
         <View

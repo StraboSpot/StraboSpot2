@@ -7,26 +7,29 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 
-const FabricListItem = (props) => {
+const FabricListItem = ({
+                          editFabric,
+                          fabric,
+                        }) => {
   const useForm = useFormHook();
 
-  const getTitle = (fabric) => {
-    if (fabric.type === 'fabric') {
-      if (fabric.feature_type) return toTitleCase(useForm.getLabel(fabric.feature_type, ['_3d_structures', 'fabric']));
+  const getTitle = (fabricObj) => {
+    if (fabricObj.type === 'fabric') {
+      if (fabricObj.feature_type) return toTitleCase(useForm.getLabel(fabricObj.feature_type, ['_3d_structures', 'fabric']));
       else return 'Fabric';
     }
     else {
-      const labelsArr = FIRST_ORDER_FABRIC_FIELDS[fabric.type]
-        && FIRST_ORDER_FABRIC_FIELDS[fabric.type].reduce((acc, fieldName) => {
-          if (fabric[fieldName]) {
-            const mainLabel = useForm.getLabel(fieldName, ['fabrics', fabric.type]);
-            const choiceLabels = useForm.getLabels(fabric[fieldName], ['fabrics', fabric.type]);
+      const labelsArr = FIRST_ORDER_FABRIC_FIELDS[fabricObj.type]
+        && FIRST_ORDER_FABRIC_FIELDS[fabricObj.type].reduce((acc, fieldName) => {
+          if (fabricObj[fieldName]) {
+            const mainLabel = useForm.getLabel(fieldName, ['fabrics', fabricObj.type]);
+            const choiceLabels = useForm.getLabels(fabricObj[fieldName], ['fabrics', fabricObj.type]);
             return [...acc, toTitleCase(mainLabel) + ' - ' + choiceLabels.toUpperCase()];
           }
           else return acc;
         }, []);
-      if (isEmpty(labelsArr) && fabric.type === 'fault_rock') return 'Structural Fabric';
-      else if (isEmpty(labelsArr)) return toTitleCase(useForm.getLabel(fabric.type, ['fabrics', fabric.type]));
+      if (isEmpty(labelsArr) && fabricObj.type === 'fault_rock') return 'Structural Fabric';
+      else if (isEmpty(labelsArr)) return toTitleCase(useForm.getLabel(fabricObj.type, ['fabrics', fabricObj.type]));
       else return labelsArr.join(', ');
     }
   };
@@ -34,11 +37,11 @@ const FabricListItem = (props) => {
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
-      key={props.fabric.id}
-      onPress={() => props.editFabric(props.fabric)}
+      key={fabric.id}
+      onPress={() => editFabric(fabric)}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(props.fabric)}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(fabric)}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Chevron/>
     </ListItem>

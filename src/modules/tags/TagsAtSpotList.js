@@ -6,15 +6,15 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {PAGE_KEYS} from '../page/page.constants';
 import {TagsListItem, useTagsHook} from '../tags';
 
-const TagsAtSpotList = (props) => {
+const TagsAtSpotList = ({openMainMenu, page}) => {
   const useTags = useTagsHook();
 
-  const data = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? useTags.getGeologicUnitTagsAtSpot()
+  const data = page.key === PAGE_KEYS.GEOLOGIC_UNITS ? useTags.getGeologicUnitTagsAtSpot()
     : useTags.getNonGeologicUnitTagsAtSpot();
-  const listEmptyText = props.page.key === PAGE_KEYS.GEOLOGIC_UNITS ? 'No Geologic Units' : 'No Tags';
+  const listEmptyText = page.key === PAGE_KEYS.GEOLOGIC_UNITS ? 'No Geologic Units' : 'No Tags';
 
   const renderTag = (tag) => {
-    return <TagsListItem tag={tag} openMainMenu={props.openMainMenu}/>;
+    return <TagsListItem tag={tag} openMainMenu={openMainMenu}/>;
   };
 
   return (

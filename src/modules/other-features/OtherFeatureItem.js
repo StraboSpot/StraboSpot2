@@ -9,7 +9,7 @@ import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
 
-const OtherFeatureItem = (props) => {
+const OtherFeatureItem = ({editFeature, feature}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const useTags = useTagsHook();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
@@ -20,25 +20,25 @@ const OtherFeatureItem = (props) => {
     if (!isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(false);
   }, [isMultipleFeaturesTaggingEnabled]);
 
-  const editFeature = (feature) => {
+  const editFeatureItem = (featureItem) => {
     if (isMultipleFeaturesTaggingEnabled) {
-      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(feature));
+      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(featureItem));
     }
-    else props.editFeature(feature);
+    else editFeature(featureItem);
   };
 
   return (
     <ListItem
       containerStyle={[commonStyles.listItem,
         {backgroundColor: featureSelectedForTagging ? themes.PRIMARY_ACCENT_COLOR : themes.SECONDARY_BACKGROUND_COLOR}]}
-      key={props.feature.id}
-      onPress={() => editFeature(props.feature)}
+      key={feature.id}
+      onPress={() => editFeatureItem(feature)}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
         <ListItem.Title style={commonStyles.listItemTitle}>
-          <OtherFeatureLabel item={props.feature}/>
+          <OtherFeatureLabel item={feature}/>
         </ListItem.Title>
-        <FeatureTagsList spotId={spot.properties.id} featureId={props.feature.id}/>
+        <FeatureTagsList spotId={spot.properties.id} featureId={feature.id}/>
       </ListItem.Content>
       <ListItem.Chevron/>
     </ListItem>

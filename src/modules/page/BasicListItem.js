@@ -8,37 +8,42 @@ import {useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
 import useSedHook from '../sed/useSed';
 
-const BasicListItem = (props) => {
+const BasicListItem = ({
+                         editItem,
+                         index,
+                         item,
+                         page,
+                       }) => {
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
   const useForm = useFormHook();
 
   const getTitle = () => {
-    switch (props.page.key) {
+    switch (page.key) {
       case PAGE_KEYS.MINERALS:
-        return usePetrology.getMineralTitle(props.item);
+        return usePetrology.getMineralTitle(item);
       case PAGE_KEYS.REACTIONS:
-        return usePetrology.getReactionTextureTitle(props.item);
+        return usePetrology.getReactionTextureTitle(item);
       case PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE:
       case PAGE_KEYS.ROCK_TYPE_IGNEOUS:
       case PAGE_KEYS.ROCK_TYPE_METAMORPHIC:
       case PAGE_KEYS.ROCK_TYPE_FAULT:
-        return usePetrology.getRockTitle(props.item, props.page.key);
+        return usePetrology.getRockTitle(item, page.key);
       case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
-        return useSed.getRockTitle(props.item);
+        return useSed.getRockTitle(item);
       case PAGE_KEYS.LITHOLOGIES:
-        return 'Lithology ' + (props.index + 1) + ': ' + useSed.getRockTitle(props.item);
+        return 'Lithology ' + (index + 1) + ': ' + useSed.getRockTitle(item);
       case PAGE_KEYS.STRAT_SECTION:
-        return useSed.getStratSectionTitle(props.item);
+        return useSed.getStratSectionTitle(item);
       case PAGE_KEYS.BEDDING:
-        return 'Lithology ' + (props.index + 1) + ': ' + useSed.getBeddingTitle(props.item);
+        return 'Lithology ' + (index + 1) + ': ' + useSed.getBeddingTitle(item);
       case PAGE_KEYS.STRUCTURES:
       case PAGE_KEYS.DIAGENESIS:
       case PAGE_KEYS.FOSSILS:
       case PAGE_KEYS.INTERPRETATIONS:
-        return 'Lithology ' + (props.index + 1);
+        return 'Lithology ' + (index + 1);
       case PAGE_KEYS.TEPHRA:
-        return props.item?.layer_type ? useForm.getLabel(props.item.layer_type, ['tephra', 'interval_description'])
+        return item?.layer_type ? useForm.getLabel(item.layer_type, ['tephra', 'interval_description'])
           : 'Unknown';
       default:
         return 'Unknown';
@@ -48,8 +53,8 @@ const BasicListItem = (props) => {
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
-      key={props.item.id}
-      onPress={() => props.editItem(props.item)}
+      key={item.id}
+      onPress={() => editItem(item)}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
         <ListItem.Title style={commonStyles.listItemTitle}>{getTitle()}</ListItem.Title>

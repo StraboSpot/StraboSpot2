@@ -6,7 +6,10 @@ import useMeasurementsHook from './useMeasurements';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
 import useFormHook from '../form/useForm';
 
-const MeasurementLabel = (props) => {
+const MeasurementLabel = ({
+                            isDetail,
+                            item,
+                          }) => {
   const useMeasurements = useMeasurementsHook();
   const useForm = useFormHook();
 
@@ -37,9 +40,9 @@ const MeasurementLabel = (props) => {
 
   return (
     <React.Fragment>
-      <Text>{getMeasurementText(props.item)} {getTypeText(props.item)}</Text>
-      {!props.isDetail && props.item.associated_orientation
-        && props.item.associated_orientation.map((ao) => {
+      <Text>{getMeasurementText(item)} {getTypeText(item)}</Text>
+      {!isDetail && item.associated_orientation
+        && item.associated_orientation.map((ao) => {
           return <Text key={JSON.stringify(ao)}>{'\n'}{getMeasurementText(ao)} {getTypeText(ao)}</Text>;
         })
       }

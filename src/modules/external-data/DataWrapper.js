@@ -7,7 +7,11 @@ import useExternalDataHook from './useExternalData';
 import {isEmpty} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 
-function DataWrapper(props) {
+function DataWrapper({
+                       editable,
+                       spot,
+                       urlData,
+                     }) {
   const [itemToDelete, setItemToDelete] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const useExternalData = useExternalDataHook();
@@ -30,7 +34,7 @@ function DataWrapper(props) {
       <DeleteConformationDialogBox
         title={`${itemToDelete.type.toUpperCase()} to delete`}
         isVisible={isDeleteConfirmModalVisible}
-        delete={() => deleteSelection()}
+        deleteOverlay={() => deleteSelection()}
         cancel={() => setIsDeleteConfirmModalVisible(false)}
       >
         <Text>Are you sure you want to delete</Text>
@@ -41,17 +45,17 @@ function DataWrapper(props) {
 
   return (
     <View style={{flex: 1}}>
-      {props.urlData && (
+      {urlData && (
         <UrlData
-          spot={props.spot}
-          editable={props.editable}
+          spot={spot}
+          editable={editable}
           initializeDelete={(type, item) => initializeDelete(type, item)}
         />
       )}
-      {!props.urlData && (
+      {!urlData && (
         <TablesData
-          spot={props.spot}
-          editable={props.editable}
+          spot={spot}
+          editable={editable}
           initializeDelete={(type, item) => initializeDelete(type, item)}
         />
       )}

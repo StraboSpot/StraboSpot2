@@ -28,7 +28,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 
-const AddMeasurementModal = (props) => {
+const AddMeasurementModal = ({onPress}) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -315,9 +315,9 @@ const AddMeasurementModal = (props) => {
     const saveTitle = 'Save ' + typeObj.save_title + (relevantTemplates.length > 1 ? 's' : '');
     return (
       <Modal
-        close={onCloseButton}
+        closeModal={onCloseButton}
         buttonTitleRight={(choicesViewKey || assocChoicesViewKey) ? 'Done' : isShowTemplates ? '' : null}
-        onPress={props.onPress}
+        onPress={onPress}
       >
         <React.Fragment>
           {measurementTypeForForm && (

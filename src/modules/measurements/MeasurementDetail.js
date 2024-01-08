@@ -23,7 +23,12 @@ import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
-const MeasurementDetail = (props) => {
+const MeasurementDetail = ({
+                             closeDetailView,
+                             deleteTemplate,
+                             selectedAttitudes,
+                             saveTemplate,
+                           }) => {
   const dispatch = useDispatch();
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
@@ -38,9 +43,9 @@ const MeasurementDetail = (props) => {
   const [isAddingAssociatedMeasurementAfterSave, setIsAddingAssociatedMeasurementAfterSave] = useState(false);
   const [selectedMeasurement, setSelectedMeasurement] = useState(null);
 
-  const isTemplate = props.saveTemplate;
+  const isTemplate = saveTemplate;
   const selectedAttitude = selectedAttributes?.length > 0 ? JSON.parse(JSON.stringify(selectedAttributes[0]))
-    : isTemplate ? props.selectedAttitudes[0]
+    : isTemplate ? selectedAttitudes[0]
       : {};
 
   useLayoutEffect(() => {
@@ -56,7 +61,7 @@ const MeasurementDetail = (props) => {
       addAssociatedMeasurement();
     }
     else if (!isEmpty(selectedAttitude)) switchSelectedMeasurement(selectedAttitude);
-    else props.closeDetailView();
+    else closeDetailView();
   }, [selectedAttributes]);
 
   // Update field values for measurements on grabbing new compass measurements
@@ -118,7 +123,7 @@ const MeasurementDetail = (props) => {
       const aOs = selectedAttitude.associated_orientation || [];
       useMeasurements.deleteMeasurements([...aOs, selectedAttitude]);
     }
-    props.closeDetailView();
+    closeDetailView();
   };
 
   const confirmDeleteMeasurement = () => {
@@ -162,7 +167,7 @@ const MeasurementDetail = (props) => {
   const deleteMeasurement = () => {
     try {
       useMeasurements.deleteMeasurements([selectedMeasurement]);
-      props.closeDetailView();
+      closeDetailView();
     }
     catch (e) {
       console.log('Unable to delete measurement.');
@@ -301,7 +306,7 @@ const MeasurementDetail = (props) => {
       <View>
         <SaveAndCloseButton
           cancel={() => cancelFormAndGo()}
-          save={() => isTemplate ? saveTemplate(formRef.current) : saveFormAndGo()}
+          save={() => isTemplate ? saveTemplateForm(formRef.current) : saveFormAndGo()}
         />
       </View>
     );
@@ -460,7 +465,7 @@ const MeasurementDetail = (props) => {
   const saveFormAndGo = async () => {
     try {
       await saveForm(formRef.current);
-      props.closeDetailView();
+      closeDetailView();
     }
     catch (e) {
       console.log('Error saving form data to Spot');
@@ -487,10 +492,10 @@ const MeasurementDetail = (props) => {
     }
   };
 
-  const saveTemplate = async (formCurrent) => {
+  const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
     const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
-    props.saveTemplate(formValues);
+    await saveTemplate(formValues);
   };
 
   // Switch the selected measurement
@@ -526,7 +531,7 @@ const MeasurementDetail = (props) => {
                     titleStyle={{color: WARNING_COLOR}}
                     title={isTemplate ? 'Delete Measurement Template' : 'Delete Measurement'}
                     type={'clear'}
-                    onPress={() => isTemplate ? props.deleteTemplate() : confirmDeleteMeasurement()}
+                    onPress={() => isTemplate ? deleteTemplate() : confirmDeleteMeasurement()}
                   />
                 )}
               </View>

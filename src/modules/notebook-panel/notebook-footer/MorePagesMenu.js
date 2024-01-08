@@ -11,7 +11,10 @@ import overlayStyles from '../../home/overlays/overlay.styles';
 import usePageHoook from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 
-const MorePagesMenu = (props) => {
+const MorePagesMenu = ({
+                         closeMorePagesMenu,
+                         visible,
+                       }) => {
   const dispatch = useDispatch();
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
 
@@ -23,7 +26,7 @@ const MorePagesMenu = (props) => {
 
   const switchPage = (key) => {
     dispatch(setNotebookPageVisible(key));
-    props.closeMorePagesMenu();
+    closeMorePagesMenu();
   };
 
   const togglePageSwitch = (key) => {
@@ -63,8 +66,8 @@ const MorePagesMenu = (props) => {
   return (
     <Overlay
       overlayStyle={footerStyles.morePagesDialog}
-      isVisible={props.visible}
-      onBackdropPress={props.closeMorePagesMenu}
+      isVisible={visible}
+      onBackdropPress={closeMorePagesMenu}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={overlayStyles.titleText}>More Pages</Text>

@@ -12,7 +12,7 @@ import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
 import Splashscreen from '../splashscreen/Splashscreen';
 
-const SignUp = (props) => {
+const SignUp = ({navigation}) => {
   const initialState = {
     firstName: {
       value: '',
@@ -161,7 +161,7 @@ const SignUp = (props) => {
           title={'Back to Sign In'}
           buttonStyle={styles.buttonStyle}
           containerStyle={styles.buttonContainer}
-          onPress={() => props.navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('SignIn')}
         />
       </View>
     );

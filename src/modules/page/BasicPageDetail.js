@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef} from 'react';
-import { FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -19,7 +19,13 @@ import useSedHook from '../sed/useSed';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 
-const BasicPageDetail = (props) => {
+const BasicPageDetail = ({
+                           closeDetailView,
+                           deleteTemplate,
+                           page,
+                           selectedFeature,
+                           saveTemplate
+                         }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -30,20 +36,20 @@ const BasicPageDetail = (props) => {
 
   const formRef = useRef(null);
 
-  const groupKey = props.groupKey || 'general';
-  const pageKey = props.page.key === PAGE_KEYS.FABRICS && props.selectedFeature.type === 'fabric' ? '_3d_structures'
-    : props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.page.key;
+  const groupKey = groupKey || 'general';
+  const pageKey = page.key === PAGE_KEYS.FABRICS && selectedFeature.type === 'fabric' ? '_3d_structures'
+    : page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
   let pageData = pageKey === PAGE_KEYS.NOTES ? {} : [];
   if (spot && spot.properties) {
     if (spot.properties[groupKey] && spot.properties[groupKey][pageKey]) pageData = spot.properties[groupKey][pageKey];
     else if (spot.properties[pageKey]) pageData = spot.properties[pageKey];
   }
   const title = groupKey === 'pet' && pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
-  && !props.selectedFeature.rock_type && props.selectedFeature.igneous_rock_class
-    ? toTitleCase(props.selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
-    : props.page.label_singular || toTitleCase(props.page.label).slice(0, -1);
+  && !selectedFeature.rock_type && selectedFeature.igneous_rock_class
+    ? toTitleCase(selectedFeature.igneous_rock_class.replace('_', ' ') + ' Rock')
+    : page.label_singular || toTitleCase(page.label).slice(0, -1);
 
-  const isTemplate = props.saveTemplate;
+  const isTemplate = saveTemplate;
 
   useLayoutEffect(() => {
     console.log('ULE BasicPageDetail []');
@@ -56,13 +62,13 @@ const BasicPageDetail = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE BasicPageDetail [props.selectedFeature]', props.selectedFeature);
-    if (!isTemplate && isEmpty(props.selectedFeature)) props.closeDetailView();
-  }, [props.selectedFeature]);
+    console.log('UE BasicPageDetail [selectedFeature]', selectedFeature);
+    if (!isTemplate && isEmpty(selectedFeature)) closeDetailView();
+  }, [selectedFeature]);
 
   const cancelForm = async () => {
     await formRef.current.resetForm();
-    props.closeDetailView();
+    closeDetailView();
   };
 
   const confirmLeavePage = () => {
@@ -83,17 +89,17 @@ const BasicPageDetail = (props) => {
   };
 
   const deleteFeature = () => {
-    useTags.deleteFeatureTags([props.selectedFeature]);
-    if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, props.selectedFeature);
-    else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, props.selectedFeature);
+    useTags.deleteFeatureTags([selectedFeature]);
+    if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, selectedFeature);
+    else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, selectedFeature);
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
-      editedPageData = editedPageData.filter(f => f.id !== props.selectedFeature.id);
+      editedPageData = editedPageData.filter(f => f.id !== selectedFeature.id);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
     }
     dispatch(setSelectedAttributes([]));
-    props.closeDetailView();
+    closeDetailView();
   };
 
   const deleteFeatureConfirm = () => {
@@ -115,10 +121,10 @@ const BasicPageDetail = (props) => {
 
   const getFormName = () => {
     let formName = [groupKey, pageKey];
-    if (groupKey === 'pet' && props.selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
-    else if (groupKey === 'pet' && pageKey === 'igneous') formName = [groupKey, props.selectedFeature.igneous_rock_class];
-    else if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, props.selectedFeature.type];
-    else if (props.page.subkey) formName = [pageKey, props.page.subkey];
+    if (groupKey === 'pet' && selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
+    else if (groupKey === 'pet' && pageKey === 'igneous') formName = [groupKey, selectedFeature.igneous_rock_class];
+    else if (pageKey === '_3d_structures' || pageKey === 'fabrics') formName = [pageKey, selectedFeature.type];
+    else if (page.subkey) formName = [pageKey, page.subkey];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
     return formName;
   };
@@ -132,7 +138,7 @@ const BasicPageDetail = (props) => {
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
           validate={values => useForm.validateForm({formName: formName, values: values})}
-          initialValues={props.selectedFeature}
+          initialValues={selectedFeature}
           initialStatus={{formName: formName}}
           enableReinitialize={true}
         >
@@ -140,9 +146,9 @@ const BasicPageDetail = (props) => {
             <Form {...{
               ...formProps,
               formName: formName,
-              onMyChange: props.page.key === PAGE_KEYS.MINERALS
+              onMyChange: page.key === PAGE_KEYS.MINERALS
                 ? ((name, value) => usePetrology.onMineralChange(formRef.current, name, value))
-                : props.page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
+                : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
                   ? ((name, value) => useSed.onSedFormChange(formRef.current, name, value))
                   : undefined,
             }}/>
@@ -152,7 +158,7 @@ const BasicPageDetail = (props) => {
           titleStyle={{color: themes.RED}}
           title={'Delete ' + title + (isTemplate ? ' Template' : '')}
           type={'clear'}
-          onPress={() => isTemplate ? props.deleteTemplate() : deleteFeatureConfirm()}
+          onPress={() => isTemplate ? deleteTemplate() : deleteFeatureConfirm()}
         />
       </View>
     );
@@ -163,13 +169,13 @@ const BasicPageDetail = (props) => {
       <View style={{flex: 1}}>
         <NoteForm
           formRef={formRef}
-          initialNotesValues={props.selectedFeature}
+          initialNotesValues={selectedFeature}
         />
         <Button
           titleStyle={{color: themes.RED}}
           title={'Delete ' + title + (isTemplate ? ' Template' : '')}
           type={'clear'}
-          onPress={() => isTemplate ? props.deleteTemplate() : deleteFeatureConfirm()}
+          onPress={() => isTemplate ? deleteTemplate() : deleteFeatureConfirm()}
         />
       </View>
     );
@@ -179,7 +185,7 @@ const BasicPageDetail = (props) => {
     try {
       await formCurrent.submitForm();
       const editedFeatureData = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
-      console.log('Saving', props.page.label, 'data', editedFeatureData, 'to Spot', pageData);
+      console.log('Saving', page.label, 'data', editedFeatureData, 'to Spot', pageData);
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
       editedPageData.push(editedFeatureData);
@@ -205,29 +211,29 @@ const BasicPageDetail = (props) => {
       }
       else await saveFeature(formCurrent);
       await formCurrent.resetForm();
-      props.closeDetailView();
+      closeDetailView();
     }
     catch (err) {
       console.error('ERROR saving form', err);
     }
   };
 
-  const saveTemplate = async (formCurrent) => {
+  const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
     const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
-    props.saveTemplate(formValues);
+    saveTemplate(formValues);
   };
 
   return (
     <React.Fragment>
-      {(isTemplate || !isEmpty(props.selectedFeature)) && (
+      {(isTemplate || !isEmpty(selectedFeature)) && (
         <React.Fragment>
           <SaveAndCloseButton
             cancel={cancelForm}
-            save={() => isTemplate ? saveTemplate(formRef.current) : saveForm(formRef.current)}
+            save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />
           <FlatList
-            ListHeaderComponent={props.page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
+            ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </React.Fragment>
       )}
     </React.Fragment>

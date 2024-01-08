@@ -9,13 +9,13 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const MeasurementsOverview = (props) => {
+const MeasurementsOverview = ({page}) => {
   const dispatch = useDispatch();
   const orientationsData = useSelector(state => state.spot.selectedSpot.properties.orientation_data);
 
   const onMeasurementPressed = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(props.page.key));
+    dispatch(setNotebookPageVisible(page.key));
   };
 
   return (

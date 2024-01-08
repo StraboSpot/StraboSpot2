@@ -11,7 +11,7 @@ import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 
-const Splashscreen = (props) => {
+const Splashscreen = ({children}) => {
   const {width, height} = useWindowDimensions();
 
   const fontSize = getFontSizeByWindowWidth({width, height}, 40);
@@ -35,7 +35,7 @@ const Splashscreen = (props) => {
               v{VERSION_NUMBER}
             </Text>
           </View>
-          {props.children}
+          {children}
         </View>
         {__DEV__ && (
           <View style={splashscreenStyles.dimensionsContainer}>

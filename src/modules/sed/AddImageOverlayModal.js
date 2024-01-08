@@ -15,7 +15,10 @@ import {setStratSection} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const AddImageOverlayModal = (props) => {
+const AddImageOverlayModal = ({
+                                closeModal,
+                                image,
+                              }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
@@ -26,7 +29,7 @@ const AddImageOverlayModal = (props) => {
 
   const deleteImageOverlay = () => {
     let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
-    const editedStratSectionImages = editedSedData.strat_section.images.filter(i => i.id !== props.image.id);
+    const editedStratSectionImages = editedSedData.strat_section.images.filter(i => i.id !== image.id);
     if (isEmpty(editedStratSectionImages)) delete editedSedData.strat_section.images;
     else editedSedData.strat_section.images = editedStratSectionImages;
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
@@ -39,7 +42,7 @@ const AddImageOverlayModal = (props) => {
       dispatch(setStratSection(stratSectionSettings));
     }
 
-    props.close();
+    closeModal();
   };
 
   const deleteImageOverlayConfirm = () => {
@@ -89,10 +92,10 @@ const AddImageOverlayModal = (props) => {
         title={'Add Image Overlay'}
         buttonTitleLeft={'Cancel'}
         buttonTitleRight={'Save'}
-        cancel={() => props.close()}
-        close={() => saveImageOverlay(overlayFormRef?.current?.values)}>
+        cancel={() => closeModal()}
+        closeModal={() => saveImageOverlay(overlayFormRef?.current?.values)}>
         <Formik
-          initialValues={props.image || {}}
+          initialValues={image || {}}
           onSubmit={() => console.log('Submitting form...')}
           validate={validateImageOverlay}
           validateOnChange={false}
@@ -200,7 +203,7 @@ const AddImageOverlayModal = (props) => {
             </View>
           )}
         </Formik>
-        {props.image && (
+        {image && (
           <Button
             titleStyle={{color: WARNING_COLOR}}
             title={'Remove Image Overlay'}
@@ -235,7 +238,7 @@ const AddImageOverlayModal = (props) => {
         dispatch(setStratSection(stratSectionSettings));
       }
     }
-    props.close();
+    closeModal();
   };
 
   const showFieldInfo = (label, info) => {

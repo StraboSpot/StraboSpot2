@@ -22,7 +22,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const BeddingPage = (props) => {
+const BeddingPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -73,7 +73,7 @@ const BeddingPage = (props) => {
           {text: 'No', style: 'cancel'},
           {
             text: 'Yes', onPress: async () => {
-              await useSed.saveSedFeature(props.page.key, spot, beddingSharedRef.current);
+              await useSed.saveSedFeature(page.key, spot, beddingSharedRef.current);
               batch(() => {
                 setIsDetailView(true);
                 setSelectedAttribute({id: getNewUUID()});
@@ -98,7 +98,7 @@ const BeddingPage = (props) => {
     if (!attribute.id) {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
       attribute = {...attribute, id: getNewUUID()};
-      editedSedData[props.page.key].beds.splice(i, 1, attribute);
+      editedSedData[page.key].beds.splice(i, 1, attribute);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
@@ -115,7 +115,7 @@ const BeddingPage = (props) => {
         <BasicPageDetail
           closeDetailView={() => setIsDetailView(false)}
           groupKey={'sed'}
-          page={props.page}
+          page={page}
           selectedFeature={selectedAttribute}
         />
       </React.Fragment>
@@ -126,7 +126,7 @@ const BeddingPage = (props) => {
     return (
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <ReturnToOverviewButton/>
-        <SectionDivider dividerText={props.page.label}/>
+        <SectionDivider dividerText={page.label}/>
         {renderBeddingShared()}
         <SectionDividerWithRightButton
           dividerText={'Beds'}
@@ -139,7 +139,7 @@ const BeddingPage = (props) => {
             <BasicListItem
               item={item}
               index={index}
-              page={props.page}
+              page={page}
               editItem={itemToEdit => editAttribute(itemToEdit, index)}
             />
           )}
@@ -181,7 +181,7 @@ const BeddingPage = (props) => {
   };
 
   const saveBeddingShared = async (formCurrent) => {
-    await useSed.saveSedFeature(props.page.key, spot, formCurrent);
+    await useSed.saveSedFeature(page.key, spot, formCurrent);
     await formCurrent.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };

@@ -15,7 +15,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import useSedHook from '../sed/useSed';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const IntervalPage = (props) => {
+const IntervalPage = ({page}) => {
   const dispatch = useDispatch();
 
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -61,7 +61,7 @@ const IntervalPage = (props) => {
   };
 
   const saveInterval = async (formCurrent) => {
-    await useSed.saveSedFeature(props.page.key, spot, formCurrent);
+    await useSed.saveSedFeature(page.key, spot, formCurrent);
     await formCurrent.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };
@@ -70,7 +70,7 @@ const IntervalPage = (props) => {
     <React.Fragment>
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <ReturnToOverviewButton/>
-        <SectionDivider dividerText={props.page.label}/>
+        <SectionDivider dividerText={page.label}/>
         <SaveAndCloseButton
           cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
           save={() => saveInterval(intervalRef.current)}

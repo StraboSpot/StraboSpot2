@@ -3,24 +3,28 @@ import {ActivityIndicator, Platform, TouchableNativeFeedback, TouchableOpacity} 
 
 import {Image} from 'react-native-elements';
 
-const ImageButton = (props) => {
+const ImageButton = ({
+                       onPress,
+                       source,
+                       style,
+                     }) => {
   const content = (
     <Image
-      source={props.source}
-      style={props.style}
+      source={source}
+      style={style}
       PlaceholderContent={<ActivityIndicator/>}
     />
   );
 
   if (Platform.OS === 'ios') {
     return (
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity onPress={onPress}>
         {content}
       </TouchableOpacity>
     );
   }
   return (
-    <TouchableNativeFeedback onPress={props.onPress}>
+    <TouchableNativeFeedback onPress={onPress}>
       {content}
     </TouchableNativeFeedback>
   );

@@ -3,10 +3,13 @@ import {Text, View} from 'react-native';
 
 import styles from '../../shared/ui/ui.styles';
 
-const SectionDivider = (props) => {
+const SectionDivider = ({
+                          dividerText,
+                          style,
+                        }) => {
   return (
-    <View style={[styles.sectionDivider, props.style]}>
-      <Text style={styles.sectionDividerText}>{props.dividerText.toUpperCase()}</Text>
+    <View style={[styles.sectionDivider, style]}>
+      <Text style={styles.sectionDividerText}>{dividerText.toUpperCase()}</Text>
     </View>
   );
 };

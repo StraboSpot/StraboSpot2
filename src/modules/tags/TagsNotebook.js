@@ -12,7 +12,7 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';
 
-const TagsNotebook = (props) => {
+const TagsNotebook = ({openMainMenu, page}) => {
   const dispatch = useDispatch();
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
 
@@ -34,20 +34,20 @@ const TagsNotebook = (props) => {
               buttonTitle={'Assign/Remove'}
               onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
             />
-            <TagsAtSpotList page={props.page} openMainMenu={props.openMainMenu}/>
+            <TagsAtSpotList page={page} openMainMenu={openMainMenu}/>
           </React.Fragment>
         }
         ListFooterComponent={pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS && (
           <React.Fragment>
             <SectionDivider dividerText={'Feature Tags'}/>
-            <FeatureTagsAtSpotList page={props.page} openMainMenu={props.openMainMenu}/>
+            <FeatureTagsAtSpotList page={page} openMainMenu={openMainMenu}/>
           </React.Fragment>
         )}
       />
       <TagDetailModal
         isVisible={isDetailModalVisibile}
         closeModal={closeTagDetailModal}
-        type={props?.page?.key === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
+        type={page?.key === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
       />
     </React.Fragment>
   );

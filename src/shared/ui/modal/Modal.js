@@ -12,7 +12,15 @@ import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import {SMALL_SCREEN} from '../../styles.constants';
 
-const Modal = (props) => {
+const Modal = ({
+                 buttonTitleLeft,
+                 buttonTitleRight,
+                 cancel,
+                 children,
+                 closeModal,
+                 onPress,
+                 title,
+               }) => {
 
   const {height} = useWindowDimensions();
 
@@ -30,7 +38,7 @@ const Modal = (props) => {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => props.onPress(shortcutModal.notebook_modal_key)}
+          onPress={() => onPress(shortcutModal.notebook_modal_key)}
         >
           <Avatar
             placeholderStyle={{backgroundColor: 'transparent'}}
@@ -52,7 +60,7 @@ const Modal = (props) => {
             title={'View In Shortcut Mode'}
             type={'clear'}
             titleStyle={compassStyles.buttonTitleStyle}
-            onPress={() => props.onPress(shortcutModalSwitch.key)}
+            onPress={() => onPress(shortcutModalSwitch.key)}
           />
         );
       }
@@ -64,20 +72,35 @@ const Modal = (props) => {
     return (
       <Overlay
         isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || SMALL_SCREEN}
-        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
+        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {
+          ...overlayStyles.overlayContainer,
+          maxHeight: height * 0.80,
+        }}
         fullScreen={SMALL_SCREEN}
         animationType={'slide'}
       >
-        <ModalHeader {...props}/>
-        {props.children}
+        <ModalHeader
+          buttonTitleLeft={buttonTitleLeft}
+          buttonTitleRight={buttonTitleRight}
+          cancel={cancel}
+          closeModal={closeModal}
+          title={title}
+        />
+        {children}
         {!isEmpty(selectedSpot) && isEmpty(selectedAttributes) && renderModalBottom()}
       </Overlay>
     );
   }
   return (
     <View style={{...overlayStyles.overlayContainer, ...overlayStyles.overlayPosition, maxHeight: height * 0.80}}>
-      <ModalHeader {...props}/>
-      {props.children}
+      <ModalHeader
+        buttonTitleLeft={buttonTitleLeft}
+        buttonTitleRight={buttonTitleRight}
+        cancel={cancel}
+        closeModal={closeModal}
+        title={title}
+      />
+      {children}
       {!isEmpty(selectedSpot) && renderModalBottom()}
     </View>
   );

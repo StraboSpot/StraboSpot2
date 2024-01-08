@@ -13,7 +13,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
 import {TagDetail, TagDetailModal} from '../tags';
 
-const TagDetailSidePanel = (props) => {
+const TagDetailSidePanel = ({openNotebookPanel}) => {
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
@@ -24,7 +24,7 @@ const TagDetailSidePanel = (props) => {
   const openFeatureDetail = (spot, feature, featureType) => {
     dispatch(setSelectedSpot(spot));
     dispatch(setSelectedAttributes([feature]));
-    props.openNotebookPanel(featureType);
+    openNotebookPanel(featureType);
   };
 
   return (
@@ -62,7 +62,7 @@ const TagDetailSidePanel = (props) => {
           openFeatureDetail={(spot, feature, featureType) => openFeatureDetail(spot, feature, featureType)}
           openSpot={(spot) => {
             dispatch(setSelectedSpot(spot));
-            props.openNotebookPanel();
+            openNotebookPanel();
           }}
           addRemoveSpots={() => {
             dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS}));

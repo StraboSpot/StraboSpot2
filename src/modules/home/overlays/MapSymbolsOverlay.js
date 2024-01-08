@@ -18,7 +18,11 @@ import {
 import styles from '../../measurements/measurements.styles';
 import useMeasurementsHook from '../../measurements/useMeasurements';
 
-const MapSymbolsOverlay = (props) => {
+const MapSymbolsOverlay = ({
+                             onTouchOutside,
+                             overlayStyle,
+                             visible,
+                           }) => {
 
   const dispatch = useDispatch();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -66,9 +70,9 @@ const MapSymbolsOverlay = (props) => {
     <Overlay
       animationType={'slide'}
       backdropStyle={{backgroundColor: 'transparent'}}
-      isVisible={props.visible}
-      onBackdropPress={props.onTouchOutside}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
+      isVisible={visible}
+      onBackdropPress={onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, overlayStyle]}
     >
       <View style={[overlayStyles.titleContainer]}>
         <Text style={[overlayStyles.titleText]}>Map Symbols</Text>

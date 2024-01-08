@@ -13,7 +13,7 @@ import {setMultipleFeaturesTaggingEnabled} from '../../modules/project/projects.
 import {setSelectedAttributes} from '../../modules/spots/spots.slice';
 import commonStyles from '../common.styles';
 
-const NotebookContentTopSection = (props) => {
+const NotebookContentTopSection = ({returnToOverviewAction}) => {
   const dispatch = useDispatch();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
 
@@ -30,7 +30,7 @@ const NotebookContentTopSection = (props) => {
           <ReturnToOverviewButton
             onPress={() => {
               dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
-              if (props.returnToOverviewAction) props.returnToOverviewAction();
+              if (returnToOverviewAction) returnToOverviewAction();
             }}
           />
           <ButtonRounded

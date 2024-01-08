@@ -48,7 +48,9 @@ const UserStyles = StyleSheet.create({
     borderWidth: 7,
     borderColor: 'white',
   },
-
+  saveButtonContainer: {
+    paddingTop: 30,
+  },
 });
 
 export default UserStyles;

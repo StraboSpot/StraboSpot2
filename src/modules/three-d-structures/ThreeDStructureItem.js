@@ -9,7 +9,10 @@ import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
 
-function ThreeDStructureItem(props) {
+function ThreeDStructureItem({
+                               edit3dStructure,
+                               item,
+                             }) {
   const useTags = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
@@ -24,21 +27,21 @@ function ThreeDStructureItem(props) {
     if (isMultipleFeaturesTaggingEnabled) {
       setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(feature));
     }
-    else props.edit3dStructure(feature);
+    else edit3dStructure(feature);
   };
 
   return (
     <ListItem
       containerStyle={[commonStyles.listItem,
         {backgroundColor: featureSelectedForTagging ? themes.PRIMARY_ACCENT_COLOR : themes.SECONDARY_BACKGROUND_COLOR}]}
-      key={props.item.id}
-      onPress={() => editFeature(props.item)}
+      key={item.id}
+      onPress={() => editFeature(item)}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
         <ListItem.Title style={commonStyles.listItemTitle}>
-          <ThreeDStructureLabel item={props.item}/>
+          <ThreeDStructureLabel item={item}/>
         </ListItem.Title>
-        <FeatureTagsList spotId={spot.properties.id} featureId={props.item.id}/>
+        <FeatureTagsList spotId={spot.properties.id} featureId={item.id}/>
       </ListItem.Content>
       <ListItem.Chevron/>
     </ListItem>

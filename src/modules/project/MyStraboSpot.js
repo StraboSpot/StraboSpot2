@@ -137,7 +137,7 @@ const MyStraboSpot = ({logout}) => {
             visibleSection={section => setShowSection(section)}
             setImportComplete={handleImportComplete}
             importComplete={importComplete}
-            setLoading={value => dispatch(setLoadingStatus({bool: value, view: 'home'}))}
+            setLoading={value => dispatch(setLoadingStatus({bool: value, view: 'home'}))} //TODO: Check to see if this can be removed or used else where
           />
         );
       case 'new':

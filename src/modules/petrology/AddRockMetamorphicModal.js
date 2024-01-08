@@ -76,7 +76,7 @@ const AddRockMetamorphicModal = (props) => {
         <ModalHeader
           buttonTitleRight={'Done'}
           title={'Facies'}
-          close={() => setIsFaciesModalVisible(false)}
+          closeModal={() => setIsFaciesModalVisible(false)}
         />
         <View style={{flex: 1}}>
 

@@ -7,14 +7,14 @@ import {MODAL_KEYS} from '../page/page.constants';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import {TagsNotebookModal} from '../tags';
-
+//TODO: See about refactoring to combine.
 const FeatureTagsModal = () => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const renderFeatureTagsModal = () => {
     return (
       <TagsNotebookModal
-        close={() => {
+        closeModal={() => {
           dispatch(setMultipleFeaturesTaggingEnabled(false));
           dispatch(setModalVisible({modal: null}));
           dispatch(setSelectedAttributes([]));

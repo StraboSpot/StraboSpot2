@@ -6,18 +6,18 @@ import SamplesList from './SamplesList';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const SamplesOverview = (props) => {
+const SamplesOverview = ({page}) => {
   const dispatch = useDispatch();
 
   const onPressed = (item) => {
     dispatch(setSelectedAttributes([item]));
-    dispatch(setNotebookPageVisible(props.page.key));
+    dispatch(setNotebookPageVisible(page.key));
   };
 
   return (
     <SamplesList
       onPress={onPressed}
-      page={props.page}
+      page={page}
     />
   );
 };

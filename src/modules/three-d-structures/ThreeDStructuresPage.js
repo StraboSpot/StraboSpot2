@@ -15,7 +15,7 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const ThreeDStructuresPage = (props) => {
+const ThreeDStructuresPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
@@ -51,7 +51,7 @@ const ThreeDStructuresPage = (props) => {
   const add3dStructure = (type) => {
     const new3dStructure = {id: getNewId(), type: type};
     dispatch(setModalValues(new3dStructure));
-    dispatch(setModalVisible({modal: props.page.key}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const edit3dStructure = (threeDStructure) => {
@@ -118,7 +118,7 @@ const ThreeDStructuresPage = (props) => {
       {isDetailView && (
         <BasicPageDetail
           closeDetailView={() => setIsDetailView(false)}
-          page={props.page}
+          page={page}
           selectedFeature={selected3dStructure}
         />
       )}

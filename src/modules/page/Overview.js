@@ -20,7 +20,7 @@ import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const Overview = (props) => {
+const Overview = ({openMainMenu}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -44,7 +44,7 @@ const Overview = (props) => {
       const SectionOverview = page.overview_component;
       const sectionOverview = {
         title: page,
-        data: [<SectionOverview key={key} page={page} openMainMenu={props.openMainMenu}/>],
+        data: [<SectionOverview key={key} page={page} openMainMenu={openMainMenu}/>],
       };
       return [...acc, sectionOverview];
     }

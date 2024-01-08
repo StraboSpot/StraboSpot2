@@ -24,7 +24,7 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
-const UserProfile = (props) => {
+const UserProfile = () => {
   const formRef = useRef(null);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -40,7 +40,7 @@ const UserProfile = (props) => {
   const navigation = useNavigation();
   const toast = useToast();
   const useUpload = useUploadHook();
-  const [useServerRequest] = useServerRequestsHook();
+  const useServerRequest = useServerRequestsHook();
 
   const formName = ['general', 'user_profile'];
 
@@ -56,7 +56,6 @@ const UserProfile = (props) => {
 
   useLayoutEffect(() => {
     console.log('UE UserProfile []');
-    return () => saveForm();
   }, []);
 
   const deleteProfile = async () => {
@@ -88,7 +87,7 @@ const UserProfile = (props) => {
         overlayButtonText={overlayStyles.importantText}
         visible={isDeleteProfileModalVisible}
         onPress={deleteProfile}
-        close={() => setDeleteProfileModalVisible(false)}
+        closeModal={() => setDeleteProfileModalVisible(false)}
         textAboveInput={isOnline.isInternetReachable ? deleteModalText : offlineText}
         onChangeText={text => handleOnChange(text)}
         errorMessage={errorMessage}
@@ -255,9 +254,17 @@ const UserProfile = (props) => {
             validateOnChange={true}
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
+          <View style={userStyles.saveButtonContainer}>
+            <Button
+              title={'Save Changes'}
+              type={'clear'}
+              onPress={() => saveForm()}
+            />
+          </View>
         </View>
         <View style={commonStyles.buttonContainer}>
-          <Text>Need to be online to delete profile.</Text>
+
+          <Text style={{textAlign: 'center'}}>Need to be online to delete profile.</Text>
           <Button
             title={'DELETE PROFILE'}
             disabled={!isOnline.isInternetReachable}

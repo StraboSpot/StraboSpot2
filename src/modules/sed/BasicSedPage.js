@@ -18,7 +18,7 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const BasicSedPage = (props) => {
+const BasicSedPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -27,7 +27,7 @@ const BasicSedPage = (props) => {
   const [selectedAttribute, setSelectedAttribute] = useState({});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
 
-  const attributes = spot && spot.properties && spot.properties.sed && spot.properties.sed[props.page.key] || [];
+  const attributes = spot && spot.properties && spot.properties.sed && spot.properties.sed[page.key] || [];
 
   useEffect(() => {
     console.log('UE BasicSedPage [selectedAttributes, spot]', selectedAttributes, spot);
@@ -49,7 +49,7 @@ const BasicSedPage = (props) => {
     if (!attribute.id) {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));
       attribute = {...attribute, id: getNewUUID()};
-      editedSedData[props.page.key].splice(i, 1, attribute);
+      editedSedData[page.key].splice(i, 1, attribute);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
@@ -61,9 +61,9 @@ const BasicSedPage = (props) => {
   };
 
   const renderAttributeDetail = () => {
-    const subpages = props.page.key === PAGE_KEYS.LITHOLOGIES ? LITHOLOGY_SUBPAGES
-      : props.page.key === PAGE_KEYS.STRUCTURES ? STRUCTURE_SUBPAGES
-        : props.page.key === PAGE_KEYS.INTERPRETATIONS ? INTERPRETATIONS_SUBPAGES
+    const subpages = page.key === PAGE_KEYS.LITHOLOGIES ? LITHOLOGY_SUBPAGES
+      : page.key === PAGE_KEYS.STRUCTURES ? STRUCTURE_SUBPAGES
+        : page.key === PAGE_KEYS.INTERPRETATIONS ? INTERPRETATIONS_SUBPAGES
           : undefined;
     if (subpages) {
       return (
@@ -80,7 +80,7 @@ const BasicSedPage = (props) => {
           <BasicPageDetail
             closeDetailView={() => setIsDetailView(false)}
             groupKey={'sed'}
-            page={{...props.page, key: Object.values(subpages)[selectedTypeIndex]}}
+            page={{...page, key: Object.values(subpages)[selectedTypeIndex]}}
             selectedFeature={selectedAttribute}
           />
         </React.Fragment>
@@ -91,7 +91,7 @@ const BasicSedPage = (props) => {
         <BasicPageDetail
           closeDetailView={() => setIsDetailView(false)}
           groupKey={'sed'}
-          page={props.page}
+          page={page}
           selectedFeature={selectedAttribute}
         />
       );
@@ -103,7 +103,7 @@ const BasicSedPage = (props) => {
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <ReturnToOverviewButton/>
         <SectionDividerWithRightButton
-          dividerText={props.page.label}
+          dividerText={page.label}
           onPress={addAttribute}
         />
         <FlatList
@@ -113,12 +113,12 @@ const BasicSedPage = (props) => {
             <BasicListItem
               item={item}
               index={index}
-              page={props.page}
+              page={page}
               editItem={itemToEdit => editAttribute(itemToEdit, index)}
             />
           )}
           ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText text={'No ' + props.page.label}/>}
+          ListEmptyComponent={<ListEmptyText text={'No ' + page.label}/>}
         />
       </View>
     );

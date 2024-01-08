@@ -315,12 +315,12 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
       case 'importData':
         return (
           <ImportProjectFromZip
-            visibleSection={section => setVisibleInitialSection(section)}
             goBackToMain={() => goBackToMain()}
-            source={source => setSource(source)}
+            importComplete={importComplete}
             importedProject={importedProjectData}
             setImportComplete={value => setImportComplete(value)}
-            importComplete={importComplete}
+            source={sourcePath => setSource(sourcePath)}
+            visibleSection={section => setVisibleInitialSection(section)}
           />
         );
       default:

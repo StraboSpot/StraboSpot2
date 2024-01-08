@@ -10,7 +10,10 @@ import {Form, useFormHook} from '../form';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
-const ImagePropertiesModal = (props) => {
+const ImagePropertiesModal = ({
+                                cancel,
+                                closeModal,
+                              }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const selectedImage = useSelector(state => state.spot.selectedAttributes[0]);
@@ -47,7 +50,7 @@ const ImagePropertiesModal = (props) => {
       dispatch(setSelectedAttributes([images[i]]));
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'images', value: images}));
-      props.close();
+      closeModal();
       return Promise.resolve();
     }
     catch (e) {
@@ -58,11 +61,11 @@ const ImagePropertiesModal = (props) => {
 
   return (
     <Modal
-      title={'Image Properties'}
       buttonTitleLeft={'Cancel'}
       buttonTitleRight={'Save'}
-      cancel={props.cancel}
-      close={saveFormAndGo}
+      cancel={cancel}
+      closeModal={saveFormAndGo}
+      title={'Image Properties'}
     >
       <FlatList
         ListHeaderComponent={renderFormFields()}

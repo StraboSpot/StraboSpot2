@@ -14,7 +14,10 @@ import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
-const NewProjectForm = (props) => {
+const NewProjectForm = ({
+                          openMainMenu,
+                          source,
+                        }) => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
@@ -26,8 +29,8 @@ const NewProjectForm = (props) => {
   const formRef = useRef(null);
 
   useEffect(() => {
-    console.log('UE NewProjectForm []', props);
-    dispatch(setSelectedProject({project: '', source: props.source}));
+    console.log('UE NewProjectForm []');
+    dispatch(setSelectedProject({project: '', source: source}));
     !isEmpty(currentProject) && setIsProjectOptionsModalVisible(true);
   }, []);
 
@@ -58,7 +61,7 @@ const NewProjectForm = (props) => {
       <ProjectOptionsDialogBox
         currentProject={currentProject}
         visible={isProjectOptionsModalVisible}
-        close={() => setIsProjectOptionsModalVisible(false)}
+        closeModal={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
        />
     );
@@ -73,7 +76,7 @@ const NewProjectForm = (props) => {
       console.log('New Project created', newProject);
       if (isProjectLoadSelectionModalVisible) {
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-        props.openMainMenu();
+        openMainMenu();
         dispatch(setProjectLoadSelectionModalVisible(false));
       }
       else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));

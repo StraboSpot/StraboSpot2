@@ -6,7 +6,11 @@ import {Button, Icon} from 'react-native-elements';
 import projectStyles from '../../project/project.styles';
 import sidePanelStyles from '../sidePanel.styles';
 
-const SidePanelHeader = (props) => {
+const SidePanelHeader = ({
+                           backButton,
+                           headerTitle,
+                           title,
+                         }) => {
   return (
     <View style={sidePanelStyles.sidePanelHeaderContainer}>
       <Button
@@ -18,13 +22,13 @@ const SidePanelHeader = (props) => {
             size={20}
           />
         }
-        title={props.title}
+        title={title}
         type={'clear'}
         titleStyle={projectStyles.buttonText}
-        onPress={props.backButton}
+        onPress={backButton}
       />
       <View style={projectStyles.headerTextContainer}>
-        <Text style={projectStyles.headerText}>{props.headerTitle}</Text>
+        <Text style={projectStyles.headerText}>{headerTitle}</Text>
       </View>
     </View>
   );

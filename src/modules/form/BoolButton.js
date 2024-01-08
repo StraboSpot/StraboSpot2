@@ -5,23 +5,29 @@ import {Button} from 'react-native-elements';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles, useFormHook} from '../form';
 
-const BoolButton = (props) => {
+const BoolButton = ({
+                      fieldKey,
+                      formName,
+                      formProps,
+                      onPress,
+                      selectedKey,
+                    }) => {
   const useForm = useFormHook();
 
   return (
     <Button
       containerStyle={formStyles.fullWidthButtonContainer}
       buttonStyle={[formStyles.formButtonSmall, {
-        backgroundColor: props.formProps?.values[props.fieldKey] === props.selectedKey ? PRIMARY_ACCENT_COLOR
+        backgroundColor: formProps?.values[fieldKey] === selectedKey ? PRIMARY_ACCENT_COLOR
           : SECONDARY_BACKGROUND_COLOR,
       }]}
       titleProps={{
-        style: props.formProps?.values[props.fieldKey] === props.selectedKey ? formStyles.formButtonSelectedTitle
+        style: formProps?.values[fieldKey] === selectedKey ? formStyles.formButtonSelectedTitle
           : formStyles.formButtonTitle,
       }}
-      title={useForm.getLabel(props.fieldKey, props.formName)}
+      title={useForm.getLabel(fieldKey, formName)}
       type={'outline'}
-      onPress={props.onPress}
+      onPress={onPress}
     />
   );
 };

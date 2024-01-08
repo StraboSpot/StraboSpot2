@@ -5,19 +5,26 @@ import {Image} from 'react-native-elements';
 
 import uiStyles from '../ui/ui.styles';
 
-const IconButton = (props) => {
+const IconButton = ({
+                      containerStyle,
+                      imageStyle,
+                      onLongPress,
+                      onPress,
+                      source,
+                      style,
+                    }) => {
 
   return (
     <Pressable
-      onPress={props.onPress}
-      onLongPress={props.onLongPress}
+      onPress={onPress}
+      onLongPress={onLongPress}
       delayLongPress={1000}
-      style={props.style}
+      style={style}
     >
       <Image
-        containerStyle={props.containerStyle}
-        style={[uiStyles.imageIcon, props.imageStyle]}
-        source={props.source}
+        containerStyle={containerStyle}
+        style={[uiStyles.imageIcon, imageStyle]}
+        source={source}
       />
     </Pressable>
   );

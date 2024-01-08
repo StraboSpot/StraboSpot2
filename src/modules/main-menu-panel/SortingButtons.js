@@ -7,7 +7,7 @@ import {SORTED_VIEWS} from './mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 
-const SortingButtons = (props) => {
+const SortingButtons = ({spots}) => {
   const dispatch = useDispatch();
   const selectedButtonIndex = useSelector(state => state.mainMenu.selectedButtonIndex);
 
@@ -15,7 +15,7 @@ const SortingButtons = (props) => {
     dispatch(setSelectedButtonIndex({index: buttonIndex}));
     switch (buttonIndex) {
       case 0:
-        console.log('Chronological Selected', props.spots);
+        console.log('Chronological Selected', spots);
         dispatch(setSortedView({view: SORTED_VIEWS.CHRONOLOGICAL}));
         break;
       case 1:

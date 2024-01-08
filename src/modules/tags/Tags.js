@@ -13,7 +13,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, TagsList} from '../tags';
 
-const Tags = (props) => {
+const Tags = ({type}) => {
   console.log('Rendering Tags...');
 
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const Tags = (props) => {
   };
 
   const getButtonTitle = () => {
-    if (props.type === PAGE_KEYS.GEOLOGIC_UNITS) return ['Alphabetical', 'Map Extent'];
+    if (type === PAGE_KEYS.GEOLOGIC_UNITS) return ['Alphabetical', 'Map Extent'];
     return ['Categorized', 'Map Extent'];
   };
 
@@ -60,11 +60,11 @@ const Tags = (props) => {
         <Switch onValueChange={value => dispatch(setUseContinuousTagging(value))}
                 value={useContinuousTagging}/>
       </ListItem>
-      <TagsList type={props.type} selectedIndex={selectedIndex}/>
+      <TagsList type={type} selectedIndex={selectedIndex}/>
       <TagDetailModal
         isVisible={isDetailModalVisible}
         closeModal={() => setIsDetailModalVisible(false)}
-        type={props.type}
+        type={type}
       />
     </SafeAreaView>
   );

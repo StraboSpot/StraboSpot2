@@ -73,7 +73,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
       <ModalHeader
         buttonTitleRight={'Done'}
         title={props.measurementsGroupLabel}
-        close={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
+        closeModal={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
       />
       {Platform.OS === 'ios' && (
         <Button

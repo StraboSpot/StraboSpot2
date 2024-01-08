@@ -14,7 +14,13 @@ import SliderBar from '../../shared/ui/SliderBar';
 import {NumberInputField} from '../form';
 import {MODAL_KEYS} from '../page/page.constants';
 
-const ManualMeasurement = (props) => {
+const ManualMeasurement = ({
+                             addAttributeMeasurement,
+                             measurementTypes,
+                             setAttributeMeasurements,
+                             setSliderValue,
+                             sliderValue,
+                           }) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const manualFormRef = useRef(null);
@@ -29,7 +35,7 @@ const ManualMeasurement = (props) => {
       >
         {formProps => (
           <View>
-            {props.measurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) && (
+            {measurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) && (
               <React.Fragment>
                 <ListItem containerStyle={commonStyles.listItemFormField}>
                   <ListItem.Content>
@@ -66,7 +72,7 @@ const ManualMeasurement = (props) => {
                 <FlatListItemSeparator/>
               </React.Fragment>
             )}
-            {props.measurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR) && (
+            {measurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR) && (
               <React.Fragment>
                 <ListItem containerStyle={commonStyles.listItemFormField}>
                   <ListItem.Content>
@@ -92,14 +98,14 @@ const ManualMeasurement = (props) => {
                 <FlatListItemSeparator/>
               </React.Fragment>
             )}
-            {props.setAttributeMeasurements && modalVisible !== MODAL_KEYS.SHORTCUTS.MEASUREMENT
+            {setAttributeMeasurements && modalVisible !== MODAL_KEYS.SHORTCUTS.MEASUREMENT
               && modalVisible !== MODAL_KEYS.NOTEBOOK.MEASUREMENTS && (
                 <>
                   <View style={compassStyles.sliderContainer}>
                     <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
                     <SliderBar
-                      onSlidingComplete={props.setSliderValue}
-                      value={props.sliderValue}
+                      onSlidingComplete={setSliderValue}
+                      value={sliderValue}
                       step={1}
                       maximumValue={6}
                       minimumValue={1}
@@ -107,7 +113,7 @@ const ManualMeasurement = (props) => {
                     />
                     <SaveButton
                       title={'Add to Attribute'}
-                      onPress={() => props.addAttributeMeasurement(formProps.values)}
+                      onPress={() => addAttributeMeasurement(formProps.values)}
                     />
                   </View>
                 </>

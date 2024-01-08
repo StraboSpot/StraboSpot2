@@ -18,7 +18,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 
-const Notes = (props) => {
+const Notes = ({goToCurrentLocation}) => {
   const dispatch = useDispatch();
   const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes) || undefined;
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -66,7 +66,7 @@ const Notes = (props) => {
       dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
       await currentForm.resetForm();
       if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
-      else if (props.goToCurrentLocation) await props.goToCurrentLocation();
+      else if (goToCurrentLocation) await goToCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {

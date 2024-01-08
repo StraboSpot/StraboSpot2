@@ -9,7 +9,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const FabricsOverview = (props) => {
+const FabricsOverview = ({page}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -18,7 +18,7 @@ const FabricsOverview = (props) => {
 
   const onFabricPressed = (fabric) => {
     dispatch(setSelectedAttributes([fabric]));
-    dispatch(setNotebookPageVisible(props.page.key));
+    dispatch(setNotebookPageVisible(page.key));
   };
 
   return (

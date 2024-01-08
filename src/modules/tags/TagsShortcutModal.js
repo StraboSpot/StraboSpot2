@@ -3,12 +3,15 @@ import React from 'react';
 import {TagsModal} from './index';
 import Modal from '../../shared/ui/modal/Modal';
 
-const TagsShortcutModal = (props) => {
+const TagsShortcutModal = ({
+                             goToCurrentLocation,
+                             onPress,
+                           }) => {
 
   const renderTagsShortcutModal = () => {
     return (
-      <Modal onPress={props.onPress}>
-        <TagsModal goToCurrentLocation={props.goToCurrentLocation}/>
+      <Modal onPress={onPress}>
+        <TagsModal goToCurrentLocation={goToCurrentLocation}/>
       </Modal>
     );
   };

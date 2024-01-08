@@ -5,24 +5,24 @@ import {Button} from 'react-native-elements';
 
 import styles from '../../shared/ui/ui.styles';
 
-const saveAndClose = (props) => {
+const saveAndClose = ({cancel, save}) => {
   return (
     <View style={styles.navButtonsContainer}>
       <View style={styles.leftContainer}>
-        {props.cancel && (
+        {cancel && (
           <Button
             titleStyle={styles.buttonText}
             title={'Cancel'}
             type={'clear'}
-            onPress={props.cancel}
+            onPress={cancel}
           />
         )}
-        {props.save && (
+        {save && (
           <Button
             titleStyle={styles.buttonText}
             title={'Save'}
             type={'clear'}
-            onPress={props.save}
+            onPress={save}
           />
         )}
       </View>

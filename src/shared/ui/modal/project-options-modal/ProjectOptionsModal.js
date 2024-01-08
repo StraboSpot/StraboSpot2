@@ -24,7 +24,13 @@ import uiStyles from '../../ui.styles';
 import modalStyle from '../modal.style';
 import ModalHeader from '../ModalHeader';
 
-const ProjectOptionsDialogBox = (props) => {
+const ProjectOptionsDialogBox = ({
+                                   closeModal,
+                                   currentProject,
+                                   endpoint,
+                                   projectDeleted,
+                                   visible,
+                                 }) => {
   const dispatch = useDispatch();
   const selectedProject = useSelector(state => state.project.selectedProject);
   const currentProjectName = useSelector(state => state.project.project?.description?.project_name);
@@ -63,14 +69,14 @@ const ProjectOptionsDialogBox = (props) => {
 
   const deleteProjectFromLocalStorage = async () => {
     try {
-      props.close();
+      closeModal();
       setDeletingProjectStatus('deleting');
       setIsProgressModalVisible(true);
       setTimeout(async () => {
         setChecked(1);
         await useDevice.deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
         setDeletingProjectStatus('complete');
-        props.projectDeleted(true);
+        projectDeleted(true);
       }, 1000);
     }
     catch (err) {
@@ -84,7 +90,7 @@ const ProjectOptionsDialogBox = (props) => {
   const exportProject = async () => {
     try {
       console.log('FileName', exportFileName);
-      props.close();
+      closeModal();
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
@@ -107,12 +113,12 @@ const ProjectOptionsDialogBox = (props) => {
       console.log('Project Saved!');
     }
     else if (userAction === OVERWRITE) {
-      props.close();
+      closeModal();
       await useProject.switchProject(OVERWRITE);
       console.log('Project overwritten!');
     }
     else {
-      props.close();
+      closeModal();
       setAction('');
       setChecked(1);
       dispatch(setProgressModalVisible(true));
@@ -131,7 +137,7 @@ const ProjectOptionsDialogBox = (props) => {
     setAction('');
     setIncludeMapTiles(true);
     setIncludeImages(true);
-    props.close();
+    closeModal();
   };
 
   const saveProject = async () => {
@@ -140,7 +146,7 @@ const ProjectOptionsDialogBox = (props) => {
     else {
       console.log('Saving Project to Device');
       setErrorMessage('');
-      props.close();
+      closeModal();
       await useExport.initializeBackup(backupFileName);
     }
   };
@@ -269,9 +275,9 @@ const ProjectOptionsDialogBox = (props) => {
           the local copy of the current project:
         </Text>
         <Text style={[overlayStyles.importantText, overlayStyles.contentText]}>
-          {props.currentProject
+          {currentProject
           && !isEmpty(
-            props.currentProject.description) ? props.currentProject.description.project_name.toUpperCase() : 'UN-NAMED'}
+            currentProject.description) ? currentProject.description.project_name.toUpperCase() : 'UN-NAMED'}
         </Text>
         <Text style={overlayStyles.contentText}>Including all datasets and Spots contained within this project. Make
           sure you have already uploaded the project to the server or backed it up to the device if you wish to preserve the data.
@@ -302,9 +308,9 @@ const ProjectOptionsDialogBox = (props) => {
       <View>
         <View>
           <Text style={overlayStyles.importantText}>Uploading {'\n'}{!isEmpty(
-            props.currentProject) && props.currentProject.description.project_name} {'\n'}to:</Text>
+            currentProject) && currentProject.description.project_name} {'\n'}to:</Text>
           <Text style={overlayStyles.importantText}>
-            {props.endpoint?.isSelected ? props.endpoint.url : STRABO_APIS.DB}
+            {endpoint?.isSelected ? endpoint.url : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>
@@ -337,10 +343,10 @@ const ProjectOptionsDialogBox = (props) => {
         animationType={'slide'}
         overlayStyle={overlayStyles.overlayContainer}
         backdropStyle={overlayStyles.backdropStyles}
-        isVisible={props.visible}
+        isVisible={visible}
       >
         <ModalHeader
-          close={onClose}
+          closeModal={onClose}
           title={(header ?  header + '\n' : '') + projectName}
         />
         {selectedProject.source === 'new'

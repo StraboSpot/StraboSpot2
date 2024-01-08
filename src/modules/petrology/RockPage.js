@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { SectionList, View} from 'react-native';
+import {SectionList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -24,7 +24,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
-const RockPage = (props) => {
+const RockPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -38,8 +38,8 @@ const RockPage = (props) => {
 
   const preFormRef = useRef(null);
 
-  const groupKey = props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
-  const pageKey = props.page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.page.key;
+  const groupKey = page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
+  const pageKey = page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
   const rockData = spot.properties[groupKey] || {};
 
   const IGNEOUS_SECTIONS = {
@@ -86,7 +86,7 @@ const RockPage = (props) => {
     let newRock = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS ? {id: getNewUUID(), igneous_rock_class: sectionKey}
       : {id: getNewUUID()};
     dispatch(setModalValues(newRock));
-    dispatch(setModalVisible({modal: props.page.key}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const editRock = (rock, i) => {
@@ -132,7 +132,7 @@ const RockPage = (props) => {
     };
 
     if (!isEmpty(spotToCopy)) {
-      const title = props.page.label;
+      const title = page.label;
       console.log('Copying ' + title + ' data from Spot:', spotToCopy);
       if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type?.includes(pageKey)
         && rockData?.rock_type?.includes(pageKey)) {
@@ -170,13 +170,14 @@ const RockPage = (props) => {
     const spotsWithRockTypeSorted = spotsWithRockType.sort(((a, b) => {
       return new Date(b.properties.date) - new Date(a.properties.date);
     }));
-    const label = 'Copy ' + props.page.label + ' Data From:';
+    const label = 'Copy ' + page.label + ' Data From:';
     return (
       <Formik
         innerRef={preFormRef}
         validate={fieldValues => copyPetData(fieldValues.spot_id_for_pet_copy)}
         validateOnChange={true}
         initialValues={{}}
+        onSubmit={values => console.log('Submitting form...', values)}
       >
         <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
@@ -234,7 +235,7 @@ const RockPage = (props) => {
         renderItem={({item, index}) => (
           <BasicListItem
             item={item}
-            page={props.page}
+            page={page}
             editItem={itemToEdit => editRock(itemToEdit, index)}
           />
         )}
@@ -251,7 +252,7 @@ const RockPage = (props) => {
     return (
       <BasicPageDetail
         closeDetailView={() => setIsDetailView(false)}
-        page={props.page}
+        page={page}
         selectedFeature={selectedRock}
         groupKey={groupKey}
       />

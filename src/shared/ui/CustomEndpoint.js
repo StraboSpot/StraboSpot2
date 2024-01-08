@@ -12,7 +12,11 @@ import {isEmpty} from '../Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 import * as themes from '../styles.constants';
 
-const CustomEndpoint = (props) => {
+const CustomEndpoint = ({
+                          containerStyles,
+                          iconText,
+                          textStyles,
+                        }) => {
   const dispatch = useDispatch();
 
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
@@ -51,9 +55,9 @@ const CustomEndpoint = (props) => {
   };
 
   return (
-    <View style={[uiStyles.customEndpointContainer, props.containerStyles]}>
+    <View style={[uiStyles.customEndpointContainer, containerStyles]}>
       <View style={uiStyles.customEndpointSwitchContainer}>
-        <Text style={[uiStyles.customEndpointText, props.textStyles]}>Use Custom Endpoint?</Text>
+        <Text style={[uiStyles.customEndpointText, textStyles]}>Use Custom Endpoint?</Text>
         <Switch
           value={isSelected}
           onValueChange={handleEndpointSwitchValue}
@@ -105,7 +109,7 @@ const CustomEndpoint = (props) => {
               {isVerified
                 ? (
                   <View style={uiStyles.customEndpointVerifyIconContainer}>
-                    <Text style={[props.iconText]}>Verified</Text>
+                    <Text style={[iconText]}>Verified</Text>
                     <Icon
                       reverse
                       name={'checkmark-sharp'}

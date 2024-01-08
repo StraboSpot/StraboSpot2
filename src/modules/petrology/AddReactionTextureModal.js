@@ -13,7 +13,7 @@ import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 
-const AddReactionTextureModal = (props) => {
+const AddReactionTextureModal = ({onPress}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -62,9 +62,9 @@ const AddReactionTextureModal = (props) => {
   const renderAddReactionTextureModalContent = () => {
     return (
       <Modal
-        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
+        closeModal={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
         buttonTitleRight={choicesViewKey && 'Done'}
-        onPress={props.onPress}
+        onPress={onPress}
       >
         <React.Fragment>
           <FlatList

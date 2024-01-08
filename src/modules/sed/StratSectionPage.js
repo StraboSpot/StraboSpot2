@@ -23,7 +23,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
-const StratSectionPage = (props) => {
+const StratSectionPage = ({page}) => {
   console.log('Rendering StratSectionPage...');
 
   const dispatch = useDispatch();
@@ -163,13 +163,13 @@ const StratSectionPage = (props) => {
             {renderSectionSettingsSection()}
           </View>
         )}
-        {selectedImage && <AddImageOverlayModal close={() => setSelectedImage(undefined)} image={selectedImage}/>}
+        {selectedImage && <AddImageOverlayModal closeModal={() => setSelectedImage(undefined)} image={selectedImage}/>}
       </View>
     );
   };
 
   const saveStratSection = async () => {
-    await useSed.saveSedFeature(props.page.key, spot, stratSectionRef.current);
+    await useSed.saveSedFeature(page.key, spot, stratSectionRef.current);
     await stratSectionRef.current.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };

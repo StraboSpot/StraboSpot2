@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import {MAIN_MENU_TITLE} from './mainMenu.constants';
 import styles from './mainMenuPanel.styles';
 
-const MainMenuPanelHeader = (props) => {
+const MainMenuPanelHeader = ({onPress}) => {
   const pageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const isSideMenuVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
 
@@ -20,7 +20,7 @@ const MainMenuPanelHeader = (props) => {
             type={'ionicon'}
             color={'black'}
             iconStyle={styles.buttons}
-            onPress={() => props.onPress()}
+            onPress={() => onPress()}
             size={30}
           />
         )}

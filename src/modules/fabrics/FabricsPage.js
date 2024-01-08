@@ -15,7 +15,7 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const FabricsPage = (props) => {
+const FabricsPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -46,7 +46,7 @@ const FabricsPage = (props) => {
 
   const addFabric = (type) => {
     dispatch(setModalValues({type: type}));
-    dispatch(setModalVisible({modal: props.page.key}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const editFabric = (fabric) => {
@@ -101,7 +101,7 @@ const FabricsPage = (props) => {
     return (
       <BasicPageDetail
         closeDetailView={() => setIsDetailView(false)}
-        page={props.page}
+        page={page}
         selectedFeature={selectedFabric}
       />
     );

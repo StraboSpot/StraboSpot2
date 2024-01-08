@@ -127,7 +127,7 @@ const DatasetList = () => {
           dialogTitle={'Edit or Delete Dataset'}
           visible={isDatasetNameModalVisible}
           onPress={() => saveDataset()}
-          close={() => setIsDatasetNameModalVisible(false)}
+          closeModal={() => setIsDatasetNameModalVisible(false)}
           value={selectedDatasetToEdit.name}
           onChangeText={text => setSelectedDatasetToEdit({...selectedDatasetToEdit, name: text})}
         >
@@ -165,7 +165,7 @@ const DatasetList = () => {
         title={'Confirm Delete!'}
         isVisible={isDeleteConfirmModalVisible}
         cancel={() => setIsDeleteConfirmModalVisible(false)}
-        delete={() => initializeDeleteDataset()}
+        deleteOverlay={() => initializeDeleteDataset()}
       >
         <Text style={{textAlign: 'center'}}>Are you sure you want to delete Dataset
           {selectedDatasetToEdit && selectedDatasetToEdit.name
@@ -194,7 +194,7 @@ const DatasetList = () => {
           useProject.makeDatasetCurrent(selectedDataset.id);
           setMakeIsDatasetCurrentModalVisible(false);
         }}
-        close={() => setMakeIsDatasetCurrentModalVisible(false)}
+        closeModal={() => setMakeIsDatasetCurrentModalVisible(false)}
       >
         <View>
           <Text style={overlayStyles.statusMessageText}>By selecting &quot;Yes&quot; any new data will be saved

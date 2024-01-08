@@ -5,33 +5,43 @@ import {Button, Overlay} from 'react-native-elements';
 
 import overlayStyles from '../../modules/home/overlays/overlay.styles';
 
-const StandardModal = (props) => {
+const StandardModal = ({
+                         children,
+                         closeModal,
+                         dialogTitle,
+                         footerButtonsVisible,
+                         leftButtonText,
+                         onPress,
+                         onTouchOutside,
+                         rightButtonText,
+                         visible,
+                       }) => {
   return (
     <Overlay
       animationType={'fade'}
-      isVisible={props.visible}
+      isVisible={visible}
       overlayStyle={overlayStyles.overlayContainer}
-      onBackdropPress={props.onTouchOutside}
+      onBackdropPress={onTouchOutside}
     >
       <View style={overlayStyles.titleContainer}>
-        <Text style={overlayStyles.titleText}>{props.dialogTitle}</Text>
+        <Text style={overlayStyles.titleText}>{dialogTitle}</Text>
       </View>
       <View style={overlayStyles.overlayContent}>
-        {props.children}
+        {children}
       </View>
-      {props.footerButtonsVisible && (
+      {footerButtonsVisible && (
         <View style={overlayStyles.buttonContainer}>
           <Button
-            title={props.rightButtonText || 'OK'}
+            title={rightButtonText || 'OK'}
             type={'clear'}
             titleStyle={overlayStyles.buttonText}
-            onPress={props.onPress}
+            onPress={onPress}
           />
           <Button
-            title={props.leftButtonText || 'Cancel'}
+            title={leftButtonText || 'Cancel'}
             titleStyle={overlayStyles.buttonText}
             type={'clear'}
-            onPress={props.close}
+            onPress={closeModal}
           />
         </View>
       )}

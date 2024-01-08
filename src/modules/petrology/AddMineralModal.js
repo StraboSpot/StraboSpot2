@@ -18,7 +18,7 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import Templates from '../templates/Templates';
 
-const AddMineralModal = (props) => {
+const AddMineralModal = ({onPress}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const templates = useSelector(state => state.project.project?.templates) || {};
@@ -120,9 +120,9 @@ const AddMineralModal = (props) => {
   const renderAddMineralModalContent = () => {
     return (
       <Modal
-        close={onCloseModalPressed}
+        closeModal={onCloseModalPressed}
         buttonTitleRight={choicesViewKey ? 'Done' : isShowTemplates ? '' : null}
-        onPress={props.onPress}
+        onPress={onPress}
       >
         {!choicesViewKey && (
           <Templates

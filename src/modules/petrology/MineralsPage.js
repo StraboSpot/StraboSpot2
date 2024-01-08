@@ -20,7 +20,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
-const MineralsPage = (props) => {
+const MineralsPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -50,19 +50,19 @@ const MineralsPage = (props) => {
   }, [selectedAttributes, spot]);
 
   const addMineral = () => {
-    dispatch(setModalVisible({modal: props.page.key}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const copyMineralData = (spotId) => {
     const spotToCopy = useSpots.getSpotById(spotId);
     if (!isEmpty(spotToCopy)) {
-      const mineralsToCopy = JSON.parse(JSON.stringify(spotToCopy.properties.pet[props.page.key]));
+      const mineralsToCopy = JSON.parse(JSON.stringify(spotToCopy.properties.pet[page.key]));
       mineralsToCopy.forEach((mineral, i) => {
         if (mineral.modal) delete mineralsToCopy[i].modal;
         mineralsToCopy[i].id = getNewCopyId();
       });
-      const updatedMinerals = spot.properties?.pet && spot.properties.pet[props.page.key]
-        ? [...spot.properties.pet[props.page.key], ...mineralsToCopy] : mineralsToCopy;
+      const updatedMinerals = spot.properties?.pet && spot.properties.pet[page.key]
+        ? [...spot.properties.pet[page.key], ...mineralsToCopy] : mineralsToCopy;
       const updatedPet = spot.properties?.pet ? {...spot.properties.pet, minerals: updatedMinerals}
         : {minerals: updatedMinerals};
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
@@ -82,7 +82,7 @@ const MineralsPage = (props) => {
   const getSpotsWithMinerals = () => {
     const allSpotsWithPet = useSpots.getSpotsWithKey('pet');
     setSpotsWithMinerals(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
-      && s.properties.pet && s.properties.pet[props.page.key]));
+      && s.properties.pet && s.properties.pet[page.key]));
   };
 
   const renderCopyDataSelectBox = () => {
@@ -101,7 +101,7 @@ const MineralsPage = (props) => {
               )}
               name={'spot_id_for_pet_copy'}
               key={'spot_id_for_pet_copy'}
-              label={'Copy ' + props.page.label + ' Data From:'}
+              label={'Copy ' + page.label + ' Data From:'}
               choices={spotsWithMinerals.map(s => ({label: s.properties.name, value: s.properties.id}))}
               single={true}
             />
@@ -112,19 +112,19 @@ const MineralsPage = (props) => {
   };
 
   const renderMineralsList = () => {
-    let mineralData = spot.properties.pet && spot.properties.pet[props.page.key] || [];
+    let mineralData = spot.properties.pet && spot.properties.pet[page.key] || [];
     if (!Array.isArray(mineralData)) mineralData = [];
     const mineralDataSorted = mineralData.slice().sort(
       (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)));
     return (
       <React.Fragment>
         <SectionDividerWithRightButton
-          dividerText={props.page.label}
+          dividerText={page.label}
           onPress={addMineral}
         />
         <FlatList
           data={mineralDataSorted}
-          renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editMineral}/>}
+          renderItem={({item}) => <BasicListItem page={page} item={item} editItem={editMineral}/>}
           keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
@@ -137,7 +137,7 @@ const MineralsPage = (props) => {
     return (
       <BasicPageDetail
         closeDetailView={() => setIsDetailView(false)}
-        page={props.page}
+        page={page}
         selectedFeature={selectedMineral}
         groupKey={'pet'}
       />

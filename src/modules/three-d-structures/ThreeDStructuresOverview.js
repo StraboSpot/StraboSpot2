@@ -9,7 +9,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const ThreeDStructuresOverview = (props) => {
+const ThreeDStructuresOverview = ({page}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -17,7 +17,7 @@ const ThreeDStructuresOverview = (props) => {
 
   const on3DStructurePressed = (threeDStructure) => {
     dispatch(setSelectedAttributes([threeDStructure]));
-    dispatch(setNotebookPageVisible(props.page.key));
+    dispatch(setNotebookPageVisible(page.key));
   };
 
   return (

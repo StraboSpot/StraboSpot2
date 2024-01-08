@@ -11,7 +11,7 @@ import {
 import {STRABO_APIS} from './urls.constants';
 import alert from '../shared/ui/alert';
 
-const useServerRequests = (props) => {
+const useServerRequests = () => {
   const dispatch = useDispatch();
   const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
 

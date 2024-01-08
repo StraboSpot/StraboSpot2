@@ -6,35 +6,45 @@ import {Button, Overlay} from 'react-native-elements';
 // import ProgressBar from 'react-native-progress/Bar';
 import overlayStyles from '../../../modules/home/overlays/overlay.styles';
 
-const ProgressModal = (props) => {
-
+const ProgressModal = ({
+                         animation,
+                         buttonText,
+                         children,
+                         dialogTitle,
+                         disabled,
+                         info,
+                         isProgressModalVisible,
+                         onPressComplete,
+                         showButton,
+                         showInfo,
+                       }) => {
   return (
     <Overlay
-      isVisible={props.isProgressModalVisible}
+      isVisible={isProgressModalVisible}
       animationType={'fade'}
       overlayStyle={overlayStyles.overlayContainer}
     >
       <View style={overlayStyles.titleContainer}>
-        <Text style={overlayStyles.titleText}>{props.dialogTitle}</Text>
+        <Text style={overlayStyles.titleText}>{dialogTitle}</Text>
       </View>
       <View>
-        {props.children}
+        {children}
       </View>
       <View style={overlayStyles.animationContainer}>
-        {props.animation}
+        {animation}
       </View>
 
-      {props.showInfo && (
+      {showInfo && (
         <View style={{flex: 1}}>
-          {props.info}
+          {info}
         </View>
       )}
-      {props.showButton && (
+      {showButton && (
         <Button
-          disabled={props.disabled}
-          onPress={props.onPressComplete}
+          disabled={disabled}
+          onPress={onPressComplete}
           type={'clear'}
-          title={props.buttonText || 'OK'}
+          title={buttonText || 'OK'}
           titleStyle={overlayStyles.buttonText}
         />
       )}

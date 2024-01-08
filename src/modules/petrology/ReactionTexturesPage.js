@@ -17,7 +17,7 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const ReactionTexturesPage = (props) => {
+const ReactionTexturesPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -42,7 +42,7 @@ const ReactionTexturesPage = (props) => {
   }, [selectedAttributes, spot]);
 
   const addReaction = () => {
-    dispatch(setModalVisible({modal: props.page.key}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const editReaction = (reaction) => {
@@ -68,7 +68,7 @@ const ReactionTexturesPage = (props) => {
     return (
       <BasicPageDetail
         closeDetailView={() => setIsDetailView(false)}
-        page={props.page}
+        page={page}
         selectedFeature={selectedReaction}
         groupKey={'pet'}
       />
@@ -90,17 +90,17 @@ const ReactionTexturesPage = (props) => {
           </ListItem>
         </View>
         <SectionDividerWithRightButton
-          dividerText={props.page.label}
+          dividerText={page.label}
           onPress={addReaction}
         />
         <FlatList
-          data={spot.properties.pet && spot.properties.pet[props.page.key]
-            && spot.properties.pet[props.page.key].slice().sort(
-              (a, b) => (a[props.page.key] || 'Unknown').localeCompare((b[props.page.key] || 'Unknown')))}
-          renderItem={({item}) => <BasicListItem page={props.page} item={item} editItem={editReaction}/>}
+          data={spot.properties.pet && spot.properties.pet[page.key]
+            && spot.properties.pet[page.key].slice().sort(
+              (a, b) => (a[page.key] || 'Unknown').localeCompare((b[page.key] || 'Unknown')))}
+          renderItem={({item}) => <BasicListItem page={page} item={item} editItem={editReaction}/>}
           keyExtractor={item => item.id.toString()}
           ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText text={'No ' + props.page.label.toLowerCase() + ' at this Spot.'}/>}
+          ListEmptyComponent={<ListEmptyText text={'No ' + page.label.toLowerCase() + ' at this Spot.'}/>}
         />
       </View>
     );

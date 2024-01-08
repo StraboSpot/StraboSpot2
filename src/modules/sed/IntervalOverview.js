@@ -7,7 +7,7 @@ import useSedHook from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 
-const IntervalOverview = (props) => {
+const IntervalOverview = ({page}) => {
   const dispatch = useDispatch();
   const character = useSelector(state => state.spot.selectedSpot.properties.sed?.character) || '';
   const interval = useSelector(state => state.spot.selectedSpot.properties.sed?.interval) || {};
@@ -18,7 +18,7 @@ const IntervalOverview = (props) => {
     <React.Fragment>
       <ListItem
         containerStyle={commonStyles.listItem}
-        onPress={() => dispatch(setNotebookPageVisible(props.page.key))}
+        onPress={() => dispatch(setNotebookPageVisible(page.key))}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>

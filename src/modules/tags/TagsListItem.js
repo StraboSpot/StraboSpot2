@@ -9,7 +9,10 @@ import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.con
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
 
-const TagsListItem = (props) => {
+const TagsListItem = ({
+                        openMainMenu,
+                        tag,
+                      }) => {
   const useTags = useTagsHook();
   const dispatch = useDispatch();
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
@@ -19,21 +22,21 @@ const TagsListItem = (props) => {
     dispatch(setSelectedTag(tag));
     if (tag.type === 'geologic_unit') dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS}));
     else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}));
-    if (!isMainMenuPanelVisible) props.openMainMenu();
+    if (!isMainMenuPanelVisible) openMainMenu();
   };
 
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
-      key={props.tag.id}
-      onPress={() => openTag(props.tag)}
+      key={tag.id}
+      onPress={() => openTag(tag)}
       pad={5}
     >
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{props.tag.name}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(props.tag.type)}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Chevron/>
     </ListItem>

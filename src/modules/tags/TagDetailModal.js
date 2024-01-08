@@ -13,7 +13,11 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
 
-const TagDetailModal = (props) => {
+const TagDetailModal = ({
+                          closeModal,
+                          isVisible,
+                          type,
+                        }) => {
   const {height} = useWindowDimensions();
 
   const dispatch = useDispatch();
@@ -40,7 +44,7 @@ const TagDetailModal = (props) => {
   };
 
   const deleteTag = () => {
-    props.closeModal();
+    closeModal();
     dispatch(setSidePanelVisible({bool: false}));
     useTags.deleteTag(selectedTag);
   };
@@ -49,7 +53,7 @@ const TagDetailModal = (props) => {
     return (
       <View>
         <SaveAndCloseButton
-          cancel={() => props.closeModal()}
+          cancel={() => closeModal()}
           save={() => saveFormAndClose()}
         />
       </View>
@@ -59,7 +63,7 @@ const TagDetailModal = (props) => {
   const saveFormAndClose = () => {
     useTags.saveForm().then(() => {
       console.log('Finished saving tag data');
-      props.closeModal();
+      closeModal();
     }, () => {
       console.log('Error saving tag data');
     });
@@ -67,7 +71,7 @@ const TagDetailModal = (props) => {
 
   return (
     <Overlay
-      isVisible={props.isVisible}
+      isVisible={isVisible}
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen
         : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
       fullScreen={SMALL_SCREEN}
@@ -78,7 +82,7 @@ const TagDetailModal = (props) => {
         <FlatList
           ListHeaderComponent={
             <React.Fragment>
-              {useTags.renderTagForm(props.type)}
+              {useTags.renderTagForm(type)}
               {!isEmpty(selectedTag) && <Button
                 titleStyle={{color: themes.RED}}
                 title={'Delete Tag'}

@@ -11,7 +11,7 @@ import IconButton from '../../../shared/ui/IconButton';
 import {NOTEBOOK_PAGES} from '../../page/page.constants';
 import usePageHoook from '../../page/usePage';
 
-const NotebookFooter = (props) => {
+const NotebookFooter = ({openPage}) => {
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
   const notebookPageVisible = useSelector(state => (
     !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
@@ -37,7 +37,7 @@ const NotebookFooter = (props) => {
           <IconButton
             key={key}
             source={getPageIcon(key)}
-            onPress={() => props.openPage(key)}
+            onPress={() => openPage(key)}
           />
         ))}
         <Button

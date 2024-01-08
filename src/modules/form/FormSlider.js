@@ -9,36 +9,46 @@ import SliderBar from '../../shared/ui/SliderBar';
 import uiStyles from '../../shared/ui/ui.styles';
 import {useFormHook} from '../form';
 
-const FormSlider = (props) => {
+const FormSlider = ({
+                      choices,
+                      fieldKey,
+                      formProps,
+                      hasNoneChoice,
+                      hasRotatedLabels,
+                      isHideLabels,
+                      labels,
+                      showSliderValue,
+                      survey,
+                    }) => {
   console.log('Rendering FormSlider...');
 
   const useForm = useFormHook();
 
-  const field = props.survey.find(f => f.name === props.fieldKey);
-  const choices = useForm.getChoicesByKey(props.survey, props.choices, props.fieldKey);
+  const field = survey.find(f => f.name === fieldKey);
+  const choicesList = useForm.getChoicesByKey(survey, choices, fieldKey);
 
   const [sliderValue, setSliderValue] = useState(5);
 
   const handleSliderValue = () => {
-    const value = choices.map(c => c.name);
-    const formPropsValues = props.formProps?.values[props.fieldKey];
+    const value = choicesList.map(c => c.name);
+    const formPropsValues = formProps?.values[fieldKey];
     const indexOfFormPropValues = value.indexOf(formPropsValues);
     console.log('formPropsValues', formPropsValues);
     console.log('indexOfFormPropValues', indexOfFormPropValues);
     // setSliderValue(b);
-    return indexOfFormPropValues === -1 ? choices.length : indexOfFormPropValues;
+    return indexOfFormPropValues === -1 ? choicesList.length : indexOfFormPropValues;
   };
 
   const onSlideComplete = async (value) => {
     console.log('value', value);
-    if (value < choices.length) {
-      const endValue = choices.map(c => c.name)[value];
+    if (value < choicesList.length) {
+      const endValue = choicesList.map(c => c.name)[value];
       console.log('Actual End Value', endValue);
-      props.formProps?.setFieldValue(props.fieldKey, endValue);
+      formProps?.setFieldValue(fieldKey, endValue);
       setSliderValue(endValue);
     }
     else {
-      props.formProps?.setFieldValue(props.fieldKey, undefined);
+      formProps?.setFieldValue(fieldKey, undefined);
       setSliderValue(undefined);
     }
   };
@@ -54,23 +64,23 @@ const FormSlider = (props) => {
       <View style={{backgroundColor: SECONDARY_BACKGROUND_COLOR, padding: 10, paddingTop: 0}}>
         <SliderBar
           onSlidingComplete={value => onSlideComplete(value)}
-          // value={choices.map(c => c.name).indexOf(props.formProps?.values[props.fieldKey])}
+          // value={choicesList.map(c => c.name).indexOf(formProps?.values[fieldKey])}
           value={handleSliderValue()}
           step={1}
           minimumValue={0}
-          maximumValue={props.hasNoneChoice ? choices.length : choices.length - 1}
-          labels={props.labels ? props.labels
-            : props.hasNoneChoice ? [...choices.map(c => c.label), 'N/R']
-              : choices.map(c => c.label)}
-          rotateLabels={props.hasRotatedLabels}
-          isHideLabels={props.isHideLabels}
+          maximumValue={hasNoneChoice ? choicesList.length : choicesList.length - 1}
+          labels={labels ? labels
+            : hasNoneChoice ? [...choicesList.map(c => c.label), 'N/R']
+              : choicesList.map(c => c.label)}
+          rotateLabels={hasRotatedLabels}
+          isHideLabels={isHideLabels}
           thumbTintColor={(!sliderValue || sliderValue === 5) && 'lightgrey'}
         />
-        {props.showSliderValue && (
+        {showSliderValue && (
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
             <Text style={uiStyles.sliderLabel}>
-              {props.formProps.values[props.fieldKey]
-                ? choices.find(c => c.name === props.formProps.values[props.fieldKey]).label
+              {formProps.values[fieldKey]
+                ? choicesList.find(c => c.name === formProps.values[fieldKey]).label
                 : 'Not Recorded'}
             </Text>
           </View>

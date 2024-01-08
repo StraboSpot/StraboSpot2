@@ -10,30 +10,36 @@ import {COMPASS_TOGGLE_BUTTONS} from '../../compass/compass.constants';
 import {setCompassMeasurementTypes} from '../../compass/compass.slice';
 import {formStyles, useFormHook} from '../../form';
 
-const ThreeDStructuresMeasurementsButtons = (props) => {
+const ThreeDStructuresMeasurementsButtons = ({
+                                               formProps,
+                                               measurementsKeys,
+                                               setIsMeasurementsModalVisible,
+                                               setMeasurementsGroupField,
+                                               survey,
+                                             }) => {
   const dispatch = useDispatch();
 
   const useForm = useFormHook();
 
-  const groupFields = Object.keys(props.measurementsKeys).map(k => props.survey.find(f => f.name === k));
+  const groupFields = Object.keys(measurementsKeys).map(k => survey.find(f => f.name === k));
 
   const addMeasurement = (groupField) => {
-    props.setIsMeasurementsModalVisible(true);
-    props.setMeasurementsGroupField(groupField);
-    const groupKeys = props.measurementsKeys[groupField.name];
+    setIsMeasurementsModalVisible(true);
+    setMeasurementsGroupField(groupField);
+    const groupKeys = measurementsKeys[groupField.name];
     if (groupKeys.strike) dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.PLANAR]));
     else dispatch(setCompassMeasurementTypes([COMPASS_TOGGLE_BUTTONS.LINEAR]));
   };
 
   const isGroupEmpty = (groupField) => {
-    const relevantFields = useForm.getGroupFields(props.survey, groupField.name);
-    return !relevantFields.some(f => !isEmpty(props.formProps.values[f.name]));
+    const relevantFields = useForm.getGroupFields(survey, groupField.name);
+    return !relevantFields.some(f => !isEmpty(formProps.values[f.name]));
   };
 
   const buttonText = (field) => {
     const getValueText = () => {
-      const values = props.formProps.values;
-      const groupKeys = props.measurementsKeys[field.name];
+      const values = formProps.values;
+      const groupKeys = measurementsKeys[field.name];
       if (groupKeys.strike) {
         const strike = values[groupKeys.strike];
         const dip = values[groupKeys.dip];

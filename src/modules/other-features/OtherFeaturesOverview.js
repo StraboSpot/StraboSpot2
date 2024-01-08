@@ -9,7 +9,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const OtherFeaturesOverview = (props) => {
+const OtherFeaturesOverview = ({page}) => {
   const dispatch = useDispatch();
   const featuresData = useSelector(state => state.spot.selectedSpot.properties.other_features);
 
@@ -18,7 +18,7 @@ const OtherFeaturesOverview = (props) => {
       <OtherFeatureItem
         feature={feature}
         editFeature={() => {
-          dispatch(setNotebookPageVisible(props.page.key));
+          dispatch(setNotebookPageVisible(page.key));
           dispatch(setSelectedAttributes([feature]));
         }}
       />

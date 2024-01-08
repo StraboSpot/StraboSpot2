@@ -7,7 +7,7 @@ import ImageInfo from '../modules/images/ImageInfo';
 import ImageSlider from '../modules/images/ImageSlider';
 import Sketch from '../modules/sketch/Sketch';
 
-const AppStack = (props) => {
+const AppStack = () => {
 
   const Stack = createStackNavigator();
 

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,18 +12,17 @@ import useImagesHook from '../images/useImages';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';
 
-const Sketch = (props) => {
+const Sketch = ({navigation, route}) => {
   const dispatch = useDispatch();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const useImages = useImagesHook();
-  const navigation = useNavigation();
 
   const [imageId, setImageId] = useState(null);
 
   useEffect(() => {
     console.log('UE Sketch [imageId]', imageId);
-    if (props.route.params?.imageId) setImageId(props.route.params.imageId);
+    if (route.params?.imageId) setImageId(route.params.imageId);
   }, [imageId]);
 
   const saveSketch = async (success, path) => {
@@ -81,7 +79,7 @@ const Sketch = (props) => {
           defaultStrokeWidth={1}
           onClosePressed={() => {
             dispatch(setModalVisible({modal: null}));
-            props.navigation.goBack();
+            navigation.goBack();
           }}
           onSketchSaved={(success, path) => saveSketch(success, path)}
           closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}

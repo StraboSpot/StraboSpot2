@@ -22,7 +22,10 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useSedHook from '../sed/useSed';
 import Templates from '../templates/Templates';
 
-const AddRockModal = (props) => {
+const AddRockModal = ({
+                        modalKey,
+                        onPress,
+                      }) => {
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -43,8 +46,8 @@ const AddRockModal = (props) => {
 
   const areMultipleTemplates = templates[rockKey] && templates[rockKey].isInUse && templates[rockKey].active
     && templates[rockKey].active.length > 1;
-  const groupKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
-  const pageKey = props.modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : props.modalKey;
+  const groupKey = modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? 'sed' : 'pet';
+  const pageKey = modalKey === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : modalKey;
   const types = Object.values(IGNEOUS_ROCK_CLASSES);
 
   useLayoutEffect(() => {
@@ -125,9 +128,9 @@ const AddRockModal = (props) => {
   const renderAddRockModalContent = () => {
     return (
       <Modal
-        close={onCloseModalPressed}
+        closeModal={onCloseModalPressed}
         buttonTitleRight={choicesViewKey ? 'Done' : isShowTemplates ? '' : null}
-        onPress={props.onPress}
+        onPress={onPress}
       >
         {Object.values(IGNEOUS_ROCK_CLASSES).includes(rockKey) && !choicesViewKey && !isShowTemplates && (
           <ButtonGroup

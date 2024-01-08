@@ -7,11 +7,14 @@ import usePageHoook from '../../modules/page/usePage';
 import {useTagsHook} from '../../modules/tags';
 import {isEmpty} from '../Helpers';
 
-function FeatureTagsList(props) {
+function FeatureTagsList({
+                           featureId,
+                           spotId,
+                         }) {
   const usePage = usePageHoook();
   const useTags = useTagsHook();
 
-  const tags = useTags.getTagsAtFeature(props.spotId, props.featureId);
+  const tags = useTags.getTagsAtFeature(spotId, featureId);
   const tagsString = tags.map(tag => tag.name).sort().join(', ');
 
   return (

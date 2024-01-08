@@ -10,7 +10,7 @@ import useServerRequestsHook from './useServerRequests';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 
-const useDevice = (props) => {
+const useDevice = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
 

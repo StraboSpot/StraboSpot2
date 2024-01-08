@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
@@ -22,29 +21,21 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 
-const ProjectList = (props) => {
+const ProjectList = ({source}) => {
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.connections.databaseEndpoint);
   const isInitialProjectLoadModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const [isDeleteConformationModalVisible, setIsDeleteConformationModalVisible] = useState(false);
-  const [isImportOverlayVisible, setIsImportOverlayVisible] = useState(false);
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
-  const [externalStorageProjects, setExternalStorageProjects] = useState([]); //For Android Downloads folder/
   const [projectsArr, setProjectsArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [selectedProjectToDelete, setSelectedProjectToDelete] = useState(null);
-  const [passwordInputVal, setPasswordTextInputVal] = useState('');
 
-
-  const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const [useProject] = useProjectHook();
   const useImport = useImportHook();
@@ -60,7 +51,7 @@ const ProjectList = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE ProjectList [props.source]', props.source);
+    console.log('UE ProjectList [source]', source);
     getAllProjects().then(() => console.log('OK got projects'));
     console.log('Project Options Modal Visible', isProjectOptionsModalVisible);
     return () => {
@@ -71,21 +62,21 @@ const ProjectList = (props) => {
 
   const handleStateChange = async (state) => {
     state === 'active'
-    && props.source === 'device'
+    && source === 'device'
     && getAllProjects().then(() => console.log('Updated Project List'));
   };
 
   const getAllProjects = async () => {
     let projectsResponse;
     setLoading(true);
-    if (props.source === 'server') {
+    if (source === 'server') {
       projectsResponse = await useProject.getAllServerProjects();
     }
-    else if (props.source === 'device') {
+    else if (source === 'device') {
       projectsResponse = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
       console.log('Device Files', projectsResponse);
     }
-    // if (Platform.OS === 'android' && props.source === 'exports') {
+    // if (Platform.OS === 'android' && source === 'exports') {
     //   // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
     //   // console.log(exists);
     //   // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
@@ -95,7 +86,7 @@ const ProjectList = (props) => {
     //   console.log('Exported Projects', externalStorageProjectsResponse);
     // }
     if (!projectsResponse) {
-      if (props.source === 'device') {
+      if (source === 'device') {
         dispatch(doesBackupDirectoryExist(false));
         setIsError(true);
         setErrorMessage('Cannot find a backup directory on this device...');
@@ -113,8 +104,8 @@ const ProjectList = (props) => {
 
   const reloadingList = async (isDeleted) => {
     if (isDeleted) {
-      if (props.source === 'server') setProjectsArr(await useProject.getAllServerProjects());
-      else if (props.source === 'device') {
+      if (source === 'server') setProjectsArr(await useProject.getAllServerProjects());
+      else if (source === 'device') {
         const newArr = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
         setProjectsArr(newArr);
       }
@@ -124,7 +115,7 @@ const ProjectList = (props) => {
 
   const initializeProjectOptions = async (project) => {
     // const projectName;
-    dispatch(setSelectedProject({project: project, source: props.source}));
+    dispatch(setSelectedProject({project: project, source: source}));
     if (isInitialProjectLoadModalVisible) {
       dispatch(setSelectedProject({project: '', source: ''}));
       const res = await loadSelectedProject(project);
@@ -137,12 +128,12 @@ const ProjectList = (props) => {
     console.log('Selected Project:', project);
     setLoading(true);
     if (!isEmpty(currentProject)) {
-      dispatch(setSelectedProject({project: project, source: props.source}));
+      dispatch(setSelectedProject({project: project, source: source}));
     }
     else {
       console.log('Getting project...');
       if (!isEmpty(project)) useProject.destroyOldProject();
-      if (props.source === 'device') {
+      if (source === 'device') {
         dispatch(setProjectLoadSelectionModalVisible(false));
         const res = await useImport.loadProjectFromDevice(project.fileName);
         setLoading(false);
@@ -159,7 +150,7 @@ const ProjectList = (props) => {
         currentProject={currentProject}
         endpoint={endPoint}
         visible={isProjectOptionsModalVisible}
-        close={() => setIsProjectOptionsModalVisible(false)}
+        closeModal={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
         projectDeleted={value => reloadingList(value)}
        />
@@ -181,12 +172,12 @@ const ProjectList = (props) => {
         key={item.id}
         onPress={() => initializeProjectOptions(item)}
         containerStyle={commonStyles.listItem}
-        disabled={!isOnline.isConnected && props.source !== 'device'}
+        disabled={!isOnline.isConnected && source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
-            {props.source === 'server' ? item.name : item.fileName}
+            {source === 'server' ? item.name : item.fileName}
           </ListItem.Title>
           <ListItem.Subtitle style={commonStyles.listItemSubtitle}>Updated: {modifiedTimeAndDate}</ListItem.Subtitle>
         </ListItem.Content>
@@ -200,7 +191,7 @@ const ProjectList = (props) => {
       return (
         <View style={{flex: 1}}>
           <View style={{paddingBottom: 0}}>
-            <SectionDivider dividerText={props.source === 'device' ? 'Saved Projects' : 'Projects to Import'}/>
+            <SectionDivider dividerText={source === 'device' ? 'Saved Projects' : 'Projects to Import'}/>
           </View>
           <FlatList
             keyExtractor={item => item.id.toString()}
@@ -209,7 +200,7 @@ const ProjectList = (props) => {
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={
               <View>
-                {props.source === 'server' ? (
+                {source === 'server' ? (
                     <Button
                       title={'Retry'}
                       onPress={() => getAllProjects()}
@@ -255,7 +246,7 @@ const ProjectList = (props) => {
     <View style={{flex: 1}}>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
-      {/*{Platform.OS === 'android' && props.source === 'device' && renderProjectListAndroidsDownloads()}*/}
+      {/*{Platform.OS === 'android' && source === 'device' && renderProjectListAndroidsDownloads()}*/}
       {renderProjectOptionsModal()}
       {/*{renderImportOverlay()}*/}
     </View>

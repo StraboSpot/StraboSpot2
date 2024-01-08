@@ -4,7 +4,7 @@ import {Text} from 'react-native';
 import {toTitleCase} from '../../shared/Helpers';
 import {useFormHook} from '../form';
 
-const ThreeDStructureLabel = (props) => {
+const ThreeDStructureLabel = ({item}) => {
   const useForm = useFormHook();
 
   const getTitle = (threeDStructure) => {
@@ -15,7 +15,7 @@ const ThreeDStructureLabel = (props) => {
   };
 
   return (
-    <Text>{getTitle(props.item)}</Text>
+    <Text>{getTitle(item)}</Text>
   );
 };
 export default ThreeDStructureLabel;

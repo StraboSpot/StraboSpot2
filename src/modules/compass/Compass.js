@@ -23,7 +23,14 @@ import {setModalVisible} from '../home/home.slice';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import {MODAL_KEYS} from '../page/page.constants';
 
-const Compass = (props) => {
+const Compass = ({
+                   closeCompass,
+                   setAttributeMeasurements,
+                   setCompassRawDataToDisplay,
+                   setMeasurements,
+                   showCompassDataModal,
+                   sliderValue,
+                 }) => {
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
   const compassMeasurements = useSelector(state => state.compass.measurements);
@@ -83,9 +90,9 @@ const Compass = (props) => {
   }, [compassMeasurements]);
 
   const addAttributeMeasurement = (data) => {
-    const sliderQuality = props.sliderValue ? {quality: props.sliderValue.toString()} : undefined;
-    props.setAttributeMeasurements({...data, ...sliderQuality});
-    props.closeCompass();
+    const sliderQuality = sliderValue ? {quality: sliderValue.toString()} : undefined;
+    setAttributeMeasurements({...data, ...sliderQuality});
+    closeCompass();
   };
 
   const displayCompassData = () => {
@@ -106,11 +113,11 @@ const Compass = (props) => {
           });
         }
         const unixTimestamp = Date.now();
-        const sliderQuality = !props.sliderValue || props.sliderValue === 6 ? {} : {quality: props.sliderValue.toString()};
-        console.log('Compass measurements', compassData, props.sliderValue);
-        if (props.setAttributeMeasurements) addAttributeMeasurement(compassData);
-        else if (props.setMeasurements) {
-          props.setMeasurements({...compassData, ...sliderQuality, unix_timestamp: unixTimestamp});
+        const sliderQuality = !sliderValue || sliderValue === 6 ? {} : {quality: sliderValue.toString()};
+        console.log('Compass measurements', compassData, sliderValue);
+        if (setAttributeMeasurements) addAttributeMeasurement(compassData);
+        else if (setMeasurements) {
+          setMeasurements({...compassData, ...sliderQuality, unix_timestamp: unixTimestamp});
         }
         else {
           dispatch(setCompassMeasurements(compassData.quality ? compassData
@@ -231,14 +238,14 @@ const Compass = (props) => {
         <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
         {renderCompassSymbols()}
       </TouchableOpacity>
-      {props.setCompassRawDataToDisplay && (
+      {setCompassRawDataToDisplay && (
         <Button
           containerStyle={{position: 'absolute', bottom: 0, right: 0, width: 75}}
           titleStyle={{fontSize: 10}}
           title={'Display Compass Data'}
           type={'clear'}
-          onPress={props.showCompassDataModal}
-          compassData={props.setCompassRawDataToDisplay(compassData)}
+          onPress={showCompassDataModal}
+          compassData={setCompassRawDataToDisplay(compassData)}
         />
       )}
     </View>

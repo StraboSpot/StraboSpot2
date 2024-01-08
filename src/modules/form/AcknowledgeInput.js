@@ -6,24 +6,31 @@ import {Icon} from 'react-native-elements';
 import {formStyles} from './index';
 import * as themes from '../../shared/styles.constants';
 
-const AcknowledgeInput = (props) => {
+const AcknowledgeInput = ({
+                            label,
+                            name,
+                            onShowFieldInfo,
+                            placeholder,
+                            setFieldValue,
+                            value,
+                          }) => {
   return (
     <React.Fragment>
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
         <View>
           <Switch
-            value={props.value}
-            onValueChange={bool => props.setFieldValue(props.name, bool)}
+            value={value}
+            onValueChange={bool => setFieldValue(name, bool)}
           />
         </View>
         <View style={[formStyles.fieldLabelContainer, {flex: 1}]}>
-          <Text style={formStyles.fieldLabel}>{props.label}</Text>
-          {props.placeholder && (
+          <Text style={formStyles.fieldLabel}>{label}</Text>
+          {placeholder && (
             <Icon
               name={'information-circle-outline'}
               type={'ionicon'}
               color={themes.PRIMARY_ACCENT_COLOR}
-              onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
+              onPress={() => onShowFieldInfo(label, placeholder)}
             />
           )}
         </View>

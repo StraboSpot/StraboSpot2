@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import styles from '../page/ui/ui.styles';
 
-const MineralsGlossary = (props) => {
+const MineralsGlossary = ({addMineral}) => {
   const [activeMineralInfo, setActiveMineralInfo] = useState({});
 
   const chunk = (input, size) => {
@@ -33,7 +33,7 @@ const MineralsGlossary = (props) => {
             titleStyle={styles.buttonText}
             title={'Add Mineral'}
             type={'clear'}
-            onPress={() => props.addMineral(activeMineralInfo)}
+            onPress={() => addMineral(activeMineralInfo)}
           />
         </View>
         {Object.entries(activeMineralInfo).map(([field, value]) => {

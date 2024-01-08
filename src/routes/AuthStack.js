@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import SignIn from '../modules/sign-in/SignIn';
 import SignUp from '../modules/sign-up/SignUp';
 
-const AuthStack = (props) => {
+const AuthStack = () => {
 
   const Stack = createStackNavigator();
 

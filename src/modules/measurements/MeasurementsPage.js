@@ -21,7 +21,7 @@ import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/com
 import {setModalVisible} from '../home/home.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const MeasurementsPage = (props) => {
+const MeasurementsPage = ({page}) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -76,7 +76,7 @@ const MeasurementsPage = (props) => {
 
   const addMeasurement = (type) => {
     dispatch(setCompassMeasurementTypes(SECTIONS[type].compass_toggles));
-    dispatch(setModalVisible({modal: props.page.key}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const deleteMeasurements = (measurementsToDelete) => {
@@ -247,7 +247,7 @@ const MeasurementsPage = (props) => {
     return (
       <MeasurementDetail
         closeDetailView={() => setIsDetailView(false)}
-        page={props.page}
+        page={page}
       />
     );
   };

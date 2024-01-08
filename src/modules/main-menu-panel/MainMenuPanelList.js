@@ -9,7 +9,10 @@ import {toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 
-const MainMenuPanelList = (props) => {
+const MainMenuPanelList = ({
+                             activeProject,
+                             onPress,
+                           }) => {
 
   const renderMenuListItem = (name) => {
     if (name !== MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT && name !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS
@@ -18,12 +21,12 @@ const MainMenuPanelList = (props) => {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => props.onPress(name)}
+          onPress={() => onPress(name)}
         >
           <ListItem.Content>
             {<ListItem.Title style={commonStyles.listItemTitle}>
               {name === MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS
-                ? MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS + ` (${props.activeProject})`
+                ? MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS + ` (${activeProject})`
                 : name
               }
             </ListItem.Title>}

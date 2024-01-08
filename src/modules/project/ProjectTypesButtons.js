@@ -11,10 +11,14 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import overlayStyles from '../home/overlays/overlay.styles';
 
-const ProjectTypesButtons = (props) => {
+const ProjectTypesButtons = ({
+                               onLoadProjectsFromDevice,
+                               onLoadProjectsFromDownloadsFolder,
+                               onLoadProjectsFromServer,
+                               onStartNewProject,
+                             }) => {
   const user = useSelector(state => state.user);
   const deviceBackUpDirectoryExists = useSelector(state => state.project.deviceBackUpDirectoryExists);
-  const downloadsDirectoryExists = useSelector(state => state.project.downloadsDirectory);
 
   const [backupFiles, setBackupFiles] = useState([]);
   const [exportedFiles, setExportedFiles] = useState([]);
@@ -53,21 +57,21 @@ const ProjectTypesButtons = (props) => {
         containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
-        onPress={() => props.onStartNewProject()}
+        onPress={() => onStartNewProject()}
       />
       {!isEmpty(user.name) && <Button
         title={'Projects From Server'}
         containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
-        onPress={() => props.onLoadProjectsFromServer()}
+        onPress={() => onLoadProjectsFromServer()}
       />}
       {deviceBackUpDirectoryExists && <Button
         title={'Projects From Device'}
         containerStyle={commonStyles.standardButtonContainer}
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
-        onPress={() => props.onLoadProjectsFromDevice()}
+        onPress={() => onLoadProjectsFromDevice()}
       />}
        <View>
           <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>When importing, select the data.json
@@ -78,7 +82,7 @@ const ProjectTypesButtons = (props) => {
             containerStyle={commonStyles.standardButtonContainer}
             buttonStyle={commonStyles.standardButton}
             titleStyle={commonStyles.standardButtonText}
-            onPress={() => props.onLoadProjectsFromDownloadsFolder()}
+            onPress={() => onLoadProjectsFromDownloadsFolder()}
           />
         </View>
     </View>

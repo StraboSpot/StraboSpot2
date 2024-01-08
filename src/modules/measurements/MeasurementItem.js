@@ -10,7 +10,12 @@ import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
 
 // Render a measurement item in a list
-const MeasurementItem = (props) => {
+const MeasurementItem = ({
+                           isDetail,
+                           item,
+                           onPress,
+                           selectedIds,
+                         }) => {
 
   const spot = useSelector(state => state.spot.selectedSpot);
   const useTags = useTagsHook();
@@ -24,32 +29,32 @@ const MeasurementItem = (props) => {
 
   const onMeasurementPress = () => {
     if (isMultipleFeaturesTaggingEnabled) {
-      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(props.item));
+      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(item));
     }
-    else props.onPress();
+    else onPress();
   };
 
   return (
     <React.Fragment>
-      {typeof (props.item) !== 'undefined' && (
+      {typeof (item) !== 'undefined' && (
         <ListItem
-          containerStyle={props.selectedIds.includes(props.item.id) ? commonStyles.listItemInverse
+          containerStyle={selectedIds.includes(item.id) ? commonStyles.listItemInverse
             : [commonStyles.listItem, {
               backgroundColor: featureSelectedForTagging
                 ? themes.PRIMARY_ACCENT_COLOR : themes.SECONDARY_BACKGROUND_COLOR,
             }]}
-          key={props.item.id}
+          key={item.id}
           onPress={() => onMeasurementPress()}
           pad={5}
         >
           <ListItem.Content>
             <ListItem.Title
-              style={props.selectedIds.includes(props.item.id) ? commonStyles.listItemTitleInverse
+              style={selectedIds.includes(item.id) ? commonStyles.listItemTitleInverse
                 : commonStyles.listItemTitle}
             >
-              <MeasurementLabel item={props.item} isDetail={props.isDetail}/>
+              <MeasurementLabel item={item} isDetail={isDetail}/>
             </ListItem.Title>
-            <FeatureTagsList spotId={spot.properties.id} featureId={props.item.id}/>
+            <FeatureTagsList spotId={spot.properties.id} featureId={item.id}/>
           </ListItem.Content>
           <ListItem.Chevron/>
         </ListItem>

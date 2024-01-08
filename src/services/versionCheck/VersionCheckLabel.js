@@ -4,7 +4,7 @@ import {Alert, Animated, Linking, Platform, Pressable, Text, View} from 'react-n
 import styles from './versionCheck.styles';
 import VersionCheckHook from '../versionCheck/useVersionCheck';
 
-const VersionCheckLabel = (props) => {
+const VersionCheckLabel = () => {
   const [versionObj, setVersionObj] = useState({});
   const animatedPulse = useMemo(() => new Animated.Value(0), []);
 

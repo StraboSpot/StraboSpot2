@@ -59,7 +59,7 @@ const Miscellaneous = () => {
       dialogTitle={'Enter Password'}
       footerButtonsVisible={true}
       onPress={verifyPassword}
-      close={closeModal}
+      closeModal={closeModal}
     >
       <Text style={overlayStyles.importantText}>
         Data saved under pages that are in testing may NOT be compatible with future versions of StraboSpot.

@@ -8,7 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 
-const SamplesList = (props) => {
+const SamplesList = ({onPress}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const samples = spot?.properties?.samples || [];
@@ -19,7 +19,7 @@ const SamplesList = (props) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={item.id}
-        onPress={() => props.onPress(item)}
+        onPress={() => onPress(item)}
         pad={5}
       >
         <ListItem.Content>

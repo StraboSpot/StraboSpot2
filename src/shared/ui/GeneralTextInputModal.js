@@ -6,49 +6,70 @@ import {Button, Input, Overlay} from 'react-native-elements';
 import overlayStyles from '../../modules/home/overlays/overlay.styles';
 import * as themes from '../styles.constants';
 
-const TextInputModal = (props) => {
+const TextInputModal = ({
+                          autoCapitalize,
+                          buttonText,
+                          children,
+                          closeModal,
+                          dialogTitle,
+                          errorMessage,
+                          keyboardType,
+                          multiline,
+                          onChangeText,
+                          onPress,
+                          onSubmitEditing,
+                          onTouchOutside,
+                          overlayButtonText,
+                          overlayTitleText,
+                          placeholder,
+                          renderErrorMessage,
+                          style,
+                          textAboveInput,
+                          value,
+                          visible,
+                        }) => {
   return (
     <Overlay
       animationType={'fade'}
-      isVisible={props.visible}
+      isVisible={visible}
       overlayStyle={[overlayStyles.overlayContainer]}
-      onBackdropPress={props.onTouchOutside}
+      onBackdropPress={onTouchOutside}
       backdropStyle={{backgroundColor: 'transparent'}}
     >
-      <View style={[overlayStyles.titleContainer, props.style]}>
-        <Text style={[overlayStyles.titleText, props.overlayTitleText]}>{props.dialogTitle}</Text>
+      <View style={[overlayStyles.titleContainer, style]}>
+        <Text style={[overlayStyles.titleText, overlayTitleText]}>{dialogTitle}</Text>
       </View>
       <View>
-        {props.textAboveInput}
+        {textAboveInput}
         <Input
-          autoCapitalize={props.autoCapitalize || 'none'}
-          multiline={props.multiline}
-          value={props.value || ''}
+          autoCapitalize={autoCapitalize || 'none'}
+          multiline={multiline}
+          value={value || ''}
           enterKeyHint={'done'}
-          keyboardType={props.keyboardType}
+          keyboardType={keyboardType}
           inputContainerStyle={overlayStyles.inputContainer}
-          onChangeText={props.onChangeText}
-          placeholder={props.placeholder || 'Enter text here...'}
+          onChangeText={onChangeText}
+          placeholder={placeholder || 'Enter text here...'}
           placeholderTextColor={themes.MEDIUMGREY}
-          errorMessage={props.errorMessage}
-          renderErrorMessage={props.renderErrorMessage}
-          onSubmitEditing={props.onSubmitEditing}
-          style={[{textAlignVertical: 'top'}, props.multiline ? {height: 100} : {height: 40}]}
+          errorMessage={errorMessage}
+          renderErrorMessage={renderErrorMessage}
+          onSubmitEditing={onSubmitEditing}
+          style={[{textAlignVertical: 'top'}, multiline ? {height: 100} : {height: 40}]}
         />
-        {props.children}
+        {children}
       </View>
       <View style={overlayStyles.buttonContainer}>
         <Button
-          title={props.buttonText || 'Save'}
+          title={buttonText || 'Save'}
           type={'clear'}
-          titleStyle={[overlayStyles.buttonText, props.overlayButtonText]}
-          onPress={props.onPress}
+          titleStyle={[overlayStyles.buttonText, overlayButtonText]}
+          onPress={onPress}
         />
         <Button
           title={'Cancel'}
           type={'clear'}
           titleStyle={overlayStyles.buttonText}
-          onPress={props.close}
+          onPress={closeModal}
         />
       </View>
     </Overlay>

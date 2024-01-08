@@ -17,7 +17,11 @@ import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible}
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 
-const UrlData = (props) => {
+const UrlData = ({
+                   editable,
+                   initializeDelete,
+                   spot,
+                 }) => {
   const useDevice = useDeviceHook();
   const dispatch = useDispatch();
   const [urlToEdit, setUrlToEdit] = useState({});
@@ -25,7 +29,7 @@ const UrlData = (props) => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   const editUrl = (inURLToEdit, i) => {
-    if (props.editable) {
+    if (editable) {
       setUrlToEdit({index: i, url: inURLToEdit});
       setIsEditModalVisible(true);
     }
@@ -40,7 +44,7 @@ const UrlData = (props) => {
         dialogTitle={'Edit Url'}
         visible={isEditModalVisible}
         onPress={() => saveEdits()}
-        close={() => setIsEditModalVisible(false)}
+        closeModal={() => setIsEditModalVisible(false)}
         value={urlToEdit.url}
         onChangeText={text => setUrlToEdit({...urlToEdit, url: text})}
       />
@@ -72,11 +76,11 @@ const UrlData = (props) => {
                 />
               }
             />
-            {props.editable && (
+            {editable && (
               <Button
                 buttonStyle={externalDataStyles.iconButton}
                 type={'clear'}
-                onPress={() => props.initializeDelete('url', urlItem)}
+                onPress={() => initializeDelete('url', urlItem)}
                 icon={
                   <Icon
                     name={'trash'}
@@ -113,7 +117,7 @@ const UrlData = (props) => {
       <FlatList
         listKey={'urls'}
         keyExtractor={index => index}
-        data={props.spot.properties?.data?.urls}
+        data={spot.properties?.data?.urls}
         renderItem={({item, index}) => renderUrlListItem(item, index)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No URLs saved'}/>}

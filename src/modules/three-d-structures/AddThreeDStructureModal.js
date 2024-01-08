@@ -19,7 +19,7 @@ import {setModalValues, setModalVisible} from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const AddThreeDStructureModal = (props) => {
+const AddThreeDStructureModal = ({onPress}) => {
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -123,9 +123,9 @@ const AddThreeDStructureModal = (props) => {
     const formName = [groupKey, types[selectedTypeIndex]];
     return (
       <Modal
-        close={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
+        closeModal={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
         buttonTitleRight={choicesViewKey && 'Done'}
-        onPress={props.onPress}
+        onPress={onPress}
       >
         <React.Fragment>
           <FlatList

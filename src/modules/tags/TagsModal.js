@@ -21,7 +21,10 @@ import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice';
 import {TagDetailModal, useTagsHook} from '../tags';
 
-const TagsModal = (props) => {
+const TagsModal = ({
+                     goToCurrentLocation,
+                     isFeatureLevelTagging,
+                   }) => {
   const toast = useToast();
   const useTags = useTagsHook();
   const useLocation = useLocationHook();
@@ -80,11 +83,10 @@ const TagsModal = (props) => {
             tagsToUpdate.push(tag);
           });
           useTags.saveTag(tagsToUpdate);
-          props.goToCurrentLocation();
+          goToCurrentLocation();
         });
       }
       else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
-      // if (props.close) props.close();
       dispatch(setModalVisible({modal: null}));
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show('Tags Saved!', {type: 'success'});
@@ -164,7 +166,7 @@ const TagsModal = (props) => {
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
-        {(!props.isFeatureLevelTagging) && (
+        {(!isFeatureLevelTagging) && (
           <ListItem.CheckBox
             checked={(modalVisible && modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
               && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
@@ -178,15 +180,15 @@ const TagsModal = (props) => {
               : checkTags(tag)}
           />
         )}
-        {(props.isFeatureLevelTagging) && (
+        {(isFeatureLevelTagging) && (
           <ListItem.CheckBox
             checked={!isMultipleFeaturesTaggingEnabled
               ? tag.features && tag.features[selectedSpot.properties.id] && selectedFeature
               && tag.features[selectedSpot.properties.id].includes(selectedFeature.id) : isAlreadyChecked
             }
             onPress={() => !isMultipleFeaturesTaggingEnabled ? useTags.addRemoveTag(tag, selectedSpot,
-                props.isFeatureLevelTagging)
-              : useTags.addRemoveTag(tag, selectedSpot, props.isFeatureLevelTagging, isAlreadyChecked)}
+                isFeatureLevelTagging)
+              : useTags.addRemoveTag(tag, selectedSpot, isFeatureLevelTagging, isAlreadyChecked)}
           />
         )}
       </ListItem>

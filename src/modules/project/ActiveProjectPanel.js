@@ -68,7 +68,7 @@ const ActiveProjectPanel = () => {
         visible={isAddDatasetModalVisible}
         dialogTitle={'Add a Dataset'}
         onPress={() => onAddDataset()}
-        close={() => setIsAddDatasetModalVisible(false)}
+        closeModal={() => setIsAddDatasetModalVisible(false)}
         value={datasetName}
         onChangeText={text => setDatasetName(text)}
       />

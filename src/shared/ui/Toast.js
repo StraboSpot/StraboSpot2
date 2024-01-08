@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {ToastProvider} from 'react-native-toast-notifications';
 
-const ToastPopup = (props) => {
+const ToastPopup = ({children}) => {
   return (
     <ToastProvider
       placement={'top'}
@@ -36,7 +36,7 @@ const ToastPopup = (props) => {
         ),
       }}
     >
-      {props.children}
+      {children}
     </ToastProvider>
   );
 };

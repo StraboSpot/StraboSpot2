@@ -8,18 +8,18 @@ import {SECONDARY_BACKGROUND_COLOR} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import {formStyles} from '../../form';
 
-const FoldGeometryButtons = (props) => {
+const FoldGeometryButtons = ({formProps, setChoicesViewKey}) => {
 
   const renderFoldGeometryIcons = () => {
     let foldGeometryData = [];
     FOLD_GEOMETRY_KEYS.forEach((key) => {
-      if (props.formProps?.values[key]) {
+      if (formProps?.values[key]) {
         const iconSource = FOLD_ICONS[key] && FOLD_ICONS[key].PRESSED
-          && FOLD_ICONS[key].PRESSED[props.formProps?.values[key]]
+          && FOLD_ICONS[key].PRESSED[formProps?.values[key]]
           && (
             <IconButton
               key={key}
-              source={FOLD_ICONS[key].PRESSED[props.formProps?.values[key]]}
+              source={FOLD_ICONS[key].PRESSED[formProps?.values[key]]}
               imageStyle={{margin: -5}}
             />
           );
@@ -45,7 +45,7 @@ const FoldGeometryButtons = (props) => {
         textAlign: 'center',
       }}
       type={'outline'}
-      onPress={() => props.setChoicesViewKey('fold_geometry')}
+      onPress={() => setChoicesViewKey('fold_geometry')}
     />
   );
 

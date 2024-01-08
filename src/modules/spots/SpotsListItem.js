@@ -11,8 +11,14 @@ import useNestingHook from '../nesting/useNesting';
 import usePageHoook from '../page/usePage';
 import {useTagsHook} from '../tags';
 
-const SpotsListItem = (props) => {
-  console.log('Rendering SpotsListItem', props.spot.properties?.name, props.spot.properties?.id?.toString(), '...');
+const SpotsListItem = ({
+                         doShowSubspots,
+                         doShowTags,
+                         isCheckedList,
+                         onPress,
+                         spot,
+                       }) => {
+  console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
   const useNesting = useNestingHook();
   const useSpots = useSpotsHook();
@@ -24,8 +30,8 @@ const SpotsListItem = (props) => {
   const renderCheckboxes = () => {
     return (
       <ListItem.CheckBox
-        checked={selectedTag.spots && selectedTag.spots.includes(props.spot.properties.id)}
-        onPress={() => useTags.addRemoveSpotFromTag(props.spot.properties.id, selectedTag)}
+        checked={selectedTag.spots && selectedTag.spots.includes(spot.properties.id)}
+        onPress={() => useTags.addRemoveSpotFromTag(spot.properties.id, selectedTag)}
       />
     );
   };
@@ -33,7 +39,7 @@ const SpotsListItem = (props) => {
   const renderSpotDataIcons = () => (
     <View>
       <FlatList
-        data={usePage.getPopulatedPagesKeys(props.spot)}
+        data={usePage.getPopulatedPagesKeys(spot)}
         horizontal={false}
         keyExtractor={(item, index) => index.toString()}
         listKey={new Date().toISOString()}
@@ -50,13 +56,13 @@ const SpotsListItem = (props) => {
   );
 
   const renderSubspots = () => {
-    const children = useNesting.getChildrenGenerationsSpots(props.spot, 10);
+    const children = useNesting.getChildrenGenerationsSpots(spot, 10);
     const numSubspots = children.flat().length;
     return <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>;
   };
 
   const renderTags = () => {
-    const tags = useTags.getTagsAtSpot(props.spot.properties.id);
+    const tags = useTags.getTagsAtSpot(spot.properties.id);
     const tagsString = tags.map(tag => tag.name).sort().join(', ');
     return !isEmpty(tagsString) && <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>;
   };
@@ -65,22 +71,22 @@ const SpotsListItem = (props) => {
     <ListItem
       containerStyle={commonStyles.listItem}
       keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
-      onPress={() => props.onPress(props.spot)}
+      onPress={() => onPress(spot)}
     >
       <Avatar
         placeholderStyle={{backgroundColor: 'transparent'}}
         size={20}
-        source={useSpots.getSpotGemometryIconSource(props.spot)}
+        source={useSpots.getSpotGemometryIconSource(spot)}
       />
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{props?.spot?.properties?.name}</ListItem.Title>
-        {props.doShowTags && props.spot && renderTags()}
-        {props.doShowSubspots && props.spot && renderSubspots()}
+        <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>
+        {doShowTags && spot && renderTags()}
+        {doShowSubspots && spot && renderSubspots()}
       </ListItem.Content>
-      {props.isCheckedList ? renderCheckboxes() : (
+      {isCheckedList ? renderCheckboxes() : (
         <React.Fragment>
-          {props.spot && renderSpotDataIcons()}
-          {props.spot && <ListItem.Chevron/>}
+          {spot && renderSpotDataIcons()}
+          {spot && <ListItem.Chevron/>}
         </React.Fragment>
       )}
     </ListItem>

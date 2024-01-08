@@ -227,7 +227,7 @@ const AddIntervalModal = () => {
         buttonTitleLeft={'Cancel'}
         buttonTitleRight={'Save'}
         cancel={() => close()}
-        close={() => saveInterval(formRef?.current?.values)}
+        closeModal={() => saveInterval(formRef?.current?.values)}
       >
         <FlatList
           ListHeaderComponent={renderAddIntervalNameField()}

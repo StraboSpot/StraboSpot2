@@ -4,21 +4,25 @@ import {Button} from 'react-native-elements';
 
 import commonStyles from '../../shared/common.styles';
 
-const AddButton = (props) => {
+const AddButton = ({
+                     onPress,
+                     title,
+                     type,
+                   }) => {
   return (
     <Button
-      onPress={props.onPress}
+      onPress={onPress}
       containerStyle={commonStyles.buttonPadding}
       buttonStyle={commonStyles.standardButton}
       titleStyle={commonStyles.standardButtonText}
-      type={props.type}
+      type={type}
       icon={{
         name: 'add',
         type: 'ionicon',
         size: 35,
         color: commonStyles.iconColor.color,
       }}
-      title={props.title}
+      title={title}
     />
   );
 };

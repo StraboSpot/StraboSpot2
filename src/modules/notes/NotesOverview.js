@@ -8,7 +8,7 @@ import {truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 
-const SpotNotesOverview = (props) => {
+const SpotNotesOverview = ({page}) => {
 
   const dispatch = useDispatch();
   const savedNote = useSelector(state => state.spot.selectedSpot.properties.notes);
@@ -18,7 +18,7 @@ const SpotNotesOverview = (props) => {
       {savedNote ? (
           <ListItem
             containerStyle={commonStyles.listItem}
-            onPress={() => dispatch(setNotebookPageVisible(props.page.key))}
+            onPress={() => dispatch(setNotebookPageVisible(page.key))}
           >
             <ListItem.Content>
               <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(savedNote, 750)}</ListItem.Title>

@@ -8,7 +8,12 @@ import overlayStyles from './overlay.styles';
 import commonStyles from '../../../shared/common.styles';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 
-const MapActionsOverlay = (props) => {
+const MapActionsOverlay = ({
+                             onPress,
+                             onTouchOutside,
+                             overlayStyle,
+                             visible,
+                           }) => {
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -37,7 +42,7 @@ const MapActionsOverlay = (props) => {
         <ListItem
           containerStyle={commonStyles.listItem}
           key={item.key}
-          onPress={() => props.onPress(item.key)}
+          onPress={() => onPress(item.key)}
         >
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
         </ListItem>
@@ -49,9 +54,9 @@ const MapActionsOverlay = (props) => {
     <Overlay
       animationType={'slide'}
       backdropStyle={{backgroundColor: 'transparent'}}
-      isVisible={props.visible}
-      onBackdropPress={props.onTouchOutside}
-      overlayStyle={[overlayStyles.overlayContainer, props.overlayStyle]}
+      isVisible={visible}
+      onBackdropPress={onTouchOutside}
+      overlayStyle={[overlayStyles.overlayContainer, overlayStyle]}
     >
       <View style={[overlayStyles.titleContainer]}>
         <Text style={[overlayStyles.titleText]}>Map Actions</Text>

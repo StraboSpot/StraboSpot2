@@ -19,7 +19,7 @@ import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
 import useMapsHook from '../useMaps';
 
-const ManageOfflineMaps = (props) => {
+const ManageOfflineMaps = ({closeMainMenuPanel}) => {
   console.log('Rendering ManageOfflineMaps...');
 
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
@@ -112,7 +112,7 @@ const ManageOfflineMaps = (props) => {
           style={styles.dialogTitle}
           visible={isNameModalVisible}
           onPress={() => saveMapEdits()}
-          close={() => setIsNameModalVisible(false)}
+          closeModal={() => setIsNameModalVisible(false)}
           value={selectedMap.name}
           onChangeText={text => setSelectedMap({...selectedMap, name: text})}
         />
@@ -238,7 +238,7 @@ const ManageOfflineMaps = (props) => {
         disabled={(!isOnline.isInternetReachable && !isOnline.isConnected)
           || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
         onPress={() => {
-          props.closeMainMenuPanel();
+          closeMainMenuPanel();
           dispatch(setOfflineMapsModalVisible(true));
         }}
         containerStyle={styles.buttonContainer}

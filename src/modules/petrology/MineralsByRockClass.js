@@ -6,7 +6,7 @@ import {Button} from 'react-native-elements';
 import {MINERALS_BY_CLASS} from './petrology.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
 
-const MineralsByRockClass = (props) => {
+const MineralsByRockClass = ({addMineral}) => {
   return (
     <FlatList ListHeaderComponent={
       <View style={{flex: 1, flexDirection: 'column'}}>
@@ -19,7 +19,7 @@ const MineralsByRockClass = (props) => {
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
-                onPress={() => props.addMineral(mineral)}
+                onPress={() => addMineral(mineral)}
               />
             ))}
           </View>
@@ -31,7 +31,7 @@ const MineralsByRockClass = (props) => {
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
-                onPress={() => props.addMineral(mineral)}
+                onPress={() => addMineral(mineral)}
               />
             ))}
           </View>
@@ -45,7 +45,7 @@ const MineralsByRockClass = (props) => {
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
-                onPress={() => props.addMineral(mineral)}
+                onPress={() => addMineral(mineral)}
               />
             ))}
           </View>
@@ -57,7 +57,7 @@ const MineralsByRockClass = (props) => {
                 title={'+ ' + mineral.Label}
                 titleProps={{numberOfLines: 1}}
                 type={'clear'}
-                onPress={() => props.addMineral(mineral)}
+                onPress={() => addMineral(mineral)}
               />
             ))}
           </View>

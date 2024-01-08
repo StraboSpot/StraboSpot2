@@ -16,7 +16,14 @@ import {
   setProjectLoadSelectionModalVisible, setStatusMessageModalTitle,
 } from '../home/home.slice';
 
-const ImportProjectFromZip = (props) => {
+const ImportProjectFromZip = ({
+                                goBackToMain,
+                                importComplete,
+                                importedProject,
+                                setImportComplete,
+                                source,
+                                visibleSection,
+                              }) => {
   const dispatch = useDispatch();
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
@@ -36,8 +43,8 @@ const ImportProjectFromZip = (props) => {
             title={'Go to saved projects'}
             // onPress={() => loadProject()}
             onPress={() => {
-              props.source && props.source('device');
-              props.visibleSection('deviceProjects');
+              source && source('device');
+              visibleSection('deviceProjects');
             }}
             type={'clear'}
             containerStyle={{alignItems: 'flex-start'}}
@@ -62,9 +69,9 @@ const ImportProjectFromZip = (props) => {
     try {
       setIsLoading(true);
       dispatch(setStatusMessageModalTitle('Importing Project...'));
-      const project = props.importedProject;
+      const project = importedProject;
       await useDevice.unZipAndCopyImportedData(project);
-      props?.setImportComplete(true);
+      setImportComplete(true);
       dispatch(setStatusMessageModalTitle('Project Imported'));
       setIsLoading(false);
     }
@@ -72,7 +79,7 @@ const ImportProjectFromZip = (props) => {
       console.error('Error Writing Project Data', err);
       dispatch(setErrorMessagesModalVisible(true));
       dispatch(addedStatusMessage(err.toString()));
-      props?.setImportComplete(false);
+      setImportComplete(false);
       setIsLoading(false);
       throw Error();
     }
@@ -80,7 +87,7 @@ const ImportProjectFromZip = (props) => {
 
   const verifyFileExistence = async (dataType) => {
     if (dataType === 'data') {
-      const fileName = props.importedProject.name.replace('.zip', '');
+      const fileName = importedProject.name.replace('.zip', '');
       const fileExists = await useDevice.doesBackupFileExist(fileName);
       if (fileExists) {
         console.log('File already exits!');
@@ -110,7 +117,7 @@ const ImportProjectFromZip = (props) => {
       {isProjectLoadSelectionModalVisible && !isLoading
         && (
           <Button
-            onPress={() => props.goBackToMain()}
+            onPress={() => goBackToMain()}
             type={'clear'}
             // title={'Back'}
             titleStyle={commonStyles.standardButtonText}
@@ -128,7 +135,7 @@ const ImportProjectFromZip = (props) => {
         )
       }
 
-      {props.importComplete ? renderImportComplete()
+      {importComplete ? renderImportComplete()
         : isLoading ? (
             <View style={{flex: 1, margin: 60}}>
               <Loading
@@ -140,7 +147,7 @@ const ImportProjectFromZip = (props) => {
           : (
             <View style={{alignItems: 'center'}}>
               <Text style={{fontWeight: 'bold'}}>Selected Project to Import:</Text>
-              <Text>{props.importedProject.name}</Text>
+              <Text>{importedProject.name}</Text>
               <Button
                 title={'Unzip and Save'}
                 type={'clear'}

@@ -11,7 +11,11 @@ import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
 
-const TagsNotebookModal = (props) => {
+const TagsNotebookModal = ({
+                             closeModal,
+                             isFeatureLevelTagging,
+                             onPress,
+                           }) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
@@ -35,8 +39,8 @@ const TagsNotebookModal = (props) => {
     return (
       <React.Fragment>
         <Modal
-          onPress={props.onPress}
-          close={props.close}
+          onPress={onPress}
+          closeModal={closeModal}
         >
           <View style={[modalStyle.textContainer]}>
             <AddButton
@@ -45,7 +49,7 @@ const TagsNotebookModal = (props) => {
               type={'outline'}
             />
           </View>
-          <TagsModal isFeatureLevelTagging={props.isFeatureLevelTagging}/>
+          <TagsModal isFeatureLevelTagging={isFeatureLevelTagging}/>
           <TagDetailModal
             isVisible={isDetailModalVisible}
             closeModal={closeTagDetailModal}

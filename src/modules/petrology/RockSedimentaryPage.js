@@ -5,16 +5,16 @@ import {useDispatch} from 'react-redux';
 import RockPage from './RockPage';
 import {setSelectedAttributes} from '../spots/spots.slice';
 
-const RockSedimentaryPage = (props) => {
+const RockSedimentaryPage = ({page}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE RockSedimentaryPage [props.page]', props.page);
+    console.log('UE RockSedimentaryPage [props.page]', page);
     return () => dispatch(setSelectedAttributes([]));
-  }, [props.page]);
+  }, [page]);
 
   return (
-    <RockPage {...props}/>
+    <RockPage page={page}/>
   );
 };
 

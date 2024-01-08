@@ -18,14 +18,17 @@ import {addedCustomFeatureTypes, updatedModifiedTimestampsBySpotsIds} from '../p
 import {editedSpotProperties} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 
-const OtherFeatureDetail = (props) => {
+const OtherFeatureDetail = ({
+                              featureTypes,
+                              hideFeatureDetail,
+                              selectedFeature,
+                            }) => {
   const dispatch = useDispatch();
   const useForm = useFormHook();
   const useTags = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const projectFeatures = useSelector(state => state.project.project.other_features);
 
-  const selectedFeature = props.selectedFeature;
   const customFeatureTypes = projectFeatures.filter(feature => !DEFAULT_GEOLOGIC_TYPES.includes(feature));
   let [otherType, setOtherType] = useState(undefined);
   const formRef = useRef(null);
@@ -37,7 +40,7 @@ const OtherFeatureDetail = (props) => {
 
   const cancelForm = async () => {
     await formRef.current.resetForm();
-    props.hideFeatureDetail();
+    hideFeatureDetail();
   };
 
   const confirmLeavePage = () => {
@@ -62,15 +65,15 @@ const OtherFeatureDetail = (props) => {
 
   const deleteFeature = () => {
     let otherFeatures = spot.properties.other_features;
-    let existingFeature = otherFeatures.filter(feature => feature.id === props.selectedFeature.id);
+    let existingFeature = otherFeatures.filter(feature => feature.id === selectedFeature.id);
     if (!isEmpty(existingFeature)) {
       delete existingFeature[0];
-      useTags.deleteFeatureTags([props.selectedFeature]);
-      otherFeatures = otherFeatures.filter(feature => feature.id !== props.selectedFeature.id);
+      useTags.deleteFeatureTags([selectedFeature]);
+      otherFeatures = otherFeatures.filter(feature => feature.id !== selectedFeature.id);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));
     }
-    props.hideFeatureDetail();
+    hideFeatureDetail();
   };
 
   const deleteFeatureConfirm = () => {
@@ -148,7 +151,7 @@ const OtherFeatureDetail = (props) => {
                     name={'type'}
                     key={'type'}
                     label={'Feature Type'}
-                    choices={props.featureTypes.map(featureType => ({label: featureType, value: featureType}))}
+                    choices={featureTypes.map(featureType => ({label: featureType, value: featureType}))}
                     single={true}
                   />
                 </ListItem.Content>
@@ -204,23 +207,23 @@ const OtherFeatureDetail = (props) => {
       let featureToEdit;
       let otherFeatures = spot.properties.other_features;
       if (otherFeatures && otherFeatures.length > 0) {
-        let existingFeatures = otherFeatures.filter(feature => feature.id === props.selectedFeature.id);
+        let existingFeatures = otherFeatures.filter(feature => feature.id === selectedFeature.id);
         if (!isEmpty(existingFeatures)) {
-          otherFeatures = otherFeatures.filter(feature => feature.id !== props.selectedFeature.id);
+          otherFeatures = otherFeatures.filter(feature => feature.id !== selectedFeature.id);
           featureToEdit = JSON.parse(JSON.stringify(existingFeatures[0]));
         }
         else {
           otherFeatures = JSON.parse(JSON.stringify(otherFeatures));
-          featureToEdit = props.selectedFeature;
+          featureToEdit = selectedFeature;
         }
       }
       else {
         otherFeatures = [];
-        featureToEdit = props.selectedFeature;
+        featureToEdit = selectedFeature;
       }
       if (updateFeature(featureToEdit, otherFeatures, formValues)) {
         await formRef.current.resetForm();
-        props.hideFeatureDetail();
+        hideFeatureDetail();
       }
     }
     catch (err) {

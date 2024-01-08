@@ -11,7 +11,11 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
 
-function TablesData(props) {
+function TablesData({
+                      editable,
+                      initializeDelete,
+                      spot,
+                    }) {
   const [isTableVisible, setIsTableVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState({});
   const [tableData, setTableData] = useState([]);
@@ -75,10 +79,10 @@ function TablesData(props) {
           <ListItem.Title style={commonStyles.listItemTitle}>
             {table.name}
           </ListItem.Title>
-          {props.editable && (
+          {editable && (
             <Button
               buttonStyle={externalDataStyles.iconButton}
-              onPress={() => props.initializeDelete('csv', table)}
+              onPress={() => initializeDelete('csv', table)}
               type={'clear'}
               icon={
                 <Icon
@@ -105,12 +109,12 @@ function TablesData(props) {
 
   return (
     <View style={{flex: 1}}>
-      {props.loading ? <Loading style={externalDataStyles.loadingSpinner}/>
+      {loading ? <Loading style={externalDataStyles.loadingSpinner}/>
         : (
           <FlatList
             listKey={'tables'}
             keyExtractor={item => item.id}
-            data={props.spot.properties?.data?.tables}
+            data={spot.properties?.data?.tables}
             renderItem={({item}) => renderTableListItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}
             ListEmptyComponent={<ListEmptyText text={'No tables saved'}/>}

@@ -5,19 +5,23 @@ import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 import IconButton from '../../../shared/ui/IconButton';
 import {formStyles, useFormHook} from '../../form';
 
-const FoldGeometryChoices = (props) => {
+const FoldGeometryChoices = ({
+                               choices,
+                               formProps,
+                               survey,
+                             }) => {
   const useForm = useFormHook();
 
   const onGeometryChoiceButtonPress = (key, value) => {
-    let updatedFormData = JSON.parse(JSON.stringify(props.formProps.values));
+    let updatedFormData = JSON.parse(JSON.stringify(formProps.values));
     if (updatedFormData[key] && updatedFormData[key] === value) delete updatedFormData[key];
     else updatedFormData[key] = value;
-    props.formProps.setValues(updatedFormData);
+    formProps.setValues(updatedFormData);
   };
 
   return FOLD_GEOMETRY_KEYS.map((key) => {
-    const foldGeometryField = useForm.getRelevantFields(props.survey, key)[0];
-    const foldGeometryChoices = useForm.getChoicesByKey(props.survey, props.choices, key);
+    const foldGeometryField = useForm.getRelevantFields(survey, key)[0];
+    const foldGeometryChoices = useForm.getChoicesByKey(survey, choices, key);
     return (
       <View style={{padding: 10}} key={key}>
         {foldGeometryField.label && (
@@ -32,7 +36,7 @@ const FoldGeometryChoices = (props) => {
               && FOLD_ICONS[key].PRESSED[c.name] && (
                 <IconButton
                   key={c.name}
-                  source={props.formProps.values[key] === c.name ? FOLD_ICONS[key].PRESSED[c.name] : FOLD_ICONS[key].DEFAULT[c.name]}
+                  source={formProps.values[key] === c.name ? FOLD_ICONS[key].PRESSED[c.name] : FOLD_ICONS[key].DEFAULT[c.name]}
                   imageStyle={{margin: -5}}
                   onPress={() => onGeometryChoiceButtonPress(key, c.name)}
                 />
@@ -41,7 +45,7 @@ const FoldGeometryChoices = (props) => {
           })}
         </View>
         <Text style={{paddingLeft: 10}}>
-          {foldGeometryChoices.find(c => c.name === props.formProps.values[key])?.label}
+          {foldGeometryChoices.find(c => c.name === formProps.values[key])?.label}
         </Text>
       </View>
     );

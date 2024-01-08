@@ -14,7 +14,13 @@ import usePageHoook from '../page/usePage';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
-const TagDetail = (props) => {
+const TagDetail = ({
+                     addRemoveFeatures,
+                     addRemoveSpots,
+                     openFeatureDetail,
+                     openSpot,
+                     setIsDetailModalVisible,
+                   }) => {
   const usePage = usePageHoook();
   const useSpots = useSpotsHook();
   const useTags = useTagsHook();
@@ -39,7 +45,7 @@ const TagDetail = (props) => {
         <ListItem
           containerStyle={commonStyles.listItem}
           key={spot.properties.id}
-          onPress={() => props.openFeatureDetail(spot, feature, featureType)}
+          onPress={() => openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
             source={usePage.getSpotDataIconSource(featureType)}
@@ -64,7 +70,7 @@ const TagDetail = (props) => {
       <SpotsListItem
         doShowTags={true}
         spot={spot}
-        onPress={props.openSpot}
+        onPress={openSpot}
       />
     );
   };
@@ -89,13 +95,13 @@ const TagDetail = (props) => {
           <SectionDividerWithRightButton
             dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
             buttonTitle={'View/Edit'}
-            onPress={props.setIsDetailModalVisible}
+            onPress={setIsDetailModalVisible}
           />
           {selectedTag && useTags.renderTagInfo()}
           <SectionDividerWithRightButton
             dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
             buttonTitle={'Add/Remove'}
-            onPress={props.addRemoveSpots}
+            onPress={addRemoveSpots}
           />
           <FlatList
             listKey={1}
@@ -110,7 +116,7 @@ const TagDetail = (props) => {
               <SectionDividerWithRightButton
                 dividerText={'Tagged Features'}
                 buttonTitle={'Add/Remove'}
-                onPress={props.addRemoveFeatures}
+                onPress={addRemoveFeatures}
               />
               {refresh ? renderTaggedFeaturesList() : renderTaggedFeaturesList()}
             </React.Fragment>

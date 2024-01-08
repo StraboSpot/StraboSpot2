@@ -12,7 +12,7 @@ import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import useMapHook from '../useMaps';
 
-const ManageCustomMaps = (props) => {
+const ManageCustomMaps = ({zoomToCustomMap}) => {
   console.log('Rendering ManageCustomMaps...');
 
   const customMaps = useSelector(state => state.map.customMaps);
@@ -51,7 +51,7 @@ const ManageCustomMaps = (props) => {
               let customMapWithBbox;
               if (item.overlay) customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
               else customMapWithBbox = await useMaps.setBasemap(item.id);
-              customMapWithBbox.bbox && setTimeout(() => props.zoomToCustomMap(customMapWithBbox.bbox), 1000);
+              customMapWithBbox.bbox && setTimeout(() => zoomToCustomMap(customMapWithBbox.bbox), 1000);
             }}
           />
         )}

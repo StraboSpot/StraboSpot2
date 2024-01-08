@@ -6,12 +6,12 @@ import {ListItem} from 'react-native-elements';
 import commonStyles from '../../shared/common.styles';
 import {TextInputField} from '../form';
 
-const NoteForm = (props) => {
+const NoteForm = ({formRef, initialNotesValues}) => {
   return (
     <Formik
-      initialValues={props.initialNotesValues}
+      initialValues={initialNotesValues}
       onSubmit={values => console.log('Submitting form...', values)}
-      innerRef={props.formRef}
+      innerRef={formRef}
       enableReinitialize={true}
     >
       {() => (
