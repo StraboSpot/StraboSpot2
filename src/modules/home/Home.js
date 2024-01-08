@@ -431,7 +431,7 @@ const Home = ({navigation, route}) => {
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
         return <TagDetailSidePanel openNotebookPanel={pageView => openNotebookPanel(pageView)}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
-        return <TagAddRemoveSpots/>;
+        return <TagAddRemoveSpots updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
         return <TagAddRemoveFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:

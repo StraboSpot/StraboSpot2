@@ -11,7 +11,7 @@ import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {SpotsList} from '../spots';
 import {useTagsHook} from '../tags';
 
-const AddRemoveTagSpots = () => {
+const AddRemoveTagSpots = ({updateSpotsInMapExtent}) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
 
@@ -30,8 +30,9 @@ const AddRemoveTagSpots = () => {
       />
       <View style={{...commonStyles.buttonContainer, flex: 1}}>
         <SpotsList
-          onPress={handleSpotChecked}
           isCheckedList={true}
+          onPress={handleSpotChecked}
+          updateSpotsInMapExtent={updateSpotsInMapExtent}
         />
       </View>
     </View>
