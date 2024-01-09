@@ -45,13 +45,13 @@ const styles = StyleSheet.create({
   },
   fieldValueMultiline: {
     height: 75,
-    textAlignVertical: 'top',
+    verticalAlign: 'top',
   },
   fieldValueFull: {
     // height: 350,
     minHeight: 200,
     maxHeight: 300,
-    textAlignVertical: 'top',
+    verticalAlign: 'top',
   },
   fieldError: {
     color: themes.WARNING_COLOR,

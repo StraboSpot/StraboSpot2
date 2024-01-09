@@ -54,7 +54,7 @@ const TextInputModal = ({
           errorMessage={errorMessage}
           renderErrorMessage={renderErrorMessage}
           onSubmitEditing={onSubmitEditing}
-          style={[{textAlignVertical: 'top'}, multiline ? {height: 100} : {height: 40}]}
+          style={[{verticalAlign: 'top'}, multiline ? {height: 100} : {height: 40}]}
         />
         {children}
       </View>
