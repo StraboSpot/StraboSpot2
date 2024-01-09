@@ -111,7 +111,7 @@ const Basemap = ({
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
     console.log('Getting initial map center...');
-    if (zoomToSpot && !isEmpty(selectedSpot)) {
+    if (zoomToSpot && selectedSpot?.geometry?.coordinates && selectedSpot.properties) {
       if ((currentImageBasemap && selectedSpot.properties.image_basemap === currentImageBasemap.id)
         || (stratSection && selectedSpot.properties.strat_section_id === stratSection.strat_section_id)) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);

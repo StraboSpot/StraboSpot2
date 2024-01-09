@@ -127,7 +127,7 @@ const Basemap = ({
   const setInitialViewState = () => {
     console.log('Getting initial center...');
     let initialCenter = center;
-    if (zoomToSpot && !isEmpty(selectedSpot)) {
+    if (zoomToSpot && selectedSpot?.geometry?.coordinates && selectedSpot.properties) {
       if ((currentImageBasemap && selectedSpot.properties.image_basemap === currentImageBasemap.id)
         || (stratSection && selectedSpot.properties.strat_section_id === stratSection.strat_section_id)) {
         initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
