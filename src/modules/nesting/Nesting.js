@@ -17,18 +17,17 @@ import {SpotsListItem} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
 
 const Nesting = () => {
-  const dispatch = useDispatch();
-
-  const useNesting = useNestingHook();
   const useImages = useImagesHook();
+  const useNesting = useNestingHook();
 
-  const notebookPageVisible = useSelector(state => (
-    !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
-  ));
+  const dispatch = useDispatch();
+  const notebookPageVisible = useSelector(state => (!isEmpty(state.notebook.visibleNotebookPagesStack)
+    && state.notebook.visibleNotebookPagesStack.slice(-1)[0]));
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-  const [parentGenerations, setParentGenerations] = useState();
+
   const [childrenGenerations, setChildrenGenerations] = useState();
+  const [parentGenerations, setParentGenerations] = useState();
 
   useEffect(() => {
     console.log('UE Nesting [spots, selectedSpot]', spots, selectedSpot);
@@ -37,6 +36,17 @@ const Nesting = () => {
 
   const goToSpotNesting = (spot) => {
     dispatch(setSelectedSpot(spot));
+  };
+
+  const renderImageBasemapThumbnail = (imageId) => {
+    return (
+      <View style={imageStyles.thumbnailContainer}>
+        <SharedUI.ImageButton
+          source={{uri: useImages.getLocalImageURI(imageId)}}
+          style={imageStyles.thumbnail}
+        />
+      </View>
+    );
   };
 
   const renderItem = (spot) => {
@@ -67,17 +77,6 @@ const Nesting = () => {
     );
   };
 
-  const renderImageBasemapThumbnail = (imageId) => {
-    return (
-      <View style={imageStyles.thumbnailContainer}>
-        <SharedUI.ImageButton
-          source={{uri: useImages.getLocalImageURI(imageId)}}
-          style={imageStyles.thumbnail}
-        />
-      </View>
-    );
-  };
-
   const renderGeneration = (type, generation, i, length) => {
     const levelNum = type === 'Parents' ? length - i : i + 1;
     const generationText = levelNum + (levelNum === 1 ? ' Level' : ' Levels') + (type === 'Parents' ? ' Up' : ' Down');
@@ -85,39 +84,21 @@ const Nesting = () => {
       (r, v, i, a, k = v.properties.image_basemap) => ((r[k] || (r[k] = [])).push(v), r), {});
     console.log('groupedGeneration', groupedGeneration);
     return (
-      <View>
+      <>
         {type === 'Children' && (
           <Icon type={'material-icons'} name={'south'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
         )}
         <Text style={{paddingLeft: 10}}>{generationText}</Text>
-        {Object.entries(groupedGeneration).map(([key, value], b) => {
-          if (key !== 'undefined') {
-            return (
-              <View style={{
-                flex: 1,
-                flexDirection: 'row',
-                borderWidth: 1,
-                borderColor: 'black',
-                marginLeft: 10,
-                marginRight: 10,
-                marginTop: 2,
-                marginBottom: 2,
-              }}>
-                <View style={{alignSelf: 'center'}}>
-                  {renderImageBasemapThumbnail(key)}
-                </View>
-                <View style={{flex: 1}}>
-                  {renderGroup(type, i, value, b)}
-                </View>
-              </View>
-            );
-          }
-          else return renderGroup(type, i, value, b);
-        })}
+        <FlatList
+          listKey={type + i}
+          keyExtractor={index => type + index}
+          data={Object.entries(groupedGeneration)}
+          renderItem={({item, index}) => renderGroup(type, i, item, index)}
+        />
         {type === 'Parents' && (
           <Icon type={'material-icons'} name={'north'} containerStyle={{paddingLeft: 8, alignItems: 'flex-start'}}/>
         )}
-      </View>
+      </>
     );
   };
 
@@ -125,27 +106,46 @@ const Nesting = () => {
     const generationData = type === 'Parents' ? parentGenerations : childrenGenerations;
     if (!isEmpty(generationData)) {
       return (
-        <View>
-          <FlatList
-            listKey={type}
-            keyExtractor={item => item.toString()}
-            data={type === 'Parents' ? generationData.reverse() : generationData}
-            renderItem={({item, index}) => renderGeneration(type, item, index, generationData.length)}
-          />
-        </View>
+        <FlatList
+          listKey={type}
+          keyExtractor={(item, index) => type + index}
+          data={type === 'Parents' ? generationData.reverse() : generationData}
+          renderItem={({item, index}) => renderGeneration(type, item, index, generationData.length)}
+        />
       );
     }
   };
 
-  const renderGroup = (type, i, group, b) => {
+  const renderGroup = (type, i, [imageBasemapKey, group], b) => {
+    console.log('renderGroup', type, i, group, b);
     return (
-      <FlatList
-        listKey={type + i + b}
-        keyExtractor={item => item.toString()}
-        data={group}
-        renderItem={({item}) => renderName(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-      />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          borderWidth: 1,
+          borderColor: 'black',
+          marginLeft: 10,
+          marginRight: 10,
+          marginTop: 2,
+          marginBottom: 2,
+        }}
+      >
+        {imageBasemapKey !== 'undefined' && (
+          <View style={{alignSelf: 'center'}}>
+            {renderImageBasemapThumbnail(imageBasemapKey)}
+          </View>
+        )}
+        <View style={{flex: 1}}>
+          <FlatList
+            listKey={type + i + b}
+            keyExtractor={item => 'NestedItem' + item.properties.id.toString()}
+            data={group}
+            renderItem={({item}) => renderName(item)}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
+        </View>
+      </View>
     );
   };
 
@@ -173,7 +173,7 @@ const Nesting = () => {
       <FlatList
         ListHeaderComponent={renderGenerations('Parents')}
         ListFooterComponent={renderGenerations('Children')}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => 'NestedItem' + item.properties.id.toString()}
         data={[selectedSpot]}
         renderItem={({item}) => renderSelf(item)}
       />
