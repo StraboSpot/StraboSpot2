@@ -16,7 +16,7 @@ import useUploadHook from '../../services/useUpload';
 import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import TextInputModal from '../../shared/ui/GeneralTextInputModal';
+import TextInputModal from '../../shared/ui/TextInputModal';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
 import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';

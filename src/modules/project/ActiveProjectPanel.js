@@ -13,9 +13,9 @@ import useProjectHook from './useProject';
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import TextInputModal from '../../shared/ui/GeneralTextInputModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
+import TextInputModal from '../../shared/ui/TextInputModal';
 import {clearedStatusMessages} from '../home/home.slice';
 import {WarningModal} from '../home/modals';
 
