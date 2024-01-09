@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useNestingHook from './useNesting';
 import {isEmpty} from '../../shared/Helpers';
-import * as SharedUI from '../../shared/ui';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import imageStyles from '../images/images.styles';
@@ -41,9 +40,10 @@ const Nesting = () => {
   const renderImageBasemapThumbnail = (imageId) => {
     return (
       <View style={imageStyles.thumbnailContainer}>
-        <SharedUI.ImageButton
+        <Image
           source={{uri: useImages.getLocalImageURI(imageId)}}
           style={imageStyles.thumbnail}
+          PlaceholderContent={<ActivityIndicator/>}
         />
       </View>
     );
