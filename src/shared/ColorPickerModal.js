@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Pressable, Text, View} from 'react-native';
 
 import {Button, Icon, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -65,11 +65,12 @@ const ColorPickerModal = ({
             <View style={overlayStyles.tagColorPickerContent} key={colorRow}>
               {colorRow.map((colorChoice) => {
                 return (
-                  <TouchableOpacity
+                  <Pressable
                     style={{...overlayStyles.tagColorPickerColorItem, backgroundColor: colorChoice}}
                     onPress={() => setColor(colorChoice)}
                     key={colorChoice}
-                  />);
+                  />
+                );
               })}
             </View>
           );

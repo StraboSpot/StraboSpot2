@@ -7,7 +7,7 @@ import {
   NativeEventEmitter,
   NativeModules,
   Platform,
-  TouchableOpacity,
+  Pressable,
   View,
 } from 'react-native';
 
@@ -234,10 +234,10 @@ const Compass = ({
 
   return (
     <View style={compassStyles.compassContainer}>
-      <TouchableOpacity style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
+      <Pressable style={compassStyles.compassImageContainer} onPress={() => grabMeasurements(true)}>
         <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
         {renderCompassSymbols()}
-      </TouchableOpacity>
+      </Pressable>
       {setCompassRawDataToDisplay && (
         <Button
           containerStyle={{position: 'absolute', bottom: 0, right: 0, width: 75}}

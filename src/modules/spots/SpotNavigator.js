@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Pressable, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {Icon} from 'react-native-elements';
@@ -39,7 +39,7 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
       <SectionDivider dividerText={'Current Spot'}/>
       {isEmpty(selectedSpot) ? <ListEmptyText text={'No Selected Spot'}/>
         : <SpotsListItem onPress={openSpotInNotebook} spot={selectedSpot}/>}
-      <TouchableOpacity
+      <Pressable
         onPress={() => pickerRef.current.focus()}
         style={{paddingLeft: 10, paddingTop: 8, paddingBottom: 2}}
       >
@@ -58,7 +58,7 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
           <Picker.Item label={pickerLabels[pickerKeys.IMAGES]} value={pickerKeys.IMAGES}/>
           <Picker.Item label={pickerLabels[pickerKeys.SAMPLES]} value={pickerKeys.SAMPLES}/>
         </Picker>
-      </TouchableOpacity>
+      </Pressable>
       {pickerKey === pickerKeys.SPOTS && <SpotsList onPress={openSpotInNotebook}/>}
       {pickerKey === pickerKeys.IMAGES && <ImageGallery openSpotInNotebook={openSpotInNotebook}/>}
       {pickerKey === pickerKeys.SAMPLES && (
