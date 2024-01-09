@@ -493,12 +493,11 @@ const AddMeasurementModal = (props) => {
     const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields
       : linearCompassFields;
     compassFields.forEach((compassFieldKey) => {
-      formRef.current.setFieldValue(compassFieldKey, data?.[compassFieldKey] || undefined);
+      formRef.current.setFieldValue(compassFieldKey, isEmpty(data?.[compassFieldKey]) ? undefined : data?.[compassFieldKey]);
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       linearCompassFields.forEach((compassFieldKey) => {
-        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey],
-          data?.[compassFieldKey] || undefined);
+        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], isEmpty(data?.[compassFieldKey]) ? undefined : data?.[compassFieldKey]);
       });
     }
     saveMeasurement().catch(console.error);
