@@ -12,12 +12,12 @@ const mapStyles = StyleSheet.create({
   },
   // --- MapPoint Style ---
   vertexEditPoint: {
+    borderColor: 'white',
     borderRadius: circleRadius,
     borderWidth: 2,
-    borderColor: 'white',
     height: circleRadius,
-    width: circleRadius,
     position: 'absolute',
+    width: circleRadius,
   },
 });
 

@@ -12,9 +12,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   baseMapPosition: {
-    position: 'absolute',
-    left: SMALL_SCREEN ? 10 : 75,
     bottom: SMALL_SCREEN ? 70 : 40,
+    left: SMALL_SCREEN ? 10 : 75,
+    position: 'absolute',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -27,6 +27,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignItems: 'flex-end',
+  },
+  contentText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    padding: 5,
+    textAlign: 'center',
   },
   customBaseMapListContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -42,41 +47,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    width: 250,
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderWidth: 1,
+    width: 250,
   },
   mapActionsPosition: {
-    position: 'absolute',
-    left: SMALL_SCREEN ? 10 : 75,
     bottom: SMALL_SCREEN ? 10 : 100,
+    left: SMALL_SCREEN ? 10 : 75,
+    position: 'absolute',
   },
   mapSymbolsPosition: {
-    position: 'absolute',
-    left: SMALL_SCREEN ? 10 :  75,
     bottom: SMALL_SCREEN ? 10 : 100,
-  },
-  titleContainer: {
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: 'lightgrey',
-  },
-  titleText: {
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    fontWeight: themes.TEXT_WEIGHT,
-    color: themes.PRIMARY_TEXT_COLOR,
-    paddingBottom: 10,
-    textAlign: 'center',
-  },
-  titleTextError: {
-    color: 'red',
-  },
-  titleTextWarning: {
-    color: 'orange',
-  },
-  statusMessageText: {
-    textAlign: 'center',
-    padding: 10,
+    left: SMALL_SCREEN ? 10 : 75,
+    position: 'absolute',
   },
   overlayContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -91,35 +74,52 @@ const styles = StyleSheet.create({
   overlayContainerFullScreen: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     overflow: 'hidden',
-    zIndex: 1,
     paddingTop: Platform.OS === 'ios' && SMALL_SCREEN ? 30 : 0,
+    zIndex: 1,
   },
   overlayContent: {
-    marginTop: 5,
     alignItems: 'center',
+    marginTop: 5,
   },
   overlayPosition: {
-    position: 'absolute',
-    left: 70,
     bottom: 60,
+    left: 70,
+    position: 'absolute',
   },
-  contentText: {
-    padding: 5,
-    textAlign: 'center',
-    fontSize: themes.MEDIUM_TEXT_SIZE
-  },
-  // Extra Specific Modal Styles
   selectGeometryTypeContent: {
     alignItems: 'flex-start',
     marginLeft: 20,
+  },
+  statusMessageText: {
+    padding: 10,
+    textAlign: 'center',
+  },
+  tagColorPickerColorItem: {
+    height: 25,
+    width: 25,
   },
   tagColorPickerContent: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  tagColorPickerColorItem: {
-    width: 25,
-    height: 25,
+  titleContainer: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: 'lightgrey',
+  },
+  // Extra Specific Modal Styles
+  titleText: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: themes.TEXT_WEIGHT,
+    paddingBottom: 10,
+    textAlign: 'center',
+  },
+  titleTextError: {
+    color: 'red',
+  },
+  titleTextWarning: {
+    color: 'orange',
   },
   urlText: {
     fontSize: themes.SMALL_TEXT_SIZE,

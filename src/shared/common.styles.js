@@ -6,12 +6,6 @@ const commonStyles = StyleSheet.create({
   alignItemsCenter: {
     alignItems: 'center',
   },
-  textAlignCenter: {
-    textAlign: 'center',
-  },
-  textBold: {
-    fontWeight: themes.TEXT_WEIGHT,
-  },
   buttonContainer: {
     paddingTop: 10,
   },
@@ -19,23 +13,15 @@ const commonStyles = StyleSheet.create({
     padding: 10,
   },
   checkboxContainer: {
-    borderWidth: 0,
     backgroundColor: 'white',
-  },
-  viewMapsButtonText: {
-    fontSize: themes.SMALL_TEXT_SIZE,
-    color: themes.PRIMARY_ACCENT_COLOR,
+    borderWidth: 0,
   },
   iconColor: {
     color: themes.BLUE,
   },
-  noValueText: {
-    padding: 10,
-    textAlign: 'center',
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    color: themes.PRIMARY_TEXT_COLOR,
+  imagePlaceholder: {
+    backgroundColor: themes.MEDIUMGREY,
   },
-  // List Styles
   listItem: {
     padding: Platform.OS === 'web' ? 5 : 10,
   },
@@ -44,14 +30,20 @@ const commonStyles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
   },
-  listItemInverse: {
-    padding: 10,
-    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
-  },
   listItemFormField: {
     padding: 10,
     paddingBottom: 5,
     paddingTop: 5,
+  },
+  // List Styles
+  listItemInverse: {
+    backgroundColor: themes.PRIMARY_ACCENT_COLOR,
+    padding: 10,
+  },
+  listItemSubtitle: {
+    color: themes.DARKGREY,
+    fontSize: themes.SMALL_TEXT_SIZE,
+    marginTop: 5,
   },
   listItemTitle: {
     color: themes.PRIMARY_TEXT_COLOR,
@@ -61,19 +53,20 @@ const commonStyles = StyleSheet.create({
     color: themes.SECONDARY_BACKGROUND_COLOR,
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
-  listItemSubtitle: {
-    fontSize: themes.SMALL_TEXT_SIZE,
-    color: themes.DARKGREY,
-    marginTop: 5,
-  },
-  standardButtonContainer: {
-    paddingTop: 5,
-    paddingBottom: 5,
+  noValueText: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    padding: 10,
+    textAlign: 'center',
   },
   standardButton: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    height: 50,
     borderRadius: 10,
+    height: 50,
+  },
+  standardButtonContainer: {
+    paddingBottom: 5,
+    paddingTop: 5,
   },
   standardButtonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
@@ -87,13 +80,20 @@ const commonStyles = StyleSheet.create({
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
   },
+  textAlignCenter: {
+    textAlign: 'center',
+  },
+  textBold: {
+    fontWeight: themes.TEXT_WEIGHT,
+  },
   textInput: {
     backgroundColor: 'white',
-    width: 200,
     paddingLeft: 20,
+    width: 200,
   },
-  imagePlaceholder: {
-    backgroundColor: themes.MEDIUMGREY,
+  viewMapsButtonText: {
+    color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: themes.SMALL_TEXT_SIZE,
   },
 });
 

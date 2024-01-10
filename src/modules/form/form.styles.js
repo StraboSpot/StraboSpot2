@@ -5,8 +5,8 @@ import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
   dropdownContainer: {
-    marginTop: -5,
     marginBottom: -5,
+    marginTop: -5,
   },
   dropdownSelectedContainer: {
     paddingTop: 0, //Overrides default
@@ -17,92 +17,91 @@ const styles = StyleSheet.create({
   },
   dropdownSelectionListHeader: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
-    padding: 0,
     marginLeft: -15,
     marginRight: -20,
-  },
-  selectorContainer: {
-    marginRight: -20,
-  },
-  fieldLabelContainer: {
-    flexDirection: 'row',
-  },
-  fieldLabel: {
-    flex: 1,
-    alignSelf: 'center',
-    paddingTop: 2.5,
-    paddingBottom: 2.5,
-    color: themes.PRIMARY_TEXT_COLOR,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    fontWeight: 'bold',
-  },
-  fieldValue: {
-    width: '100%',
     padding: 0,
-    paddingLeft: 5,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    color: themes.PRIMARY_TEXT_COLOR,
-  },
-  fieldValueMultiline: {
-    height: 75,
-    textAlignVertical: 'top',
-  },
-  fieldValueFull: {
-    // height: 350,
-    minHeight: 200,
-    maxHeight: 300,
-    textAlignVertical: 'top',
   },
   fieldError: {
     color: themes.WARNING_COLOR,
     textAlign: 'center',
   },
-  halfWidthButtonsContainer: {
+  fieldLabel: {
+    alignSelf: 'center',
+    color: themes.PRIMARY_TEXT_COLOR,
     flex: 1,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontWeight: 'bold',
+    paddingBottom: 2.5,
+    paddingTop: 2.5,
+  },
+  fieldLabelContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingTop: 2.5,
-    paddingBottom: 2.5,
   },
-  halfWidthButtonContainer: {
-    padding: 2,
-    width: '50%',
+  fieldValue: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    padding: 0,
+    paddingLeft: 5,
+    width: '100%',
   },
-  fullWidthButtonContainer: {
-    alignItems: 'center',
-    padding: 10,
-    paddingTop: 2.5,
-    paddingBottom: 2.5,
+  fieldValueFull: {
+    maxHeight: 300,
+    minHeight: 200,
+    textAlignVertical: 'top',
+  },
+  fieldValueMultiline: {
+    height: 75,
+    textAlignVertical: 'top',
   },
   formButton: {
-    borderRadius: 5,
     borderColor: themes.MEDIUMGREY,
+    borderRadius: 5,
     height: 60,
     width: '100%',
   },
-  formButtonSmall: {
-    borderRadius: 5,
+  formButtonLarge: {
     borderColor: themes.MEDIUMGREY,
-    height: 40,
+    borderRadius: 5,
+    height: 80,
     width: '100%',
   },
-  formButtonLarge: {
-    borderRadius: 5,
+  formButtonSelectedTitle: {
+    color: themes.WHITE,
+    fontSize: themes.SMALL_TEXT_SIZE,
+    fontWeight: '400',
+  },
+  formButtonSmall: {
     borderColor: themes.MEDIUMGREY,
-    height: 80,
+    borderRadius: 5,
+    height: 40,
     width: '100%',
   },
   formButtonTitle: {
     color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
   },
-  formButtonSelectedTitle: {
-    color: themes.WHITE,
-    fontWeight: '400',
-    fontSize: themes.SMALL_TEXT_SIZE,
+  fullWidthButtonContainer: {
+    alignItems: 'center',
+    padding: 10,
+    paddingBottom: 2.5,
+    paddingTop: 2.5,
+  },
+  halfWidthButtonContainer: {
+    padding: 2,
+    width: '50%',
+  },
+  halfWidthButtonsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingBottom: 2.5,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 2.5,
+  },
+  selectorContainer: {
+    marginRight: -20,
   },
 });
 export default styles;

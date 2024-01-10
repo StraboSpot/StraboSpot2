@@ -7,9 +7,9 @@ const splashscreenStyles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingTop: 70,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 70,
   },
   dimensionsContainer: {
     alignItems: 'center',
@@ -26,27 +26,27 @@ const splashscreenStyles = StyleSheet.create({
     textShadowRadius: 10,
   },
   titleContainer: {
-    paddingTop: 20,
     alignItems: 'center',
+    paddingTop: 20,
   },
   versionContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   versionNumber: {
-    textAlign: 'right',
-    fontSize: 25,
     color: 'black',
-    textShadowColor: 'white',
-    textShadowRadius: 10, fontFamily: 'ChalkboardSE-Bold',
-    // marginBottom: 10,
+    fontFamily: 'ChalkboardSE-Bold',
+    fontSize: 25,
     marginRight: 10,
+    textAlign: 'right', textShadowColor: 'white',
+    // marginBottom: 10,
+    textShadowRadius: 10,
   },
   wifiIndicatorContainer: {
     alignItems: 'flex-end',
     position: 'absolute',
-    top: 10,
     right: 10,
+    top: 10,
   },
 });
 

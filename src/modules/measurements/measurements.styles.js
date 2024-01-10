@@ -3,10 +3,20 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  measurementsSectionDividerContainer: {
+  basicText: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.SMALL_TEXT_SIZE,
+    paddingLeft: 10,
+  },
+  measurementDetailSwitches: {
+    borderColor: themes.PRIMARY_ACCENT_COLOR,
+    borderRadius: 10,
+    height: 40,
+  },
+  measurementsContentContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
   measurementsSectionDividerButtonContainer: {
     flex: 1,
@@ -18,20 +28,10 @@ const styles = StyleSheet.create({
     color: themes.PRIMARY_ACCENT_COLOR,
     fontSize: themes.MEDIUM_TEXT_SIZE,
   },
-  measurementsContentContainer: {
+  measurementsSectionDividerContainer: {
+    alignItems: 'center',
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-  },
-  measurementDetailSwitches: {
-    height: 40,
-    borderRadius: 10,
-    borderColor: themes.PRIMARY_ACCENT_COLOR,
-  },
-  basicText: {
-    paddingLeft: 10,
-    fontSize: themes.SMALL_TEXT_SIZE,
-    color: themes.PRIMARY_TEXT_COLOR,
+    flexDirection: 'row',
   },
 });
 

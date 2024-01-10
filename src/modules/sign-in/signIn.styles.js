@@ -3,42 +3,22 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  input: {
-    width: 350,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    fontWeight: '500',
-    height: 48,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    margin: 10,
-    color: 'black',
-    padding: 8,
-    borderRadius: 15,
-  },
-  signInContainer: {
-    alignItems: 'center',
-    // flex: 1,
-  },
-  version: {
-    textAlign: 'center',
-    fontSize: 32,
-    fontFamily: 'ChalkboardSE-Bold',
-  },
   buttonContainer: {
     margin: 10,
   },
-  buttonsContainer: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   buttonStyle: {
     borderRadius: 15,
-    paddingRight: 20,
-    paddingLeft: 20,
     height: 48,
+    paddingLeft: 20,
+    paddingRight: 20,
 
+  },
+  buttonsContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    padding: 20,
   },
   customEndpointContainer: {
     alignItems: 'center',
@@ -47,64 +27,80 @@ const styles = StyleSheet.create({
   customEndpointText: {
     color: themes.WHITE,
     fontSize: themes.MEDIUM_TEXT_SIZE,
-    marginEnd: 30,
     fontWeight: 'bold',
+    marginEnd: 30,
     textAlign: 'center',
   },
   errorText: {
     fontSize: themes.MEDIUM_TEXT_SIZE,
   },
+  input: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderRadius: 15,
+    color: 'black',
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontWeight: '500',
+    height: 48,
+    margin: 10,
+    padding: 8,
+    width: 350,
+  },
   loadingSplashScreenContainer: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: 'lightgrey',
+    flex: 1,
+    justifyContent: 'center',
   },
   loadingSplashScreenText: {
-    padding: 50,
-    fontWeight: themes.TEXT_WEIGHT,
     fontSize: themes.LARGE_TEXT_SIZE,
+    fontWeight: themes.TEXT_WEIGHT,
+    padding: 50,
+  },
+  signInContainer: {
+    alignItems: 'center',
   },
   verifyButtonContainer: {
     paddingLeft: 10,
   },
   verifyContainer: {
-    flexDirection: 'row',
-    width: 300,
-    justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'red',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: 300,
   },
   verifyEndpointIconText: {
     color: 'white',
   },
+  verifyInput: {
+    borderBottomColor: 'transparent',
+    fontSize: themes.SMALL_TEXT_SIZE,
+  },
   verifyProtocolInputContainer: {
     backgroundColor: 'white',
-    width: 70,
-    height: 45,
-    borderTopStartRadius: 15,
     borderBottomStartRadius: 15,
-  },
-  // verifyProtocolInput: {},
-  // verifySubdirectoryInput: {},
-  verifyInput: {
-    fontSize: themes.SMALL_TEXT_SIZE,
-    borderBottomColor: 'transparent',
+    borderTopStartRadius: 15,
+    height: 45,
+    width: 70,
   },
   verifySchemeInputContainer: {
-    backgroundColor: 'white',
-    width: 125,
-    height: 45,
-    marginRight: 3,
-    marginLeft: 3,
     alignItems: 'center',
+    backgroundColor: 'white',
+    height: 45,
+    marginLeft: 3,
+    marginRight: 3,
+    width: 125,
   },
   verifySubdirectoryInputContainer: {
     backgroundColor: 'white',
-    width: 60,
-    height: 45,
-    borderTopEndRadius: 15,
     borderBottomEndRadius: 15,
+    borderTopEndRadius: 15,
+    height: 45,
+    width: 60,
+  },
+  version: {
+    fontFamily: 'ChalkboardSE-Bold',
+    fontSize: 32,
+    textAlign: 'center',
   },
 
 });

@@ -4,17 +4,17 @@ import * as themes from '../../shared/styles.constants';
 
 const noteStyle = StyleSheet.create({
   container: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     flex: 1,
     padding: 10,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+  },
+  messageText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    padding: 15,
+    textAlign: 'center',
   },
   noteContainer: {
     marginTop: 10,
-  },
-  messageText: {
-    padding: 15,
-    textAlign: 'center',
-    fontSize: themes.MEDIUM_TEXT_SIZE,
   },
 });
 
