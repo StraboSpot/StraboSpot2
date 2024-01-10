@@ -1,7 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Alert, Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
+import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
 import styles from './versionCheck.styles';
+import alert from '../../shared/ui/alert';
 import VersionCheckHook from '../versionCheck/useVersionCheck';
 
 const VersionCheckLabel = (props) => {
@@ -26,7 +27,7 @@ const VersionCheckLabel = (props) => {
   };
 
   const showAlert = () => {
-    Alert.alert('IMPORTANT',
+    alert('IMPORTANT',
       'Please make sure your data is uploaded to your online account before upgrading. '
       + ' It is best to delete and the reinstall the app',
       [
