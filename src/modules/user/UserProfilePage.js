@@ -130,8 +130,13 @@ const UserProfile = (props) => {
         console.log(formCurrent.hasErrors());
       }
       dispatch(setUserData(newValues));
-      if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
-      else props.toast('Not connected to internet to upload profile changes', 'noWifi');
+      if (isOnline.isInternetReachable) {
+        await upload(newValues).catch(err => console.error('Error:', err));
+        toast.show('Profile uploaded successfully!', {type: 'success'});
+        setIsLoading(false);
+        dispatch(setSidePanelVisible({bool: false}));
+      }
+      else toast.show('Not connected to internet to upload profile changes', {type: 'warning'});
     }
     else {
       setSaveButtonDisabled(true);
