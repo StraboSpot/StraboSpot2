@@ -3,50 +3,50 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const UserStyles = StyleSheet.create({
-  profileNameAndImageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    padding: 10,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  avatarPlaceholderTitleStyle: {
-    color: themes.PRIMARY_TEXT_COLOR,
-  },
   avatarLabelContainer: {
-    padding: 10,
     justifyContent: 'space-around',
-  },
-  avatarLabelName: {
-    paddingBottom: 5,
-    fontWeight: 'bold',
-    fontSize: themes.PRIMARY_TEXT_SIZE,
+    padding: 10,
   },
   avatarLabelEmail: {
     fontSize: 12,
     fontWeight: 'bold',
   },
-  deleteProfileButtonText: {
-    color: themes.RED,
+  avatarLabelName: {
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontWeight: 'bold',
+    paddingBottom: 5,
+  },
+  avatarPlaceholderTitleStyle: {
+    color: themes.PRIMARY_TEXT_COLOR,
   },
   deleteProfileButtonContainer: {
     marginBottom: 15,
   },
+  deleteProfileButtonText: {
+    color: themes.RED,
+  },
   deleteProfileText: {
-    textAlign: 'center',
-    lineHeight: 25,
-    paddingTop: 10,
-    paddingBottom: 20,
     fontWeight: '600',
+    lineHeight: 25,
+    paddingBottom: 20,
+    paddingTop: 10,
+    textAlign: 'center',
   },
   imageSelectionModal: {
     borderRadius: 20,
     padding: 20,
     width: 300,
   },
+  profileNameAndImageContainer: {
+    alignItems: 'center',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    padding: 10,
+  },
   profilePageAvatarContainer: {
-    borderWidth: 7,
     borderColor: 'white',
+    borderWidth: 7,
   },
   saveButtonContainer: {
     paddingTop: 30,

@@ -4,186 +4,46 @@ import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 
 const homeStyles = StyleSheet.create({
-  buttonContainer: {
-    alignContent: 'center',
-  },
-  container: {
-    flex: 1,
-    overflow: 'hidden',
-  },
-  connectionStatusIconContainer: {
-    paddingEnd: 5,
-  },
-  statusBarContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    position: 'absolute',
-    top: 10,
-    width: '100%',
-    zIndex: -1,
-    justifyContent: 'center',
-  },
-  iconButton: {
-    top: 5,
-  },
-  imageSliderContainer: {
-    flex: 1,
-    position: 'absolute',
-    top: 100,
-    left: 0,
-    right: 0,
-    bottom: 20,
-    alignItems: 'center',
-  },
-  mapboxAttributionPosition: {
-    right: 10,
-    bottom: Platform.OS === 'ios' ? -15 : 7,
-  },
-  mapboxLogoPosition: {
-    left: 10,
-    bottom: Platform.OS === 'ios' ? -15 : 7,
-  },
-  buttonTextAlign: {
-    textAlign: 'center',
-  },
-  toastContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-  },
-  toastText: {
-    color: themes.PRIMARY_TEXT_COLOR,
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  offlineMapLabelContainer: {
-    position: 'absolute',
-    top: 60,
-    right: 0,
-    left: 0,
-    alignItems: 'center',
-    zIndex: -1,
-  },
-  offlineMapViewLabel: {
-    padding: 10,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'yellow',
-    textShadowColor: 'black',
-    textShadowRadius: 10,
-  },
-
-  // --- Drawer Styles ---
-  // --- Bottom icons (line, polygon, and point) ---
-  drawContainer: {
-    position: 'absolute',
-    bottom: 30,
-    right: 10,
-    zIndex: -1,
-  },
-  drawToolsContainer: {
-    flexDirection: 'row',
-  },
-
-  drawToolsButtons: {
-    borderRadius: 30,
-    borderWidth: 1,
-    paddingTop: 3,
-    paddingBottom: 3,
-    backgroundColor: themes.BLUE,
-    borderColor: themes.LIST_BORDER_COLOR,
-  },
-  drawToolsTitle: {
-    color: 'white',
-    fontSize: themes.PRIMARY_TEXT_SIZE,
-  },
-  editButtonsContainer: {
-    width: 185,
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-    backgroundColor: themes.LIGHTGREY,
-    padding: 10,
-    borderRadius: 10,
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  selectedDatasetContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    borderRadius: 10,
-    padding: 15,
-    width: 160,
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-
-  //Small Screen Icon Box
   actionButtonsSmallScreenContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
     alignItems: 'center',
-  },
-  actionButtonsSmallScreenContainerPortrait: {
-    bottom: 30,
+    left: 0,
+    position: 'absolute',
+    right: 0,
   },
   actionButtonsSmallScreenContainerLandscape: {
     bottom: 10,
   },
-  smallScreenMapActionButtons: {
-    borderColor: themes.MEDIUMGREY,
-    borderRightWidth: 1,
-    flexDirection: 'row',
-    paddingRight: 10,
+  actionButtonsSmallScreenContainerPortrait: {
+    bottom: 30,
   },
-  smallScreenDrawActionButtons: {
-    flexDirection: 'row',
-    paddingLeft: 10,
-  },
-  iconSizeSmallScreen: {
-    height: 40,
-  },
-
-  // --- Left and right icon absolute positions from top ---
-  mapActionsContainer: {
+  addIntervalButton: {
     position: 'absolute',
-    bottom: 150,
-    left: 10,
-    zIndex: -1,
-  },
-  shortcutButtons: {
-    position: 'absolute',
-    right: 10,
-    top: 150,
-    zIndex: -1,
-  },
-  drawSaveAndCancelButtons: {
-    position: 'absolute',
-    bottom: 100,
-    right: '40%',
-  },
-  notebookButton: {
-    position: 'absolute',
-    right: 10,
+    right: SMALL_SCREEN ? 10 : 60,
     top: 10,
   },
-  // --- Bottom Left Icon (current location) ---
   bottomLeftIcons: {
-    position: 'absolute',
     bottom: 30,
     left: 10,
+    position: 'absolute',
     zIndex: -1,
   },
-  homeIconContainer: {
-    position: 'absolute',
+  buttonContainer: {
+    alignContent: 'center',
+  },
+  buttonTextAlign: {
+    textAlign: 'center',
+  },
+  closeButtonSmallScreen: {
     left: 10,
+    position: 'absolute',
     top: 10,
-    zIndex: -1,
+  },
+  connectionStatusIconContainer: {
+    paddingEnd: 5,
+  },
+  container: {
+    flex: 1,
+    overflow: 'hidden',
   },
   currentZoomTextBlack: {
     color: themes.BLACK,
@@ -199,48 +59,177 @@ const homeStyles = StyleSheet.create({
     textShadowColor: themes.BLACK,
     textShadowRadius: 10,
   },
-  addIntervalButton: {
+  drawContainer: {
+    bottom: 30,
     position: 'absolute',
-    top: 10,
-    right: SMALL_SCREEN ? 10 : 60,
+    right: 10,
+    zIndex: -1,
   },
-  closeButtonSmallScreen: {
+  drawSaveAndCancelButtons: {
+    bottom: 100,
+    position: 'absolute',
+    right: '40%',
+  },
+  drawToolsButtons: {
+    backgroundColor: themes.BLUE,
+    borderColor: themes.LIST_BORDER_COLOR,
+    borderRadius: 30,
+    borderWidth: 1,
+    paddingBottom: 3,
+    paddingTop: 3,
+  },
+
+  drawToolsContainer: {
+    flexDirection: 'row',
+  },
+  drawToolsTitle: {
+    color: 'white',
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+  },
+  editButtonsContainer: {
+    backgroundColor: themes.LIGHTGREY,
+    borderRadius: 10,
+    bottom: 10,
+    elevation: 2,
+    padding: 10,
+    position: 'absolute',
+    right: 10,
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    width: 185,
+  },
+  homeIconContainer: {
+    left: 10,
     position: 'absolute',
     top: 10,
-    left: 10,
+    zIndex: -1,
   },
   homeIconSmallScreen: {
     height: 30,
   },
-
-  // --- Modal Style ---
+  iconButton: {
+    top: 5,
+  },
+  iconSizeSmallScreen: {
+    height: 40,
+  },
+  imageSliderContainer: {
+    alignItems: 'center',
+    bottom: 20,
+    flex: 1,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 100,
+  },
+  mapActionsContainer: {
+    bottom: 150,
+    left: 10,
+    position: 'absolute',
+    zIndex: -1,
+  },
+  mapboxAttributionPosition: {
+    bottom: Platform.OS === 'ios' ? -15 : 7,
+    right: 10,
+  },
+  mapboxLogoPosition: {
+    bottom: Platform.OS === 'ios' ? -15 : 7,
+    left: 10,
+  },
   modal: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+  },
+  notebookButton: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+  },
+  offlineMapLabelContainer: {
     alignItems: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 60,
+    zIndex: -1,
+  },
+  offlineMapViewLabel: {
+    color: 'yellow',
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 10,
+    textShadowColor: 'black',
+    textShadowRadius: 10,
+  },
+  selectedDatasetContainer: {
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    borderRadius: 10,
+    elevation: 2,
+    padding: 15,
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    width: 160,
+  },
+  shortcutButtons: {
+    position: 'absolute',
+    right: 10,
+    top: 150,
+    zIndex: -1,
+  },
+  smallScreenDrawActionButtons: {
+    flexDirection: 'row',
+    paddingLeft: 10,
+  },
+  smallScreenMapActionButtons: {
+    borderColor: themes.MEDIUMGREY,
+    borderRightWidth: 1,
+    flexDirection: 'row',
+    paddingRight: 10,
+  },
+  statusBarContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 10,
+    width: '100%',
+    zIndex: -1,
+  },
+  toastContainer: {
+    alignItems: 'center',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    justifyContent: 'center',
+  },
+  toastText: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   urlText: {
     fontSize: themes.SMALL_TEXT_SIZE,
   },
-
-  zoomAndScaleBarContainer: {
-    zIndex: 1,
+  webScaleControl: {
+    background: 'red',
+    bottom: 20,
+    fontWeight: 'bold',
+    left: 50,
     position: 'absolute',
+  },
+  zoomAndScaleBarContainer: {
     bottom: 40,
     left: 100,
+    position: 'absolute',
+    zIndex: 1,
   },
   zoomAndScaleBarContainerSmallScreen: {
-    zIndex: 1,
+    left: 10,
     position: 'absolute',
     top: 10,
-    left: 10,
-  },
-  webScaleControl: {
-    position: 'absolute',
-    left: 50,
-    bottom: 20,
-    background: 'red',
-    fontWeight: 'bold',
+    zIndex: 1,
   },
 });
 

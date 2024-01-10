@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   textStyle: {
-    fontSize: themes.PRIMARY_TEXT_SIZE,
     color: themes.PRIMARY_TEXT_COLOR,
+    fontSize: themes.PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
   },
 });

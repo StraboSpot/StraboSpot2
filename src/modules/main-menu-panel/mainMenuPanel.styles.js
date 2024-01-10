@@ -3,53 +3,53 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  settingsDrawer: {
-    width: 300,
-    height: '100%',
-    position: 'absolute',
-    left: 0,
-    zIndex: 0,
-  },
-  mainMenuContainer: {
-    flex: 1,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-  },
   buttons: {
+    color: themes.PRIMARY_ACCENT_COLOR,
     paddingLeft: 10,
     paddingRight: 10,
-    color: themes.PRIMARY_ACCENT_COLOR,
   },
-  headerText: {
-    flex: 3,
-    fontWeight: 'bold',
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
-    textAlign: 'center',
-    color: themes.PRIMARY_TEXT_COLOR,
+  container: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    flex: 1,
   },
   documentListItem: {
-    margin: 5,
     borderRadius: 15,
+    margin: 5,
   },
-  mainMenuHeaderTextContainer: {
-    flex: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerText: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    flex: 3,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  mainMenuIconContainer: {
+  mainMenuContainer: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
   },
   mainMenuHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    paddingTop: 15,
-    height: 70,
     flexDirection: 'row',
+    height: 70,
     justifyContent: 'center',
+    paddingTop: 15,
+  },
+  mainMenuHeaderTextContainer: {
+    alignItems: 'center',
+    flex: 4,
+    flexDirection: 'row',
+  },
+  mainMenuIconContainer: {
+    alignItems: 'flex-start',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  settingsDrawer: {
+    height: '100%',
+    left: 0,
+    position: 'absolute',
+    width: 300,
+    zIndex: 0,
   },
 });
 

@@ -4,43 +4,43 @@ import * as themes from '../../../shared/styles.constants';
 
 const notebookFooterStyles = StyleSheet.create({
   footerIconContainer: {
-    justifyContent: 'space-evenly',
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
   footerIconContainerWrap: {
-    justifyContent: 'space-evenly',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
   },
   morePagesButton: {
     color: themes.PRIMARY_TEXT_COLOR,
   },
   morePagesDialog: {
-    position: 'absolute',
-    width: 250,
-    height: '95%',
-    bottom: 10,
-    right: 10,
     borderRadius: 20,
-    zIndex: 10,
+    bottom: 10,
+    height: '95%',
     paddingBottom: 0,
+    position: 'absolute',
+    right: 10,
+    width: 250,
+    zIndex: 10,
   },
   morePagesListItem: {
-    paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 0,
     paddingRight: 0,
+    paddingTop: 5,
+  },
+  morePagesListItemTitle: {
+    color: themes.PRIMARY_TEXT_COLOR,
+    flex: 1,
+    fontSize: themes.SMALL_TEXT_SIZE,
+    paddingLeft: 5,
+    paddingRight: 5,
   },
   morePagesSectionDivider: {
     borderBottomWidth: 1,
-  },
-  morePagesListItemTitle: {
-    flex: 1,
-    paddingLeft: 5,
-    paddingRight: 5,
-    color: themes.PRIMARY_TEXT_COLOR,
-    fontSize: themes.SMALL_TEXT_SIZE,
   },
 });
 

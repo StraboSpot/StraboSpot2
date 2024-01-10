@@ -4,6 +4,7 @@ module.exports = {
     'es2021': true,
     'react-native/react-native': true,
   },
+  plugins : ['react', 'react-native'],
   extends: ['@react-native', 'plugin:import/recommended'],
   parserOptions: {
     ecmaFeatures: {
@@ -36,6 +37,8 @@ module.exports = {
       'newlines-between': 'always',
       'alphabetize': {order: 'asc', caseInsensitive: true},
     }],
+    // StraboSpot2 Sort StyleSheets
+    'react-native/sort-styles': ['error', 'asc', { 'ignoreClassNames': false, 'ignoreStyleProperties': false }],
 
     // StraboSpot2 Override React rules
     'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx']}], // allow .js files to contain JSX code

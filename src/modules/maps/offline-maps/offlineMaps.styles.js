@@ -5,45 +5,45 @@ import * as themes from '../../../shared/styles.constants';
 const platform = Platform.OS;
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    padding: 10,
-    marginTop: 10,
-  },
   button: {
     borderRadius: 30,
-    paddingRight: 50,
     paddingLeft: 50,
+    paddingRight: 50,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    padding: 10,
   },
   closeButton: {
     position: 'absolute',
     right: 15,
   },
   dialogTitle: {
-    justifyContent: 'center',
     flexDirection: 'row',
-    paddingTop: 30,
+    justifyContent: 'center',
     paddingBottom: 10,
-  },
-  modalButtonText: {
-    paddingLeft: 10,
-    paddingRight: 15,
+    paddingTop: 30,
   },
   itemContainer: {
-    width: '100%',
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
   },
   itemSubContainer: {
-    width: '100%',
-    justifyContent: 'space-evenly',
     flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+  },
+  itemSubTextStyle: {
+    fontSize: 14,
   },
   itemTextStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
   },
-  itemSubTextStyle: {
-    fontSize: 14,
+  modalButtonText: {
+    paddingLeft: 10,
+    paddingRight: 15,
   },
   pickerAndroid: {
     // flex: 1,

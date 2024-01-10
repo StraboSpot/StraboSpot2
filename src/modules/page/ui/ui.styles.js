@@ -3,11 +3,11 @@ import {StyleSheet} from 'react-native';
 import ui from '../../../shared/ui/ui.styles';
 
 const buttonStyles = StyleSheet.create({
-  navButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  backButton: {
     alignItems: 'flex-start',
+    marginTop: 10,
   },
+  buttonText: ui.buttonText,
   leftContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -15,11 +15,11 @@ const buttonStyles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  backButton: {
-    marginTop: 10,
+  navButtonsContainer: {
     alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  buttonText: ui.buttonText,
 });
 
 export default buttonStyles;

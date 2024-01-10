@@ -10,8 +10,8 @@ const documentationStyles = StyleSheet.create({
     margin: 20,
   },
   overlayContainer: {
-    width: '55%',
     height: '100%',
+    width: '55%',
   },
 });
 

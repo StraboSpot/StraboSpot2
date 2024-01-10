@@ -10,82 +10,80 @@ const styles = StyleSheet.create({
   alignItemsToCenter: {
     alignItems: 'center',
   },
-  safeAreaView: {
-    flex: 1,
-    overflow: 'hidden',
-    backgroundColor: themes.BLACK,
+  backButton: {
+    alignItems: 'flex-start',
+    marginTop: 10,
   },
   backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    height: '100%',
+    left: 0,
     position: 'absolute',
     top: 0,
-    left: 0,
     width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     zIndex: 50,
-  },
-  batteryLevelTextContainer: {
-    position: 'absolute',
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   batteryLevelText: {
     color: themes.BLACK,
-    fontWeight: 'bold',
     fontSize: 12,
+    fontWeight: 'bold',
   },
-  statusBarIcon: {
-    width: 40,
+  batteryLevelTextContainer: {
+    alignItems: 'center',
     height: 40,
-    backgroundColor: 'white',
-    borderRadius: 50,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: 40,
+  },
+  buttonText: {
+    color: themes.PRIMARY_ACCENT_COLOR,
+    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
   },
   customEndpointContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  customEndpointText: {
-    fontSize: themes.MEDIUM_TEXT_SIZE,
-    marginEnd: 30,
-    textAlign: 'center',
+  customEndpointSwitch: {
+    height: 48,
+    width: 48,
   },
   customEndpointSwitchContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     height: 50,
   },
+  customEndpointText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    marginEnd: 30,
+    textAlign: 'center',
+  },
   customEndpointVerifyButtonContainer: {
     alignItems: 'center',
     padding: 20,
   },
-  verifyButtonStyle: {
-    borderRadius: 15,
-    paddingRight: 20,
-    paddingLeft: 20,
-  },
   customEndpointVerifyIconContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   customEndpointVerifyInputContainer: {
-    flexDirection: 'row',
-    width: 300,
-    justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: 300,
   },
-  customEndpointSwitch: {
-    height: 48,
-    width: 48,
+  headerContainer: {
+    alignItems: 'center',
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    height: 60,
+    justifyContent: 'center',
   },
   imageIcon: {
-    width: Platform.OS === 'web' ? 50 : 55,
     height: Platform.OS === 'web' ? 50 : 55,
+    width: Platform.OS === 'web' ? 50 : 55,
   },
   itemSeparator: {
-    borderTopWidth: 1,
     borderColor: themes.LIGHTGREY,
+    borderTopWidth: 1,
   },
   leftContainer: {
     flex: 1,
@@ -94,40 +92,43 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  backButton: {
-    marginTop: 10,
-    alignItems: 'flex-start',
+  littleSpacer: {
+    padding: 5,
   },
   navButtonsContainer: {
+    alignItems: 'flex-start',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
   },
-  saveAndDeleteButtonStyles: {
-    borderRadius: 15,
-    paddingRight: 20,
-    paddingLeft: 20,
+  safeAreaView: {
+    backgroundColor: themes.BLACK,
+    flex: 1,
+    overflow: 'hidden',
   },
   saveAndDeleteButtonContainer: {
     alignItems: 'center',
     paddingTop: 10,
   },
+  saveAndDeleteButtonStyles: {
+    borderRadius: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
   sectionDivider: {
+    flexShrink: 1,
+    paddingBottom: 2,
     paddingLeft: 10,
     paddingTop: 8,
-    paddingBottom: 2,
-    flexShrink: 1,
   },
   sectionDividerText: {
+    color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.MEDIUM_TEXT_SIZE,
     fontWeight: 'bold',
-    // textTransform: 'uppercase',
-    color: themes.PRIMARY_TEXT_COLOR,
   },
   sectionDividerWithButtonContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   sectionHeaderBackground: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -135,29 +136,27 @@ const styles = StyleSheet.create({
   slider: {
     width: '100%',
   },
-  sliderTextContainer: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
   sliderLabel: {
+    color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.SMALL_TEXT_SIZE,
-    color: themes.PRIMARY_TEXT_COLOR
   },
-  buttonText: {
-    color: themes.PRIMARY_ACCENT_COLOR,
-    fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+  sliderTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   spacer: {
     padding: 10,
   },
-  littleSpacer: {
-    padding: 5,
+  statusBarIcon: {
+    backgroundColor: 'white',
+    borderRadius: 50,
+    height: 40,
+    width: 40,
   },
-  headerContainer: {
-    height: 60,
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
-    alignItems: 'center',
-    justifyContent: 'center',
+  verifyButtonStyle: {
+    borderRadius: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
 });
 
