@@ -44,11 +44,17 @@ const UserStyles = StyleSheet.create({
     padding: 20,
     width: 300,
   },
+  loadingSpinnerProps: {
+    color: '#999999',
+    size: 'large',
+  },
   profilePageAvatarContainer: {
     borderWidth: 7,
     borderColor: 'white',
   },
-
+  saveButtonContainer: {
+    paddingVertical: 20,
+  },
 });
 
 export default UserStyles;
