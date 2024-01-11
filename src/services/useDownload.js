@@ -15,7 +15,6 @@ import {
   setStatusMessageModalTitle,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
-import {initialProjectLoadModal} from '../modules/home/modals';
 import useImagesHook from '../modules/images/useImages';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
@@ -43,6 +42,7 @@ const useDownload = () => {
 
   const dispatch = useDispatch();
   const encodedLogin = useSelector(state => state.user.encoded_login);
+  const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const project = useSelector(state => state.project.project);
 
   const useImages = useImagesHook();
@@ -162,7 +162,7 @@ const useDownload = () => {
   const initializeDownload = async (selectedProject) => {
     const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
     batch(() => {
-      if (initialProjectLoadModal) dispatch(setProjectLoadSelectionModalVisible(false));
+      if (isProjectLoadSelectionModalVisible) dispatch(setProjectLoadSelectionModalVisible(false));
       dispatch(setStatusMessageModalTitle(project.name));
       dispatch(clearedStatusMessages());
       if (Platform.OS !== 'web') dispatch(setStatusMessagesModalVisible(true));
@@ -175,11 +175,10 @@ const useDownload = () => {
       console.log('Download Complete! Spots Downloaded!');
       batch(() => {
         dispatch(addedStatusMessage('------------------'));
-        dispatch(addedStatusMessage('Download Complete!'));
         dispatch(addedSpotsFromServer(spotsToSave));
         dispatch(addedDatasets(datasetsObjToSave));
         dispatch(addedCustomMapsFromBackup(customMapsToSave));
-        dispatch(addedStatusMessage('Project Saved!'));
+        dispatch(addedStatusMessage('Project Loaded!'));
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
       });
