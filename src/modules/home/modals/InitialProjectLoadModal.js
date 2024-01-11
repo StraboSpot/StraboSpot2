@@ -153,125 +153,9 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
 
   };
 
-  const renderCurrentDatasetSelection = () => {
-    return (
-      <React.Fragment>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Button
-            onPress={() => goBack()}
-            type={'clear'}
-          />
-          <Button
-            onPress={() => closeModal()}
-            title={'Done'}
-            type={'clear'}
-            disabled={isEmpty(activeDatasetsId)}
-            // buttonStyle={commonStyles.standardButton}
-            // titleStyle={commonStyles.standardButtonText}
-          />
-        </View>
-        <View style={{alignItems: 'center', paddingTop: 10}}>
-          <Text>Select the dataset to add new spots.</Text>
-        </View>
-        <Spacer/>
-        <View style={{height: 400}}>
-          <ActiveDatasetsList/>
-        </View>
-      </React.Fragment>
-    );
-  };
-
-  const renderContinueOrCloseButton = () => {
-    if (activeDatasetsId.length > 1) {
-      return (
-        <Button
-          onPress={() => setVisibleProjectSection('currentDatasetSelection')}
-          type={'clear'}
-          title={'Next'}
-          // buttonStyle={[commonStyles.standardButton]}
-          titleStyle={commonStyles.standardButtonText}
-        />
-      );
-    }
-    else {
-      return (
-        <Button
-          onPress={() => closeModal()}
-          type={'clear'}
-          title={'Done'}
-          disabled={isEmpty(activeDatasetsId)}
-          // buttonStyle={[commonStyles.standardButton]}
-          titleStyle={commonStyles.standardButtonText}
-        />
-      );
-    }
-  };
-
-  const renderDatasetList = () => {
-    return (
-      <React.Fragment>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Button
-            onPress={() => goBack()}
-            type={'clear'}
-            // buttonStyle={[commonStyles.standardButton]}
-            titleStyle={commonStyles.standardButtonText}
-          />
-          {renderContinueOrCloseButton()}
-        </View>
-        <Spacer/>
-        <View style={commonStyles.standardButtonText}>
-          <Text> By default the first dataset selected will be made the current dataset. You can change this on the next
-            page and in the Active Project section of the Home Menu.</Text>
-        </View>
-        <Spacer/>
-        <View style={{height: 400}}>
-          <DatasetList/>
-        </View>
-      </React.Fragment>
-    );
-  };
-
   const renderListOfProjectsOnDevice = () => {
-    if (!isEmpty(selectedProject)) {
-      return visibleProjectSection === 'activeDatasetsList' ? renderDatasetList() : renderCurrentDatasetSelection();
-    }
-    else {
-      return (
-        <React.Fragment>
-          <View style={{alignContent: 'center', marginTop: 10}}>
-            <Button
-              onPress={() => goBackToMain()}
-              type={'clear'}
-              icon={
-                <Icon
-                  name={'arrow-back'}
-                  type={'ionicon'}
-                  color={'black'}
-                  iconStyle={projectStyles.buttons}
-                  size={25}
-                />
-              }
-              containerStyle={{alignItems: 'flex-start'}}
-              titleStyle={commonStyles.standardButtonText}
-            />
-          </View>
-          {/*{renderProjectTypesButtons()}*/}
-          {/*<Spacer/>*/}
-          <View style={{height: 400}}>
-            <ProjectList source={source}/>
-          </View>
-        </React.Fragment>
-      );
-    }
-  };
-
-  const renderListOfProjectsOnServer = () => {
-    if (!isEmpty(selectedProject)) {
-      return visibleProjectSection === 'activeDatasetsList' ? renderDatasetList() : renderCurrentDatasetSelection();
-    }
-    else {
-      return (
+    return (
+      <React.Fragment>
         <View style={{alignContent: 'center', marginTop: 10}}>
           <Button
             onPress={() => goBackToMain()}
@@ -288,14 +172,38 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
             containerStyle={{alignItems: 'flex-start'}}
             titleStyle={commonStyles.standardButtonText}
           />
-          {/*{renderProjectTypesButtons()}*/}
-          <Spacer/>
-          <View style={{height: 400}}>
-            <ProjectList source={source}/>
-          </View>
         </View>
-      );
-    }
+        <View style={{height: 400}}>
+          <ProjectList source={source}/>
+        </View>
+      </React.Fragment>
+    );
+  };
+
+  const renderListOfProjectsOnServer = () => {
+    return (
+      <View style={{alignContent: 'center', marginTop: 10}}>
+        <Button
+          onPress={() => goBackToMain()}
+          type={'clear'}
+          icon={
+            <Icon
+              name={'arrow-back'}
+              type={'ionicon'}
+              color={'black'}
+              iconStyle={projectStyles.buttons}
+              size={25}
+            />
+          }
+          containerStyle={{alignItems: 'flex-start'}}
+          titleStyle={commonStyles.standardButtonText}
+        />
+        <Spacer/>
+        <View style={{height: 400}}>
+          <ProjectList source={source}/>
+        </View>
+      </View>
+    );
   };
 
   const renderSectionView = () => {
