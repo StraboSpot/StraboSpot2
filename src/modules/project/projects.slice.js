@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, isEqual} from '../../shared/Helpers';
 
 const initialProjectState = {
   activeDatasetsIds: [],
@@ -67,27 +67,13 @@ const projectSlice = createSlice({
     addedProjectDescription(state, action) {
       state.project = action.payload;
     },
-    addedSpotsIdsToDataset(state, action) {
-      const {datasetId, spotIds, modified_timestamp, images} = action.payload;
-      let datasetTimestamp = modified_timestamp;
+    addedNewSpotIdToDataset(state, action) {
+      const {datasetId, spotId} = action.payload;
       const timestamp = Date.now();
-      const spotIdsInDataset = state.datasets[datasetId].spotIds
-        ? [...state.datasets[action.payload.datasetId].spotIds, ...spotIds]
-        : spotIds;
-      const spotIdsUnique = [...new Set(spotIdsInDataset)];
-      if (!datasetTimestamp) {
-        datasetTimestamp = timestamp;
-        console.log('Modified Timestamp:', datasetTimestamp);
-        state.project.modified_timestamp = timestamp;
-      }
-      let dataset = {...state.datasets[datasetId], modified_timestamp: datasetTimestamp, spotIds: spotIdsUnique};
-      if (images) {
-        const imagesInDataset = state.datasets[datasetId].images
-          ? {...state.datasets[datasetId].images, ...images}
-          : images;
-        dataset = {...dataset, images: imagesInDataset};
-      }
+      const spotIdsInDataset = [...state.datasets[action.payload.datasetId].spotIds, spotId];
+      const dataset = {...state.datasets[datasetId], modified_timestamp: timestamp, spotIds: spotIdsInDataset};
       state.datasets = {...state.datasets, [datasetId]: dataset};
+      state.project.modified_timestamp = timestamp;
     },
     addedTagToSelectedSpot(state, action) {
       state.addTagToSelectedSpot = action.payload;
@@ -150,7 +136,9 @@ const projectSlice = createSlice({
       const timestamp = Date.now();
       const updatedDatasets = Object.entries(state.datasets).reduce((acc, [datasetId, dataset]) => {
         const remainingSpotIds = dataset.spotIds?.filter(id => id !== spotId) || [];
-        return {...acc, [datasetId]: {...dataset, modified_timestamp: timestamp, spotIds: remainingSpotIds}};
+        const updatedDatatset = isEqual(dataset.spotIds, remainingSpotIds) ? dataset
+          : {...dataset, modified_timestamp: timestamp, spotIds: remainingSpotIds};
+        return {...acc, [datasetId]: updatedDatatset};
       }, {});
       state.datasets = updatedDatasets;
       state.project.modified_timestamp = timestamp;
@@ -160,6 +148,20 @@ const projectSlice = createSlice({
     },
     doesDownloadsDirectoryExist(state, action) {
       state.downloadsDirectory = action.payload;
+    },
+    movedSpotIdBetweenDatasets(state, action) {
+      const {toDatasetId, spotId} = action.payload;
+      const timestamp = Date.now();
+      const updatedDatasets = Object.entries(state.datasets).reduce((acc, [datasetId, dataset]) => {
+        const remainingSpotIds = dataset.spotIds?.filter(id => id !== spotId) || [];
+        const updatedSpotIds = datasetId === toDatasetId.toString() ? [...remainingSpotIds, spotId]
+          : remainingSpotIds;
+        const updatedDatatset = isEqual(dataset.spotIds, updatedSpotIds) ? dataset
+          : {...dataset, modified_timestamp: timestamp, spotIds: updatedSpotIds};
+        return {...acc, [datasetId]: updatedDatatset};
+      }, {});
+      state.datasets = updatedDatasets;
+      state.project.modified_timestamp = timestamp;
     },
     setIsImageTransferring(state, action) {
       state.isImageTransferring = action.payload;
@@ -262,7 +264,7 @@ export const {
   addedProject,
   addedProjectDescription,
   addedNeededImagesToDataset,
-  addedSpotsIdsToDataset,
+  addedNewSpotIdToDataset,
   addedTagToSelectedSpot,
   addedTemplates,
   clearedDatasets,
@@ -273,6 +275,7 @@ export const {
   deletedSpotIdFromTags,
   doesBackupDirectoryExist,
   doesDownloadsDirectoryExist,
+  movedSpotIdBetweenDatasets,
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,

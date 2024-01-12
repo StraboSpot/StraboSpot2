@@ -77,6 +77,15 @@ export const deleteDataset = async (datasetId, encodedLogin) => {
   }
 };
 
+// Move one Spot from a one Dataset to Another
+export const moveSpotToDataset = async (spotId, datasetId, modifiedTimestamp, encodedLogin) => {
+  return post('/moveSpotToDataset', encodedLogin, {
+    'spot_id': spotId,
+    'dataset_id': datasetId,
+    'modified_timestamp': modifiedTimestamp,
+  });
+};
+
 // Update project
 export const updateProject = (project, encodedLogin) => {
   return post('/project/' + project.id, encodedLogin, project);

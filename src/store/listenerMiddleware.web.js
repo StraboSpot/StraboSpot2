@@ -7,6 +7,7 @@ import {
   addedDataset,
   addedTemplates,
   deletedDataset,
+  movedSpotIdBetweenDatasets,
   setActiveTemplates,
   setUseContinuousTagging,
   setUseTemplate,
@@ -23,6 +24,7 @@ import {
 } from '../modules/spots/spots.slice';
 import {
   deleteDataset,
+  moveSpotToDataset,
   updateProject,
   uploadProjectDatasetDeleteSpot,
   uploadProjectDatasetsSpots,
@@ -55,6 +57,25 @@ const deleteDatasetListener = async (action, listenerApi) => {
 
   const resJSON2 = await updateProject(project, encodedLogin);
   console.log('updateProject resJSON', resJSON2);
+
+  Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+};
+
+// Move one Spot from a one Dataset to Another
+const moveSpotToDatasetListener = async (action, listenerApi) => {
+  Toast.hideAll();
+  let toastId = Toast.show('Saving changes...', {placement: 'bottom', duration: 100000});
+  console.log('Action:', action, 'Moving Spot to Dataset:', action.payload);
+
+  const newState = listenerApi.getState();
+  console.log('New State:', newState);
+
+  const encodedLogin = newState.user.encoded_login;
+  const {toDatasetId, spotId} = action.payload;
+  const modifiedTimestamp = newState.project.project.modified_timestamp;
+
+  const resJSON = await moveSpotToDataset(spotId, toDatasetId, modifiedTimestamp, encodedLogin);
+  console.log('moved Spot to Dataset resJSON', resJSON);
 
   Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
 };
@@ -180,8 +201,9 @@ listenerMiddleware.startListening({
 // Don't need to do addedSpotsFromDevice until can add from device on web
 // listenerMiddleware.startListening({actionCreator: addedSpotsFromDevice, effect: updatedProjectDatasetSpotListener});
 
-// Don't need to do addedSpotsIdsToDataset until moving a dataset on metadata page works
-// listenerMiddleware.startListening({actionCreator: addedSpotsIdsToDataset, effect: addedCustomFeatureTypesListener});
+// Spot Move from One Dataset to Another
+listenerMiddleware.startListening({actionCreator: movedSpotIdBetweenDatasets, effect: moveSpotToDatasetListener});
+// Don't need to do addedNewSpotIdToDataset as editedOrCreatedSpot is called after this
 
 // Project Only Updates to Send to Server
 listenerMiddleware.startListening({

@@ -8,7 +8,7 @@ import {setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {
   addedDataset,
-  addedSpotsIdsToDataset,
+  addedNewSpotIdToDataset,
   deletedSpotIdFromDatasets,
   deletedSpotIdFromTags,
   setActiveDatasets,
@@ -139,7 +139,7 @@ const useSpots = () => {
       });
     }
     console.log('Active Dataset', currentDataset);
-    dispatch(addedSpotsIdsToDataset({datasetId: currentDataset.id, spotIds: [newSpot.properties.id]}));
+    dispatch(addedNewSpotIdToDataset({datasetId: currentDataset.id, spotId: newSpot.properties.id}));
     dispatch(editedOrCreatedSpot(newSpot));
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
