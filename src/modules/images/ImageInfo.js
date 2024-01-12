@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Text, Platform, View, useWindowDimensions} from 'react-native';
+import {ActivityIndicator, Platform, Text, useWindowDimensions, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
@@ -111,14 +111,16 @@ const ImageInfo = ({route}) => {
       <View style={styles.rightsideIcons}>
         <IconButton
           style={styles.imageInfoButtons}
-          source={require('../../assets/icons/ImagePropetiesButton.png')}
+          source={require('../../assets/icons/ImagePropertiesButton.png')}
           onPress={() => setIsImagePropertiesModalVisible(true)}
         />
-        <IconButton
-          style={styles.imageInfoButtons}
-          source={require('../../assets/icons/SketchButton.png')}
-          onPress={() => clickHandler('sketch')}
-        />
+        {Platform.OS !== 'web' && (
+          <IconButton
+            style={styles.imageInfoButtons}
+            source={require('../../assets/icons/ImageSketchButton.png')}
+            onPress={() => clickHandler('sketch')}
+          />
+        )}
         <IconButton
           style={styles.imageInfoButtons}
           source={require('../../assets/icons/DeleteButton.png')}
