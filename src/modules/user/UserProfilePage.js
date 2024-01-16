@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Animated, Image, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -16,6 +16,7 @@ import useUploadHook from '../../services/useUpload';
 import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import TextInputModal from '../../shared/ui/TextInputModal';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
@@ -35,6 +36,8 @@ const UserProfile = () => {
   const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const useForm = useFormHook();
   const navigation = useNavigation();
@@ -53,10 +56,6 @@ const UserProfile = () => {
   </View>;
 
   const offlineText = <Text style={userStyles.deleteProfileText}>Need to be online in order to delete profile.</Text>;
-
-  useLayoutEffect(() => {
-    console.log('UE UserProfile []');
-  }, []);
 
   const deleteProfile = async () => {
     console.log(deleteProfileInputValue);
@@ -123,6 +122,7 @@ const UserProfile = () => {
   const saveForm = async () => {
     const formCurrent = formRef.current;
     if (formCurrent.dirty) {
+      setIsLoading(true);
       await formRef.current.submitForm();
       let newValues = JSON.parse(JSON.stringify(formCurrent.values));
       console.log(newValues);
@@ -130,10 +130,18 @@ const UserProfile = () => {
         console.log(formCurrent.hasErrors());
       }
       dispatch(setUserData(newValues));
-      if (isOnline.isInternetReachable) upload(newValues).catch(err => console.error('Error:', err));
-      else props.toast('Not connected to internet to upload profile changes', 'noWifi');
+      if (isOnline.isInternetReachable) {
+        await upload(newValues).catch(err => console.error('Error:', err));
+        toast.show('Profile uploaded successfully!', {type: 'success'});
+        setIsLoading(false);
+        dispatch(setSidePanelVisible({bool: false}));
+      }
+      else toast.show('Not connected to internet to upload profile changes', {type: 'warning'});
     }
-    else toast.show('No changes were made.');
+    else {
+      setSaveButtonDisabled(true);
+      toast.show('No changes were made.');
+    }
   };
 
   const saveImage = async () => {
@@ -209,7 +217,6 @@ const UserProfile = () => {
     try {
       console.log(values);
       await useUpload.uploadProfile(values);
-      toast.show('Profile uploaded successfully!', {type: 'success'});
     }
     catch (err) {
       console.error('Error uploading profile', err);
@@ -217,12 +224,36 @@ const UserProfile = () => {
     }
   };
 
+  const validateForm = (values) => {
+    console.log('DIRTY', formRef.current.dirty);
+    if (saveButtonDisabled) setSaveButtonDisabled(false);
+    useForm.validateForm({formName: formName, values: values});
+    console.log('DIRTY AFTER', formRef.current.dirty);
+
+  };
+
   return (
     <View style={{flex: 1}}>
       <SidePanelHeader
         title={'My Strabo Spot'}
         headerTitle={'Profile'}
-        backButton={() => dispatch(setSidePanelVisible({bool: false}))}
+        backButton={() => {
+          console.log('DIRTY', formRef.current.dirty);
+          if (!formRef?.current?.dirty) {
+            toast.show('No Changes Were Made.');
+            dispatch(setSidePanelVisible({bool: false}));
+          }
+          else {
+            alert(
+              'Changes Were Made',
+              'Do you want to save your Changes',
+              [
+                {text: 'Ok', onPress: async () => await saveForm()},
+                {text: 'Cancel', onPress: () => dispatch(setSidePanelVisible({bool: false}))},
+              ],
+            );
+          }
+        }}
       />
       <Animated.View style={{flex: 1}}>
         <View style={{alignItems: 'center', marginTop: 15}}>
@@ -248,23 +279,25 @@ const UserProfile = () => {
           <Formik
             innerRef={formRef}
             onSubmit={values => console.log('Submitting form...', values)}
-            validate={values => useForm.validateForm({formName: formName, values: values})}
+            validate={values => validateForm(values)}
             component={formProps => Form({formName: formName, ...formProps})}
             initialValues={userData}
             validateOnChange={true}
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
           <View style={userStyles.saveButtonContainer}>
-            <Button
-              title={'Save Changes'}
-              type={'clear'}
-              onPress={() => saveForm()}
-            />
+              <Button
+                onPress={() => saveForm()}
+                type={'clear'}
+                title={'Save Changes'}
+                disabled={saveButtonDisabled}
+                loading={isLoading}
+                loadingProps={userStyles.loadingSpinnerProps}
+              />
           </View>
         </View>
         <View style={commonStyles.buttonContainer}>
-
-          <Text style={{textAlign: 'center'}}>Need to be online to delete profile.</Text>
+          <Text>Need to be online to delete profile.</Text>
           <Button
             title={'DELETE PROFILE'}
             disabled={!isOnline.isInternetReachable}

@@ -37,6 +37,10 @@ const UserStyles = StyleSheet.create({
     padding: 20,
     width: 300,
   },
+  loadingSpinnerProps: {
+    color: '#999999',
+    size: 'large',
+  },
   profileNameAndImageContainer: {
     alignItems: 'center',
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -49,7 +53,7 @@ const UserStyles = StyleSheet.create({
     borderWidth: 7,
   },
   saveButtonContainer: {
-    paddingTop: 30,
+    paddingVertical: 20,
   },
 });
 
