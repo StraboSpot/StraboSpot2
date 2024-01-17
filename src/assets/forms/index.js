@@ -2,6 +2,7 @@ import faultRock from './fabrics/fault-rock.json';
 import igneousRock from './fabrics/igneous-rock.json';
 import metamorphicRock from './fabrics/metamorphic-rock.json';
 import geography from './geography.json';
+import earthquake from './geomorph/earthquake.json';
 import imageProperties from './image-properties.json';
 import linearOrientation from './measurement/linear-orientation.json';
 import planarOrientation from './measurement/planar-orientation.json';
@@ -81,6 +82,7 @@ const forms = {
     metamorphic_rock: metamorphicRock,
   },
   general: {
+    earthquakes: earthquake,
     geography: geography,
     images: imageProperties,
     project_description: projectDescription,

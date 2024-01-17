@@ -1,0 +1,863 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "select_one vb6ve90",
+      "name": "earthquake_feature",
+      "label": "Feature",
+      "required": "true"
+    },
+    {
+      "type": "text",
+      "name": "references",
+      "label": "Notes",
+      "hint::English (en)": "Reference to notebook entries and sketches, photo numbers, other geologic observations.",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "select_one du9xy31",
+      "name": "confidence_in_feature_id",
+      "label": "Confidence in Feature ID",
+      "hint::English (en)": "Low - Unlikely related to primary tectonic rupture (e.g., shaking, triggered, gravity), Medium - Could either be primary tectonic or secondary rupture (triggered or shaking), High - Very likely related to tectonic rupture",
+      "required": "false"
+    },
+    {
+      "type": "select_one oi7js36",
+      "name": "mode_of_observation",
+      "label": "Mode of Observation",
+      "hint::English (en)": "Physical (boots on the ground), Visual (terrestrial line of sight), Estimate (areal)",
+      "required": "false"
+    },
+    {
+      "type": "select_one ju3gq49",
+      "name": "slip_sense",
+      "label": "Slip Sense",
+      "required": "false",
+      "appearance": "minimal",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "select_one ob6dm82",
+      "name": "scarp_facing_dir",
+      "label": "Scarp Facing Direction",
+      "required": "false",
+      "appearance": "minimal",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "decimal",
+      "name": "local_fault_dip",
+      "label": "Local Fault Dip",
+      "hint::English (en)": "0-90 degrees; right hand rule",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'",
+      "guidance_hint": "0-90 degrees; right hand rule"
+    },
+    {
+      "type": "decimal",
+      "name": "local_fault_azimuth",
+      "label": "Local Fault Azimuth",
+      "hint::English (en)": "0-360 degrees; right hand rule",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "decimal",
+      "name": "slip_azimuth",
+      "label": "Slip Azimuth",
+      "hint::English (en)": "0-360 degrees",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "select_multiple rz2qw00",
+      "name": "fault_slip_meas",
+      "label": "Fault Slip Measurement",
+      "hint::English (en)": "Vector measurement (directly taking trend/plunge and measuring slip), Slip components (horizontal and vertical components of separation)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "select_one hm18t55",
+      "name": "vector_meas_confidence",
+      "label": "Vector Measurement Confidence",
+      "hint::English (en)": "Explain confidence if \"low\" or \"medium\" in Notes below",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "text",
+      "name": "vector_meas_notes",
+      "label": "Vector Measurement Notes",
+      "hint::English (en)": "Explain confidence if \"low\" or \"medium\"",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "decimal",
+      "name": "plunge",
+      "label": "Plunge",
+      "hint::English (en)": "0-90 degrees",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "decimal",
+      "name": "slip_preferred_cm",
+      "label": "Slip Preferred (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "decimal",
+      "name": "slip_min_cm",
+      "label": "Slip Min (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "decimal",
+      "name": "slip_max_cm",
+      "label": "Slip Max (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "decimal",
+      "name": "horiz_separation_preferred_cm",
+      "label": "Horizontal Separation Preferred (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "decimal",
+      "name": "horiz_separation_min_cm",
+      "label": "Horizontal Separation Min (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "decimal",
+      "name": "horiz_separation_max_cm",
+      "label": "Horizontal Separation Max (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "decimal",
+      "name": "vert_separation_preferred",
+      "label": "Vertical Separation Preferred (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "decimal",
+      "name": "vert_separation_min_cm",
+      "label": "Vertical Separation Min (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "decimal",
+      "name": "vertical_separation_max_cm",
+      "label": "Vertical Separation Max (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "select_one rb7mn64",
+      "name": "slip_meas_confidence",
+      "label": "Slip Measurement Confidence",
+      "hint::English (en)": "Explain confidence if \"low\" or \"medium\" in Notes below",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "text",
+      "name": "slip_meas_notes",
+      "label": "Slip Measurement Notes",
+      "hint::English (en)": "Explain confidence if \"low\" or \"medium\"",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
+    },
+    {
+      "type": "decimal",
+      "name": "heave_preferred_cm",
+      "label": "Heave Preferred (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "decimal",
+      "name": "heave_min_cm",
+      "label": "Heave Min (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "decimal",
+      "name": "heave_max_cm",
+      "label": "Heave Max (cm)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture' and ${fault_slip_meas} != ''"
+    },
+    {
+      "type": "text",
+      "name": "rupture_expression",
+      "label": "Rupture Expression",
+      "hint::English (en)": "What does the rupture look like at this location? (e.g. mole track, crack, en echelon fractures, etc.)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'",
+      "constraint": ". = ''"
+    },
+    {
+      "type": "decimal",
+      "name": "rupture_width_preferred_m",
+      "label": "Rupture Width Preferred (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "decimal",
+      "name": "rupture_width_min_m",
+      "label": "Rupture Width Min (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "decimal",
+      "name": "rupture_width_max_m",
+      "label": "Rupture Width Max (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "select_one mv2vk38",
+      "name": "area_affected_sq_mi",
+      "label": "Area Affected (square miles)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'liquefaction'"
+    },
+    {
+      "type": "decimal",
+      "name": "diameter_m",
+      "label": "Diameter (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'liquefaction'"
+    },
+    {
+      "type": "decimal",
+      "name": "height_of_material_m",
+      "label": "Height of Material (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'liquefaction'"
+    },
+    {
+      "type": "decimal",
+      "name": "max_vert_movement_m",
+      "label": "Maximum Vertical Movement (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'liquefaction'"
+    },
+    {
+      "type": "date",
+      "name": "date_of_movement",
+      "label": "Date of Movement",
+      "required": "false"
+    },
+    {
+      "type": "time",
+      "name": "time_of_movement",
+      "label": "Time of Movement",
+      "required": "false"
+    },
+    {
+      "type": "select_one ub5fh32",
+      "name": "slide_type",
+      "label": "Slide Type",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "select_one xm1ul26",
+      "name": "material_type",
+      "label": "Material Type",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "select_one it7sf67",
+      "name": "landslide_feat",
+      "label": "Landslide Feature",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "select_one jy2xk40",
+      "name": "area_affected_sq_mi_001",
+      "label": "Area Affected (square miles)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "integer",
+      "name": "est_dir_of_slope_m",
+      "label": "Estimated Direction of Slope Movement",
+      "hint::English (en)": "0-360 degrees",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "integer",
+      "name": "displacement_amt_cm",
+      "label": "Displacement Amount (cm) ",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "integer",
+      "name": "depth_m",
+      "label": "Depth (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "integer",
+      "name": "max_drop_in_elevation_m",
+      "label": "Max Drop in Elevation (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "integer",
+      "name": "length_exposed_downslope_m",
+      "label": "Length Exposed Downslope (m)",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
+      "type": "date",
+      "name": "date_of_damage",
+      "label": "Date of Damage",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'damage'"
+    },
+    {
+      "type": "time",
+      "name": "time_of_damage",
+      "label": "Time of Damage",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'damage'"
+    },
+    {
+      "type": "select_one bq5nd76",
+      "name": "cause_of_damage",
+      "label": "Cause of Damage",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'damage'"
+    },
+    {
+      "type": "select_one hl0yl26",
+      "name": "utility_affected",
+      "label": "Utility Affected",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'damage'"
+    },
+    {
+      "type": "select_one om2tc00",
+      "name": "facility_affected",
+      "label": "Facility Affected",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'damage'"
+    },
+    {
+      "type": "select_one qu4jz39",
+      "name": "damage_severity",
+      "label": "Damage Severity",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'damage'"
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'no_deformation'"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "vb6ve90",
+      "name": "fault_rupture",
+      "label": "Fault Rupture"
+    },
+    {
+      "list_name": "vb6ve90",
+      "name": "liquefaction",
+      "label": "Liquefaction"
+    },
+    {
+      "list_name": "vb6ve90",
+      "name": "slope_movement",
+      "label": "Slope Movement"
+    },
+    {
+      "list_name": "vb6ve90",
+      "name": "damage",
+      "label": "Damage"
+    },
+    {
+      "list_name": "vb6ve90",
+      "name": "no_deformation",
+      "label": "No Deformation"
+    },
+    {
+      "list_name": "du9xy31",
+      "name": "low",
+      "label": "Low"
+    },
+    {
+      "list_name": "du9xy31",
+      "name": "medium",
+      "label": "Medium"
+    },
+    {
+      "list_name": "du9xy31",
+      "name": "high",
+      "label": "High"
+    },
+    {
+      "list_name": "oi7js36",
+      "name": "physical",
+      "label": "Physical"
+    },
+    {
+      "list_name": "oi7js36",
+      "name": "visual",
+      "label": "Visual"
+    },
+    {
+      "list_name": "oi7js36",
+      "name": "estimate",
+      "label": "Estimate"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "normal",
+      "label": "Normal"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "reverse",
+      "label": "Reverse"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "right_lateral",
+      "label": "Right Lateral"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "left_lateral",
+      "label": "Left Lateral"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "right_lateral_normal",
+      "label": "Right Lateral Normal"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "left_lateral_normal",
+      "label": "Left Lateral Normal"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "right_lateral_reverse",
+      "label": "Right Lateral Reverse"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "left_lateral_reverse",
+      "label": "Left Lateral Reverse"
+    },
+    {
+      "list_name": "ju3gq49",
+      "name": "reverse_2",
+      "label": "Reverse"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "north",
+      "label": "North"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "south",
+      "label": "South"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "east",
+      "label": "East"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "west",
+      "label": "West"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "northeast",
+      "label": "Northeast"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "southeast",
+      "label": "Southeast"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "northwest",
+      "label": "Northwest"
+    },
+    {
+      "list_name": "ob6dm82",
+      "name": "southwest",
+      "label": "Southwest"
+    },
+    {
+      "list_name": "rz2qw00",
+      "name": "vector_measurement",
+      "label": "Vector Measurement"
+    },
+    {
+      "list_name": "rz2qw00",
+      "name": "slip_components",
+      "label": "Slip Components"
+    },
+    {
+      "list_name": "hm18t55",
+      "name": "low",
+      "label": "Low"
+    },
+    {
+      "list_name": "hm18t55",
+      "name": "medium",
+      "label": "Medium"
+    },
+    {
+      "list_name": "hm18t55",
+      "name": "high",
+      "label": "High"
+    },
+    {
+      "list_name": "rb7mn64",
+      "name": "low",
+      "label": "Low"
+    },
+    {
+      "list_name": "rb7mn64",
+      "name": "medium",
+      "label": "Medium"
+    },
+    {
+      "list_name": "rb7mn64",
+      "name": "high",
+      "label": "High"
+    },
+    {
+      "list_name": "mv2vk38",
+      "name": "less_than_10",
+      "label": "<10"
+    },
+    {
+      "list_name": "mv2vk38",
+      "name": "10_to_100",
+      "label": "10-100"
+    },
+    {
+      "list_name": "mv2vk38",
+      "name": "100_to_1000",
+      "label": "100-1000"
+    },
+    {
+      "list_name": "mv2vk38",
+      "name": "1000_to_10000",
+      "label": "1000-10,000"
+    },
+    {
+      "list_name": "mv2vk38",
+      "name": "greater_than_10000",
+      "label": ">10,000"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "rock_slide",
+      "label": "Rock slide"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "soil_slide",
+      "label": "Soil Slide"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "earth_flow",
+      "label": "Earth Flow"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "debris_flow",
+      "label": "Debris Flow"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "rock_fall",
+      "label": "Rock Fall"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "multiple",
+      "label": "Multiple (add to notes)"
+    },
+    {
+      "list_name": "ub5fh32",
+      "name": "other",
+      "label": "Other (add to notes)"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "fill",
+      "label": "Fill"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "existing_landslide_material",
+      "label": "Existing landslide material"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "soil_alluvium",
+      "label": "Soil/alluvium"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "colluvium",
+      "label": "Colluvium"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "sedimentary_rock",
+      "label": "Sedimentary Rock"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "crystalline_metamorphic_bedrock",
+      "label": "Crystalline/Metamorphic Bedrock"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "multiple",
+      "label": "Multiple (add to notes)"
+    },
+    {
+      "list_name": "xm1ul26",
+      "name": "other",
+      "label": "Other (add to notes)"
+    },
+    {
+      "list_name": "it7sf67",
+      "name": "deposit",
+      "label": "Deposit"
+    },
+    {
+      "list_name": "it7sf67",
+      "name": "scarp_source_area",
+      "label": "Scarp/source area"
+    },
+    {
+      "list_name": "jy2xk40",
+      "name": "less_than_10",
+      "label": "< 10"
+    },
+    {
+      "list_name": "jy2xk40",
+      "name": "10_to_100",
+      "label": "10 - 100"
+    },
+    {
+      "list_name": "jy2xk40",
+      "name": "100_to_1000",
+      "label": "100 - 1000"
+    },
+    {
+      "list_name": "jy2xk40",
+      "name": "1000_to_10000",
+      "label": "1000 - 10,000"
+    },
+    {
+      "list_name": "jy2xk40",
+      "name": "greater_than_10000",
+      "label": "> 10,000"
+    },
+    {
+      "list_name": "bq5nd76",
+      "name": "surface_rupture",
+      "label": "Surface Rupture"
+    },
+    {
+      "list_name": "bq5nd76",
+      "name": "landslide",
+      "label": "Landslide"
+    },
+    {
+      "list_name": "bq5nd76",
+      "name": "liquefaction",
+      "label": "Liquefaction"
+    },
+    {
+      "list_name": "bq5nd76",
+      "name": "shaking",
+      "label": "Shaking"
+    },
+    {
+      "list_name": "bq5nd76",
+      "name": "unknown",
+      "label": "Unknown"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "tanks",
+      "label": "Tanks"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "pipelines",
+      "label": "Pipelines"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "utility_equip",
+      "label": "Utility Equipment"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "transformers",
+      "label": "Transformers"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "pumps",
+      "label": "Pumps"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "generators",
+      "label": "Generators"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "other",
+      "label": "Other (add to notes)"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "multiple",
+      "label": "Multiple (add to notes)"
+    },
+    {
+      "list_name": "hl0yl26",
+      "name": "none",
+      "label": "None"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "buildings",
+      "label": "Buildings"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "road",
+      "label": "Road"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "bridge",
+      "label": "Bridge"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "railroads",
+      "label": "Railroads"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "sidewalk",
+      "label": "Sidewalk"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "curb",
+      "label": "Curb"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "foundation",
+      "label": "Foundation"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "fence",
+      "label": "Fence"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "other",
+      "label": "Other (add to notes)"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "multiple",
+      "label": "Multiple (add to notes)"
+    },
+    {
+      "list_name": "om2tc00",
+      "name": "none",
+      "label": "None"
+    },
+    {
+      "list_name": "qu4jz39",
+      "name": "minor_to_none",
+      "label": "Minor to None (Green Tag)"
+    },
+    {
+      "list_name": "qu4jz39",
+      "name": "moderate",
+      "label": "Moderate (Yellow Tag)"
+    },
+    {
+      "list_name": "qu4jz39",
+      "name": "severe",
+      "label": "Severe (Red Tag)"
+    },
+    {
+      "list_name": "qu4jz39",
+      "name": "imminent_threat",
+      "label": "Imminent threat to life, safety or property (CALL 911 or local EOC)"
+    }
+  ],
+  "settings": [
+    {
+      "default_language": "English (en)"
+    }
+  ]
+}

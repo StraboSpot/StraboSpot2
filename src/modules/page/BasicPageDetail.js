@@ -22,9 +22,10 @@ import {useTagsHook} from '../tags';
 const BasicPageDetail = ({
                            closeDetailView,
                            deleteTemplate,
+                           groupKey = 'general',
                            page,
                            selectedFeature,
-                           saveTemplate
+                           saveTemplate,
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -36,7 +37,6 @@ const BasicPageDetail = ({
 
   const formRef = useRef(null);
 
-  const groupKey = groupKey || 'general';
   const pageKey = page.key === PAGE_KEYS.FABRICS && selectedFeature.type === 'fabric' ? '_3d_structures'
     : page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
   let pageData = pageKey === PAGE_KEYS.NOTES ? {} : [];
@@ -225,7 +225,7 @@ const BasicPageDetail = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       {(isTemplate || !isEmpty(selectedFeature)) && (
         <React.Fragment>
           <SaveAndCloseButton
@@ -236,7 +236,7 @@ const BasicPageDetail = ({
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </React.Fragment>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

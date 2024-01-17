@@ -6,6 +6,7 @@ import AddFabricModal from '../fabrics/AddFabricModal';
 import FabricsOverview from '../fabrics/FabricsOverview';
 import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
+import EarthquakesPage from '../geomorph/EarthquakesPage';
 import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
 import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
@@ -57,6 +58,7 @@ export const PAGE_KEYS = {
   BEDDING: 'bedding',
   DATA: 'data',
   DIAGENESIS: 'diagenesis',
+  EARTHQUAKES: 'earthquakes',
   FABRICS: 'fabrics',
   FOSSILS: 'fossils',
   GEOGRAPHY: 'geography',
@@ -83,9 +85,9 @@ export const PAGE_KEYS = {
   STRAT_SECTION: 'strat_section',
   STRUCTURES: 'structures',
   TAGS: 'tags',
+  TEPHRA: 'tephra',
   TERNARY: 'ternary',
   THREE_D_STRUCTURES: '_3d_structures',
-  TEPHRA: 'tephra',
 };
 
 export const OVERVIEW_PAGE = {
@@ -197,6 +199,13 @@ export const SECONDARY_PAGES = [
     icon_src: require('../../assets/icons/Tephra.png'),
     icon_pressed_src: require('../../assets/icons/Tephra_pressed.png'),
     page_component: TephraPage,
+    testing: true,
+  }, {
+    key: PAGE_KEYS.EARTHQUAKES,
+    label: 'Earthquakes',
+    icon_src: require('../../assets/icons/Earthquake.png'),
+    icon_pressed_src: require('../../assets/icons/Earthquake_pressed.png'),
+    page_component: EarthquakesPage,
     testing: true,
   },
 ];

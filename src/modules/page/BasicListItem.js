@@ -43,8 +43,9 @@ const BasicListItem = ({
       case PAGE_KEYS.INTERPRETATIONS:
         return 'Lithology ' + (index + 1);
       case PAGE_KEYS.TEPHRA:
-        return item?.layer_type ? useForm.getLabel(item.layer_type, ['tephra', 'interval_description'])
-          : 'Unknown';
+        return useForm.getLabel(item?.layer_type, [PAGE_KEYS.TEPHRA, 'interval_description']);
+      case PAGE_KEYS.EARTHQUAKES:
+        return useForm.getLabel(item?.earthquake_feature, ['general', PAGE_KEYS.EARTHQUAKES]);
       default:
         return 'Unknown';
     }
