@@ -17,8 +17,8 @@
     {
       "type": "text",
       "name": "references",
-      "label": "Notes",
-      "hint::English (en)": "Reference to notebook entries and sketches, photo numbers, other geologic observations.",
+      "label": "References",
+      "hint": "References to notebook entries and sketches, photo numbers, other geologic observations.",
       "required": "false",
       "appearance": "multiline"
     },
@@ -26,14 +26,14 @@
       "type": "select_one du9xy31",
       "name": "confidence_in_feature_id",
       "label": "Confidence in Feature ID",
-      "hint::English (en)": "Low - Unlikely related to primary tectonic rupture (e.g., shaking, triggered, gravity), Medium - Could either be primary tectonic or secondary rupture (triggered or shaking), High - Very likely related to tectonic rupture",
+      "hint": "Low - Unlikely related to primary tectonic rupture (e.g., shaking, triggered, gravity), Medium - Could either be primary tectonic or secondary rupture (triggered or shaking), High - Very likely related to tectonic rupture",
       "required": "false"
     },
     {
       "type": "select_one oi7js36",
       "name": "mode_of_observation",
       "label": "Mode of Observation",
-      "hint::English (en)": "Physical (boots on the ground), Visual (terrestrial line of sight), Estimate (areal)",
+      "hint": "Physical (boots on the ground), Visual (terrestrial line of sight), Estimate (areal)",
       "required": "false"
     },
     {
@@ -56,7 +56,7 @@
       "type": "decimal",
       "name": "local_fault_dip",
       "label": "Local Fault Dip",
-      "hint::English (en)": "0-90 degrees; right hand rule",
+      "hint": "0-90 degrees; right hand rule",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'",
       "guidance_hint": "0-90 degrees; right hand rule"
@@ -65,7 +65,7 @@
       "type": "decimal",
       "name": "local_fault_azimuth",
       "label": "Local Fault Azimuth",
-      "hint::English (en)": "0-360 degrees; right hand rule",
+      "hint": "0-360 degrees; right hand rule",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
@@ -73,7 +73,7 @@
       "type": "decimal",
       "name": "slip_azimuth",
       "label": "Slip Azimuth",
-      "hint::English (en)": "0-360 degrees",
+      "hint": "0-360 degrees",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
@@ -81,7 +81,7 @@
       "type": "select_multiple rz2qw00",
       "name": "fault_slip_meas",
       "label": "Fault Slip Measurement",
-      "hint::English (en)": "Vector measurement (directly taking trend/plunge and measuring slip), Slip components (horizontal and vertical components of separation)",
+      "hint": "Vector measurement (directly taking trend/plunge and measuring slip), Slip components (horizontal and vertical components of separation)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
@@ -89,7 +89,7 @@
       "type": "select_one hm18t55",
       "name": "vector_meas_confidence",
       "label": "Vector Measurement Confidence",
-      "hint::English (en)": "Explain confidence if \"low\" or \"medium\" in Notes below",
+      "hint": "Explain confidence if \"low\" or \"medium\" in Notes below",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
@@ -97,15 +97,16 @@
       "type": "text",
       "name": "vector_meas_notes",
       "label": "Vector Measurement Notes",
-      "hint::English (en)": "Explain confidence if \"low\" or \"medium\"",
+      "hint": "Explain confidence if \"low\" or \"medium\"",
       "required": "false",
+      "appearance": "multiline",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
     {
       "type": "decimal",
       "name": "plunge",
       "label": "Plunge",
-      "hint::English (en)": "0-90 degrees",
+      "hint": "0-90 degrees",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
@@ -176,7 +177,7 @@
       "type": "select_one rb7mn64",
       "name": "slip_meas_confidence",
       "label": "Slip Measurement Confidence",
-      "hint::English (en)": "Explain confidence if \"low\" or \"medium\" in Notes below",
+      "hint": "Explain confidence if \"low\" or \"medium\" in Notes below",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
@@ -184,8 +185,9 @@
       "type": "text",
       "name": "slip_meas_notes",
       "label": "Slip Measurement Notes",
-      "hint::English (en)": "Explain confidence if \"low\" or \"medium\"",
+      "hint": "Explain confidence if \"low\" or \"medium\"",
       "required": "false",
+      "appearance": "multiline",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
@@ -213,10 +215,10 @@
       "type": "text",
       "name": "rupture_expression",
       "label": "Rupture Expression",
-      "hint::English (en)": "What does the rupture look like at this location? (e.g. mole track, crack, en echelon fractures, etc.)",
+      "hint": "What does the rupture look like at this location? (e.g. mole track, crack, en echelon fractures, etc.)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'",
-      "constraint": ". = ''"
+      "constraint": ". != ''"
     },
     {
       "type": "decimal",
@@ -241,7 +243,7 @@
     },
     {
       "type": "select_one mv2vk38",
-      "name": "area_affected_sq_mi",
+      "name": "liquefaction_area_affected",
       "label": "Area Affected (square miles)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'liquefaction'"
@@ -302,7 +304,7 @@
     },
     {
       "type": "select_one jy2xk40",
-      "name": "area_affected_sq_mi_001",
+      "name": "slope_movement_area_affected",
       "label": "Area Affected (square miles)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
@@ -311,7 +313,7 @@
       "type": "integer",
       "name": "est_dir_of_slope_m",
       "label": "Estimated Direction of Slope Movement",
-      "hint::English (en)": "0-360 degrees",
+      "hint": "0-360 degrees",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
@@ -390,7 +392,7 @@
       "name": "notes",
       "label": "Notes",
       "required": "false",
-      "relevant": "${earthquake_feature} = 'no_deformation'"
+      "appearance": "multiline"
     }
   ],
   "choices": [
