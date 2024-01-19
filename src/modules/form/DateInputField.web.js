@@ -12,14 +12,18 @@ import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible}
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},
                           form: {errors, touched, setFieldValue, values},
-                          ...props
+                          isDisplayOnly,
+                          isShowTime,
+                          isShowTimeOnly,
+                          label,
                         }) => {
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : undefined);
 
   const dispatch = useDispatch();
 
-  let title = value ? props.isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
-      : moment(value).format('MM/DD/YYYY')
+  let title = value ? isShowTimeOnly ? moment(value).format('h:mm:ss a')
+      : isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
+        : moment(value).format('MM/DD/YYYY')
     : undefined;
 
   const changeDate = (selectedDate) => {
@@ -53,25 +57,43 @@ const DateInputField = ({
   };
 
   const renderDatePickerWeb = () => {
-    return (
-      <DatePicker
-        selected={date}
-        onChange={changeDate}
-        portalId={'root-portal'}
-      />
-    );
+    if (isShowTimeOnly) {
+      return (
+        <DatePicker
+          showIcon
+          selected={date}
+          onChange={changeDate}
+          portalId={'root-portal'}
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={15}
+          timeCaption='Time'
+          dateFormat='h:mm aa'
+        />
+      );
+    }
+    else {
+      return (
+        <DatePicker
+          showIcon
+          selected={date}
+          onChange={changeDate}
+          portalId={'root-portal'}
+        />
+      );
+    }
   };
 
   return (
-    <React.Fragment>
-      {props.label && (
+    <>
+      {label && (
         <View style={formStyles.fieldLabelContainer}>
-          <Text style={formStyles.fieldLabel}>{props.label}</Text>
+          <Text style={formStyles.fieldLabel}>{label}</Text>
         </View>
       )}
-      {props.isDisplayOnly ? <Text style={{...formStyles.fieldValue, paddingTop: 5, paddingBottom: 5}}>{title}</Text>
+      {isDisplayOnly ? <Text style={{...formStyles.fieldValue, paddingTop: 5, paddingBottom: 5}}>{title}</Text>
         : renderDatePickerWeb()}
-    </React.Fragment>
+    </>
   );
 };
 

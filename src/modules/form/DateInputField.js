@@ -13,15 +13,19 @@ import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible}
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},
                           form: {errors, touched, setFieldValue, values},
-                          ...props
+                          isDisplayOnly,
+                          isShowTime,
+                          isShowTimeOnly,
+                          label,
                         }) => {
   const [isDatePickerModalVisible, setIsDatePickerModalVisible] = useState(false);
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : new Date());
 
   const dispatch = useDispatch();
 
-  let title = value ? props.isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
-      : moment(value).format('MM/DD/YYYY')
+  let title = value ? isShowTimeOnly ? moment(value).format('h:mm:ss a')
+      : isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
+        : moment(value).format('MM/DD/YYYY')
     : undefined;
 
   const changeDate = (event, selectedDate) => {
@@ -62,7 +66,7 @@ const DateInputField = ({
     return (
       <View style={{width: '100%'}}>
         <DateTimePicker
-          mode={'date'}
+          mode={isShowTimeOnly ? 'time' : 'date'}
           value={date}
           onChange={changeDate}
           display={Platform.OS === 'ios' ? 'inline' : 'default'}
@@ -77,7 +81,7 @@ const DateInputField = ({
       <DateDialogBox
         isVisible={isDatePickerModalVisible}
         onTouchOutside={() => setIsDatePickerModalVisible(false)}
-        title={'Pick ' + props.label}
+        title={'Pick ' + label}
       >
         {renderDatePicker()}
         <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-evenly'}}>
@@ -103,13 +107,13 @@ const DateInputField = ({
   };
 
   return (
-    <React.Fragment>
-      {props.label && (
+    <>
+      {label && (
         <View style={formStyles.fieldLabelContainer}>
-          <Text style={formStyles.fieldLabel}>{props.label}</Text>
+          <Text style={formStyles.fieldLabel}>{label}</Text>
         </View>
       )}
-      {props.isDisplayOnly ? (
+      {isDisplayOnly ? (
           <Text style={{...formStyles.fieldValue, paddingTop: 5, paddingBottom: 5}}>
             {title}
           </Text>
@@ -124,7 +128,7 @@ const DateInputField = ({
         )}
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       {Platform.OS === 'ios' ? renderDatePickerDialogBox() : isDatePickerModalVisible && renderDatePicker()}
-    </React.Fragment>
+    </>
   );
 };
 

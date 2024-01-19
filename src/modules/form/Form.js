@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Field} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -39,13 +39,14 @@ const Form = ({
     );
   };
 
-  const renderDateInput = (field) => {
+  const renderDateInput = (field, isShowTimeOnly = false) => {
     return (
       <Field
         component={DateInputField}
         name={field.name}
         label={field.label}
         key={field.name}
+        isShowTimeOnly={isShowTimeOnly}
       />
     );
   };
@@ -122,11 +123,12 @@ const Form = ({
   const renderField = (field) => {
     const fieldType = field.type.split(' ')[0];
     return (
-      <React.Fragment>
+      <>
         {fieldType === 'begin_group' && renderGroupHeading(field)}
         {(fieldType === 'text' || fieldType === 'integer' || fieldType === 'decimal' || fieldType === 'select_one'
-          || fieldType === 'select_multiple' || fieldType === 'date' || fieldType === 'acknowledge') && (
-          <React.Fragment>
+          || fieldType === 'select_multiple' || fieldType === 'date' || fieldType === 'time'
+          || fieldType === 'acknowledge') && (
+          <>
             {surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple')
               && renderSelectInput(field, true)}
             <ListItem containerStyle={commonStyles.listItemFormField}>
@@ -136,12 +138,13 @@ const Form = ({
                 {(!surveyFragment && (fieldType === 'select_one' || fieldType === 'select_multiple'))
                   && renderSelectInput(field)}
                 {fieldType === 'date' && renderDateInput(field)}
+                {fieldType === 'time' && renderDateInput(field, true)}
                 {fieldType === 'acknowledge' && renderAcknowledgeInput(field)}
               </ListItem.Content>
             </ListItem>
-          </React.Fragment>
+          </>
         )}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -151,22 +154,17 @@ const Form = ({
       const arr = Object.entries(LABELS_WITH_ABBREVIATIONS).map(([key, value]) => key + ': ' + value);
       info += arr.join('\n');
     }
-    alert(
-      label,
-      info,
-      );
+    alert(label, info);
   };
 
   return (
-    <View>
-      <FlatList
-        listKey={JSON.stringify(survey)}
-        keyExtractor={(item, index) => index.toString()}
-        data={Object.values(survey.filter(item => useForm.isRelevant(item, values)))}
-        renderItem={({item}) => renderField(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-      />
-    </View>
+    <FlatList
+      listKey={JSON.stringify(survey)}
+      keyExtractor={(item, index) => index.toString()}
+      data={Object.values(survey.filter(item => useForm.isRelevant(item, values)))}
+      renderItem={({item}) => renderField(item)}
+      ItemSeparatorComponent={FlatListItemSeparator}
+    />
   );
 };
 

@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import * as forms from '../../assets/forms';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -34,24 +36,30 @@ const useForm = () => {
     return relevantGroupFields;
   };
 
-  // Get a label for a given key with the option of giving a form category and name
-  const getLabel = (key, [category, name] = []) => {
+  // Get a label for a given key with the option of giving a form category, form name and field name
+  const getLabel = (key, [category, name] = [], fieldName) => {
     if (key) {
       let dictionary = {};
       if (category && name) dictionary = LABEL_DICTIONARY[category][name];
       else if (category) {
         dictionary = Object.values(LABEL_DICTIONARY[category]).reduce((acc, form) => ({...acc, ...form}), {});
       }
-      if (dictionary) return dictionary[key.toString()] || key.toString().replace(/_/g, ' ');
+      if (dictionary && dictionary[key.toString()]) return dictionary[key.toString()];
+      else if (Date.parse(key) && new Date(key).toISOString() === key && fieldName?.includes('date')) {
+        return moment(key).format('MM/DD/YYYY');
+      }
+      else if (Date.parse(key) && new Date(key).toISOString() === key && fieldName?.includes('time')) {
+        return moment(key).format('h:mm:ss a');
+      }
       else return key.toString().replace(/_/g, ' ');
     }
     else return 'Unknown';
   };
 
-  // Get a labels as string for given keys with the option of giving a form category and name
-  const getLabels = (keys, [category, name]) => {
+  // Get a labels as string for given keys with the option of giving a form category, form name and field name
+  const getLabels = (keys, [category, name], fieldName) => {
     if (!Array.isArray(keys)) keys = [keys];
-    const labelsArr = keys.map(val => getLabel(val, [category, name]));
+    const labelsArr = keys.map(val => getLabel(val, [category, name], fieldName));
     return labelsArr.join(', ');
   };
 
