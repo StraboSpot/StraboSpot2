@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -33,11 +33,7 @@ const EarthquakesPage = ({page}) => {
   }, [selectedAttributes, spot]);
 
   const addAttribute = () => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedAttribute({id: getNewUUID()});
-      dispatch(setModalVisible({modal: null}));
-    });
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const editAttribute = (attribute, i) => {
@@ -89,11 +85,7 @@ const EarthquakesPage = ({page}) => {
     );
   };
 
-  return (
-    <>
-      {isDetailView ? renderAttributeDetail() : renderAttributesMain()}
-    </>
-  );
+  return isDetailView ? renderAttributeDetail() : renderAttributesMain();
 };
 
 export default EarthquakesPage;

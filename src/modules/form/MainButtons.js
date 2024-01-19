@@ -23,7 +23,7 @@ const MainButtons = ({
       </Text>
       {formProps?.values[key] && (
         <Text style={[formStyles.formButtonSelectedTitle, {fontWeight: 'bold'}]}>
-          {truncateText(useForm.getLabels(formProps.values[key], formName), 23)}
+          {truncateText(useForm.getLabels(formProps.values[key], formName, key), 23)}
         </Text>
       )}
     </View>

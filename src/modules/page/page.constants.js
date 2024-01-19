@@ -6,6 +6,7 @@ import AddFabricModal from '../fabrics/AddFabricModal';
 import FabricsOverview from '../fabrics/FabricsOverview';
 import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
+import AddEarthquakeModal from '../geomorph/AddEarthquakeModal';
 import EarthquakesPage from '../geomorph/EarthquakesPage';
 import ImagesOverview from '../images/ImagesOverview';
 import ImagesViewPage from '../images/ImagesViewPage';
@@ -206,6 +207,8 @@ export const SECONDARY_PAGES = [
     icon_src: require('../../assets/icons/Earthquake.png'),
     icon_pressed_src: require('../../assets/icons/Earthquake_pressed.png'),
     page_component: EarthquakesPage,
+    modal_component: AddEarthquakeModal,
+    action_label: 'Add an Earthquake Feature',
     testing: true,
   },
 ];
