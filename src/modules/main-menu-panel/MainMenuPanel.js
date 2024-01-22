@@ -11,7 +11,7 @@ import styles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 import {isEmpty} from '../../shared/Helpers';
-import ImageGallery from '../images/ImageGallery';
+import {ImageGallery} from '../images';
 import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
 import ImageBasemapsList from '../maps/ImageBasemapsList';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';

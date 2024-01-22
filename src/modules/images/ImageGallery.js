@@ -5,8 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import imageStyles from './images.styles';
-import useImagesHook from './useImages';
+import {imageStyles, useImagesHook} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';

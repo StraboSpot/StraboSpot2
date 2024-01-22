@@ -7,8 +7,7 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import imageStyles from '../images/images.styles';
-import useImagesHook from '../images/useImages';
+import {imageStyles, useImagesHook} from '../images';
 import useSpotsHook from '../spots/useSpots';
 
 const ImageBasemapsList = ({closeManMenuPanel}) => {

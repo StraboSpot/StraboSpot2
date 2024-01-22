@@ -1,7 +1,9 @@
 export {default as ImageGallery} from './ImageGallery';
 export {default as ImageInfo} from './ImageInfo';
-export {default as ImageOverview} from './ImagesOverview';
-export {default as ImageProperties} from './ImagePropertiesModal';
-export {default as imageStyles} from './images.styles';
-export {default as ImagesPage} from './ImagesViewPage';
+export {default as ImagePropertiesModal} from './ImagePropertiesModal';
+export {default as ImageSlider} from './ImageSlider';
+export {default as ImagesOverview} from './ImagesOverview';
+export {default as ImagesViewPage} from './ImagesViewPage';
+export {default as imageSliderStyles} from './imageSlider.styles';
+export {default as imageStyles} from './image.styles';
 export {default as useImagesHook} from './useImages';

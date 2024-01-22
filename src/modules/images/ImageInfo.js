@@ -5,9 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import ImagePropertiesModal from './ImagePropertiesModal';
-import styles from './images.styles';
-import useImagesHook from './useImages';
+import {ImagePropertiesModal, imageStyles, useImagesHook} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
@@ -86,7 +84,7 @@ const ImageInfo = ({route}) => {
           : {width: '100%', height: '100%'}}
         resizeMode={'contain'}
         PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>
-          : <Image style={styles.thumbnail} source={placeholderImage}/>}
+          : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
         placeholderStyle={commonStyles.imagePlaceholder}
         onError={() => {
           if (!isImageLoaded) setIsImageLoaded(true);
@@ -101,28 +99,28 @@ const ImageInfo = ({route}) => {
           cancel={() => closeModal()} // Closes without saving
         />
       )}
-      <View style={styles.closeButtonContainer}>
+      <View style={imageStyles.closeButtonContainer}>
         <IconButton
           source={require('../../assets/icons/Close.png')}
           onPress={() => navigation.goBack()}
-          style={styles.closeButtonStyle}
+          style={imageStyles.closeButtonStyle}
         />
       </View>
-      <View style={styles.rightsideIcons}>
+      <View style={imageStyles.rightsideIcons}>
         <IconButton
-          style={styles.imageInfoButtons}
+          style={imageStyles.imageInfoButtons}
           source={require('../../assets/icons/ImagePropertiesButton.png')}
           onPress={() => setIsImagePropertiesModalVisible(true)}
         />
         {Platform.OS !== 'web' && (
           <IconButton
-            style={styles.imageInfoButtons}
+            style={imageStyles.imageInfoButtons}
             source={require('../../assets/icons/ImageSketchButton.png')}
             onPress={() => clickHandler('sketch')}
           />
         )}
         <IconButton
-          style={styles.imageInfoButtons}
+          style={imageStyles.imageInfoButtons}
           source={require('../../assets/icons/DeleteButton.png')}
           onPress={() => handleDeleteImageOnPress()}
         />

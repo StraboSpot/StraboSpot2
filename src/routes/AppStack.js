@@ -3,8 +3,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Home from '../modules/home/Home';
-import ImageInfo from '../modules/images/ImageInfo';
-import ImageSlider from '../modules/images/ImageSlider';
+import {ImageInfo, ImageSlider} from '../modules/images';
 import Sketch from '../modules/sketch/Sketch';
 
 const AppStack = () => {

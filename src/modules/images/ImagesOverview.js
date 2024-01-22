@@ -4,8 +4,7 @@ import {ActivityIndicator, FlatList, Switch, Text, View} from 'react-native';
 import {Button, Image} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import imageStyles from './images.styles';
-import useImagesHook from './useImages';
+import {imageStyles, useImagesHook} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';

@@ -4,9 +4,7 @@ import {ActivityIndicator, Platform, useWindowDimensions, View} from 'react-nati
 import {Button, Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import styles from './images.styles';
-import imageSliderStyles from './imageSlider.styles';
-import useImagesHook from './useImages';
+import {imageStyles, imageSliderStyles, useImagesHook} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -64,12 +62,12 @@ const ImageSlider = ({route, navigation}) => {
       <View style={{backgroundColor: 'black'}}>
         <View style={imageSliderStyles.buttonsContainer}>
           <IconButton
-            style={styles.imageInfoButtons}
+            style={imageStyles.imageInfoButtons}
             source={require('../../assets/icons/NotebookNavButton.png')}
             onPress={getSpotFromId}
           />
           <IconButton
-            style={styles.imageInfoButtons}
+            style={imageStyles.imageInfoButtons}
             source={require('../../assets/icons/Close.png')}
             onPress={() => navigation.goBack()}
           />
@@ -84,7 +82,7 @@ const ImageSlider = ({route, navigation}) => {
             : {width: '100%', height: '100%'}}
           resizeMode={'contain'}
           PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>
-            : <Image style={styles.thumbnail} source={placeholderImage}/>}
+            : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
           placeholderStyle={commonStyles.imagePlaceholder}
           onError={() => setIsImageLoaded(true)}
           onLoadEnd={() => setIsImageLoaded(true)}

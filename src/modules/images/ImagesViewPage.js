@@ -6,6 +6,7 @@ import {Button, Card, Icon, Image} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {imageStyles, useImagesHook} from '.';
 import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import useUploadHook from '../../services/useUpload';
@@ -14,7 +15,6 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {setLoadingStatus} from '../home/home.slice';
-import {imageStyles, useImagesHook} from '../images';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';

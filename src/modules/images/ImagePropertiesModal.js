@@ -4,7 +4,7 @@ import {FlatList, Switch, Text, View} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import styles from './images.styles';
+import {imageStyles} from '.';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, useFormHook} from '../form';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -70,7 +70,7 @@ const ImagePropertiesModal = ({
       <FlatList
         ListHeaderComponent={renderFormFields()}
         ListFooterComponent={
-          <View style={styles.switch}>
+          <View style={imageStyles.switch}>
             <Text style={{marginLeft: 10, fontSize: 16}}>Use as Image-basemap</Text>
             <Switch
               onValueChange={a => setAnnotated(a)}
