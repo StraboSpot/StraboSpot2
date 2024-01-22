@@ -538,7 +538,7 @@ const useMaps = (mapRef) => {
       bbox = await getBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
-        setBasemap(null);
+        await setBasemap(null);
       }
       if (project.other_maps) {
         const otherMapsInProject = project.other_maps;
@@ -575,7 +575,7 @@ const useMaps = (mapRef) => {
           dispatch(clearedStatusMessages());
           dispatch(addedStatusMessage(`Map ${mapId} not found. Setting basemap to Mapbox Topo.`));
           dispatch(setErrorMessagesModalVisible(true));
-          setBasemap(null);
+          await setBasemap(null);
         }
       }
       console.log('Setting current basemap to a default basemap...');

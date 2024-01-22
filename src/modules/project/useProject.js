@@ -149,10 +149,8 @@ const useProject = () => {
   };
 
   const doesDeviceBackupDirExist = async (subDirectory) => {
-    if (subDirectory !== undefined) {
-      return await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
-    }
-    else return await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
+    if (subDirectory !== undefined) return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
+    else return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
   };
 
   const getActiveDatasets = () => {

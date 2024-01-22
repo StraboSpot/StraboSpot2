@@ -450,11 +450,11 @@ const Map = ({
                   spot => spot.properties.id === spotFound.properties.id);
                 setSelectedSpotToEdit(isEmpty(editedSpot) ? spotFound : editedSpot);
                 if (spotFound.geometry.type !== 'Point') { // if Point, vertex gets set by setSelectedSpotToEdit already.
-                  setSelectedVertexToEdit(vertexSelected);
+                  await setSelectedVertexToEdit(vertexSelected);
                   setVertexIndex(closestVertexDetails[1]);
                 }
               }
-              else setSelectedVertexToEdit(vertexSelected);
+              else await setSelectedVertexToEdit(vertexSelected);
               // this is the case when the spot is already highlighted for edit and a vertex is chosen to edit.
             }
           }
@@ -726,7 +726,7 @@ const Map = ({
           feature.properties.strat_section_id = stratSection.strat_section_id;
         }
         if (isSelectingForStereonet) await getStereonetForFeature(feature);
-        else if (isSelectingForTagging) selectSpotsForTagging(feature);
+        else if (isSelectingForTagging) await selectSpotsForTagging(feature);
         else {
           feature.properties.symbology = useMapSymbology.getSymbology(feature);
           newOrEditedSpot = await useSpots.createSpot(feature);
@@ -751,7 +751,7 @@ const Map = ({
         newFeature.properties.strat_section_id = stratSection.strat_section_id;
       }
       if (isSelectingForStereonet) await getStereonetForFeature(newFeature);
-      if (isSelectingForTagging) selectSpotsForTagging(newFeature);
+      if (isSelectingForTagging) await selectSpotsForTagging(newFeature);
       else {
         newOrEditedSpot = await useSpots.createSpot(newFeature);
         dispatch(setSelectedSpot(newOrEditedSpot));

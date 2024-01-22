@@ -102,7 +102,7 @@ const UserProfile = () => {
 
   const pickImageSource = async (source) => {
     if (source === 'gallery') {
-      launchImageLibrary({}, async (response) => {
+      await launchImageLibrary({}, async (response) => {
         console.log('Profile Image', response);
         if (response.didCancel) return;
         if (response) setAvatar(response.assets[0]);
@@ -110,7 +110,7 @@ const UserProfile = () => {
       });
     }
     else {
-      launchCamera({}, (response) => {
+      await launchCamera({}, (response) => {
         console.log('Response = ', response);
         if (response.didCancel) return;
         if (response) setAvatar(response.assets[0]);
