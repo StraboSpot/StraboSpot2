@@ -81,7 +81,7 @@ const useMapSymbology = () => {
                     ],
                   ], ['concat', ['var', 'feature_type'], '_vertical'],
                   ['case',
-                    // Case 5: Other features with no symbol orienation
+                    // Case 5: Other features with no symbol orientation
                     ['all',
                       ['has', 'feature_type', ['get', 'orientation']],
                       ['any',
@@ -149,7 +149,7 @@ const useMapSymbology = () => {
               ['>=', ['var', 'rotation'], 240],
               ['<=', ['var', 'rotation'], 300],
             ],
-          ], ['literal', [2, 0]],     // Need to specifiy 'literal' to return an array in expressions
+          ], ['literal', [2, 0]],     // Need to specify 'literal' to return an array in expressions
           // Default
           ['literal', [0.75, 0]],
         ],

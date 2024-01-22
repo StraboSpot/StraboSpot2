@@ -63,7 +63,7 @@ const useImport = () => {
       }
     }
     catch (err) {
-      console.error('Error checking existance of backup images dir.', err);
+      console.error('Error checking existence of backup images dir.', err);
     }
   };
 

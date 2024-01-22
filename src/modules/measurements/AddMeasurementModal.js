@@ -415,7 +415,7 @@ const AddMeasurementModal = ({onPress}) => {
         editedMeasurementData.associated_orientation[0].type = MEASUREMENT_KEYS.LINEAR;
       }
 
-      // If multiple templates then make all linear measurements associated to every planar and tabular meausurement
+      // If multiple templates then make all linear measurements associated to every planar and tabular measurement
       if (relevantTemplates.length > 1) {
         if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR || isSelectedAttitude) {
           let planarTabularTemplates = getPlanarTemplates(relevantTemplates);

@@ -56,7 +56,7 @@ const useSpots = () => {
     return null;
   };
 
-  // Copy Spot to a new Spot omiting specific properties
+  // Copy Spot to a new Spot omitting specific properties
   const copySpot = async () => {
     let copiedSpot = {'type': 'Feature'};
     let {
@@ -393,7 +393,7 @@ const useSpots = () => {
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
     getSpotByImageId: getSpotByImageId,
-    getSpotGemometryIconSource: getSpotGeometryIconSource,
+    getSpotGeometryIconSource: getSpotGeometryIconSource,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,

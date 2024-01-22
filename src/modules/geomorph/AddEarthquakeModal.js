@@ -28,7 +28,7 @@ const AddEarthquakeModal = ({onPress}) => {
   const formName = [groupKey, pageKey];
 
   // Relevant keys for quick-entry modal
-  const mainButttonsKeys = ['earthquake_feature', 'liquefaction_area_affected', 'date_of_movement',
+  const mainButtonsKeys = ['earthquake_feature', 'liquefaction_area_affected', 'date_of_movement',
     'time_of_movement', 'landslide_feat', 'slide_type', 'material_type', 'slope_movement_area_affected',
     'cause_of_damage', 'date_of_damage', 'time_of_damage', 'utility_affected', 'facility_affected', 'damage_severity',
     'rupture_expression', 'mode_of_observation', 'fault_slip_meas'];
@@ -52,7 +52,7 @@ const AddEarthquakeModal = ({onPress}) => {
   }, []);
 
   const renderForm = (formProps) => {
-    const mainButttonsKeysRelevant = mainButttonsKeys.filter((k) => {
+    const mainButtonsKeysRelevant = mainButtonsKeys.filter((k) => {
       const field = survey.find(f => f.name === k);
       return useForm.isRelevant(field, formProps.values);
     });
@@ -61,7 +61,7 @@ const AddEarthquakeModal = ({onPress}) => {
       <>
         <LittleSpacer/>
         <MainButtons
-          mainKeys={mainButttonsKeysRelevant}
+          mainKeys={mainButtonsKeysRelevant}
           formName={formName}
           setChoicesViewKey={setChoicesViewKey}
           formProps={formProps}

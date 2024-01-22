@@ -10,15 +10,15 @@ const AddRockIgneousModal = (props) => {
 
   const renderSpecificIgneousRock = () => {
     // Relevant keys for quick-entry modal
-    let firstKeys, mainButttonsKeys, lastKeys;
+    let firstKeys, mainButtonsKeys, lastKeys;
     if (igneousRockClass === IGNEOUS_ROCK_CLASSES.PLUTONIC) {
       firstKeys = ['plutonic_rock_type'];
-      mainButttonsKeys = ['occurence_plutonic', 'texture_plutonic', 'color_index_pluton', 'alteration_plutonic'];
+      mainButtonsKeys = ['occurence_plutonic', 'texture_plutonic', 'color_index_pluton', 'alteration_plutonic'];
       lastKeys = ['pluton_characteristic_size_of', 'notes_plutonic'];
     }
     else {
       firstKeys = ['volcanic_rock_type'];
-      mainButttonsKeys = ['occurence_volcanic', 'texture_volcanic', 'color_index_volc', 'alteration_volcanic'];
+      mainButtonsKeys = ['occurence_volcanic', 'texture_volcanic', 'color_index_volc', 'alteration_volcanic'];
       lastKeys = ['vol_characteristic_size_of_cry', 'notes_volcanic'];
     }
 
@@ -34,7 +34,7 @@ const AddRockIgneousModal = (props) => {
           setChoicesViewKey={props.setChoicesViewKey}
         />
         <MainButtons
-          mainKeys={mainButttonsKeys}
+          mainKeys={mainButtonsKeys}
           formName={props.formName}
           formProps={props.formProps}
           setChoicesViewKey={props.setChoicesViewKey}

@@ -3,7 +3,7 @@ import {View} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 
-import usePageHoook from '../../modules/page/usePage';
+import usePageHook from '../../modules/page/usePage';
 import {useTagsHook} from '../../modules/tags';
 import {isEmpty} from '../Helpers';
 
@@ -11,7 +11,7 @@ function FeatureTagsList({
                            featureId,
                            spotId,
                          }) {
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
   const useTags = useTagsHook();
 
   const tags = useTags.getTagsAtFeature(spotId, featureId);

@@ -8,7 +8,7 @@ const IgneousRockFabric = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = FIRST_ORDER_FABRIC_FIELDS.igneous_rock;
+  const mainButtonsKeys = FIRST_ORDER_FABRIC_FIELDS.igneous_rock;
   const lastKeys = ['mag_interp_note'];
 
   // Relevant fields for quick-entry modal
@@ -19,7 +19,7 @@ const IgneousRockFabric = (props) => {
   return (
     <React.Fragment>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
     </React.Fragment>
   );

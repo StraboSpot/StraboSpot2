@@ -103,7 +103,7 @@ const AddCustomMaps = () => {
 
   const renderCustomMapName = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={BLUE}/>;
-    const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
+    const radioUnselected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content>
@@ -112,7 +112,7 @@ const AddCustomMaps = () => {
         <ListItem.CheckBox
           checked={item.source === editableCustomMapData?.source}
           checkedIcon={radioSelected}
-          uncheckedIcon={radioUnslected}
+          uncheckedIcon={radioUnselected}
           onPress={() => setEditableCustomMapData(e => ({...e, source: item.source}))}
         />
       </ListItem>

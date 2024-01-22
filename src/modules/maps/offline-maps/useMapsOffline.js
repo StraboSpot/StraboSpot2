@@ -5,7 +5,7 @@ import {addMapFromDevice, clearedMapsFromRedux, setOfflineMap} from './offlineMa
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import {STRABO_APIS} from '../../../services/urls.constants';
 import useDeviceHook from '../../../services/useDevice';
-import useServerRequesteHook from '../../../services/useServerRequests';
+import useServerRequestsHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import config from '../../../utils/config';
@@ -32,7 +32,7 @@ const useMapsOffline = () => {
 
   const useDevice = useDeviceHook();
   const useMaps = useMapsHook();
-  const useServerRequests = useServerRequesteHook();
+  const useServerRequests = useServerRequestsHook();
 
   //INTERNAL
   const adjustTileCount = async () => {
@@ -68,7 +68,7 @@ const useMapsOffline = () => {
     }
   };
 
-  const checkTileZipFileExistance = async () => {
+  const checkTileZipFileExistence = async () => {
     try {
       let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
@@ -426,7 +426,7 @@ const useMapsOffline = () => {
   return {
     addMapFromDeviceToRedux: addMapFromDeviceToRedux,
     checkIfTileZipFolderExists: checkIfTileZipFolderExists,
-    checkTileZipFileExistance: checkTileZipFileExistance,
+    checkTileZipFileExistence: checkTileZipFileExistence,
     checkZipStatus: checkZipStatus,
     doUnzip: doUnzip,
     getMapCenterTile: getMapCenterTile,

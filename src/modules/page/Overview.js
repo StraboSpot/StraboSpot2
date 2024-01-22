@@ -6,7 +6,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
-import usePageHoook from './usePage';
+import usePageHook from './usePage';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -30,7 +30,7 @@ const Overview = ({openMainMenu}) => {
   const formRef = useRef(null);
 
   const useForm = useFormHook();
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
 
   useEffect(() => {
     console.log('UE Overview []');

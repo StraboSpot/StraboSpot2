@@ -8,7 +8,7 @@ const AddPlane = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = ['feature_type'];
+  const mainButtonsKeys = ['feature_type'];
   const beddingButtonsKeys = ['bedding_type'];
   const contactButtonsKeys = ['contact_type'];
   const foliationButtonsKeys = ['foliation_type', 'directional_indicators'];
@@ -29,7 +29,7 @@ const AddPlane = (props) => {
       {!props.isManualMeasurement && (
         <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       )}
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       {featureType && (
         <React.Fragment>
           {featureType === 'bedding' && <MainButtons {...{mainKeys: beddingButtonsKeys, ...props}}/>}

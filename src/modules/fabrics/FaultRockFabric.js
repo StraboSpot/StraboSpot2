@@ -9,7 +9,7 @@ const FaultRockFabric = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = FIRST_ORDER_FABRIC_FIELDS.fault_rock;
+  const mainButtonsKeys = FIRST_ORDER_FABRIC_FIELDS.fault_rock;
   const lastKeys = ['interp_note'];
   const tectoniteTypesKey = 'tectonite_type';
 
@@ -22,7 +22,7 @@ const FaultRockFabric = (props) => {
     <React.Fragment>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <LittleSpacer/>
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       <LittleSpacer/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       <LittleSpacer/>

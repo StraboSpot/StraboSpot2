@@ -12,8 +12,8 @@ const useXAxis = (n) => {
   const useForm = useFormHook();
 
   const xCl = 10;  // Horizontal spacing between clastic tick marks
-  const xCa = 23.3; // Horizonatal space between carbonate tick marks
-  const xMi = 26.6; // Horizonatal space between miscelaneous lithologies tick marks
+  const xCa = 23.3; // Horizontal space between carbonate tick marks
+  const xMi = 26.6; // Horizontal space between miscellaneous lithologies tick marks
   const s = 20; // spacing between multiple x axes
 
   const lineString = {

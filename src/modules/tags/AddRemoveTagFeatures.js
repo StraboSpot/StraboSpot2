@@ -11,12 +11,12 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import usePageHoook from '../page/usePage';
+import usePageHook from '../page/usePage';
 import {useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
 const AddRemoveTagFeatures = () => {
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
   const useSpots = useSpotsHook();
   const useTags = useTagsHook();
 

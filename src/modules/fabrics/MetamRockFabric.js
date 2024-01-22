@@ -8,7 +8,7 @@ const MetamRockFabric = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = FIRST_ORDER_FABRIC_FIELDS.metamorphic_rock;
+  const mainButtonsKeys = FIRST_ORDER_FABRIC_FIELDS.metamorphic_rock;
   const lastKeys = ['interp_note_meta'];
   const tectoniteTypesKey = 'tectonite_type';
 
@@ -20,7 +20,7 @@ const MetamRockFabric = (props) => {
   return (
     <React.Fragment>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       <FormSlider {...{fieldKey: tectoniteTypesKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
     </React.Fragment>

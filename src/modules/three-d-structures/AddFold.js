@@ -17,7 +17,7 @@ const AddFold = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = ['feature_type'];
+  const mainButtonsKeys = ['feature_type'];
   const tightnessKey = 'tightness';
   const vergenceKey = 'vergence';
   const lastKeys = ['fold_notes'];
@@ -30,7 +30,7 @@ const AddFold = (props) => {
   return (
     <React.Fragment>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       <ThreeDStructuresMeasurementsButtons
         formProps={props.formProps}
         measurementsKeys={FOLD_MEASUREMENTS_KEYS}

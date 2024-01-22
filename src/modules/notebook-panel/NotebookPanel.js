@@ -17,7 +17,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {setModalVisible} from '../home/home.slice';
 import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS, SUBPAGES} from '../page/page.constants';
-import usePageHoook from '../page/usePage';
+import usePageHook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
@@ -34,7 +34,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
   const spots = useSelector(state => state.spot.spots);
 
   const useSpots = useSpotsHook();
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
 
   useEffect(() => {
     console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);

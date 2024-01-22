@@ -18,8 +18,8 @@ const TagDetailSidePanel = ({openNotebookPanel}) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
 
-  const [isColorPickerModalVisibile, setIsColorPickerModalVisible] = useState(false);
-  const [isDetailModalVisibile, setIsDetailModalVisible] = useState(false);
+  const [isColorPickerModalVisible, setIsColorPickerModalVisible] = useState(false);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
   const openFeatureDetail = (spot, feature, featureType) => {
     dispatch(setSelectedSpot(spot));
@@ -74,11 +74,11 @@ const TagDetailSidePanel = ({openNotebookPanel}) => {
         />
       </View>
       <TagDetailModal
-        isVisible={isDetailModalVisibile}
+        isVisible={isDetailModalVisible}
         closeModal={() => setIsDetailModalVisible(false)}
       />
       <ColorPickerModal
-        isVisible={isColorPickerModalVisibile}
+        isVisible={isColorPickerModalVisible}
         closeModal={() => setIsColorPickerModalVisible(false)}
       />
     </View>

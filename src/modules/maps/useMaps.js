@@ -615,7 +615,7 @@ const useMaps = (mapRef) => {
     else if (!isEmpty(selectedSpot)
       && (selectedSpot.properties.image_basemap || selectedSpot.properties.strat_section_id)) {
       // spot selected is on an image basemap or strat section, either if not on imagebasemap
-      // or not on same imagebasemap as the selectedspot's imagebasemap,
+      // or not on same imagebasemap as the selected spot's imagebasemap,
       // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
       if (selectedSpot.properties.image_basemap
         && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {

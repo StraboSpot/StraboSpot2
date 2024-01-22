@@ -8,7 +8,7 @@ import useSpotsHook from './useSpots';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import useNestingHook from '../nesting/useNesting';
-import usePageHoook from '../page/usePage';
+import usePageHook from '../page/usePage';
 import {useTagsHook} from '../tags';
 
 const SpotsListItem = ({
@@ -23,7 +23,7 @@ const SpotsListItem = ({
   const useNesting = useNestingHook();
   const useSpots = useSpotsHook();
   const useTags = useTagsHook();
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
 
@@ -76,7 +76,7 @@ const SpotsListItem = ({
       <Avatar
         placeholderStyle={{backgroundColor: 'transparent'}}
         size={20}
-        source={useSpots.getSpotGemometryIconSource(spot)}
+        source={useSpots.getSpotGeometryIconSource(spot)}
       />
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>

@@ -9,7 +9,7 @@ import footerStyle from './notebookFooter.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import IconButton from '../../../shared/ui/IconButton';
 import {NOTEBOOK_PAGES} from '../../page/page.constants';
-import usePageHoook from '../../page/usePage';
+import usePageHook from '../../page/usePage';
 
 const NotebookFooter = ({openPage}) => {
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
@@ -18,7 +18,7 @@ const NotebookFooter = ({openPage}) => {
   ));
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
 
   const pagesToShow = [...usePage.getRelevantGeneralPages(), ...usePage.getRelevantPetPages(), ...usePage.getRelevantSedPages()];
   const notebookPagesValidOn = notebookPagesOn.filter(i => pagesToShow.find(p => p.key === i));

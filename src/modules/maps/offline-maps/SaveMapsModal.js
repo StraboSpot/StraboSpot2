@@ -141,7 +141,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       //first try to delete from temp directories
       await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
       await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
-      await useMapsOffline.checkTileZipFileExistance();
+      await useMapsOffline.checkTileZipFileExistence();
       const progress = await useDevice.downloadAndSaveMap(downloadOptions);
       console.log('PROGRESS', progress);
     }

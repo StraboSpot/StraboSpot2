@@ -36,8 +36,8 @@ const AddMineralModal = ({onPress}) => {
   // Relevant keys for quick-entry modal
   const firstKeys = ['mineral_abbrev', 'full_mineral_name'];
   const igOrMetKey = 'igneous_or_metamorphic';
-  const igButttonsKeys = ['habit', 'textural_setting_igneous'];
-  const metButttonsKeys = ['habit_met', 'textural_setting_metamorphic'];
+  const igButtonsKeys = ['habit', 'textural_setting_igneous'];
+  const metButtonsKeys = ['habit_met', 'textural_setting_metamorphic'];
   const lastKeys = ['average_grain_size_mm', 'maximum_grain_size_mm', 'modal', 'mineral_notes'];
 
   // Relevant fields for quick-entry modal
@@ -155,7 +155,7 @@ const AddMineralModal = ({onPress}) => {
         />
         {!isEmpty(formProps.values[igOrMetKey]) && formProps.values[igOrMetKey] === 'ig_min' && (
           <MainButtons
-            mainKeys={igButttonsKeys}
+            mainKeys={igButtonsKeys}
             formName={formName}
             setChoicesViewKey={setChoicesViewKey}
             formProps={formProps}
@@ -163,7 +163,7 @@ const AddMineralModal = ({onPress}) => {
         )}
         {!isEmpty(formProps.values[igOrMetKey]) && formProps.values[igOrMetKey] === 'met_min' && (
           <MainButtons
-            mainKeys={metButttonsKeys}
+            mainKeys={metButtonsKeys}
             formName={formName}
             setChoicesViewKey={setChoicesViewKey}
             formProps={formProps}

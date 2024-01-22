@@ -8,7 +8,7 @@ const AddLine = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = ['feature_type'];
+  const mainButtonsKeys = ['feature_type'];
   const lastKeys = ['defined_by', 'notes'];
 
   // Relevant fields for quick-entry modal
@@ -34,7 +34,7 @@ const AddLine = (props) => {
         <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...updatedProps.formProps}}/>
       )}
       <MainButtons {...{
-        mainKeys: mainButttonsKeys,
+        mainKeys: mainButtonsKeys,
         subkey: props.isPlanarLinear && 'associated_orientation',
         ...updatedProps,
       }}/>

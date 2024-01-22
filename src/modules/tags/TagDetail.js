@@ -10,7 +10,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {PAGE_KEYS} from '../page/page.constants';
-import usePageHoook from '../page/usePage';
+import usePageHook from '../page/usePage';
 import {SpotsListItem, useSpotsHook} from '../spots';
 import {useTagsHook} from '../tags';
 
@@ -21,7 +21,7 @@ const TagDetail = ({
                      openSpot,
                      setIsDetailModalVisible,
                    }) => {
-  const usePage = usePageHoook();
+  const usePage = usePageHook();
   const useSpots = useSpotsHook();
   const useTags = useTagsHook();
 

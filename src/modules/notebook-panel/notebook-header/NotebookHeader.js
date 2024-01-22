@@ -163,7 +163,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => 
   return (
     <React.Fragment>
       <Image
-        source={useSpots.getSpotGemometryIconSource(spot)}
+        source={useSpots.getSpotGeometryIconSource(spot)}
         style={headerStyles.headerImage}
         onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.METADATA))}
       />

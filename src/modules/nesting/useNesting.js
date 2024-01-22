@@ -99,7 +99,7 @@ const useNesting = () => {
             || (thisSpot.properties.image_basemap && spot.properties.image_basemap
               && thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
             if (thisSpot.geometry.type && thisSpot.geometry.type === 'Polygon'
-              || thisSpot.geometry.type === 'MutiPolygon'
+              || thisSpot.geometry.type === 'MultiPolygon'
               || thisSpot.geometry.type === 'GeometryCollection') {
               if (isWithin(spot, thisSpot)) childrenSpots.push(spot);
             }
@@ -192,7 +192,7 @@ const useNesting = () => {
           || (thisSpot.properties.image_basemap && spot.properties.image_basemap
             && thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
           if (spot.geometry.type && (spot.geometry.type === 'Polygon'
-            || spot.geometry.type === 'MutiPolygon' || spot.geometry.type === 'GeometryCollection')) {
+            || spot.geometry.type === 'MultiPolygon' || spot.geometry.type === 'GeometryCollection')) {
             if (isWithin(thisSpot, spot)) parentSpots.push(spot);
           }
         }

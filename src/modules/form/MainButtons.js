@@ -15,7 +15,7 @@ const MainButtons = ({
                      }) => {
   const useForm = useFormHook();
 
-  const mainButttonsText = key => (
+  const mainButtonsText = key => (
     <View style={{flex: 1, alignItems: 'center'}}>
       <Text
         style={formProps?.values[key] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>
@@ -40,7 +40,7 @@ const MainButtons = ({
             buttonStyle={[formStyles.formButtonLarge, {
               backgroundColor: formProps?.values[k] ? PRIMARY_ACCENT_COLOR : SECONDARY_BACKGROUND_COLOR,
             }]}
-            title={() => mainButttonsText(k)}
+            title={() => mainButtonsText(k)}
             type={'outline'}
             onPress={() => setChoicesViewKey(k)}
           />

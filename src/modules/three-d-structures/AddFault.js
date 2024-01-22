@@ -15,7 +15,7 @@ const AddFault = (props) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
-  const mainButttonsKeys = ['fault_or_sz_type'];
+  const mainButtonsKeys = ['fault_or_sz_type'];
   const secondButtonKeys = ['movement', 'movement_justification', 'directional_indicators'];
   const lastKeys = ['movement_amount_m', 'amplitude_m', 'folded_layer_thickness_m', 'fault_notes'];
 
@@ -27,7 +27,7 @@ const AddFault = (props) => {
   return (
     <React.Fragment>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-      <MainButtons {...{mainKeys: mainButttonsKeys, ...props}}/>
+      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       <ThreeDStructuresMeasurementsButtons
         formProps={props.formProps}
         measurementsKeys={FAULT_MEASUREMENTS_KEYS}

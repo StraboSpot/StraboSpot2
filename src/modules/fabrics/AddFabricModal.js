@@ -153,7 +153,7 @@ const AddFabricModal = ({onPress}) => {
     try {
       await formRef.current.submitForm();
       const editedFabricData = useForm.showErrors(formRef.current);
-      console.log('Saving fabic data to Spot ...');
+      console.log('Saving fabric data to Spot ...');
       let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
       editedFabricsData.push({...editedFabricData, id: getNewId()});
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));

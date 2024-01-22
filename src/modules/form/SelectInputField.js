@@ -31,7 +31,7 @@ const SelectInputField = (props) => {
 
   const renderChoiceItem = (item) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={PRIMARY_ACCENT_COLOR}/>;
-    const radioUnslected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
+    const radioUnselected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
       <React.Fragment key={item.value}>
         <ListItem containerStyle={commonStyles.listItemFormField}>
@@ -42,7 +42,7 @@ const SelectInputField = (props) => {
             <ListItem.CheckBox
               checked={props.value === item.value}
               checkedIcon={radioSelected}
-              uncheckedIcon={radioUnslected}
+              uncheckedIcon={radioUnselected}
               onPress={() => fieldValueChanged([item.value])}
             />
           )}
