@@ -20,10 +20,9 @@ const Routes = () => {
   const userInfo = useSelector(state => state.user);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
-    autoSignIn().then(() => console.log('Should be signed in...', isSignedIn));
+    autoSignIn().then(() => console.log('Should be signed in'));
   }, []);
 
   const autoSignIn = async () => {

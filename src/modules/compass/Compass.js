@@ -53,7 +53,6 @@ const Compass = ({
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [buttonSound, setButtonSound] = useState(null);
-  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
 
   const useMeasurements = useMeasurementsHook();
 

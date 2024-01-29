@@ -222,9 +222,6 @@ const projectSlice = createSlice({
       state.datasets[action.payload.id].modified_timestamp = timestamp;
       state.project.modified_timestamp = timestamp;
     },
-    updatedDatasets(state, action) {
-      state.datasets = action.payload;
-    },
     updatedModifiedTimestampsBySpotsIds(state, action) {
       let datasetIdsFound = [];
       action.payload.map((spotId) => {
@@ -288,7 +285,6 @@ export const {
   setUseContinuousTagging,
   setUseTemplate,
   updatedDatasetProperties,
-  updatedDatasets,
   updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } = projectSlice.actions;

@@ -142,7 +142,7 @@ const updatedProjectDatasetsSpotsListener = async (action, listenerApi) => {
   const project = newState.project.project;
   const datasets = Object.values(newState.project.datasets);
 
-  let objectToSend = {};
+  let objectToSend;
 
   // Spots Updated
   if (action.type.includes('spot/editedSpots')) {

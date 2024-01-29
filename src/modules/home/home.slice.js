@@ -10,7 +10,6 @@ const initialHomeState = {
     modal: false,
     home: false,
   },
-  // isSignedIn: false,
   modalValues: {},
   modalVisible: null,
   isBackupModalVisible: false,
@@ -57,9 +56,6 @@ const homeSlice = createSlice({
     setErrorMessagesModalVisible(state, action) {
       state.isErrorMessagesModalVisible = action.payload;
     },
-    setImageModalVisible(state, action) {
-      state.isImageModalVisible = action.payload;
-    },
     setLoadingStatus(state, action) {
       const {bool, view} = action.payload;
       state.loading[view] = bool;
@@ -85,9 +81,6 @@ const homeSlice = createSlice({
     setProjectLoadSelectionModalVisible(state, action) {
       state.isProjectLoadSelectionModalVisible = action.payload;
     },
-    // setSignedInStatus(state, action) {
-    //   state.isSignedIn = action.payload;
-    // },
     setStatusMessagesModalVisible(state, action) {
       state.isStatusMessagesModalVisible = action.payload;
     },
@@ -119,8 +112,6 @@ export const {
   removedLastStatusMessage,
   setBackupModalVisible,
   setErrorMessagesModalVisible,
-  setImageModalVisible,
-  setInfoMessagesModalVisible,
   setLoadingStatus,
   setMainMenuPanelVisible,
   setModalValues,
@@ -129,7 +120,6 @@ export const {
   setProgressModalVisible,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
-  // setSignedInStatus,
   setStatusMessagesModalVisible,
   setStatusMessageModalTitle,
   setShortcutSwitchPositions,

@@ -236,8 +236,7 @@ const useDevice = () => {
   };
 
   const readDirectory = async (directory) => {
-    let files = [];
-    files = await RNFS.readdir(directory);
+    const files = await RNFS.readdir(directory);
     console.log('Directory files', files);
     return files;
   };

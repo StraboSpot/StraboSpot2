@@ -17,10 +17,7 @@ const offlineMapsSlice = createSlice({
     addMapFromDevice(state, action) {
       state.offlineMaps = {...state.offlineMaps, ...action.payload};
     },
-    adjustedMapsFromDevice(state, action) {
-      state.offlineMaps = action.payload;
-    },
-    clearedMapsFromRedux(state, action) {
+    clearedMapsFromRedux(state) {
       state.offlineMaps = initialOfflineMapsState.offlineMaps;
     },
     deletedOfflineMap(state, action) {
@@ -49,7 +46,6 @@ const offlineMapsSlice = createSlice({
 export const {
   addMapFromDevice,
   addedMapsFromDevice,
-  adjustedMapsFromDevice,
   clearedMapsFromRedux,
   deletedOfflineMap,
   editedOfflineMap,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,7 +7,6 @@ import {STRABO_APIS} from '../../../services/urls.constants';
 import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';
 import UploadDialogBox from '../../project/UploadDialogBox';
-import useProjectHook from '../../project/useProject';
 import {setProgressModalVisible, setUploadModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
@@ -17,16 +16,12 @@ const UploadModal = () => {
   const endPoint = useSelector(state => state.connections.databaseEndpoint);
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
 
-  const [useProject] = useProjectHook();
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [response, setResponse] = useState('');
-
   const renderUploadProgressModal = async () => {
     dispatch(setUploadModalVisible(false));
     dispatch(setProgressModalVisible(true));
   };
 
-  return (<>
+  return (
     <UploadDialogBox
       dialogTitle={'OVERWRITE WARNING!'}
       visible={isUploadModalVisible}
@@ -51,7 +46,7 @@ const UploadModal = () => {
         </Text>
       </View>
     </UploadDialogBox>
-  </>);
+  );
 };
 
 export default UploadModal;

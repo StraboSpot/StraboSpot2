@@ -40,17 +40,13 @@ const SignIn = ({navigation, route}) => {
   }, []);
 
   const handleSignIn = async () => {
-    const res = await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage,
-      setIsErrorModalVisible);
+    await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
     dispatch(login());
-    // res === 'true' && setIsSignedIn(res);
-    // res === 'true' && navigation.navigate('HomeScreen')
   };
 
   const handleGuestSignIn = async () => {
     await useSignIn.guestSignIn();
     dispatch(login());
-    // setIsSignedIn('true');
   };
 
   const renderButtons = () => {

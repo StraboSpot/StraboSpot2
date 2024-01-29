@@ -79,10 +79,6 @@ export const csvToArray = (strData, strDelimiter) => {
   return (arrData);
 };
 
-export const capitalizeFirstLetter = (str) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
 export const deepFindFeatureById = (obj, id) => {
   //Early return
   if (isEmpty(obj)) return null;
@@ -146,18 +142,6 @@ function getOrientation(window) {
   return window.width < window.height ? 'portrait' : 'landscape';
 }
 
-export const getTimeStamp = () => {
-  const time = moment(new Date()).format('YYYY-MM-DD_hmma');
-  console.log(time);
-  return time;
-};
-
-// Truncate the decimal part of a number to 5 digits and return as a string
-export const truncDecimal = (num) => {
-  const numParts = num.toString().split('.');
-  return numParts[0].concat('.').concat(numParts[1].slice(0, 5));
-};
-
 export const handleKeyboardDidHide = (textInputAnimate) => {
   Animated.timing(
     textInputAnimate,
@@ -215,11 +199,6 @@ export const hexToRgb = (hex) => {
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16),
   } : null;
-};
-
-// Correct a quirk in JS that doesn't mod negative number correctly
-export const mod = (a, n) => {
-  return ((a % n) + n) % n;
 };
 
 export const padWithLeadingZeros = (number, length) => {

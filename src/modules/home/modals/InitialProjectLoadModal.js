@@ -10,17 +10,12 @@ import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
-import modalStyle from '../../../shared/ui/modal/modal.style';
 import Spacer from '../../../shared/ui/Spacer';
-import ActiveDatasetsList from '../../project/ActiveDatasetsList';
-import DatasetList from '../../project/DatasetList';
 import ImportProjectFromZip from '../../project/ImportProjectFromZip';
 import NewProject from '../../project/NewProjectForm';
 import projectStyles from '../../project/project.styles';
 import ProjectList from '../../project/ProjectList';
-import {clearedDatasets, clearedProject} from '../../project/projects.slice';
 import ProjectTypesButtons from '../../project/ProjectTypesButtons';
-import {clearedSpots} from '../../spots/spots.slice';
 import userStyles from '../../user/user.styles';
 import useUserProfileHook from '../../user/useUserProfile';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
@@ -29,28 +24,25 @@ import overlayStyles from '../overlays/overlay.styles';
 const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) => {
   console.log('Rendering InitialProjectLoadModal...');
 
+  const dispatch = useDispatch();
+  const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
+  const isOnline = useSelector(state => state.connections.isOnline);
+  const user = useSelector(state => state.user);
+
+  const [displayName, setDisplayName] = useState('');
+  const [importComplete, setImportComplete] = useState(false);
+  const [importedProjectData, setImportedProjectData] = useState({});
+  const [source, setSource] = useState('');
+  const [visibleInitialSection, setVisibleInitialSection] = useState('none');
+
+  const toast = useToast();
+  const useDevice = useDeviceHook();
+  const useUserProfile = useUserProfileHook();
+
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
     else return 'Guest';
   };
-
-  const activeDatasetsId = useSelector(state => state.project.activeDatasetsIds);
-  const selectedProject = useSelector(state => state.project.project);
-  const statusMessageModalTitle = useSelector(state => state.home.statusMessageModalTitle);
-  const isOnline = useSelector(state => state.connections.isOnline);
-  const user = useSelector(state => state.user);
-  const dispatch = useDispatch();
-  const [displayName, setDisplayName] = useState('');
-  const [visibleProjectSection, setVisibleProjectSection] = useState('activeDatasetsList');
-  const [visibleInitialSection, setVisibleInitialSection] = useState('none');
-  const [source, setSource] = useState('');
-  const [importedProjectData, setImportedProjectData] = useState({});
-  const [importedImageFiles, setImportedImageFiles] = useState([]);
-  const [importComplete, setImportComplete] = useState(false);
-
-  const useDevice = useDeviceHook();
-  const toast = useToast();
-  const useUserProfile = useUserProfileHook();
 
   useEffect(() => {
     setDisplayName(displayFirstName);
@@ -65,25 +57,9 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
     dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
   }, [isOnline]);
 
-  const goBack = () => {
-    if (visibleProjectSection === 'activeDatasetsList') {
-      dispatch(clearedProject());
-      dispatch(clearedDatasets());
-      dispatch(clearedSpots());
-      setVisibleInitialSection(source === 'device' ? 'deviceProjects' : 'serverProjects');
-      setImportedImageFiles([]);
-      dispatch(setStatusMessageModalTitle(source === 'device'
-        ? 'Projects on Device' : source === 'server' ? 'Projects on Server' : 'Welcome to StraboSpot'));
-    }
-    else if (visibleProjectSection === 'currentDatasetSelection') {
-      setVisibleProjectSection('activeDatasetsList');
-    }
-  };
-
   const goBackToMain = () => {
     if (visibleInitialSection !== 'none') {
       setVisibleInitialSection('none');
-      setImportedImageFiles([]);
       setImportComplete(false);
       dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
     }
@@ -155,7 +131,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
 
   const renderListOfProjectsOnDevice = () => {
     return (
-      <React.Fragment>
+      <>
         <View style={{alignContent: 'center', marginTop: 10}}>
           <Button
             onPress={() => goBackToMain()}
@@ -176,7 +152,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
         <View style={{height: 400}}>
           <ProjectList source={source}/>
         </View>
-      </React.Fragment>
+      </>
     );
   };
 
@@ -240,7 +216,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
 
   const renderStartNewProject = () => {
     return (
-      <React.Fragment>
+      <>
         <Button
           onPress={() => goBackToMain()}
           type={'clear'}
@@ -259,7 +235,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
         <View style={{height: 400}}>
           <NewProject openMainMenu={openMainMenu} onPress={() => closeModal()}/>
         </View>
-      </React.Fragment>
+      </>
     );
   };
 

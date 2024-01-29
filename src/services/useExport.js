@@ -128,7 +128,6 @@ const useExport = () => {
       const maps = data.mapNamesDb;
       const mapCount = Object.values(maps).length;
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
-      let promises = [];
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
@@ -174,14 +173,7 @@ const useExport = () => {
 
   const initializeBackup = async (fileName) => {
     try {
-      // dispatch(setSelectedProject({
-      //   ...selectedProject,
-      //   project: {
-      //     fileName: fileName,
-      //   },
-      // }));
       dispatch(setBackupFileName(fileName));
-
       dispatch(setBackupModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Backing up Project to Device...'));
@@ -219,29 +211,6 @@ const useExport = () => {
     }
   };
 
-  const moveDistributedMap = async (mapId, fileName, directory) => {
-    console.log('Moving Map:', mapId);
-    return useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip')
-      .then((exists) => {
-        if (exists) {
-          console.log(mapId + '.zip exists?', exists);
-          return useDevice.copyFiles(APP_DIRECTORIES.TILE_ZIP + mapId + '.zip',
-            directory + fileName + '/maps/' + mapId.toString() + '.zip').then(
-            () => {
-              console.log('Map Copied.');
-              return Promise.resolve(mapId);
-            });
-        }
-        else {
-          console.log('couldn\'t find map ' + mapId + '.zip');
-          return Promise.resolve();
-        }
-      })
-      .catch((err) => {
-        console.warn('Error moving maps in useExport', err);
-      });
-  };
-
   const requestWriteDirectoryPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -255,12 +224,8 @@ const useExport = () => {
           buttonPositive: 'OK',
         },
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can read the folder');
-      }
-      else {
-        console.log('Folder read permission denied');
-      }
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) console.log('You can read the folder');
+      else console.log('Folder read permission denied');
     }
     catch (err) {
       console.warn(err);

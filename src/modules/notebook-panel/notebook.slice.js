@@ -7,7 +7,6 @@ const initialNotebookState = {
   visibleNotebookPagesStack: [],
   isNotebookPanelVisible: false,
   isSamplesModalVisible: false,
-  compassMeasurementTypes: [COMPASS_TOGGLE_BUTTONS.PLANAR],
   notebookPagesOn: ['geologic_unit', 'notes', 'orientation_data', 'images', 'tags', 'samples'],
   // notebookPagesOn: PRIMARY_PAGES.map(p => p.key),  // This worked in Native but not Web
 };
@@ -16,9 +15,6 @@ const notebookSlice = createSlice({
   name: 'notebook',
   initialState: initialNotebookState,
   reducers: {
-    setCompassMeasurementTypes(state, action) {
-      state.compassMeasurementTypes = action.payload;
-    },
     setNotebookPageVisible(state, action) {
       let visibleNotebookPagesStack = state.visibleNotebookPagesStack;
       if (isEmpty(visibleNotebookPagesStack)) state.visibleNotebookPagesStack = [action.payload];
@@ -30,7 +26,7 @@ const notebookSlice = createSlice({
         visibleNotebookPagesStack = state.visibleNotebookPagesStack.push(action.payload);
       }
     },
-    setNotebookPageVisibleToPrev(state, action) {
+    setNotebookPageVisibleToPrev(state) {
       state.visibleNotebookPagesStack = state.visibleNotebookPagesStack.slice(0, -1);
     },
     setNotebookPanelVisible(state, action) {
@@ -46,7 +42,6 @@ const notebookSlice = createSlice({
 });
 
 export const {
-  setCompassMeasurementTypes,
   setNotebookPageVisible,
   setNotebookPageVisibleToPrev,
   setNotebookPanelVisible,

@@ -137,16 +137,6 @@ const SignUp = ({navigation}) => {
     }
   };
 
-  const toggleCheck = () => {
-    setUserData(prevState => ({
-      ...prevState,
-      password: {
-        ...prevState.password,
-        showPassword: !prevState.password.showPassword,
-      },
-    }));
-  };
-
   const renderButtons = () => {
     return (
       <View style={styles.buttonsContainer}>

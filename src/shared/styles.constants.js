@@ -21,8 +21,6 @@ export const PRIMARY_TEXT_COLOR = BLACK;
 
 export const WARNING_COLOR = RED;
 
-export const PRIMARY_LISTITEM_FONTWEIGHT = '500';
-
 export const PRIMARY_ACCENT_COLOR = BLUE;
 
 export const LIST_BORDER_COLOR = MEDIUMGREY;

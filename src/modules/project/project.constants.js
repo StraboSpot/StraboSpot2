@@ -1,12 +1,7 @@
-import {STRABO_APIS} from '../../services/urls.constants';
-
 export const BACKUP_TO_DEVICE = 'BACKUP TO DEVICE';
 export const BACKUP_TO_SERVER = 'BACKUP TO SERVER';
-
-export const STRABO_DATABASE_ENDPOINT = STRABO_APIS.DB;
-export const OVERWRITE = 'OVERWRITE';
-export const UPLOAD_TO_SERVER = 'UPLOAD_TO_SERVER';
 export const CANCEL = 'CANCEL';
+export const OVERWRITE = 'OVERWRITE';
 
 export const TAG_TYPES = [
   'geologic_unit',

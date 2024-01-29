@@ -35,25 +35,21 @@ const ProjectOptionsDialogBox = ({
   const selectedProject = useSelector(state => state.project.selectedProject);
   const currentProjectName = useSelector(state => state.project.project?.description?.project_name);
 
-  const [checked, setChecked] = useState(1);
-  const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
   const [action, setAction] = useState('');
   const [backupFileName, setBackupFileName] = useState('');
-  const [exportFileName, setExportFileName] = useState('');
+  const [checked, setChecked] = useState(1);
+  const [deletingProjectStatus, setDeletingProjectStatus] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
+  const [exportFileName, setExportFileName] = useState('');
   const [includeImages, setIncludeImages] = useState(true);
   const [includeMapTiles, setIncludeMapTiles] = useState(true);
   const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
-  const [isOverwriteModalVisible, setIsOverwriteModalVisible] = useState(false);
-  const [passwordInputVal, setPasswordTextInputVal] = useState('');
-  // const [projectsArr, setProjectsArr] = useState([]);
-  const [projectNameToDelete, setProjectNameToToDelete] = useState('');
+  const [projectToDeleteName, setProjectToDeleteName] = useState('');
 
-  const useDevice = useDeviceHook();
-  const useExport = useExportHook();
   const [useProject] = useProjectHook();
   const toast = useToast();
+  const useDevice = useDeviceHook();
+  const useExport = useExportHook();
 
   useEffect(() => {
     console.log('Images Included:', includeImages);
@@ -74,6 +70,7 @@ const ProjectOptionsDialogBox = ({
       setIsProgressModalVisible(true);
       setTimeout(async () => {
         setChecked(1);
+        setProjectToDeleteName(selectedProject?.project?.fileName || '');
         await useDevice.deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
         setDeletingProjectStatus('complete');
         projectDeleted(true);
@@ -81,7 +78,6 @@ const ProjectOptionsDialogBox = ({
     }
     catch (err) {
       console.error('Error deleting project!', err);
-      setDeleteErrorMessage(err.toString());
       toast.show(`${selectedProject.project.fileName} does not exist!`, {type: 'danger'});
       setChecked(3);
     }
@@ -280,7 +276,8 @@ const ProjectOptionsDialogBox = ({
             currentProject.description) ? currentProject.description.project_name.toUpperCase() : 'UN-NAMED'}
         </Text>
         <Text style={overlayStyles.contentText}>Including all datasets and Spots contained within this project. Make
-          sure you have already uploaded the project to the server or backed it up to the device if you wish to preserve the data.
+          sure you have already uploaded the project to the server or backed it up to the device if you wish to preserve
+          the data.
         </Text>
       </View>
     );
@@ -324,7 +321,7 @@ const ProjectOptionsDialogBox = ({
     );
   };
 
-  const validateCharacters = (string) => {
+  const validateCharacters = () => {
     const format = /[`!@#$%^&*()+=[\]{};':"\\|,.<>/?~]+/;
     return format.test(backupFileName);
   };
@@ -347,7 +344,7 @@ const ProjectOptionsDialogBox = ({
       >
         <ModalHeader
           closeModal={onClose}
-          title={(header ?  header + '\n' : '') + projectName}
+          title={(header ? header + '\n' : '') + projectName}
         />
         {selectedProject.source === 'new'
           && (
@@ -391,8 +388,8 @@ const ProjectOptionsDialogBox = ({
         <Text style={modalStyle.modalTitle}>{'Deleting...'}</Text>
         <View style={overlayStyles.overlayContent}>
           {deletingProjectStatus !== 'complete'
-            ? <Text style={projectOptionsModalStyle.projectNameText}>Deleting {projectNameToDelete}</Text>
-            : <Text style={projectOptionsModalStyle.projectNameText}>{projectNameToDelete} has been deleted.</Text>
+            ? <Text style={projectOptionsModalStyle.projectNameText}>Deleting {projectToDeleteName}</Text>
+            : <Text style={projectOptionsModalStyle.projectNameText}>{projectToDeleteName} has been deleted.</Text>
           }
           <LottieAnimations
             type={deletingProjectStatus === 'deleting' ? 'deleteProject' : 'complete'}

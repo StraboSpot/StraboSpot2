@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import { Platform, View} from 'react-native';
+import {View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
@@ -104,9 +104,9 @@ const SampleModal = (props) => {
     else formRef.current?.setFieldValue(orientedKey, 'no');
   };
 
-  const renderForm = (formProps) => {
+  const renderForm = () => {
     return (
-      <React.Fragment>
+      <>
         <Form
           {...{
             formName: props.formName,
@@ -143,30 +143,7 @@ const SampleModal = (props) => {
             ...props.formProps,
           }}
         />
-      </React.Fragment>
-    );
-  };
-
-  const renderSamplesModal = () => {
-    return (
-      <Modal onPress={props.onPress}>
-        <React.Fragment>
-          <Formik
-            innerRef={formRef}
-            initialValues={{
-              sample_id_name: namePrefix + startingNumber,
-              inplaceness_of_sample: '5___definitely',
-            }}
-            onSubmit={values => console.log('Submitting form...', values)}
-            enableReinitialize={true}>
-            {formProps => <View style={{}}>{renderForm(formProps)}</View>}
-          </Formik>
-          <SaveButton
-            title={'Save Sample'}
-            onPress={() => saveForm(formRef.current)}
-          />
-        </React.Fragment>
-      </Modal>
+      </>
     );
   };
 
@@ -214,7 +191,24 @@ const SampleModal = (props) => {
     }
   };
 
-  if (Platform.OS === 'android') return renderSamplesModal();
-  else return renderSamplesModal();
+  return (
+    <Modal onPress={props.onPress}>
+      <Formik
+        innerRef={formRef}
+        initialValues={{
+          sample_id_name: namePrefix + startingNumber,
+          inplaceness_of_sample: '5___definitely',
+        }}
+        onSubmit={values => console.log('Submitting form...', values)}
+        enableReinitialize={true}>
+        {formProps => <View style={{}}>{renderForm(formProps)}</View>}
+      </Formik>
+      <SaveButton
+        title={'Save Sample'}
+        onPress={() => saveForm(formRef.current)}
+      />
+    </Modal>
+  );
 };
+
 export default SampleModal;

@@ -1,4 +1,3 @@
-export {default as BoolButton} from './BoolButton';
 export {default as ChoiceButtons} from './ChoiceButtons';
 export {default as DateInputField} from './DateInputField';
 export {default as Form} from './Form';

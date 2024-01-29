@@ -9,8 +9,8 @@ import signInStyles from '../../modules/sign-in/signIn.styles';
 import {setDatabaseIsSelected, setDatabaseVerify} from '../../services/connections.slice';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../Helpers';
-import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 import * as themes from '../styles.constants';
+import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 
 const CustomEndpoint = ({
                           containerStyles,
@@ -18,17 +18,15 @@ const CustomEndpoint = ({
                           textStyles,
                         }) => {
   const dispatch = useDispatch();
-
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isOnline = useSelector(state => state.connections.isOnline);
 
   const {protocol, domain, path, isSelected, isVerified} = customDatabaseEndpoint;
 
+  const [domainValue, setDomainValue] = useState(domain);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
   const [protocolValue, setProtocolValue] = useState(protocol);
-  const [domainValue, setDomainValue] = useState(domain);
-  const [pathValue, setPathValue] = useState(path);
 
   const useServerRequests = useServerRequestsHook();
 
@@ -41,12 +39,12 @@ const CustomEndpoint = ({
     dispatch(setDatabaseVerify(false));
     if (input === 'domain') setDomainValue(value);
     if (input === 'protocol') setProtocolValue(value);
-    if (input === 'path') pathValue(value);
+    if (input === 'path') path(value);
   };
 
   const verifyEndpoint = async () => {
     setIsLoadingEndpoint(true);
-    const isVerified = await useServerRequests.verifyEndpoint(protocolValue, domainValue, pathValue);
+    const isVerified = await useServerRequests.verifyEndpoint(protocolValue, domainValue, path);
     if (isVerified) setIsLoadingEndpoint(false);
     else {
       setErrorMessage('Not Reachable');
@@ -65,76 +63,73 @@ const CustomEndpoint = ({
           ios_backgroundColor={'white'}
         />
       </View>
-      {customDatabaseEndpoint.isSelected
-        && (
-          <View>
-            <View style={uiStyles.customEndpointVerifyInputContainer}>
-              <Input
-                containerStyle={signInStyles.verifyProtocolInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'protocol')}
-                label={'Protocol'}
-                labelStyle={{fontSize: 10}}
-                defaultValue={protocolValue}
-                autoCapitalize={'none'}
-              />
-              <Input
-                containerStyle={signInStyles.verifySchemeInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'domain')}
-                value={domainValue}
-                label={'Host'}
-                placeholder={'192.168.x.xxx'}
-                placeholderTextColor={themes.MEDIUMGREY}
-                labelStyle={{fontSize: 10}}
-                errorMessage={errorMessage}
-                errorStyle={{fontSize: 12, fontWeight: 'bold', textAlign: 'center'}}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-              />
-              <Input
-                containerStyle={signInStyles.verifySubdirectoryInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'path')}
-                label={'Path'}
-                labelStyle={{fontSize: 10}}
-                value={pathValue}
-                autoCapitalize={'none'}
-              />
-            </View>
-            <View style={uiStyles.customEndpointVerifyButtonContainer}>
-              {isVerified
-                ? (
-                  <View style={uiStyles.customEndpointVerifyIconContainer}>
-                    <Text style={[iconText]}>Verified</Text>
-                    <Icon
-                      reverse
-                      name={'checkmark-sharp'}
-                      type={'ionicon'}
-                      size={10}
-                      color={'green'}
-                    />
-                  </View>
-                )
-                : <Button
-                  title={'Verify'}
-                  disabled={!isOnline.isConnected || isEmpty(domainValue)}
-                  buttonStyle={uiStyles.verifyButtonStyle}
-                  titleStyle={{color: 'white'}}
-                  containerStyle={uiStyles.customEndpointVerifyButtonContainer}
-                  onPress={() => verifyEndpoint()}
-                  loading={isLoadingEndpoint}
-                  loadingStyle={{width: 60}}
-                />
-              }
-            </View>
+      {customDatabaseEndpoint.isSelected && (
+        <View>
+          <View style={uiStyles.customEndpointVerifyInputContainer}>
+            <Input
+              containerStyle={signInStyles.verifyProtocolInputContainer}
+              inputContainerStyle={{borderBottomWidth: 0}}
+              inputStyle={signInStyles.verifyInput}
+              onChangeText={value => handleEndpointTextValues(value, 'protocol')}
+              label={'Protocol'}
+              labelStyle={{fontSize: 10}}
+              defaultValue={protocolValue}
+              autoCapitalize={'none'}
+            />
+            <Input
+              containerStyle={signInStyles.verifySchemeInputContainer}
+              inputContainerStyle={{borderBottomWidth: 0}}
+              inputStyle={signInStyles.verifyInput}
+              onChangeText={value => handleEndpointTextValues(value, 'domain')}
+              value={domainValue}
+              label={'Host'}
+              placeholder={'192.168.x.xxx'}
+              placeholderTextColor={themes.MEDIUMGREY}
+              labelStyle={{fontSize: 10}}
+              errorMessage={errorMessage}
+              errorStyle={{fontSize: 12, fontWeight: 'bold', textAlign: 'center'}}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+            />
+            <Input
+              containerStyle={signInStyles.verifySubdirectoryInputContainer}
+              inputContainerStyle={{borderBottomWidth: 0}}
+              inputStyle={signInStyles.verifyInput}
+              onChangeText={value => handleEndpointTextValues(value, 'path')}
+              label={'Path'}
+              labelStyle={{fontSize: 10}}
+              value={path}
+              autoCapitalize={'none'}
+            />
           </View>
-
-        )
-      }
+          <View style={uiStyles.customEndpointVerifyButtonContainer}>
+            {isVerified
+              ? (
+                <View style={uiStyles.customEndpointVerifyIconContainer}>
+                  <Text style={[iconText]}>Verified</Text>
+                  <Icon
+                    reverse
+                    name={'checkmark-sharp'}
+                    type={'ionicon'}
+                    size={10}
+                    color={'green'}
+                  />
+                </View>
+              )
+              : <Button
+                title={'Verify'}
+                disabled={!isOnline.isConnected || isEmpty(domainValue)}
+                buttonStyle={uiStyles.verifyButtonStyle}
+                titleStyle={{color: 'white'}}
+                containerStyle={uiStyles.customEndpointVerifyButtonContainer}
+                onPress={() => verifyEndpoint()}
+                loading={isLoadingEndpoint}
+                loadingStyle={{width: 60}}
+              />
+            }
+          </View>
+        </View>
+      )}
     </View>
   );
 };

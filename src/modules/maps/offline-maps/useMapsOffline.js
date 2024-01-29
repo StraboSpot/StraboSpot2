@@ -400,18 +400,8 @@ const useMapsOffline = () => {
 
   const updateMapTileCountWhenSaving = async (mapId) => {
     try {
-      // let mapName;
-      let mapID = mapId ? mapId : currentBasemap.id;
-      let currentOfflineMaps = Object.values(offlineMaps);
-
-      //now check for existence of AsyncStorage offlineMapsData and store new count
-      if (!currentOfflineMaps) {
-        currentOfflineMaps = [];
-      }
-
-      const customMap = Object.values(customMaps).filter((map) => {
-        return mapID === map.id;
-      });
+      const mapID = mapId ? mapId : currentBasemap.id;
+      const customMap = Object.values(customMaps).filter(map => mapID === map.id);
       console.log(customMap);
       const newOfflineMapsData = await createOfflineMapObject(mapID, customMap);
       console.log(newOfflineMapsData);

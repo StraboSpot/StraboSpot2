@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Animated, View, useWindowDimensions} from 'react-native';
+import React from 'react';
+import {useWindowDimensions, View} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -27,8 +27,6 @@ const Modal = ({
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-
-  const [textInputAnimate] = useState(new Animated.Value(0));
 
   const renderModalBottom = () => {
     const shortcutModal = SHORTCUT_MODALS.find(m => m.key === modalVisible);

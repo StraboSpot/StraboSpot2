@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, Input, ListItem} from 'react-native-elements';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import customMapStyles from './customMaps.styles';
@@ -121,7 +120,7 @@ const AddCustomMaps = () => {
 
   const renderMapDetails = () => {
     return (
-      <React.Fragment>
+      <>
         <SectionDivider dividerText={'Map Details'}/>
         <View>
           {editableCustomMapData?.source === 'mapbox_styles' && (
@@ -172,7 +171,7 @@ const AddCustomMaps = () => {
           <Text style={customMapStyles.mapTypeInfoText}>Map available from:</Text>
           <Text style={customMapStyles.mapTypeInfoText}>{customMapToEdit?.url[0]}</Text>
         </View>}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -198,7 +197,7 @@ const AddCustomMaps = () => {
 
   const renderTitle = () => {
     return (
-      <React.Fragment>
+      <>
         <SectionDivider dividerText={'Custom Map Title'}/>
         <Input
           inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
@@ -209,7 +208,7 @@ const AddCustomMaps = () => {
           errorMessage={editableCustomMapData && isEmpty(editableCustomMapData.title) && 'Title is required'}
           errorStyle={customMapStyles.requiredMessage}
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -218,7 +217,7 @@ const AddCustomMaps = () => {
     && editableCustomMapData.opacity >= 0 && editableCustomMapData.opacity <= 1 ? editableCustomMapData.opacity : 1;
     const sliderValuePercent = Math.round(opacity * 100).toFixed(0);
     return (
-      <React.Fragment>
+      <>
         <SectionDivider dividerText={'Overlay Settings'}/>
         <ListItem containerStyle={commonStyles.listItem}>
           <ListItem.Content>
@@ -247,7 +246,7 @@ const AddCustomMaps = () => {
             </View>
           </ListItem>
         )}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -271,12 +270,6 @@ const AddCustomMaps = () => {
         {renderTitle()}
         {renderOverlay()}
         {renderMapTypeList()}
-        {/*<Button*/}
-        {/*  titleStyle={{fontSize: 14}}*/}
-        {/*  type={'clear'}*/}
-        {/*  title={'More information'}*/}
-        {/*  onPress={() => console.log('More information')}*/}
-        {/*/>*/}
         {(editableCustomMapData?.source === 'mapbox_styles' || editableCustomMapData?.source === 'map_warper'
           || editableCustomMapData?.source === 'strabospot_mymaps') && renderMapDetails()}
       </View>

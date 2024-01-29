@@ -63,7 +63,6 @@ const Basemap = ({
 
   const [cursor, setCursor] = useState('');
   const [prevMapMode, setPrevMapMode] = useState(mapMode);
-  const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
   const [viewState, setViewState] = React.useState({});
 
   const layerIdsNotSelected = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected',
@@ -73,6 +72,7 @@ const Basemap = ({
   const layerIdsSelected = ['polygonLayerSelected', 'polygonLayerWithPatternSelected',
     'polygonLayerSelectedBorder', 'polygonLabelLayerSelected', 'lineLayerSelected', 'lineLayerSelectedDotted',
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
+  const symbols = {...MAP_SYMBOLS, ...STRAT_PATTERNS};
 
   const coordQuad = useMaps.getCoordQuad(currentImageBasemap);
 
