@@ -9,6 +9,8 @@ import SaveButton from '../../shared/SaveButton';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
+import MeasurementButtons from '../form/MeasurementButtons';
+import MeasurementModal from '../form/MeasurementModal';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -23,28 +25,38 @@ const AddEarthquakeModal = ({onPress}) => {
   const formRef = useRef(null);
   const useForm = useFormHook();
 
+  const [isMeasurementsModalVisible, setIsMeasurementsModalVisible] = useState(false);
+  const [measurementsGroupField, setMeasurementsGroupField] = useState({});
+
   const groupKey = 'general';
   const pageKey = PAGE_KEYS.EARTHQUAKES;
   const formName = [groupKey, pageKey];
 
   // Relevant keys for quick-entry modal
-  const mainButtonsKeys = ['earthquake_feature', 'liquefaction_area_affected', 'date_of_movement',
-    'time_of_movement', 'landslide_feat', 'slide_type', 'material_type', 'slope_movement_area_affected',
-    'cause_of_damage', 'date_of_damage', 'time_of_damage', 'utility_affected', 'facility_affected', 'damage_severity',
-    'rupture_expression', 'mode_of_observation', 'fault_slip_meas'];
-  const confidenceInFeatureIdKey = 'confidence_in_feature_id';
-  const lastKeys = ['diameter_m', 'height_of_material_m', 'max_vert_movement_m', 'est_dir_of_slope_m',
-    'displacement_amt_cm', 'depth_m', 'max_drop_in_elevation_m', 'length_exposed_downslope_m', 'slip_preferred_cm',
-    'slip_min_cm', 'slip_max_cm', 'horiz_separation_preferred_cm', 'horiz_separation_min_cm', 'horiz_separation_max_cm',
-    'vert_separation_preferred', 'vert_separation_min_cm', 'vertical_separation_max_cm', 'slip_azimuth',
-    'heave_preferred_cm', 'heave_min_cm', 'rupture_width_preferred_m', 'rupture_width_min_m', 'rupture_width_max_m',
-    'notes'];
+  const mainButtonsKeys1 = ['earthquake_feature', 'fault_type'];
+  const mainButtonsKeys2 = ['movement', 'rupture_expression',
+    'liquefaction_area_affected', 'fault_slip_meas', 'date_of_movement', 'time_of_movement', 'landslide_feat',
+    'slide_type', 'material_type', 'area_affected', 'cause_of_damage', 'date_of_damage', 'time_of_damage',
+    'utility_affected', 'facility_affected', 'damage_severity', 'mode_of_observation'];
+  const confidenceInFeatureKey = 'confidence_in_feature';
+  const lastKeys = ['diameter', 'height_of_material', 'max_vert_movement', 'dir_of_slope_mov',
+    'displacement_amt', 'depth', 'max_drop_in_elevation', 'length_exposed_downslope', 'slip_preferred', 'slip_min',
+    'slip_max', 'horiz_sep_pref', 'horiz_sep_min', 'horiz_sep_max', 'vert_sep_pref', 'vert_sep_min', 'vertical_sep_max',
+    'slip_azimuth', 'heave_pref', 'heave_min', 'rupture_width_pref', 'rupture_width_min', 'rupture_width_max', 'notes'];
+
+  const MEASUREMENT_KEYS = {
+    group_fs5ba04: {
+      strike: 'strike',
+      dip_direction: 'azimuth_dip_dir',
+      dip: 'dip',
+      quality: 'meas_quality',
+    },
+  };
 
   // Relevant fields for quick-entry modal
   const survey = useForm.getSurvey(formName);
   const choices = useForm.getChoices(formName);
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
-
 
   useEffect(() => {
     console.log('UE AddEarthquakeModal []');
@@ -52,7 +64,11 @@ const AddEarthquakeModal = ({onPress}) => {
   }, []);
 
   const renderForm = (formProps) => {
-    const mainButtonsKeysRelevant = mainButtonsKeys.filter((k) => {
+    const mainButtonsKeysRelevant1 = mainButtonsKeys1.filter((k) => {
+      const field = survey.find(f => f.name === k);
+      return useForm.isRelevant(field, formProps.values);
+    });
+    const mainButtonsKeysRelevant2 = mainButtonsKeys2.filter((k) => {
       const field = survey.find(f => f.name === k);
       return useForm.isRelevant(field, formProps.values);
     });
@@ -61,14 +77,29 @@ const AddEarthquakeModal = ({onPress}) => {
       <>
         <LittleSpacer/>
         <MainButtons
-          mainKeys={mainButtonsKeysRelevant}
+          mainKeys={mainButtonsKeysRelevant1}
+          formName={formName}
+          setChoicesViewKey={setChoicesViewKey}
+          formProps={formProps}
+        />
+        {formProps.values.earthquake_feature === 'fault_rupture' && (
+          <MeasurementButtons
+            formProps={formProps}
+            measurementsKeys={MEASUREMENT_KEYS}
+            setMeasurementsGroupField={setMeasurementsGroupField}
+            setIsMeasurementsModalVisible={setIsMeasurementsModalVisible}
+            survey={survey}
+          />
+        )}
+        <MainButtons
+          mainKeys={mainButtonsKeysRelevant2}
           formName={formName}
           setChoicesViewKey={setChoicesViewKey}
           formProps={formProps}
         />
         <LittleSpacer/>
         <FormSlider
-          fieldKey={confidenceInFeatureIdKey}
+          fieldKey={confidenceInFeatureKey}
           formProps={formProps}
           survey={survey}
           choices={choices}
@@ -76,8 +107,16 @@ const AddEarthquakeModal = ({onPress}) => {
         />
         <LittleSpacer/>
         <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
+        {isMeasurementsModalVisible && (
+          <MeasurementModal
+            measurementsGroup={MEASUREMENT_KEYS[measurementsGroupField.name]}
+            measurementsGroupLabel={measurementsGroupField.label}
+            formName={formName}
+            formProps={formProps}
+            setIsMeasurementModalVisible={setIsMeasurementsModalVisible}
+          />
+        )}
       </>
-
     );
   };
 

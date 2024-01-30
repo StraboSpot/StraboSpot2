@@ -4,13 +4,13 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import {isEmpty, padWithLeadingZeros} from '../../../shared/Helpers';
-import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_TEXT_SIZE} from '../../../shared/styles.constants';
-import {COMPASS_TOGGLE_BUTTONS} from '../../compass/compass.constants';
-import {setCompassMeasurementTypes} from '../../compass/compass.slice';
-import {formStyles, useFormHook} from '../../form';
+import {formStyles, useFormHook} from '.';
+import {isEmpty, padWithLeadingZeros} from '../../shared/Helpers';
+import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
+import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
+import {setCompassMeasurementTypes} from '../compass/compass.slice';
 
-const ThreeDStructuresMeasurementsButtons = ({
+const MeasurementButtons = ({
                                                formProps,
                                                measurementsKeys,
                                                setIsMeasurementsModalVisible,
@@ -97,4 +97,4 @@ const ThreeDStructuresMeasurementsButtons = ({
   );
 };
 
-export default ThreeDStructuresMeasurementsButtons;
+export default MeasurementButtons;

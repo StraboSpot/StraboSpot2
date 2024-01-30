@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
 
-import {
-  FAULT_MEASUREMENTS_KEYS,
-  ThreeDStructuresMeasurementsButtons,
-  ThreeDStructuresMeasurementsModal,
-} from './measurements';
+import {FAULT_MEASUREMENTS_KEYS} from './threeDStructures.constants';
 import {Form, MainButtons, useFormHook} from '../form';
+import MeasurementButtons from '../form/MeasurementButtons';
+import MeasurementModal from '../form/MeasurementModal';
 
 const AddFault = (props) => {
   const useForm = useFormHook();
@@ -25,10 +23,10 @@ const AddFault = (props) => {
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
-    <React.Fragment>
+    <>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
-      <ThreeDStructuresMeasurementsButtons
+      <MeasurementButtons
         formProps={props.formProps}
         measurementsKeys={FAULT_MEASUREMENTS_KEYS}
         setMeasurementsGroupField={setFaultMeasurementsGroupField}
@@ -38,15 +36,15 @@ const AddFault = (props) => {
       <MainButtons {...{mainKeys: secondButtonKeys, ...props}}/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       {isFaultMeasurementsModalVisible && (
-        <ThreeDStructuresMeasurementsModal
+        <MeasurementModal
           measurementsGroup={FAULT_MEASUREMENTS_KEYS[faultMeasurementsGroupField.name]}
           measurementsGroupLabel={faultMeasurementsGroupField.label}
           formName={props.formName}
           formProps={props.formProps}
-          setIsThreeDStructuresMeasurementsModalVisible={setIsFaultMeasurementsModalVisible}
+          setIsMeasurementModalVisible={setIsFaultMeasurementsModalVisible}
         />
       )}
-    </React.Fragment>
+    </>
   );
 };
 

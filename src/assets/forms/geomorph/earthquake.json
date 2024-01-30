@@ -15,18 +15,9 @@
       "required": "true"
     },
     {
-      "type": "text",
-      "name": "references",
-      "label": "References",
-      "hint": "References to notebook entries and sketches, photo numbers, other geologic observations.",
-      "required": "false",
-      "appearance": "multiline"
-    },
-    {
       "type": "select_one du9xy31",
-      "name": "confidence_in_feature_id",
-      "label": "Confidence in Feature ID",
-      "hint": "Low - Unlikely related to primary tectonic rupture (e.g., shaking, triggered, gravity), Medium - Could either be primary tectonic or secondary rupture (triggered or shaking), High - Very likely related to tectonic rupture",
+      "name": "confidence_in_feature",
+      "label": "Confidence in Feature",
       "required": "false"
     },
     {
@@ -37,40 +28,7 @@
       "required": "false"
     },
     {
-      "type": "select_one ju3gq49",
-      "name": "slip_sense",
-      "label": "Slip Sense",
-      "required": "false",
-      "appearance": "minimal",
-      "relevant": "${earthquake_feature} = 'fault_rupture'"
-    },
-    {
-      "type": "select_one ob6dm82",
-      "name": "scarp_facing_dir",
-      "label": "Scarp Facing Direction",
-      "required": "false",
-      "appearance": "minimal",
-      "relevant": "${earthquake_feature} = 'fault_rupture'"
-    },
-    {
-      "type": "decimal",
-      "name": "local_fault_dip",
-      "label": "Local Fault Dip",
-      "hint": "0-90 degrees; right hand rule",
-      "required": "false",
-      "relevant": "${earthquake_feature} = 'fault_rupture'",
-      "guidance_hint": "0-90 degrees; right hand rule"
-    },
-    {
-      "type": "decimal",
-      "name": "local_fault_azimuth",
-      "label": "Local Fault Azimuth",
-      "hint": "0-360 degrees; right hand rule",
-      "required": "false",
-      "relevant": "${earthquake_feature} = 'fault_rupture'"
-    },
-    {
-      "type": "decimal",
+      "type": "integer",
       "name": "slip_azimuth",
       "label": "Slip Azimuth",
       "hint": "0-360 degrees",
@@ -86,20 +44,64 @@
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
     {
+      "type": "select_one nh2ay41",
+      "name": "fault_type",
+      "label": "Fault Type",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_fs5ba04",
+      "label": "Fault Orientation",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "integer",
+      "name": "strike",
+      "label": "Strike",
+      "hint": "Azimuth in degrees",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "integer",
+      "name": "azimuth_dip_dir",
+      "label": "Azimuth Dip Direction",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "integer",
+      "name": "dip",
+      "label": "Dip",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "select_one uf5yp07",
+      "name": "meas_quality",
+      "label": "Measurement Quality",
+      "hint": "How well was this plane exposed or measured?",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "select_one np86i16",
+      "name": "movement",
+      "label": "Movement",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'fault_rupture'"
+    },
+    {
       "type": "select_one hm18t55",
       "name": "vector_meas_confidence",
       "label": "Vector Measurement Confidence",
-      "hint": "Explain confidence if \"low\" or \"medium\" in Notes below",
       "required": "false",
-      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
-    },
-    {
-      "type": "text",
-      "name": "vector_meas_notes",
-      "label": "Vector Measurement Notes",
-      "hint": "Explain confidence if \"low\" or \"medium\"",
-      "required": "false",
-      "appearance": "multiline",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
     {
@@ -112,64 +114,64 @@
     },
     {
       "type": "decimal",
-      "name": "slip_preferred_cm",
-      "label": "Slip Preferred (cm)",
+      "name": "slip_preferred",
+      "label": "Slip Preferred (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
     {
       "type": "decimal",
-      "name": "slip_min_cm",
-      "label": "Slip Min (cm)",
+      "name": "slip_min",
+      "label": "Slip Minimum (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
     {
       "type": "decimal",
-      "name": "slip_max_cm",
-      "label": "Slip Max (cm)",
+      "name": "slip_max",
+      "label": "Slip Maximum  (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
     },
     {
       "type": "decimal",
-      "name": "horiz_separation_preferred_cm",
-      "label": "Horizontal Separation Preferred (cm)",
+      "name": "horiz_sep_pref",
+      "label": "Horizontal Separation Preferred (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
       "type": "decimal",
-      "name": "horiz_separation_min_cm",
-      "label": "Horizontal Separation Min (cm)",
+      "name": "horiz_sep_min",
+      "label": "Horizontal Separation Minimum (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
       "type": "decimal",
-      "name": "horiz_separation_max_cm",
-      "label": "Horizontal Separation Max (cm)",
+      "name": "horiz_sep_max",
+      "label": "Horizontal Separation Maximum (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
       "type": "decimal",
-      "name": "vert_separation_preferred",
-      "label": "Vertical Separation Preferred (cm)",
+      "name": "vert_sep_pref",
+      "label": "Vertical Separation Preferred (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
       "type": "decimal",
-      "name": "vert_separation_min_cm",
-      "label": "Vertical Separation Min (cm)",
+      "name": "vert_sep_min",
+      "label": "Vertical Separation Minimum (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
       "type": "decimal",
-      "name": "vertical_separation_max_cm",
-      "label": "Vertical Separation Max (cm)",
+      "name": "vertical_sep_max",
+      "label": "Vertical Separation Maximum (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
@@ -177,37 +179,27 @@
       "type": "select_one rb7mn64",
       "name": "slip_meas_confidence",
       "label": "Slip Measurement Confidence",
-      "hint": "Explain confidence if \"low\" or \"medium\" in Notes below",
       "required": "false",
-      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
-    },
-    {
-      "type": "text",
-      "name": "slip_meas_notes",
-      "label": "Slip Measurement Notes",
-      "hint": "Explain confidence if \"low\" or \"medium\"",
-      "required": "false",
-      "appearance": "multiline",
       "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'slip_components')"
     },
     {
       "type": "decimal",
-      "name": "heave_preferred_cm",
-      "label": "Heave Preferred (cm)",
+      "name": "heave_pref",
+      "label": "Heave Preferred (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
     {
       "type": "decimal",
-      "name": "heave_min_cm",
-      "label": "Heave Min (cm)",
+      "name": "heave_min",
+      "label": "Heave Min (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
     {
       "type": "decimal",
-      "name": "heave_max_cm",
-      "label": "Heave Max (cm)",
+      "name": "heave_max",
+      "label": "Heave Max (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture' and ${fault_slip_meas} != ''"
     },
@@ -218,25 +210,25 @@
       "hint": "What does the rupture look like at this location? (e.g. mole track, crack, en echelon fractures, etc.)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'",
-      "constraint": ". != ''"
+      "constraint": ". = ''"
     },
     {
       "type": "decimal",
-      "name": "rupture_width_preferred_m",
+      "name": "rupture_width_pref",
       "label": "Rupture Width Preferred (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
     {
       "type": "decimal",
-      "name": "rupture_width_min_m",
+      "name": "rupture_width_min",
       "label": "Rupture Width Min (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
     {
       "type": "decimal",
-      "name": "rupture_width_max_m",
+      "name": "rupture_width_max",
       "label": "Rupture Width Max (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'fault_rupture'"
@@ -250,41 +242,43 @@
     },
     {
       "type": "decimal",
-      "name": "diameter_m",
+      "name": "diameter",
       "label": "Diameter (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'liquefaction'"
     },
     {
       "type": "decimal",
-      "name": "height_of_material_m",
+      "name": "height_of_material",
       "label": "Height of Material (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'liquefaction'"
     },
     {
       "type": "decimal",
-      "name": "max_vert_movement_m",
+      "name": "max_vert_movement",
       "label": "Maximum Vertical Movement (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'liquefaction'"
     },
     {
+      "type": "select_one ub5fh32",
+      "name": "slide_type",
+      "label": "Slide Type",
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
+    },
+    {
       "type": "date",
       "name": "date_of_movement",
       "label": "Date of Movement",
-      "required": "false"
+      "required": "false",
+      "relevant": "${earthquake_feature} = 'slope_movement'"
     },
     {
       "type": "time",
       "name": "time_of_movement",
       "label": "Time of Movement",
-      "required": "false"
-    },
-    {
-      "type": "select_one ub5fh32",
-      "name": "slide_type",
-      "label": "Slide Type",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
@@ -304,43 +298,43 @@
     },
     {
       "type": "select_one jy2xk40",
-      "name": "slope_movement_area_affected",
+      "name": "area_affected",
       "label": "Area Affected (square miles)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
     {
       "type": "integer",
-      "name": "est_dir_of_slope_m",
-      "label": "Estimated Direction of Slope Movement",
+      "name": "dir_of_slope_mov",
+      "label": "Direction of Slope Movement",
       "hint": "0-360 degrees",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
     {
       "type": "integer",
-      "name": "displacement_amt_cm",
-      "label": "Displacement Amount (cm) ",
+      "name": "displacement_amt",
+      "label": "Displacement Amount (m) ",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
     {
       "type": "integer",
-      "name": "depth_m",
+      "name": "depth",
       "label": "Depth (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
     {
       "type": "integer",
-      "name": "max_drop_in_elevation_m",
+      "name": "max_drop_in_elevation",
       "label": "Max Drop in Elevation (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
     },
     {
       "type": "integer",
-      "name": "length_exposed_downslope_m",
+      "name": "length_exposed_downslope",
       "label": "Length Exposed Downslope (m)",
       "required": "false",
       "relevant": "${earthquake_feature} = 'slope_movement'"
@@ -423,18 +417,28 @@
     },
     {
       "list_name": "du9xy31",
-      "name": "low",
-      "label": "Low"
+      "name": "5",
+      "label": "5 – High"
     },
     {
       "list_name": "du9xy31",
-      "name": "medium",
-      "label": "Medium"
+      "name": "4",
+      "label": "4"
     },
     {
       "list_name": "du9xy31",
-      "name": "high",
-      "label": "High"
+      "name": "3",
+      "label": "3"
+    },
+    {
+      "list_name": "du9xy31",
+      "name": "2",
+      "label": "2"
+    },
+    {
+      "list_name": "du9xy31",
+      "name": "1",
+      "label": "1 – Low"
     },
     {
       "list_name": "oi7js36",
@@ -452,91 +456,6 @@
       "label": "Estimate"
     },
     {
-      "list_name": "ju3gq49",
-      "name": "normal",
-      "label": "Normal"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "reverse",
-      "label": "Reverse"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "right_lateral",
-      "label": "Right Lateral"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "left_lateral",
-      "label": "Left Lateral"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "right_lateral_normal",
-      "label": "Right Lateral Normal"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "left_lateral_normal",
-      "label": "Left Lateral Normal"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "right_lateral_reverse",
-      "label": "Right Lateral Reverse"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "left_lateral_reverse",
-      "label": "Left Lateral Reverse"
-    },
-    {
-      "list_name": "ju3gq49",
-      "name": "reverse_2",
-      "label": "Reverse"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "north",
-      "label": "North"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "south",
-      "label": "South"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "east",
-      "label": "East"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "west",
-      "label": "West"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "northeast",
-      "label": "Northeast"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "southeast",
-      "label": "Southeast"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "northwest",
-      "label": "Northwest"
-    },
-    {
-      "list_name": "ob6dm82",
-      "name": "southwest",
-      "label": "Southwest"
-    },
-    {
       "list_name": "rz2qw00",
       "name": "vector_measurement",
       "label": "Vector Measurement"
@@ -545,6 +464,196 @@
       "list_name": "rz2qw00",
       "name": "slip_components",
       "label": "Slip Components"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "dextral",
+      "label": "dextral strik-slip"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "sinsitral",
+      "label": "sinistral strike-slip"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "normal",
+      "label": "normal"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "reverse",
+      "label": "reverse"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "thrust",
+      "label": "thrust"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "low_angle_normal",
+      "label": "low-angle normal"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "dextral_reverse",
+      "label": "dextral reverse"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "normal_reverse",
+      "label": "normal reverse"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "sinistral_reverse_1",
+      "label": "sinistral reveres"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "sinistral_normal_1",
+      "label": "sinistral normal"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "high_angle_1",
+      "label": "high-angle"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "low_angle_1",
+      "label": "low-angle"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "scissor_1",
+      "label": "scissor"
+    },
+    {
+      "list_name": "nh2ay41",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "uf5yp07",
+      "name": "5",
+      "label": "5 - excellent"
+    },
+    {
+      "list_name": "uf5yp07",
+      "name": "4",
+      "label": "4"
+    },
+    {
+      "list_name": "uf5yp07",
+      "name": "3",
+      "label": "3"
+    },
+    {
+      "list_name": "uf5yp07",
+      "name": "2",
+      "label": "2"
+    },
+    {
+      "list_name": "uf5yp07",
+      "name": "1",
+      "label": "1 - poor"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "n_side_up",
+      "label": "N side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "ne_side_up",
+      "label": "NE side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "e_side_up",
+      "label": "E side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "se_side_up",
+      "label": "SE side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "s_side_up",
+      "label": "S side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "sw_side_up",
+      "label": "SW side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "w_side_up",
+      "label": "W side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "nw_side_up",
+      "label": "NW side up"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_n",
+      "label": "top to N"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_ne",
+      "label": "top to NE"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_e",
+      "label": "top to E"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_se",
+      "label": "tope to SE"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_s",
+      "label": "top to S"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_sw",
+      "label": "top to SW"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_w",
+      "label": "top to W"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "top_to_nw",
+      "label": "top to NW"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "right_lateral",
+      "label": "right-lateral"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "left_lateral",
+      "label": "left-lateral"
+    },
+    {
+      "list_name": "np86i16",
+      "name": "other",
+      "label": "other"
     },
     {
       "list_name": "hm18t55",

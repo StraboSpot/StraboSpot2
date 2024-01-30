@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
 
 import {FoldGeometryButtons} from './fold-geometry';
-import {
-  FOLD_MEASUREMENTS_KEYS,
-  ThreeDStructuresMeasurementsButtons,
-  ThreeDStructuresMeasurementsModal,
-} from './measurements';
+import {FOLD_MEASUREMENTS_KEYS} from './threeDStructures.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
+import MeasurementButtons from '../form/MeasurementButtons';
+import MeasurementModal from '../form/MeasurementModal';
 
 const AddFold = (props) => {
   const useForm = useFormHook();
@@ -28,10 +26,10 @@ const AddFold = (props) => {
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
-    <React.Fragment>
+    <>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
-      <ThreeDStructuresMeasurementsButtons
+      <MeasurementButtons
         formProps={props.formProps}
         measurementsKeys={FOLD_MEASUREMENTS_KEYS}
         setMeasurementsGroupField={setFoldMeasurementsGroupField}
@@ -51,15 +49,15 @@ const AddFold = (props) => {
       <LittleSpacer/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       {isFoldMeasurementsModalVisible && (
-        <ThreeDStructuresMeasurementsModal
+        <MeasurementModal
           measurementsGroup={FOLD_MEASUREMENTS_KEYS[foldMeasurementsGroupField.name]}
           measurementsGroupLabel={foldMeasurementsGroupField.label}
           formName={props.formName}
           formProps={props.formProps}
-          setIsThreeDStructuresMeasurementsModalVisible={setIsFoldMeasurementsModalVisible}
+          setIsMeasurementModalVisible={setIsFoldMeasurementsModalVisible}
         />
       )}
-    </React.Fragment>
+    </>
   );
 };
 

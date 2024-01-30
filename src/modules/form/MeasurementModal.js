@@ -5,18 +5,18 @@ import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 import {useSelector} from 'react-redux';
 
-import commonStyles from '../../../shared/common.styles';
-import {isEmpty} from '../../../shared/Helpers';
-import {SMALL_SCREEN, WARNING_COLOR} from '../../../shared/styles.constants';
-import ModalHeader from '../../../shared/ui/modal/ModalHeader';
-import SliderBar from '../../../shared/ui/SliderBar';
-import Compass from '../../compass/Compass';
-import compassStyles from '../../compass/compass.styles';
-import ManualMeasurement from '../../compass/ManualMeasurement';
-import {formStyles, useFormHook} from '../../form';
-import overlayStyles from '../../home/overlays/overlay.styles';
+import {formStyles, useFormHook} from '.';
+import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN, WARNING_COLOR} from '../../shared/styles.constants';
+import ModalHeader from '../../shared/ui/modal/ModalHeader';
+import SliderBar from '../../shared/ui/SliderBar';
+import Compass from '../compass/Compass';
+import compassStyles from '../compass/compass.styles';
+import ManualMeasurement from '../compass/ManualMeasurement';
+import overlayStyles from '../home/overlays/overlay.styles';
 
-const ThreeDStructuresMeasurementsModal = (props) => {
+const MeasurementModal = (props) => {
   const {height} = useWindowDimensions();
 
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
@@ -29,7 +29,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
   const addAttributeMeasurement = (data) => {
     const sliderQuality = sliderValue ? {quality: sliderValue.toString()} : undefined;
     setMeasurements({...data, ...sliderQuality});
-    props.setIsThreeDStructuresMeasurementsModalVisible(false);
+    props.setIsMeasurementModalVisible(false);
   };
 
   const setMeasurements = (compassData) => {
@@ -40,7 +40,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
         if (isEmpty(compassData) && updatedFormData[k]) delete updatedFormData[k];
       });
       props.formProps.setValues(updatedFormData);
-      props.setIsThreeDStructuresMeasurementsModalVisible(false);
+      props.setIsMeasurementModalVisible(false);
     }
     else {
       Object.entries(props.measurementsGroup).forEach(([compassFieldKey, foldFieldKey]) => {
@@ -73,7 +73,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
       <ModalHeader
         buttonTitleRight={'Done'}
         title={props.measurementsGroupLabel}
-        closeModal={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
+        closeModal={() => props.setIsMeasurementModalVisible(false)}
       />
       {Platform.OS === 'ios' && (
         <Button
@@ -96,7 +96,7 @@ const ThreeDStructuresMeasurementsModal = (props) => {
         <>
           <Compass
             setAttributeMeasurements={setMeasurements}
-            closeCompass={() => props.setIsThreeDStructuresMeasurementsModalVisible(false)}
+            closeCompass={() => props.setIsMeasurementModalVisible(false)}
             sliderValue={sliderValue}
           />
           <View style={compassStyles.sliderContainer}>
@@ -122,4 +122,4 @@ const ThreeDStructuresMeasurementsModal = (props) => {
   );
 };
 
-export default ThreeDStructuresMeasurementsModal;
+export default MeasurementModal;

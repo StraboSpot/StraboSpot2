@@ -1,13 +1,10 @@
 import React, {useState} from 'react';
 
-import {
-  BOUDINAGE_MEASUREMENTS_KEYS,
-  MULLION_MEASUREMENTS_KEYS,
-  ThreeDStructuresMeasurementsButtons,
-  ThreeDStructuresMeasurementsModal,
-} from './measurements';
+import {BOUDINAGE_MEASUREMENTS_KEYS, MULLION_MEASUREMENTS_KEYS} from './threeDStructures.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import {Form, MainButtons} from '../form';
+import MeasurementButtons from '../form/MeasurementButtons';
+import MeasurementModal from '../form/MeasurementModal';
 
 const AddOther = (props) => {
   const [isOtherMeasurementsModalVisible, setIsOtherMeasurementsModalVisible] = useState(false);
@@ -33,7 +30,7 @@ const AddOther = (props) => {
   const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
 
   return (
-    <React.Fragment>
+    <>
       <Form {...{surveyFragment: labelField, ...props.formProps}}/>
       <MainButtons
         mainKeys={firstKeys}
@@ -42,14 +39,14 @@ const AddOther = (props) => {
         setChoicesViewKey={props.setChoicesViewKey}
       />
       {props.formProps.values.feature_type === 'boudinage' && (
-        <React.Fragment>
+        <>
           <MainButtons
             mainKeys={boudinageFirstKeys}
             formName={props.formName}
             formProps={props.formProps}
             setChoicesViewKey={props.setChoicesViewKey}
           />
-          <ThreeDStructuresMeasurementsButtons
+          <MeasurementButtons
             formProps={props.formProps}
             measurementsKeys={BOUDINAGE_MEASUREMENTS_KEYS}
             setMeasurementsGroupField={setOtherMeasurementsGroupField}
@@ -58,25 +55,25 @@ const AddOther = (props) => {
           />
           <Form {...{surveyFragment: boudinageKeysFields, ...props.formProps}}/>
           {isOtherMeasurementsModalVisible && (
-            <ThreeDStructuresMeasurementsModal
+            <MeasurementModal
               measurementsGroup={BOUDINAGE_MEASUREMENTS_KEYS[otherMeasurementsGroupField.name]}
               measurementsGroupLabel={otherMeasurementsGroupField.label}
               formName={props.formName}
               formProps={props.formProps}
-              setIsThreeDStructuresMeasurementsModalVisible={setIsOtherMeasurementsModalVisible}
+              setIsMeasurementModalVisible={setIsOtherMeasurementsModalVisible}
             />
           )}
-        </React.Fragment>
+        </>
       )}
       {props.formProps.values.feature_type === 'mullion' && (
-        <React.Fragment>
+        <>
           <MainButtons
             mainKeys={mullionFirstKeys}
             formName={props.formName}
             formProps={props.formProps}
             setChoicesViewKey={props.setChoicesViewKey}
           />
-          <ThreeDStructuresMeasurementsButtons
+          <MeasurementButtons
             formProps={props.formProps}
             measurementsKeys={MULLION_MEASUREMENTS_KEYS}
             setMeasurementsGroupField={setOtherMeasurementsGroupField}
@@ -85,22 +82,22 @@ const AddOther = (props) => {
           />
           <Form {...{surveyFragment: mullionKeysFields, ...props.formProps}}/>
           {isOtherMeasurementsModalVisible && (
-            <ThreeDStructuresMeasurementsModal
+            <MeasurementModal
               measurementsGroup={MULLION_MEASUREMENTS_KEYS[otherMeasurementsGroupField.name]}
               measurementsGroupLabel={otherMeasurementsGroupField.label}
               formName={props.formName}
               formProps={props.formProps}
-              setIsThreeDStructuresMeasurementsModalVisible={setIsOtherMeasurementsModalVisible}
+              setIsMeasurementModalVisible={setIsOtherMeasurementsModalVisible}
             />
           )}
-        </React.Fragment>
+        </>
       )}
       {props.formProps.values.feature_type === 'lobate_cuspate' && (
         <Form {...{surveyFragment: lobateCuspateKeysFields, ...props.formProps}}/>
       )}
       <LittleSpacer/>
       <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
-    </React.Fragment>
+    </>
   );
 };
 
