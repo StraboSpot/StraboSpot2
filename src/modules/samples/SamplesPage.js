@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import SamplesList from './SamplesList';
 import {isEmpty} from '../../shared/Helpers';
@@ -35,11 +35,9 @@ const SamplesPage = ({page}) => {
   }, [selectedAttributes, spot]);
 
   const editSample = (sample) => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedSample(sample);
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedSample(sample);
+    dispatch(setModalVisible({modal: null}));
   };
 
   const renderSamplesDetail = () => {
@@ -55,13 +53,13 @@ const SamplesPage = ({page}) => {
   const renderSamplesMain = () => {
     return (
       <View style={{flex: 1}}>
-        <React.Fragment>
+        <>
           <ReturnToOverviewButton/>
           <SectionDividerWithRightButton
             dividerText={page.label}
             onPress={() => dispatch(setModalVisible({modal: page.key}))}
           />
-        </React.Fragment>
+        </>
         <SamplesList
           onPress={editSample}
           page={page}
@@ -70,11 +68,7 @@ const SamplesPage = ({page}) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderSamplesDetail() : renderSamplesMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderSamplesDetail() : renderSamplesMain();
 };
 
 export default SamplesPage;

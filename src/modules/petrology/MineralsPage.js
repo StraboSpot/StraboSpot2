@@ -3,7 +3,7 @@ import {FlatList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import usePetrologyHook from './usePetrology';
 import commonStyles from '../../shared/common.styles';
@@ -72,11 +72,9 @@ const MineralsPage = ({page}) => {
   };
 
   const editMineral = (mineral) => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedMineral(mineral);
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedMineral(mineral);
+    dispatch(setModalVisible({modal: null}));
   };
 
   const getSpotsWithMinerals = () => {
@@ -117,7 +115,7 @@ const MineralsPage = ({page}) => {
     const mineralDataSorted = mineralData.slice().sort(
       (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)));
     return (
-      <React.Fragment>
+      <>
         <SectionDividerWithRightButton
           dividerText={page.label}
           onPress={addMineral}
@@ -129,7 +127,7 @@ const MineralsPage = ({page}) => {
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'There are no minerals at this Spot.'}/>}
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -154,11 +152,7 @@ const MineralsPage = ({page}) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderMineralDetail() : renderMineralsMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderMineralDetail() : renderMineralsMain();
 };
 
 export default MineralsPage;

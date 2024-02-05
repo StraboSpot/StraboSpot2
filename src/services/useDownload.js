@@ -1,6 +1,6 @@
 import {Platform} from 'react-native';
 
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
@@ -50,13 +50,10 @@ const useDownload = () => {
   const useDevice = useDeviceHook();
 
   const destroyOldProject = () => {
-    batch(() => {
-      // dispatch(clearedProject());
-      dispatch(clearedSpots());
-      dispatch(clearedDatasets());
-      dispatch(clearedMaps());
-    });
-    console.log('Destroy batch complete');
+    dispatch(clearedSpots());
+    dispatch(clearedDatasets());
+    dispatch(clearedMaps());
+    console.log('Destroy complete');
   };
 
   const downloadDatasets = async (selectedProject) => {
@@ -161,27 +158,23 @@ const useDownload = () => {
 
   const initializeDownload = async (selectedProject) => {
     const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
-    batch(() => {
-      if (isProjectLoadSelectionModalVisible) dispatch(setProjectLoadSelectionModalVisible(false));
-      dispatch(setStatusMessageModalTitle(project.name));
-      dispatch(clearedStatusMessages());
-      if (Platform.OS !== 'web') dispatch(setStatusMessagesModalVisible(true));
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
-    });
+    if (isProjectLoadSelectionModalVisible) dispatch(setProjectLoadSelectionModalVisible(false));
+    dispatch(setStatusMessageModalTitle(project.name));
+    dispatch(clearedStatusMessages());
+    if (Platform.OS !== 'web') dispatch(setStatusMessagesModalVisible(true));
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
     try {
       await downloadProject(selectedProject);
       await downloadDatasets(selectedProject);
       console.log('Download Complete! Spots Downloaded!');
-      batch(() => {
-        dispatch(addedStatusMessage('------------------'));
-        dispatch(addedSpotsFromServer(spotsToSave));
-        dispatch(addedDatasets(datasetsObjToSave));
-        dispatch(addedCustomMapsFromBackup(customMapsToSave));
-        dispatch(addedStatusMessage('Project Loaded!'));
-        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      });
+      dispatch(addedStatusMessage('------------------'));
+      dispatch(addedSpotsFromServer(spotsToSave));
+      dispatch(addedDatasets(datasetsObjToSave));
+      dispatch(addedCustomMapsFromBackup(customMapsToSave));
+      dispatch(addedStatusMessage('Project Loaded!'));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
       console.error('Error Initializing Download.', err);

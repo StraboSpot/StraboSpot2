@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {ButtonGroup} from 'react-native-elements';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {INTERPRETATIONS_SUBPAGES, LITHOLOGY_SUBPAGES, STRUCTURE_SUBPAGES} from './sed.constants';
 import {getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
@@ -38,11 +38,9 @@ const BasicSedPage = ({page}) => {
   }, [selectedAttributes, spot]);
 
   const addAttribute = () => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedAttribute({id: getNewUUID()});
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedAttribute({id: getNewUUID()});
+    dispatch(setModalVisible({modal: null}));
   };
 
   const editAttribute = (attribute, i) => {
@@ -53,11 +51,9 @@ const BasicSedPage = ({page}) => {
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedAttribute(attribute);
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedAttribute(attribute);
+    dispatch(setModalVisible({modal: null}));
   };
 
   const renderAttributeDetail = () => {
@@ -67,7 +63,7 @@ const BasicSedPage = ({page}) => {
           : undefined;
     if (subpages) {
       return (
-        <React.Fragment>
+        <>
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
             onPress={i => setSelectedTypeIndex(i)}
@@ -83,7 +79,7 @@ const BasicSedPage = ({page}) => {
             page={{...page, key: Object.values(subpages)[selectedTypeIndex]}}
             selectedFeature={selectedAttribute}
           />
-        </React.Fragment>
+        </>
       );
     }
     else {
@@ -124,11 +120,7 @@ const BasicSedPage = ({page}) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderAttributeDetail() : renderAttributesMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderAttributeDetail() : renderAttributesMain();
 };
 
 export default BasicSedPage;

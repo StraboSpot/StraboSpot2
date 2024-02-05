@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -74,11 +74,9 @@ const BeddingPage = ({page}) => {
           {
             text: 'Yes', onPress: async () => {
               await useSed.saveSedFeature(page.key, spot, beddingSharedRef.current);
-              batch(() => {
-                setIsDetailView(true);
-                setSelectedAttribute({id: getNewUUID()});
-                dispatch(setModalVisible({modal: null}));
-              });
+              setIsDetailView(true);
+              setSelectedAttribute({id: getNewUUID()});
+              dispatch(setModalVisible({modal: null}));
             },
           },
         ],
@@ -86,11 +84,9 @@ const BeddingPage = ({page}) => {
       );
     }
     else {
-      batch(() => {
-        setIsDetailView(true);
-        setSelectedAttribute({id: getNewUUID()});
-        dispatch(setModalVisible({modal: null}));
-      });
+      setIsDetailView(true);
+      setSelectedAttribute({id: getNewUUID()});
+      dispatch(setModalVisible({modal: null}));
     }
   };
 
@@ -102,23 +98,19 @@ const BeddingPage = ({page}) => {
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
     }
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedAttribute(attribute);
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedAttribute(attribute);
+    dispatch(setModalVisible({modal: null}));
   };
 
   const renderAttributeDetail = () => {
     return (
-      <React.Fragment>
-        <BasicPageDetail
-          closeDetailView={() => setIsDetailView(false)}
-          groupKey={'sed'}
-          page={page}
-          selectedFeature={selectedAttribute}
-        />
-      </React.Fragment>
+      <BasicPageDetail
+        closeDetailView={() => setIsDetailView(false)}
+        groupKey={'sed'}
+        page={page}
+        selectedFeature={selectedAttribute}
+      />
     );
   };
 
@@ -186,11 +178,7 @@ const BeddingPage = ({page}) => {
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderAttributeDetail() : renderAttributesMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderAttributeDetail() : renderAttributesMain();
 };
 
 export default BeddingPage;

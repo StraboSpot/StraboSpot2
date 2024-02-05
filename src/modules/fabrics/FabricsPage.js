@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {SectionList, View} from 'react-native';
 
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import FabricListItem from './FabricListItem';
 import {isEmpty} from '../../shared/Helpers';
@@ -50,11 +50,9 @@ const FabricsPage = ({page}) => {
   };
 
   const editFabric = (fabric) => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedFabric(fabric);
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedFabric(fabric);
+    dispatch(setModalVisible({modal: null}));
   };
 
   const renderFabricSections = () => {
@@ -116,11 +114,7 @@ const FabricsPage = ({page}) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderFabricDetail() : renderFabricsMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderFabricDetail() : renderFabricsMain();
 };
 
 export default FabricsPage;

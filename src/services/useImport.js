@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 
 import {unzip} from 'react-native-zip-archive';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
@@ -130,13 +130,11 @@ const useImport = () => {
       console.log('fileCount', progress);
       dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
       dispatch(removedLastStatusMessage());
-      batch(() => {
-        dispatch(addedStatusMessage('---------------------'));
-        dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
-        dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
-        dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
-        dispatch(addedStatusMessage('Finished moving tiles'));
-      });
+      dispatch(addedStatusMessage('---------------------'));
+      dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
+      dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
+      dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+      dispatch(addedStatusMessage('Finished moving tiles'));
     }
     else {
       dispatch(removedLastStatusMessage());
@@ -145,12 +143,10 @@ const useImport = () => {
   };
 
   const destroyOldProject = () => {
-    batch(() => {
-      dispatch(clearedSpots());
-      dispatch(clearedDatasets());
-      dispatch(clearedMaps());
-    });
-    console.log('Destroy batch complete');
+    dispatch(clearedSpots());
+    dispatch(clearedDatasets());
+    dispatch(clearedMaps());
+    console.log('Destroy complete');
   };
 
   const loadProjectFromDevice = async (selectedProject, isExternal) => {
@@ -255,12 +251,10 @@ const useImport = () => {
     }
     catch (err) {
       console.error('Error reading JSON file', err);
-      batch(() => {
-        dispatch(setStatusMessagesModalVisible(false));
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Project Not Found'));
-        dispatch(setErrorMessagesModalVisible(true));
-      });
+      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Project Not Found'));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 

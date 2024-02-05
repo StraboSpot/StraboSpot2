@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { SectionList, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import MeasurementDetail from './MeasurementDetail';
 import MeasurementItem from './MeasurementItem';
@@ -103,11 +103,9 @@ const MeasurementsPage = ({page}) => {
   };
 
   const editMeasurement = (measurements) => {
-    batch(() => {
       setIsDetailView(true);
       dispatch(setSelectedAttributes(measurements));
       if (measurements.length > 1) dispatch(setModalVisible({modal: null}));
-    });
   };
 
   const getIdsOfSelected = () => {
@@ -182,7 +180,7 @@ const MeasurementsPage = ({page}) => {
           )}
           {!multiSelectMode && (
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <React.Fragment>
+              <>
                 <Button
                   disabled={data.length < 1 || isMultipleFeaturesTaggingEnabled}
                   titleStyle={styles.measurementsSectionDividerButtonText}
@@ -197,7 +195,7 @@ const MeasurementsPage = ({page}) => {
                   type={'clear'}
                   onPress={() => onSelectingStart(sectionType)}
                 />
-              </React.Fragment>
+              </>
               {!modalVisible && (
                 <Button
                   icon={<Icon name={'add'} size={30} style={{paddingRight: 10, paddingLeft: 10}} color={PRIMARY_ACCENT_COLOR}/>}
@@ -271,11 +269,7 @@ const MeasurementsPage = ({page}) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderMeasurementDetail() : renderMeasurementsMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderMeasurementDetail() : renderMeasurementsMain();
 };
 
 export default MeasurementsPage;

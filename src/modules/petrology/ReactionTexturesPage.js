@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import usePetrologyHook from './usePetrology';
 import commonStyles from '../../shared/common.styles';
@@ -46,11 +46,9 @@ const ReactionTexturesPage = ({page}) => {
   };
 
   const editReaction = (reaction) => {
-    batch(() => {
-      setIsDetailView(true);
-      setSelectedReaction(reaction);
-      dispatch(setModalVisible({modal: null}));
-    });
+    setIsDetailView(true);
+    setSelectedReaction(reaction);
+    dispatch(setModalVisible({modal: null}));
   };
 
   const getExistingMineralsText = () => {
@@ -106,11 +104,7 @@ const ReactionTexturesPage = ({page}) => {
     );
   };
 
-  return (
-    <React.Fragment>
-      {isDetailView ? renderReactionDetail() : renderReactionsMain()}
-    </React.Fragment>
-  );
+  return isDetailView ? renderReactionDetail() : renderReactionsMain();
 };
 
 export default ReactionTexturesPage;

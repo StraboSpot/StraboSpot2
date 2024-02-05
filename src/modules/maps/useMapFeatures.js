@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import * as turf from '@turf/turf';
 import moment from 'moment';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {
   addedStatusMessage,
@@ -192,18 +192,14 @@ const useMapFeatures = () => {
 
     if (hasData) {
       Clipboard.setString(out);
-      batch(() => {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Success!\n\nData has been copied to clipboard.'));
-        dispatch(setStatusMessagesModalVisible(true));
-      });
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Success!\n\nData has been copied to clipboard.'));
+      dispatch(setStatusMessagesModalVisible(true));
     }
     else {
-      batch(() => {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage('Error!\n\nYour selected spots contained no valid stereonet data.'));
-        dispatch(setErrorMessagesModalVisible(true));
-      });
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Error!\n\nYour selected spots contained no valid stereonet data.'));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 

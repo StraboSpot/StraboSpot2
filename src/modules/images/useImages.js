@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {useToast} from 'react-native-toast-notifications';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
@@ -46,12 +46,10 @@ const useImages = () => {
   const deleteImage = async (imageId, spotWithImage) => {
     const spotsOnImage = Object.values(spots).filter(spot => spot.properties.image_basemap === imageId);
     if (spotsOnImage && spotsOnImage.length >= 1) {
-      batch(() => {
-        dispatch(clearedStatusMessages());
-        dispatch(
-          addedStatusMessage('Image Basemap contains Spots! \n\nDelete the spots, before trying to delete the image'));
-        dispatch(setErrorMessagesModalVisible(true));
-      });
+      dispatch(clearedStatusMessages());
+      dispatch(
+        addedStatusMessage('Image Basemap contains Spots! \n\nDelete the spots, before trying to delete the image'));
+      dispatch(setErrorMessagesModalVisible(true));
       return false;
     }
     else if (spotWithImage) {
@@ -69,11 +67,9 @@ const useImages = () => {
       return true;
     }
     else {
-      batch(() => {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage(`There was an error deleting image ${imageId}`));
-        dispatch(setErrorMessagesModalVisible(true));
-      });
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(`There was an error deleting image ${imageId}`));
+      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 
@@ -138,11 +134,9 @@ const useImages = () => {
     console.log('Pressed image basemap:', image);
     if (Platform.OS === 'web') {
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-      batch(() => {
-        dispatch(clearedSelectedSpots());
-        dispatch(setCurrentImageBasemap(image));
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-      });
+      dispatch(clearedSelectedSpots());
+      dispatch(setCurrentImageBasemap(image));
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     else {
       doesImageExistOnDevice(image.id)
@@ -282,12 +276,10 @@ const useImages = () => {
     }
     catch (err) {
       console.error(`Error Taking picture ${err}`);
-      batch(() => {
-        dispatch(clearedStatusMessages());
-        dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
-        dispatch(setErrorMessagesModalVisible(true));
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-      });
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
+      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
 
@@ -305,12 +297,8 @@ const useImages = () => {
           buttonPositive: 'OK',
         },
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
-      }
-      else {
-        console.log('Camera permission denied');
-      }
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) console.log('You can use the camera');
+      else console.log('Camera permission denied');
     }
     catch (err) {
       console.warn(err);
@@ -444,7 +432,7 @@ const useImages = () => {
     setAnnotation: setAnnotation,
     setImageHeightAndWidth: setImageHeightAndWidth,
     takePicture: takePicture,
-  }; //TODO: remove array and just call object;
+  };
 };
 
 export default useImages;

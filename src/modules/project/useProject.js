@@ -1,5 +1,5 @@
 import {useToast} from 'react-native-toast-notifications';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import * as ProjectActions from './project.constants';
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
@@ -140,12 +140,10 @@ const useProject = () => {
   };
 
   const destroyOldProject = () => {
-    batch(() => {
-      dispatch(clearedSpots());
-      dispatch(clearedDatasets());
-      dispatch(clearedMaps());
-    });
-    console.log('Destroy batch complete');
+    dispatch(clearedSpots());
+    dispatch(clearedDatasets());
+    dispatch(clearedMaps());
+    console.log('Destroy complete');
   };
 
   const doesDeviceBackupDirExist = async (subDirectory) => {

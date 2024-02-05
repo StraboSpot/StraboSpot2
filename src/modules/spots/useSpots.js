@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react-native';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
 import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
@@ -44,7 +44,9 @@ const useSpots = () => {
         + ' before deleting.';
     }
     if (spotToDelete.properties?.sed?.strat_section) return 'Remove the strat section from this Spot before deleting.';
-    if (!isEmpty(spotToDelete.properties?.images)) return `Remove all ${(spotToDelete.properties.images).length} images from this Spot before deleting.`;
+    if (!isEmpty(spotToDelete.properties?.images)) {
+      return `Remove all ${(spotToDelete.properties.images).length} images from this Spot before deleting.`;
+    }
     //var childrenSpots = getChildrenGenerationsSpots(spotToDelete, 1)[0];
     // Get only children that are mapped on an image basemap or strat section which is
     // different from the image basemap or strat section of the Spot being deleted
@@ -132,11 +134,9 @@ const useSpots = () => {
     if (isEmpty(currentDataset)) {
       alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
       currentDataset = useProject.createDataset();
-      batch(() => {
-        dispatch(addedDataset(currentDataset));
-        dispatch(setActiveDatasets({bool: true, dataset: currentDataset.id}));
-        dispatch(setSelectedDataset(currentDataset.id));
-      });
+      dispatch(addedDataset(currentDataset));
+      dispatch(setActiveDatasets({bool: true, dataset: currentDataset.id}));
+      dispatch(setSelectedDataset(currentDataset.id));
     }
     console.log('Active Dataset', currentDataset);
     dispatch(addedNewSpotIdToDataset({datasetId: currentDataset.id, spotId: newSpot.properties.id}));
@@ -375,10 +375,6 @@ const useSpots = () => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
   };
 
-  const saveSpot = () => {
-
-  };
-
   return {
     checkIsSafeDelete: checkIsSafeDelete,
     copySpot: copySpot,
@@ -405,7 +401,6 @@ const useSpots = () => {
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
     isStratInterval: isStratInterval,
-    saveSpot: saveSpot,
   };
 };
 
