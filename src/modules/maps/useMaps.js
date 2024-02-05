@@ -367,12 +367,15 @@ const useMaps = (mapRef) => {
 
     // Get a bounding box for a pressed point on screen [top, right, bottom, left]
     const getBoundingBox = () => {
+      const pixelRatio = PixelRatio.get();
       const r = 15;
       const maxX = x + r;
       const minX = x - r;
       const maxY = y + r;
       const minY = y - r;
-      return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]] : [maxY, maxX, minY, minX];
+      return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]]
+        : Platform.OS === 'android' ? [maxY * pixelRatio, maxX * pixelRatio, minY * pixelRatio, minX * pixelRatio]
+          : [maxY, maxX, minY, minX];
     };
 
     // Get all the features in the bounding box
@@ -380,20 +383,6 @@ const useMaps = (mapRef) => {
     const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
       : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
     let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
-
-    // ToDo: In RNMapbox v10.0.3 queryRenderedFeaturesInRect is returning all features in the visible map bounds for
-    //  Android only. Check to see if queryRenderedFeaturesInRect is fixed for Android with updated RNMapbox versions
-    // Android fix for queryRenderedFeaturesInRect returning all features in view
-    // Create a polygon from the bounding box and get features that intersect it
-    if (Platform.OS === 'android') {
-      const turfBbox = bbox.slice().reverse(); //turf bbox is minX, minY, maxX, maxY
-      const polyBbox = turf.bboxPolygon(turfBbox);
-      const geoPolyBbox = await Promise.all(
-        polyBbox.geometry.coordinates[0].map(async c => await mapRef.current.getCoordinateFromView(c)));
-      const poly = turf.polygon([geoPolyBbox]);
-      nearFeatures = nearFeaturesCollection.features.reduce(
-        (acc, nearFeature) => turf.booleanIntersects(nearFeature, poly) ? [...acc, nearFeature] : acc, []);
-    }
     if (nearFeatures.length > 0) console.log('Near features:', nearFeatures);
 
     // If more than one near feature is found, return a random one (user needs to zoom in if too many features found)
