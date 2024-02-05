@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {configureStore} from '@reduxjs/toolkit';
-import {combineReducers} from 'redux';
+import {configureStore, combineReducers} from '@reduxjs/toolkit';
 import {createLogger} from 'redux-logger';
 import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
 
