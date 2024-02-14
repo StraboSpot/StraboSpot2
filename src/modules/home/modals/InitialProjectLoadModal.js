@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useDeviceHook from '../../../services/useDevice';
 import {REDUX} from '../../../shared/app.constants';
 import commonStyles from '../../../shared/common.styles';
-import {isEmpty} from '../../../shared/Helpers';
+import {isEmpty, truncateText} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import Spacer from '../../../shared/ui/Spacer';
 import ImportProjectFromZip from '../../project/ImportProjectFromZip';
@@ -241,15 +241,16 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
 
   const renderUserProfile = () => {
     return (
-      <View style={{flexDirection: 'row', padding: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
+      <View style={userStyles.initialProjectLoadProfileContainer}>
         {user.name && <Avatar
           source={user.image && {uri: user.image}}
           title={useUserProfile.getInitials()}
           titleStyle={userStyles.avatarPlaceholderTitleStyle}
           size={80} rounded
         />}
-        <View>
-          <Text style={{fontSize: 22}}>Hello, {displayName}!</Text>
+        <View style={userStyles.initialProjectLoadProfileHeaderContainer}>
+          <Text style={userStyles.initialProjectLoadProfileHeaderText}>Hello, {displayName}!</Text>
+          {user.email &&<Text style={userStyles.initialProjectLoadProfileSubHeaderText}>Signed in as {truncateText(user.email, 15)}</Text>}
           <Button
             title={user.name ? `Not ${user.name}?` : 'Sign in?'}
             type={'clear'}
