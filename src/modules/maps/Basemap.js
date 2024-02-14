@@ -33,7 +33,6 @@ import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
 
-MapboxGL.setWellKnownTileServer('mapbox');
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const Basemap = ({
