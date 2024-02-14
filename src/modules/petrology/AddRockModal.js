@@ -55,6 +55,9 @@ const AddRockModal = ({
     const rockKeyUpdated = pageKey === PAGE_KEYS.ROCK_TYPE_IGNEOUS
       ? modalValues.igneous_rock_class || IGNEOUS_ROCK_CLASSES.PLUTONIC
       : pageKey;
+    if (Object.values(IGNEOUS_ROCK_CLASSES).includes(rockKeyUpdated)) {
+      setSelectedTypeIndex(Object.values(IGNEOUS_ROCK_CLASSES).indexOf(rockKeyUpdated));
+    }
     setRockKey(rockKeyUpdated);
     if (templates[rockKeyUpdated] && templates[rockKeyUpdated].isInUse
       && templates[rockKeyUpdated].active && templates[rockKeyUpdated].active[0]
