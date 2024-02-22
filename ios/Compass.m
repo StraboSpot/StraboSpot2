@@ -11,9 +11,7 @@
 #import "React/RCTEventEmitter.h"
 
 @interface RCT_EXTERN_MODULE(Compass, RCTEventEmitter)
-//RCT_EXTERN_METHOD(getHeading)
-RCT_EXTERN_METHOD(myAccelerometer)
-RCT_EXTERN_METHOD(myAcceleration)
+RCT_EXTERN_METHOD(getHeading)
 RCT_EXTERN_METHOD(myDeviceRotation)
 RCT_EXTERN_METHOD(stopObserving)
 
