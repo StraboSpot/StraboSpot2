@@ -1,0 +1,268 @@
+package com.strabospot2;
+
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationRequest;
+import android.os.Bundle;
+import android.telecom.Call;
+import android.util.Log;
+import android.util.*;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+public class Compass extends ReactContextBaseJavaModule implements SensorEventListener {
+    private static final String PERMISSION_LOCATION_ACCESS = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final int PERMISSION_REQ_CODE = 100;
+    private int listenerCount = 0;
+    private final ReactApplicationContext context;
+    private LocationRequest locationRequest;
+    protected Location mCurrentLocation;
+
+    private SensorManager sensorManager;
+    private Arguments arguments;
+    private Callback callback;
+
+    private Sensor sensorAccelerometer;
+    private Sensor sensorMagneticField;
+    private final float[] lastAccelerometer = new float[3];
+    private final float[] lastMagnetometer = new float[3];
+    private int[] rotationMatrixArray = new int[5];
+    private final float[] orientation = new float[3];
+    private final float[] rotationMatrix = new float[9];
+    boolean isLastAccelerometerCopied = false;
+    boolean isLastMagnetometerCopied = false;
+
+    private float[] mGravity = new float[3];
+    private float[] mGeomagnetic = new float[3];
+    private float azimuth = 0f;
+    float I[] = new float[9];
+
+
+    Compass(ReactApplicationContext context) {
+        super(context);
+        this.context = context;
+
+        this.sensorManager = (SensorManager)context.getSystemService(context.SENSOR_SERVICE);
+        this.sensorAccelerometer = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.sensorMagneticField = this.sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+//        if (mCurrentLocation == null) {
+//            LocationManager locationManager =(LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+//            if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+////                requestRuntimePermissions();
+//                return;
+//            }
+//            mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            if (mCurrentLocation == null) mCurrentLocation = locationManager.getLastKnownLocation((LocationManager.NETWORK_PROVIDER));
+//        }
+//
+//        if (mCurrentLocation != null) mDeclination = getDeclination(mCurrentLocation, System.currentTimeMillis());
+    }
+
+//    private void requestRuntimePermissions() {
+//        if (ActivityCompat.checkSelfPermission(this.context, PERMISSION_LOCATION_ACCESS) == PackageManager.PERMISSION_GRANTED) {
+//            Toast.makeText(this.context, "Permission Granted", Toast.LENGTH_LONG).show();
+////            userLocation();
+//        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this.context, PERMISSION_LOCATION_ACCESS)) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+//            builder.setMessage("This app requires LOCATION to get the users declination")
+//                    .setTitle("Permission Required")
+//                    .setCancelable(false)
+//                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            ActivityCompat.requestPermissions(MainActivity., new String[]{PERMISSION_LOCATION_ACCESS}, PERMISSION_REQ_CODE);
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+//
+//            builder.show();
+//
+//        } else {
+//            ActivityCompat.requestPermissions(this, new String[]{PERMISSION_LOCATION_ACCESS}, PERMISSION_REQ_CODE);
+//        }
+//    }
+
+    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
+
+    @ReactMethod
+    public void startSensors() {
+        this.sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        this.sensorManager.registerListener(this, sensorMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+        Log.d("MatrixDataModule", "Sensors started!" );
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        final float alpha = 0.97f;
+
+        synchronized (this) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                mGravity[0] = alpha * mGravity[0] + (1 - alpha) * event.values[0];
+                mGravity[1] = alpha * mGravity[1] + (1 - alpha) * event.values[1];
+                mGravity[2] = alpha * mGravity[2] + (1 - alpha) * event.values[2];
+            }
+
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                mGeomagnetic[0] = alpha * mGeomagnetic[0] + (1 - alpha) * event.values[0];
+                mGeomagnetic[1] = alpha * mGeomagnetic[1] + (1 - alpha) * event.values[1];
+                mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha) * event.values[2];
+            }
+
+//            float R[] = new float[9];
+//            float I[] = new float[9];
+
+            boolean success = SensorManager.getRotationMatrix(rotationMatrix, I, mGravity, mGeomagnetic);
+
+//            if (success) {
+                SensorManager.getOrientation(rotationMatrix, orientation);
+
+                azimuth = (float) Math.toDegrees(orientation[0]);
+                azimuth = (azimuth + 360) % 360;
+                azimuth = Math.round(azimuth);
+
+                sendAzimuthChangeEvent();
+//            }
+
+
+//        if(this.listenerCount <= 0) {
+//            return; // avoid all the computation if there are no observers
+//        }
+//         double timeStamp = System.currentTimeMillis();
+//         WritableMap data = this.arguments.createMap();
+
+//         Log.d("MatrixDataModule", "Sensor is changing" + sensorEvent);
+//         if (sensorEvent.sensor == sensorAccelerometer) {
+//             System.arraycopy(sensorEvent.values, 0, lastAccelerometer, 0, sensorEvent.values.length);
+//             isLastAccelerometerCopied = true;
+//         } else if (sensorEvent.sensor == sensorMagneticField) {
+//             System.arraycopy(sensorEvent.values, 0, lastMagnetometer, 0, sensorEvent.values.length);
+//             isLastMagnetometerCopied = true;
+//         }
+
+//        if (isLastAccelerometerCopied && isLastAccelerometerCopied && System.currentTimeMillis() - lastUpdatedTime > 250) {
+//         SensorManager.getRotationMatrix(rotationMatrix, null, lastAccelerometer, lastMagnetometer);
+//         SensorManager.getOrientation(rotationMatrix, orientation);
+//         System.arraycopy(rotationMatrix, 0, rotationMatrixArray, 0, rotationMatrixArray.length);
+//
+//         data.putDouble("yaw", orientation[0]);
+//         data.putDouble("pitch", orientation[1]);
+//         data.putDouble("roll", orientation[2]);
+//         data.putDouble("M11", rotationMatrix[0]);
+//         data.putDouble("M12", rotationMatrix[1]);
+//         data.putDouble("M13", rotationMatrix[2]);
+//         data.putDouble("M21", rotationMatrix[3]);
+//         data.putDouble("M22", rotationMatrix[4]);
+//         data.putDouble("M23", rotationMatrix[5]);
+//         data.putDouble("M31", rotationMatrix[6]);
+//         data.putDouble("M32", rotationMatrix[7]);
+//         data.putDouble("M33", rotationMatrix[8]);
+//
+//         sendEvent("rotationMatrix", data);
+//         Log.println(Log.WARN,"Matrix Array", rotationMatrix);
+
+        }
+    }
+
+    private void sendAzimuthChangeEvent() {
+        WritableMap wm = Arguments.createMap();
+
+        wm.putDouble("newAzimuth", azimuth);
+        wm.putDouble("M11", rotationMatrix[0]);
+        wm.putDouble("M12", rotationMatrix[1]);
+        wm.putDouble("M13", rotationMatrix[2]);
+        wm.putDouble("M21", rotationMatrix[3]);
+        wm.putDouble("M22", rotationMatrix[4]);
+        wm.putDouble("M23", rotationMatrix[5]);
+        wm.putDouble("M31", rotationMatrix[6]);
+        wm.putDouble("M32", rotationMatrix[7]);
+        wm.putDouble("M33", rotationMatrix[8]);
+
+
+        sendEvent(this.context, "rotationMatrix", wm);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+//    @ReactMethod
+//    public void addListener(String eventName) {
+//        this.listenerCount += 1;
+//    }
+
+    // Required for rn built in EventEmitter Calls.
+    @ReactMethod
+    public void addListener(String eventName) {
+        Log.d("Matrix Array", "Listener has been ADDED: " + eventName);
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+        Log.d("Matrix Array", "Listener has been REMOVED: " + count);
+    }
+
+
+    @ReactMethod
+    public void sendEvent(String eventName, @Nullable WritableMap params) {
+        Log.d("Event", "Params" + params);
+        try {
+            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+//        callback.invoke(params);
+        }
+        catch (RuntimeException e) {
+            Log.e("ERROR", "java.lang.RuntimeException: Trying to invoke Javascript before CatalystInstance has been set!");
+        }
+    }
+
+    @ReactMethod
+    public void stopSensors() {
+        sensorManager.unregisterListener(this, sensorAccelerometer);
+        sensorManager.unregisterListener(this, sensorMagneticField);
+        Log.d("Compass", "All Sensors Stopped!!");
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return "Compass";
+    }
+}
+
