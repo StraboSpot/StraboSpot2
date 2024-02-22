@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useDeviceHook from '../../services/useDevice';
+import usePermissionsHook from '../../services/usePermissions';
 import {getNewId} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -33,6 +34,7 @@ const useImages = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const useDevice = useDeviceHook();
+  const usePermissions = usePermissionsHook();
   const {width, height} = useWindowDimensions();
 
   const dispatch = useDispatch();
@@ -250,28 +252,36 @@ const useImages = () => {
 
   const launchCameraFromNotebook = async (newSpotId) => {
     try {
-      const savedPhoto = await takePicture();
-      dispatch(setLoadingStatus({view: 'home', bool: true}));
-      if (savedPhoto === 'cancelled') {
-        if (newImages.length > 0) {
-          console.log('ALL PHOTOS SAVED', newImages);
-          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
-          dispatch(editedSpotImages(newImages));
+      const permissionResult = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+      if (permissionResult) {
+        const savedPhoto = await takePicture();
+        dispatch(setLoadingStatus({view: 'home', bool: true}));
+        if (savedPhoto === 'cancelled') {
+          if (newImages.length > 0) {
+            console.log('ALL PHOTOS SAVED', newImages);
+            dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
+            dispatch(editedSpotImages(newImages));
+          }
+          else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+          return newImages.length;
         }
-        else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        return newImages.length;
+        else {
+          const photoProperties = {
+            id: savedPhoto.id,
+            image_type: 'photo',
+            height: savedPhoto.height,
+            width: savedPhoto.width,
+          };
+          console.log('Photos to Save:', [...newImages, photoProperties]);
+          newImages.push(photoProperties);
+          return launchCameraFromNotebook(newSpotId);
+        }
       }
       else {
-        const photoProperties = {
-          id: savedPhoto.id,
-          image_type: 'photo',
-          height: savedPhoto.height,
-          width: savedPhoto.width,
-        };
-        console.log('Photos to Save:', [...newImages, photoProperties]);
-        newImages.push(photoProperties);
-        return launchCameraFromNotebook(newSpotId);
+        const permissionRequestResult = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+        if (permissionRequestResult ===  'granted' || permissionRequestResult === 'never_ask_again') await launchCameraFromNotebook();
+        else toast.show('StraboSpot can not access your camera due to permission denial.');
       }
     }
     catch (err) {
