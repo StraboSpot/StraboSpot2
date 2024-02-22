@@ -17,8 +17,8 @@ const Tags = ({type}) => {
   console.log('Rendering Tags...');
 
   const dispatch = useDispatch();
-  const tags = useSelector(state => state.project.project.tags) || [];
-  const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
+  const tags = useSelector(state => state.project.project?.tags) || [];
+  const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);

@@ -21,8 +21,8 @@ const TagsList = ({type, selectedIndex}) => {
 
   const dispatch = useDispatch();
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
-  const tags = useSelector(state => state.project.project.tags) || [];
-  const useContinuousTagging = useSelector(state => state.project.project.useContinuousTagging);
+  const tags = useSelector(state => state.project.project?.tags) || [];
+  const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
   const useTags = useTagsHook();
 

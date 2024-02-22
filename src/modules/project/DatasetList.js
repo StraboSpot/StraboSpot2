@@ -30,7 +30,7 @@ const DatasetList = () => {
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
-  const datasets = useSelector(state => state.project.datasets);
+  const datasets = useSelector(state => state.project.datasets) || {};
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 

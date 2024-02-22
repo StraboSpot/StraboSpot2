@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 import homeStyles from '../../home/home.style';
 
 const OfflineMapLabel = () => {
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps) || {};
 
   const res = Object.values(offlineMaps).some(offlineMap => offlineMap.isOfflineMapVisible === true);
 

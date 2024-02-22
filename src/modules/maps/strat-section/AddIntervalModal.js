@@ -19,7 +19,7 @@ import useSpotsHook from '../../spots/useSpots';
 
 const AddIntervalModal = () => {
   const dispatch = useDispatch();
-  const preferences = useSelector(state => state.project.project.preferences) || {};
+  const preferences = useSelector(state => state.project.project?.preferences) || {};
   const stratSection = useSelector(state => state.map.stratSection);
 
   const [initialFormValues, setInitialFormValues] = useState({});
