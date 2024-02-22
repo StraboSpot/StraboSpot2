@@ -41,7 +41,6 @@ const SignIn = ({navigation, route}) => {
 
   const handleSignIn = async () => {
     await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
-    dispatch(login());
   };
 
   const handleGuestSignIn = async () => {

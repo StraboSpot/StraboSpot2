@@ -17,19 +17,47 @@ import {
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import useProjectHook from '../project/useProject';
-import {login, setUserData} from '../user/userProfile.slice';
+import {login, logout, setUserData} from '../user/userProfile.slice';
 
 const useSignIn = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const user = useSelector(state => state.user);
   const encodedLogin = useSelector(state => state.user.encoded_login);
+  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
 
   const useServerRequests = useServerRequestsHook();
   const navigation = useNavigation();
   const [useProject] = useProjectHook();
 
   const project = useRef(null);
+
+  let timeout;
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && isAuthenticated) checkAuthentication();
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isAuthenticated]);
+
+  const checkAuthentication = async () => {
+    const credentials = atob(encodedLogin);
+    const email = credentials.split(':')[0];
+    const password = credentials.split(':')[1];
+    await signIn(email, password);
+    console.log('Passed Authentication Check');
+    checkAuthenticationRestartTimer();
+  };
+
+  const checkAuthenticationRestartTimer = () => {
+    console.log('Restarting Authentication Check Timer...');
+
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      checkAuthentication();
+    }, 1000 * 300);  // 300 Seconds (5 minutes)
+  };
 
   useEffect(() => {
     console.log('Encoded Login Updated', encodedLogin);
@@ -50,19 +78,14 @@ const useSignIn = () => {
     console.log('Credentials', credentialsEncoded, 'Project Id', projectId);
     console.log('Auto Login Here...');
     console.log('First, force logout and destroy project');
-
     console.log('Credentials set, check for validity.');
 
     if (credentialsEncoded) {
       try {
         const credentials = atob(credentialsEncoded);
-        console.log('Credentials decoded: ', credentials);
-        const login = {};
-        login.email = credentials.split('*****')[0];
-        login.password = credentials.split('*****')[1];
-        login.encoded_login = btoa(login.email + ':' + login.password);
-
-        return await signIn(login.email, login.password);
+        const email = credentials.split('*****')[0];
+        const password = credentials.split('*****')[1];
+        return await signIn(email, password);
       }
       catch (err) {
         autoLoginError(err);
@@ -125,20 +148,18 @@ const useSignIn = () => {
         if (setPassword) setPassword('');
         dispatch(login());
       }
-      else {
-        if (setErrorMessage) setErrorMessage('Login Failure!\n\nIncorrect username and/or password');
-        if (setIsErrorModalVisible) setIsErrorModalVisible(true);
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        if (setPassword) setPassword('');
-      }
-
+      else throw Error('Login Failure!\n\nIncorrect username and/or password');
       return userAuthResponse?.valid;
     }
     catch (err) {
-      console.log('error:', err);
+      console.error(err);
       Sentry.captureException(err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       if (setErrorMessage) setErrorMessage(err);
+      if (setIsErrorModalVisible) setIsErrorModalVisible(true);
+      if (setPassword) setPassword('');
+      dispatch(logout());
+      throw Error;
     }
   };
 
