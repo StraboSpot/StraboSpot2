@@ -149,7 +149,7 @@ const Basemap = ({
 
   // Update scale bar and zoom text
   const onCameraChanged = async (e) => {
-    console.log('Event onCameraChanged', e);
+    // console.log('Event onCameraChanged', e);
     if (!currentImageBasemap && !stratSection && mapRef?.current) {
       const newZoom = await mapRef.current.getZoom();
       setZoomText(newZoom);
