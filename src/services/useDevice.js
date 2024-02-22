@@ -318,8 +318,8 @@ const useDevice = () => {
         fileName = zipFile.name.replace('.zip', '');
         console.log('Files copied to export folder!');
       }
-
-      const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+      // *** Will not unzip when using iOS simulator ***
+      let source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
       const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR : APP_DIRECTORIES.BACKUP_DIR + fileName;
 
       console.log('SOURCE', source);
@@ -331,7 +331,6 @@ const useDevice = () => {
       console.error('Error unzipping imported file', err);
       throw Error(err);
     }
-
   };
 
   const writeFileToDevice = async (path, filename, data) => {
