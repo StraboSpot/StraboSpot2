@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, TextInput} from 'react-native';
+import {Animated, Keyboard, PermissionsAndroid, Platform, TextInput} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -30,6 +30,7 @@ import {
 } from './modals';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
+import usePermissionsHook from '../../services/usePermissions';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
@@ -64,9 +65,12 @@ import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 
 const {State: TextInputState} = TextInput;
+const {CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE} = PermissionsAndroid.PERMISSIONS;
 
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
+
+  let isLocationPermissionGranted = true;
 
   const useHome = useHomeHook();
   const useImages = useImagesHook();
@@ -76,6 +80,7 @@ const Home = ({navigation, route}) => {
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
   const useLocation = useLocationHook();
+  const usePermissions = usePermissionsHook();
   const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -125,7 +130,9 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     let updateTimer;
     if (Platform.OS === 'android') {
-      useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
+      usePermissions.requestPermissions([CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE])
+      .then(res => console.log('Requested Permissions', res));
+      //   useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
     }
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
@@ -240,8 +247,14 @@ const Home = ({navigation, route}) => {
         await saveEdits();
         break;
       case 'toggleUserLocation':
-        if (value) goToCurrentLocation().catch(console.error);
-        mapComponentRef.current?.toggleUserLocation(value);
+        const res = await usePermissions.checkPermission(ACCESS_COARSE_LOCATION);
+        if (res) {
+          if (value) goToCurrentLocation().catch(console.error);
+          mapComponentRef.current?.toggleUserLocation(value);
+        }
+        else {
+          await usePermissions.requestPermissions([ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION]);
+        }
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
@@ -309,6 +322,10 @@ const Home = ({navigation, route}) => {
     toggleDialog(dialog);
   };
 
+  const isLocationError = () => {
+    isLocationPermissionGranted = false;
+  };
+
   const onEndDrawPressed = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -349,6 +366,8 @@ const Home = ({navigation, route}) => {
     catch (err) {
       console.error('Geolocation Error:', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
+      mapComponentRef.current?.toggleUserLocation(false);
+      isLocationError();
       toast.show(`${err.toString()}`);
     }
   };
@@ -572,6 +591,7 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
+          locationPermissionError={isLocationPermissionGranted}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
