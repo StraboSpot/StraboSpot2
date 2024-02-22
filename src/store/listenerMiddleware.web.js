@@ -31,6 +31,13 @@ import {
 } from '../services/serverAPI';
 import {isEmpty} from '../shared/Helpers';
 
+const alertAuthenticationError = () => {
+  Toast.hideAll();
+  window.alert(
+    'Authentication Error! Changes NOT saved. Your connection has timed out. Please log in to StraboSpot again.');
+  window.location.href = 'https://strabospot.org/';
+};
+
 // Remove spotIds and images from dataset because those shouldn't go up to the server
 const cleanDatasets = (datasets) => {
   return datasets.map((dataset) => {
@@ -52,13 +59,18 @@ const deleteDatasetListener = async (action, listenerApi) => {
   const project = newState.project.project;
   const datasetId = action.payload;
 
-  const resJSON = await deleteDataset(datasetId, encodedLogin);
-  console.log('deleteDataset resJSON', resJSON);
+  try {
+    const resJSON = await deleteDataset(datasetId, encodedLogin);
+    console.log('deleteDataset resJSON', resJSON);
 
-  const resJSON2 = await updateProject(project, encodedLogin);
-  console.log('updateProject resJSON', resJSON2);
+    const resJSON2 = await updateProject(project, encodedLogin);
+    console.log('updateProject resJSON', resJSON2);
 
-  Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+    Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+  }
+  catch (err) {
+    alertAuthenticationError();
+  }
 };
 
 // Move one Spot from a one Dataset to Another
@@ -74,10 +86,15 @@ const moveSpotToDatasetListener = async (action, listenerApi) => {
   const {toDatasetId, spotId} = action.payload;
   const modifiedTimestamp = newState.project.project.modified_timestamp;
 
-  const resJSON = await moveSpotToDataset(spotId, toDatasetId, modifiedTimestamp, encodedLogin);
-  console.log('moved Spot to Dataset resJSON', resJSON);
+  try {
+    const resJSON = await moveSpotToDataset(spotId, toDatasetId, modifiedTimestamp, encodedLogin);
+    console.log('moved Spot to Dataset resJSON', resJSON);
 
-  Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+    Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+  }
+  catch (err) {
+    alertAuthenticationError();
+  }
 };
 
 // Update project on server DB
@@ -92,10 +109,15 @@ const updateProjectListener = async (action, listenerApi) => {
   const encodedLogin = newState.user.encoded_login;
   const project = newState.project.project;
 
-  const resJSON = await updateProject(project, encodedLogin);
-  console.log('updateProject resJSON', resJSON);
+  try {
+    const resJSON = await updateProject(project, encodedLogin);
+    console.log('updateProject resJSON', resJSON);
 
-  Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+    Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+  }
+  catch (err) {
+    alertAuthenticationError();
+  }
 };
 
 // Delete spot, update datasets and project on server DB
@@ -121,10 +143,15 @@ const uploadProjectDatasetDeleteSpotListener = async (action, listenerApi) => {
   if (!isEmpty(datasets)) objectToSend.datasets = cleanDatasets(Object.values(datasets));
   const jsonToSend = JSON.parse(JSON.stringify(objectToSend));
 
-  const resJSON = await uploadProjectDatasetDeleteSpot(jsonToSend, encodedLogin);
-  console.log('uploadProjectDatasetDeleteSpot resJSON', resJSON);
+  try {
+    const resJSON = await uploadProjectDatasetDeleteSpot(jsonToSend, encodedLogin);
+    console.log('uploadProjectDatasetDeleteSpot resJSON', resJSON);
 
-  Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+    Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+  }
+  catch (err) {
+    alertAuthenticationError();
+  }
 };
 
 // Update spots, datasets and project on server DB
@@ -180,12 +207,17 @@ const updatedProjectDatasetsSpotsListener = async (action, listenerApi) => {
   }
   const jsonToSend = JSON.parse(JSON.stringify(objectToSend));
 
-  // Send object to server
-  console.log('Sending updates to server', jsonToSend);
-  const resJSON = await uploadProjectDatasetsSpots(jsonToSend, encodedLogin);
-  console.log('uploadProjectDatasetsSpots resJSON', resJSON);
+  try {
+    // Send object to server
+    console.log('Sending updates to server', jsonToSend);
+    const resJSON = await uploadProjectDatasetsSpots(jsonToSend, encodedLogin);
+    console.log('uploadProjectDatasetsSpots resJSON', resJSON);
 
-  Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+    Toast.update(toastId, 'Changes saved.', {type: 'success', duration: 3000});
+  }
+  catch (err) {
+    alertAuthenticationError();
+  }
 };
 
 const listenerMiddleware = createListenerMiddleware();
