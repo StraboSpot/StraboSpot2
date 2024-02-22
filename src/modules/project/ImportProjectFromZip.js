@@ -12,8 +12,10 @@ import alert from '../../shared/ui/alert';
 import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
+  clearedStatusMessages,
   setErrorMessagesModalVisible,
-  setProjectLoadSelectionModalVisible, setStatusMessageModalTitle,
+  setProjectLoadSelectionModalVisible,
+  setStatusMessageModalTitle,
 } from '../home/home.slice';
 
 const ImportProjectFromZip = ({
@@ -27,6 +29,7 @@ const ImportProjectFromZip = ({
   const dispatch = useDispatch();
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
+  const [fileName, setFileName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const useDevice = useDeviceHook();
@@ -69,25 +72,25 @@ const ImportProjectFromZip = ({
     try {
       setIsLoading(true);
       dispatch(setStatusMessageModalTitle('Importing Project...'));
-      const project = importedProject;
-      await useDevice.unZipAndCopyImportedData(project);
+      await useDevice.unZipAndCopyImportedData(importedProject);
+      await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR + fileName);
       setImportComplete(true);
       dispatch(setStatusMessageModalTitle('Project Imported'));
       setIsLoading(false);
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
+      dispatch(clearedStatusMessages());
       dispatch(setErrorMessagesModalVisible(true));
       dispatch(addedStatusMessage(err.toString()));
       setImportComplete(false);
       setIsLoading(false);
-      throw Error();
     }
   };
 
   const verifyFileExistence = async (dataType) => {
     if (dataType === 'data') {
-      const fileName = importedProject.name.replace('.zip', '');
+      setFileName(importedProject.name.replace('.zip', ''));
       const fileExists = await useDevice.doesBackupFileExist(fileName);
       if (fileExists) {
         console.log('File already exits!');
@@ -106,7 +109,6 @@ const ImportProjectFromZip = ({
           ]);
       }
       else {
-        await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR + fileName);
         await saveToDevice();
       }
     }
