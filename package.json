@@ -124,9 +124,9 @@
     "types": "^0.1.1",
     "typescript": "5.0.4",
     "url-loader": "^4.1.1",
-    "webpack": "^5.90.1",
+    "webpack": "5.90.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.1"
+    "webpack-dev-server": "5.0.2"
   },
   "engines": {
     "node": ">=18"
