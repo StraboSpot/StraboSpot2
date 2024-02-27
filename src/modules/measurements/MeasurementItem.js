@@ -5,6 +5,7 @@ import {useSelector} from 'react-redux';
 
 import MeasurementLabel from './MeasurementLabel';
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
 import {useTagsHook} from '../tags';
@@ -34,33 +35,31 @@ const MeasurementItem = ({
     else onPress();
   };
 
-  return (
-    <React.Fragment>
-      {typeof (item) !== 'undefined' && (
-        <ListItem
-          containerStyle={selectedIds.includes(item.id) ? commonStyles.listItemInverse
-            : [commonStyles.listItem, {
-              backgroundColor: featureSelectedForTagging
-                ? themes.PRIMARY_ACCENT_COLOR : themes.SECONDARY_BACKGROUND_COLOR,
-            }]}
-          key={item.id}
-          onPress={() => onMeasurementPress()}
-          pad={5}
-        >
-          <ListItem.Content>
-            <ListItem.Title
-              style={selectedIds.includes(item.id) ? commonStyles.listItemTitleInverse
-                : commonStyles.listItemTitle}
-            >
-              <MeasurementLabel item={item} isDetail={isDetail}/>
-            </ListItem.Title>
-            <FeatureTagsList spotId={spot.properties.id} featureId={item.id}/>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </ListItem>
-      )}
-    </React.Fragment>
-  );
+  if (!isEmpty(item)) {
+    return (
+      <ListItem
+        containerStyle={selectedIds.includes(item.id) ? commonStyles.listItemInverse
+          : [commonStyles.listItem, {
+            backgroundColor: featureSelectedForTagging
+              ? themes.PRIMARY_ACCENT_COLOR : themes.SECONDARY_BACKGROUND_COLOR,
+          }]}
+        key={item.id}
+        onPress={() => onMeasurementPress()}
+        pad={5}
+      >
+        <ListItem.Content>
+          <ListItem.Title
+            style={selectedIds.includes(item.id) ? commonStyles.listItemTitleInverse
+              : commonStyles.listItemTitle}
+          >
+            <MeasurementLabel item={item} isDetail={isDetail}/>
+          </ListItem.Title>
+          <FeatureTagsList spotId={spot.properties.id} featureId={item.id}/>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </ListItem>
+    );
+  }
 };
 
 export default MeasurementItem;

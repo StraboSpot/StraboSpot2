@@ -414,32 +414,35 @@ const useMaps = (mapRef) => {
 
   // Spots with multiple measurements become multiple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
-    let mappedFeatures = [];
-    spotsToFeatures.map((spot) => {
-      if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && spot.properties.orientation_data) {
-        spot.properties.orientation_data.map((orientation, i) => {
-          const feature = JSON.parse(JSON.stringify(spot));
-          delete feature.properties.orientation_data;
-          orientation.associated_orientation && orientation.associated_orientation.map((associatedOrientation) => {
-            feature.properties.orientation = associatedOrientation;
-            mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+      let mappedFeatures = [];
+      spotsToFeatures.map((spot) => {
+        if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && !isEmpty(spot.properties.orientation_data)) {
+          spot.properties.orientation_data.map((orientation, i) => {
+            if (!isEmpty(orientation)) {
+              const feature = JSON.parse(JSON.stringify(spot));
+              delete feature.properties.orientation_data;
+              !isEmpty(orientation.associated_orientation) && orientation.associated_orientation.map((associatedOrientation) => {
+                feature.properties.orientation = associatedOrientation;
+                mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+              });
+              feature.properties.orientation = orientation;
+              //feature.properties.orientation_num = i.toString();
+              mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+            }
+            else console.log('Stupid spot', spot.properties.id);
           });
-          feature.properties.orientation = orientation;
-          //feature.properties.orientation_num = i.toString();
-          mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
-        });
-      }
-      else if (spot.geometry.type === 'GeometryCollection') {
-        spot.geometry.geometries.forEach((g, i) => {
-          const feature = JSON.parse(JSON.stringify(spot));
-          if (i % 2 === 1) feature.properties.isInterbed = true;
-          feature.geometry = g;
-          mappedFeatures.push(feature);
-        });
-      }
-      else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
-    });
-    return mappedFeatures;
+        }
+        else if (spot.geometry.type === 'GeometryCollection') {
+          spot.geometry.geometries.forEach((g, i) => {
+            const feature = JSON.parse(JSON.stringify(spot));
+            if (i % 2 === 1) feature.properties.isInterbed = true;
+            feature.geometry = g;
+            mappedFeatures.push(feature);
+          });
+        }
+        else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
+      });
+      return mappedFeatures;
   };
 
   // Point Spots currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
@@ -494,7 +497,7 @@ const useMaps = (mapRef) => {
     const featureTypes = mappedSpots.reduce((acc, spot) => {
       const spotFeatureTypes = spot.properties.orientation_data
         && spot.properties.orientation_data.reduce((acc1, orientation) => {
-          return orientation.feature_type ? [...new Set([...acc1, orientation.feature_type])] : acc1;
+          return orientation?.feature_type ? [...new Set([...acc1, orientation.feature_type])] : acc1;
         }, []);
       return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
     }, []);
