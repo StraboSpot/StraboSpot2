@@ -110,7 +110,7 @@ const useDownload = () => {
       }
       else {
         const spots = featureCollection.features;
-        const spotImages = await gatherNeededImages(spots, dataset);
+        const spotImages = Platform.OS === 'web' ? undefined : await gatherNeededImages(spots, dataset);
         if (spotImages) datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], images: spotImages};
         spotsToSave.push(...spots);
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
