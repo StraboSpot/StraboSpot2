@@ -2,15 +2,28 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import {useToast} from 'react-native-toast-notifications';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setErrorMessagesModalVisible,
+  setStatusMessagesModalVisible,
+} from '../modules/home/home.slice';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
+import usePermissionsHook from '../services/usePermissions';
+
+const {READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE} = PermissionsAndroid.PERMISSIONS;
 
 const useDevice = () => {
+  const usePermissions = usePermissionsHook();
+  const toast = useToast();
+
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
 
@@ -40,24 +53,37 @@ const useDevice = () => {
   };
 
   const createProjectDirectories = async () => {
+    console.log('STOP!!');
+    if (Platform.OS === 'android') {
+      const permissionsGranted = await usePermissions.checkPermission(WRITE_EXTERNAL_STORAGE);
+      if (permissionsGranted) {
+        await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+        console.log('Android Downloads/StraboSpot/Backups directory created');
+        await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+        console.log('AndroidExportFiles directory created');
+      }
+      else {
+        console.log('PERMISSION NOT GRANTED', permissionsGranted);
+
+      }
+    }
+    if (Platform.OS === 'ios') {
+      await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_IOS);
+      console.log('Distribution directory created for iOS');
+    }
     await makeDirectory(APP_DIRECTORIES.APP_DIR);
     console.log('App Directory Created');
     await makeDirectory(APP_DIRECTORIES.IMAGES);
     console.log('Images Directory Created');
     await makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
     console.log('Backup Directory Created');
-    if (Platform.OS === 'android') {
-      await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-      console.log('Android Downloads/StraboSpot/Backups directory created');
-    }
-    if (Platform.OS === 'ios') {
-      await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_IOS);
-      console.log('Distribution directory created for iOS');
-    }
+
     await makeDirectory(APP_DIRECTORIES.TILES_DIRECTORY);
     console.log('Tiles Directory Created');
     await makeDirectory(APP_DIRECTORIES.TILE_CACHE);
     console.log('Tile Cache Directory Created');
+
+    // console.log('Here are all the app directories created.', RNFS.readdir(APP_DIRECTORIES));
   };
 
   const deleteFromDevice = async (dir, file) => {
@@ -285,6 +311,30 @@ const useDevice = () => {
     }
   };
 
+  const readDeviceJSONFile = async (fileName) => {
+    try {
+      // const granted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+      // if (granted) {
+        const dataFile = '/data.json';
+        console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+        const response = await readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+        console.log(JSON.parse(response));
+        return JSON.parse(response);
+      // }
+      // else {
+      //  const permissionStatus = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+      //  console.log('Permission Status', permissionStatus);
+      // }
+    }
+    catch (err) {
+      console.error('Error reading JSON file', err);
+      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Project Not Found'));
+      dispatch(setErrorMessagesModalVisible(true));
+    }
+  };
+
   const requestReadDirectoryPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -313,19 +363,22 @@ const useDevice = () => {
   const unZipAndCopyImportedData = async (zipFile) => {
     try {
       let fileName = '';
-      if (Platform.OS === 'android') {
+      const exists = await RNFS.exists(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+      if (Platform.OS === 'android' && exists) {
         await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
         fileName = zipFile.name.replace('.zip', '');
         console.log('Files copied to export folder!');
+        const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+        const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR : APP_DIRECTORIES.BACKUP_DIR + fileName;
+
+        console.log('SOURCE', source);
+        console.log('DEST', dest);
+
+        await unzip(source, dest);
       }
+      else {
 
-      const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
-      const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR : APP_DIRECTORIES.BACKUP_DIR + fileName;
-
-      console.log('SOURCE', source);
-      console.log('DEST', dest);
-
-      await unzip(source, dest);
+      }
     }
     catch (err) {
       console.error('Error unzipping imported file', err);
@@ -369,6 +422,7 @@ const useDevice = () => {
     readDirectoryForMapFiles: readDirectoryForMapFiles,
     readDirectoryForMapTiles: readDirectoryForMapTiles,
     readFile: readFile,
+    readDeviceJSONFile: readDeviceJSONFile,
     requestReadDirectoryPermission: requestReadDirectoryPermission,
     unZipAndCopyImportedData: unZipAndCopyImportedData,
     writeFileToDevice: writeFileToDevice,
