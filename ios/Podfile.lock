@@ -959,11 +959,13 @@ PODS:
   - React-Mapbuffer (0.73.5):
     - glog
     - React-debug
-  - react-native-blob-util (0.19.6):
+  - react-native-blob-util (0.19.8):
     - React-Core
   - react-native-document-picker (9.1.1):
     - React-Core
-  - react-native-geolocation (3.1.0):
+  - react-native-geolocation (3.2.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - react-native-get-random-values (1.10.0):
     - React-Core
@@ -975,7 +977,7 @@ PODS:
     - React-Core
   - react-native-keep-awake (4.0.0):
     - React
-  - react-native-netinfo (11.3.0):
+  - react-native-netinfo (11.3.1):
     - React-Core
   - react-native-orientation-locker (1.6.0):
     - React-Core
@@ -1158,7 +1160,7 @@ PODS:
     - React-jsi (= 0.73.5)
     - React-logger (= 0.73.5)
     - React-perflogger (= 0.73.5)
-  - RNCAsyncStorage (1.22.2):
+  - RNCAsyncStorage (1.22.3):
     - React-Core
   - RNCClipboard (1.13.2):
     - React-Core
@@ -1166,7 +1168,7 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.6.2):
     - React-Core
-  - RNDeviceInfo (10.13.0):
+  - RNDeviceInfo (10.13.1):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
@@ -1174,13 +1176,13 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - rnmapbox-maps (10.1.15):
+  - rnmapbox-maps (10.1.16):
     - MapboxMaps (~> 10.16.4)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.1.15)
+    - rnmapbox-maps/DynamicLibrary (= 10.1.16)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.1.15):
+  - rnmapbox-maps/DynamicLibrary (10.1.16):
     - MapboxMaps (~> 10.16.4)
     - React
     - React-Core
@@ -1557,14 +1559,14 @@ SPEC CHECKSUMS:
   React-jsinspector: 32db5e364bcae8fca8cdf8891830636275add0c5
   React-logger: 0331362115f0f5b392bd7ed14636d1a3ea612479
   React-Mapbuffer: 7c35cd53a22d0be04d3f26f7881c7fb7dd230216
-  react-native-blob-util: d8fa1a7f726867907a8e43163fdd8b441d4489ea
+  react-native-blob-util: 26f1fb0c91f2b437380d4f3875769a7c3e06080e
   react-native-document-picker: 3599b238843369026201d2ef466df53f77ae0452
-  react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
+  react-native-geolocation: 6c20401249e4f426bc03a2bc30bdcefc85f64a9a
   react-native-get-random-values: 384787fd76976f5aec9465aff6fa9e9129af1e74
   react-native-image-picker: e8f292d7d7f04778cfd0fa91466ac66acea96b1a
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
-  react-native-netinfo: 299dad906cdbf3b67bcc6f693c807f98bdd127cc
+  react-native-netinfo: bdb108d340cdb41875c9ced535977cac6d2ff321
   react-native-orientation-locker: 4409c5b12b65f942e75449872b4f078b6f27af81
   react-native-pager-view: d5f3adb58a4e6e0d200055e9a4afdcda9b9022ce
   react-native-pdf: 79aa75e39a80c1d45ffe58aa500f3cf08f267a2e
@@ -1590,14 +1592,14 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 814b644a5f456c7df1fba7bcd9914707152527c6
   React-utils: 987a4526a2fc0acdfaf87888adfe0bf9d0452066
   ReactCommon: 2947b0bffd82ea0e58ca7928881152d4c6dae9af
-  RNCAsyncStorage: 014a78b2cc8cc107c9e92ee428dc0c1ac3223416
+  RNCAsyncStorage: 10591b9e0a91eaffee14e69b3721009759235125
   RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
   RNCPicker: b18aaf30df596e9b1738e7c1f9ee55402a229dca
   RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
-  RNDeviceInfo: 5e4695f906aeb624855cee8d568a46037e4a50f7
+  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 67fb54b3e6ca338a8044e85cd6f340265aa41091
-  rnmapbox-maps: 865d98e03cd45eafaea51efd0ee1121c799102ef
+  rnmapbox-maps: 4f0afa3051ac3b26d018958437b60d2faa452ccc
   RNReanimated: 15a855719335a6b655a214531e86d806edfd49da
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
