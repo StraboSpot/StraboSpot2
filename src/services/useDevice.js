@@ -187,10 +187,16 @@ const useDevice = () => {
   };
 
   const getExternalProjectData = async () => {
+    const options = {
+      type: [DocumentPicker.types.zip],
+      copyTo: 'cachesDirectory',
+      // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
+      transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
+    };
     // try {
-    const res = await DocumentPicker.pick({type: [DocumentPicker.types.zip], copyTo: 'cachesDirectory'});
+    const res = await DocumentPicker.pickSingle(options);
     console.log('External Document', res);
-    return res[0];
+    return res;
   };
 
   const isPickDocumentCanceled = (err) => {

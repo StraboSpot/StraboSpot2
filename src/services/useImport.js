@@ -44,17 +44,20 @@ const useImport = () => {
 
   const copyImages = async (fileName) => {
     try {
-      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+      const existsWithLowercase = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+        + fileName + '/images');
+      const existsWithCapital = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
         + fileName + '/Images');
-      if (exists) {
+      const imagesFolderName = existsWithLowercase ? '/images' : '/Images';
+      if (existsWithCapital || existsWithLowercase) {
         const imageFiles = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR
-          + fileName + '/Images');
+          + fileName + imagesFolderName);
         console.log(imageFiles);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         if (!isEmpty(imageFiles)) {
           imageFiles.map(async (image) => {
             await useDevice.copyFiles(APP_DIRECTORIES.BACKUP_DIR
-              + fileName + '/Images/' + image, APP_DIRECTORIES.IMAGES + image);
+              + fileName + imagesFolderName + '/' + image, APP_DIRECTORIES.IMAGES + image);
           });
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Finished importing image files.'));
