@@ -18,11 +18,10 @@ import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice'
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import usePermissionsHook from '../services/usePermissions';
 
-const {READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE} = PermissionsAndroid.PERMISSIONS;
+const {PERMISSIONS, RESULTS} = PermissionsAndroid;
 
 const useDevice = () => {
   const usePermissions = usePermissionsHook();
-  const toast = useToast();
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
@@ -55,8 +54,8 @@ const useDevice = () => {
   const createProjectDirectories = async () => {
     console.log('STOP!!');
     if (Platform.OS === 'android') {
-      const permissionsGranted = await usePermissions.checkPermission(WRITE_EXTERNAL_STORAGE);
-      if (permissionsGranted) {
+      const permissionsGranted = await usePermissions.checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+      if (permissionsGranted === RESULTS.GRANTED) {
         await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
         console.log('Android Downloads/StraboSpot/Backups directory created');
         await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
@@ -64,7 +63,6 @@ const useDevice = () => {
       }
       else {
         console.log('PERMISSION NOT GRANTED', permissionsGranted);
-
       }
     }
     if (Platform.OS === 'ios') {

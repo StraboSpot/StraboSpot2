@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
 import {useDispatch} from 'react-redux';
@@ -11,20 +13,27 @@ const useLocation = () => {
 
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
-    const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
-    return (
-      new Promise((resolve, reject) => {
-        Geolocation.getCurrentPosition(
-          (position) => {
-            // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-            console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-            resolve(position.coords);
-          },
-          error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
-          geolocationOptions,
-        );
-      })
-    );
+    if (Platform.OS !== 'web') {
+      Geolocation.setRNConfiguration({
+        skipPermissionRequests: false,
+        locationProvider: 'playServices',
+      });
+    }
+
+      const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
+      return (
+        new Promise((resolve, reject) => {
+          Geolocation.getCurrentPosition(
+            (position) => {
+              // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
+              console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
+              resolve(position.coords);
+            },
+            error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
+            geolocationOptions,
+          );
+        })
+      );
   };
 
   // Create a point feature at the current location

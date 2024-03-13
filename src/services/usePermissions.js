@@ -1,103 +1,45 @@
-import {useState} from 'react';
 import {PermissionsAndroid} from 'react-native';
 
 import DeviceInfo from 'react-native-device-info';
-import {useToast} from 'react-native-toast-notifications';
 
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
 
-const {RESULTS, PERMISSIONS, request, check} = PermissionsAndroid;
-
 const usePermissions = () => {
-
-  const toast = useToast();
 
   const permissionsRequestType = (permission) => {
     switch (permission) {
       case PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE:
         return {
-          title: 'EXTERNAL STORAGE',
+          title: 'WRITE To External Storage',
           message: 'StraboSpot needs permission access the external storage to save files',
         };
       case PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE:
         return {
-          title: 'EXTERNAL STORAGE',
+          title: 'READ External Storage',
           message: 'StraboSpot needs permission access the external storage to read files',
         };
       case PermissionsAndroid.PERMISSIONS.CAMERA:
-        return  {
+        return {
           title: 'CAMERA',
           message: 'StraboSpot needs permission to use the camera take pictures',
         };
     }
   };
 
-  const [granted, setGranted] = useState(false);
-
   const checkPermission = async (permission) => {
+    let granted;
     let deviceVersion = DeviceInfo.getSystemVersion();
-    if (deviceVersion >= 13) return true;
-    const res = await permittingCheck(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-    console.log(res);
-  };
 
-  const permittingCheck = (data) => {
-    return new Promise((resolve, reject) => {
-      check(data)
-        .then((result) => {
-          switch (result) {
-            case RESULTS.UNAVAILABLE:
-              resolve(false);
-              break;
-            case RESULTS.DENIED:
-              resolve(false);
-              break;
-            case RESULTS.LIMITED:
-              resolve(false);
-              break;
-            case RESULTS.GRANTED:
-              resolve(true);
-              break;
-            case RESULTS.BLOCKED:
-              resolve(false);
-              break;
-          }
-        })
-        .catch((error) => {
-          console.error('ERROR permittingCheck()', error);
-          resolve(false);
-        });
-    });
-  };
+    if ((permission === PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE || permission === PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE) && deviceVersion >= 13) {
+      return PermissionsAndroid.RESULTS.GRANTED;
+    }
 
-  const permittingReq = (data) => {
-    return new Promise((resolve, reject) => {
-      request(data)
-        .then((result) => {
-          switch (result) {
-            case RESULTS.UNAVAILABLE:
-              resolve(false);
-              break;
-            case RESULTS.DENIED:
-              resolve(false);
-              break;
-            case RESULTS.LIMITED:
-              resolve(false);
-              break;
-            case RESULTS.GRANTED:
-              resolve(true);
-              break;
-            case RESULTS.BLOCKED:
-              resolve(false);
-              break;
-          }
-        })
-        .catch((error) => {
-          console.error('ERROR permittingReq()', error);
-          resolve(false);
-        });
-    });
+    granted = await PermissionsAndroid.check(permission);
+    if (granted) return PermissionsAndroid.RESULTS.GRANTED;
+    else granted = await requestPermission(permission);
+    console.log('Permissions', granted);
+    return granted;
   };
 
   const requestPermission = async (permission) => {
@@ -108,9 +50,9 @@ const usePermissions = () => {
     const result = await PermissionsAndroid.request(permission, useRational);
     console.log('RESULT', result);
     if (result === PermissionsAndroid.RESULTS.GRANTED) {
-      return true;
+      return PermissionsAndroid.RESULTS.GRANTED;
     }
-    else alert('Permission Denied', 'To allow permission please go to Settings -> App -> StraboSpot2 -> Permissions');
+    else alert('Permission Denied', 'You may have denied this permission previously. \nTo allow permission please go to Settings -> App -> StraboSpot2 -> Permissions');
   };
 
   const requestPermissions = async (permissions) => {
@@ -120,26 +62,10 @@ const usePermissions = () => {
     else throw Error('permissions is not of type array');
   };
 
-  const requestWritePermission = async () => {
-    let deviceVersion = DeviceInfo.getSystemVersion();
-    if (deviceVersion >= 13) return true;
-    const res = await permittingCheck(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-    console.log(res);
-  };
-
-  const requestReadPermission = async () => {
-    let deviceVersion = DeviceInfo.getSystemVersion();
-    if (deviceVersion >= 13) return true;
-    const res = await permittingReq(PERMISSIONS.READ_EXTERNAL_STORAGE);
-    console.log(res);
-  };
-
   return {
     checkPermission: checkPermission,
     requestPermission: requestPermission,
     requestPermissions: requestPermissions,
-    requestReadPermission: requestReadPermission,
-    requestWritePermission: requestWritePermission,
   };
 };
 
