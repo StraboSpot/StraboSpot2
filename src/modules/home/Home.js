@@ -123,10 +123,19 @@ const Home = ({navigation, route}) => {
   const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
 
   useEffect(() => {
+    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+      err => console.error('Error creating app directories', err));
+  }, []);
+
+  useEffect(() => {
     let updateTimer;
-    if (Platform.OS === 'android') {
-      useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
-    }
+    // if (Platform.OS === 'android') {
+      // Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+      //   err => console.error('Error creating app directories', err));
+      // Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
+      //   .catch(err => console.error('Error getting permissions', err));
+      // useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
+    // }
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
         if (res.needsUpdate) {
