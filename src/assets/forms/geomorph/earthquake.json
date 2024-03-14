@@ -98,19 +98,37 @@
       "relevant": "${earthquake_feature} = 'fault_rupture'"
     },
     {
+      "type": "begin_group",
+      "name": "group_bf6rc11",
+      "label": "Vector Measurement",
+      "required": "false",
+      "relevant": "selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "integer",
+      "name": "trend",
+      "label": "Trend",
+      "hint": "0-360 Degrees",
+      "required": "false",
+      "relevant": "selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
+      "type": "integer",
+      "name": "plunge",
+      "label": "Plunge",
+      "hint": "0-90 Degrees",
+      "required": "false",
+      "relevant": "selected(${fault_slip_meas}, 'vector_measurement')"
+    },
+    {
       "type": "select_one hm18t55",
       "name": "vector_meas_confidence",
       "label": "Vector Measurement Confidence",
       "required": "false",
-      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+      "relevant": "selected(${fault_slip_meas}, 'vector_measurement')"
     },
     {
-      "type": "decimal",
-      "name": "plunge",
-      "label": "Plunge",
-      "hint": "0-90 degrees",
-      "required": "false",
-      "relevant": "${earthquake_feature} = 'fault_rupture' and selected(${fault_slip_meas}, 'vector_measurement')"
+      "type": "end_group"
     },
     {
       "type": "decimal",

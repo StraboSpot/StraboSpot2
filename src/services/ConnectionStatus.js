@@ -25,8 +25,6 @@ const ConnectionStatus = () => {
     console.log('Is connected?', state.isConnected);
     if (state.isInternetReachable !== null && state.isConnected !== null) dispatch(setOnlineStatus(state));
   });
-
-  return (<></>);
 };
 
 export default ConnectionStatus;

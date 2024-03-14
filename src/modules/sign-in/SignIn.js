@@ -33,15 +33,14 @@ const SignIn = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE SignIn []');
-    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
-      err => console.error('Error creating app directories', err));
-    Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
-      .catch(err => console.error('Error getting permissions', err));
+    // Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+    //   err => console.error('Error creating app directories', err));
+    // Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
+    //   .catch(err => console.error('Error getting permissions', err));
   }, []);
 
   const handleSignIn = async () => {
     await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
-    dispatch(login());
   };
 
   const handleGuestSignIn = async () => {

@@ -105,7 +105,7 @@ const useImages = () => {
       else imageIds = getAllImagesIds(spotsOnServer);
       await Promise.all(
         imageIds.map(async (imageId) => {
-          const doesExist = Platform.OS === 'web' ? undefined : await doesImageExistOnDevice(imageId);
+          const doesExist = await doesImageExistOnDevice(imageId);
           if (!doesExist) {
             console.log('Need to download image:', imageId);
             neededImagesIds.push(imageId);
@@ -298,11 +298,10 @@ const useImages = () => {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
-          title: 'Cool Photo App Camera Permission',
+          title: 'Camera Permission Requested',
           message:
             'StraboSpot needs access to your camera '
             + 'so you can take pictures.',
-          buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
@@ -401,26 +400,29 @@ const useImages = () => {
   // Called from Notebook Panel Footer and opens camera only
   const takePicture = async () => {
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-    return new Promise((resolve, reject) => {
-      try {
-        launchCamera({saveToPhotos: true}, async (response) => {
-          console.log('Response = ', response);
-          if (response.didCancel) resolve('cancelled');
-          else if (response.error) reject();
-          else {
-            const imageAsset = response.assets[0];
-            const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
-            const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-            console.log('resizedImage', resizedImage);
-            resolve(saveFile(resizedImage));
-          }
-        });
-      }
-      catch (e) {
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        reject(e);
-      }
-    });
+    const permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+    if (permissionGranted === 'granted') {
+      return new Promise((resolve, reject) => {
+        try {
+          launchCamera({saveToPhotos: true}, async (response) => {
+            console.log('Response = ', response);
+            if (response.didCancel) resolve('cancelled');
+            else if (response.error) reject();
+            else {
+              const imageAsset = response.assets[0];
+              const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
+              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+              console.log('resizedImage', resizedImage);
+              resolve(saveFile(resizedImage));
+            }
+          });
+        }
+        catch (e) {
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+          reject(e);
+        }
+      });
+    }
   };
 
   return {
@@ -436,7 +438,6 @@ const useImages = () => {
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getLocalImageURI: getLocalImageURI,
     launchCameraFromNotebook: launchCameraFromNotebook,
-    requestCameraPermission: requestCameraPermission,
     saveFile: saveFile,
     saveImageFromDownloadsDir: saveImageFromDownloadsDir,
     setAnnotation: setAnnotation,

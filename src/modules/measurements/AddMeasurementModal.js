@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, Platform, Text, View} from 'react-native';
+import {FlatList, PermissionsAndroid, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button, ButtonGroup} from 'react-native-elements';
@@ -10,6 +10,7 @@ import AddLine from './AddLine';
 import AddManualMeasurements from './AddManualMeasurements';
 import AddPlane from './AddPlane';
 import {MEASUREMENT_KEYS, MEASUREMENT_TYPES} from './measurements.constants';
+import usePermissionsHook from '../../services/usePermissions';
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
@@ -46,9 +47,11 @@ const AddMeasurementModal = ({onPress}) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [survey, setSurvey] = useState({});
   const [sliderValue, setSliderValue] = useState(6);
+  const [locationPermission, setLocationPermission] = useState('');
 
   const useForm = useFormHook();
   const useLocation = useLocationHook();
+  const usePermissions = usePermissionsHook();
   const toast = useToast();
 
   const formRef = useRef(null);
@@ -56,6 +59,14 @@ const AddMeasurementModal = ({onPress}) => {
   const groupKey = 'measurement';
   // Is an attitude already selected (like when adding an associated measurement to an already existing attitude)
   const isSelectedAttitude = !isEmpty(selectedAttributes) && selectedAttributes?.length > 0;
+
+  useEffect(() => {
+    console.log('UE AddMeasurementModal []');
+    if (Platform.OS === 'android') {
+      checkAndRequestLocPermission();
+    }
+    return () => dispatch(setModalValues({}));
+  }, []);
 
   useLayoutEffect(() => {
     console.log('UE AddMeasurementModal [compassMeasurementTypes, templates]', compassMeasurementTypes, templates);
@@ -105,10 +116,10 @@ const AddMeasurementModal = ({onPress}) => {
 
   }, [compassMeasurementTypes, templates]);
 
-  useEffect(() => {
-    console.log('UE AddMeasurementModal []');
-    return () => dispatch(setModalValues({}));
-  }, []);
+  const checkAndRequestLocPermission = async () => {
+    const response = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    setLocationPermission(response);
+  };
 
   const equalsIgnoreOrder = (a, b) => {
     if (a.length !== b.length) return false;
@@ -200,8 +211,8 @@ const AddMeasurementModal = ({onPress}) => {
                 onPress={() => setIsManualMeasurement(!isManualMeasurement)}
               />
             )}
-            {/*{!isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>*/}
-            {/*  : (*/}
+            {isManualMeasurement && locationPermission !== 'granted' ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
+              : (
                 <>
                   <Compass
                     setMeasurements={setMeasurements}
@@ -439,11 +450,13 @@ const AddMeasurementModal = ({onPress}) => {
     const compassFields = measurementTypeForForm === MEASUREMENT_KEYS.PLANAR ? planarCompassFields
       : linearCompassFields;
     compassFields.forEach((compassFieldKey) => {
-      formRef.current.setFieldValue(compassFieldKey, isEmpty(data?.[compassFieldKey]) ? undefined : data?.[compassFieldKey]);
+      formRef.current.setFieldValue(compassFieldKey,
+        isEmpty(data?.[compassFieldKey]) ? undefined : data?.[compassFieldKey]);
     });
     if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR) {
       linearCompassFields.forEach((compassFieldKey) => {
-        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey], isEmpty(data?.[compassFieldKey]) ? undefined : data?.[compassFieldKey]);
+        formRef.current.setFieldValue('associated_orientation[0]' + [compassFieldKey],
+          isEmpty(data?.[compassFieldKey]) ? undefined : data?.[compassFieldKey]);
       });
     }
     saveMeasurement().catch(console.error);

@@ -19,7 +19,7 @@ import {updatedProject} from '../projects.slice';
 const DailyNotesModal = () => {
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
-  const projectDescription = useSelector(state => state.project.project.description);
+  const projectDescription = useSelector(state => state.project.project?.description);
 
   const formRef = useRef(null);
 

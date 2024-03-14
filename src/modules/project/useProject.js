@@ -35,7 +35,7 @@ import {clearedSpots, deletedSpot} from '../spots/spots.slice';
 const useProject = () => {
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
-  const datasets = useSelector(state => state.project.datasets);
+  const datasets = useSelector(state => state.project.datasets) || {};
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const user = useSelector(state => state.user);

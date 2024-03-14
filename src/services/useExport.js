@@ -88,7 +88,7 @@ const useExport = () => {
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
       await useDevice.doesDeviceDirectoryExist(
-        deviceDir + fileName + '/Images');
+        deviceDir + fileName + '/images');
       dispatch(addedStatusMessage('Exporting Images...'));
       if (data.spotsDb) {
         console.log('Spots Exist!');

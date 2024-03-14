@@ -37,7 +37,7 @@ const TagsModal = ({
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes) || [];
   const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
-  const tags = useSelector(state => state.project.project.tags) || [];
+  const tags = useSelector(state => state.project.project?.tags) || [];
 
   const formRef = useRef(null);
 

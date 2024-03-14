@@ -21,7 +21,7 @@ import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 const SampleModal = (props) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const preferences = useSelector(state => state.project.project.preferences) || {};
+  const preferences = useSelector(state => state.project.project?.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const useForm = useFormHook();

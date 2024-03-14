@@ -17,7 +17,7 @@ const OtherFeaturesPage = () => {
   const [selectedFeature, setSelectedFeature] = useState({});
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
-  const otherFeatures = useSelector(state => state.project.project.other_features);
+  const otherFeatures = useSelector(state => state.project.project?.other_features);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
 

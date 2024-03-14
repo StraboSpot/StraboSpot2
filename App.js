@@ -44,7 +44,7 @@ NetInfo.configure({
 const App = () => {
   console.log('Rendering App...');
   const persistor = persistStore(store);
-  // const persistorPurge = persistStore(store).purge(); // Use this to clear persistStore completely
+  if (Platform.OS === 'web') persistor.purge(); // Use this to clear persistStore completely
 
   return (
     <SafeAreaProvider>

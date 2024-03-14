@@ -26,13 +26,13 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapsHook from './useMaps';
 import useMapViewHook from './useMapView';
+import VertexDrag from './VertexDrag';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
 import useImagesHook from '../images/useImages';
 import FreehandSketch from '../sketch/FreehandSketch';
 
-MapboxGL.setWellKnownTileServer('mapbox');
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const Basemap = ({
@@ -59,6 +59,7 @@ const Basemap = ({
   const customMaps = useSelector(state => state.map.customMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
+  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
   const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef, cameraRef} = forwardedRef;
@@ -148,7 +149,7 @@ const Basemap = ({
 
   // Update scale bar and zoom text
   const onCameraChanged = async (e) => {
-    console.log('Event onCameraChanged', e);
+    // console.log('Event onCameraChanged', e);
     if (!currentImageBasemap && !stratSection && mapRef?.current) {
       const newZoom = await mapRef.current.getZoom();
       setZoomText(newZoom);
@@ -510,6 +511,7 @@ const Basemap = ({
           />
         </MapboxGL.ShapeSource>
       </MapboxGL.MapView>
+      {vertexStartCoords && <VertexDrag/>}
     </>
   );
 };

@@ -25,6 +25,8 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
+import {PermissionsAndroid} from 'react-native';
+import usePermissions from './usePermissions';
 
 const useImport = () => {
   let isOldBackup;
@@ -44,17 +46,20 @@ const useImport = () => {
 
   const copyImages = async (fileName) => {
     try {
-      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+      const existsWithLowercase = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+        + fileName + '/images');
+      const existsWithCapital = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
         + fileName + '/Images');
-      if (exists) {
+      const imagesFolderName = existsWithLowercase ? '/images' : '/Images';
+      if (existsWithCapital || existsWithLowercase) {
         const imageFiles = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR
-          + fileName + '/Images');
+          + fileName + imagesFolderName);
         console.log(imageFiles);
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         if (!isEmpty(imageFiles)) {
           imageFiles.map(async (image) => {
             await useDevice.copyFiles(APP_DIRECTORIES.BACKUP_DIR
-              + fileName + '/Images/' + image, APP_DIRECTORIES.IMAGES + image);
+              + fileName + imagesFolderName + '/' + image, APP_DIRECTORIES.IMAGES + image);
           });
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Finished importing image files.'));
@@ -165,11 +170,11 @@ const useImport = () => {
       console.log('Old project destroyed', project);
       const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject);
       if (dirExists) {
-        const dataFile = await readDeviceJSONFile(selectedProject);
+        const dataFile = await useDevice.readDeviceJSONFile(selectedProject);
         const {projectDb, spotsDb} = dataFile;
         console.log('DataFile', dataFile);
         dispatch(addedSpotsFromDevice(spotsDb));
-        dispatch(addedProject(projectDb.project));
+        dispatch(addedProject(projectDb.project || projectDb));
         dispatch(addedDatasets(projectDb.datasets));
         if (Object.values(projectDb.datasets).length > 0 && !isEmpty(Object.values(projectDb.datasets)[0])) {
           dispatch(setActiveDatasets({bool: true, dataset: Object.values(projectDb.datasets)[0].id}));
@@ -240,23 +245,6 @@ const useImport = () => {
     );
   };
 
-  const readDeviceJSONFile = async (fileName) => {
-    try {
-      // await requestReadDirectoryPermission();
-      const dataFile = '/data.json';
-      console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-      const response = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-      console.log(JSON.parse(response));
-      return JSON.parse(response);
-    }
-    catch (err) {
-      console.error('Error reading JSON file', err);
-      dispatch(setStatusMessagesModalVisible(false));
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Project Not Found'));
-      dispatch(setErrorMessagesModalVisible(true));
-    }
-  };
 
   const unzipFile = async (filePath) => {
     try {
@@ -306,7 +294,6 @@ const useImport = () => {
     copyZipMapsToProject: copyZipMapsToProject,
     loadProjectFromDevice: loadProjectFromDevice,
     moveFiles: moveFiles,
-    readDeviceJSONFile: readDeviceJSONFile,
     unzipBackupFile: unzipBackupFile,
     unzipFile: unzipFile,
   };

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, PermissionsAndroid, Platform, TextInput} from 'react-native';
+import {Animated, Keyboard, Platform, TextInput} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -247,14 +247,8 @@ const Home = ({navigation, route}) => {
         await saveEdits();
         break;
       case 'toggleUserLocation':
-        const res = await usePermissions.checkPermission(ACCESS_COARSE_LOCATION);
-        if (res) {
-          if (value) goToCurrentLocation().catch(console.error);
-          mapComponentRef.current?.toggleUserLocation(value);
-        }
-        else {
-          await usePermissions.requestPermissions([ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION]);
-        }
+        if (value) goToCurrentLocation().catch(console.error);
+        mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
         dispatch(setCurrentImageBasemap(undefined));
@@ -322,10 +316,6 @@ const Home = ({navigation, route}) => {
     toggleDialog(dialog);
   };
 
-  const isLocationError = () => {
-    isLocationPermissionGranted = false;
-  };
-
   const onEndDrawPressed = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -366,8 +356,6 @@ const Home = ({navigation, route}) => {
     catch (err) {
       console.error('Geolocation Error:', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      mapComponentRef.current?.toggleUserLocation(false);
-      isLocationError();
       toast.show(`${err.toString()}`);
     }
   };
@@ -591,7 +579,6 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          locationPermissionError={isLocationPermissionGranted}
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}

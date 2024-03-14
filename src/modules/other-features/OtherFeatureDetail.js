@@ -27,7 +27,7 @@ const OtherFeatureDetail = ({
   const useForm = useFormHook();
   const useTags = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
-  const projectFeatures = useSelector(state => state.project.project.other_features);
+  const projectFeatures = useSelector(state => state.project.project?.other_features);
 
   const customFeatureTypes = projectFeatures.filter(feature => !DEFAULT_GEOLOGIC_TYPES.includes(feature));
   let [otherType, setOtherType] = useState(undefined);

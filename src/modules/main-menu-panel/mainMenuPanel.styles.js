@@ -23,10 +23,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  mainMenuContainer: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    flex: 1,
-  },
   mainMenuHeaderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     flexDirection: 'row',

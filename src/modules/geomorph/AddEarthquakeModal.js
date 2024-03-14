@@ -25,7 +25,8 @@ const AddEarthquakeModal = ({onPress}) => {
   const formRef = useRef(null);
   const useForm = useFormHook();
 
-  const [isMeasurementsModalVisible, setIsMeasurementsModalVisible] = useState(false);
+  const [isFaultOrientationModalVisible, setIsFaultOrientationModalVisible] = useState(false);
+  const [isVectorMeasurementModalVisible, setIsVectorMeasurementModalVisible] = useState(false);
   const [measurementsGroupField, setMeasurementsGroupField] = useState({});
 
   const groupKey = 'general';
@@ -44,12 +45,20 @@ const AddEarthquakeModal = ({onPress}) => {
     'slip_max', 'horiz_sep_pref', 'horiz_sep_min', 'horiz_sep_max', 'vert_sep_pref', 'vert_sep_min', 'vertical_sep_max',
     'slip_azimuth', 'heave_pref', 'heave_min', 'rupture_width_pref', 'rupture_width_min', 'rupture_width_max', 'notes'];
 
-  const MEASUREMENT_KEYS = {
+  const FAULT_ORIENTATION_KEYS = {
     group_fs5ba04: {
       strike: 'strike',
       dip_direction: 'azimuth_dip_dir',
       dip: 'dip',
       quality: 'meas_quality',
+    },
+  };
+
+  const VECTOR_MEASUREMENT_KEYS = {
+    group_bf6rc11: {
+      trend: 'trend',
+      plunge: 'plunge',
+      quality: 'vector_meas_confidence',
     },
   };
 
@@ -85,9 +94,9 @@ const AddEarthquakeModal = ({onPress}) => {
         {formProps.values.earthquake_feature === 'fault_rupture' && (
           <MeasurementButtons
             formProps={formProps}
-            measurementsKeys={MEASUREMENT_KEYS}
+            measurementsKeys={FAULT_ORIENTATION_KEYS}
             setMeasurementsGroupField={setMeasurementsGroupField}
-            setIsMeasurementsModalVisible={setIsMeasurementsModalVisible}
+            setIsMeasurementsModalVisible={setIsFaultOrientationModalVisible}
             survey={survey}
           />
         )}
@@ -97,6 +106,15 @@ const AddEarthquakeModal = ({onPress}) => {
           setChoicesViewKey={setChoicesViewKey}
           formProps={formProps}
         />
+        {formProps.values.fault_slip_meas?.includes('vector_measurement') && (
+          <MeasurementButtons
+            formProps={formProps}
+            measurementsKeys={VECTOR_MEASUREMENT_KEYS}
+            setMeasurementsGroupField={setMeasurementsGroupField}
+            setIsMeasurementsModalVisible={setIsVectorMeasurementModalVisible}
+            survey={survey}
+          />
+        )}
         <LittleSpacer/>
         <FormSlider
           fieldKey={confidenceInFeatureKey}
@@ -107,13 +125,22 @@ const AddEarthquakeModal = ({onPress}) => {
         />
         <LittleSpacer/>
         <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
-        {isMeasurementsModalVisible && (
+        {isFaultOrientationModalVisible && (
           <MeasurementModal
-            measurementsGroup={MEASUREMENT_KEYS[measurementsGroupField.name]}
+            measurementsGroup={FAULT_ORIENTATION_KEYS[measurementsGroupField.name]}
             measurementsGroupLabel={measurementsGroupField.label}
             formName={formName}
             formProps={formProps}
-            setIsMeasurementModalVisible={setIsMeasurementsModalVisible}
+            setIsMeasurementModalVisible={setIsFaultOrientationModalVisible}
+          />
+        )}
+        {isVectorMeasurementModalVisible && (
+          <MeasurementModal
+            measurementsGroup={VECTOR_MEASUREMENT_KEYS[measurementsGroupField.name]}
+            measurementsGroupLabel={measurementsGroupField.label}
+            formName={formName}
+            formProps={formProps}
+            setIsMeasurementModalVisible={setIsVectorMeasurementModalVisible}
           />
         )}
       </>

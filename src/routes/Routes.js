@@ -8,7 +8,6 @@ import AuthStack from './AuthStack';
 import LoadingSplashScreen from '../modules/sign-in/LoadingSplashScreen';
 import useSignInHook from '../modules/sign-in/useSignIn';
 import {login, logout} from '../modules/user/userProfile.slice';
-import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
 
 const Routes = () => {
@@ -27,10 +26,7 @@ const Routes = () => {
 
   const autoSignIn = async () => {
     try {
-      if (Platform.OS === 'web') {
-        dispatch({type: REDUX.CLEAR_STORE});
-        await useSignIn.autoLogin();
-      }
+      if (Platform.OS === 'web') await useSignIn.autoLogin();
       else if (userInfo.name && !isEmpty(currentProject)) dispatch(login());
       else dispatch(logout());
     }
