@@ -20,8 +20,8 @@ import {clearedStatusMessages} from '../home/home.slice';
 import {WarningModal} from '../home/modals';
 
 const ActiveProjectPanel = () => {
-  const [useProject] = useProjectHook();
   const useDownload = useDownloadHook();
+  const useProject = useProjectHook();
 
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);

@@ -12,7 +12,7 @@ import homeStyles from '../home.style';
 const DrawInfo = ({distance, endMeasurement, mapMode, onEndDrawPressed}) => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
 
   return (
     !isEmpty(selectedDatasetId)

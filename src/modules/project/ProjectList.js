@@ -37,7 +37,7 @@ const ProjectList = ({source}) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const useDownload = useDownloadHook();
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const useImport = useImportHook();
 
   useEffect(() => {

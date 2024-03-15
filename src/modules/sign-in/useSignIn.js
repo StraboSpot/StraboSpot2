@@ -1,7 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {Platform} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,7 +15,7 @@ import {
   setProjectLoadSelectionModalVisible,
   setStatusMessagesModalVisible,
 } from '../home/home.slice';
-import useProjectHook from '../project/useProject';
+import {setSelectedProject} from '../project/projects.slice';
 import {login, logout, setUserData} from '../user/userProfile.slice';
 
 const useSignIn = () => {
@@ -27,8 +26,6 @@ const useSignIn = () => {
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
 
   const useServerRequests = useServerRequestsHook();
-  const navigation = useNavigation();
-  const [useProject] = useProjectHook();
 
   const project = useRef(null);
 

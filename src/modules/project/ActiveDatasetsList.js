@@ -11,7 +11,8 @@ import {BLUE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 
 const ActiveDatasetsList = () => {
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
+
   const [refresh] = useState();
   const datasets = useSelector(state => state.project.datasets);
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);

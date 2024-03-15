@@ -24,7 +24,7 @@ const NewProjectForm = ({
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
 
   const useForm = useFormHook();
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
 
   const formRef = useRef(null);
 

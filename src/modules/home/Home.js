@@ -42,7 +42,6 @@ import {
 } from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useHomeHook from '../home/useHome';
-import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -69,8 +68,7 @@ const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
 
   const useHome = useHomeHook();
-  const useImages = useImagesHook();
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const useSpots = useSpotsHook();
   const toast = useToast();
   const useDevice = useDeviceHook();
@@ -129,13 +127,6 @@ const Home = ({navigation, route}) => {
 
   useEffect(() => {
     let updateTimer;
-    // if (Platform.OS === 'android') {
-      // Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
-      //   err => console.error('Error creating app directories', err));
-      // Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
-      //   .catch(err => console.error('Error getting permissions', err));
-      // useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
-    // }
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
         if (res.needsUpdate) {

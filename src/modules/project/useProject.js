@@ -286,7 +286,7 @@ const useProject = () => {
     }
   };
 
-  const projectHelpers = {
+  return {
     addDataset: addDataset,
     checkUserAuthorization: checkUserAuthorization,
     checkValidDateTime: checkValidDateTime,
@@ -308,8 +308,6 @@ const useProject = () => {
     setSwitchValue: setSwitchValue,
     switchProject: switchProject,
   };
-
-  return [projectHelpers];
 };
 
 export default useProject;
