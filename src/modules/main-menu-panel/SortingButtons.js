@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {ButtonGroup} from 'react-native-elements';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {SORTED_VIEWS} from './mainMenu.constants';
 import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
@@ -44,12 +44,4 @@ const SortingButtons = ({spots}) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    spots: state.spot.spots,
-    selectedSpot: state.spot.selectedSpot,
-  };
-};
-
-
-export default connect(mapStateToProps)(SortingButtons);
+export default SortingButtons;
