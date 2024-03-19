@@ -93,7 +93,8 @@ const Home = ({navigation, route}) => {
   const selectedProject = useSelector(state => state.project.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
-  const user = useSelector(state => state.user);
+  const userEmail = useSelector(state => state.user.email);
+  const userName = useSelector(state => state.user.name);
 
   const [buttons, setButtons] = useState(
     {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
@@ -141,7 +142,7 @@ const Home = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    console.log('NAVIGATION UE', route.params);
+    console.log('UE Home', '[navigation, route.params]', route.params);
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });
@@ -152,13 +153,13 @@ const Home = ({navigation, route}) => {
   }, [navigation, route.params]);
 
   useEffect(() => {
-    console.log('UE Home [user]', user);
-    if (user.email && user.name) {
+    console.log('UE Home [user]', userEmail);
+    if (userEmail && userName) {
       Sentry.configureScope((scope) => {
-        scope.setUser({'email': user.email, 'username': user.name});
+        scope.setUser({'email': userEmail, 'username': userName});
       });
     }
-  }, [user]);
+  }, [userEmail, userName]);
 
   useEffect(() => {
     console.log('UE Home [currentImageBasemap, customMaps, stratSection]', currentImageBasemap, customMaps,
@@ -505,7 +506,7 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleSidePanel = () => {
-    console.log('Rendering side panel...');
+    console.log('Toggling side panel...');
     if (isSidePanelVisible) animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
     else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
     return renderSidePanelView();

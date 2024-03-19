@@ -74,7 +74,7 @@ const Map = ({
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const spots = useSelector(state => state.spot.spots);
   const stratSection = useSelector(state => state.map.stratSection);
-  const user = useSelector(state => state.user);
+  const userEmail = useSelector(state => state.user.email);
   const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
 
   const [allowMapViewMove, setAllowMapViewMove] = useState(!useMaps.isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT);
@@ -107,7 +107,7 @@ const Map = ({
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    console.log('UE Map [user, isOnline]', user, isOnline);
+    console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
     if (isOnline.isInternetReachable && !currentBasemap) useMaps.setBasemap().catch(console.error);
     else if (isOnline.isInternetReachable && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
@@ -130,7 +130,7 @@ const Map = ({
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
     clearVertexes();
-  }, [user, isOnline]);
+  }, [userEmail, isOnline]);
 
   useEffect(() => {
     console.log(

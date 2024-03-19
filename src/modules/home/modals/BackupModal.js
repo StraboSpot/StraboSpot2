@@ -13,14 +13,14 @@ import overlayStyles from '../overlays/overlay.styles';
 const BackupModal = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
-  const user = useSelector(state => state.user);
+  const userEmail = useSelector(state => state.user.email);
   const isBackModalVisible = useSelector(state => state.home.isBackupModalVisible);
   const [backupFileName, setBackupFileName] = useState('');
 
   const useExport = useExportHook();
 
   useEffect(() => {
-    console.log('UE BackupModal [currentProject, user]', currentProject, user);
+    console.log('UE BackupModal [currentProject, user]', currentProject, userEmail);
     if (!isEmpty(currentProject) && isBackModalVisible) {
       setBackupFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
     }
