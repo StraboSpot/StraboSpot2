@@ -21,8 +21,8 @@ const ConnectionStatus = () => {
 
   // Subscribe
   NetInfo.addEventListener((state) => {
-    console.log('Connection type:', state.type);
-    console.log('Is connected?', state.isConnected);
+    console.log('Checking Connection Status...');
+    console.log('Is connected?', state.isConnected, '- Connection type:', state.type);
     if (state.isInternetReachable !== null && state.isConnected !== null) dispatch(setOnlineStatus(state));
   });
 };
