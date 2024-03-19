@@ -19,13 +19,14 @@ const Nesting = () => {
   const useNesting = useNestingHook();
 
   const dispatch = useDispatch();
-  const notebookPageVisible = useSelector(state => (!isEmpty(state.notebook.visibleNotebookPagesStack)
-    && state.notebook.visibleNotebookPagesStack.slice(-1)[0]));
+  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
   const [childrenGenerations, setChildrenGenerations] = useState();
   const [parentGenerations, setParentGenerations] = useState();
+
+  const notebookPageVisible = !isEmpty(pagesStack) && pagesStack.slice(-1)[0];
 
   useEffect(() => {
     console.log('UE Nesting [spots, selectedSpot]', spots, selectedSpot);

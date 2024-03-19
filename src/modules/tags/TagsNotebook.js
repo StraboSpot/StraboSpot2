@@ -14,9 +14,11 @@ import {TagDetailModal, TagsAtSpotList} from '../tags';
 
 const TagsNotebook = ({openMainMenu, page}) => {
   const dispatch = useDispatch();
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+
+  const pageVisible = pagesStack.slice(-1)[0];
 
   const closeTagDetailModal = () => {
     setIsDetailModalVisible(false);
@@ -24,7 +26,7 @@ const TagsNotebook = ({openMainMenu, page}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <ReturnToOverviewButton/>
       <FlatList
         ListHeaderComponent={
@@ -49,7 +51,7 @@ const TagsNotebook = ({openMainMenu, page}) => {
         closeModal={closeTagDetailModal}
         type={page?.key === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
       />
-    </React.Fragment>
+    </>
   );
 };
 

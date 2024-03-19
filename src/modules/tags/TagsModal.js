@@ -32,7 +32,7 @@ const TagsModal = ({
   const dispatch = useDispatch();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const selectedFeature = useSelector(state => state.spot.selectedAttributes[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes) || [];
@@ -44,6 +44,8 @@ const TagsModal = ({
   const [checkedTagsTemp, setCheckedTagsTemp] = useState([]);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+
+  const pageVisible = pagesStack.slice(-1)[0];
 
   const addTag = () => {
     dispatch(setSelectedTag({}));

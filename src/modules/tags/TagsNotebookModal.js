@@ -18,12 +18,14 @@ const TagsNotebookModal = ({
                            }) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
   const useTags = useTagsHook();
+
+  const pageVisible = pagesStack.slice(-1)[0];
 
   const addTag = async () => {
     useTags.addTag();
