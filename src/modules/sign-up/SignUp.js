@@ -10,7 +10,7 @@ import {validate} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import StatusDialog from '../../shared/ui/StatusDialogBox';
-import Splashscreen from '../splashscreen/Splashscreen';
+import SplashScreen from '../splash-screen/SplashScreen';
 
 const SignUp = ({navigation}) => {
   const initialState = {
@@ -158,7 +158,7 @@ const SignUp = ({navigation}) => {
   };
 
   return (
-    <Splashscreen>
+    <SplashScreen>
       <View style={styles.signUpContainer}>
         <View style={styles.inputContainer}>
           <TextInput
@@ -225,7 +225,7 @@ const SignUp = ({navigation}) => {
         <Text>{statusMessage}</Text>
       </StatusDialog>
       <Loading isLoading={isLoading}/>
-    </Splashscreen>
+    </SplashScreen>
   );
 };
 

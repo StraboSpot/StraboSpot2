@@ -3,7 +3,7 @@ import {ImageBackground, Platform, ScrollView, Text, useWindowDimensions, View} 
 
 import {useSelector} from 'react-redux';
 
-import splashscreenStyles from './splashscreen.styles';
+import splashScreenStyles from './splashScreen.styles';
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
@@ -11,42 +11,42 @@ import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
 
-const Splashscreen = ({children}) => {
+const SplashScreen = ({children}) => {
   const {width, height} = useWindowDimensions();
 
   const fontSize = getFontSizeByWindowWidth({width, height}, 40);
-  const titleStyles = [splashscreenStyles.title, {fontSize}];
+  const titleStyles = [splashScreenStyles.title, {fontSize}];
 
   const loading = useSelector(state => state.home.loading.home);
 
   return (
     <ImageBackground
-      source={require('../../assets/images/splashscreen-1.jpeg')}
-      style={splashscreenStyles.backgroundImage}>
+      source={require('../../assets/images/splash-screen.jpeg')}
+      style={splashScreenStyles.backgroundImage}>
       <ScrollView automaticallyAdjustKeyboardInsets={true} style={{flex: 1}}>
-        <View style={splashscreenStyles.wifiIndicatorContainer}>
+        <View style={splashScreenStyles.wifiIndicatorContainer}>
           {Platform.OS === 'ios' && <BatteryInfo/>}
           <ConnectionStatusIcon/>
         </View>
-        <View style={splashscreenStyles.contentContainer}>
-          <View style={splashscreenStyles.titleContainer}>
+        <View style={splashScreenStyles.contentContainer}>
+          <View style={splashScreenStyles.titleContainer}>
             <Text style={titleStyles}>StraboSpot 2</Text>
-            <Text style={splashscreenStyles.versionNumber}>
+            <Text style={splashScreenStyles.versionNumber}>
               v{VERSION_NUMBER}
             </Text>
           </View>
           {children}
         </View>
         {__DEV__ && (
-          <View style={splashscreenStyles.dimensionsContainer}>
-            <Text style={splashscreenStyles.dimensionsText}>
+          <View style={splashScreenStyles.dimensionsContainer}>
+            <Text style={splashScreenStyles.dimensionsText}>
               Screen Dimensions
             </Text>
-            <Text style={splashscreenStyles.dimensionsText}>
+            <Text style={splashScreenStyles.dimensionsText}>
               {' '}
               H: {height.toFixed(0)}{' '}
             </Text>
-            <Text style={splashscreenStyles.dimensionsText}>
+            <Text style={splashScreenStyles.dimensionsText}>
               W: {width.toFixed(0)}{' '}
             </Text>
           </View>
@@ -58,4 +58,4 @@ const Splashscreen = ({children}) => {
   );
 };
 
-export default Splashscreen;
+export default SplashScreen;

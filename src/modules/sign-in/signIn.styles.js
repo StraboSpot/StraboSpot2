@@ -45,17 +45,6 @@ const styles = StyleSheet.create({
     padding: 8,
     width: 350,
   },
-  loadingSplashScreenContainer: {
-    alignItems: 'center',
-    backgroundColor: 'lightgrey',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingSplashScreenText: {
-    fontSize: themes.LARGE_TEXT_SIZE,
-    fontWeight: themes.TEXT_WEIGHT,
-    padding: 50,
-  },
   signInContainer: {
     alignItems: 'center',
   },

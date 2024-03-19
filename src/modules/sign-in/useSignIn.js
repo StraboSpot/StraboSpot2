@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useRef} from 'react';
 import {Platform} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
@@ -21,68 +21,30 @@ import {login, logout, setUserData} from '../user/userProfile.slice';
 const useSignIn = () => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
-  const user = useSelector(state => state.user);
-  const encodedLogin = useSelector(state => state.user.encoded_login);
-  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+  const userEmail = useSelector(state => state.user.email);
 
   const useServerRequests = useServerRequestsHook();
 
   const project = useRef(null);
 
-  let timeout;
-
-  useEffect(() => {
-    if (Platform.OS === 'web' && isAuthenticated) checkAuthentication();
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [isAuthenticated]);
-
-  const checkAuthentication = async () => {
-    const credentials = atob(encodedLogin);
-    const email = credentials.split(':')[0];
-    const password = credentials.split(':')[1];
-    await signIn(email, password);
-    console.log('Passed Authentication Check');
-    checkAuthenticationRestartTimer();
-  };
-
-  const checkAuthenticationRestartTimer = () => {
-    console.log('Restarting Authentication Check Timer...');
-
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      checkAuthentication();
-    }, 1000 * 300);  // 300 Seconds (5 minutes)
-  };
-
-  useEffect(() => {
-    console.log('Encoded Login Updated', encodedLogin);
-    if (Platform.OS === 'web' && !isEmpty(encodedLogin) && !isEmpty(project.current?.id)) {
-      useProject.loadProjectWeb(project.current);
-    }
-  }, [encodedLogin, project]);
-
   const autoLogin = async () => {
+    console.log('Performing Auto Login...');
+
     const url = new URL(window.location).href;
     const credentialsRegEx = new RegExp('[?&]' + 'credentials' + '=([^&]+).*$');
     const credentialsEncoded = url.match(credentialsRegEx)?.[1];
-
     const projectIdRegEx = new RegExp('[?&]' + 'projectid' + '=([^&]+).*$');
     const projectId = url.match(projectIdRegEx)?.[1];
     project.current = {id: projectId};
-
-    console.log('Credentials', credentialsEncoded, 'Project Id', projectId);
-    console.log('Auto Login Here...');
-    console.log('First, force logout and destroy project');
-    console.log('Credentials set, check for validity.');
 
     if (credentialsEncoded) {
       try {
         const credentials = atob(credentialsEncoded);
         const email = credentials.split('*****')[0];
         const password = credentials.split('*****')[1];
-        return await signIn(email, password);
+        console.log('Got Credentials:', credentialsEncoded, '\nGot Project Id:', projectId);
+        await signIn(email, password);
+        dispatch(setSelectedProject({project: {id: projectId}}));
       }
       catch (err) {
         autoLoginError(err);
@@ -98,13 +60,10 @@ const useSignIn = () => {
     dispatch(addedStatusMessage('Error loading project!'));
     dispatch(setErrorMessagesModalVisible(true));
     dispatch(setLoadingStatus({view: 'home', bool: false}));
+    throw Error;
   };
 
-  const createAccount = () => {
-    navigation.navigate('SignUp');
-  };
-
-  const getUserImage = async (userProfileImage) => {
+  const convertImageToBase64 = async (userProfileImage) => {
     if (userProfileImage) {
       return new Promise((resolve, reject) => {
         readDataUrl(userProfileImage, (base64Image) => {
@@ -120,33 +79,32 @@ const useSignIn = () => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(user.name)) dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(userEmail)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
     setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
   };
 
-  const signIn = async (username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible) => {
-    console.log(`Authenticating ${username} and signing in...`);
+  const signIn = async (email, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible) => {
+    console.log(`Authenticating ${email} and getting user profile...`);
     try {
-      const userAuthResponse = await useServerRequests.authenticateUser(username, password);
-      // login with provider
-      if (userAuthResponse?.valid === 'true') {
-        Sentry.configureScope((scope) => {
-          scope.setUser({'username': user.name, 'email': user.email});
-        });
-        const newEncodedLogin = Base64.encode(username + ':' + password);
-        await updateUserResponse(newEncodedLogin);
-        console.log(`${username} is successfully logged in!`);
-        if (Platform.OS !== 'web') {
-          isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
-          dispatch(setLoadingStatus({view: 'home', bool: false}));
-        }
-        if (setUsername) setUsername('');
-        if (setPassword) setPassword('');
-        dispatch(login());
+      const newEncodedLogin = Base64.encode(email + ':' + password);
+      let userProfileRes = await useServerRequests.getProfile(newEncodedLogin);
+      const userProfileImage = await useServerRequests.getProfileImage(newEncodedLogin);
+      const image = isEmpty(userProfileImage) ? null : await convertImageToBase64(userProfileImage);
+      console.log(`${email} is successfully logged in!`);
+      dispatch(setUserData({...userProfileRes, image: image, encoded_login: newEncodedLogin}));
+      dispatch(login());
+
+      Sentry.configureScope((scope) => {
+        scope.setUser({'username': userProfileRes.name, 'email': email});
+      });
+
+      if (Platform.OS !== 'web') {
+        isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
       }
-      else throw Error('Login Failure!\n\nIncorrect username and/or password');
-      return userAuthResponse?.valid;
+      if (setUsername) setUsername('');
+      if (setPassword) setPassword('');
     }
     catch (err) {
       console.error(err);
@@ -160,25 +118,8 @@ const useSignIn = () => {
     }
   };
 
-  const updateUserResponse = async (newEncodedLogin) => {
-    try {
-      let userProfileRes = await useServerRequests.getProfile(newEncodedLogin);
-      const userProfileImage = await useServerRequests.getProfileImage(newEncodedLogin);
-      console.log('userProfileImage', userProfileImage);
-      if (!isEmpty(userProfileImage)) {
-        const profileImage = await getUserImage(userProfileImage);
-        dispatch(setUserData({...userProfileRes, image: profileImage, encoded_login: newEncodedLogin}));
-      }
-      else dispatch(setUserData({...userProfileRes, image: null, encoded_login: newEncodedLogin}));
-    }
-    catch (err) {
-      console.log('SIGN IN ERROR', err);
-    }
-  };
-
   return {
     autoLogin: autoLogin,
-    createAccount: createAccount,
     guestSignIn: guestSignIn,
     signIn: signIn,
   };
