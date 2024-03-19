@@ -30,17 +30,15 @@ const SortingButtons = ({spots}) => {
   };
 
   return (
-    <React.Fragment>
-      <ButtonGroup
-        selectedIndex={selectedButtonIndex}
-        buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
-        containerStyle={{height: 50}}
-        buttonStyle={{padding: 5}}
-        selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-        textStyle={{fontSize: 12}}
-        onPress={selected => updateIndex(selected)}
-      />
-    </React.Fragment>
+    <ButtonGroup
+      selectedIndex={selectedButtonIndex}
+      buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
+      containerStyle={{height: 50}}
+      buttonStyle={{padding: 5}}
+      selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+      textStyle={{fontSize: 12}}
+      onPress={selected => updateIndex(selected)}
+    />
   );
 };
 
