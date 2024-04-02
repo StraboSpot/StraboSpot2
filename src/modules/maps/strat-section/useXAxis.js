@@ -3,13 +3,13 @@ import {useSelector} from 'react-redux';
 
 import {BASIC_LITHOLOGIES_LABELS, CARBONATE_KEYS, GRAIN_SIZE_KEYS, LITHOLOGIES_KEYS} from './stratSection.constants';
 import {useFormHook} from '../../form';
-import useMapsHook from '../useMaps';
+import useCoordsHook from '../useCoords';
 
 const useXAxis = (n) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useMaps = useMapsHook();
   const useForm = useFormHook();
+  const useCoords = useCoordsHook();
 
   const xCl = 10;  // Horizontal spacing between clastic tick marks
   const xCa = 23.3; // Horizontal space between carbonate tick marks
@@ -25,7 +25,7 @@ const useXAxis = (n) => {
   const getXAxis = () => {
     const xAxis = JSON.parse(JSON.stringify(lineString));
     xAxis.geometry.coordinates = n === 1 ? [[0, 0], [15 * xCl + 5, 0]] : [[0, -n * s], [15 * xCl + 5, -n * s]];
-    return useMaps.convertImagePixelsToLatLong(xAxis);
+    return useCoords.convertImagePixelsToLatLong(xAxis);
   };
 
   const getXAxisTickMarks = () => {
@@ -63,7 +63,7 @@ const useXAxis = (n) => {
       const tickMark = JSON.parse(JSON.stringify(lineString));
       tickMark.properties.label = labels[i];
       tickMark.geometry.coordinates = n === 1 ? [[x, 0], [x, -5]] : [[x, n * -s], [x, n * -s - 5]];
-      tickMarks.push(useMaps.convertImagePixelsToLatLong(tickMark));
+      tickMarks.push(useCoords.convertImagePixelsToLatLong(tickMark));
       x += xCl;
     });
     return turf.featureCollection(tickMarks);

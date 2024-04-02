@@ -1,10 +1,9 @@
 import {PixelRatio, Platform} from 'react-native';
 
 import * as turf from '@turf/turf';
-import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {BASEMAPS, GEO_LAT_LNG_PROJECTION, MAP_MODES, MAP_PROVIDERS, PIXEL_PROJECTION} from './maps.constants';
+import {BASEMAPS, MAP_MODES, MAP_PROVIDERS} from './maps.constants';
 import {
   addedCustomMap,
   clearedStratSection,
@@ -16,6 +15,7 @@ import {
   setStratSection,
 } from './maps.slice';
 import useStratSectionHook from './strat-section/useStratSection';
+import useCoordsHook from './useCoords';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
@@ -32,6 +32,7 @@ import {addedProject, updatedProject} from '../project/projects.slice';
 import useSpotsHook from '../spots/useSpots';
 
 const useMaps = (mapRef) => {
+  const useCoords = useCoordsHook();
   const useServerRequests = useServerRequestsHook();
   const useSpots = useSpotsHook();
   const useStratSection = useStratSectionHook();
@@ -104,52 +105,6 @@ const useMaps = (mapRef) => {
     return tileUrl;
   };
 
-  // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
-  const convertCoords = (feature, fromProjection, toProjection) => {
-    if (feature.geometry.type === 'Point') {
-      feature.geometry.coordinates = proj4(fromProjection, toProjection, feature.geometry.coordinates);
-    }
-    else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiPoint') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((pointCoords) => {
-        return proj4(fromProjection, toProjection, pointCoords);
-      });
-    }
-    else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiLineString') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((lineCoords) => {
-        return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
-      });
-    }
-    else if (feature.geometry.type === 'MultiPolygon') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((polygonCoords) => {
-        return polygonCoords.map((lineCoords) => {
-          return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
-        });
-      });
-    }
-    // Interbedded (Geometry Collections)
-    else if (feature.geometry.type === 'GeometryCollection') {
-      feature.geometry.geometries = feature.geometry.geometries.map((geometry) => {
-        return {
-          type: geometry.type,
-          coordinates: geometry.coordinates.map((lineCoords) => {
-            return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
-          }),
-        };
-      });
-    }
-    return feature;
-  };
-
-  // Convert WGS84 to image x,y pixels, assuming x,y are web mercator
-  const convertFeatureGeometryToImagePixels = (feature) => {
-    return convertCoords(feature, GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION);
-  };
-
-  // Convert image x,y pixels to WGS84, assuming x,y are web mercator
-  const convertImagePixelsToLatLong = (feature) => {
-    return convertCoords(feature, PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION);
-  };
-
   const customMapDetails = (map) => {
     if (map.source === 'map_warper') {
       const warningMessage = 'Map Warper maps are no longer available. Download the .tiff'
@@ -214,22 +169,6 @@ const useMaps = (mapRef) => {
       } // else we can ignore that feature.
     }
     return [minDistance, minIndex];
-  };
-
-  // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
-  const getCoordQuad = (imageBasemapProps, altOrigin) => {
-    if (!imageBasemapProps) return undefined;
-    // identify the [lat,lng] corners of the image basemap
-    const x = altOrigin && altOrigin.x || 0;
-    const y = altOrigin && altOrigin.y || 0;
-    const bottomLeft = altOrigin ? proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [x, y]) : [x, y];
-    const bottomRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [imageBasemapProps.width + x, y]);
-    const topRight = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-      [imageBasemapProps.width + x, imageBasemapProps.height + y]);
-    const topLeft = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, [x, imageBasemapProps.height + y]);
-    let coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
-    console.log('The coordinates identified for image-basemap :', coordQuad);
-    return coordQuad;
   };
 
   // Get selected and not selected Spots to display when not editing
@@ -414,35 +353,37 @@ const useMaps = (mapRef) => {
 
   // Spots with multiple measurements become multiple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
-      let mappedFeatures = [];
-      spotsToFeatures.map((spot) => {
-        if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint') && !isEmpty(spot.properties.orientation_data)) {
-          spot.properties.orientation_data.map((orientation, i) => {
-            if (!isEmpty(orientation)) {
-              const feature = JSON.parse(JSON.stringify(spot));
-              delete feature.properties.orientation_data;
-              !isEmpty(orientation.associated_orientation) && orientation.associated_orientation.map((associatedOrientation) => {
-                feature.properties.orientation = associatedOrientation;
-                mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
-              });
-              feature.properties.orientation = orientation;
-              //feature.properties.orientation_num = i.toString();
-              mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
-            }
-            else console.log('Stupid spot', spot.properties.id);
-          });
-        }
-        else if (spot.geometry.type === 'GeometryCollection') {
-          spot.geometry.geometries.forEach((g, i) => {
+    let mappedFeatures = [];
+    spotsToFeatures.map((spot) => {
+      if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint')
+        && !isEmpty(spot.properties.orientation_data)) {
+        spot.properties.orientation_data.map((orientation, i) => {
+          if (!isEmpty(orientation)) {
             const feature = JSON.parse(JSON.stringify(spot));
-            if (i % 2 === 1) feature.properties.isInterbed = true;
-            feature.geometry = g;
-            mappedFeatures.push(feature);
-          });
-        }
-        else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
-      });
-      return mappedFeatures;
+            delete feature.properties.orientation_data;
+            !isEmpty(orientation.associated_orientation)
+            && orientation.associated_orientation.map((associatedOrientation) => {
+              feature.properties.orientation = associatedOrientation;
+              mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+            });
+            feature.properties.orientation = orientation;
+            //feature.properties.orientation_num = i.toString();
+            mappedFeatures.push(JSON.parse(JSON.stringify(feature)));
+          }
+          else console.log('Stupid spot', spot.properties.id);
+        });
+      }
+      else if (spot.geometry.type === 'GeometryCollection') {
+        spot.geometry.geometries.forEach((g, i) => {
+          const feature = JSON.parse(JSON.stringify(spot));
+          if (i % 2 === 1) feature.properties.isInterbed = true;
+          feature.geometry = g;
+          mappedFeatures.push(feature);
+        });
+      }
+      else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
+    });
+    return mappedFeatures;
   };
 
   // Point Spots currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
@@ -469,7 +410,7 @@ const useMaps = (mapRef) => {
     let editedSpot = spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
     spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
-    if (currentImageBasemap || stratSection) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);
+    if (currentImageBasemap || stratSection) spotFoundCopy = useCoords.convertImagePixelsToLatLong(spotFoundCopy);
     const explodedFeatures = turf.explode(spotFoundCopy).features;
     const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
     const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);
@@ -626,7 +567,7 @@ const useMaps = (mapRef) => {
       //spot selected is already on the same image basemap or strat section, zoomToSpot in sync mode
       else {
         const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
-        const spotInLatLng = convertImagePixelsToLatLong(selectedSpotCopy);
+        const spotInLatLng = useCoords.convertImagePixelsToLatLong(selectedSpotCopy);
         zoomToSpots([spotInLatLng], map, camera);
       }
     }
@@ -664,12 +605,9 @@ const useMaps = (mapRef) => {
   return {
     buildStyleURL: buildStyleURL,
     buildTileUrl: buildTileUrl,
-    convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
-    convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     customMapDetails: customMapDetails,
     deleteMap: deleteMap,
     getAllMappedSpots: getAllMappedSpots,
-    getCoordQuad: getCoordQuad,
     getDisplayedSpots: getDisplayedSpots,
     getDrawFeatureAtPress: getDrawFeatureAtPress,
     getExtentAndZoomCall: getExtentAndZoomCall,
