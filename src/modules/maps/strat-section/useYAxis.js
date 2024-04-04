@@ -2,10 +2,10 @@ import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from '../maps.constants';
-import useCoordsHook from '../useCoords';
+import useMapCoordsHook from '../useMapCoords';
 
 const useYAxis = (spotsDisplayed) => {
-  const useCoords = useCoordsHook();
+  const useMapCoords = useMapCoordsHook();
 
   const lineString = {type: 'Feature', properties: {}, geometry: {type: 'LineString', coordinates: []}};
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
@@ -37,7 +37,7 @@ const useYAxis = (spotsDisplayed) => {
       const tickMark = JSON.parse(JSON.stringify(lineString));
       tickMark.properties.label = y / yMultiplier;
       tickMark.geometry.coordinates = [[0, y], [-5, y]];
-      tickMarks.push(useCoords.convertImagePixelsToLatLong(tickMark));
+      tickMarks.push(useMapCoords.convertImagePixelsToLatLong(tickMark));
       y += yMultiplier;
     }
     return turf.featureCollection(tickMarks);

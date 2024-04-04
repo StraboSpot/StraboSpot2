@@ -12,7 +12,7 @@ import config from '../../../utils/config';
 import {addedStatusMessage, removedLastStatusMessage} from '../../home/home.slice';
 import {DEFAULT_MAPS} from '../maps.constants';
 import {setCurrentBasemap} from '../maps.slice';
-import useMapsHook from '../useMaps';
+import useMapURLHook from '../useMapURL';
 
 const useMapsOffline = () => {
   let zipUID;
@@ -31,7 +31,7 @@ const useMapsOffline = () => {
   const url = 'file://' + APP_DIRECTORIES.TILE_CACHE;
 
   const useDevice = useDeviceHook();
-  const useMaps = useMapsHook();
+  const useMapURL = useMapURLHook();
   const useServerRequests = useServerRequestsHook();
 
   //INTERNAL
@@ -361,7 +361,7 @@ const useMapsOffline = () => {
   const setOfflineMapTiles = async (map) => {
     console.log('Switch To Offline Map: ', map);
     const tilePath = '/tiles/{z}_{x}_{y}.png';
-    const mapStyleURL = useMaps.buildStyleURL({...map, tilePath: tilePath, url: [url]});
+    const mapStyleURL = useMapURL.buildStyleURL({...map, tilePath: tilePath, url: [url]});
     console.log('tempCurrentBasemap: ', mapStyleURL);
     dispatch(setCurrentBasemap(mapStyleURL));
     // dispatch(setOfflineMapVisible(true));

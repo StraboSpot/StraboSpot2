@@ -11,7 +11,7 @@ import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import {PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import {LABEL_DICTIONARY} from '../../form';
-import useLocationHook from '../../maps/useLocation';
+import useMapLocationHook from '../../maps/useMapLocation';
 import {PAGE_KEYS} from '../../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
 import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
@@ -26,7 +26,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => 
   const [isNotebookMenuVisible, setIsNotebookMenuVisible] = useState(false);
 
   const useSpots = useSpotsHook();
-  const useLocation = useLocationHook();
+  const useMapLocation = useMapLocationHook();
 
   const getSpotCoordText = () => {
     if (spot.geometry && spot.geometry.type) {
@@ -146,7 +146,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => 
   };
 
   const setToCurrentLocation = async () => {
-    const currentLocation = await useLocation.getCurrentLocation();
+    const currentLocation = await useMapLocation.getCurrentLocation();
     let editedSpot = JSON.parse(JSON.stringify(spot));
     editedSpot.geometry = turf.point([currentLocation.longitude, currentLocation.latitude]).geometry;
     if (currentLocation.altitude) editedSpot.properties.altitude = currentLocation.altitude;

@@ -24,8 +24,9 @@ import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
-import useCoordsHook from './useCoords';
-import useMapsHook from './useMaps';
+import useMapCoordsHook from './useMapCoords';
+import useMapFeaturesHook from './useMapFeatures';
+import useMapURLHook from './useMapURL';
 import useMapViewHook from './useMapView';
 import VertexDrag from './VertexDrag';
 import {isEmpty} from '../../shared/Helpers';
@@ -65,11 +66,12 @@ const Basemap = ({
 
   const {mapRef, cameraRef} = forwardedRef;
 
-  const useCoords = useCoordsHook();
   const useImages = useImagesHook();
+  const useMapCoords = useMapCoordsHook();
+  const useMapFeatures = useMapFeaturesHook();
   const useMapSymbology = useMapSymbologyHook();
+  const useMapURL = useMapURLHook();
   const useMapView = useMapViewHook();
-  const useMaps = useMapsHook();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
@@ -79,13 +81,13 @@ const Basemap = ({
   const [initialCenter, setInitialCenter] = useState(center);
   const [initialZoom, setInitialZoom] = useState(zoom);
 
-  const coordQuad = useCoords.getCoordQuad(currentImageBasemap);
+  const coordQuad = useMapCoords.getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
-    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
+    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
   const featuresSelected = turf.featureCollection(
-    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
+    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
 
   // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
   const featuresNotSelectedUniq = turf.featureCollection(
@@ -227,7 +229,7 @@ const Basemap = ({
               <MapboxGL.RasterSource
                 key={customMap.id}
                 id={customMap.id}
-                tileUrlTemplates={[useMaps.buildTileUrl(customMap)]}
+                tileUrlTemplates={[useMapURL.buildTileURL(customMap)]}
               >
                 <MapboxGL.RasterLayer
                   belowLayerID={'pointLayerSelectedHalo'}

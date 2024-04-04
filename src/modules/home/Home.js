@@ -51,7 +51,7 @@ import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import {MAP_MODES} from '../maps/maps.constants';
 import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import useLocationHook from '../maps/useLocation';
+import useMapLocationHook from '../maps/useMapLocation';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
@@ -73,7 +73,7 @@ const Home = ({navigation, route}) => {
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
-  const useLocation = useLocationHook();
+  const useMapLocation = useMapLocationHook();
   const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
@@ -465,7 +465,7 @@ const Home = ({navigation, route}) => {
   const setPointAtCurrentLocation = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useLocation.setPointAtCurrentLocation();
+      await useMapLocation.setPointAtCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(
         `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,

@@ -1,8 +1,14 @@
 import proj4 from 'proj4';
+import {useSelector} from 'react-redux';
 
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
+import useServerRequestsHook from '../../services/useServerRequests';
+import {isEmpty} from '../../shared/Helpers';
 
-const useCoords = () => {
+const useMapCoords = () => {
+  const isOnline = useSelector(state => state.connections.isOnline);
+
+  const useServerRequests = useServerRequestsHook();
 
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
   const convertCoords = (feature, fromProjection, toProjection) => {
@@ -66,11 +72,19 @@ const useCoords = () => {
     return coordQuad;
   };
 
+  const getMyMapsBboxCoords = async (map) => {
+    if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
+      const myMapsBbox = await useServerRequests.getMyMapsBbox(map.id);
+      if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
+    }
+  };
+
   return {
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     getCoordQuad: getCoordQuad,
+    getMyMapsBboxCoords: getMyMapsBboxCoords,
   };
 };
 
-export default useCoords;
+export default useMapCoords;

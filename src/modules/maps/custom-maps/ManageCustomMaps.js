@@ -4,20 +4,23 @@ import {FlatList} from 'react-native';
 import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
+import useCustomMapHook from './useCustomMap';
 import commonStyles from '../../../shared/common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../../../shared/styles.constants';
 import AddButton from '../../../shared/ui/AddButton';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import useMapHook from '../useMaps';
+import useMapHook from '../useMap';
 
 const ManageCustomMaps = ({zoomToCustomMap}) => {
   console.log('Rendering ManageCustomMaps...');
 
   const customMaps = useSelector(state => state.map.customMaps);
   const isOnline = useSelector(state => state.connections.isOnline);
-  const useMaps = useMapHook();
+
+  const useCustomMap = useCustomMapHook();
+  const useMap = useMapHook();
 
   const {isInternetReachable, isConnected} = isOnline;
 
@@ -34,7 +37,7 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={item.id}
-        onPress={() => useMaps.customMapDetails(item)}>
+        onPress={() => useCustomMap.getCustomMapDetails(item)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
           <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
@@ -49,8 +52,8 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
             color={PRIMARY_ACCENT_COLOR}
             onPress={async () => {
               let customMapWithBbox;
-              if (item.overlay) customMapWithBbox = await useMaps.saveCustomMap({...item, isViewable: true});
-              else customMapWithBbox = await useMaps.setBasemap(item.id);
+              if (item.overlay) customMapWithBbox = await useCustomMap.saveCustomMap({...item, isViewable: true});
+              else customMapWithBbox = await useMap.setBasemap(item.id);
               customMapWithBbox.bbox && setTimeout(() => zoomToCustomMap(customMapWithBbox.bbox), 1000);
             }}
           />
@@ -61,9 +64,9 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <AddButton
-        onPress={() => useMaps.customMapDetails({})}
+        onPress={() => useCustomMap.getCustomMapDetails({})}
         title={'Add New Custom Map'}
         type={'outline'}
       />
@@ -75,7 +78,7 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No Custom Maps'}/>}
       />
-    </React.Fragment>
+    </>
   );
 };
 

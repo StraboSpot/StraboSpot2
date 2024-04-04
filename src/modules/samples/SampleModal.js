@@ -12,7 +12,7 @@ import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
-import useLocationHook from '../maps/useLocation';
+import useMapLocationHook from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpotsHook} from '../spots';
@@ -26,7 +26,7 @@ const SampleModal = (props) => {
 
   const useForm = useFormHook();
   const useSpots = useSpotsHook();
-  const useLocation = useLocationHook();
+  const useMapLocation = useMapLocationHook();
 
   const [namePrefix, setNamePrefix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
@@ -154,7 +154,7 @@ const SampleModal = (props) => {
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         let pointSetAtCurrentLocation
-          = await useLocation.setPointAtCurrentLocation();
+          = await useMapLocation.setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {
