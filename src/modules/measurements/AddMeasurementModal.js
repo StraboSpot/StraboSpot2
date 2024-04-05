@@ -231,7 +231,8 @@ const AddMeasurementModal = ({onPress}) => {
                     />
                   </View>
                 </>
-              {/*)}*/}
+              )
+            }
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
               && getPlanarTemplates(relevantTemplates).length <= 1 && (
                 <React.Fragment>
