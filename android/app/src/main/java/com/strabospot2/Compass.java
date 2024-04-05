@@ -55,7 +55,7 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
     private Sensor sensorMagneticField;
     private final float[] lastAccelerometer = new float[3];
     private final float[] lastMagnetometer = new float[3];
-    private int[] rotationMatrixArray = new int[5];
+    private int[][] rotationMatrixArray = new int[5][];
     private final float[] orientation = new float[3];
     private final float[] rotationMatrix = new float[9];
     boolean isLastAccelerometerCopied = false;
@@ -144,9 +144,6 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
                 mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha) * event.values[2];
             }
 
-//            float R[] = new float[9];
-//            float I[] = new float[9];
-
             boolean success = SensorManager.getRotationMatrix(rotationMatrix, I, mGravity, mGeomagnetic);
 
 //            if (success) {
@@ -163,55 +160,34 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
 //        if(this.listenerCount <= 0) {
 //            return; // avoid all the computation if there are no observers
 //        }
-//         double timeStamp = System.currentTimeMillis();
-//         WritableMap data = this.arguments.createMap();
-
-//         Log.d("MatrixDataModule", "Sensor is changing" + sensorEvent);
-//         if (sensorEvent.sensor == sensorAccelerometer) {
-//             System.arraycopy(sensorEvent.values, 0, lastAccelerometer, 0, sensorEvent.values.length);
-//             isLastAccelerometerCopied = true;
-//         } else if (sensorEvent.sensor == sensorMagneticField) {
-//             System.arraycopy(sensorEvent.values, 0, lastMagnetometer, 0, sensorEvent.values.length);
-//             isLastMagnetometerCopied = true;
-//         }
-
-//        if (isLastAccelerometerCopied && isLastAccelerometerCopied && System.currentTimeMillis() - lastUpdatedTime > 250) {
-//         SensorManager.getRotationMatrix(rotationMatrix, null, lastAccelerometer, lastMagnetometer);
-//         SensorManager.getOrientation(rotationMatrix, orientation);
-//         System.arraycopy(rotationMatrix, 0, rotationMatrixArray, 0, rotationMatrixArray.length);
-//
-//         data.putDouble("yaw", orientation[0]);
-//         data.putDouble("pitch", orientation[1]);
-//         data.putDouble("roll", orientation[2]);
-//         data.putDouble("M11", rotationMatrix[0]);
-//         data.putDouble("M12", rotationMatrix[1]);
-//         data.putDouble("M13", rotationMatrix[2]);
-//         data.putDouble("M21", rotationMatrix[3]);
-//         data.putDouble("M22", rotationMatrix[4]);
-//         data.putDouble("M23", rotationMatrix[5]);
-//         data.putDouble("M31", rotationMatrix[6]);
-//         data.putDouble("M32", rotationMatrix[7]);
-//         data.putDouble("M33", rotationMatrix[8]);
-//
-//         sendEvent("rotationMatrix", data);
-//         Log.println(Log.WARN,"Matrix Array", rotationMatrix);
-
         }
     }
 
     private void sendAzimuthChangeEvent() {
         WritableMap wm = Arguments.createMap();
 
-        wm.putDouble("newAzimuth", azimuth);
+        // Transposed Matrix
+        wm.putDouble("heading", azimuth);
         wm.putDouble("M11", rotationMatrix[0]);
-        wm.putDouble("M12", rotationMatrix[1]);
-        wm.putDouble("M13", rotationMatrix[2]);
-        wm.putDouble("M21", rotationMatrix[3]);
+        wm.putDouble("M12", rotationMatrix[3]);
+        wm.putDouble("M13", rotationMatrix[6]);
+        wm.putDouble("M21", rotationMatrix[1]);
         wm.putDouble("M22", rotationMatrix[4]);
-        wm.putDouble("M23", rotationMatrix[5]);
-        wm.putDouble("M31", rotationMatrix[6]);
-        wm.putDouble("M32", rotationMatrix[7]);
+        wm.putDouble("M23", rotationMatrix[7]);
+        wm.putDouble("M31", rotationMatrix[2]);
+        wm.putDouble("M32", rotationMatrix[5]);
         wm.putDouble("M33", rotationMatrix[8]);
+
+//         wm.putDouble("newAzimuth", azimuth);
+//         wm.putDouble("M11", rotationMatrix[0]);
+//         wm.putDouble("M12", rotationMatrix[1]);
+//         wm.putDouble("M13", rotationMatrix[2]);
+//         wm.putDouble("M21", rotationMatrix[3]);
+//         wm.putDouble("M22", rotationMatrix[4]);
+//         wm.putDouble("M23", rotationMatrix[5]);
+//         wm.putDouble("M31", rotationMatrix[6]);
+//         wm.putDouble("M32", rotationMatrix[7]);
+//         wm.putDouble("M33", rotationMatrix[8]);
 
 
         sendEvent(this.context, "rotationMatrix", wm);
@@ -236,20 +212,6 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
     @ReactMethod
     public void removeListeners(Integer count) {
         Log.d("Matrix Array", "Listener has been REMOVED: " + count);
-    }
-
-
-    @ReactMethod
-    public void sendEvent(String eventName, @Nullable WritableMap params) {
-        Log.d("Event", "Params" + params);
-        try {
-            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(eventName, params);
-//        callback.invoke(params);
-        }
-        catch (RuntimeException e) {
-            Log.e("ERROR", "java.lang.RuntimeException: Trying to invoke Javascript before CatalystInstance has been set!");
-        }
     }
 
     @ReactMethod
