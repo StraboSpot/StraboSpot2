@@ -24,7 +24,7 @@ import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
 import DeviceSound from '../../utils/sounds/sound';
 import {setModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import useLocationHook from '../maps/useLocation';
+import useMapLocationHook from '../maps/useMapLocation';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import {MODAL_KEYS} from '../page/page.constants';
 
@@ -45,7 +45,7 @@ const Compass = ({
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const useCompass = useCompassHook();
-  const useLocation = useLocationHook();
+  const useLocation = useMapLocationHook();
 
   const [strikeSpinValue] = useState(new Animated.Value(0));
   const [trendSpinValue] = useState(new Animated.Value(0));

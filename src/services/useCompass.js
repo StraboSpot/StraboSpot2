@@ -1,8 +1,8 @@
-import useLocationHook from '../modules/maps/useLocation';
+import useMapLocationHook from '../modules/maps/useMapLocation';
 
 const useCompass = () => {
 
-  const useLocation = useLocationHook();
+  const useLocation = useMapLocationHook();
 
   const cartesianToSpherical = async (mValue1, mValue2, mValue3) => {
     let rho = Math.sqrt(Math.pow(mValue1, 2) + Math.pow(mValue2, 2) + Math.pow(mValue3, 2));
