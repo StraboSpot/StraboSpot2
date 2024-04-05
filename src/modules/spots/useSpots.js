@@ -20,7 +20,7 @@ import useProjectHook from '../project/useProject';
 import {useTagsHook} from '../tags';
 
 const useSpots = () => {
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const useTags = useTagsHook();
 
   const dispatch = useDispatch();

@@ -46,7 +46,7 @@ const ProjectOptionsDialogBox = ({
   const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [projectToDeleteName, setProjectToDeleteName] = useState('');
 
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();

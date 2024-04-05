@@ -19,7 +19,7 @@ import useProjectHook from '../project/useProject';
 const DatasetList = () => {
   console.log('Rendering DatasetList...');
 
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const useDownload = useDownloadHook();
 
   const [selectedDataset, setSelectedDataset] = useState({});

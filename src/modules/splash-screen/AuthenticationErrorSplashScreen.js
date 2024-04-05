@@ -1,13 +1,14 @@
 import React from 'react';
 import {Linking, Pressable, Text} from 'react-native';
 
-import Splashscreen from '../modules/splashscreen/Splashscreen';
-import {WHITE} from '../shared/styles.constants';
+import SplashScreen from './SplashScreen';
+import {WHITE} from '../../shared/styles.constants';
 
-const AuthStack = () => {
+const AuthenticationErrorSplashScreen = () => {
+  console.count('Rendering AuthenticationErrorSplashScreen ...');
 
   return (
-    <Splashscreen>
+    <SplashScreen>
       <Text style={{paddingTop: 50, color: WHITE, fontSize: 30, textAlign: 'center'}}>
         Authentication Error!{'\n'}
         Please log in to StraboSpot again.
@@ -17,8 +18,8 @@ const AuthStack = () => {
           https://strabospot.org/login
         </Text>
       </Pressable>
-    </Splashscreen>
+    </SplashScreen>
   );
 };
 
-export default AuthStack;
+export default AuthenticationErrorSplashScreen;

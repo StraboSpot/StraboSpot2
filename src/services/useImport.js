@@ -1,5 +1,3 @@
-import {useEffect} from 'react';
-
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -9,7 +7,6 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setErrorMessagesModalVisible,
   setLoadingStatus,
   setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
@@ -25,8 +22,6 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {PermissionsAndroid} from 'react-native';
-import usePermissions from './usePermissions';
 
 const useImport = () => {
   let isOldBackup;
@@ -39,10 +34,6 @@ const useImport = () => {
   const project = useSelector(state => state.project.project);
 
   const useDevice = useDeviceHook();
-
-  useEffect(() => {
-    console.log('ISOLDBACKUP', isOldBackup);
-  }, [isOldBackup]);
 
   const copyImages = async (fileName) => {
     try {

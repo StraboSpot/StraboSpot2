@@ -25,7 +25,10 @@ import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
-import useMapsHook from './useMaps';
+import useMapHook from './useMap';
+import useMapCoordsHook from './useMapCoords';
+import useMapFeaturesHook from './useMapFeatures';
+import useMapURLHook from './useMapURL';
 import useMapViewHook from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
 import useImagesHook from '../images/useImages';
@@ -57,9 +60,12 @@ const Basemap = ({
 
   const useDimensions = useWindowDimensions();
   const useImages = useImagesHook();
+  const useMap = useMapHook();
+  const useMapCoords = useMapCoordsHook();
+  const useMapFeatures = useMapFeaturesHook();
   const useMapSymbology = useMapSymbologyHook();
+  const useMapURL = useMapURLHook();
   const useMapView = useMapViewHook();
-  const useMaps = useMapsHook(mapRef);
 
   const [cursor, setCursor] = useState('');
   const [prevMapMode, setPrevMapMode] = useState(mapMode);
@@ -76,13 +82,13 @@ const Basemap = ({
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
   const symbols = {...MAP_SYMBOLS, ...STRAT_PATTERNS};
 
-  const coordQuad = useMaps.getCoordQuad(currentImageBasemap);
+  const coordQuad = useMapCoords.getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
-    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
+    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
   const featuresSelected = turf.featureCollection(
-    useMaps.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
+    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
 
   // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
   const featuresNotSelectedUniq = turf.featureCollection(
@@ -102,7 +108,7 @@ const Basemap = ({
   if (mapMode !== prevMapMode) {
     console.log('MapMode changed from', prevMapMode, 'to', mapMode);
     setPrevMapMode(mapMode);
-    if (useMaps.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
+    if (useMap.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
     else setCursor('');
   }
 
@@ -182,7 +188,7 @@ const Basemap = ({
 
   const onMouseLeave = () => {
     if (mapMode === MAP_MODES.VIEW) setCursor('');
-    else if (useMaps.isDrawMode(mapMode)) setCursor('pointer');
+    else if (useMap.isDrawMode(mapMode)) setCursor('pointer');
     else if (mapMode === MAP_MODES.EDIT) setCursor('default');
   };
 
@@ -241,7 +247,7 @@ const Basemap = ({
       pitchWithRotate={false}
       touchPitch={!(stratSection || currentImageBasemap)}
       touchZoomRotate={false}
-      doubleClickZoom={!(useMaps.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
+      doubleClickZoom={!(useMap.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
       onClick={onMapPress}
       onDblClick={onMapLongPress}
       onMouseEnter={onMouseEnter}
@@ -271,10 +277,10 @@ const Basemap = ({
               key={customMap.id}
               id={customMap.id}
               type={'raster'}
-              tiles={[useMaps.buildTileUrl(customMap)]}
+              tiles={[useMapURL.buildTileURL(customMap)]}
             >
               <Layer
-                beforeId={'pointLayerSelectedHalo'}
+                // beforeId={'pointLayerSelectedHalo'}
                 type={'raster'}
                 id={customMap.id + 'Layer'}
                 paint={{

@@ -20,8 +20,8 @@ import {clearedStatusMessages} from '../home/home.slice';
 import {WarningModal} from '../home/modals';
 
 const ActiveProjectPanel = () => {
-  const [useProject] = useProjectHook();
   const useDownload = useDownloadHook();
+  const useProject = useProjectHook();
 
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
@@ -59,7 +59,6 @@ const ActiveProjectPanel = () => {
   const handleDownloadProject = () => {
     dispatch(clearedStatusMessages());
     setIsWarningModalVisible(true);
-
   };
 
   const renderAddDatasetModal = () => {
@@ -91,7 +90,7 @@ const ActiveProjectPanel = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
         {/*Active Projects*/}
         <ActiveProjectList/>
@@ -143,7 +142,7 @@ const ActiveProjectPanel = () => {
       </View>
       {renderAddDatasetModal()}
       {renderWarningModal()}
-    </React.Fragment>
+    </>
   );
 };
 

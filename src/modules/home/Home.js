@@ -43,7 +43,6 @@ import {
 } from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useHomeHook from '../home/useHome';
-import useImagesHook from '../images/useImages';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -53,7 +52,7 @@ import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import {MAP_MODES} from '../maps/maps.constants';
 import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import useLocationHook from '../maps/useLocation';
+import useMapLocationHook from '../maps/useMapLocation';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
@@ -70,16 +69,13 @@ const {CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_EXTERNAL_STORA
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
 
-  let isLocationPermissionGranted = true;
-
   const useHome = useHomeHook();
-  const useImages = useImagesHook();
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const useSpots = useSpotsHook();
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
-  const useLocation = useLocationHook();
+  const useMapLocation = useMapLocationHook();
   const usePermissions = usePermissionsHook();
   const useVersionCheck = VersionCheckHook();
 
@@ -100,7 +96,8 @@ const Home = ({navigation, route}) => {
   const selectedProject = useSelector(state => state.project.selectedProject);
   const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
-  const user = useSelector(state => state.user);
+  const userEmail = useSelector(state => state.user.email);
+  const userName = useSelector(state => state.user.name);
 
   const [buttons, setButtons] = useState(
     {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
@@ -128,12 +125,12 @@ const Home = ({navigation, route}) => {
   const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
 
   useEffect(() => {
+    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+      err => console.error('Error creating app directories', err));
+  }, []);
+
+  useEffect(() => {
     let updateTimer;
-    // if (Platform.OS === 'android') {
-    //   usePermissions.requestPermissions([CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE])
-    //   .then(res => console.log('Requested Permissions', res));
-    //   //   useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
-    // }
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
         if (res.needsUpdate) {
@@ -148,7 +145,7 @@ const Home = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    console.log('NAVIGATION UE', route.params);
+    console.log('UE Home', '[navigation, route.params]', route.params);
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });
@@ -159,13 +156,13 @@ const Home = ({navigation, route}) => {
   }, [navigation, route.params]);
 
   useEffect(() => {
-    console.log('UE Home [user]', user);
-    if (user.email && user.name) {
+    console.log('UE Home [user]', userEmail);
+    if (userEmail && userName) {
       Sentry.configureScope((scope) => {
-        scope.setUser({'email': user.email, 'username': user.name});
+        scope.setUser({'email': userEmail, 'username': userName});
       });
     }
-  }, [user]);
+  }, [userEmail, userName]);
 
   useEffect(() => {
     console.log('UE Home [currentImageBasemap, customMaps, stratSection]', currentImageBasemap, customMaps,
@@ -471,7 +468,7 @@ const Home = ({navigation, route}) => {
   const setPointAtCurrentLocation = async () => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useLocation.setPointAtCurrentLocation();
+      await useMapLocation.setPointAtCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(
         `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,
@@ -512,7 +509,7 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleSidePanel = () => {
-    console.log('Rendering side panel...');
+    console.log('Toggling side panel...');
     if (isSidePanelVisible) animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
     else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
     return renderSidePanelView();

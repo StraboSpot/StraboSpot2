@@ -159,7 +159,7 @@ const useDownload = () => {
   const initializeDownload = async (selectedProject) => {
     const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
     if (isProjectLoadSelectionModalVisible) dispatch(setProjectLoadSelectionModalVisible(false));
-    dispatch(setStatusMessageModalTitle(project.name));
+    dispatch(setStatusMessageModalTitle(projectName));
     dispatch(clearedStatusMessages());
     if (Platform.OS !== 'web') dispatch(setStatusMessagesModalVisible(true));
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
@@ -185,6 +185,7 @@ const useDownload = () => {
       }
       else dispatch(addedStatusMessage('Download Failed!', err));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      throw Error;
     }
   };
 

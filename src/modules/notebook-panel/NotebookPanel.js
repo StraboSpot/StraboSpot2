@@ -27,14 +27,16 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
 
   const dispatch = useDispatch();
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
-  const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
+  const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
   const useSpots = useSpotsHook();
   const usePage = usePageHook();
+
+  const pageVisible = pagesStack.slice(-1)[0];
 
   useEffect(() => {
     console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);
@@ -64,7 +66,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
     let pageProps = {page: page, openMainMenu: openMainMenu};
     if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
     return (
-      <React.Fragment>
+      <>
         <View style={notebookStyles.headerContainer}>
           <NotebookHeader
             closeNotebookPanel={closeNotebookPanel}
@@ -78,7 +80,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
         <View style={notebookStyles.footerContainer}>
           <NotebookFooter openPage={openPage}/>
         </View>
-      </React.Fragment>
+      </>
     );
   };
 

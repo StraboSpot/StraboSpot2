@@ -224,9 +224,9 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const loadProjectWeb = async (project) => {
+  const loadProjectWeb = async (projectId) => {
     try {
-      await useDownload.initializeDownload(project);
+      await useDownload.initializeDownload({id: projectId});
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -235,6 +235,7 @@ const useProject = () => {
       dispatch(addedStatusMessage('Error loading project!'));
       dispatch(setErrorMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'home', bool: false}));
+      throw Error;
     }
   };
 
@@ -286,7 +287,7 @@ const useProject = () => {
     }
   };
 
-  const projectHelpers = {
+  return {
     addDataset: addDataset,
     checkUserAuthorization: checkUserAuthorization,
     checkValidDateTime: checkValidDateTime,
@@ -308,8 +309,6 @@ const useProject = () => {
     setSwitchValue: setSwitchValue,
     switchProject: switchProject,
   };
-
-  return [projectHelpers];
 };
 
 export default useProject;

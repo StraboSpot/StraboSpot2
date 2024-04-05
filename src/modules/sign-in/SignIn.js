@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Platform, Text, TextInput, View} from 'react-native';
+import React, {useState} from 'react';
+import {Text, TextInput, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,15 +7,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import signInStyles from './signIn.styles';
 import useSignInHook from './useSignIn';
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
-import useDeviceHook from '../../services/useDevice';
 import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import {ErrorModal} from '../home/modals';
-import Splashscreen from '../splashscreen/Splashscreen';
+import SplashScreen from '../splash-screen/SplashScreen';
 import {login} from '../user/userProfile.slice';
 
 const SignIn = ({navigation, route}) => {
   console.log('Rendering SignIn...');
+  // console.count('Rendering SignIn...');
 
   const dispatch = useDispatch();
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
@@ -28,16 +28,7 @@ const SignIn = ({navigation, route}) => {
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
 
-  const useDevice = useDeviceHook();
   const useSignIn = useSignInHook();
-
-  useEffect(() => {
-    console.log('UE SignIn []');
-    // Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
-    //   err => console.error('Error creating app directories', err));
-    // Platform.OS === 'android' && useDevice.requestReadDirectoryPermission()
-    //   .catch(err => console.error('Error getting permissions', err));
-  }, []);
 
   const handleSignIn = async () => {
     await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
@@ -89,7 +80,7 @@ const SignIn = ({navigation, route}) => {
   };
 
   return (
-    <Splashscreen>
+    <SplashScreen>
       <View style={{marginTop: 20}}>
         <View style={signInStyles.signInContainer}>
           <TextInput
@@ -124,7 +115,7 @@ const SignIn = ({navigation, route}) => {
         </View>
         {renderErrorModal()}
       </View>
-    </Splashscreen>
+    </SplashScreen>
   );
 };
 

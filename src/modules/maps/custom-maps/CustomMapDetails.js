@@ -5,6 +5,7 @@ import {Button, Icon, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import customMapStyles from './customMaps.styles';
+import useCustomMapHook from './useCustomMap';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
@@ -26,12 +27,12 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/m
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {selectedCustomMapToEdit} from '../maps.slice';
-import useMapHook from '../useMaps';
 
-const AddCustomMaps = () => {
+const CustomMapDetails = () => {
   const MBKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
   const MWKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
-  const useMaps = useMapHook();
+
+  const useCustomMap = useCustomMapHook();
 
   const dispatch = useDispatch();
   const MBAccessToken = useSelector(state => state.user.mapboxToken);
@@ -40,7 +41,7 @@ const AddCustomMaps = () => {
   const [editableCustomMapData, setEditableCustomMapData] = useState({});
 
   useEffect(() => {
-    console.log('UE AddCustomMaps [customMapToEdit]', customMapToEdit);
+    console.log('UE CustomMapDetails [customMapToEdit]', customMapToEdit);
     if (!isEmpty(customMapToEdit)) setEditableCustomMapData(customMapToEdit);
     else {
       setEditableCustomMapData({
@@ -60,7 +61,7 @@ const AddCustomMaps = () => {
       dispatch(setStatusMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(addedStatusMessage('Saving Custom Map...'));
-      const customMap = await useMaps.saveCustomMap(editableCustomMapData);
+      const customMap = await useCustomMap.saveCustomMap(editableCustomMapData);
       console.log(customMap);
       dispatch(setSidePanelVisible({view: null, bool: false}));
       dispatch(setMenuSelectionPage({name: null}));
@@ -93,7 +94,7 @@ const AddCustomMaps = () => {
         },
         {
           text: 'Delete',
-          onPress: () => useMaps.deleteMap(customMapToEdit.id),
+          onPress: () => useCustomMap.deleteMap(customMapToEdit.id),
         },
       ],
       {cancelable: false},
@@ -294,4 +295,4 @@ const AddCustomMaps = () => {
   );
 };
 
-export default AddCustomMaps;
+export default CustomMapDetails;

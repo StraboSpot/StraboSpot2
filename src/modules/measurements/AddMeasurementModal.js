@@ -22,7 +22,8 @@ import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import compassStyles from '../compass/compass.styles';
 import {Form, formStyles, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
-import useLocationHook from '../maps/useLocation';
+import overlayStyles from '../home/overlays/overlay.styles';
+import useMapLocationHook from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -50,7 +51,7 @@ const AddMeasurementModal = ({onPress}) => {
   const [locationPermission, setLocationPermission] = useState('');
 
   const useForm = useFormHook();
-  const useLocation = useLocationHook();
+  const useMapLocation = useMapLocationHook();
   const usePermissions = usePermissionsHook();
   const toast = useToast();
 
@@ -355,7 +356,7 @@ const AddMeasurementModal = ({onPress}) => {
           values: editedMeasurementData.associated_orientation[0],
         });
       }
-      const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await useLocation.setPointAtCurrentLocation()
+      const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await useMapLocation.setPointAtCurrentLocation()
         : spot;
       let editedMeasurementsData = spotToUpdate.properties.orientation_data
         ? JSON.parse(JSON.stringify(spotToUpdate.properties.orientation_data)) : [];

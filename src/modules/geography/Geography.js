@@ -12,16 +12,16 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
-import useLocationHook from '../maps/useLocation';
-import useMapsHooks from '../maps/useMaps';
+import useMapLocationHook from '../maps/useMapLocation';
+import useMapViewHook from '../maps/useMapView';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Geography = () => {
   const useForm = useFormHook();
-  const useMaps = useMapsHooks();
-  const useLocation = useLocationHook();
+  const useMapLocation = useMapLocationHook();
+  const useMapView = useMapViewHook();
 
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -35,7 +35,7 @@ const Geography = () => {
 
   // Fill in current location
   const fillWithCurrentLocation = async () => {
-    const currentLocation = await useLocation.getCurrentLocation();
+    const currentLocation = await useMapLocation.getCurrentLocation();
     if (currentLocation.latitude) geomFormRef.current.setFieldValue('latitude', currentLocation.latitude);
     if (currentLocation.longitude) geomFormRef.current.setFieldValue('longitude', currentLocation.longitude);
     if (currentLocation.altitude) formRef.current.setFieldValue('altitude', currentLocation.altitude);
@@ -112,7 +112,7 @@ const Geography = () => {
       coordsString: getCoordArray(),
     };
 
-    if (useMaps.isOnGeoMap(spot)) {
+    if (useMapView.isOnGeoMap(spot)) {
       if (turf.getType(spot) === 'Point') {
         initialGeomValues.longitude = turf.getCoord(spot)[0];
         initialGeomValues.latitude = turf.getCoord(spot)[1];
@@ -148,7 +148,7 @@ const Geography = () => {
               </ListItem.Content>
             </ListItem>
             <FlatListItemSeparator/>
-            {useMaps.isOnGeoMap(spot) ? renderGeoCoords(initialGeomValues) : renderPixelCoords(initialGeomValues)}
+            {useMapView.isOnGeoMap(spot) ? renderGeoCoords(initialGeomValues) : renderPixelCoords(initialGeomValues)}
           </View>
         )}
       </Formik>
@@ -314,13 +314,13 @@ const Geography = () => {
       let geographyProperties = useForm.showErrors(formRef.current);
       console.log('Saving form data to Spot ...');
       let geometry = spot.geometry;
-      if (useMaps.isOnGeoMap(spot)) {
+      if (useMapView.isOnGeoMap(spot)) {
         if (!isEmpty(editedGeomFormData.longitude) && !isEmpty(editedGeomFormData.latitude)) {
           const point = turf.point([editedGeomFormData.longitude, editedGeomFormData.latitude]);
           geometry = point.geometry;
         }
       }
-      else if (!useMaps.isOnGeoMap(spot)) {
+      else if (!useMapView.isOnGeoMap(spot)) {
         if (!isEmpty(editedGeomFormData.x_pixels) && !isEmpty(editedGeomFormData.y_pixels)) {
           const point = turf.point([editedGeomFormData.x_pixels, editedGeomFormData.y_pixels]);
           geometry = point.geometry;

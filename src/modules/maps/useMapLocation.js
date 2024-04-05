@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 import {setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
-const useLocation = () => {
+const useMapLocation = () => {
   const useSpots = useSpotsHook();
   const dispatch = useDispatch();
 
@@ -54,4 +54,4 @@ const useLocation = () => {
   };
 };
 
-export default useLocation;
+export default useMapLocation;

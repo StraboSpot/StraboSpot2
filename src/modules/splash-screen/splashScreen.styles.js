@@ -1,8 +1,9 @@
 import {StyleSheet} from 'react-native';
 
 import {PRIMARY_TEXT_SIZE} from '../../shared/styles.constants';
+import * as themes from '../../shared/styles.constants';
 
-const splashscreenStyles = StyleSheet.create({
+const splashScreenStyles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
   },
@@ -19,6 +20,11 @@ const splashscreenStyles = StyleSheet.create({
     color: 'white',
     fontSize: PRIMARY_TEXT_SIZE,
     fontWeight: 'bold',
+  },
+  loadingSplashScreenText: {
+    fontSize: themes.LARGE_TEXT_SIZE,
+    fontWeight: themes.TEXT_WEIGHT,
+    padding: 50,
   },
   title: {
     color: 'black',
@@ -50,4 +56,4 @@ const splashscreenStyles = StyleSheet.create({
   },
 });
 
-export default splashscreenStyles;
+export default splashScreenStyles;

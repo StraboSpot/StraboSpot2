@@ -31,7 +31,7 @@ const useUpload = () => {
   const useServerRequests = useServerRequestsHook();
   const useSpots = useSpotsHook();
   const useImages = useImagesHook();
-  const [useProject] = useProjectHook();
+  const useProject = useProjectHook();
   const useDevice = useDeviceHook();
 
   const initializeUpload = async () => {

@@ -18,7 +18,7 @@ const SpotsListItem = ({
                          onPress,
                          spot,
                        }) => {
-  console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
+  // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
   const useNesting = useNestingHook();
   const useSpots = useSpotsHook();

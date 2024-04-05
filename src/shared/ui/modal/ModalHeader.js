@@ -18,9 +18,10 @@ const ModalHeader = ({
                      }) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const pageVisible = useSelector(state => state.notebook.visibleNotebookPagesStack.slice(-1)[0]);
+  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
 
   const modalInfo = MODALS.find(p => p.key === modalVisible);
+  const pageVisible = pagesStack.slice(-1)[0];
 
   const getTitle = () => {
     if (pageVisible === PAGE_KEYS.GEOLOGIC_UNITS) {

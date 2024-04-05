@@ -13,13 +13,13 @@ import usePageHook from '../../page/usePage';
 
 const NotebookFooter = ({openPage}) => {
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
-  const notebookPageVisible = useSelector(state => (
-    !isEmpty(state.notebook.visibleNotebookPagesStack) && state.notebook.visibleNotebookPagesStack.slice(-1)[0]
-  ));
+  const pagesState = useSelector(state => state.notebook.visibleNotebookPagesStack);
+
   const [isMorePagesMenuVisible, setIsMorePagesMenuVisible] = useState(false);
 
   const usePage = usePageHook();
 
+  const notebookPageVisible =  !isEmpty(pagesState) && pagesState.slice(-1)[0];
   const pagesToShow = [...usePage.getRelevantGeneralPages(), ...usePage.getRelevantPetPages(), ...usePage.getRelevantSedPages()];
   const notebookPagesValidOn = notebookPagesOn.filter(i => pagesToShow.find(p => p.key === i));
 
@@ -29,7 +29,7 @@ const NotebookFooter = ({openPage}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <View
         style={notebookPagesValidOn.length <= 6 ? footerStyle.footerIconContainer : footerStyle.footerIconContainerWrap}
       >
@@ -53,7 +53,7 @@ const NotebookFooter = ({openPage}) => {
         visible={isMorePagesMenuVisible}
         closeMorePagesMenu={() => setIsMorePagesMenuVisible(false)}
       />
-    </React.Fragment>
+    </>
   );
 };
 

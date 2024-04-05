@@ -11,13 +11,15 @@ import * as themes from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
+import useCustomMapHook from '../../maps/custom-maps/useCustomMap';
 import {BASEMAPS} from '../../maps/maps.constants';
 import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline.web';
-import useMapsHook from '../../maps/useMaps';
+import useMapHook from '../../maps/useMap';
 
 const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
 
-  const useMaps = useMapsHook();
+  const useCustomMap = useCustomMapHook();
+  const useMap = useMapHook();
   const useMapsOffline = useMapsOfflineHook();
 
   const [dialogTitle, setDialogTitle] = useState('Map Layers');
@@ -177,7 +179,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
   const renderDefaultMapItem = map => (
     <ListItem
       key={map.id + 'DefaultMapItem'}
-      onPress={() => isInternetReachable ? useMaps.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
+      onPress={() => isInternetReachable ? useMap.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
     >
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
@@ -203,7 +205,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
       <Switch
         style={{marginRight: 10}}
         value={customMap.isViewable}
-        onValueChange={val => useMaps.setCustomMapSwitchValue(val, customMap)}
+        onValueChange={val => useCustomMap.setCustomMapSwitchValue(val, customMap)}
       />
     </ListItem>
   );
@@ -212,7 +214,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
     let baseMap = {};
     if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
       if (!customMap.url) baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
-      else baseMap = await useMaps.setBasemap(customMap.id);
+      else baseMap = await useMap.setBasemap(customMap.id);
       baseMap.bbox && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {
