@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, TextInput} from 'react-native';
+import {Animated, Keyboard, PermissionsAndroid, Platform, TextInput} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -129,11 +129,11 @@ const Home = ({navigation, route}) => {
 
   useEffect(() => {
     let updateTimer;
-    if (Platform.OS === 'android') {
-      usePermissions.requestPermissions([CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE])
-      .then(res => console.log('Requested Permissions', res));
-      //   useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
-    }
+    // if (Platform.OS === 'android') {
+    //   usePermissions.requestPermissions([CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE])
+    //   .then(res => console.log('Requested Permissions', res));
+    //   //   useImages.requestCameraPermission().then(res => console.log('Permission Status:', res));
+    // }
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
         if (res.needsUpdate) {
