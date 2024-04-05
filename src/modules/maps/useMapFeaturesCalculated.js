@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import useNestingHook from '../nesting/useNesting';
 import useSpotsHook from '../spots/useSpots';
 
-const useMapFeaturesCalculated = ({mapRef}) => {
+const useMapFeaturesCalculated = (mapRef) => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
