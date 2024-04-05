@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
-    "android-release": "react-native run-android --mode=release",
-    "ios-release": "react-native run-ios --mode=Release",
+    "android-release": "npx react-native run-android --mode=release",
+    "ios-release": "npx react-native run-ios --mode=Release",
     "ios": "npx react-native run-ios",
     "start": "npx react-native start",
     "debug": "npx react-native start --experimental-debugger",
@@ -64,6 +64,7 @@
     "react-native-blob-util": "0.19.8",
     "react-native-check-version": "1.1.1",
     "react-native-device-info": "10.13.1",
+    "react-native-devsettings": "^1.0.5",
     "react-native-document-picker": "9.1.1",
     "react-native-elements": "3.4.3",
     "react-native-fs": "2.20.0",
