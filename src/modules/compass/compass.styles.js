@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   compassContainer: {
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
   },
   compassDataCol1: {
     flex: 1,
@@ -58,10 +58,8 @@ const styles = StyleSheet.create({
     // textAlign: 'center',
   },
   compassImage: {
-    // alignItems: 'center',
     height: 175,
-    // justifyContent: 'center',
-    // marginTop: 15,
+    justifyContent: 'center',
     width: 175,
   },
   compassImageContainer: {
@@ -73,18 +71,21 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: 'center',
   },
-  compassMeasurementTextContainer: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    left: 10,
-    position: 'absolute',
-    top: 10,
-  },
   matrixDataButtonContainer: {
+    // backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    // bottom: 10,
+    // position: 'absolute',
+    // right: 10,
+    // width: 75,
+  },
+  rawMeasurementDataContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
-    bottom: 10,
-    position: 'absolute',
-    right: 10,
-    width: 75,
+  },
+  rawMeasurementsTextContainer: {
+    borderTopWidth: 0,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
   sliderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -97,19 +98,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   strikeAndDipLine: {
-    height: 125,
-    position: 'absolute',
+    alignSelf: 'center',
+    height: '65%',
     resizeMode: 'contain',
-    top: 40,
-    width: 125,
-    zIndex: 10,
+    width: '100%',
   },
   trendLine: {
-    height: 105,
-    position: 'absolute',
+    alignSelf: 'center',
+    height: '65%',
     resizeMode: 'contain',
-    top: 50,
-    width: 105,
+    width: '100%',
   },
 });
 

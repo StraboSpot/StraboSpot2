@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements} from './compass.slice';
 import compassStyles from './compass.styles';
+import CompassFace from './CompassFace';
 import CompassModule from '../../services/CompassModule';
 import useCompassHook from '../../services/useCompass';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
@@ -26,7 +27,6 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import useLocationHook from '../maps/useLocation';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import {MODAL_KEYS} from '../page/page.constants';
-import image from '../../assets/images/compass/strike-dip-centered.png';
 
 const Compass = ({
                    closeCompass,
@@ -34,6 +34,8 @@ const Compass = ({
                    setMeasurements,
                    sliderValue,
                  }) => {
+  let matrixArray = [];
+
   const CompassEvents = new NativeEventEmitter(CompassModule);
   const {startSensors, stopSensors, myDeviceRotation, stopObserving} = CompassModule;
 
@@ -49,11 +51,11 @@ const Compass = ({
   const [trendSpinValue] = useState(new Animated.Value(0));
   const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
-    heading: null,
-    strike: null,
+    heading: 0,
+    strike: 0,
     dip_direction: null,
     dip: null,
-    trend: null,
+    trend: 0,
     plunge: null,
     rake: null,
     rake_calculated: 'yes',
@@ -155,6 +157,7 @@ const Compass = ({
   const getCartesianToSpherical = async (matrixRotationData) => {
     let ENU_Pole;
     let ENU_TP;
+    const heading = matrixRotationData.heading;
     if (Platform.OS === 'ios') {
       ENU_Pole = await useCompass.cartesianToSpherical(-matrixRotationData.M32, matrixRotationData.M31,
         matrixRotationData.M33);
@@ -170,7 +173,7 @@ const Compass = ({
     const strikeAndDip = await useCompass.strikeAndDip(ENU_Pole);
     const trendAndPlunge = await useCompass.trendAndPlunge(ENU_TP);
     setCompassData({
-      heading: roundToDecimalPlaces(matrixRotationData.heading, 0),
+      heading: roundToDecimalPlaces(heading, 0),
       strike: roundToDecimalPlaces(strikeAndDip.strike, 0),
       dip: roundToDecimalPlaces(strikeAndDip.dip, 0),
       trend: roundToDecimalPlaces(trendAndPlunge.trend, 0),
@@ -178,30 +181,60 @@ const Compass = ({
     });
   };
 
-  const matrixRotationData = async (res) => {
-    // console.log('Matrix Data', res);
-
-    // if (Platform.OS === 'android') {
-
-    await getCartesianToSpherical(res);
-    // }
-    setMatrixRotation({
-      heading: roundToDecimalPlaces(res.heading, 0),
-      M11: roundToDecimalPlaces(res.M11, 3),
-      M12: roundToDecimalPlaces(res.M12, 3),
-      M13: roundToDecimalPlaces(res.M13, 3),
-      M21: roundToDecimalPlaces(res.M21, 3),
-      M22: roundToDecimalPlaces(res.M22, 3),
-      M23: roundToDecimalPlaces(res.M23, 3),
-      M31: roundToDecimalPlaces(res.M31, 3),
-      M32: roundToDecimalPlaces(res.M32, 3),
-      M33: roundToDecimalPlaces(res.M33, 3),
-    });
+  const handleMatrixRotationData = (res) => {
+    if (Platform.OS === 'android') {
+      // console.log('Matrix Data', res);
+      matrixAverage(res);
+      // console.log('DataAverages', dataAveragesObj);
+    }
+    else {
+      setMatrixRotation({
+        M11: roundToDecimalPlaces(res.M11, 3),
+        M12: roundToDecimalPlaces(res.M12, 3),
+        M13: roundToDecimalPlaces(res.M13, 3),
+        M21: roundToDecimalPlaces(res.M21, 3),
+        M22: roundToDecimalPlaces(res.M22, 3),
+        M23: roundToDecimalPlaces(res.M23, 3),
+        M31: roundToDecimalPlaces(res.M31, 3),
+        M32: roundToDecimalPlaces(res.M32, 3),
+        M33: roundToDecimalPlaces(res.M33, 3),
+      });
+    }
   };
 
   const matrixAverage = async (res) => {
-    console.log('Matrix Average', res);
-    await getCartesianToSpherical(res, true);
+    // console.log('Matrix Average', res);
+    matrixArray.push(res);
+
+    if (matrixArray.length > 10) {
+      matrixArray.shift();
+      // console.log('Matrix Array', matrixArray);
+    }
+    const m11Avg = matrixArray.reduce((sum, obj) => sum + obj.M11 / matrixArray.length, 0);
+    const m12Avg = matrixArray.reduce((sum, obj) => sum + obj.M12 / matrixArray.length, 0);
+    const m13Avg = matrixArray.reduce((sum, obj) => sum + obj.M13 / matrixArray.length, 0);
+    const m21Avg = matrixArray.reduce((sum, obj) => sum + obj.M21 / matrixArray.length, 0);
+    const m22Avg = matrixArray.reduce((sum, obj) => sum + obj.M22 / matrixArray.length, 0);
+    const m23Avg = matrixArray.reduce((sum, obj) => sum + obj.M23 / matrixArray.length, 0);
+    const m31Avg = matrixArray.reduce((sum, obj) => sum + obj.M31 / matrixArray.length, 0);
+    const m32Avg = matrixArray.reduce((sum, obj) => sum + obj.M32 / matrixArray.length, 0);
+    const m33Avg = matrixArray.reduce((sum, obj) => sum + obj.M33 / matrixArray.length, 0);
+    const headingAvg = matrixArray.reduce((sum, obj) => sum + obj.heading / matrixArray.length, 0);
+
+    const newMatrixObject = {
+      M11: roundToDecimalPlaces(m11Avg, 3),
+      M12: roundToDecimalPlaces(m12Avg, 3),
+      M13: roundToDecimalPlaces(m13Avg, 3),
+      M21: roundToDecimalPlaces(m21Avg, 3),
+      M22: roundToDecimalPlaces(m22Avg, 3),
+      M23: roundToDecimalPlaces(m23Avg, 3),
+      M31: roundToDecimalPlaces(m31Avg, 3),
+      M32: roundToDecimalPlaces(m32Avg, 3),
+      M33: roundToDecimalPlaces(m33Avg, 3),
+      heading: roundToDecimalPlaces(headingAvg, 0),
+    };
+    setMatrixRotation(newMatrixObject);
+    await getCartesianToSpherical(newMatrixObject);
   };
 
   const Row = ({children}) => (
@@ -235,19 +268,10 @@ const Compass = ({
   };
 
   const renderCompassData = () => (
-    <View style={{
-      // flex: 1,
-      // backgroundColor: 'white',
-      // padding: 20,
-      // borderBottomRightRadius: 20,
-      // borderTopRightRadius: 20,
-      // zIndex: 100,
-    }}>
-      <View style={overlayStyles.titleContainer}>
-        <Text style={overlayStyles.titleText}>Compass Data</Text>
-      </View>
+    <View>
       <View style={compassStyles.compassDataGridContainer}>
         <Text style={overlayStyles.titleText}>Matrix Rotation</Text>
+        <Text style={overlayStyles.titleText}>Heading: {compassData.heading}</Text>
         <View style={compassStyles.compassDataDirectionTextContainer}>
           {renderColumnLabels()}
         </View>
@@ -297,114 +321,45 @@ const Compass = ({
     </View>
   );
 
+  const planerType = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
+  const linearType = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
+
   const renderCompassMeasurementsText = () => {
-  if (compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR) && compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
+    if (planerType && linearType) {
       return (
-        <>
-          <Text style={compassStyles.compassDataText}>Strike: {compassData.strike}</Text>
-          <Text style={compassStyles.compassDataText}>Dip: {compassData.dip}</Text>
-          <Text style={compassStyles.compassDataText}>Trend: {compassData.trend}</Text>
-          <Text style={compassStyles.compassDataText}>Plunge: {compassData.plunge}</Text>
-        </>
-      );
-    }
-
-   else if (compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR)) {
-      return (
-        <>
-          <Text style={compassStyles.compassDataText}>Strike: {compassData.strike}</Text>
-          <Text style={compassStyles.compassDataText}>Dip: {compassData.dip}</Text>
-        </>
-      );
-    }
-
-    else if (compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR)) {
-      return (
-        <>
-          <Text style={compassStyles.compassDataText}>Trend: {compassData.trend}</Text>
-          <Text style={compassStyles.compassDataText}>Plunge: {compassData.plunge}</Text>
-        </>
-      );
-    }
-  };
-
-  const renderCompassSymbols = () => {
-    // console.log('Strike', compassData.strike + '\n' + 'Trend', compassData.trend);
-    const linearToggleOn = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
-    const planerToggleOn = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
-
-    if (linearToggleOn && planerToggleOn && compassData.trend !== null && compassData.strike !== null) {
-      return [renderTrendSymbol(), renderStrikeDipSymbol()];
-    }
-    else if (linearToggleOn && compassData.trend !== null) return renderTrendSymbol();
-    else if (planerToggleOn && compassData.strike !== null) return renderStrikeDipSymbol();
-  };
-
-  // Render the strike and dip symbol inside the compass
-  const renderStrikeDipSymbol = () => {
-    let spin;
-    let image = require('../../assets/images/compass/strike-dip-centered.png');
-    if (compassData.strike > 0) {
-      spin = strikeSpinValue.interpolate({
-        inputRange: [0, compassData.strike],
-        // inputRange: [0, 360], // Changed to get symbols to render while we figure out the android compass
-        outputRange: ['0deg', compassData.strike + 'deg'],
-        // outputRange: ['0deg', 180 + 'deg'], // Changed to get symbols to render while we figure out the android compass
-      });
-      // First set up animation
-
-      Animated.timing(
-        strikeSpinValue,
-        {
-          duration: 100,
-          toValue: compassData.strike,
-          easing: Easing.linear(),
-          useNativeDriver: true,
-        },
-      ).start();
-
-      return (
-        <View style={{alignContent: 'center', backgroundColor: 'green'}}>
-          <Animated.Image
-            key={image}
-            source={image}
-            style={[compassStyles.strikeAndDipLine, {transform: [{rotate: spin}]}]}/>
+        <View style={compassStyles.rawMeasurementsTextContainer}>
+          <View>
+            <Text style={compassStyles.compassDataText}>Strike: {compassData.strike || 0}</Text>
+            <Text style={compassStyles.compassDataText}>Trend: {compassData.trend || 0}</Text>
+          </View>
+          <View>
+            <Text style={compassStyles.compassDataText}>Dip: {compassData.dip || 0}</Text>
+            <Text style={compassStyles.compassDataText}>Plunge: {compassData.plunge || 0}</Text>
+          </View>
         </View>
-
       );
     }
-  };
-
-  // Render the strike and dip symbol inside the compass
-  const renderTrendSymbol = () => {
-    let image = require('../../assets/images/compass/trendLine.png');
-    const spin = trendSpinValue.interpolate({
-      inputRange: [0, compassData.trend ? compassData.trend : 0],
-      outputRange: ['0deg', compassData.trend + 'deg'],
-    });
-    // First set up animation
-    Animated.timing(
-      trendSpinValue,
-      {
-        duration: 100,
-        toValue: compassData.trend,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      },
-    ).start();
-
-    return (
-      <Animated.Image
-        key={image}
-        source={image}
-        style={[compassStyles.trendLine, {transform: [{rotate: spin}]}]}
-      />
-    );
+    else if (planerType) {
+      return (
+        <View style={compassStyles.rawMeasurementsTextContainer}>
+          <Text style={compassStyles.compassDataText}>Strike: {compassData.strike || 0}</Text>
+          <Text style={compassStyles.compassDataText}>Dip: {compassData.dip || 0}</Text>
+        </View>
+      );
+    }
+    else if (linearType) {
+      return (
+        <View style={compassStyles.rawMeasurementsTextContainer}>
+          <Text style={compassStyles.compassDataText}>Trend: {compassData.trend || 0}</Text>
+          <Text style={compassStyles.compassDataText}>Plunge: {compassData.plunge || 0}</Text>
+        </View>
+      );
+    }
   };
 
   const subscribe = () => {
     try {
-      CompassEvents.addListener('rotationMatrix', matrixRotationData);
+      CompassEvents.addListener('rotationMatrix', handleMatrixRotationData);
 
       Platform.OS === 'ios' ? myDeviceRotation() : startSensors();
       console.log('%cSUBSCRIBING to native compass data!', 'color: green');
@@ -416,8 +371,7 @@ const Compass = ({
 
   const unsubscribe = () => {
     try {
-      CompassEvents.addListener('rotationMatrix', matrixRotationData).remove();
-
+      CompassEvents.addListener('rotationMatrix', handleMatrixRotationData).remove();
       Platform.OS === 'ios' ? stopObserving() : stopSensors();
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
@@ -429,31 +383,32 @@ const Compass = ({
   return (
     <View style={{flex: 1}}>
       <View style={compassStyles.compassContainer}>
-        <View style={compassStyles.compassImageContainer}>
-          <Pressable  onPress={() => grabMeasurements(true)}>
-            <Image source={require('../../assets/images/compass/compass.png')} style={compassStyles.compassImage}/>
-            <View style={{alignItems: 'center'}}>
-              {renderCompassSymbols()}
+        {!showCompassRawDataView
+          ? (
+            <CompassFace
+              compassMeasurementTypes={compassMeasurementTypes}
+              grabMeasurements={grabMeasurements}
+              compassData={compassData}
+            />
+          )
+          : (
+            <View style={compassStyles.rawMeasurementDataContainer}>
+              {renderCompassData()}
+              {renderCompassMeasurementsText()}
             </View>
-          </Pressable>
+          )
+        }
 
-        </View>
-        <View style={compassStyles.matrixDataButtonContainer}>
-          <View style={compassStyles.compassMeasurementTextContainer}>
-            {renderCompassMeasurementsText()}
-          </View>
-          <Button
-            containerStyle={compassStyles.matrixDataButtonContainer}
-            titleStyle={{fontSize: 10}}
-            title={showCompassRawDataView ? 'Hide Matrix Data' : 'Display Matrix Data'}
-            type={'clear'}
-            onPress={() => setShowCompassRawDataView(!showCompassRawDataView)}
-          />
-        </View>
       </View>
-      <View style={{}}>
-      {showCompassRawDataView && renderCompassData()}
-      </View>
+      {/*<View style={compassStyles.matrixDataButtonContainer}>*/}
+      <Button
+        containerStyle={compassStyles.matrixDataButtonContainer}
+        titleStyle={{fontSize: 10}}
+        title={showCompassRawDataView ? 'Hide Raw Data' : 'Display Raw Data'}
+        type={'clear'}
+        onPress={() => setShowCompassRawDataView(!showCompassRawDataView)}
+      />
+      {/*</View>*/}
     </View>
   );
 };
