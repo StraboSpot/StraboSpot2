@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, PermissionsAndroid, Platform, TextInput} from 'react-native';
+import {Animated, Keyboard, Platform, TextInput} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -64,7 +64,6 @@ import {logout} from '../user/userProfile.slice';
 import UserProfile from '../user/UserProfilePage';
 
 const {State: TextInputState} = TextInput;
-const {CAMERA, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE} = PermissionsAndroid.PERMISSIONS;
 
 const Home = ({navigation, route}) => {
   console.log('Rendering Home...');
@@ -76,7 +75,6 @@ const Home = ({navigation, route}) => {
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
   const useMapLocation = useMapLocationHook();
-  const usePermissions = usePermissionsHook();
   const useVersionCheck = VersionCheckHook();
 
   const selectedDataset = useProject.getSelectedDatasetFromId();
