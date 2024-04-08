@@ -41,7 +41,7 @@ const AddMeasurementModal = ({onPress}) => {
   const [choices, setChoices] = useState({});
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [initialValues, setInitialValues] = useState({id: getNewUUID()});
-  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
+  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS === 'web');
   const [isShowTemplates, setIsShowTemplates] = useState(false);
   const [measurementTypeForForm, setMeasurementTypeForForm] = useState(null);
   const [relevantTemplates, setRelevantTemplates] = useState([]);
@@ -203,7 +203,7 @@ const AddMeasurementModal = ({onPress}) => {
         )}
         {!isShowTemplates && (
           <React.Fragment>
-            {Platform.OS === 'ios' && (
+            {Platform.OS !== 'web' && (
               <Button
                 buttonStyle={formStyles.formButtonSmall}
                 titleProps={formStyles.formButtonTitle}
