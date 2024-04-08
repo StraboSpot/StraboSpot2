@@ -122,8 +122,8 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
 
     @ReactMethod
     public void startSensors() {
-        this.sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        this.sensorManager.registerListener(this, sensorMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+        this.sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        this.sensorManager.registerListener(this, sensorMagneticField, SensorManager.SENSOR_DELAY_UI);
         Log.d("MatrixDataModule", "Sensors started!" );
     }
 
@@ -146,7 +146,7 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
 
             boolean success = SensorManager.getRotationMatrix(rotationMatrix, I, mGravity, mGeomagnetic);
 
-//            if (success) {
+            if (success) {
                 SensorManager.getOrientation(rotationMatrix, orientation);
 
                 azimuth = (float) Math.toDegrees(orientation[0]);
@@ -154,7 +154,7 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
                 azimuth = Math.round(azimuth);
 
                 sendAzimuthChangeEvent();
-//            }
+            }
 
 
 //        if(this.listenerCount <= 0) {
