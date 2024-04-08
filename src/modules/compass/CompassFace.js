@@ -17,7 +17,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
     const linearToggleOn = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
     const planerToggleOn = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
 
-    if (linearToggleOn && planerToggleOn && compassData.trend == null && compassData.strike == null) {
+    if (linearToggleOn && planerToggleOn && compassData.trend !== null && compassData.strike !== null) {
       strikeAndDipStyles.push({position: 'absolute'});
       return [renderTrendSymbol(), renderStrikeDipSymbol()];
     }

@@ -181,24 +181,30 @@ const Compass = ({
     });
   };
 
-  const handleMatrixRotationData = (res) => {
-    if (Platform.OS === 'android') {
-      // console.log('Matrix Data', res);
-      matrixAverage(res);
-      // console.log('DataAverages', dataAveragesObj);
+  const handleMatrixRotationData = async (res) => {
+    try {
+      if (Platform.OS === 'android') {
+        const averageDataObj = await matrixAverage(res);
+        await getCartesianToSpherical(averageDataObj);
+      }
+      else {
+        setMatrixRotation({
+          M11: roundToDecimalPlaces(res.M11, 3),
+          M12: roundToDecimalPlaces(res.M12, 3),
+          M13: roundToDecimalPlaces(res.M13, 3),
+          M21: roundToDecimalPlaces(res.M21, 3),
+          M22: roundToDecimalPlaces(res.M22, 3),
+          M23: roundToDecimalPlaces(res.M23, 3),
+          M31: roundToDecimalPlaces(res.M31, 3),
+          M32: roundToDecimalPlaces(res.M32, 3),
+          M33: roundToDecimalPlaces(res.M33, 3),
+        });
+
+        await getCartesianToSpherical(res);
+      }
     }
-    else {
-      setMatrixRotation({
-        M11: roundToDecimalPlaces(res.M11, 3),
-        M12: roundToDecimalPlaces(res.M12, 3),
-        M13: roundToDecimalPlaces(res.M13, 3),
-        M21: roundToDecimalPlaces(res.M21, 3),
-        M22: roundToDecimalPlaces(res.M22, 3),
-        M23: roundToDecimalPlaces(res.M23, 3),
-        M31: roundToDecimalPlaces(res.M31, 3),
-        M32: roundToDecimalPlaces(res.M32, 3),
-        M33: roundToDecimalPlaces(res.M33, 3),
-      });
+    catch (err) {
+      console.error('Error Getting Matrix', err);
     }
   };
 
@@ -206,7 +212,7 @@ const Compass = ({
     // console.log('Matrix Average', res);
     matrixArray.push(res);
 
-    if (matrixArray.length > 10) {
+    if (matrixArray.length > 5) {
       matrixArray.shift();
       // console.log('Matrix Array', matrixArray);
     }
@@ -233,93 +239,92 @@ const Compass = ({
       M33: roundToDecimalPlaces(m33Avg, 3),
       heading: roundToDecimalPlaces(headingAvg, 0),
     };
-    setMatrixRotation(newMatrixObject);
-    await getCartesianToSpherical(newMatrixObject);
+    return newMatrixObject;
   };
 
-  const Row = ({children}) => (
-    <View style={compassStyles.compassDataGridRow}>{children}</View>
-  );
-  const Col = ({numRows, children}) => {
-    return (
-      <View style={compassStyles[`compassDataCol${numRows}`]}>{children}</View>
-    );
-  };
+  // const Row = ({children}) => (
+  //   <View style={compassStyles.compassDataGridRow}>{children}</View>
+  // );
+  // const Col = ({numRows, children}) => {
+  //   return (
+  //     <View style={compassStyles[`compassDataCol${numRows}`]}>{children}</View>
+  //   );
+  // };
 
-  const renderColumnLabels = () => {
-    if (Platform.OS === 'ios') {
-      return (
-        <>
-          <Text>North</Text>
-          <Text>West</Text>
-          <Text>Up</Text>
-        </>
-      );
-    }
-    else {
-      return (
-        <>
-          <Text>East</Text>
-          <Text>North</Text>
-          <Text>Up</Text>
-        </>
-      );
-    }
-  };
+  // const renderColumnLabels = () => {
+  //   if (Platform.OS === 'ios') {
+  //     return (
+  //       <>
+  //         <Text>North</Text>
+  //         <Text>West</Text>
+  //         <Text>Up</Text>
+  //       </>
+  //     );
+  //   }
+  //   else {
+  //     return (
+  //       <>
+  //         <Text>East</Text>
+  //         <Text>North</Text>
+  //         <Text>Up</Text>
+  //       </>
+  //     );
+  //   }
+  // };
 
-  const renderCompassData = () => (
-    <View>
-      <View style={compassStyles.compassDataGridContainer}>
-        <Text style={overlayStyles.titleText}>Matrix Rotation</Text>
-        <Text style={overlayStyles.titleText}>Heading: {compassData.heading}</Text>
-        <View style={compassStyles.compassDataDirectionTextContainer}>
-          {renderColumnLabels()}
-        </View>
-        <Row>
-          <Col numRows={1}>
-            <Text style={compassStyles.compassDataText}>X</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M11: {'\n'}{roundToDecimalPlaces(matrixRotation.M11, 3)}</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M12: {'\n'}{roundToDecimalPlaces(matrixRotation.M12, 3)}</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M13: {'\n'}{roundToDecimalPlaces(matrixRotation.M13, 3)}</Text>
-          </Col>
-        </Row>
-        <Row>
-          <Col numRows={1}>
-            <Text style={compassStyles.compassDataText}>Y</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M21: {'\n'}{roundToDecimalPlaces(matrixRotation.M21, 3)}</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M22: {'\n'}{roundToDecimalPlaces(matrixRotation.M22, 3)}</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M23: {'\n'}{roundToDecimalPlaces(matrixRotation.M23, 3)}</Text>
-          </Col>
-        </Row>
-        <Row>
-          <Col numRows={1}>
-            <Text style={compassStyles.compassDataText}>Z</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M31: {'\n'}{roundToDecimalPlaces(matrixRotation.M31, 3)}</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M32: {'\n'}{roundToDecimalPlaces(matrixRotation.M32, 3)}</Text>
-          </Col>
-          <Col numRows={3}>
-            <Text style={compassStyles.compassDataText}>M33: {'\n'}{roundToDecimalPlaces(matrixRotation.M33, 3)}</Text>
-          </Col>
-        </Row>
-      </View>
-    </View>
-  );
+  // const renderCompassData = () => (
+  //   <View>
+  //     <View style={compassStyles.compassDataGridContainer}>
+  //       <Text style={overlayStyles.titleText}>Matrix Rotation</Text>
+  //       <Text style={overlayStyles.titleText}>Heading: {compassData.heading}</Text>
+  //       <View style={compassStyles.compassDataDirectionTextContainer}>
+  //         {renderColumnLabels()}
+  //       </View>
+  //       <Row>
+  //         <Col numRows={1}>
+  //           <Text style={compassStyles.compassDataText}>X</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M11: {'\n'}{roundToDecimalPlaces(matrixRotation.M11, 3)}</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M12: {'\n'}{roundToDecimalPlaces(matrixRotation.M12, 3)}</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M13: {'\n'}{roundToDecimalPlaces(matrixRotation.M13, 3)}</Text>
+  //         </Col>
+  //       </Row>
+  //       <Row>
+  //         <Col numRows={1}>
+  //           <Text style={compassStyles.compassDataText}>Y</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M21: {'\n'}{roundToDecimalPlaces(matrixRotation.M21, 3)}</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M22: {'\n'}{roundToDecimalPlaces(matrixRotation.M22, 3)}</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M23: {'\n'}{roundToDecimalPlaces(matrixRotation.M23, 3)}</Text>
+  //         </Col>
+  //       </Row>
+  //       <Row>
+  //         <Col numRows={1}>
+  //           <Text style={compassStyles.compassDataText}>Z</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M31: {'\n'}{roundToDecimalPlaces(matrixRotation.M31, 3)}</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M32: {'\n'}{roundToDecimalPlaces(matrixRotation.M32, 3)}</Text>
+  //         </Col>
+  //         <Col numRows={3}>
+  //           <Text style={compassStyles.compassDataText}>M33: {'\n'}{roundToDecimalPlaces(matrixRotation.M33, 3)}</Text>
+  //         </Col>
+  //       </Row>
+  //     </View>
+  //   </View>
+  // );
 
   const planerType = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.PLANAR);
   const linearType = compassMeasurementTypes.includes(COMPASS_TOGGLE_BUTTONS.LINEAR);
@@ -382,32 +387,23 @@ const Compass = ({
 
   return (
     <View style={{flex: 1}}>
-      <View style={compassStyles.compassContainer}>
-        {!showCompassRawDataView
-          ? (
-            <CompassFace
-              compassMeasurementTypes={compassMeasurementTypes}
-              grabMeasurements={grabMeasurements}
-              compassData={compassData}
-            />
-          )
-          : (
-            <View style={compassStyles.rawMeasurementDataContainer}>
-              {renderCompassData()}
-              {renderCompassMeasurementsText()}
-            </View>
-          )
-        }
-
+      <View>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Heading: {compassData.heading}</Text>
+        <CompassFace
+          compassMeasurementTypes={compassMeasurementTypes}
+          grabMeasurements={grabMeasurements}
+          compassData={compassData}
+        />
+        {/*{renderCompassMeasurementsText()}*/}
       </View>
       {/*<View style={compassStyles.matrixDataButtonContainer}>*/}
-      <Button
-        containerStyle={compassStyles.matrixDataButtonContainer}
-        titleStyle={{fontSize: 10}}
-        title={showCompassRawDataView ? 'Hide Raw Data' : 'Display Raw Data'}
-        type={'clear'}
-        onPress={() => setShowCompassRawDataView(!showCompassRawDataView)}
-      />
+      {/*<Button*/}
+      {/*  containerStyle={compassStyles.matrixDataButtonContainer}*/}
+      {/*  titleStyle={{fontSize: 10}}*/}
+      {/*  title={showCompassRawDataView ? 'Hide Raw Data' : 'Display Raw Data'}*/}
+      {/*  type={'clear'}*/}
+      {/*  onPress={() => setShowCompassRawDataView(!showCompassRawDataView)}*/}
+      {/*/>*/}
       {/*</View>*/}
     </View>
   );
