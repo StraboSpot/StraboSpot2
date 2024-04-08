@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationRequest;
 import android.os.Bundle;
@@ -44,9 +45,10 @@ public class Compass extends ReactContextBaseJavaModule implements SensorEventLi
     private static final int PERMISSION_REQ_CODE = 100;
     private int listenerCount = 0;
     private final ReactApplicationContext context;
-    private LocationRequest locationRequest;
-    protected Location mCurrentLocation;
-
+//    private LocationRequest locationRequest;
+//    protected Location mCurrentLocation;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private SensorManager sensorManager;
     private Arguments arguments;
     private Callback callback;
