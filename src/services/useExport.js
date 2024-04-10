@@ -201,7 +201,7 @@ const useExport = () => {
       const imageExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES + image_id + '.jpg');
       if (imageExists) {
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
-          directory + fileName + '/Images/' + image_id + '.jpg');
+          directory + fileName + '/images/' + image_id + '.jpg');
         imageSuccess++;
       }
     }
