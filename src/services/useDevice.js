@@ -8,12 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setErrorMessagesModalVisible,
-  setStatusMessagesModalVisible,
-} from '../modules/home/home.slice';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import usePermissionsHook from '../services/usePermissions';
@@ -304,12 +298,12 @@ const useDevice = () => {
       return await RNFS.readFile(source);
     }
     catch (e) {
-      console.log('Error reading file as utf8', e);
+      console.error('Error reading file as utf8', e);
       try {
         return await RNFS.readFile(source, 'ascii');
       }
       catch (e2) {
-        console.log('Error reading file as ascii:', e2);
+        console.error('Error reading file as ascii:', e2);
         return undefined;
       }
     }
@@ -332,10 +326,6 @@ const useDevice = () => {
     }
     catch (err) {
       console.error('Error reading JSON file', err);
-      dispatch(setStatusMessagesModalVisible(false));
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Project Not Found'));
-      dispatch(setErrorMessagesModalVisible(true));
     }
   };
 

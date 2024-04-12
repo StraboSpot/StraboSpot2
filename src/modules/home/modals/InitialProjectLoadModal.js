@@ -250,7 +250,13 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
         />}
         <View style={userStyles.initialProjectLoadProfileHeaderContainer}>
           <Text style={userStyles.initialProjectLoadProfileHeaderText}>Hello, {displayName}!</Text>
-          {user.email &&<Text style={userStyles.initialProjectLoadProfileSubHeaderText}>Signed in as {truncateText(user.email, 15)}</Text>}
+          {user.email
+            && (
+              <Text>
+                Signed in as {truncateText(user.email, 15)}
+              </Text>
+            )
+          }
           <Button
             title={user.name ? `Not ${user.name}?` : 'Sign in?'}
             type={'clear'}

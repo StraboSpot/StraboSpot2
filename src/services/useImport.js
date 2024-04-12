@@ -146,44 +146,36 @@ const useImport = () => {
   };
 
   const loadProjectFromDevice = async (selectedProject, isExternal) => {
-    try {
-      dispatch(clearedStatusMessages());
-      dispatch(setStatusMessagesModalVisible(true));
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      dispatch(addedStatusMessage(`Importing ${selectedProject}...`));
+    dispatch(clearedStatusMessages());
+    dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    dispatch(addedStatusMessage(`Importing ${selectedProject}...`));
 
-      console.log('SELECTED PROJECT', selectedProject);
-      if (selectedProject.includes('.zip')) {
-        await unzipBackupFile(selectedProject);
-        selectedProject = selectedProject.replace('.zip', '');
-      }
-      if (!isEmpty(project)) destroyOldProject();
-      console.log('Old project destroyed', project);
-      const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject);
-      if (dirExists) {
-        const dataFile = await useDevice.readDeviceJSONFile(selectedProject);
-        const {projectDb, spotsDb} = dataFile;
-        console.log('DataFile', dataFile);
-        dispatch(addedSpotsFromDevice(spotsDb));
-        dispatch(addedProject(projectDb.project || projectDb));
-        dispatch(addedDatasets(projectDb.datasets));
-        if (Object.values(projectDb.datasets).length > 0 && !isEmpty(Object.values(projectDb.datasets)[0])) {
-          dispatch(setActiveDatasets({bool: true, dataset: Object.values(projectDb.datasets)[0].id}));
-          dispatch(setSelectedDataset(Object.values(projectDb.datasets)[0].id));
-        }
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`${selectedProject}\nProject loaded.`));
-        dispatch(addedStatusMessage('Importing image files...'));
-        await copyImages(selectedProject);
-        await checkForMaps(dataFile, selectedProject, isExternal);
-        dispatch(setLoadingStatus({view: 'modal', bool: false}));
-        dispatch(setSelectedProject({project: '', source: ''}));
-        return Promise.resolve({project: dataFile.projectDb.project});
-      }
+    console.log('SELECTED PROJECT', selectedProject);
+    if (selectedProject.includes('.zip')) {
+      await unzipBackupFile(selectedProject);
+      selectedProject = selectedProject.replace('.zip', '');
     }
-    catch (err) {
-      console.error('ERROR Loading project from device!', err);
+    const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject);
+    if (dirExists) {
+      const dataFile = await useDevice.readDeviceJSONFile(selectedProject);
+      if (!isEmpty(project) && dataFile) destroyOldProject();
+      const {projectDb, spotsDb} = dataFile;
+      console.log('DataFile', dataFile);
+      dispatch(addedSpotsFromDevice(spotsDb));
+      dispatch(addedProject(projectDb.project || projectDb));
+      dispatch(addedDatasets(projectDb.datasets));
+      if (Object.values(projectDb.datasets).length > 0 && !isEmpty(Object.values(projectDb.datasets)[0])) {
+        dispatch(setActiveDatasets({bool: true, dataset: Object.values(projectDb.datasets)[0].id}));
+        dispatch(setSelectedDataset(Object.values(projectDb.datasets)[0].id));
+      }
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage(`${selectedProject}\nProject loaded.`));
+      dispatch(addedStatusMessage('Importing image files...'));
+      await copyImages(selectedProject);
+      await checkForMaps(dataFile, selectedProject, isExternal);
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      dispatch(setSelectedProject({project: '', source: ''}));
+      return Promise.resolve({project: dataFile.projectDb.project});
     }
   };
 
