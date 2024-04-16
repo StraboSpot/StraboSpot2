@@ -110,7 +110,7 @@ const useSignIn = () => {
       console.error(err);
       Sentry.captureException(err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      if (setErrorMessage) setErrorMessage(err);
+      if (setErrorMessage) setErrorMessage('Server request failed');
       if (setIsErrorModalVisible) setIsErrorModalVisible(true);
       if (setPassword) setPassword('');
       dispatch(logout());
