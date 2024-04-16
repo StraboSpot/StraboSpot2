@@ -53,10 +53,6 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const checkUserAuthorization = async (password) => {
-    return await useServerRequests.authenticateUser(user.email, password.trim());
-  };
-
   const checkValidDateTime = (spot) => {
     if (!spot.properties.date || !spot.properties.time) {
       let date = spot.properties.date || spot.properties.time;
@@ -281,7 +277,6 @@ const useProject = () => {
 
   return {
     addDataset: addDataset,
-    checkUserAuthorization: checkUserAuthorization,
     checkValidDateTime: checkValidDateTime,
     createDataset: createDataset,
     createProject: createProject,
