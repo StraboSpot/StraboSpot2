@@ -18,7 +18,7 @@ const Nesting = () => {
   const useImages = useImagesHook();
   const useNesting = useNestingHook();
 
-  const dispatch = useDispatch();
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
@@ -31,7 +31,7 @@ const Nesting = () => {
   useEffect(() => {
     console.log('UE Nesting [spots, selectedSpot]', spots, selectedSpot);
     if (notebookPageVisible === PAGE_KEYS.NESTING) updateNest();
-  }, [spots, selectedSpot]);
+  }, [activeDatasetsIds, spots, selectedSpot]);
 
   const goToSpotNesting = (spot) => {
     dispatch(setSelectedSpot(spot));
