@@ -13,7 +13,7 @@ import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import useCustomMapHook from '../../maps/custom-maps/useCustomMap';
 import {BASEMAPS} from '../../maps/maps.constants';
-import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline.web';
+import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline';
 import useMapHook from '../../maps/useMap';
 
 const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
