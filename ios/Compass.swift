@@ -42,7 +42,7 @@ class Compass: RCTEventEmitter {
 //  }
 
   @objc
-  func myDeviceRotation() {
+  func getDeviceRotation() {
           guard motion.isDeviceMotionAvailable else {
               return
           }
@@ -178,7 +178,7 @@ class Compass: RCTEventEmitter {
 
 
   @objc
-  override func stopObserving() {
+  override func stopCompass() {
     motion.stopAccelerometerUpdates()
     motion.stopDeviceMotionUpdates()
 //    motion.stopAccelerometerUpdates()

@@ -37,7 +37,7 @@ const Compass = ({
   let matrixArray = [];
 
   const CompassEvents = new NativeEventEmitter(CompassModule);
-  const {startSensors, stopSensors, myDeviceRotation, stopObserving} = CompassModule;
+  const {startSensors, stopSensors, getDeviceRotation, stopCompass} = CompassModule;
 
   const dispatch = useDispatch();
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
@@ -75,12 +75,13 @@ const Compass = ({
   }, []);
 
   useEffect(() => {
+    subscribeToSensors();
     console.log('UE Compass []');
     displayCompassData()
       .then(() => console.log('SENSORS ARE RUNNING'));
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
-      unsubscribe();
+      unsubscribeFromSensors();
       AppState.addEventListener(
         'change',
         () => console.log('APP STATE EVENT REMOVED IN COMPASS')).remove();
@@ -150,7 +151,7 @@ const Compass = ({
     if (state === 'background' || state === 'inactive') {
       dispatch(setModalVisible({modal: null}));
       setShowCompassRawDataView(false);
-      unsubscribe();
+      unsubscribeFromSensors();
     }
   };
 
@@ -362,11 +363,11 @@ const Compass = ({
     }
   };
 
-  const subscribe = () => {
+  const subscribeToSensors = () => {
     try {
       CompassEvents.addListener('rotationMatrix', handleMatrixRotationData);
 
-      Platform.OS === 'ios' ? myDeviceRotation() : startSensors();
+      Platform.OS === 'ios' ? getDeviceRotation() : startSensors();
       console.log('%cSUBSCRIBING to native compass data!', 'color: green');
     }
     catch (err) {
@@ -374,10 +375,10 @@ const Compass = ({
     }
   };
 
-  const unsubscribe = () => {
+  const unsubscribeFromSensors = () => {
     try {
       CompassEvents.addListener('rotationMatrix', handleMatrixRotationData).remove();
-      Platform.OS === 'ios' ? stopObserving() : stopSensors();
+      Platform.OS === 'ios' ? stopCompass() : stopSensors();
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
     catch (err) {

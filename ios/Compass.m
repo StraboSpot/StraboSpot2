@@ -12,7 +12,7 @@
 
 @interface RCT_EXTERN_MODULE(Compass, RCTEventEmitter)
 RCT_EXTERN_METHOD(getHeading)
-RCT_EXTERN_METHOD(myDeviceRotation)
-RCT_EXTERN_METHOD(stopObserving)
+RCT_EXTERN_METHOD(getDeviceRotation)
+RCT_EXTERN_METHOD(stopCompass)
 
 @end
