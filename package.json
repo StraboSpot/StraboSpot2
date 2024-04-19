@@ -48,6 +48,7 @@
     "@StraboSpot/react-native-sketch-canvas": "github:StraboSpot/react-native-sketch-canvas",
     "@turf/turf": "6.5.0",
     "formik": "2.4.5",
+    "geomagnetism": "^0.1.1",
     "js-base64": "3.7.7",
     "lodash.isequal": "4.5.0",
     "lottie-react-native": "6.7.0",
