@@ -1,8 +1,14 @@
+import geomagnetism from 'geomagnetism';
+
 import useMapLocationHook from '../modules/maps/useMapLocation';
+import {useSelector} from 'react-redux';
+import useMapCoordsHook from '../modules/maps/useMapCoords';
 
 const useCompass = () => {
 
-  const useLocation = useMapLocationHook();
+  const useMapLocation = useMapLocationHook();
+  const useMapCoords = useMapCoordsHook();
+  const selectedSpotCoords = useSelector(state => state.spot.selectedSpot.geometry.coordinates);
 
   const cartesianToSpherical = async (mValue1, mValue2, mValue3) => {
     let rho = Math.sqrt(Math.pow(mValue1, 2) + Math.pow(mValue2, 2) + Math.pow(mValue3, 2));
@@ -37,12 +43,15 @@ const useCompass = () => {
 
   const getHeading = (yaw) => {
     const degrees = yaw * (180 / Math.PI);
-    const azimuthDegrees = Math.floor ((degrees + 360) % 360);
+    const azimuthDegrees = Math.floor((degrees + 360) % 360);
     return azimuthDegrees;
   };
 
   const getUserDeclination = async () => {
-    return await useLocation.getCurrentLocation();
+    const [longitude, latitude] = await useMapCoords.getCenterCoordsOfFeature();
+    const magneticDeclination = geomagnetism.model().point([latitude, longitude]);
+    console.log('MagDeclination', magneticDeclination);
+    return magneticDeclination.decl;
   };
 
   const strikeAndDip = async (ENU) => {

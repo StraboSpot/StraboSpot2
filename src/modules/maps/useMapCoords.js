@@ -7,7 +7,7 @@ import {isEmpty} from '../../shared/Helpers';
 
 const useMapCoords = () => {
   const isOnline = useSelector(state => state.connections.isOnline);
-
+  const {geometry, properties} = useSelector(state => state.spot.selectedSpot);
   const useServerRequests = useServerRequestsHook();
 
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
@@ -56,6 +56,12 @@ const useMapCoords = () => {
     return convertCoords(feature, PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION);
   };
 
+  const getCenterCoordsOfFeature = () => {
+    if (geometry.type === 'Point') return geometry.coordinates;
+    else if (geometry.type === 'Line') console.log('Get center cood of line')
+    else if (geometry.type === 'Polygon') console.log('Get center cood of polygon')
+  }
+
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
   const getCoordQuad = (imageBasemapProps, altOrigin) => {
     if (!imageBasemapProps) return undefined;
@@ -82,6 +88,7 @@ const useMapCoords = () => {
   return {
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    getCenterCoordsOfFeature: getCenterCoordsOfFeature,
     getCoordQuad: getCoordQuad,
     getMyMapsBboxCoords: getMyMapsBboxCoords,
   };

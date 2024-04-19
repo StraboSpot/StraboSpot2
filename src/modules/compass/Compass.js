@@ -1,17 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Animated,
   AppState,
-  Easing,
-  Image,
   NativeEventEmitter,
   Platform,
-  Pressable,
   Text,
   View,
 } from 'react-native';
 
-import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -23,8 +18,6 @@ import useCompassHook from '../../services/useCompass';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
 import DeviceSound from '../../utils/sounds/sound';
 import {setModalVisible} from '../home/home.slice';
-import overlayStyles from '../home/overlays/overlay.styles';
-import useMapLocationHook from '../maps/useMapLocation';
 import useMeasurementsHook from '../measurements/useMeasurements';
 import {MODAL_KEYS} from '../page/page.constants';
 
@@ -45,13 +38,11 @@ const Compass = ({
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const useCompass = useCompassHook();
-  const useLocation = useMapLocationHook();
 
-  const [strikeSpinValue] = useState(new Animated.Value(0));
-  const [trendSpinValue] = useState(new Animated.Value(0));
+  const [magneticDeclination, setMagneticDeclination] = useState(0);
   const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
-    heading: 0,
+    heading: 0 - magneticDeclination,
     strike: 0,
     dip_direction: null,
     dip: null,
@@ -77,8 +68,9 @@ const Compass = ({
   useEffect(() => {
     subscribeToSensors();
     console.log('UE Compass []');
-    displayCompassData()
-      .then(() => console.log('SENSORS ARE RUNNING'));
+    getDeclination().then((res) => {
+      console.log('Declination received');
+    });
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
       unsubscribeFromSensors();
@@ -104,19 +96,10 @@ const Compass = ({
     closeCompass();
   };
 
-  const displayCompassData = async () => {
-    // const userDeclination = await getDeclination();
-    // console.log('User declination', userDeclination);
-    console.log('Subscribing to data!');
-    subscribe();
-    console.log('Subscribing to data!');
-
-  };
-
   const getDeclination = async () => {
-    const declination = await useLocation.getCurrentLocation();
+    const declination = await useCompass.getUserDeclination();
     console.log('Declination is:', declination);
-    return declination;
+    setMagneticDeclination(declination);
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
@@ -173,8 +156,11 @@ const Compass = ({
     }
     const strikeAndDip = await useCompass.strikeAndDip(ENU_Pole);
     const trendAndPlunge = await useCompass.trendAndPlunge(ENU_TP);
+    const declinationRadians = magneticDeclination * Math.PI / 180;
+    const adjustedHeading = heading + declinationRadians;
+    const headingWithMagneticDecl = heading - magneticDeclination
     setCompassData({
-      heading: roundToDecimalPlaces(heading, 0),
+      heading: roundToDecimalPlaces(headingWithMagneticDecl, 0),
       strike: roundToDecimalPlaces(strikeAndDip.strike, 0),
       dip: roundToDecimalPlaces(strikeAndDip.dip, 0),
       trend: roundToDecimalPlaces(trendAndPlunge.trend, 0),
@@ -390,6 +376,7 @@ const Compass = ({
     <View style={{flex: 1}}>
       <View>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Heading: {compassData.heading}</Text>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.toFixed(2)}</Text>
         <CompassFace
           compassMeasurementTypes={compassMeasurementTypes}
           grabMeasurements={grabMeasurements}
