@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 import {isEmpty} from '../../shared/Helpers';
-import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 
 const initialNotebookState = {
   visibleNotebookPagesStack: [],

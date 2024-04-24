@@ -207,9 +207,9 @@ const HomeViewSmallScreen = ({
             {() =>
               <NotebookPanel
                 closeNotebookPanel={closeNotebookPanel}
-                createDefaultGeom={() => mapComponentRef.current?.createDefaultGeom()}
+                createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
                 openMainMenu={toggleHomeDrawer}
-                zoomToSpot={() => mapComponentRef.current?.zoomToSpot()}
+                zoomToSpots={mapComponentRef.current?.zoomToSpots}
               />
             }
           </Tab.Screen>

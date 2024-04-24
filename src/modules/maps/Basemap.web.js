@@ -3,22 +3,10 @@ import {Platform, useWindowDimensions, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import proj4 from 'proj4';
 import {Layer, Map, ScaleControl, Source} from 'react-map-gl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {
-  BACKGROUND,
-  GEO_LAT_LNG_PROJECTION,
-  LATITUDE,
-  LONGITUDE,
-  MAP_MODES,
-  MAPBOX_TOKEN,
-  PIXEL_PROJECTION,
-  STRAT_SECTION_CENTER,
-  ZOOM,
-  ZOOM_STRAT_SECTION,
-} from './maps.constants';
+import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN, ZOOM_STRAT_SECTION} from './maps.constants';
 import {setIsMapMoved, setVertexEndCoords} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
@@ -44,17 +32,13 @@ const Basemap = ({
                    onMapPress,
                    spotsNotSelected,
                    spotsSelected,
-                   zoomToSpot,
                  }, forwardedRef) => {
   console.log('Rendering Basemap...');
 
   const dispatch = useDispatch();
-  const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
-  const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef} = forwardedRef;
 
@@ -101,7 +85,7 @@ const Basemap = ({
   useEffect(() => {
       console.log('UE Basemap', viewState);
       console.log('Dimensions', useDimensions);
-      setInitialViewState();
+      setViewState(useMapView.getInitialViewState());
     }, [currentImageBasemap, stratSection],
   );
 
@@ -128,41 +112,6 @@ const Basemap = ({
       );
     }
   });
-
-  // Set initial center and zoom
-  const setInitialViewState = () => {
-    console.log('Getting initial center...');
-    let initialCenter = center;
-    if (zoomToSpot && selectedSpot?.geometry?.coordinates && selectedSpot.properties) {
-      if ((currentImageBasemap && selectedSpot.properties.image_basemap === currentImageBasemap.id)
-        || (stratSection && selectedSpot.properties.strat_section_id === stratSection.strat_section_id)) {
-        initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-          turf.centroid(selectedSpot).geometry.coordinates);
-      }
-      else if (!selectedSpot.properties.image_basemap && !selectedSpot.properties.strat_section_id) {
-        initialCenter = turf.centroid(selectedSpot).geometry.coordinates;
-      }
-    }
-    else if (currentImageBasemap) {
-      initialCenter = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
-        [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]);
-    }
-    else if (stratSection) initialCenter = STRAT_SECTION_CENTER;
-
-    console.log('Getting initial zoom...');
-    let initialZoom = zoom;
-    if (currentImageBasemap) initialZoom = ZOOM;
-    else if (stratSection) initialZoom = ZOOM_STRAT_SECTION;
-
-    const initialViewState = {
-      longitude: initialCenter[0],
-      latitude: initialCenter[1],
-      zoom: initialZoom,
-    };
-
-    console.log('Setting Initial View State', initialViewState);
-    setViewState(initialViewState);
-  };
 
   // Update spots in extent and saved view (center and zoom)
   const onMove = (e) => {

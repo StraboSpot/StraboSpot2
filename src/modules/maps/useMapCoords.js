@@ -16,30 +16,24 @@ const useMapCoords = () => {
       feature.geometry.coordinates = proj4(fromProjection, toProjection, feature.geometry.coordinates);
     }
     else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiPoint') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((pointCoords) => {
-        return proj4(fromProjection, toProjection, pointCoords);
-      });
+      feature.geometry.coordinates = feature.geometry.coordinates.map(
+        pointCoords => proj4(fromProjection, toProjection, pointCoords));
     }
     else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiLineString') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((lineCoords) => {
-        return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
-      });
+      feature.geometry.coordinates = feature.geometry.coordinates.map(
+        lineCoords => lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords)));
     }
     else if (feature.geometry.type === 'MultiPolygon') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((polygonCoords) => {
-        return polygonCoords.map((lineCoords) => {
-          return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
-        });
-      });
+      feature.geometry.coordinates = feature.geometry.coordinates.map(polygonCoords => polygonCoords.map(
+        lineCoords => lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords))));
     }
     // Interbedded (Geometry Collections)
     else if (feature.geometry.type === 'GeometryCollection') {
       feature.geometry.geometries = feature.geometry.geometries.map((geometry) => {
         return {
           type: geometry.type,
-          coordinates: geometry.coordinates.map((lineCoords) => {
-            return lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords));
-          }),
+          coordinates: geometry.coordinates.map(
+            lineCoords => lineCoords.map(pointCoords => proj4(fromProjection, toProjection, pointCoords))),
         };
       });
     }

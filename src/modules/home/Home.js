@@ -49,14 +49,13 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
 import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import {MAP_MODES} from '../maps/maps.constants';
-import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapLocationHook from '../maps/useMapLocation';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
-import {clearedSelectedSpots, setSelectedAttributes, setSelectedSpot} from '../spots/spots.slice';
+import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel} from '../tags';
 import {logout} from '../user/userProfile.slice';
@@ -81,7 +80,6 @@ const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const customMaps = useSelector(state => state.map.customMaps);
   const isHomeLoading = useSelector(state => state.home.loading.home);
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
@@ -162,15 +160,6 @@ const Home = ({navigation, route}) => {
   }, [userEmail, userName]);
 
   useEffect(() => {
-    console.log('UE Home [currentImageBasemap, customMaps, stratSection]', currentImageBasemap, customMaps,
-      stratSection);
-    if ((currentImageBasemap || stratSection) && isMainMenuPanelVisible) toggleHomeDrawerButton();
-    return function cleanUp() {
-      console.log('currentImageBasemap and stratSection cleanup UE');
-    };
-  }, [currentImageBasemap, customMaps, stratSection]);
-
-  useEffect(() => {
     console.log('UE Home [modalVisible]', modalVisible);
     if (Platform.OS === 'ios') {
       Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
@@ -245,10 +234,12 @@ const Home = ({navigation, route}) => {
         mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
-        dispatch(setCurrentImageBasemap(undefined));
+        const spotWithThisImageBasemap = useSpots.getRootSpot(currentImageBasemap.id);
+        useSpots.handleSpotSelected(spotWithThisImageBasemap);
         break;
       case 'closeStratSection':
-        dispatch(clearedStratSection());
+        const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
+        useSpots.handleSpotSelected(spotWithThisStratSection);
         break;
       // Map Actions
       case 'zoom':
@@ -276,7 +267,8 @@ const Home = ({navigation, route}) => {
         setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
         break;
       case 'stratSection':
-        dispatch(setSelectedSpot(useSpots.getSpotWithThisStratSection(stratSection.strat_section_id)));
+        const selectedSpotWithThisStratSection = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
+        useSpots.handleSpotSelected(selectedSpotWithThisStratSection);
         openNotebookPanel(PAGE_KEYS.STRAT_SECTION);
         break;
     }
@@ -386,7 +378,7 @@ const Home = ({navigation, route}) => {
   };
 
   const openSpotInNotebook = (spot, notebookPage, attributes) => {
-    dispatch(setSelectedSpot(spot));
+    useSpots.handleSpotSelected(spot);
     if (attributes) dispatch(setSelectedAttributes(attributes));
     if (notebookPage) openNotebookPanel(notebookPage);
     else openNotebookPanel(PAGE_KEYS.OVERVIEW);

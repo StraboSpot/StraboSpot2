@@ -1,13 +1,21 @@
 import {Platform} from 'react-native';
 
 import * as turf from '@turf/turf';
+import proj4 from 'proj4';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {clearedStratSection, setCenter, setCurrentImageBasemap, setStratSection, setZoom} from './maps.slice';
-import useStratSectionHook from './strat-section/useStratSection';
+import {
+  GEO_LAT_LNG_PROJECTION,
+  LATITUDE,
+  LONGITUDE,
+  PIXEL_PROJECTION,
+  STRAT_SECTION_CENTER,
+  ZOOM,
+  ZOOM_STRAT_SECTION,
+} from './maps.constants';
+import {setCenter, setZoom} from './maps.slice';
 import useMapCoordsHook from './useMapCoords';
 import {isEmpty, isEqual} from '../../shared/Helpers';
-import useSpotsHook from '../spots/useSpots';
 
 const useMapView = () => {
   const dispatch = useDispatch();
@@ -18,8 +26,46 @@ const useMapView = () => {
   const zoom = useSelector(state => state.map.zoom);
 
   const useMapCoords = useMapCoordsHook();
-  const useSpots = useSpotsHook();
-  const useStratSection = useStratSectionHook();
+
+  // Evaluate and return appropriate center coordinates
+  const getCenterCoordinates = () => {
+    console.log('Getting initial map center...');
+    if (currentImageBasemap || stratSection) {
+      if ((selectedSpot?.properties?.image_basemap && selectedSpot?.properties.image_basemap === currentImageBasemap?.id)
+        || (selectedSpot?.properties?.strat_section_id && selectedSpot?.properties.strat_section_id === stratSection?.strat_section_id)) {
+        return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
+      }
+      if (currentImageBasemap) {
+        return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
+          [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]);
+      }
+      else if (stratSection) return STRAT_SECTION_CENTER;
+    }
+    else if (selectedSpot?.geometry?.coordinates) return turf.centroid(selectedSpot).geometry.coordinates;
+    return [LONGITUDE, LATITUDE];
+  };
+
+  // Set initial center and zoom (WEB)
+  const getInitialViewState = () => {
+    const initialCenter = getCenterCoordinates();
+    const initialZoom = getZoomLevel();
+
+    const initialViewState = {
+      longitude: initialCenter[0],
+      latitude: initialCenter[1],
+      zoom: initialZoom,
+    };
+
+    console.log('Setting Initial View State', initialViewState);
+    return initialViewState;
+  };
+
+  const getZoomLevel = () => {
+    console.log('Getting initial zoom...');
+    if (currentImageBasemap) return ZOOM;
+    else if (stratSection) return ZOOM_STRAT_SECTION;
+    return zoom;
+  };
 
   // If feature is mapped on geographical map, not an image basemap or strat section
   const isOnGeoMap = (feature) => {
@@ -44,62 +90,27 @@ const useMapView = () => {
     }
   };
 
-  const zoomToSpot = (map, camera) => {
-    if (selectedSpot && isOnGeoMap(selectedSpot)) {
-      // spot selected is on geomap, but currently on image basemap mode, turn off imagebasemap mode and zoomToSpot in async mode.
-      if (currentImageBasemap || stratSection) {
-        dispatch(setCurrentImageBasemap(undefined));
-        dispatch(clearedStratSection());
-        // doZoomToSpot = true;
-        // return true;
-      }
-      // spot selected is on geomap and mapMode is main-map, zoomToSpot in sync mode.
-      else zoomToSpots([selectedSpot], map, camera);
-    }
-    else if (!isEmpty(selectedSpot)
-      && (selectedSpot.properties.image_basemap || selectedSpot.properties.strat_section_id)) {
-      // spot selected is on an image basemap or strat section, either if not on imagebasemap
-      // or not on same imagebasemap as the selected spot's imagebasemap,
-      // then switch to corresponding imagebasemap and zoomToSpot in asyncMode
-      if (selectedSpot.properties.image_basemap
-        && (!currentImageBasemap || currentImageBasemap.id !== selectedSpot.properties.image_basemap)) {
-        const imageBasemapData = useSpots.getImageBasemaps().find((imgBasemap) => {
-          return imgBasemap.id === selectedSpot.properties.image_basemap;
-        });
-        dispatch(setCurrentImageBasemap(imageBasemapData));
-      }
-      else if (selectedSpot.properties.strat_section_id
-        && (!stratSection || stratSection.strat_section_id !== selectedSpot.properties.strat_section_id)) {
-        const stratSectionSettings = useStratSection.getStratSectionSettings(selectedSpot.properties.strat_section_id);
-        if (stratSectionSettings) {
-          dispatch(setStratSection(stratSectionSettings));
-        }
-      }
-      //spot selected is already on the same image basemap or strat section, zoomToSpot in sync mode
-      else {
-        const selectedSpotCopy = JSON.parse(JSON.stringify(selectedSpot));
-        const spotInLatLng = useMapCoords.convertImagePixelsToLatLong(selectedSpotCopy);
-        zoomToSpots([spotInLatLng], map, camera);
-      }
-    }
-    else {
-      // handle other maps
-    }
-  };
-
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
     if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))
       || spotsToZoomTo.every(s => isOnStratSection(s))) {
       if (camera || Platform.OS === 'web') {
         try {
+          console.log('spotsToZoomTo[0]', spotsToZoomTo[0]);
+          if (isOnImageBasemap(spotsToZoomTo[0]) || isOnStratSection(spotsToZoomTo[0])) {
+            const spotsCopy = JSON.parse(JSON.stringify(spotsToZoomTo));
+            spotsToZoomTo = spotsCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
+            console.log('spotsToZoomToNew', spotsToZoomTo);
+          }
           if (spotsToZoomTo.length === 1) {
-            const centroid = turf.centroid(spotsToZoomTo[0]);
-            if (Platform.OS === 'web') map.flyTo({center: turf.getCoord(centroid)});
-            else camera.flyTo(turf.getCoord(centroid));
+            let centroidCoords = turf.getCoord(turf.centroid(spotsToZoomTo[0]));
+            if (Platform.OS === 'web') {
+              map.flyTo({center: centroidCoords, zoom: isOnStratSection(spotsToZoomTo[0]) ? ZOOM_STRAT_SECTION : ZOOM});
+            }
+            else camera.flyTo(centroidCoords);
           }
           else if (spotsToZoomTo.length > 1) {
-            const features = turf.featureCollection(spotsToZoomTo);
-            const [minX, minY, maxX, maxY] = turf.bbox(features);  //bbox extent in minX, minY, maxX, maxY order
+            let featureCollection = turf.featureCollection(spotsToZoomTo);
+            const [minX, minY, maxX, maxY] = turf.bbox(featureCollection);  //bbox extent in minX, minY, maxX, maxY order
             if (Platform.OS === 'web') map.fitBounds([[maxX, minY], [minX, maxY]], {padding: 100, duration: 2500});
             else camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
           }
@@ -114,9 +125,11 @@ const useMapView = () => {
   };
 
   return {
+    getCenterCoordinates: getCenterCoordinates,
+    getInitialViewState: getInitialViewState,
+    getZoomLevel: getZoomLevel,
     isOnGeoMap: isOnGeoMap,
     setMapView: setMapView,
-    zoomToSpot: zoomToSpot,
     zoomToSpots: zoomToSpots,
   };
 };

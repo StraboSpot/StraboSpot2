@@ -150,9 +150,7 @@ const Map = ({
   useEffect(() => {
     console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
     //conditional call to avoid multiple renders during edit mode.
-    if (mapMode !== MAP_MODES.EDIT) {
-      setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
-    }
+    if (mapMode !== MAP_MODES.EDIT) setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
@@ -1024,10 +1022,6 @@ const Map = ({
     return [line, newPointOnLine];
   };
 
-  const zoomToSpot = () => {
-    useMapView.zoomToSpot(mapRef.current, cameraRef.current);
-  };
-
   // Modal to prompt the user to select a geometry if no geometry has been set
   const renderSetInCurrentViewModal = () => {
     const buttons = ['Point', 'LineString', 'Polygon'];
@@ -1077,6 +1071,10 @@ const Map = ({
     );
   };
 
+  const toggleUserLocation = (value) => {
+    setShowUserLocation(value);
+  };
+
   // Calculate the Spots in the current map extent and send to redux
   const updateSpotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
@@ -1092,12 +1090,6 @@ const Map = ({
       const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots([...spotsSelected, ...spotsNotSelected], bboxPoly);
       dispatch(setSpotsInMapExtent(gotSpotsInMapExtent));
     }
-  };
-
-  // Zoom map to the extent of the mapped Spots
-  const zoomToSpotsExtent = () => {
-    const spotsToZoomTo = [...spotsSelected, ...spotsNotSelected];
-    useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
   const zoomToCenterOfflineTile = () => {
@@ -1122,12 +1114,17 @@ const Map = ({
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Not able to zoom to custom map while offline.'));
       dispatch(setErrorMessagesModalVisible(true));
-
     }
   };
 
-  const toggleUserLocation = (value) => {
-    setShowUserLocation(value);
+  const zoomToSpots = (spotsToZoomTo) => {
+    useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
+  };
+
+  // Zoom map to the extent of the mapped Spots
+  const zoomToSpotsExtent = () => {
+    const spotsToZoomTo = [...spotsSelected, ...spotsNotSelected];
+    useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
   useImperativeHandle(mapComponentRef, () => {
@@ -1149,7 +1146,7 @@ const Map = ({
       updateSpotsInMapExtent: updateSpotsInMapExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
       zoomToCustomMap: zoomToCustomMap,
-      zoomToSpot: zoomToSpot,
+      zoomToSpots: zoomToSpots,
       zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
@@ -1162,8 +1159,6 @@ const Map = ({
           basemap={basemap}
           drawFeatures={drawFeatures}
           editFeatureVertex={editFeatureVertex}
-          // drawFeatures={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(drawFeatures) : drawFeatures}
-          // editFeatureVertex={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(editFeatureVertex) : editFeatureVertex}
           mapMode={mapMode}
           measureFeatures={measureFeatures}
           onMapLongPress={onMapLongPress}
@@ -1172,9 +1167,6 @@ const Map = ({
           showUserLocation={showUserLocation}
           spotsNotSelected={spotsNotSelected}
           spotsSelected={spotsSelected}
-          // spotsNotSelected={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(spotsNotSelected) : spotsNotSelected}
-          // spotsSelected={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(spotsSelected) : spotsSelected}
-          zoomToSpot={zoomToSpot}
         />
       )}
       {renderSetInCurrentViewModal()}

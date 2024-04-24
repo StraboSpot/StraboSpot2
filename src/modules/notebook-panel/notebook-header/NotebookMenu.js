@@ -17,7 +17,7 @@ import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
 import notebookStyles from '../notebookPanel.styles';
 
-const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpot}) => {
+const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -58,7 +58,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpot}) =>
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
       setTimeout(() => {
-        zoomToSpot();
+        zoomToSpots([spot]);
         dispatch(setLoadingStatus({view: 'home', bool: false}));
       }, 500);
     }
