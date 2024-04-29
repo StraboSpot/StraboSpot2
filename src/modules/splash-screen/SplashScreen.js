@@ -37,7 +37,10 @@ const SplashScreen = ({children}) => {
           </View>
           {children}
         </View>
-        {__DEV__ && (
+        <View style={{ marginVertical: 100}}>
+          <VersionCheckLabel/>
+        </View>
+        {!__DEV__ && (
           <View style={splashScreenStyles.dimensionsContainer}>
             <Text style={splashScreenStyles.dimensionsText}>
               Screen Dimensions
@@ -53,7 +56,6 @@ const SplashScreen = ({children}) => {
         )}
       </ScrollView>
       <Loading isLoading={loading} size={60}/>
-      <VersionCheckLabel/>
     </ImageBackground>
   );
 };

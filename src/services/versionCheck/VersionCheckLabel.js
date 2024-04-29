@@ -13,29 +13,35 @@ const VersionCheckLabel = () => {
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
-      useVersionCheck.animateLabel(animatedPulse);
       useVersionCheck.checkAppStoreVersion().then((res) => {
-        if (res.needsUpdate) showAlert();
+        if (res.needsUpdate) {
+          useVersionCheck.animateLabel(animatedPulse);
+
+          // showAlert();
+        }
         setVersionObj(res);
       });
     }
   }, []);
 
   const handlePress = async () => {
-    const res = await Linking.canOpenURL(versionObj.url);
-    if (res) await Linking.openURL(versionObj.url);
-  };
-
-  const showAlert = () => {
     alert('IMPORTANT',
       'Please make sure your data is uploaded to your online account before upgrading. '
       + ' It is best to delete and the reinstall the app',
       [
         {
-          text: 'OK', onPress: async () => {
+          text: 'Go To Store', onPress: async () => {
             console.log('OK Pressed');
+            const res = await Linking.canOpenURL(versionObj.url);
+            if (res) await Linking.openURL(versionObj.url);
           },
-        }]);
+        },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        ]);
   };
 
   return (

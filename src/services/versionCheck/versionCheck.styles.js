@@ -4,9 +4,6 @@ import {GOLD, PRIMARY_HEADER_TEXT_SIZE, UPDATE_LABEL_HEIGHT, UPDATE_LABEL_WIDTH}
 
 const versionCheckStyles = StyleSheet.create({
   container: {
-    bottom: 175,
-    position: 'absolute',
-    right: 200,
     shadowColor: 'black',
     shadowOffset: {width: 5, height: 5},
     shadowOpacity: 0.75,
