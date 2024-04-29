@@ -37,7 +37,7 @@ const SplashScreen = ({children}) => {
           </View>
           {children}
         </View>
-        <View style={{ marginVertical: 100}}>
+        <View style={splashScreenStyles.versionPositionSplashScreen}>
           <VersionCheckLabel/>
         </View>
         {!__DEV__ && (

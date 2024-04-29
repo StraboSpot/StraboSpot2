@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
 import styles from './versionCheck.styles';
@@ -7,7 +7,7 @@ import VersionCheckHook from '../versionCheck/useVersionCheck';
 
 const VersionCheckLabel = () => {
   const [versionObj, setVersionObj] = useState({});
-  const animatedPulse = useMemo(() => new Animated.Value(0), []);
+  const [animatedPulse] = useState(new Animated.Value(0));
 
   const useVersionCheck = VersionCheckHook();
 

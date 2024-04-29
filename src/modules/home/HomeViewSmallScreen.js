@@ -34,7 +34,9 @@ const HomeViewSmallScreen = ({
                                onEndDrawPressed,
                                openNotebookPanel,
                                openSpotInNotebook,
+                               renderVersionCheckLabel,
                                setDistance,
+                               showUpdateLabel,
                                startEdit,
                                toggleDialog,
                                toggleHomeDrawer,
@@ -200,6 +202,7 @@ const HomeViewSmallScreen = ({
                   </View>
                 )}
                 <OfflineMapLabel/>
+                {showUpdateLabel && renderVersionCheckLabel}
               </>
             }
           </Tab.Screen>

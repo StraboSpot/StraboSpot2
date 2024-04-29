@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, TextInput} from 'react-native';
+import {Animated, Keyboard, Platform, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -434,6 +434,12 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  const renderVersionCheckLabel = () => (
+    <View style={homeStyles.versionPositionHome}>
+      <VersionCheckLabel/>
+    </View>
+  )
+
   const setDraw = async (mapModeToSet) => {
     mapComponentRef.current?.cancelDraw();
     if (mapMode === mapModeToSet
@@ -549,6 +555,8 @@ const Home = ({navigation, route}) => {
           startEdit={startEdit}
           toggleDialog={toggleDialog}
           toggleHomeDrawer={toggleHomeDrawerButton}
+          showUpdateLabel={showUpdateLabel}
+          renderVersionCheckLabel={renderVersionCheckLabel()}
         />
       ) : (
         <HomeView
@@ -601,7 +609,6 @@ const Home = ({navigation, route}) => {
       {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
-      {showUpdateLabel && <VersionCheckLabel/>}
     </Animated.View>
   );
 };
