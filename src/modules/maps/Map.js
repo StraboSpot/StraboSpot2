@@ -489,25 +489,19 @@ const Map = ({
 
   const setSelectedVertexToEdit = async (vertex) => {
     console.log('setSelectedVertexToEdit, vertex:', vertex);
-    clearVertexes();
-    setVertexToEdit(vertex);
-    setVertexIndex(undefined);
-    console.log('Set vertex to edit:', vertex);
-    setEditFeatureVertex([vertex]);
-    setAllowMapViewMove(false);
-    let vertexGeoCoords = vertex.geometry.coordinates;
+    let vertexToEditWithGeoCoords = JSON.parse(JSON.stringify(vertex));
     if ((currentImageBasemap || stratSection)
       && ((isEmpty(spotEditing) || ((!isEmpty(spotEditing) && spotEditing.geometry.type === 'Point'))
         || (!isEmpty(spotEditing) && spotEditing.properties.name !== vertex.properties.name)))) {
-      // spotEditing will be empty for Point (may not be empty if the same spot is selected again for edit) and
-      // not empty for polygon or linestring, because, only Point can select the vertex on first long press.
-      // For polygon or line, long press would identify the spot.
-      // For polygon or LineString, the vertex comes from the draw feature, so, the coordinates are already in lat lng projection, so no more conversion necessary.
-
-      // !isEmpty(spotEditing) && spotEditing.properties.name != vertex.properties.name)), this check is required
-      // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
-      vertexGeoCoords = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, vertexGeoCoords);
+      vertexToEditWithGeoCoords  = useMapCoords.convertImagePixelsToLatLong(vertexToEditWithGeoCoords);
     }
+    clearVertexes();
+    setVertexToEdit(vertexToEditWithGeoCoords);
+    setVertexIndex(undefined);
+    console.log('Set vertex to edit:', vertexToEditWithGeoCoords);
+    setEditFeatureVertex([vertexToEditWithGeoCoords]);
+    setAllowMapViewMove(false);
+    const vertexGeoCoords = vertexToEditWithGeoCoords.geometry.coordinates;
     let vertexScreenCoords = Platform.OS === 'web' ? mapRef.current.project(vertexGeoCoords)
       : await mapRef.current.getPointInView(vertexGeoCoords);
     if (Platform.OS === 'web') vertexScreenCoords = [vertexScreenCoords.x, vertexScreenCoords.y];
