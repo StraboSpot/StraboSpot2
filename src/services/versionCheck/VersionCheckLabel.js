@@ -14,11 +14,7 @@ const VersionCheckLabel = () => {
   useEffect(() => {
     if (Platform.OS !== 'web') {
       useVersionCheck.checkAppStoreVersion().then((res) => {
-        if (res.needsUpdate) {
-          useVersionCheck.animateLabel(animatedPulse);
-
-          // showAlert();
-        }
+        if (res.needsUpdate) useVersionCheck.animateLabel(animatedPulse);
         setVersionObj(res);
       });
     }
