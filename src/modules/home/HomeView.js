@@ -87,7 +87,7 @@ const HomeView = ({
           closeNotebookPanel={closeNotebookPanel}
           createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
           openMainMenu={toggleHomeDrawer}
-          zoomToSpot={mapComponentRef.current?.zoomToSpot}
+          zoomToSpots={mapComponentRef.current?.zoomToSpots}
         />
       </Animated.View>
     </SafeAreaView>

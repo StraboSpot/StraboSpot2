@@ -5,6 +5,7 @@ import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
 import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
+import {clearedStratSection, setCurrentImageBasemap, setStratSection} from '../maps/maps.slice';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {
   addedDataset,
@@ -219,6 +220,12 @@ const useSpots = () => {
     //get the length of the array
   };
 
+  // Get parent Spot for image basemap
+  const getImageBasemapBySpot = (spot) => {
+    const imageBasemapFound = getImageBasemaps().find(imageBasemap => imageBasemap.id === spot.properties.image_basemap);
+    return imageBasemapFound;
+  };
+
   const getImageBasemaps = () => {
     return Object.values(getActiveSpotsObj()).reduce((acc, spot) => {
       const imageBasemaps = spot.properties.images
@@ -290,7 +297,6 @@ const useSpots = () => {
     });
   };
 
-
   const getSpotGeometryIconSource = (spot) => {
     if (spot?.geometry?.type === 'Point') {
       if (spot.properties?.image_basemap) return require('../../assets/icons/ImagePoint_pressed.png');
@@ -310,13 +316,18 @@ const useSpots = () => {
     else return require('../../assets/icons/QuestionMark_pressed.png');
   };
 
+  const getSpotWithThisImageBasemap = (imageBasemapId) => {
+    return Object.values(getActiveSpotsObj()).find((spot) => {
+      const spotFound = spot.properties?.images?.find(image => image.id === imageBasemapId);
+      return spotFound ? spot : undefined;
+    });
+  };
+
   // Get the Spot that Contains a Specific Strat Section Given the ID of the Strat Section
   const getSpotWithThisStratSection = (stratSectionId) => {
-    const activeSpots = getActiveSpotsObj();
     // Comparing int to string so use only 2 equal signs
-    return (
-      Object.values(activeSpots).find(spot => spot?.properties?.sed?.strat_section?.strat_section_id == stratSectionId)
-    );
+    return Object.values(getActiveSpotsObj()).find(
+      spot => spot?.properties?.sed?.strat_section?.strat_section_id == stratSectionId);
   };
 
   const getSpotsByIds = (spotIds) => {
@@ -365,11 +376,48 @@ const useSpots = () => {
     }));
   };
 
-  // Get all active Spot that contain a strat section
+  // Get all active Spots that contain a strat section
   const getSpotsWithStratSection = () => {
-    const activeSpots = getActiveSpotsObj();
-    return Object.values(activeSpots).filter(spot => spot?.properties?.sed?.strat_section);
+    return Object.values(getActiveSpotsObj()).filter(spot => spot?.properties?.sed?.strat_section);
   };
+
+  const getStratSectionSettings = (stratSectionId) => {
+    const spot = getSpotWithThisStratSection(stratSectionId);
+    return spot && spot.properties && spot.properties.sed
+    && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
+  };
+
+  const handleSpotSelected = (spot) => {
+    dispatch(setSelectedSpot(spot));
+
+    // Set correct map for type of selected Spot
+    if (isOnGeoMap(spot)) {
+      if (currentImageBasemap) dispatch(setCurrentImageBasemap(undefined));
+      if (stratSection) dispatch(clearedStratSection());
+    }
+    else if (isOnImageBasemap(spot)
+      && (!currentImageBasemap || currentImageBasemap.id !== spot.properties.image_basemap)) {
+      const imageBasemap = getImageBasemapBySpot(spot);
+      if (stratSection) dispatch(clearedStratSection());
+      dispatch(setCurrentImageBasemap(imageBasemap));
+    }
+    else if (isOnStratSection(spot)
+      && (!stratSection || stratSection.strat_section_id !== spot.properties.strat_section_id)) {
+      const stratSectionSettings = getStratSectionSettings(spot.properties.strat_section_id);
+      if (currentImageBasemap) dispatch(setCurrentImageBasemap(undefined));
+      if (stratSectionSettings) dispatch(setStratSection(stratSectionSettings));
+    }
+  };
+
+  // If feature is mapped on geographical map, not an image basemap or strat section
+  const isOnGeoMap = (feature) => {
+    if (isEmpty(feature)) return false;
+    return !feature.properties.image_basemap && !feature.properties.strat_section_id;
+  };
+
+  const isOnImageBasemap = feature => feature.properties?.image_basemap;
+
+  const isOnStratSection = feature => feature.properties?.strat_section_id;
 
   const isStratInterval = (spot) => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
@@ -383,6 +431,7 @@ const useSpots = () => {
     getActiveSpotsObj: getActiveSpotsObj,
     getAllFeaturesFromSpot: getAllFeaturesFromSpot,
     getAllSpotSamplesCount: getAllSpotSamplesCount,
+    getImageBasemapBySpot: getImageBasemapBySpot,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
     getMappableSpots: getMappableSpots,
@@ -390,6 +439,7 @@ const useSpots = () => {
     getSpotById: getSpotById,
     getSpotByImageId: getSpotByImageId,
     getSpotGeometryIconSource: getSpotGeometryIconSource,
+    getSpotWithThisImageBasemap: getSpotWithThisImageBasemap,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
@@ -400,6 +450,10 @@ const useSpots = () => {
     getSpotsWithSamples: getSpotsWithSamples,
     getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
+    handleSpotSelected: handleSpotSelected,
+    isOnGeoMap: isOnGeoMap,
+    isOnImageBasemap: isOnImageBasemap,
+    isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
   };
 };

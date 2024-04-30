@@ -63,9 +63,7 @@ const AddMeasurementModal = ({onPress}) => {
 
   useEffect(() => {
     console.log('UE AddMeasurementModal []');
-    if (Platform.OS === 'android') {
-      checkAndRequestLocPermission();
-    }
+    // if (Platform.OS === 'android') checkAndRequestLocPermission(); TODO Check once Android Auto Compass is complete;
     return () => dispatch(setModalValues({}));
   }, []);
 
@@ -212,7 +210,7 @@ const AddMeasurementModal = ({onPress}) => {
                 onPress={() => setIsManualMeasurement(!isManualMeasurement)}
               />
             )}
-            {isManualMeasurement && locationPermission !== 'granted' ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
+            {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
               : (
                 <>
                   <Compass

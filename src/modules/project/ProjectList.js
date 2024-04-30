@@ -13,14 +13,17 @@ import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {
+  setLoadingStatus,
   setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
+  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 
 const ProjectList = ({source}) => {
@@ -116,7 +119,7 @@ const ProjectList = ({source}) => {
   const initializeProjectOptions = async (project) => {
     // const projectName;
     dispatch(setSelectedProject({project: project, source: source}));
-    if (isInitialProjectLoadModalVisible) {
+    if (isInitialProjectLoadModalVisible || isEmpty(currentProject)) {
       dispatch(setSelectedProject({project: '', source: ''}));
       const res = await loadSelectedProject(project);
       console.log('Done loading project from InitialProjectModal', res);
@@ -125,22 +128,33 @@ const ProjectList = ({source}) => {
   };
 
   const loadSelectedProject = async (project) => {
-    console.log('Selected Project:', project);
-    setLoading(true);
-    if (!isEmpty(currentProject)) {
-      dispatch(setSelectedProject({project: project, source: source}));
-    }
-    else {
-      console.log('Getting project...');
-      if (!isEmpty(project)) useProject.destroyOldProject();
-      if (source === 'device') {
-        dispatch(setProjectLoadSelectionModalVisible(false));
-        const res = await useImport.loadProjectFromDevice(project.fileName);
-        setLoading(false);
-        dispatch(setStatusMessageModalTitle(res.project.description.project_name));
-        console.log('Done loading project', res);
+    try {
+      console.log('Selected Project:', project);
+      setLoading(true);
+      if (!isEmpty(currentProject)) {
+        dispatch(setSelectedProject({project: project, source: source}));
       }
-      else await useDownload.initializeDownload(project);
+      else {
+        console.log('Getting project...');
+        if (!isEmpty(project)) useProject.destroyOldProject();
+        if (source === 'device') {
+          dispatch(setProjectLoadSelectionModalVisible(false));
+          dispatch(setStatusMessagesModalVisible(true));
+          const res = await useImport.loadProjectFromDevice(project.fileName);
+          dispatch(setStatusMessagesModalVisible(false));
+          setLoading(false);
+          dispatch(setStatusMessageModalTitle(res.project.description.project_name));
+          console.log('Done loading project', res);
+        }
+        else await useDownload.initializeDownload(project);
+      }
+    }
+    catch (err) {
+      console.error('Error loading Project.', err);
+      alert('Project not found!', 'Make sure there is a "data.json" file and it is properly named.');
+      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      setLoading(false);
+      dispatch(setStatusMessagesModalVisible(false));
     }
   };
 
@@ -153,7 +167,7 @@ const ProjectList = ({source}) => {
         closeModal={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
         projectDeleted={value => reloadingList(value)}
-       />
+      />
     );
   };
 

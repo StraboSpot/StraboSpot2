@@ -150,9 +150,7 @@ const Map = ({
   useEffect(() => {
     console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
     //conditional call to avoid multiple renders during edit mode.
-    if (mapMode !== MAP_MODES.EDIT) {
-      setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
-    }
+    if (mapMode !== MAP_MODES.EDIT) setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
@@ -491,25 +489,19 @@ const Map = ({
 
   const setSelectedVertexToEdit = async (vertex) => {
     console.log('setSelectedVertexToEdit, vertex:', vertex);
-    clearVertexes();
-    setVertexToEdit(vertex);
-    setVertexIndex(undefined);
-    console.log('Set vertex to edit:', vertex);
-    setEditFeatureVertex([vertex]);
-    setAllowMapViewMove(false);
-    let vertexGeoCoords = vertex.geometry.coordinates;
+    let vertexToEditWithGeoCoords = JSON.parse(JSON.stringify(vertex));
     if ((currentImageBasemap || stratSection)
       && ((isEmpty(spotEditing) || ((!isEmpty(spotEditing) && spotEditing.geometry.type === 'Point'))
         || (!isEmpty(spotEditing) && spotEditing.properties.name !== vertex.properties.name)))) {
-      // spotEditing will be empty for Point (may not be empty if the same spot is selected again for edit) and
-      // not empty for polygon or linestring, because, only Point can select the vertex on first long press.
-      // For polygon or line, long press would identify the spot.
-      // For polygon or LineString, the vertex comes from the draw feature, so, the coordinates are already in lat lng projection, so no more conversion necessary.
-
-      // !isEmpty(spotEditing) && spotEditing.properties.name != vertex.properties.name)), this check is required
-      // when a polygon/linestring is selected by a long press first then a different point than the points on polygon/line is selected to edit.
-      vertexGeoCoords = proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, vertexGeoCoords);
+      vertexToEditWithGeoCoords  = useMapCoords.convertImagePixelsToLatLong(vertexToEditWithGeoCoords);
     }
+    clearVertexes();
+    setVertexToEdit(vertexToEditWithGeoCoords);
+    setVertexIndex(undefined);
+    console.log('Set vertex to edit:', vertexToEditWithGeoCoords);
+    setEditFeatureVertex([vertexToEditWithGeoCoords]);
+    setAllowMapViewMove(false);
+    const vertexGeoCoords = vertexToEditWithGeoCoords.geometry.coordinates;
     let vertexScreenCoords = Platform.OS === 'web' ? mapRef.current.project(vertexGeoCoords)
       : await mapRef.current.getPointInView(vertexGeoCoords);
     if (Platform.OS === 'web') vertexScreenCoords = [vertexScreenCoords.x, vertexScreenCoords.y];
@@ -1024,10 +1016,6 @@ const Map = ({
     return [line, newPointOnLine];
   };
 
-  const zoomToSpot = () => {
-    useMapView.zoomToSpot(mapRef.current, cameraRef.current);
-  };
-
   // Modal to prompt the user to select a geometry if no geometry has been set
   const renderSetInCurrentViewModal = () => {
     const buttons = ['Point', 'LineString', 'Polygon'];
@@ -1077,6 +1065,10 @@ const Map = ({
     );
   };
 
+  const toggleUserLocation = (value) => {
+    setShowUserLocation(value);
+  };
+
   // Calculate the Spots in the current map extent and send to redux
   const updateSpotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
@@ -1092,12 +1084,6 @@ const Map = ({
       const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots([...spotsSelected, ...spotsNotSelected], bboxPoly);
       dispatch(setSpotsInMapExtent(gotSpotsInMapExtent));
     }
-  };
-
-  // Zoom map to the extent of the mapped Spots
-  const zoomToSpotsExtent = () => {
-    const spotsToZoomTo = [...spotsSelected, ...spotsNotSelected];
-    useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
   const zoomToCenterOfflineTile = () => {
@@ -1122,12 +1108,17 @@ const Map = ({
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Not able to zoom to custom map while offline.'));
       dispatch(setErrorMessagesModalVisible(true));
-
     }
   };
 
-  const toggleUserLocation = (value) => {
-    setShowUserLocation(value);
+  const zoomToSpots = (spotsToZoomTo) => {
+    useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
+  };
+
+  // Zoom map to the extent of the mapped Spots
+  const zoomToSpotsExtent = () => {
+    const spotsToZoomTo = [...spotsSelected, ...spotsNotSelected];
+    useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
   useImperativeHandle(mapComponentRef, () => {
@@ -1149,7 +1140,7 @@ const Map = ({
       updateSpotsInMapExtent: updateSpotsInMapExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
       zoomToCustomMap: zoomToCustomMap,
-      zoomToSpot: zoomToSpot,
+      zoomToSpots: zoomToSpots,
       zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
@@ -1162,8 +1153,6 @@ const Map = ({
           basemap={basemap}
           drawFeatures={drawFeatures}
           editFeatureVertex={editFeatureVertex}
-          // drawFeatures={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(drawFeatures) : drawFeatures}
-          // editFeatureVertex={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(editFeatureVertex) : editFeatureVertex}
           mapMode={mapMode}
           measureFeatures={measureFeatures}
           onMapLongPress={onMapLongPress}
@@ -1172,9 +1161,6 @@ const Map = ({
           showUserLocation={showUserLocation}
           spotsNotSelected={spotsNotSelected}
           spotsSelected={spotsSelected}
-          // spotsNotSelected={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(spotsNotSelected) : spotsNotSelected}
-          // spotsSelected={currentImageBasemap || stratSection ? useMapCoords.convertFeatureGeometryToImagePixels(spotsSelected) : spotsSelected}
-          zoomToSpot={zoomToSpot}
         />
       )}
       {renderSetInCurrentViewModal()}

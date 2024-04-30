@@ -53,10 +53,6 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const checkUserAuthorization = async (password) => {
-    return await useServerRequests.authenticateUser(user.email, password.trim());
-  };
-
   const checkValidDateTime = (spot) => {
     if (!spot.properties.date || !spot.properties.time) {
       let date = spot.properties.date || spot.properties.time;
@@ -261,35 +257,26 @@ const useProject = () => {
   };
 
   const switchProject = async (action) => {
-    try {
-      console.log('User wants to:', action);
-      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setProgressModalVisible(true));
-      else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
-      else if (action === ProjectActions.OVERWRITE) {
-        if (selectedProject.source === 'device') {
-          dispatch(clearedStatusMessages());
-          dispatch(setStatusMessagesModalVisible(true));
-          const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
-          console.log('Done loading project', res);
-        }
-        else if (selectedProject.source === 'server') {
-          dispatch(setSelectedProject({project: '', source: ''}));
-          await useDownload.initializeDownload(selectedProject.project);
-        }
+    console.log('User wants to:', action);
+    if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setProgressModalVisible(true));
+    else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
+    else if (action === ProjectActions.OVERWRITE) {
+      if (selectedProject.source === 'device') {
+        dispatch(clearedStatusMessages());
+        dispatch(setStatusMessagesModalVisible(true));
+        const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
+        dispatch(setStatusMessagesModalVisible(false));
+        console.log('Done loading project', res);
       }
-    }
-    catch (err) {
-      console.error('Error switching project in useProject', err);
-      dispatch(setStatusMessagesModalVisible(false));
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error switching project!'));
-      dispatch(setErrorMessagesModalVisible(true));
+      else if (selectedProject.source === 'server') {
+        dispatch(setSelectedProject({project: '', source: ''}));
+        await useDownload.initializeDownload(selectedProject.project);
+      }
     }
   };
 
   return {
     addDataset: addDataset,
-    checkUserAuthorization: checkUserAuthorization,
     checkValidDateTime: checkValidDateTime,
     createDataset: createDataset,
     createProject: createProject,

@@ -68,9 +68,9 @@ const useHome = () => {
   };
 
   const onLongPress = (type) => {
-    if (Platform.OS === 'ios') {
-      switch (type) {
-        case 'point':
+    switch (type) {
+      case 'point':
+        if (Platform.OS !== 'web') {
           setDrawTypes(prevState => ({
               ...prevState,
               point: drawTypes.point === MAP_MODES.DRAW.POINT
@@ -78,8 +78,10 @@ const useHome = () => {
                 : MAP_MODES.DRAW.POINT,
             }),
           );
-          break;
-        case 'line':
+        }
+        break;
+      case 'line':
+        if (Platform.OS === 'ios') {
           setDrawTypes(prevState => ({
               ...prevState,
               line: drawTypes.line === MAP_MODES.DRAW.LINE
@@ -87,8 +89,10 @@ const useHome = () => {
                 : MAP_MODES.DRAW.LINE,
             }),
           );
-          break;
-        case 'polygon':
+        }
+        break;
+      case 'polygon':
+        if (Platform.OS === 'ios') {
           setDrawTypes(prevState => ({
               ...prevState,
               polygon: drawTypes.polygon === MAP_MODES.DRAW.POLYGON
@@ -96,8 +100,8 @@ const useHome = () => {
                 : MAP_MODES.DRAW.POLYGON,
             }),
           );
-          break;
-      }
+        }
+        break;
     }
   };
 

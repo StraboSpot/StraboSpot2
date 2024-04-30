@@ -135,8 +135,19 @@ const useServerRequests = () => {
     return request('GET', '/myProjects', encodedLogin);
   };
 
-  const getProfile = (encodedLogin) => {
-    return request('GET', '/profile', encodedLogin);
+  const getProfile = async (encodedLogin) => {
+    // return request('GET', '/profile', encodedLogin);
+    const response = await fetch(
+      `${baseUrl}/profile`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + encodedLogin + '/',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return handleResponse(response);
   };
 
   const getProfileImage = async (encodedLogin) => {

@@ -20,12 +20,12 @@ import {NOTEBOOK_PAGES, PAGE_KEYS, SUBPAGES} from '../page/page.constants';
 import usePageHook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
-import {setSelectedSpot} from '../spots/spots.slice';
 
-const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoomToSpot}) => {
+const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoomToSpots}) => {
   console.log('Rendering NotebookPanel...');
 
   const dispatch = useDispatch();
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
@@ -71,7 +71,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
           <NotebookHeader
             closeNotebookPanel={closeNotebookPanel}
             createDefaultGeom={createDefaultGeom}
-            zoomToSpot={zoomToSpot}
+            zoomToSpots={zoomToSpots}
           />
         </View>
         <View style={{...notebookStyles.centerContainer}}>
@@ -92,6 +92,28 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
     );
   };
 
+  const renderParentSpot = () => {
+    const parentSpot = useSpots.getRootSpot(currentImageBasemap.id);
+    return (
+      <View style={{justifyContent: 'flex-start'}}>
+      <SectionDivider dividerText={'Parent Spot'}/>
+        <FlatList
+          keyExtractor={item => item?.properties?.id?.toString()}
+          data={[parentSpot]}
+          renderItem={({item}) => (
+            <SpotsListItem
+              doShowTags={true}
+              spot={item}
+              onPress={() => useSpots.handleSpotSelected(item)}
+            />
+          )}
+          ItemSeparatorComponent={FlatListItemSeparator}
+          ListEmptyComponent={<ListEmptyText text={'No Parent Spot Found'}/>}
+        />
+      </View>
+    );
+  };
+
   const renderRecentSpotsList = () => {
     if (modalVisible !== null && !SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
     let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
@@ -99,8 +121,10 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
       return obj;
     }, []);
     if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();
+
     return (
       <View style={notebookStyles.centerContainer}>
+        {currentImageBasemap && renderParentSpot()}
         <SectionDivider dividerText={'Recent Spots'}/>
         <FlatList
           keyExtractor={item => item.properties.id.toString()}
@@ -109,8 +133,9 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
             <SpotsListItem
               doShowTags={true}
               spot={item}
-              onPress={() => dispatch(setSelectedSpot(item))}
-            />)}
+              onPress={() => useSpots.handleSpotSelected(item)}
+            />
+          )}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Spots in Active Datasets'}/>}
         />

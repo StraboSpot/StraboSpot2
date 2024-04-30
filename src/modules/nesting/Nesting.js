@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import useNestingHook from './useNesting';
 import {isEmpty} from '../../shared/Helpers';
@@ -12,13 +12,14 @@ import {imageStyles, useImagesHook} from '../images';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {SpotsListItem} from '../spots';
-import {setSelectedSpot} from '../spots/spots.slice';
+import useSpotsHook from '../spots/useSpots';
 
 const Nesting = () => {
   const useImages = useImagesHook();
   const useNesting = useNestingHook();
+  const useSpots = useSpotsHook();
 
-  const dispatch = useDispatch();
+  const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
@@ -31,11 +32,7 @@ const Nesting = () => {
   useEffect(() => {
     console.log('UE Nesting [spots, selectedSpot]', spots, selectedSpot);
     if (notebookPageVisible === PAGE_KEYS.NESTING) updateNest();
-  }, [spots, selectedSpot]);
-
-  const goToSpotNesting = (spot) => {
-    dispatch(setSelectedSpot(spot));
-  };
+  }, [activeDatasetsIds, spots, selectedSpot]);
 
   const renderImageBasemapThumbnail = (imageId) => {
     return (
@@ -72,7 +69,7 @@ const Nesting = () => {
       <SpotsListItem
         doShowSubspots={true}
         spot={spot}
-        onPress={() => goToSpotNesting(spot)}
+        onPress={() => useSpots.handleSpotSelected(spot)}
       />
     );
   };

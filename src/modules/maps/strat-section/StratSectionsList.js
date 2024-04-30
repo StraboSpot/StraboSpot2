@@ -11,6 +11,7 @@ import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import {setLoadingStatus} from '../../home/home.slice';
+import {setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setStratSection} from '../maps.slice';
 
@@ -30,6 +31,7 @@ const StratSectionsList = ({closeManMenuPanel}) => {
       if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
       setTimeout(() => {
         dispatch(setStratSection(stratSectionSettings));
+        dispatch(setSelectedSpot(spot));
         dispatch(setLoadingStatus({view: 'home', bool: false}));
       }, 500);
     }

@@ -25,13 +25,21 @@ const SignIn = ({navigation, route}) => {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
 
   const useSignIn = useSignInHook();
 
   const handleSignIn = async () => {
-    await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
+    try {
+      setLoading(true);
+      await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
+      setLoading(false);
+    }
+    catch (err) {
+      setLoading(false)
+    }
   };
 
   const handleGuestSignIn = async () => {
@@ -49,6 +57,7 @@ const SignIn = ({navigation, route}) => {
           buttonStyle={signInStyles.buttonStyle}
           disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
           title={'Sign In'}
+          loading={loading}
         />
         <Button
           type={'solid'}
@@ -74,7 +83,7 @@ const SignIn = ({navigation, route}) => {
         isVisible={isErrorModalVisible}
         closeModal={() => setIsErrorModalVisible(false)}
       >
-        <Text style={signInStyles.errorText}>{errorMessage}</Text>
+        <Text style={signInStyles.errorText}>{errorMessage.toString()}</Text>
       </ErrorModal>
     );
   };

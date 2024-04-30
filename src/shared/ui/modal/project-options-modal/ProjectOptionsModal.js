@@ -7,7 +7,11 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import projectOptionsModalStyle from './projectOptionsModal.style';
-import {setLoadingStatus, setProgressModalVisible} from '../../../../modules/home/home.slice';
+import {
+  setLoadingStatus,
+  setProgressModalVisible,
+  setStatusMessagesModalVisible,
+} from '../../../../modules/home/home.slice';
 import overlayStyles from '../../../../modules/home/overlays/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
 import {setSelectedProject} from '../../../../modules/project/projects.slice';
@@ -109,9 +113,15 @@ const ProjectOptionsDialogBox = ({
       console.log('Project Saved!');
     }
     else if (userAction === OVERWRITE) {
-      closeModal();
-      await useProject.switchProject(OVERWRITE);
-      console.log('Project overwritten!');
+      try {
+        closeModal();
+        await useProject.switchProject(OVERWRITE);
+        console.log('Project overwritten!');
+      }
+      catch (err) {
+        console.error('Error switching project in useProject', err);
+        dispatch(setStatusMessagesModalVisible(false));
+      }
     }
     else {
       closeModal();

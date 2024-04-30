@@ -19,7 +19,7 @@ import {setOfflineMapsModalVisible} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
 import useMapHook from '../useMap';
 
-const ManageOfflineMaps = ({closeMainMenuPanel}) => {
+const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   console.log('Rendering ManageOfflineMaps...');
 
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
@@ -227,7 +227,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel}) => {
         setSelectedMap(res);
         setIsWarningModalVisible(true);
       }
-      else props.zoomToCenterOfflineTile();
+      else zoomToCenterOfflineTile();
     }
   };
 

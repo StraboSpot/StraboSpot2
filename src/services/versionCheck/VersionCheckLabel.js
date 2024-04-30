@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
 import styles from './versionCheck.styles';
@@ -7,35 +7,37 @@ import VersionCheckHook from '../versionCheck/useVersionCheck';
 
 const VersionCheckLabel = () => {
   const [versionObj, setVersionObj] = useState({});
-  const animatedPulse = useMemo(() => new Animated.Value(0), []);
+  const [animatedPulse] = useState(new Animated.Value(0));
 
   const useVersionCheck = VersionCheckHook();
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
-      useVersionCheck.animateLabel(animatedPulse);
       useVersionCheck.checkAppStoreVersion().then((res) => {
-        if (res.needsUpdate) showAlert();
+        if (res.needsUpdate) useVersionCheck.animateLabel(animatedPulse);
         setVersionObj(res);
       });
     }
   }, []);
 
   const handlePress = async () => {
-    const res = await Linking.canOpenURL(versionObj.url);
-    if (res) await Linking.openURL(versionObj.url);
-  };
-
-  const showAlert = () => {
     alert('IMPORTANT',
       'Please make sure your data is uploaded to your online account before upgrading. '
       + ' It is best to delete and the reinstall the app',
       [
         {
-          text: 'OK', onPress: async () => {
+          text: 'Go To Store', onPress: async () => {
             console.log('OK Pressed');
+            const res = await Linking.canOpenURL(versionObj.url);
+            if (res) await Linking.openURL(versionObj.url);
           },
-        }]);
+        },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        ]);
   };
 
   return (

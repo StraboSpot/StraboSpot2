@@ -35,7 +35,6 @@ const ProjectTypesButtons = ({
           onPress={() => onLoadProjectsFromServer()}
         />
       )}
-      {deviceBackUpDirectoryExists && (
         <Button
           title={'Projects From Device'}
           containerStyle={commonStyles.standardButtonContainer}
@@ -43,7 +42,6 @@ const ProjectTypesButtons = ({
           titleStyle={commonStyles.standardButtonText}
           onPress={() => onLoadProjectsFromDevice()}
         />
-      )}
       <View>
         <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>When importing, select the data.json
           file

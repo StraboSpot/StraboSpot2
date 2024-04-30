@@ -19,7 +19,7 @@ import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
 import notebookStyles from '../notebookPanel.styles';
 
-const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => {
+const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -183,10 +183,10 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpot}) => 
         />
       </View>
       <NotebookMenu
-        overlayStyle={notebookStyles.dialogBoxPosition}
-        isNotebookMenuVisible={isNotebookMenuVisible}
         closeNotebookMenu={() => setIsNotebookMenuVisible(false)}
-        zoomToSpot={zoomToSpot}
+        isNotebookMenuVisible={isNotebookMenuVisible}
+        overlayStyle={notebookStyles.dialogBoxPosition}
+        zoomToSpots={zoomToSpots}
       />
     </React.Fragment>
   );

@@ -201,7 +201,7 @@ const useExport = () => {
       const imageExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES + image_id + '.jpg');
       if (imageExists) {
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
-          directory + fileName + '/Images/' + image_id + '.jpg');
+          directory + fileName + '/images/' + image_id + '.jpg');
         imageSuccess++;
       }
     }
@@ -245,13 +245,11 @@ const useExport = () => {
     Platform.OS === 'android' && await requestWriteDirectoryPermission();
     console.log(backupFileName);
 
-    const file = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
-    const exportedJSON = JSON.parse(file);
+    const dataFile = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
+    const exportedJSON = JSON.parse(dataFile);
     await useDevice.copyFiles(source, `${destination}/data.json`);
     console.log('Files Copied', exportedJSON);
     dispatch(removedLastStatusMessage());
-
-    console.log('DEST', await useDevice.readFile(destination + '/data.json'));
     await gatherImagesForDistribution(exportedJSON, backupFileName, isBeingExported);
     console.log('Images copied to:', destination);
     await gatherMapsForDistribution(exportedJSON, backupFileName, isBeingExported);

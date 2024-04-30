@@ -37,6 +37,18 @@ const UserStyles = StyleSheet.create({
     padding: 20,
     width: 300,
   },
+  initialProjectLoadProfileContainer: {
+    alignItems: 'center',
+    paddingTop: 15,
+  },
+  initialProjectLoadProfileHeaderContainer: {
+    alignItems: 'center',
+    margin: 10,
+  },
+  initialProjectLoadProfileHeaderText:{
+    fontSize: themes.LARGE_TEXT_SIZE,
+    margin: 10,
+  },
   loadingSpinnerProps: {
     color: '#999999',
     size: 'large',

@@ -399,9 +399,10 @@ const useImages = () => {
 
   // Called from Notebook Panel Footer and opens camera only
   const takePicture = async () => {
+    let permissionGranted;
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-    const permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (permissionGranted === 'granted') {
+    if (Platform.OS === 'android') permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+    if (permissionGranted === 'granted' || Platform.OS === 'ios') {
       return new Promise((resolve, reject) => {
         try {
           launchCamera({saveToPhotos: true}, async (response) => {
