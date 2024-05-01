@@ -76,7 +76,7 @@ const Map = ({
   const datasets = useSelector(state => state.project.datasets);
   const freehandFeatureCoords = useSelector(state => state.map.freehandFeatureCoords);
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
-  const isOnline = useSelector(state => state.connections.isOnline);
+  const isOnline = useSelector(state => state.connections.isOnline.isInternetReachable);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
@@ -116,8 +116,8 @@ const Map = ({
 
   useEffect(() => {
     console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
-    if (isOnline.isInternetReachable && !currentBasemap) useMap.setBasemap().catch(console.error);
-    else if (isOnline.isInternetReachable && currentBasemap) {
+    if (isOnline && !currentBasemap) useMap.setBasemap().catch(console.error);
+    else if (isOnline && currentBasemap) {
       console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       useMap.setBasemap(currentBasemap.id).catch((error) => {
         console.log('Error Setting Basemap', error);
@@ -129,8 +129,7 @@ const Map = ({
         // Sentry.captureException(error);
       });
     }
-    else if (!isEmpty(isOnline) && !isOnline.isInternetReachable && isOnline.isInternetReachable !== null
-      && currentBasemap) {
+    else if (!isOnline && isOnline !== null && currentBasemap && Platform.OS !== 'web') {
       console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       Object.values(customBasemap).map((map) => {
         if (offlineMaps[map.id]?.id !== map.id) useCustomMap.setCustomMapSwitchValue(false, map);
