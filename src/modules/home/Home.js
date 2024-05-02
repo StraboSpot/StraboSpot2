@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Keyboard, Platform, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -34,32 +33,21 @@ import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
-import {
-  MAIN_MENU_DRAWER_WIDTH,
-  MAIN_MENU_SIDE_DRAWER_WIDTH,
-  NOTEBOOK_DRAWER_WIDTH,
-  SMALL_SCREEN,
-} from '../../shared/styles.constants';
+import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useHomeHook from '../home/useHome';
-import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import sidePanelStyles from '../main-menu-panel/sidePanel.styles';
-import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
 import {MAP_MODES} from '../maps/maps.constants';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapLocationHook from '../maps/useMapLocation';
 import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
-import ProjectDescription from '../project/ProjectDescription';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel} from '../tags';
 import {logout} from '../user/userProfile.slice';
-import UserProfile from '../user/UserProfilePage';
 
 const {State: TextInputState} = TextInput;
 
@@ -85,11 +73,9 @@ const Home = ({navigation, route}) => {
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
-  const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedProject = useSelector(state => state.project.selectedProject);
-  const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
   const stratSection = useSelector(state => state.map.stratSection);
   const userEmail = useSelector(state => state.user.email);
   const userName = useSelector(state => state.user.name);
@@ -106,14 +92,12 @@ const Home = ({navigation, route}) => {
 
   const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
   const animatedValueMainMenuDrawer = useRef(new Animated.Value(-MAIN_MENU_DRAWER_WIDTH)).current;
-  const animatedValueMainMenuSideDrawer = useRef(new Animated.Value(-MAIN_MENU_SIDE_DRAWER_WIDTH)).current;
   const animatedValueNotebookDrawer = useRef(new Animated.Value(NOTEBOOK_DRAWER_WIDTH)).current;
   const animatedValueRightSide = useRef(new Animated.Value(0)).current;
   const animatedValueTextInputs = useRef(new Animated.Value(0)).current;
   const mapComponentRef = useRef(null);
 
   const animateMainMenuDrawer = {transform: [{translateX: animatedValueMainMenuDrawer}]};
-  const animateMainMenuSubDrawer = {transform: [{translateX: animatedValueMainMenuSideDrawer}]};
   const animateNotebookDrawer = {transform: [{translateX: animatedValueNotebookDrawer}]};
   const animateTextInputs = {transform: [{translateY: animatedValueTextInputs}]};
   const animateLeftSide = {transform: [{translateX: animatedValueLeftSide}]};
@@ -403,42 +387,11 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const renderSidePanelView = () => {
-    return (
-      <Animated.View style={[sidePanelStyles.sidePanelContainer, animateMainMenuSubDrawer]}>
-        <Animated.View style={[{flex: 1}, animateTextInputs]}>
-          <SafeAreaView style={{flex: 1}}>
-            {renderSidePanelContent()}
-          </SafeAreaView>
-        </Animated.View>
-      </Animated.View>
-    );
-  };
-
-  const renderSidePanelContent = () => {
-    switch (sidePanelView) {
-      case SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP:
-        return <CustomMapDetails/>;
-      case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
-        return <ProjectDescription toastMessage={(message, type) => toast.show(message, {type: type})}/>;
-      case SIDE_PANEL_VIEWS.TAG_DETAIL:
-        return <TagDetailSidePanel openNotebookPanel={pageView => openNotebookPanel(pageView)}/>;
-      case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
-        return <AddRemoveTagSpots updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}/>;
-      case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
-        return <AddRemoveTagFeatures/>;
-      case SIDE_PANEL_VIEWS.USER_PROFILE:
-        return <UserProfile toast={(message, type) =>
-          toast.show(message, {type: type})
-        }/>;
-    }
-  };
-
   const renderVersionCheckLabel = () => (
     <View style={homeStyles.versionPositionHome}>
       <VersionCheckLabel/>
     </View>
-  )
+  );
 
   const setDraw = async (mapModeToSet) => {
     mapComponentRef.current?.cancelDraw();
@@ -503,13 +456,6 @@ const Home = ({navigation, route}) => {
     else openMainMenu();
   };
 
-  const toggleSidePanel = () => {
-    console.log('Toggling side panel...');
-    if (isSidePanelVisible) animateDrawer(animatedValueMainMenuSideDrawer, MAIN_MENU_SIDE_DRAWER_WIDTH);
-    else animateDrawer(animatedValueMainMenuSideDrawer, -MAIN_MENU_SIDE_DRAWER_WIDTH);
-    return renderSidePanelView();
-  };
-
   const onLogout = () => {
     toggleHomeDrawerButton();
     closeNotebookPanel();
@@ -521,6 +467,7 @@ const Home = ({navigation, route}) => {
       <MainMenuPanel
         closeMainMenuPanel={toggleHomeDrawerButton}
         logout={onLogout}
+        openNotebookPanel={openNotebookPanel}
         openSpotInNotebook={openSpotInNotebook}
         updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
         zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
@@ -606,7 +553,6 @@ const Home = ({navigation, route}) => {
       {/*------------------------*/}
       <LoadingSpinner isLoading={isHomeLoading}/>
       {MainMenu}
-      {isMainMenuPanelVisible && toggleSidePanel()}
       {modalVisible && renderFloatingView()}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
     </Animated.View>

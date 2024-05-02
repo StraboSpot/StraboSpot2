@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 70,
     justifyContent: 'center',
-    paddingTop: 15,
   },
   mainMenuHeaderTextContainer: {
     alignItems: 'center',
