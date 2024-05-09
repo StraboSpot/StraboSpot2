@@ -1,12 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {
-  AppState,
-  NativeEventEmitter,
-  Platform,
-  Text,
-  View,
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {AppState, NativeEventEmitter, Platform, Text, View} from 'react-native';
 
+import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -28,6 +23,7 @@ const Compass = ({
                    sliderValue,
                  }) => {
   let matrixArray = [];
+  let magneticDeclination = useRef(0);
 
   const CompassEvents = new NativeEventEmitter(CompassModule);
   const {startSensors, stopSensors, getDeviceRotation, stopCompass} = CompassModule;
@@ -39,14 +35,19 @@ const Compass = ({
 
   const useCompass = useCompassHook();
 
-  const [magneticDeclination, setMagneticDeclination] = useState(0);
+  // const [magneticDeclination, setMagneticDeclination] = useState(0);
+  const [showTrueHeading, setShowTrueHeading] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
-    heading: 0 - magneticDeclination,
+    magHeading: 0,
+    trueHeading: 0,
     strike: 0,
+    magStrike: 0,
     dip_direction: null,
     dip: null,
     trend: 0,
+    magTrend: 0,
     plunge: null,
     rake: null,
     rake_calculated: 'yes',
@@ -66,11 +67,16 @@ const Compass = ({
   }, []);
 
   useEffect(() => {
-    subscribeToSensors();
     console.log('UE Compass []');
-    getDeclination().then((res) => {
-      console.log('Declination received');
-    });
+    getDeclination()
+      .then((declination) => {
+        // setMagneticDeclination(declination);
+        magneticDeclination.current = declination;
+        subscribeToSensors();
+      })
+      .catch((err) => {
+        console.error('Error getting Declination', err);
+      });
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
       unsubscribeFromSensors();
@@ -96,10 +102,14 @@ const Compass = ({
     closeCompass();
   };
 
+  const trueNorthButton = () => <Text>True North</Text>;
+  const magNorthButton = () => <Text>Mag North</Text>;
+  const groupButtons = [{element: trueNorthButton}, {element: magNorthButton}];
+
   const getDeclination = async () => {
     const declination = await useCompass.getUserDeclination();
     console.log('Declination is:', declination);
-    setMagneticDeclination(declination);
+    return declination;
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
@@ -142,6 +152,7 @@ const Compass = ({
     let ENU_Pole;
     let ENU_TP;
     const heading = matrixRotationData.heading;
+    const adjustedHeadingWithMagDecl = heading > 0 ? heading + magneticDeclination.current : heading - magneticDeclination.current;
     if (Platform.OS === 'ios') {
       ENU_Pole = await useCompass.cartesianToSpherical(-matrixRotationData.M32, matrixRotationData.M31,
         matrixRotationData.M33);
@@ -156,14 +167,18 @@ const Compass = ({
     }
     const strikeAndDip = await useCompass.strikeAndDip(ENU_Pole);
     const trendAndPlunge = await useCompass.trendAndPlunge(ENU_TP);
-    const declinationRadians = magneticDeclination * Math.PI / 180;
-    const adjustedHeading = heading + declinationRadians;
-    const headingWithMagneticDecl = heading - magneticDeclination
+    const adjustedStrike = heading < 0 ? strikeAndDip.strike + magneticDeclination.current : strikeAndDip.strike - magneticDeclination.current;
+    const adjustedTrend= heading < 0 ? strikeAndDip.trend + magneticDeclination.current : strikeAndDip.trend - magneticDeclination.current;
+    // const declinationRadians = magneticDeclination * Math.PI / 180;
+    // const adjustedHeading = heading + declinationRadians;
     setCompassData({
-      heading: roundToDecimalPlaces(headingWithMagneticDecl, 0),
-      strike: roundToDecimalPlaces(strikeAndDip.strike, 0),
+      magHeading: roundToDecimalPlaces(heading, 0),
+      trueHeading: roundToDecimalPlaces(adjustedHeadingWithMagDecl, 0),
+      strike: roundToDecimalPlaces(adjustedStrike, 0),
+      magStrike: roundToDecimalPlaces(strikeAndDip.strike, 0),
       dip: roundToDecimalPlaces(strikeAndDip.dip, 0),
       trend: roundToDecimalPlaces(trendAndPlunge.trend, 0),
+      magTrend: roundToDecimalPlaces(adjustedTrend, 0),
       plunge: roundToDecimalPlaces(trendAndPlunge.plunge, 0),
     });
   };
@@ -374,13 +389,32 @@ const Compass = ({
 
   return (
     <View style={{flex: 1}}>
-      <View>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Heading: {compassData.heading}</Text>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.toFixed(2)}</Text>
+      <View style={{flex: 1}}>
+        <ButtonGroup
+          onPress={i => setSelectedIndex(i)}
+          buttons={groupButtons}
+          selectedIndex={selectedIndex}
+        />
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.current?.toFixed(
+          2)}</Text>
+        {selectedIndex === 0 ? (
+          <>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>True Heading: {compassData.trueHeading}</Text>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Strike: {compassData.strike?.toFixed(2)}</Text>
+          </>
+        ) : (
+          <>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Mag Heading: {compassData.magHeading}</Text>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MagStrike: {compassData.magStrike?.toFixed(
+              2)}</Text>
+          </>
+        )
+        }
         <CompassFace
           compassMeasurementTypes={compassMeasurementTypes}
           grabMeasurements={grabMeasurements}
           compassData={compassData}
+          selectedIndex={selectedIndex}
         />
         {/*{renderCompassMeasurementsText()}*/}
       </View>

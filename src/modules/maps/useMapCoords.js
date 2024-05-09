@@ -1,3 +1,4 @@
+import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
 
@@ -52,9 +53,8 @@ const useMapCoords = () => {
 
   const getCenterCoordsOfFeature = () => {
     if (geometry.type === 'Point') return geometry.coordinates;
-    else if (geometry.type === 'Line') console.log('Get center cood of line')
-    else if (geometry.type === 'Polygon') console.log('Get center cood of polygon')
-  }
+    else if (geometry.type === 'Polygon' || geometry.type === 'LineString') return (turf.centroid(geometry)).geometry.coordinates;
+  };
 
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
   const getCoordQuad = (imageBasemapProps, altOrigin) => {

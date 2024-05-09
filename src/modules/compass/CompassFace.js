@@ -4,7 +4,7 @@ import {Animated, Easing, ImageBackground, Pressable, View} from 'react-native';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
 
-const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) => {
+const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements, selectedIndex}) => {
 
   const strikeAndDipStyles = [compassStyles.strikeAndDipLine];
   const trendAndPlungeStyles = [compassStyles.trendLine];
@@ -28,12 +28,13 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
   // Render the strike and dip symbol inside the compass
   const renderStrikeDipSymbol = () => {
     let spin;
+    const strikeAdjusted = selectedIndex === 0 ? compassData.strike : compassData?.magStrike;
     let image = require('../../assets/images/compass/strike-dip-centered.png');
     if (compassData.strike >= 0) {
       spin = strikeSpinValue.interpolate({
-        inputRange: [0, compassData.strike],
+        inputRange: [0, strikeAdjusted],
         // inputRange: [0, 360], // Changed to get symbols to render while we figure out the android compass
-        outputRange: ['0deg', compassData.strike + 'deg'],
+        outputRange: ['0deg', strikeAdjusted + 'deg'],
         // outputRange: ['0deg', 180 + 'deg'], // Changed to get symbols to render while we figure out the android compass
       });
 
@@ -44,7 +45,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
         strikeSpinValue,
         {
           duration: 100,
-          toValue: compassData.strike,
+          toValue: strikeAdjusted,
           easing: Easing.linear(),
           useNativeDriver: true,
         },
@@ -61,10 +62,11 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
 
   // Render the strike and dip symbol inside the compass
   const renderTrendSymbol = () => {
+    const trendAdjusted = selectedIndex === 0 ? compassData.trend : compassData?.magTrend;
     let image = require('../../assets/images/compass/trendLine.png');
     const spin = trendSpinValue.interpolate({
-      inputRange: [0, compassData.trend],
-      outputRange: ['0deg', compassData.trend + 'deg'],
+      inputRange: [0, trendAdjusted],
+      outputRange: ['0deg', trendAdjusted + 'deg'],
     });
 
     trendAndPlungeStyles.push({transform: [{rotate: spin}]});
@@ -73,7 +75,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
       trendSpinValue,
       {
         duration: 100,
-        toValue: compassData.trend,
+        toValue: trendAdjusted,
         easing: Easing.linear,
         useNativeDriver: true,
       },
