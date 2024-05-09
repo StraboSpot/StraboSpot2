@@ -178,7 +178,7 @@ class Compass: RCTEventEmitter {
 
 
   @objc
-  override func stopCompass() {
+  func stopCompass() {
     motion.stopAccelerometerUpdates()
     motion.stopDeviceMotionUpdates()
 //    motion.stopAccelerometerUpdates()
