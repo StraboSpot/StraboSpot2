@@ -4,7 +4,7 @@ import {Animated, Easing, ImageBackground, Pressable, View} from 'react-native';
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
 
-const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements, selectedIndex}) => {
+const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) => {
 
   const strikeAndDipStyles = [compassStyles.strikeAndDipLine];
   const trendAndPlungeStyles = [compassStyles.trendLine];
@@ -28,7 +28,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements, se
   // Render the strike and dip symbol inside the compass
   const renderStrikeDipSymbol = () => {
     let spin;
-    const strikeAdjusted = selectedIndex === 0 ? compassData.strike : compassData?.magStrike;
+    const strikeAdjusted = compassData?.magStrike;
     let image = require('../../assets/images/compass/strike-dip-centered.png');
     if (compassData.strike >= 0) {
       spin = strikeSpinValue.interpolate({
@@ -62,7 +62,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements, se
 
   // Render the strike and dip symbol inside the compass
   const renderTrendSymbol = () => {
-    const trendAdjusted = selectedIndex === 0 ? compassData.trend : compassData?.magTrend;
+    const trendAdjusted = compassData?.magTrend;
     let image = require('../../assets/images/compass/trendLine.png');
     const spin = trendSpinValue.interpolate({
       inputRange: [0, trendAdjusted],

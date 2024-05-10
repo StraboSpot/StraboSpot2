@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {AppState, NativeEventEmitter, Platform, Text, View} from 'react-native';
 
-import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
@@ -35,9 +34,6 @@ const Compass = ({
 
   const useCompass = useCompassHook();
 
-  // const [magneticDeclination, setMagneticDeclination] = useState(0);
-  const [showTrueHeading, setShowTrueHeading] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
     magHeading: 0,
@@ -168,7 +164,7 @@ const Compass = ({
     const strikeAndDip = await useCompass.strikeAndDip(ENU_Pole);
     const trendAndPlunge = await useCompass.trendAndPlunge(ENU_TP);
     const adjustedStrike = heading < 0 ? strikeAndDip.strike + magneticDeclination.current : strikeAndDip.strike - magneticDeclination.current;
-    const adjustedTrend= heading < 0 ? strikeAndDip.trend + magneticDeclination.current : strikeAndDip.trend - magneticDeclination.current;
+    const adjustedTrend = heading < 0 ? strikeAndDip.trend + magneticDeclination.current : strikeAndDip.trend - magneticDeclination.current;
     // const declinationRadians = magneticDeclination * Math.PI / 180;
     // const adjustedHeading = heading + declinationRadians;
     setCompassData({
@@ -390,31 +386,15 @@ const Compass = ({
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <ButtonGroup
-          onPress={i => setSelectedIndex(i)}
-          buttons={groupButtons}
-          selectedIndex={selectedIndex}
-        />
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.current?.toFixed(
-          2)}</Text>
-        {selectedIndex === 0 ? (
-          <>
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>True Heading: {compassData.trueHeading}</Text>
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Strike: {compassData.strike?.toFixed(2)}</Text>
-          </>
-        ) : (
-          <>
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Mag Heading: {compassData.magHeading}</Text>
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MagStrike: {compassData.magStrike?.toFixed(
-              2)}</Text>
-          </>
-        )
-        }
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.current?.toFixed(2)}</Text>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>True Heading: {compassData.trueHeading}</Text>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Strike: {compassData.strike?.toFixed(2)}</Text>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Mag Heading: {compassData.magHeading}</Text>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MagStrike: {compassData.magStrike?.toFixed(2)}</Text>
         <CompassFace
           compassMeasurementTypes={compassMeasurementTypes}
           grabMeasurements={grabMeasurements}
           compassData={compassData}
-          selectedIndex={selectedIndex}
         />
         {/*{renderCompassMeasurementsText()}*/}
       </View>
