@@ -12,12 +12,20 @@
       "type": "text",
       "name": "label",
       "label": "Label",
+      "hint": "If a label is not specified a default label will be given.",
       "required": "false"
     },
     {
       "type": "text",
       "name": "sample_id_name",
       "label": "Sample Specific ID/Name",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "Sample_IGSN",
+      "label": "Sample IGSN ",
+      "hint": "Use the IGSN or International Generic Sample Number.  These are unique identifiers given out at igsn.org or obtained under you project at strabospot.org.",
       "required": "false"
     },
     {
@@ -233,18 +241,6 @@
       "label": "Sample Notes",
       "required": "false",
       "appearance": "multiline"
-    },
-    {
-      "type": "calculate",
-      "name": "__version__",
-      "required": "false",
-      "calculation": "'va7DMmTtZp3ZiCJQCdxQpL'"
-    },
-    {
-      "type": "calculate",
-      "name": "_version_",
-      "calculation": "'vdyH73jmEcyDv2vB9JVR97'",
-      "$given_name": "__version__"
     }
   ],
   "choices": [
@@ -553,7 +549,7 @@
   "settings": [
     {
       "id_string": "sample",
-      "version": "vdyH73jmEcyDv2vB9JVR97"
+      "version": "va7DMmTtZp3ZiCJQCdxQpL"
     }
   ]
 }

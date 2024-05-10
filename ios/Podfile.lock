@@ -72,10 +72,10 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.6)
   - hermes-engine/Pre-built (0.73.6)
   - libevent (2.1.12)
-  - lottie-ios (4.4.3)
-  - lottie-react-native (6.7.0):
+  - lottie-ios (4.4.1)
+  - lottie-react-native (6.7.2):
     - glog
-    - lottie-ios (~> 4.4.1)
+    - lottie-ios (= 4.4.1)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - MapboxCommon (23.9.2)
@@ -1162,11 +1162,11 @@ PODS:
     - React-perflogger (= 0.73.6)
   - RNCAsyncStorage (1.23.1):
     - React-Core
-  - RNCClipboard (1.13.2):
+  - RNCClipboard (1.14.1):
     - React-Core
   - RNCPicker (2.7.5):
     - React-Core
-  - RNDateTimePicker (7.6.4):
+  - RNDateTimePicker (8.0.0):
     - React-Core
   - RNDeviceInfo (10.13.2):
     - React-Core
@@ -1532,8 +1532,8 @@ SPEC CHECKSUMS:
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
-  lottie-react-native: 13cd0c4782c3e6bb26bfa4cc2d08bfb84f6d1ab6
+  lottie-ios: e047b1d2e6239b787cc5e9755b988869cf190494
+  lottie-react-native: 2d9efc8a5ffabe688b55a1a1ac1fb94b9d971995
   MapboxCommon: 768660d6fca8193529ecf82eb6f5f9ae7a5acdf9
   MapboxCoreMaps: be412ff97b16aa7820922c818115a9a0d8211caa
   MapboxMaps: 87ef0003e6db46e45e7a16939f29ae87e38e7ce2
@@ -1594,9 +1594,9 @@ SPEC CHECKSUMS:
   React-utils: d16c1d2251c088ad817996621947d0ac8167b46c
   ReactCommon: 2aa35648354bd4c4665b9a5084a7d37097b89c10
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
-  RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
+  RNCClipboard: 0a720adef5ec193aa0e3de24c3977222c7e52a37
   RNCPicker: 3e2c37a8328f368ce14da050cdc8231deb5fc9f9
-  RNDateTimePicker: 08f00a2c341bf96e4b30da15799fbdd4c5fa48a3
+  RNDateTimePicker: cd42eda5f315fc320f0b359413bd598957f7e601
   RNDeviceInfo: 42aadf1282ffa0a88dc38a504a7be145eb010dfa
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: a8825f964c319a5ea23cc3fa28ae2add62863071
@@ -1615,6 +1615,6 @@ SPEC CHECKSUMS:
   Turf: 13d1a92d969ca0311bbc26e8356cca178ce95da2
   Yoga: d17d2cc8105eed528474683b42e2ea310e1daf61
 
-PODFILE CHECKSUM: 328f73c8dbd00babe4414803a61648d8faf353e9
+PODFILE CHECKSUM: a3bce8bba8dd28c5cac6da70c29322977da6ae85
 
 COCOAPODS: 1.15.2

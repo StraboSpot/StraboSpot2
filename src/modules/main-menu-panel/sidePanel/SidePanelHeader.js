@@ -3,8 +3,8 @@ import {Text, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
 
+import sidePanelStyles from './sidePanel.styles';
 import projectStyles from '../../project/project.styles';
-import sidePanelStyles from '../sidePanel.styles';
 
 const SidePanelHeader = ({
                            backButton,

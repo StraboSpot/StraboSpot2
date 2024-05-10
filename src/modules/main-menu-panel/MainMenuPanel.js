@@ -1,18 +1,21 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
 
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import About from './About';
 import Documentation from './Documentation';
-import {MAIN_MENU_ITEMS} from './mainMenu.constants';
+import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from './mainMenu.constants';
 import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import mainMenuPanelStyles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
 import {isEmpty} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import {ImageGallery} from '../images';
-import CustomMapsMenu from '../maps/custom-maps/ManageCustomMaps';
+import CustomMapDetails from '../maps/custom-maps/CustomMapDetails';
+import ManageCustomMaps from '../maps/custom-maps/ManageCustomMaps';
 import ImageBasemapsList from '../maps/ImageBasemapsList';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import StratSectionsList from '../maps/strat-section/StratSectionsList';
@@ -21,14 +24,17 @@ import NamingConventions from '../preferences/naming-conventions/NamingConventio
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
 import ActiveProject from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
+import ProjectDescription from '../project/ProjectDescription';
 import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {SpotsList} from '../spots';
-import {Tags} from '../tags';
+import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel, Tags} from '../tags';
+import UserProfile from '../user/UserProfilePage';
 
 const MainMenuPanel = ({
                          closeMainMenuPanel,
                          logout,
+                         openNotebookPanel,
                          openSpotInNotebook,
                          updateSpotsInMapExtent,
                          zoomToCenterOfflineTile,
@@ -37,10 +43,23 @@ const MainMenuPanel = ({
   console.log('Rendering MainMenuPanel...');
 
   const dispatch = useDispatch();
+  const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
+  const sidePanelView = useSelector(state => state.mainMenu.sidePanelView);
 
-  const getMainMenuContent = () => {
+  const toast = useToast();
+
+  const renderMainMenuContent = () => {
+    return (
+      <>
+        <MainMenuPanelHeader onPress={() => dispatch(setMenuSelectionPage({name: null}))}/>
+        {renderMainMenuList()}
+      </>
+    );
+  };
+
+  const renderMainMenuList = () => {
     switch (settingsPageVisible) {
       case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
         return <MyStraboSpot logout={logout}/>;
@@ -68,7 +87,7 @@ const MainMenuPanel = ({
       case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
         return <Tags/>;
       case MAIN_MENU_ITEMS.MAPS.CUSTOM:
-        return <CustomMapsMenu zoomToCustomMap={zoomToCustomMap}/>;
+        return <ManageCustomMaps zoomToCustomMap={zoomToCustomMap}/>;
       case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
         return <ImageBasemapsList closeManMenuPanel={closeMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MAPS.STRAT_SECTIONS :
@@ -101,14 +120,30 @@ const MainMenuPanel = ({
     }
   };
 
+  const renderSidePanelContent = () => {
+    switch (sidePanelView) {
+      case SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP:
+        return <CustomMapDetails/>;
+      case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
+        return <ProjectDescription toastMessage={(message, type) => toast.show(message, {type: type})}/>;
+      case SIDE_PANEL_VIEWS.TAG_DETAIL:
+        return <TagDetailSidePanel openNotebookPanel={openNotebookPanel}/>;
+      case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
+        return <AddRemoveTagSpots updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+      case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
+        return <AddRemoveTagFeatures/>;
+      case SIDE_PANEL_VIEWS.USER_PROFILE:
+        return <UserProfile toast={(message, type) => toast.show(message, {type: type})}/>;
+    }
+  };
+
   const setVisibleMenu = (name) => {
     dispatch(setMenuSelectionPage({name: name}));
   };
 
   return (
-    <SafeAreaView style={mainMenuPanelStyles.container}>
-      <MainMenuPanelHeader onPress={() => dispatch(setMenuSelectionPage({name: null}))}/>
-      {getMainMenuContent()}
+    <SafeAreaView style={[mainMenuPanelStyles.container, SMALL_SCREEN ? {paddingTop: 30} : {}]}>
+      {isSidePanelVisible ? renderSidePanelContent() : renderMainMenuContent()}
     </SafeAreaView>
   );
 };

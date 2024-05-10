@@ -1,15 +1,15 @@
 import {useEffect} from 'react';
-import {Platform} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from '../../services/useServerRequests';
-import {logout} from '../user/userProfile.slice';
+import {login, logout} from '../user/userProfile.slice';
 
 const useAuthentication = () => {
   const dispatch = useDispatch();
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+  const isOnline = useSelector(state => state.connections.isOnline.isInternetReachable);
 
   const useServerRequests = useServerRequestsHook();
 
@@ -17,11 +17,11 @@ const useAuthentication = () => {
 
   useEffect(() => {
     console.log('Checking authentication...');
-    if (Platform.OS === 'web' && isAuthenticated) checkAuthentication();
+    checkAuthentication();
     return () => {
       if (timeout) clearTimeout(timeout);
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isOnline]);
 
   const checkAuthentication = async () => {
     const credentials = atob(encodedLogin);
@@ -38,14 +38,17 @@ const useAuthentication = () => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       checkAuthentication();
-    }, 1000 * 300);  // 300 Seconds (5 minutes)
+    }, 1000 * 20);  // 300 Seconds (5 minutes)
   };
 
   const authenticateUser = async (email, password) => {
     try {
       console.log('Authenticating user...');
       const userAuthResponse = await useServerRequests.authenticateUser(email, password);
-      if (userAuthResponse?.valid === 'true') console.log('User Authenticated.');
+      if (userAuthResponse?.valid === 'true') {
+        if (!isAuthenticated) dispatch(login());
+        console.log('User Authenticated.');
+      }
       else throw Error('Error Authenticating User!\nIncorrect username and/or password');
     }
     catch (err) {
