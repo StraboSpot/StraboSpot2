@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
+import {isEmpty} from '../../../shared/Helpers';
 import {BLUE} from '../../../shared/styles.constants';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
 import LottieAnimations from '../../../utils/animations/LottieAnimations';
@@ -69,12 +70,12 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
           )}
           <View style={{flexDirection: 'row'}}>
             <Button
-              title={selectedProject.source !== '' && 'Continue'}
+              title={!isEmpty(selectedProject.source) && selectedProject.source !== '' && 'Continue'}
               type={'clear'}
               containerStyle={{padding: 10}}
               onPress={() => getProjectFromSource(selectedProject)}
             />
-            {selectedProject.source !== '' && (
+            {!isEmpty(selectedProject.source) && selectedProject.source !== '' && (
               <Button
                 title={'Cancel'}
                 containerStyle={{padding: 10}}
