@@ -37,7 +37,7 @@ const HomeViewSmallScreen = ({
                                renderVersionCheckLabel,
                                setDistance,
                                showUpdateLabel,
-                               startEdit,
+                               setMapModeToEdit,
                                toggleDialog,
                                toggleHomeDrawer,
                              }) => {
@@ -144,7 +144,7 @@ const HomeViewSmallScreen = ({
                   mapMode={mapMode}
                   onEndDrawPressed={onEndDrawPressed}
                   setDistance={setDistance}
-                  startEdit={startEdit}
+                  setMapModeToEdit={setMapModeToEdit}
                 />
 
                 {currentImageBasemap && (

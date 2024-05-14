@@ -432,7 +432,7 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const startEdit = () => {
+  const setMapModeToEdit = () => {
     useHome.lockOrientation();
     setMapMode(MAP_MODES.EDIT);
     setButtons({
@@ -499,7 +499,7 @@ const Home = ({navigation, route}) => {
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
           setDistance={setDistance}
-          startEdit={startEdit}
+          setMapModeToEdit={setMapModeToEdit}
           toggleDialog={toggleDialog}
           toggleHomeDrawer={toggleHomeDrawerButton}
           showUpdateLabel={showUpdateLabel}
@@ -525,7 +525,7 @@ const Home = ({navigation, route}) => {
           onEndDrawPressed={onEndDrawPressed}
           openNotebookPanel={openNotebookPanel}
           setDistance={setDistance}
-          startEdit={startEdit}
+          setMapModeToEdit={setMapModeToEdit}
           toggleDialog={toggleDialog}
           toggleHomeDrawer={toggleHomeDrawerButton}
         />

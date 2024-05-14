@@ -31,7 +31,7 @@ const HomeView = ({
                     onEndDrawPressed,
                     openNotebookPanel,
                     setDistance,
-                    startEdit,
+                    setMapModeToEdit,
                     toggleDialog,
                     toggleHomeDrawer,
                   }) => {
@@ -53,7 +53,7 @@ const HomeView = ({
         mapComponentRef={mapComponentRef}
         mapMode={mapMode}
         setDistance={setDistance}
-        startEdit={startEdit}
+        setMapModeToEdit={setMapModeToEdit}
       />
 
       <DeviceInfo/>
