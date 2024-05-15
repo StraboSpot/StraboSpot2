@@ -11,6 +11,7 @@ const compileNodeModules = [
   '@StraboSpot/react-native-sketch-canvas',
   '@react-native',
   '@react-native-community/netinfo',
+  '@react-navigation',
   '@rnmapbox/maps',
   '@sentry/react-native',
   'react-native',

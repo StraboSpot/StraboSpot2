@@ -792,6 +792,15 @@ const useMapFeaturesDraw = ({
     }
   };
 
+  const startDraw = (mapModeToSet) => {
+    cancelDraw();
+    if (mapMode === mapModeToSet
+      || (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON && mapModeToSet === MAP_MODES.DRAW.POLYGON)
+      || (mapMode === MAP_MODES.DRAW.FREEHANDLINE && mapModeToSet === MAP_MODES.DRAW.LINE)
+    ) mapModeToSet = MAP_MODES.VIEW;
+    return mapModeToSet;
+  };
+
   return {
     allowMapViewMove: allowMapViewMove,
     cancelDraw: cancelDraw,
@@ -805,6 +814,7 @@ const useMapFeaturesDraw = ({
     getSpotToEdit: getSpotToEdit,
     moveVertex: moveVertex,
     saveEdits: saveEdits,
+    startDraw: startDraw,
     setDrawFeaturesNew: setDrawFeaturesNew,
     spotEditing: spotEditing,
     spotsEdited: spotsEdited,

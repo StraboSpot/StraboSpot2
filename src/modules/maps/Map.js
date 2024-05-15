@@ -28,18 +28,17 @@ import {editedOrCreatedSpot, setSelectedSpot} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
 const Map = ({
+               cameraRef,
                isSelectingForStereonet,
                isSelectingForTagging,
                mapComponentRef,
+               mapRef,
                mapMode,
                onEndDrawPressed,
                setDistance,
                setMapModeToEdit,
              }) => {
   console.log('Rendering Map...');
-
-  const cameraRef = useRef(null);
-  const mapRef = useRef(null);
 
   const useCustomMap = useCustomMapHook();
   const useImages = useImagesHook();
@@ -394,7 +393,7 @@ const Map = ({
   });
 
   return (
-    <View style={{flex: 1, zIndex: -1}}>
+    <>
       {basemap && (
         <Basemap
           allowMapViewMove={useMapFeaturesDraw.allowMapViewMove}
@@ -412,7 +411,7 @@ const Map = ({
         />
       )}
       {renderSetInCurrentViewModal()}
-    </View>
+    </>
   );
 };
 

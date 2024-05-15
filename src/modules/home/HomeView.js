@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animated} from 'react-native';
+import {Animated, Text, View} from 'react-native';
 
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
@@ -17,6 +17,7 @@ const HomeView = ({
                     animateNotebookDrawer,
                     animateRightSide,
                     areEditButtonsVisible,
+                    cameraRef,
                     clickHandler,
                     closeNotebookPanel,
                     dialogClickHandler,
@@ -27,6 +28,7 @@ const HomeView = ({
                     isSelectingForStereonet,
                     isSelectingForTagging,
                     mapComponentRef,
+                    mapRef,
                     mapMode,
                     onEndDrawPressed,
                     openNotebookPanel,
@@ -45,12 +47,14 @@ const HomeView = ({
   };
 
   return (
-    <SafeAreaView style={uiStyles.safeAreaView}>
+    <>
       <Map
+        cameraRef={cameraRef}
         onEndDrawPressed={onEndDrawPressed}
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
         mapComponentRef={mapComponentRef}
+        mapRef={mapRef}
         mapMode={mapMode}
         setDistance={setDistance}
         setMapModeToEdit={setMapModeToEdit}
@@ -78,19 +82,20 @@ const HomeView = ({
         dialogClickHandler={dialogClickHandler}
         dialogs={dialogs}
         mapComponentRef={mapComponentRef}
+        mapRef={mapRef}
         toggleDialog={toggleDialog}
         toggleHomeDrawer={toggleHomeDrawer}
       />
 
-      <Animated.View style={[notebookStyles.notebookDrawer, animateNotebookDrawer]}>
-        <NotebookPanel
-          closeNotebookPanel={closeNotebookPanel}
-          createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
-          openMainMenu={toggleHomeDrawer}
-          zoomToSpots={mapComponentRef.current?.zoomToSpots}
-        />
-      </Animated.View>
-    </SafeAreaView>
+      {/*<Animated.View style={[notebookStyles.notebookDrawer, animateNotebookDrawer]}>*/}
+      {/*  <NotebookPanel*/}
+      {/*    closeNotebookPanel={closeNotebookPanel}*/}
+      {/*    createDefaultGeom={mapComponentRef.current?.createDefaultGeom}*/}
+      {/*    openMainMenu={toggleHomeDrawer}*/}
+      {/*    zoomToSpots={mapComponentRef.current?.zoomToSpots}*/}
+      {/*  />*/}
+      {/*</Animated.View>*/}
+    </>
   );
 };
 

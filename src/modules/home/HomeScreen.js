@@ -1,58 +1,44 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, TextInput, View} from 'react-native';
+import {Animated, Button, Keyboard, Platform, View} from 'react-native';
 
+import {LeftDrawerContext, RightDrawerContext} from './RightDrawerContext';
+import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
+import HomeViewSmallScreen from './HomeViewSmallScreen';
+import HomeView from './HomeView';
 import * as Sentry from '@sentry/react-native';
-import {useToast} from 'react-native-toast-notifications';
-import {useDispatch, useSelector} from 'react-redux';
-
 import {
   addedStatusMessage,
   clearedStatusMessages,
   setLoadingStatus,
-  setMainMenuPanelVisible,
-  setModalVisible,
+  setMainMenuPanelVisible, setModalVisible,
   setOfflineMapsModalVisible,
   setProjectLoadComplete,
   setProjectLoadSelectionModalVisible,
 } from './home.slice';
+import {MAP_MODES} from '../maps/maps.constants';
+import * as Helpers from '../../shared/Helpers';
+import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
+import {animateDrawer, isEmpty} from '../../shared/Helpers';
+import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
 import homeStyles from './home.style';
-import HomeView from './HomeView';
-import HomeViewSmallScreen from './HomeViewSmallScreen';
-import {
-  BackupModal,
-  ErrorModal,
-  InitialProjectLoadModal,
-  StatusModal,
-  UploadModal,
-  UploadProgressModal,
-  WarningModal,
-} from './modals';
+import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
+import {logout} from '../user/userProfile.slice';
+import useHomeHook from './useHome';
+import useProjectHook from '../project/useProject';
+import useSpotsHook from '../spots/useSpots';
+import {useToast} from 'react-native-toast-notifications';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
-import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
-import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
-import * as Helpers from '../../shared/Helpers';
-import {animateDrawer, isEmpty} from '../../shared/Helpers';
-import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
-import LoadingSpinner from '../../shared/ui/Loading';
-import useHomeHook from '../home/useHome';
-import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
-import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import {MAP_MODES} from '../maps/maps.constants';
-import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapLocationHook from '../maps/useMapLocation';
-import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
-import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
-import useProjectHook from '../project/useProject';
-import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
-import {logout} from '../user/userProfile.slice';
+import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
+import {useDispatch, useSelector} from 'react-redux';
 
-const {State: TextInputState} = TextInput;
+function HomeScreen( {navigation, route}) {
 
-const Home = ({navigation, route}) => {
-  console.log('Rendering Home...');
+  const { openRightDrawer } = React.useContext(RightDrawerContext);
+  const { openLeftDrawer } = React.useContext(LeftDrawerContext);
 
   const useHome = useHomeHook();
   const useProject = useProjectHook();
@@ -105,6 +91,7 @@ const Home = ({navigation, route}) => {
   const animateTextInputs = {transform: [{translateY: animatedValueTextInputs}]};
   const animateLeftSide = {transform: [{translateX: animatedValueLeftSide}]};
   const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
+
 
   useEffect(() => {
     Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
@@ -465,22 +452,12 @@ const Home = ({navigation, route}) => {
     dispatch(logout());
   };
 
-  const MainMenu = (
-    <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
-      <MainMenuPanel
-        closeMainMenuPanel={toggleHomeDrawerButton}
-        logout={onLogout}
-        openNotebookPanel={openNotebookPanel}
-        openSpotInNotebook={openSpotInNotebook}
-        updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
-        zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
-        zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
-      />
-    </Animated.View>
-  );
-
   return (
-    <Animated.View style={[homeStyles.container, animateTextInputs]}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button onPress={() => openLeftDrawer()} title='Open left drawer' />
+      <Button onPress={() => openRightDrawer()} title='Open right drawer' />
+
+
       {SMALL_SCREEN ? (
         <HomeViewSmallScreen
           animateLeftSide={animateLeftSide}
@@ -537,33 +514,9 @@ const Home = ({navigation, route}) => {
           toggleHomeDrawer={toggleHomeDrawerButton}
         />
       )}
-      {/*Modals for Home Page*/}
-      <BackupModal/>
-      {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
-      {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
-        <InitialProjectLoadModal
-          closeModal={closeInitialProjectLoadModal}
-          logout={onLogout}
-          openMainMenu={toggleHomeDrawerButton}
-          visible={isProjectLoadSelectionModalVisible}
-        />
-      )}
-      <ErrorModal/>
-      <StatusModal
-        exportProject={exportProject}
-        openMainMenu={!isMainMenuPanelVisible && toggleHomeDrawerButton}
-        openUrl={openStraboSpotURL}
-      />
-      <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
-      <UploadProgressModal/>
-      <WarningModal/>
-      {/*------------------------*/}
-      <LoadingSpinner isLoading={isHomeLoading}/>
-      {MainMenu}
-      {modalVisible && renderFloatingView()}
-      {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
-    </Animated.View>
-  );
-};
 
-export default Home;
+    </View>
+  );
+}
+
+export default HomeScreen;

@@ -31,15 +31,7 @@ import {SpotsList} from '../spots';
 import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel, Tags} from '../tags';
 import UserProfile from '../user/UserProfilePage';
 
-const MainMenuPanel = ({
-                         closeMainMenuPanel,
-                         logout,
-                         openNotebookPanel,
-                         openSpotInNotebook,
-                         updateSpotsInMapExtent,
-                         zoomToCenterOfflineTile,
-                         zoomToCustomMap,
-                       }) => {
+const MainMenuPanel = () => {
   console.log('Rendering MainMenuPanel...');
 
   const dispatch = useDispatch();
@@ -62,7 +54,7 @@ const MainMenuPanel = ({
   const renderMainMenuList = () => {
     switch (settingsPageVisible) {
       case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
-        return <MyStraboSpot logout={logout}/>;
+        // return <MyStraboSpot logout={logout}/>;
       case MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS:
         return (
           <ActiveProject
@@ -70,35 +62,35 @@ const MainMenuPanel = ({
           />
         );
       case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
-        return <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>;
+        // return <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
-        return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        // return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
-        return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        // return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SAMPLES:
-        return (
-          <SamplesMenuItem
-            openSpotInNotebook={openSpotInNotebook}
-            updateSpotsInMapExtent={updateSpotsInMapExtent}
-          />
-        );
+        // return (
+        //   <SamplesMenuItem
+        //     openSpotInNotebook={openSpotInNotebook}
+        //     updateSpotsInMapExtent={updateSpotsInMapExtent}
+        //   />
+        // );
       case MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS:
         return <Tags type={'geologic_unit'}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
         return <Tags/>;
       case MAIN_MENU_ITEMS.MAPS.CUSTOM:
-        return <ManageCustomMaps zoomToCustomMap={zoomToCustomMap}/>;
+        // return <ManageCustomMaps zoomToCustomMap={zoomToCustomMap}/>;
       case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
-        return <ImageBasemapsList closeManMenuPanel={closeMainMenuPanel}/>;
+        // return <ImageBasemapsList closeManMenuPanel={closeMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MAPS.STRAT_SECTIONS :
-        return <StratSectionsList closeManMenuPanel={closeMainMenuPanel}/>;
+        // return <StratSectionsList closeManMenuPanel={closeMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS:
-        return (
-          <ManageOfflineMapsMenu
-            closeMainMenuPanel={closeMainMenuPanel}
-            zoomToCenterOfflineTile={zoomToCenterOfflineTile}
-          />
-        );
+        // return (
+        //   <ManageOfflineMapsMenu
+        //     closeMainMenuPanel={closeMainMenuPanel}
+        //     zoomToCenterOfflineTile={zoomToCenterOfflineTile}
+        //   />
+        // );
       case MAIN_MENU_ITEMS.PREFERENCES.SHORTCUTS:
         return <ShortcutMenu/>;
       case MAIN_MENU_ITEMS.PREFERENCES.NAMING_CONVENTIONS:
@@ -127,9 +119,9 @@ const MainMenuPanel = ({
       case SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION:
         return <ProjectDescription toastMessage={(message, type) => toast.show(message, {type: type})}/>;
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
-        return <TagDetailSidePanel openNotebookPanel={openNotebookPanel}/>;
+        // return <TagDetailSidePanel openNotebookPanel={openNotebookPanel}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
-        return <AddRemoveTagSpots updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        // return <AddRemoveTagSpots updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
         return <AddRemoveTagFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:

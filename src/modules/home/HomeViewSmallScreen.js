@@ -5,7 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {Button, Header, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {EditCancelSaveButtons, ShortcutButtons, ActionButtonsSmallScreen} from './buttons';
+import {ActionButtonsSmallScreen, EditCancelSaveButtons, ShortcutButtons} from './buttons';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import * as themes from '../../shared/styles.constants';
@@ -19,6 +19,7 @@ import SpotNavigator from '../spots/SpotNavigator';
 const HomeViewSmallScreen = ({
                                animateLeftSide,
                                areEditButtonsVisible,
+                               cameraRef,
                                clickHandler,
                                closeNotebookPanel,
                                dialogClickHandler,
@@ -31,13 +32,14 @@ const HomeViewSmallScreen = ({
                                isSelectingForTagging,
                                mapComponentRef,
                                mapMode,
+                               mapRef,
                                onEndDrawPressed,
                                openNotebookPanel,
                                openSpotInNotebook,
                                renderVersionCheckLabel,
                                setDistance,
-                               showUpdateLabel,
                                setMapModeToEdit,
+                               showUpdateLabel,
                                toggleDialog,
                                toggleHomeDrawer,
                              }) => {
@@ -66,7 +68,7 @@ const HomeViewSmallScreen = ({
   };
 
   return (
-    <Animated.View style={[homeStyles.container, animateLeftSide]}>
+    <View>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         barStyle={'dark-content'}
@@ -138,10 +140,12 @@ const HomeViewSmallScreen = ({
             {() =>
               <>
                 <Map
+                  cameraRef={cameraRef}
                   isSelectingForStereonet={isSelectingForStereonet}
                   isSelectingForTagging={isSelectingForTagging}
                   mapComponentRef={mapComponentRef}
                   mapMode={mapMode}
+                  mapRef={mapRef}
                   onEndDrawPressed={onEndDrawPressed}
                   setDistance={setDistance}
                   setMapModeToEdit={setMapModeToEdit}
@@ -189,6 +193,7 @@ const HomeViewSmallScreen = ({
                       distance={distance}
                       endMeasurement={endMeasurement}
                       mapComponentRef={mapComponentRef}
+                      mapRef={mapRef}
                       mapMode={mapMode}
                       onEndDrawPressed={onEndDrawPressed}
                       toggleDialog={toggleDialog}
@@ -218,7 +223,7 @@ const HomeViewSmallScreen = ({
           </Tab.Screen>
         </Tab.Navigator>
       )}
-    </Animated.View>
+    </View>
   );
 };
 

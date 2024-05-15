@@ -132,6 +132,7 @@ const Basemap = ({
 
   return (
     <>
+      <Text>/a</Text>
       {!stratSection && !currentImageBasemap && (
         <View
           style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}
