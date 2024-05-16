@@ -36,8 +36,8 @@ const HomeViewSmallScreen = ({
                                openSpotInNotebook,
                                renderVersionCheckLabel,
                                setDistance,
-                               showUpdateLabel,
                                setMapModeToEdit,
+                               showUpdateLabel,
                                toggleDialog,
                                toggleHomeDrawer,
                              }) => {
