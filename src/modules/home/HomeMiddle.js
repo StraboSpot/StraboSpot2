@@ -235,6 +235,22 @@ const HomeMiddle = ({
     }
   };
 
+  const renderMainMenu = () => {
+    return (
+      <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
+        <MainMenuPanel
+          closeMainMenuPanel={toggleHomeDrawerButton}
+          logout={onLogout}
+          openNotebookPanel={openNotebookPanel}
+          openSpotInNotebook={openSpotInNotebook}
+          updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
+          zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
+          zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
+        />
+      </Animated.View>
+    );
+  };
+
   const renderVersionCheckLabel = () => (
     <View style={homeStyles.versionPositionHome}>
       <VersionCheckLabel/>
@@ -287,22 +303,6 @@ const HomeMiddle = ({
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.error('Error setting point to current location', err);
     }
-  };
-
-  const renderMainMenu = () => {
-    return (
-      <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
-        <MainMenuPanel
-          closeMainMenuPanel={toggleHomeDrawerButton}
-          logout={onLogout}
-          openNotebookPanel={openNotebookPanel}
-          openSpotInNotebook={openSpotInNotebook}
-          updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
-          zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
-          zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
-        />
-      </Animated.View>
-    );
   };
 
   return (
