@@ -26,6 +26,7 @@ const useUpload = () => {
   const dispatch = useDispatch();
   const projectDatasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
+  const spots = useSelector(state => state.spot.spots);
   const user = useSelector(state => state.user);
 
   const useServerRequests = useServerRequestsHook();
@@ -39,6 +40,7 @@ const useUpload = () => {
     try {
       await uploadProject();
       const uploadStatus = await uploadDatasets();
+      await uploadImages(Object.values(spots));
       Platform.OS !== 'web' && KeepAwake.deactivate();
       return {status: uploadStatus, datasets: datasetsNotUploaded};
     }
@@ -60,9 +62,9 @@ const useUpload = () => {
   };
 
   // Downsize image for upload
-  const resizeImageForUpload = async (imageProps, imageURI, name) => {
+  const resizeImageForUpload = async (imageProps, imageURI) => {
     try {
-      console.log(name + ': Resizing Image', imageProps?.id, '...');
+      console.log('Resizing Image', imageProps?.id, '...');
       let height = imageProps?.height;
       let width = imageProps?.width;
 
@@ -215,7 +217,7 @@ const useUpload = () => {
     const startUploadingImage = async (imageProps) => {
       try {
         const imageURI = await getImageFile(imageProps);
-        const resizedImage = await resizeImageForUpload(imageProps, imageURI, datasetName);
+        const resizedImage = await resizeImageForUpload(imageProps, imageURI);
         await uploadImage(imageProps.id, resizedImage);
         imagesUploadedCount++;
       }
@@ -351,14 +353,14 @@ const useUpload = () => {
 
   // Upload Spots
   const uploadSpots = async (dataset) => {
-    let spots;
+    let datasetSpots;
     dispatch(removedLastStatusMessage());
     if (dataset.spotIds) {
-      spots = useSpots.getSpotsByIds(dataset.spotIds);
-      spots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
+      datasetSpots = useSpots.getSpotsByIds(dataset.spotIds);
+      datasetSpots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
     }
     try {
-      if (isEmpty(spots)) {
+      if (isEmpty(datasetSpots)) {
         console.log(dataset.name + ': No Spots to Upload.');
         dispatch(addedStatusMessage('There are no spots to upload.'));
         await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
@@ -367,7 +369,7 @@ const useUpload = () => {
       else {
         const spotCollection = {
           type: 'FeatureCollection',
-          features: Object.values(spots),
+          features: Object.values(datasetSpots),
         };
         console.log(dataset.name + ': Uploading Spots...', spotCollection);
         dispatch(addedStatusMessage(`\nUploading ${dataset.name} spots...`));
@@ -375,7 +377,7 @@ const useUpload = () => {
         console.log(`Finished uploading ${dataset.name} spots.`);
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`\nFinished uploading ${dataset.name} spots.\n`));
-        await uploadImages(Object.values(spots), dataset.name);
+        // await uploadImages(Object.values(datasetSpots), dataset.name);
       }
 
     }
