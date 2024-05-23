@@ -78,7 +78,7 @@ const Notes = ({goToCurrentLocation}) => {
   return (
     <View style={{flex: 1}}>
       {modalVisible === MODAL_KEYS.SHORTCUTS.NOTE ? (
-          <React.Fragment>
+          <>
             {!isShowTemplates && (
               <View style={uiStyles.alignItemsToCenter}>
                 <Text>Saving a note will create</Text>
@@ -90,10 +90,10 @@ const Notes = ({goToCurrentLocation}) => {
               setIsShowTemplates={bool => setIsShowTemplates(bool)}
               page={page}
             />
-          </React.Fragment>
+          </>
         )
         : (
-          <React.Fragment>
+          <>
             {!isShowTemplates && <ReturnToOverviewButton/>}
             <View style={noteStyle.noteContainer}>
               <Templates
@@ -102,11 +102,11 @@ const Notes = ({goToCurrentLocation}) => {
                 page={page}
               />
             </View>
-          </React.Fragment>
+          </>
         )
       }
       {!isShowTemplates && (
-        <React.Fragment>
+        <>
           <NoteForm
             formRef={formRef}
             initialNotesValues={initialNotesValues}
@@ -117,7 +117,7 @@ const Notes = ({goToCurrentLocation}) => {
               onPress={() => saveForm(formRef.current, false)}
             />
           )}
-        </React.Fragment>
+        </>
       )}
       <Text style={noteStyle.messageText}>Notes will save automatically if you navigate away.</Text>
     </View>

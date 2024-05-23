@@ -15,18 +15,16 @@ const IntervalOverview = ({page}) => {
   const useSed = useSedHook();
 
   return (
-    <React.Fragment>
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        onPress={() => dispatch(setNotebookPageVisible(page.key))}
-      >
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {useSed.getIntervalTitle(character, interval)}
-          </ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
-    </React.Fragment>
+    <ListItem
+      containerStyle={commonStyles.listItem}
+      onPress={() => dispatch(setNotebookPageVisible(page.key))}
+    >
+      <ListItem.Content>
+        <ListItem.Title style={commonStyles.listItemTitle}>
+          {useSed.getIntervalTitle(character, interval)}
+        </ListItem.Title>
+      </ListItem.Content>
+    </ListItem>
   );
 };
 

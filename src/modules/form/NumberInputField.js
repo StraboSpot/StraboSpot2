@@ -19,7 +19,7 @@ const NumberInputField = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <View style={formStyles.fieldLabelContainer}>
         <Text style={formStyles.fieldLabel}>{props.label}</Text>
         {props.placeholder && (
@@ -42,7 +42,7 @@ const NumberInputField = ({
         editable={props.editable}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
-    </React.Fragment>
+    </>
   );
 };
 

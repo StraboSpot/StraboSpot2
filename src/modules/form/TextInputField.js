@@ -13,7 +13,7 @@ const TextInputField = ({
                         }) => {
 
   return (
-    <React.Fragment>
+    <>
       {props.label && (
         <View style={formStyles.fieldLabelContainer}>
           <Text style={formStyles.fieldLabel}>{props.label}</Text>
@@ -42,7 +42,7 @@ const TextInputField = ({
         keyboardType={props.keyboardType}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
-    </React.Fragment>
+    </>
   );
 };
 

@@ -52,7 +52,7 @@ const OtherFeaturesPage = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {!isFeatureDetailVisible && (
         <View>
           <NotebookContentTopSection/>
@@ -78,7 +78,7 @@ const OtherFeaturesPage = () => {
           selectedFeature={selectedFeature}
           renderFeature={feature => renderFeature(feature)}
         />)}
-    </React.Fragment>
+    </>
   );
 };
 

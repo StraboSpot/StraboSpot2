@@ -85,17 +85,17 @@ const SiteSafetyPage = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {renderCancelSaveButtons()}
       <FlatList
         ListHeaderComponent={
-          <React.Fragment>
+          <>
             <SectionDivider dividerText={page.label}/>
             {renderSiteSafetyForm()}
-          </React.Fragment>
+          </>
         }
       />
-    </React.Fragment>
+    </>
   );
 };
 

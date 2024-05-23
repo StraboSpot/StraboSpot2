@@ -84,10 +84,10 @@ const SpotsListItem = ({
         {doShowSubspots && spot && renderSubspots()}
       </ListItem.Content>
       {isCheckedList ? renderCheckboxes() : (
-        <React.Fragment>
+        <>
           {spot && renderSpotDataIcons()}
           {spot && <ListItem.Chevron/>}
-        </React.Fragment>
+        </>
       )}
     </ListItem>
   );

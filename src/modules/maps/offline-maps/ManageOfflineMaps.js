@@ -232,7 +232,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Button
         title={'Download tiles of current map'}
         disabled={(!isOnline.isInternetReachable && !isOnline.isConnected)
@@ -249,7 +249,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
       {loading ? <Text style={{textAlign: 'center', padding: 15}}>Loading...</Text> : renderMapsList()}
       {renderNameChangeModal()}
       {renderWarningModal()}
-    </React.Fragment>
+    </>
   );
 };
 

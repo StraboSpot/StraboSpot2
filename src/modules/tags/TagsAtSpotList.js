@@ -18,15 +18,13 @@ const TagsAtSpotList = ({openMainMenu, page}) => {
   };
 
   return (
-    <React.Fragment>
-      <FlatList
-        keyExtractor={item => item.id.toString()}
-        data={data}
-        renderItem={({item}) => renderTag(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={listEmptyText}/>}
-      />
-    </React.Fragment>
+    <FlatList
+      keyExtractor={item => item.id.toString()}
+      data={data}
+      renderItem={({item}) => renderTag(item)}
+      ItemSeparatorComponent={FlatListItemSeparator}
+      ListEmptyComponent={<ListEmptyText text={listEmptyText}/>}
+    />
   );
 };
 

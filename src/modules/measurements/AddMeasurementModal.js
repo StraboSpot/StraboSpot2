@@ -224,97 +224,93 @@ const AddMeasurementModal = ({onPress}) => {
     && MEASUREMENT_TYPES[selectedTypeIndex].key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR_LINEAR
       : measurementTypeForForm;
     return (
-      <React.Fragment>
-        {!isShowTemplates && !isSelectedAttitude && (
-          <ButtonGroup
-            selectedIndex={selectedTypeIndex}
-            onPress={onMeasurementTypePress}
-            buttons={Object.values(MEASUREMENT_TYPES).map(t => t.add_title)}
-            containerStyle={{height: 40, borderRadius: 10}}
-            buttonStyle={{padding: 5}}
-            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-            textStyle={{color: PRIMARY_TEXT_COLOR}}
-          />
-        )}
-        {!isSelectedAttitude && (
-          <Templates
-            isShowTemplates={isShowTemplates}
-            setIsShowTemplates={bool => setIsShowTemplates(bool)}
-            typeKey={typeKey}
-          />
-        )}
-        {!isShowTemplates && (
-          <React.Fragment>
-            {Platform.OS === 'ios' && (
-              <Button
-                buttonStyle={formStyles.formButtonSmall}
-                titleProps={formStyles.formButtonTitle}
-                title={isManualMeasurement ? 'Switch to Compass Input' : 'Manually Add Measurement'}
-                type={'clear'}
-                onPress={() => setIsManualMeasurement(!isManualMeasurement)}
+      <>
+      {!isShowTemplates && !isSelectedAttitude && (
+        <ButtonGroup
+          selectedIndex={selectedTypeIndex}
+          onPress={onMeasurementTypePress}
+          buttons={Object.values(MEASUREMENT_TYPES).map(t => t.add_title)}
+          containerStyle={{height: 40, borderRadius: 10}}
+          buttonStyle={{padding: 5}}
+          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+          textStyle={{color: PRIMARY_TEXT_COLOR}}
+        />
+      )}
+      {!isSelectedAttitude && (
+        <Templates
+          isShowTemplates={isShowTemplates}
+          setIsShowTemplates={bool => setIsShowTemplates(bool)}
+          typeKey={typeKey}
+        />
+      )}
+      {!isShowTemplates && (
+        <>
+          {Platform.OS === 'ios' && (
+            <Button
+              buttonStyle={formStyles.formButtonSmall}
+              titleProps={formStyles.formButtonTitle}
+              title={isManualMeasurement ? 'Switch to Compass Input' : 'Manually Add Measurement'}
+              type={'clear'}
+              onPress={() => setIsManualMeasurement(!isManualMeasurement)}
+            />
+          )}
+          {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
+            : (
+              <>
+                <Compass
+                  setMeasurements={setMeasurements}
+                  formValues={formProps.values}
+                  showCompassDataModal={showCompassMetadataModal}
+                  setCompassRawDataToDisplay={data => showCompassRawDataView && setCompassData(data)}
+                  sliderValue={sliderValue}
+                />
+                <View style={compassStyles.sliderContainer}>
+                  <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
+                  <SliderBar
+                    onSlidingComplete={setSliderValue}
+                    value={sliderValue}
+                    step={1}
+                    maximumValue={6}
+                    minimumValue={1}
+                    labels={['Low', '', '', '', 'High', 'N/R']}
+                  />
+                </View>
+              </>
+            )}
+          {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
+            && getPlanarTemplates(relevantTemplates).length <= 1 && (
+              <AddPlane
+                survey={survey}
+                choices={choices}
+                setChoicesViewKey={onSetChoicesViewKey}
+                formName={[groupKey, MEASUREMENT_KEYS.PLANAR]}
+                formProps={formProps}
+                isManualMeasurement={isManualMeasurement}
               />
             )}
-            {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
-              : (
-                <>
-                  <Compass
-                    setMeasurements={setMeasurements}
-                    formValues={formProps.values}
-                    showCompassDataModal={showCompassMetadataModal}
-                    setCompassRawDataToDisplay={data => showCompassRawDataView && setCompassData(data)}
-                    sliderValue={sliderValue}
-                  />
-                  <View style={compassStyles.sliderContainer}>
-                    <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-                    <SliderBar
-                      onSlidingComplete={setSliderValue}
-                      value={sliderValue}
-                      step={1}
-                      maximumValue={6}
-                      minimumValue={1}
-                      labels={['Low', '', '', '', 'High', 'N/R']}
-                    />
-                  </View>
-                </>
-              )}
-            {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
-              && getPlanarTemplates(relevantTemplates).length <= 1 && (
-                <React.Fragment>
-                  <AddPlane
-                    survey={survey}
-                    choices={choices}
-                    setChoicesViewKey={onSetChoicesViewKey}
-                    formName={[groupKey, MEASUREMENT_KEYS.PLANAR]}
-                    formProps={formProps}
-                    isManualMeasurement={isManualMeasurement}
-                  />
-                </React.Fragment>
-              )}
-            {(measurementTypeForForm === MEASUREMENT_KEYS.LINEAR || typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)
-              && getLinearTemplates(relevantTemplates).length <= 1 && (
-                <React.Fragment>
-                  <AddLine
-                    survey={assocSurvey}
-                    choices={assocChoices}
-                    setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey
-                      : onSetChoicesViewKey}
-                    formName={[groupKey, MEASUREMENT_KEYS.LINEAR]}
-                    formProps={formProps}
-                    isManualMeasurement={isManualMeasurement}
-                    isPlanarLinear={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR}
-                  />
-                </React.Fragment>
-              )}
-            <Overlay
-              isVisible={showCompassRawDataView}
-              overlayStyle={[{...overlayStyles.overlayContainer}, compassStyles.compassDataModalPosition]}
-              onBackdropPress={() => showCompassMetadataModal(false)}
-            >
-              {renderCompassData()}
-            </Overlay>
-          </React.Fragment>
-        )}
-      </React.Fragment>
+          {(measurementTypeForForm === MEASUREMENT_KEYS.LINEAR || typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)
+            && getLinearTemplates(relevantTemplates).length <= 1 && (
+              <AddLine
+                survey={assocSurvey}
+                choices={assocChoices}
+                setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey
+                  : onSetChoicesViewKey}
+                formName={[groupKey, MEASUREMENT_KEYS.LINEAR]}
+                formProps={formProps}
+                isManualMeasurement={isManualMeasurement}
+                isPlanarLinear={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR}
+              />
+            )}
+          <Overlay
+            isVisible={showCompassRawDataView}
+            overlayStyle={[{...overlayStyles.overlayContainer}, compassStyles.compassDataModalPosition]}
+            onBackdropPress={() => showCompassMetadataModal(false)}
+          >
+            {renderCompassData()}
+          </Overlay>
+        </>
+      )}
+      </>
     );
   };
 
@@ -328,7 +324,7 @@ const AddMeasurementModal = ({onPress}) => {
         buttonTitleRight={(choicesViewKey || assocChoicesViewKey) ? 'Done' : isShowTemplates ? '' : null}
         onPress={onPress}
       >
-        <React.Fragment>
+        <>
           {measurementTypeForForm && (
             <FlatList
               bounces={false}
@@ -352,7 +348,7 @@ const AddMeasurementModal = ({onPress}) => {
           {!choicesViewKey && !assocChoicesViewKey && !isShowTemplates && isManualMeasurement && (
             <SaveButton title={saveTitle} onPress={saveMeasurement}/>
           )}
-        </React.Fragment>
+        </>
       </Modal>
     );
   };

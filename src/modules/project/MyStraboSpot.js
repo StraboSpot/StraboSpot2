@@ -150,7 +150,7 @@ const MyStraboSpot = ({logout}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <View style={{alignItems: 'flex-start'}}>
         {showSection !== 'none' && (
           <Button
@@ -168,7 +168,7 @@ const MyStraboSpot = ({logout}) => {
         )}
       </View>
       {renderSectionView()}
-    </React.Fragment>
+    </>
   );
 };
 

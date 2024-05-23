@@ -38,7 +38,7 @@ const MainMenuPanelList = ({
 
   const renderMenuSection = ([menuItem, submenuItems]) => {
     return (
-      <React.Fragment>
+      <>
         <SectionDivider dividerText={toTitleCase(menuItem)}/>
         <FlatList
           keyExtractor={item => item.toString()}
@@ -46,7 +46,7 @@ const MainMenuPanelList = ({
           renderItem={({item}) => renderMenuListItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
         />
-      </React.Fragment>
+      </>
     );
   };
 

@@ -27,15 +27,13 @@ const FeatureTagsAtSpotList = ({openMainMenu, page}) => {
   };
 
   return (
-    <React.Fragment>
-      <FlatList
-        keyExtractor={item => item.id.toString()}
-        data={getFeatureTagsAtSpot()}
-        renderItem={({item}) => renderTag(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={listEmptyText}/>}
-      />
-    </React.Fragment>
+    <FlatList
+      keyExtractor={item => item.id.toString()}
+      data={getFeatureTagsAtSpot()}
+      renderItem={({item}) => renderTag(item)}
+      ItemSeparatorComponent={FlatListItemSeparator}
+      ListEmptyComponent={<ListEmptyText text={listEmptyText}/>}
+    />
   );
 };
 

@@ -157,10 +157,10 @@ const Geography = () => {
 
   const renderGeoCoords = (initialGeomValues) => {
     return (
-      <React.Fragment>
+      <>
         {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude)
           ? renderGeoFieldInputs() : renderGeoFieldText(initialGeomValues)}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -223,7 +223,7 @@ const Geography = () => {
 
   const renderPixelCoords = (initialGeomValues) => {
     return (
-      <React.Fragment>
+      <>
         {!isEmpty(initialGeomValues.x_pixels) && !isEmpty(initialGeomValues.y_pixels)
           ? renderPixelFieldInputs() : renderPixelFieldText(initialGeomValues)}
         <FlatListItemSeparator/>
@@ -254,7 +254,7 @@ const Geography = () => {
             </View>
           </ListItem.Content>
         </ListItem>
-      </React.Fragment>
+      </>
     );
   };
 
@@ -351,18 +351,18 @@ const Geography = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {renderCancelSaveButtons()}
       <FlatList
         ListHeaderComponent={
-          <React.Fragment>
+          <>
             <SectionDivider dividerText={'Geography'}/>
             {renderGeometryForm()}
             {renderFormFields()}
-          </React.Fragment>
+          </>
         }
       />
-    </React.Fragment>
+    </>
   );
 };
 

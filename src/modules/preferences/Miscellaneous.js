@@ -88,7 +88,7 @@ const Miscellaneous = () => {
   );
 
   const renderTestingModeField = () => (
-    <React.Fragment>
+    <>
       <SectionDivider dividerText={'Testing Mode'}/>
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content>
@@ -99,7 +99,7 @@ const Miscellaneous = () => {
           onValueChange={onTestingSwitchChange}
         />
       </ListItem>
-    </React.Fragment>
+    </>
   );
 
   const verifyPassword = () => {
@@ -117,11 +117,11 @@ const Miscellaneous = () => {
       initialValues={initialValues}
       enableReinitialize
     >
-      <React.Fragment>
+      <>
         {renderEndpointFieldContent()}
         {renderTestingModeField()}
         {renderPrompt()}
-      </React.Fragment>
+      </>
     </Formik>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
@@ -264,7 +264,7 @@ const MeasurementDetail = ({
       <View>
         {/* Primary measurement */}
         {selectedMeasurement && selectedAttitude && selectedAttitude.associated_orientation && (
-          <React.Fragment>
+          <>
             <MeasurementItem
               item={selectedAttitude}
               selectedIds={[selectedMeasurement.id]}
@@ -272,13 +272,13 @@ const MeasurementDetail = ({
               onPress={() => onSwitchSelectedMeasurement(selectedAttitude)}
             />
             <FlatListItemSeparator/>
-          </React.Fragment>
+          </>
         )}
 
         {/* Associated measurements */}
         {selectedMeasurement && selectedAttitude && selectedAttitude.associated_orientation
           && (selectedAttitude.associated_orientation.map((item, i) =>
-              <React.Fragment key={item.id + 'Outer'}>
+              <Fragment key={item.id + 'Outer'}>
                 <MeasurementItem
                   item={item}
                   selectedIds={[selectedMeasurement.id]}
@@ -286,7 +286,7 @@ const MeasurementDetail = ({
                   key={item.id}
                 />
                 <FlatListItemSeparator/>
-              </React.Fragment>,
+              </Fragment>,
             )
           )}
 
@@ -512,7 +512,7 @@ const MeasurementDetail = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       {selectedMeasurement && (
         <View style={styles.measurementsContentContainer}>
           {renderCancelSaveButtons()}
@@ -539,7 +539,7 @@ const MeasurementDetail = ({
           />
         </View>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

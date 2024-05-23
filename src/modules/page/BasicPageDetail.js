@@ -227,14 +227,14 @@ const BasicPageDetail = ({
   return (
     <>
       {(isTemplate || !isEmpty(selectedFeature)) && (
-        <React.Fragment>
+        <>
           <SaveAndCloseButton
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
-        </React.Fragment>
+        </>
       )}
     </>
   );

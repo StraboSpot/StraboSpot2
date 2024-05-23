@@ -21,15 +21,13 @@ const ThreeDStructuresOverview = ({page}) => {
   };
 
   return (
-    <React.Fragment>
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        data={threeDStructures}
-        renderItem={({item}) => <ThreeDStructureItem item={item} edit3dStructure={() => on3DStructurePressed(item)}/>}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No 3D Structures yet'}/>}
-      />
-    </React.Fragment>
+    <FlatList
+      keyExtractor={(item, index) => index.toString()}
+      data={threeDStructures}
+      renderItem={({item}) => <ThreeDStructureItem item={item} edit3dStructure={() => on3DStructurePressed(item)}/>}
+      ItemSeparatorComponent={FlatListItemSeparator}
+      ListEmptyComponent={<ListEmptyText text={'No 3D Structures yet'}/>}
+    />
   );
 };
 

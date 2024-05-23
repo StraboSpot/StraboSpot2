@@ -123,7 +123,7 @@ const AddImageOverlayModal = ({
                 </ListItem.Content>
               </ListItem>
               {outerFormProps.values?.id && (
-                <React.Fragment>
+                <>
                   <ListItem containerStyle={commonStyles.listItemFormField}>
                     <ListItem.Content>
                       <Field
@@ -198,7 +198,7 @@ const AddImageOverlayModal = ({
                       />
                     </ListItem.Content>
                   </ListItem>
-                </React.Fragment>
+                </>
               )}
             </View>
           )}

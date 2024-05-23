@@ -61,17 +61,15 @@ const ImageBasemapsList = ({closeManMenuPanel}) => {
   };
 
   return (
-    <React.Fragment>
-      <View style={imageStyles.galleryImageContainer}>
-        <FlatList
-          keyExtractor={item => item.id.toString()}
-          data={imageBasemaps}
-          numColumns={3}
-          renderItem={({item}) => renderImageBasemapThumbnail(item)}
-          ListEmptyComponent={<ListEmptyText text={'No Image Basemaps in Active Datasets'}/>}
-        />
-      </View>
-    </React.Fragment>
+    <View style={imageStyles.galleryImageContainer}>
+      <FlatList
+        keyExtractor={item => item.id.toString()}
+        data={imageBasemaps}
+        numColumns={3}
+        renderItem={({item}) => renderImageBasemapThumbnail(item)}
+        ListEmptyComponent={<ListEmptyText text={'No Image Basemaps in Active Datasets'}/>}
+      />
+    </View>
   );
 };
 

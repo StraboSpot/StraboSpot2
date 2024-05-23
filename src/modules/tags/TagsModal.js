@@ -103,7 +103,7 @@ const TagsModal = ({
 
   const renderSpotTagsList = () => {
     return (
-      <React.Fragment>
+      <>
         {!isEmpty(tags) && pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS
           && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && (
             <Formik
@@ -140,7 +140,7 @@ const TagsModal = ({
           ListEmptyComponent={<ListEmptyText
             text={!isEmpty(tags) && isEmpty(getRelevantTags()) ? 'There are no tags with this type.' : ''}/>}
         />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -203,7 +203,7 @@ const TagsModal = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       {modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS && (
         <View style={modalStyle.textContainer}>
           <AddButton
@@ -233,7 +233,7 @@ const TagsModal = ({
         closeModal={closeTagDetailModal}
         type={modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
       />
-    </React.Fragment>
+    </>
   );
 };
 

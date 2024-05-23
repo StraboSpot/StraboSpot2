@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Text, View} from 'react-native';
 
 import {Icon, ListItem} from 'react-native-elements';
@@ -33,7 +33,7 @@ const SelectInputField = (props) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={PRIMARY_ACCENT_COLOR}/>;
     const radioUnselected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
-      <React.Fragment key={item.value}>
+      <Fragment key={item.value}>
         <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
@@ -55,21 +55,21 @@ const SelectInputField = (props) => {
             />
           )}
         </ListItem>
-      </React.Fragment>
+      </Fragment>
     );
   };
 
   const renderChoices = () => {
     // console.log('Field Choices', props.choices);
     return (
-      <React.Fragment>
+      <>
         <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
             {renderFieldLabel()}
           </ListItem.Content>
         </ListItem>
         {props.choices.map((item, index) => renderChoiceItem(item, index))}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -91,7 +91,7 @@ const SelectInputField = (props) => {
 
   const renderMultiSelect = () => {
     return (
-      <React.Fragment>
+      <>
         {renderFieldLabel()}
         <View style={formStyles.fieldValue}>
           <MultiSelect
@@ -123,14 +123,14 @@ const SelectInputField = (props) => {
         </View>
         {props.errors && props.errors[props.name]
           && <Text style={formStyles.fieldError}>{props.errors[props.name]}</Text>}
-      </React.Fragment>
+      </>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {props.showExpandedChoices ? renderChoices() : renderMultiSelect()}
-    </React.Fragment>
+    </>
   );
 };
 

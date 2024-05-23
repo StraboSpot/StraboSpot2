@@ -130,44 +130,6 @@ const StratSectionPage = ({page}) => {
     );
   };
 
-  const renderStratSectionsMain = () => {
-    return (
-      <View style={{flex: 1, justifyContent: 'flex-start'}}>
-        <ReturnToOverviewButton/>
-        {renderStratSectionToggle()}
-        {!isEmpty(stratSection) && (
-          <View style={{flex: 1}}>
-            <FlatListItemSeparator/>
-            <ListItem
-              containerStyle={commonStyles.listItem}
-              key={'strat_section'}
-              onPress={() => {
-                dispatch(setLoadingStatus({view: 'home', bool: true}));
-                if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-                setTimeout(() => {
-                  dispatch(setStratSection(stratSection));
-                  dispatch(setLoadingStatus({view: 'home', bool: false}));
-                }, 500);
-              }}
-            >
-              <Avatar
-                source={require('../../assets/icons/SedStratColumn.png')}
-                size={20}
-                containerStyle={{alignSelf: 'center'}}
-              />
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-            {renderImageOverlaysSection()}
-            {renderSectionSettingsSection()}
-          </View>
-        )}
-        {selectedImage && <AddImageOverlayModal closeModal={() => setSelectedImage(undefined)} image={selectedImage}/>}
-      </View>
-    );
-  };
-
   const saveStratSection = async () => {
     await useSed.saveSedFeature(page.key, spot, stratSectionRef.current);
     await stratSectionRef.current.resetForm();
@@ -175,9 +137,39 @@ const StratSectionPage = ({page}) => {
   };
 
   return (
-    <React.Fragment>
-      {renderStratSectionsMain()}
-    </React.Fragment>
+    <View style={{flex: 1, justifyContent: 'flex-start'}}>
+      <ReturnToOverviewButton/>
+      {renderStratSectionToggle()}
+      {!isEmpty(stratSection) && (
+        <View style={{flex: 1}}>
+          <FlatListItemSeparator/>
+          <ListItem
+            containerStyle={commonStyles.listItem}
+            key={'strat_section'}
+            onPress={() => {
+              dispatch(setLoadingStatus({view: 'home', bool: true}));
+              if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+              setTimeout(() => {
+                dispatch(setStratSection(stratSection));
+                dispatch(setLoadingStatus({view: 'home', bool: false}));
+              }, 500);
+            }}
+          >
+            <Avatar
+              source={require('../../assets/icons/SedStratColumn.png')}
+              size={20}
+              containerStyle={{alignSelf: 'center'}}
+            />
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          {renderImageOverlaysSection()}
+          {renderSectionSettingsSection()}
+        </View>
+      )}
+      {selectedImage && <AddImageOverlayModal closeModal={() => setSelectedImage(undefined)} image={selectedImage}/>}
+    </View>
   );
 };
 

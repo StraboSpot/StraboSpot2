@@ -60,11 +60,9 @@ const VertexDrag = () => {
     });
 
   return (
-    <React.Fragment>
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={[mapStyles.vertexEditPoint, animatedStyles]}/>
-      </GestureDetector>
-    </React.Fragment>
+    <GestureDetector gesture={gesture}>
+      <Animated.View style={[mapStyles.vertexEditPoint, animatedStyles]}/>
+    </GestureDetector>
   );
 };
 

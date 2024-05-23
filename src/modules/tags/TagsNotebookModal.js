@@ -39,26 +39,24 @@ const TagsNotebookModal = ({
 
   const renderTagsModalContent = () => {
     return (
-      <React.Fragment>
-        <Modal
-          onPress={onPress}
-          closeModal={closeModal}
-        >
-          <View style={[modalStyle.textContainer]}>
-            <AddButton
-              title={'Create New Tag'}
-              onPress={() => addTag()}
-              type={'outline'}
-            />
-          </View>
-          <TagsModal isFeatureLevelTagging={isFeatureLevelTagging}/>
-          <TagDetailModal
-            isVisible={isDetailModalVisible}
-            closeModal={closeTagDetailModal}
-            type={pageVisible === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
+      <Modal
+        onPress={onPress}
+        closeModal={closeModal}
+      >
+        <View style={[modalStyle.textContainer]}>
+          <AddButton
+            title={'Create New Tag'}
+            onPress={() => addTag()}
+            type={'outline'}
           />
-        </Modal>
-      </React.Fragment>
+        </View>
+        <TagsModal isFeatureLevelTagging={isFeatureLevelTagging}/>
+        <TagDetailModal
+          isVisible={isDetailModalVisible}
+          closeModal={closeTagDetailModal}
+          type={pageVisible === PAGE_KEYS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
+        />
+      </Modal>
     );
   };
   if ((modalVisible === MODAL_KEYS.NOTEBOOK.TAGS || modalVisible === MODAL_KEYS.OTHER.FEATURE_TAGS)

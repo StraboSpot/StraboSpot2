@@ -91,7 +91,7 @@ const TagDetail = ({
   return (
     <FlatList
       ListHeaderComponent={
-        <React.Fragment>
+        <>
           <SectionDividerWithRightButton
             dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
             buttonTitle={'View/Edit'}
@@ -112,16 +112,16 @@ const TagDetail = ({
             ListEmptyComponent={<ListEmptyText text={'No Spots'}/>}
           />
           {selectedTag.type !== PAGE_KEYS.GEOLOGIC_UNITS && (
-            <React.Fragment>
+            <>
               <SectionDividerWithRightButton
                 dividerText={'Tagged Features'}
                 buttonTitle={'Add/Remove'}
                 onPress={addRemoveFeatures}
               />
               {refresh ? renderTaggedFeaturesList() : renderTaggedFeaturesList()}
-            </React.Fragment>
+            </>
           )}
-        </React.Fragment>
+        </>
       }
     />
   );
