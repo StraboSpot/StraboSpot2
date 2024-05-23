@@ -265,15 +265,19 @@ const UserProfile = () => {
             renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')}
                                              style={{width: '70%', height: '70%'}}/>}
             source={!isEmpty(userData.image) && {uri: userData.image}}
-          />
-        </View>
-        <View>
-          <Button
-            title={'Edit Profile Photo'}
-            titleStyle={commonStyles.standardButtonText}
-            type={'clear'}
-            onPress={() => setImageDialogVisible(true)}
-          />
+          >
+            <View style={{position: 'relative', right: 15, bottom: 15}}>
+              <Avatar.Accessory
+                reverse
+                name={'pencil'}
+                type={'font-awesome'}
+                size={23}
+                iconStyle={{color: 'white'}}
+                color={'grey'}
+                onPress={() => setImageDialogVisible(true)}
+              />
+            </View>
+          </Avatar>
         </View>
         <View style={{flex: 1}}>
           <Formik
@@ -286,14 +290,14 @@ const UserProfile = () => {
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
           <View style={userStyles.saveButtonContainer}>
-              <Button
-                onPress={() => saveForm()}
-                type={'clear'}
-                title={'Save Changes'}
-                disabled={saveButtonDisabled}
-                loading={isLoading}
-                loadingProps={userStyles.loadingSpinnerProps}
-              />
+            <Button
+              onPress={() => saveForm()}
+              type={'clear'}
+              title={'Save Changes'}
+              disabled={saveButtonDisabled}
+              loading={isLoading}
+              loadingProps={userStyles.loadingSpinnerProps}
+            />
           </View>
         </View>
         <View style={commonStyles.buttonContainer}>
