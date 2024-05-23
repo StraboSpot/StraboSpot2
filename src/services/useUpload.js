@@ -49,6 +49,16 @@ const useUpload = () => {
     }
   };
 
+  const resizeProfileImageForUpload = async (imageProps) => {
+    const {uri, width, height} = imageProps;
+    if (width && height) {
+      await useDevice.doesDeviceDirectoryExist(tempImagesDownsizedDirectory);
+      const resizedProfileImage = await ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 100, 0, tempImagesDownsizedDirectory);
+      useImages.getImageSize(imageProps, resizedProfileImage);
+      return resizedProfileImage;
+    }
+  };
+
   // Downsize image for upload
   const resizeImageForUpload = async (imageProps, imageURI, name) => {
     try {
@@ -59,7 +69,7 @@ const useUpload = () => {
       if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
 
       if (width && height) {
-        const max_size = name === 'profileImage' ? 300 : 2000;
+        const max_size = 2000;
         if (width > height && width > max_size) {
           height = max_size * height / width;
           width = max_size;
@@ -72,12 +82,7 @@ const useUpload = () => {
         await useDevice.makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        let imageSizeText;
-        if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
-        else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
-        else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
-        else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-        console.log(name + ': Finished Resizing Image', imageProps?.id, 'New Size', imageSizeText);
+       useImages.getImageSize(imageProps, resizedImage);
         return resizedImage;
       }
     }
@@ -393,6 +398,7 @@ const useUpload = () => {
   return {
     initializeUpload: initializeUpload,
     resizeImageForUpload: resizeImageForUpload,
+    resizeProfileImageForUpload: resizeProfileImageForUpload,
     uploadDatasets: uploadDatasets,
     uploadFromWeb: uploadFromWeb,
     uploadProfile: uploadProfile,

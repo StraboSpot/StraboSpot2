@@ -146,9 +146,8 @@ const UserProfile = () => {
 
   const saveImage = async () => {
     try {
-      const imageProps = {width: avatar.width, height: avatar.height};
-      const uri = avatar.uri;
-      const resizedProfileImage = await useUpload.resizeImageForUpload(imageProps, uri, 'profileImage');
+      const imageProps = {width: avatar.width, height: avatar.height, uri: avatar.uri};
+      const resizedProfileImage = await useUpload.resizeProfileImageForUpload(imageProps);
       console.log('RESIZED PROFILE IMAGE', resizedProfileImage);
       formRef.current.setFieldValue('image', resizedProfileImage.uri);
       dispatch(setUserData({...userData, image: resizedProfileImage.uri}));

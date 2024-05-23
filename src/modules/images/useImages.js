@@ -178,6 +178,15 @@ const useImages = () => {
     return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
   };
 
+  const getImageSize = (image, resizedImage) => {
+    let imageSizeText;
+    if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
+    else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
+    else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
+    else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
+    console.log(name + ': Finished Resizing Image', image?.id, 'New Size', imageSizeText);
+  };
+
   const getImageThumbnailURI = (id) => {
     return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
   };
@@ -426,6 +435,7 @@ const useImages = () => {
     getImageBasemap: getImageBasemap,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,
+    getImageSize: getImageSize,
     getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
     getImagesFromCameraRoll: getImagesFromCameraRoll,
