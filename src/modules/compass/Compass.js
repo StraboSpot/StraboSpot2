@@ -387,10 +387,10 @@ const Compass = ({
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.current?.toFixed(2)}</Text>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>True Heading: {compassData.trueHeading}</Text>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Strike: {compassData.strike?.toFixed(2)}</Text>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Mag Heading: {compassData.magHeading}</Text>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MagStrike: {compassData.magStrike?.toFixed(2)}</Text>
+        {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>True Heading: {compassData.trueHeading}</Text>*/}
+        {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>Strike: {compassData.strike?.toFixed(2)}</Text>*/}
+        {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>Mag Heading: {compassData.magHeading}</Text>*/}
+        {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>MagStrike: {compassData.magStrike?.toFixed(2)}</Text>*/}
         <CompassFace
           compassMeasurementTypes={compassMeasurementTypes}
           grabMeasurements={grabMeasurements}
