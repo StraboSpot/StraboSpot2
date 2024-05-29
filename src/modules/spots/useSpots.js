@@ -99,7 +99,7 @@ const useSpots = () => {
     // Set spot name
     if (!newSpot.properties.name) {
       const defaultName = preferences.spot_prefix || 'Unnamed';
-      const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
+      const defaultNumber = parseInt(preferences.starting_number_for_spot, 10) || Object.keys(spots).length + 1;
       newSpot.properties.name = defaultName + defaultNumber;
       let updatedPreferences = {
         ...preferences,
