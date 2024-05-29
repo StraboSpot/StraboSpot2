@@ -16,7 +16,7 @@ const useMapLocation = () => {
     if (Platform.OS !== 'web') {
       Geolocation.setRNConfiguration({
         skipPermissionRequests: false,
-        locationProvider: 'playServices',
+        locationProvider: Platform.OS === 'ios' ? null : 'playServices',
       });
     }
 

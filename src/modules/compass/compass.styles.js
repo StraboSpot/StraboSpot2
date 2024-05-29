@@ -3,6 +3,14 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
+  azimuthPointer: {
+    height: 75,
+    position: 'absolute',
+    resizeMode: 'contain',
+    // top: 40,
+    width: 75,
+    zIndex: 10,
+  },
   buttonContainer: {
     paddingBottom: 10,
   },
@@ -11,34 +19,73 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   compassContainer: {
-    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
+    // backgroundColor: 'red',
+  },
+  compassDataCol1: {
+    flex: 1,
+  },
+  compassDataCol2: {
+    borderWidth: 1,
+    flex: 2,
+  },
+  compassDataCol3: {
+    flex: 3,
+  },
+  compassDataDirectionTextContainer: {
+    flex: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginHorizontal: 'auto',
+    paddingBottom: 10,
+    paddingLeft: 10,
+  },
+  compassDataGridContainer: {
+    borderWidth: 1,
+    flex: 3,
+    marginHorizontal: 'auto',
+
+  },
+  compassDataGridRow: {
+    flexDirection: 'row',
   },
   compassDataModalPosition: {
-    borderRadius: 20,
-    left: '30%',
     position: 'absolute',
-    top: 20,
+    // top: 20,
+  },
+  compassDataText: {
+    // borderWidth: 1,
+    padding: 5,
+    // textAlign: 'center',
   },
   compassImage: {
-    alignItems: 'center',
     height: 175,
     justifyContent: 'center',
-    marginTop: 15,
     width: 175,
   },
   compassImageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  compassMatrixDataText: {
-    borderWidth: 1,
-    padding: 5,
-    // textAlign: 'center',
-  },
   compassMatrixHeader: {
     fontWeight: 'bold',
     marginBottom: 5,
     textAlign: 'center',
+  },
+  matrixDataButtonContainer: {
+    // backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    // bottom: 10,
+    // position: 'absolute',
+    // right: 10,
+    // width: 75,
+  },
+  rawMeasurementDataContainer: {
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+  },
+  rawMeasurementsTextContainer: {
+    borderTopWidth: 0,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
   sliderContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
@@ -51,19 +98,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   strikeAndDipLine: {
-    height: 125,
-    position: 'absolute',
+    alignSelf: 'center',
+    height: '65%',
     resizeMode: 'contain',
-    top: 40,
-    width: 125,
-    zIndex: 10,
+    width: '100%',
   },
   trendLine: {
-    height: 105,
-    position: 'absolute',
+    alignSelf: 'center',
+    height: '65%',
     resizeMode: 'contain',
-    top: 50,
-    width: 105,
+    width: '100%',
   },
 });
 
