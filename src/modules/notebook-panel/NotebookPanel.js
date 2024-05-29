@@ -115,7 +115,6 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
   };
 
   const renderRecentSpotsList = () => {
-    if (modalVisible !== null && !SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
     let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
       if (spots?.[key]) obj.push(spots[key]);
       return obj;

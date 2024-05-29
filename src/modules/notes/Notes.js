@@ -15,7 +15,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
+import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 
 const Notes = ({goToCurrentLocation}) => {
@@ -44,7 +44,7 @@ const Notes = ({goToCurrentLocation}) => {
   }, [templates]);
 
   const leavePage = () => {
-    if (formRef.current && formRef.current.dirty) {
+    if (formRef.current && formRef.current.dirty && modalVisible !== MODAL_KEYS.SHORTCUTS.NOTE) {
       const formCurrent = formRef.current;
       saveForm(formCurrent, false);
       if (Platform.OS !== 'web') toast.show('Notes saved', {type: 'success'});
@@ -57,14 +57,25 @@ const Notes = ({goToCurrentLocation}) => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
-        const pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
+        pointSetAtCurrentLocation = {
+          ...pointSetAtCurrentLocation,
+          properties: {
+            ...pointSetAtCurrentLocation.properties,
+            notes: currentForm.values.note,
+          },
+        };
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
+        dispatch(updatedModifiedTimestampsBySpotsIds([pointSetAtCurrentLocation.properties.id]));
+        dispatch(editedOrCreatedSpot(pointSetAtCurrentLocation));
       }
-      await currentForm.submitForm();
-      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-      dispatch(setSelectedSpotNotesTimestamp());
-      dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
-      await currentForm.resetForm();
+      else {
+        await currentForm.submitForm();
+        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+        dispatch(setSelectedSpotNotesTimestamp());
+        dispatch(editedSpotProperties({field: 'notes', value: currentForm.values.note}));
+        await currentForm.resetForm();
+      }
       if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
       else if (goToCurrentLocation) await goToCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));

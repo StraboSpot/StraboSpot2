@@ -67,7 +67,7 @@ const SampleModal = (props) => {
   }, [spot]);
 
   const confirmLeavePage = () => {
-    if (formRef.current && formRef.current.dirty) {
+    if (formRef.current && formRef.current.dirty && modalVisible !== MODAL_KEYS.SHORTCUTS.SAMPLE) {
       const formCurrent = formRef.current;
       alert(
         'Unsaved Changes',
