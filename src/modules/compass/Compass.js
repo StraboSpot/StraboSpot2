@@ -36,20 +36,20 @@ const Compass = ({
 
   const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
-    magHeading: 0,
+    magDecHeading: 0,
     trueHeading: 0,
     strike: 0,
-    magStrike: 0,
+    magDecStrike: 0,
     dip_direction: null,
     dip: null,
     trend: 0,
-    magTrend: 0,
+    magDecTrend: 0,
     plunge: null,
     rake: null,
     rake_calculated: 'yes',
     quality: null,
   });
-  const [matrixRotation, setMatrixRotation] = useState({});
+  // const [matrixRotation, setMatrixRotation] = useState({});
   const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
   // const [userDeclination, setUserDeclination] = useState('');
   const useMeasurements = useMeasurementsHook();
@@ -64,15 +64,7 @@ const Compass = ({
 
   useEffect(() => {
     console.log('UE Compass []');
-    getDeclination()
-      .then((declination) => {
-        // setMagneticDeclination(declination);
-        magneticDeclination.current = declination;
-        subscribeToSensors();
-      })
-      .catch((err) => {
-        console.error('Error getting Declination', err);
-      });
+    getDeclination().catch(err => console.error('Error getting user\'s declination', err));
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
       unsubscribeFromSensors();
@@ -105,7 +97,8 @@ const Compass = ({
   const getDeclination = async () => {
     const declination = await useCompass.getUserDeclination();
     console.log('Declination is:', declination);
-    return declination;
+    magneticDeclination.current = declination;
+    subscribeToSensors();
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
@@ -164,42 +157,26 @@ const Compass = ({
     const strikeAndDip = await useCompass.strikeAndDip(ENU_Pole);
     const trendAndPlunge = await useCompass.trendAndPlunge(ENU_TP);
     const adjustedStrike = heading < 0 ? strikeAndDip.strike + magneticDeclination.current : strikeAndDip.strike - magneticDeclination.current;
-    const adjustedTrend = heading < 0 ? strikeAndDip.trend + magneticDeclination.current : strikeAndDip.trend - magneticDeclination.current;
+    const adjustedTrend = heading < 0 ? trendAndPlunge.trend + magneticDeclination.current : trendAndPlunge.trend - magneticDeclination.current;
     // const declinationRadians = magneticDeclination * Math.PI / 180;
     // const adjustedHeading = heading + declinationRadians;
     setCompassData({
-      magHeading: roundToDecimalPlaces(heading, 0),
+      magDecHeading: roundToDecimalPlaces(heading, 0),
       trueHeading: roundToDecimalPlaces(adjustedHeadingWithMagDecl, 0),
-      strike: roundToDecimalPlaces(adjustedStrike, 0),
-      magStrike: roundToDecimalPlaces(strikeAndDip.strike, 0),
+      strike: roundToDecimalPlaces(strikeAndDip.strike, 0),
+      magDecStrike: roundToDecimalPlaces(adjustedStrike, 0),
       dip: roundToDecimalPlaces(strikeAndDip.dip, 0),
       trend: roundToDecimalPlaces(trendAndPlunge.trend, 0),
-      magTrend: roundToDecimalPlaces(adjustedTrend, 0),
+      magDecTrend: roundToDecimalPlaces(adjustedTrend, 0),
       plunge: roundToDecimalPlaces(trendAndPlunge.plunge, 0),
     });
   };
 
   const handleMatrixRotationData = async (res) => {
     try {
-      if (Platform.OS === 'android') {
-        const averageDataObj = await matrixAverage(res);
-        await getCartesianToSpherical(averageDataObj);
-      }
-      else {
-        setMatrixRotation({
-          M11: roundToDecimalPlaces(res.M11, 3),
-          M12: roundToDecimalPlaces(res.M12, 3),
-          M13: roundToDecimalPlaces(res.M13, 3),
-          M21: roundToDecimalPlaces(res.M21, 3),
-          M22: roundToDecimalPlaces(res.M22, 3),
-          M23: roundToDecimalPlaces(res.M23, 3),
-          M31: roundToDecimalPlaces(res.M31, 3),
-          M32: roundToDecimalPlaces(res.M32, 3),
-          M33: roundToDecimalPlaces(res.M33, 3),
-        });
-
-        await getCartesianToSpherical(res);
-      }
+      let matrixData = res;
+      if (Platform.OS === 'android') matrixData = await matrixAverage(matrixData);
+      await getCartesianToSpherical(matrixData);
     }
     catch (err) {
       console.error('Error Getting Matrix', err);
@@ -386,11 +363,10 @@ const Compass = ({
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.current?.toFixed(2)}</Text>
+        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>MDeclination: {magneticDeclination.current?.toFixed(
+          2)}</Text>
         {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>True Heading: {compassData.trueHeading}</Text>*/}
-        {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>Strike: {compassData.strike?.toFixed(2)}</Text>*/}
         {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>Mag Heading: {compassData.magHeading}</Text>*/}
-        {/*<Text style={{textAlign: 'center', fontWeight: 'bold'}}>MagStrike: {compassData.magStrike?.toFixed(2)}</Text>*/}
         <CompassFace
           compassMeasurementTypes={compassMeasurementTypes}
           grabMeasurements={grabMeasurements}
