@@ -28,9 +28,9 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
   // Render the strike and dip symbol inside the compass
   const renderStrikeDipSymbol = () => {
     let spin;
-    const strikeAdjusted = compassData?.magStrike;
+    const strikeAdjusted = compassData?.magDecStrike || 0;
     let image = require('../../assets/images/compass/strike-dip-centered.png');
-    if (compassData.strike >= 0) {
+    if (compassData.magDecStrike >= 0) {
       spin = strikeSpinValue.interpolate({
         inputRange: [0, strikeAdjusted],
         // inputRange: [0, 360], // Changed to get symbols to render while we figure out the android compass
@@ -62,32 +62,34 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
 
   // Render the strike and dip symbol inside the compass
   const renderTrendSymbol = () => {
-    const trendAdjusted = compassData?.magTrend;
+    const trendAdjusted = compassData?.magDecTrend || 0;
     let image = require('../../assets/images/compass/trendLine.png');
-    const spin = trendSpinValue.interpolate({
-      inputRange: [0, trendAdjusted],
-      outputRange: ['0deg', trendAdjusted + 'deg'],
-    });
+    if (compassData.magDecTrend >= 0) {
+      const spin = trendSpinValue.interpolate({
+        inputRange: [0, trendAdjusted],
+        outputRange: ['0deg', trendAdjusted + 'deg'],
+      });
 
-    trendAndPlungeStyles.push({transform: [{rotate: spin}]});
-    // First set up animation
-    Animated.timing(
-      trendSpinValue,
-      {
-        duration: 100,
-        toValue: trendAdjusted,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      },
-    ).start();
+      trendAndPlungeStyles.push({transform: [{rotate: spin}]});
+      // First set up animation
+      Animated.timing(
+        trendSpinValue,
+        {
+          duration: 100,
+          toValue: trendAdjusted,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        },
+      ).start();
 
-    return (
-      <Animated.Image
-        key={image}
-        source={image}
-        style={trendAndPlungeStyles}
-      />
-    );
+      return (
+        <Animated.Image
+          key={image}
+          source={image}
+          style={trendAndPlungeStyles}
+        />
+      );
+    }
   };
 
   return (
