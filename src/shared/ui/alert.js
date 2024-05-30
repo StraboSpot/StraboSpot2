@@ -6,12 +6,12 @@ const alertPolyfill = (title, description, options, extra) => {
   if (result && options) {
     console.log('OK pressed');
     const confirmOption = options.find(({style}) => style !== 'cancel');
-    confirmOption && confirmOption.onPress();
+    confirmOption && confirmOption.onPress && confirmOption.onPress();
   }
   else if (options) {
     console.log('Cancel pressed');
     const cancelOption = options.find(({style}) => style === 'cancel');
-    cancelOption && cancelOption.onPress();
+    cancelOption && cancelOption.onPress && cancelOption.onPress();
   }
 };
 
