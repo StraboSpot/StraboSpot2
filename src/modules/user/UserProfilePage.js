@@ -25,7 +25,7 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
-const UserProfile = () => {
+const UserProfilePage = () => {
   const formRef = useRef(null);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -317,4 +317,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserProfilePage;
