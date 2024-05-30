@@ -61,8 +61,8 @@ const spotSlice = createSlice({
         const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.payload.id);
         imagesFiltered.push(action.payload);
         foundSpot.properties.images = imagesFiltered;
-        const selectedSpotCopy = state.selectedSpot?.properties.id === foundSpot.properties.id
-          ? foundSpot : state.selectedSpot;
+        const selectedSpotCopy = isEmpty(state.selectedSpot)
+        || state.selectedSpot.properties.id === foundSpot.properties.id ? foundSpot : state.selectedSpot;
         console.log('Edit Image for selectedSpot', selectedSpotCopy);
         state.selectedSpot = selectedSpotCopy;
         state.spots = {...state.spots, [foundSpot.properties.id]: foundSpot};
