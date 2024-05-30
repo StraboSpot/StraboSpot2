@@ -13,6 +13,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';
 
 const Sketch = ({navigation, route}) => {
+  const image = route?.params?.imageInfo || {};
   const dispatch = useDispatch();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
@@ -21,15 +22,15 @@ const Sketch = ({navigation, route}) => {
   const [imageId, setImageId] = useState(null);
 
   useEffect(() => {
-    console.log('UE Sketch [imageId]', imageId);
-    if (route.params?.imageId) setImageId(route.params.imageId);
-  }, [imageId]);
+    console.log('UE Sketch [imageId]', image.id);
+    if (image.id) setImageId(image.id);
+  }, []);
 
   const saveSketch = async (success, path) => {
     try {
       console.log(success, 'Path:', path);
       if (success) {
-        const savedSketch = await useImages.saveFile({'path': path});
+        const savedSketch = await useImages.saveFile({...image, 'path': path});
         dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         alert(
@@ -72,7 +73,7 @@ const Sketch = ({navigation, route}) => {
             borderColor: 'grey',
           }}
           localSourceImage={{
-            filename: useImages.getLocalImageURI(imageId).replace('file://', ''),
+            filename: useImages.getLocalImageURI(image.id).replace('file://', ''),
             mode: 'AspectFit',
           }}
           defaultStrokeIndex={0}

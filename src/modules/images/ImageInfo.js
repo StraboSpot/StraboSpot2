@@ -21,7 +21,7 @@ const ImageInfo = ({route}) => {
 
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
-  const [imageId] = useState(route.params.imageId);
+  const [imageData, setImageData] = useState({});
   const useImages = useImagesHook();
   const useSpots = useSpotsHook();
   const navigation = useNavigation();
@@ -31,6 +31,7 @@ const ImageInfo = ({route}) => {
 
   useEffect(() => {
     console.log('UE ImageInfo []');
+    setImageData(route.params.imageInfo);
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
@@ -38,7 +39,7 @@ const ImageInfo = ({route}) => {
     console.log(name);
     switch (name) {
       case 'sketch':
-        navigation.navigate('Sketch', {imageId: imageId});
+        navigation.navigate('Sketch', {imageInfo: imageData});
         break;
     }
   };
@@ -53,7 +54,7 @@ const ImageInfo = ({route}) => {
 
   const deleteImage = async () => {
     setIsImageDeleteModalVisible(false);
-    const isImageDeleted = await useImages.deleteImage(imageId, useSpots.getSpotByImageId(imageId));
+    const isImageDeleted = await useImages.deleteImage(imageData.id, useSpots.getSpotByImageId(imageData.id));
     if (isImageDeleted) navigation.goBack();
   };
 
@@ -70,16 +71,16 @@ const ImageInfo = ({route}) => {
         onConfirmPress={() => deleteImage()}
       >
         <Text>Are you sure you want to delete image:{'\n'}</Text>
-        <Text>{imageId}</Text>
+        <Text>{imageData.id}</Text>
       </WarningModal>
     );
   };
 
   return (
-    <View style={{backgroundColor: 'black'}}>
+    <View style={{backgroundColor: 'black', justifyContent: 'center', alignContent: 'center'}}>
       <Image
-        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageId)}
-          : {uri: useImages.getLocalImageURI(imageId)}}
+        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageData.id)}
+          : {uri: useImages.getLocalImageURI(imageData.id)}}
         style={Platform.OS === 'web' ? {width: width, height: height}
           : {width: '100%', height: '100%'}}
         resizeMode={'contain'}
