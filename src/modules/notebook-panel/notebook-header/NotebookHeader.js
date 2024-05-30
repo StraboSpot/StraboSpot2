@@ -102,9 +102,10 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
     return toTitleCase(surfaceFeatureText);
   };
 
-  const onSpotEdit = (field, value) => {
+  const onSpotEdit = async (field, value) => {
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     dispatch(editedSpotProperties({field: field, value: value}));
+    await useSpots.checkSpotName(value);
   };
 
   const renderCoordsText = () => {

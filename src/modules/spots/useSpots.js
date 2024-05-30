@@ -1,8 +1,11 @@
+import {Platform} from 'react-native';
+
 import * as Sentry from '@sentry/react-native';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
-import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
+import {getNewId, isEmpty, isEqual, sleep} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import {clearedStratSection, setCurrentImageBasemap, setStratSection} from '../maps/maps.slice';
@@ -36,6 +39,8 @@ const useSpots = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
+  const toast = useToast();
+
   const checkIsSafeDelete = (spotToDelete) => {
     // Check if Spot is manually nested - get the first Spot that has this Spot nested manually in spot.properties.nesting
     const spotWithManualNest = Object.values(spots).find(
@@ -57,6 +62,18 @@ const useSpots = () => {
     // if (!_.isEmpty(altMappedChildrenSpots)) return 'Delete the nested Spots for this Spot before deleting.';
 
     return null;
+  };
+
+  // Show toast warning if duplicate Spot name used
+  const checkSpotName = async (name) => {
+    if (preferences.warn_on_dupe_spot_name) {
+      const spotNames = Object.values(spots).map(spot => spot.properties.name);
+      const foundDuplicateName = spotNames.includes(name);
+      if (foundDuplicateName) {
+        toast.show('Warning! Spot Name has Already Been Used.', {duration: 1500, type: 'warning'});
+        if (Platform.OS === 'web') await sleep(1500);
+      }
+    }
   };
 
   // Copy Spot to a new Spot omitting specific properties
@@ -115,6 +132,7 @@ const useSpots = () => {
       }
       dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
     }
+    await checkSpotName(newSpot.properties.name);
 
     if ((currentImageBasemap || stratSection) && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = currentImageBasemap ? getRootSpot(currentImageBasemap.id)
@@ -222,7 +240,8 @@ const useSpots = () => {
 
   // Get parent Spot for image basemap
   const getImageBasemapBySpot = (spot) => {
-    const imageBasemapFound = getImageBasemaps().find(imageBasemap => imageBasemap.id === spot.properties.image_basemap);
+    const imageBasemapFound = getImageBasemaps().find(
+      imageBasemap => imageBasemap.id === spot.properties.image_basemap);
     return imageBasemapFound;
   };
 
@@ -455,6 +474,7 @@ const useSpots = () => {
     isOnImageBasemap: isOnImageBasemap,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
+    checkSpotName: checkSpotName,
   };
 };
 

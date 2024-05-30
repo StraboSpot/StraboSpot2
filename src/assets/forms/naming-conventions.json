@@ -11,14 +11,14 @@
     {
       "type": "text",
       "name": "spot_prefix",
-      "label": "SPOT Prefix Label",
+      "label": "Spot Name Prefix",
       "hint": "Label prefix based on location or other",
       "required": "false"
     },
     {
       "type": "integer",
       "name": "starting_number_for_spot",
-      "label": "Starting Number for SPOTs",
+      "label": "Starting Number for Spots",
       "required": "false",
       "constraint": ". >= 0",
       "constraint_message": "Must start with 0 or greater"
@@ -26,7 +26,7 @@
     {
       "type": "text",
       "name": "sample_prefix",
-      "label": "Sample Prefix Label",
+      "label": "Sample Name Prefix",
       "hint": "Short label based on location or IGSN prefix (exactly 3 characters) or something else associated with the user",
       "required": "false"
     },
@@ -39,14 +39,10 @@
       "constraint_message": "Must start with 0 or greater"
     },
     {
-      "type": "calculate",
-      "name": "__version__",
-      "calculation": "'vkjJAv5X8aW7TDWWww6Baw'"
-    }
-  ],
-  "settings": [
-    {
-      "version": "vkjJAv5X8aW7TDWWww6Baw"
+      "type": "acknowledge",
+      "name": "warn_on_dupe_spot_name",
+      "label": "Warn on Duplicate Spot Name",
+      "required": "false"
     }
   ]
 }
