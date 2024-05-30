@@ -16,6 +16,7 @@ import usePetrologyHook from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSedHook from '../sed/useSed';
+import {useSpotsHook} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTagsHook} from '../tags';
 
@@ -30,10 +31,11 @@ const BasicPageDetail = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useTags = useTagsHook();
   const useForm = useFormHook();
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
+  const useSpots = useSpotsHook();
+  const useTags = useTagsHook();
 
   const formRef = useRef(null);
 
@@ -191,6 +193,10 @@ const BasicPageDetail = ({
       editedPageData.push(editedFeatureData);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
+
+      if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
+        await useSpots.checkSampleName(editedFeatureData.sample_id_name);
+      }
     }
     catch (err) {
       console.log('Error saving', pageKey, err);

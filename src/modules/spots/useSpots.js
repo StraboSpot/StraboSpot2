@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
 import {getNewId, isEmpty, isEqual, sleep} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import {clearedStratSection, setCurrentImageBasemap, setStratSection} from '../maps/maps.slice';
@@ -64,13 +65,31 @@ const useSpots = () => {
     return null;
   };
 
+  // Show toast warning if duplicate Sample name used
+  const checkSampleName = async (name, toastRef) => {
+    if (preferences.warn_on_dupe_sample_name) {
+      const sampleNames = Object.values(spots).reduce((acc, spot) => {
+        const spotSampleNames = spot.properties.samples?.map(sample => sample.sample_id_name);
+        return spotSampleNames ? [...new Set([...acc, ...spotSampleNames])] : acc;
+      }, []);
+      const foundDuplicateName = sampleNames.includes(name);
+      if (foundDuplicateName) {
+        const toastMsg = 'Warning! Sample Name has Already Been Used.';
+        const toastOptions = {duration: 1500, type: 'warning', placement: 'top'};
+        if (SMALL_SCREEN && toastRef) toastRef.current.show(toastMsg, toastOptions);
+        else toast.show(toastMsg, toastOptions);
+        if (Platform.OS === 'web') await sleep(1500);
+      }
+    }
+  };
+
   // Show toast warning if duplicate Spot name used
   const checkSpotName = async (name) => {
     if (preferences.warn_on_dupe_spot_name) {
       const spotNames = Object.values(spots).map(spot => spot.properties.name);
       const foundDuplicateName = spotNames.includes(name);
       if (foundDuplicateName) {
-        toast.show('Warning! Spot Name has Already Been Used.', {duration: 1500, type: 'warning'});
+        toast.show('Warning! Spot Name has Already Been Used.', {duration: 1500, type: 'warning', placement: 'top'});
         if (Platform.OS === 'web') await sleep(1500);
       }
     }
@@ -444,6 +463,8 @@ const useSpots = () => {
 
   return {
     checkIsSafeDelete: checkIsSafeDelete,
+    checkSampleName: checkSampleName,
+    checkSpotName: checkSpotName,
     copySpot: copySpot,
     createSpot: createSpot,
     deleteSpot: deleteSpot,
@@ -474,7 +495,6 @@ const useSpots = () => {
     isOnImageBasemap: isOnImageBasemap,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
-    checkSpotName: checkSpotName,
   };
 };
 

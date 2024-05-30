@@ -3,11 +3,12 @@ import {View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
+import Toast from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
@@ -32,6 +33,7 @@ const SampleModal = (props) => {
   const [startingNumber, setStartingNumber] = useState(null);
 
   const formRef = useRef(null);
+  const toastRef = useRef();
 
   const formName = ['general', 'samples'];
 
@@ -184,6 +186,8 @@ const SampleModal = (props) => {
       }
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
+
+      if (newSample.sample_id_name) await useSpots.checkSampleName(newSample.sample_id_name, toastRef);
     }
     catch (err) {
       console.error('Error saving Sample', err);
@@ -207,6 +211,7 @@ const SampleModal = (props) => {
         title={'Save Sample'}
         onPress={() => saveForm(formRef.current)}
       />
+      {SMALL_SCREEN && <Toast ref={toastRef} />}
     </Modal>
   );
 };

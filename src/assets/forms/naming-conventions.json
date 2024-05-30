@@ -43,6 +43,12 @@
       "name": "warn_on_dupe_spot_name",
       "label": "Warn on Duplicate Spot Name",
       "required": "false"
+    },
+    {
+      "type": "acknowledge",
+      "name": "warn_on_dupe_sample_name",
+      "label": "Warn on Duplicate Sample Name",
+      "required": "false"
     }
   ]
 }
