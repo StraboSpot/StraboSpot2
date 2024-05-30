@@ -201,6 +201,7 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Tephra_pressed.png'),
     page_component: TephraPage,
     modal_component: AddTephraModal,
+    overview_component: BasicOverviewList,
     action_label: 'Add a Tephra Layer',
     testing: true,
   }, {
@@ -210,6 +211,7 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Earthquake_pressed.png'),
     page_component: EarthquakesPage,
     modal_component: AddEarthquakeModal,
+    overview_component: BasicOverviewList,
     action_label: 'Add an Earthquake Feature',
     testing: true,
   },
