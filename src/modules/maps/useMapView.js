@@ -35,7 +35,7 @@ const useMapView = () => {
         || (selectedSpot?.properties?.strat_section_id && selectedSpot?.properties.strat_section_id === stratSection?.strat_section_id)) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION, turf.centroid(selectedSpot).geometry.coordinates);
       }
-      if (currentImageBasemap) {
+      if (currentImageBasemap && currentImageBasemap.width && currentImageBasemap.height) {
         return proj4(PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION,
           [(currentImageBasemap.width) / 2, (currentImageBasemap.height) / 2]);
       }
