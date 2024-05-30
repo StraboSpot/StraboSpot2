@@ -90,7 +90,7 @@ const useImages = () => {
 
   const editImage = (image) => {
     dispatch(setSelectedAttributes([image]));
-    navigation.navigate('ImageInfo', {imageId: image.id});
+    navigation.navigate('ImageInfo', {imageInfo: image});
   };
 
   const gatherNeededImages = async (spotsOnServer, dataset) => {
@@ -340,7 +340,11 @@ const useImages = () => {
     let imgHeight = imageData.height;
     let imgWidth = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!imgHeight || !imgWidth) ({imgHeight, imgWidth} = await getImageHeightAndWidth(tempImageURI));
+    if (!imgHeight || !imgWidth) {
+      const newImageDimensions = await getImageHeightAndWidth(tempImageURI);
+      imgHeight = newImageDimensions.height;
+      imgWidth = newImageDimensions.width;
+    }
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
