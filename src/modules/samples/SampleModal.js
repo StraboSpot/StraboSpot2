@@ -29,7 +29,8 @@ const SampleModal = (props) => {
   const useSpots = useSpotsHook();
   const useMapLocation = useMapLocationHook();
 
-  const [namePrefix, setNamePrefix] = useState(null);
+  const initialNamePrefix = preferences.sample_prefix || 'Unnamed';
+  const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
   const [startingNumber, setStartingNumber] = useState(null);
 
   const formRef = useRef(null);
@@ -58,7 +59,12 @@ const SampleModal = (props) => {
 
   useEffect(() => {
     console.log('UE SampleModal [spot]', spot);
-    setNamePrefix(preferences.sample_prefix || 'Unnamed');
+
+    if (preferences.prepend_spot_name_sample_name) {
+      const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? useSpots.getNewSpotName()
+        : spot?.properties?.name;
+      setNamePrefix(spotName + initialNamePrefix);
+    }
 
     setStartingNumber(
       preferences.starting_sample_number
@@ -177,7 +183,7 @@ const SampleModal = (props) => {
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
         const updatedPreferences = {
           ...preferences,
-          sample_prefix: namePrefix,
+          sample_prefix: initialNamePrefix,
           starting_sample_number: startingNumber + 1,
         };
         dispatch(
@@ -211,7 +217,7 @@ const SampleModal = (props) => {
         title={'Save Sample'}
         onPress={() => saveForm(formRef.current)}
       />
-      {SMALL_SCREEN && <Toast ref={toastRef} />}
+      {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>
   );
 };

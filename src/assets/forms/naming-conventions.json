@@ -49,6 +49,12 @@
       "name": "warn_on_dupe_sample_name",
       "label": "Warn on Duplicate Sample Name",
       "required": "false"
+    },
+    {
+      "type": "acknowledge",
+      "name": "prepend_spot_name_sample_name",
+      "label": "Prepend Spot Name to Sample Name",
+      "required": "false"
     }
   ]
 }

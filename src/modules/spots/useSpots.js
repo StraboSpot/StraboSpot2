@@ -134,13 +134,12 @@ const useSpots = () => {
 
     // Set spot name
     if (!newSpot.properties.name) {
-      const defaultName = preferences.spot_prefix || 'Unnamed';
-      const defaultNumber = parseInt(preferences.starting_number_for_spot, 10) || Object.keys(spots).length + 1;
-      newSpot.properties.name = defaultName + defaultNumber;
+      const {spotName, namePrefix, nameNumber} = getNewSpotNameObj();
+      newSpot.properties.name = spotName;
       let updatedPreferences = {
         ...preferences,
-        spot_prefix: defaultName,
-        starting_number_for_spot: defaultNumber + 1,
+        spot_prefix: namePrefix,
+        starting_number_for_spot: nameNumber + 1,
       };
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         updatedPreferences = {
@@ -302,6 +301,17 @@ const useSpots = () => {
     });
     console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
     return allSpotsCopyFiltered;
+  };
+
+  const getNewSpotName = () => {
+    const {spotName} = getNewSpotNameObj();
+    return spotName;
+  };
+
+  const getNewSpotNameObj = () => {
+    const namePrefix = preferences.spot_prefix || 'Unnamed';
+    const nameNumber = parseInt(preferences.starting_number_for_spot, 10) || Object.keys(spots).length + 1;
+    return {spotName: namePrefix + nameNumber, namePrefix: namePrefix, nameNumber: nameNumber};
   };
 
   // Find the rootSpot for a given image id.
@@ -474,6 +484,7 @@ const useSpots = () => {
     getImageBasemapBySpot: getImageBasemapBySpot,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
+    getNewSpotName: getNewSpotName,
     getMappableSpots: getMappableSpots,
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
