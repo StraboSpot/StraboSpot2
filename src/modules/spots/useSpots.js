@@ -75,10 +75,10 @@ const useSpots = () => {
       const foundDuplicateName = sampleNames.includes(name);
       if (foundDuplicateName) {
         const toastMsg = 'Warning! Sample Name has Already Been Used.';
-        const toastOptions = {duration: 1500, type: 'warning', placement: 'top'};
+        const toastOptions = {duration: 3000, type: 'warning', placement: 'top'};
         if (SMALL_SCREEN && toastRef) toastRef.current.show(toastMsg, toastOptions);
         else toast.show(toastMsg, toastOptions);
-        if (Platform.OS === 'web') await sleep(1500);
+        if (Platform.OS === 'web') await sleep(3000);
       }
     }
   };
@@ -89,8 +89,8 @@ const useSpots = () => {
       const spotNames = Object.values(spots).map(spot => spot.properties.name);
       const foundDuplicateName = spotNames.includes(name);
       if (foundDuplicateName) {
-        toast.show('Warning! Spot Name has Already Been Used.', {duration: 1500, type: 'warning', placement: 'top'});
-        if (Platform.OS === 'web') await sleep(1500);
+        toast.show('Warning! Spot Name has Already Been Used.', {duration: 3000, type: 'warning', placement: 'top'});
+        if (Platform.OS === 'web') await sleep(3000);
       }
     }
   };
