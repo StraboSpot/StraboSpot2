@@ -335,3 +335,5 @@ const notEmptyValidator = (val) => {
   return val.trim() !== '';
 };
 
+// Convert 1 to A, 2 to B, ... 27 to AA, 28 to AB, etc
+export const numToLetter = num => num <= 0 ? '' : numToLetter(Math.floor((num - 1) / 26)) + String.fromCharCode((num - 1) % 26 + 65);

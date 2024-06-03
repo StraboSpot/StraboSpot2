@@ -6,7 +6,7 @@ import {ButtonGroup} from 'react-native-elements';
 import Toast from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, isEmpty, numToLetter} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -31,6 +31,7 @@ const SampleModal = (props) => {
 
   const initialNamePrefix = preferences.sample_prefix || 'Unnamed';
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
+  const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
 
   const formRef = useRef(null);
@@ -66,12 +67,28 @@ const SampleModal = (props) => {
       setNamePrefix(spotName + initialNamePrefix);
     }
 
-    setStartingNumber(
-      preferences.starting_sample_number
-      || spot.properties?.samples?.length + 1
-      || getAllSamplesCount(),
-    );
-    // preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
+    if (preferences.sample_postfix_letter) {
+      let postfixLetter = 'a';
+      if (spot?.properties?.samples && !isEmpty(spot?.properties?.samples)) {
+        postfixLetter = numToLetter(spot.properties.samples.length + 1);
+        postfixLetter = postfixLetter.toLowerCase();
+      }
+      setNamePostfix(postfixLetter);
+    }
+    else if (preferences.restart_sample_num_each_spot) {
+      let postfixNumber = 1;
+      if (spot?.properties?.samples && !isEmpty(spot?.properties?.samples)) {
+        postfixNumber = spot.properties?.samples?.length + 1;
+      }
+      setNamePostfix(postfixNumber);
+    }
+    else {
+      setStartingNumber(
+        preferences.starting_sample_number
+        || spot.properties?.samples?.length + 1
+        || getAllSamplesCount(),
+      );
+    }
   }, [spot]);
 
   const confirmLeavePage = () => {
@@ -161,8 +178,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        let pointSetAtCurrentLocation
-          = await useMapLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {
@@ -184,11 +200,9 @@ const SampleModal = (props) => {
         const updatedPreferences = {
           ...preferences,
           sample_prefix: initialNamePrefix,
-          starting_sample_number: startingNumber + 1,
+          starting_sample_number: namePostfix ? startingNumber : startingNumber + 1,
         };
-        dispatch(
-          updatedProject({field: 'preferences', value: updatedPreferences}),
-        );
+        dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
       }
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
@@ -206,7 +220,7 @@ const SampleModal = (props) => {
       <Formik
         innerRef={formRef}
         initialValues={{
-          sample_id_name: namePrefix + startingNumber,
+          sample_id_name: namePrefix + (namePostfix || startingNumber),
           inplaceness_of_sample: '5___definitely',
         }}
         onSubmit={values => console.log('Submitting form...', values)}
