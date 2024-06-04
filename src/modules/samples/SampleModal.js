@@ -29,7 +29,7 @@ const SampleModal = (props) => {
   const useSpots = useSpotsHook();
   const useMapLocation = useMapLocationHook();
 
-  const initialNamePrefix = preferences.sample_prefix || 'Unnamed';
+  const initialNamePrefix = preferences.sample_prefix || '';
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
   const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
@@ -80,6 +80,7 @@ const SampleModal = (props) => {
       if (spot?.properties?.samples && !isEmpty(spot?.properties?.samples)) {
         postfixNumber = spot.properties?.samples?.length + 1;
       }
+      postfixNumber = postfixNumber < 10 ? '0' + postfixNumber : postfixNumber;
       setNamePostfix(postfixNumber);
     }
     else {
@@ -199,7 +200,6 @@ const SampleModal = (props) => {
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
         const updatedPreferences = {
           ...preferences,
-          sample_prefix: initialNamePrefix,
           starting_sample_number: namePostfix ? startingNumber : startingNumber + 1,
         };
         dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
@@ -220,7 +220,7 @@ const SampleModal = (props) => {
       <Formik
         innerRef={formRef}
         initialValues={{
-          sample_id_name: namePrefix + (namePostfix || startingNumber),
+          sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
           inplaceness_of_sample: '5___definitely',
         }}
         onSubmit={values => console.log('Submitting form...', values)}

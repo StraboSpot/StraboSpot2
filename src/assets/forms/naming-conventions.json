@@ -42,6 +42,34 @@
     },
     {
       "type": "begin_group",
+      "name": "group_rv9mt72",
+      "label": "Image Basemap/Strat Section Spot Name"
+    },
+    {
+      "type": "text",
+      "name": "nested_spot_prefix",
+      "label": "Alternate Prefix",
+      "hint": "Use an alternate label prefix for Spots on an Image Basemap or Strat Section.",
+      "required": "false"
+    },
+    {
+      "type": "acknowledge",
+      "name": "prepend_spot_name_nested_spot",
+      "label": "Prepend Parent Spot Name",
+      "hint": "Add the parent spot name to beginning of every nested spot name.",
+      "required": "false"
+    },
+    {
+      "type": "acknowledge",
+      "name": "restart_num_each_nested_spot",
+      "label": "Restart Numbering at 1 for Each Image Basemap/Strat Section",
+      "required": "false"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
       "name": "group_vy88v94",
       "label": "Sample Name",
       "required": "false"

@@ -134,17 +134,15 @@ const useSpots = () => {
 
     // Set spot name
     if (!newSpot.properties.name) {
-      const {spotName, namePrefix, nameNumber} = getNewSpotNameObj();
+      const {spotName, spotNumber} = getNewSpotNameObj(newSpot);
       newSpot.properties.name = spotName;
-      let updatedPreferences = {
-        ...preferences,
-        spot_prefix: namePrefix,
-        starting_number_for_spot: nameNumber + 1,
-      };
+      let updatedPreferences;
+      if (!(preferences.restart_num_each_nested_spot && (isOnImageBasemap(newSpot) || isOnStratSection(newSpot)))) {
+        updatedPreferences = {...preferences, starting_number_for_spot: spotNumber + 1};
+      }
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         updatedPreferences = {
           ...updatedPreferences,
-          sample_prefix: preferences.sample_prefix || 'Unnamed',
           starting_sample_number: (preferences.starting_sample_number || 1) + 1,
         };
       }
@@ -308,10 +306,42 @@ const useSpots = () => {
     return spotName;
   };
 
-  const getNewSpotNameObj = () => {
-    const namePrefix = preferences.spot_prefix || 'Unnamed';
-    const nameNumber = parseInt(preferences.starting_number_for_spot, 10) || Object.keys(spots).length + 1;
-    return {spotName: namePrefix + nameNumber, namePrefix: namePrefix, nameNumber: nameNumber};
+  const getNewSpotNameObj = (newSpot) => {
+    let namePrefix = preferences.spot_prefix || '';
+    if (newSpot && preferences.nested_spot_prefix && (isOnImageBasemap(newSpot) || isOnStratSection(newSpot))) {
+      namePrefix = preferences.nested_spot_prefix;
+    }
+
+    let newSpotName = namePrefix;
+    if (newSpot && preferences.prepend_spot_name_nested_spot && (isOnImageBasemap(newSpot) || isOnStratSection(
+      newSpot))) {
+      if (isOnImageBasemap(newSpot)) {
+        const parentSpot = getSpotWithThisImageBasemap(newSpot.properties.image_basemap);
+        newSpotName = parentSpot.properties.name + namePrefix;
+      }
+      else {
+        const parentSpot = getSpotWithThisStratSection(newSpot.properties.strat_section_id);
+        newSpotName = parentSpot.properties.name + namePrefix;
+      }
+    }
+
+    let spotNumber;
+    if (newSpot && preferences.restart_num_each_nested_spot
+      && (isOnImageBasemap(newSpot) || isOnStratSection(newSpot))) {
+      if (isOnImageBasemap(newSpot)) {
+        const spotsMappedOnGivenImageBasemap = getSpotsMappedOnGivenImageBasemap(newSpot.properties.image_basemap);
+        spotNumber = spotsMappedOnGivenImageBasemap.length + 1;
+      }
+      else {
+        const spotsMappedOnGivenStratSection = getSpotsMappedOnGivenStratSection(newSpot.properties.strat_section_id);
+        spotNumber = spotsMappedOnGivenStratSection.length + 1;
+      }
+    }
+    else spotNumber = parseInt(preferences.starting_number_for_spot, 10) || Object.keys(spots).length + 1;
+
+    newSpotName = spotNumber < 10 ? newSpotName + '0' + spotNumber : newSpotName + spotNumber;
+
+    return {spotName: newSpotName, spotNumber: spotNumber};
   };
 
   // Find the rootSpot for a given image id.
@@ -384,6 +414,13 @@ const useSpots = () => {
       if (spotIds.includes(obj[1].properties.id)) foundSpots.push(obj[1]);
     });
     return foundSpots;
+  };
+
+  // Get all the Spots mapped on a specific image basemap
+  const getSpotsMappedOnGivenImageBasemap = (basemapId) => {
+    return Object.values(spots).reduce((acc, s) => {
+      return s.properties?.image_basemap == basemapId ? [...acc, s] : acc;
+    }, []);
   };
 
   // Get all the Spots mapped on a specific strat section
@@ -493,6 +530,7 @@ const useSpots = () => {
     getSpotWithThisImageBasemap: getSpotWithThisImageBasemap,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
+    getSpotsMappedOnGivenImageBasemap: getSpotsMappedOnGivenImageBasemap,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
