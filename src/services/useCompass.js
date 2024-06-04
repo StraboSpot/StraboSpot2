@@ -75,7 +75,7 @@ const useCompass = () => {
     }
     else {
       strikeDeg = mod((360 - (theta + Math.PI) * (180 / Math.PI)), 360);
-      dipDeg = (Math.PI + phi) * (180 / Math.PI);
+      dipDeg = (Math.PI - phi) * (180 / Math.PI);
     }
     // console.log('Strike:', strikeDeg, 'Dip:', dipDeg);
 
