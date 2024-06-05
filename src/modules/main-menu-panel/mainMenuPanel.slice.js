@@ -3,6 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {SORTED_VIEWS} from './mainMenu.constants';
 
 const initialMainMenuState = {
+  appVersion: null,
   sortedView: SORTED_VIEWS.CHRONOLOGICAL,
   selectedButtonIndex: 0,
   mainMenuPageVisible: null,
@@ -15,6 +16,9 @@ const mainMenuSlice = createSlice({
   name: 'mainMenu',
   initialState: initialMainMenuState,
   reducers: {
+    setAppVersion(state, action) {
+      state.appVersion = action.payload;
+    },
     setMenuSelectionPage(state, action) {
       state.mainMenuPageVisible = action.payload.name;
     },
@@ -33,6 +37,7 @@ const mainMenuSlice = createSlice({
 });
 
 export const {
+  setAppVersion,
   setMenuSelectionPage,
   setSelectedButtonIndex,
   setSidePanelVisible,

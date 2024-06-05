@@ -27,6 +27,7 @@ import {
   UploadProgressModal,
   WarningModal,
 } from './modals';
+import WhatsNewModal from './WhatsNewModal';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import usePermissionsHook from '../../services/usePermissions';
@@ -38,7 +39,7 @@ import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../..
 import LoadingSpinner from '../../shared/ui/Loading';
 import useHomeHook from '../home/useHome';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
-import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setAppVersion, setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import {MAP_MODES} from '../maps/maps.constants';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
@@ -67,6 +68,7 @@ const Home = ({navigation, route}) => {
   const selectedDataset = useProject.getSelectedDatasetFromId();
 
   const dispatch = useDispatch();
+  const appVersion = useSelector(state => state.mainMenu.appVersion);
   const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isHomeLoading = useSelector(state => state.home.loading.home);
@@ -88,6 +90,7 @@ const Home = ({navigation, route}) => {
   const [distance, setDistance] = useState(0);
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
+  const [isWhatsNewModalVisible, setIsWhatsNewModalVisible] = useState(false);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
   const [showUpdateLabel, setShowUpdateLabel] = useState(false);
 
@@ -117,6 +120,7 @@ const Home = ({navigation, route}) => {
           setShowUpdateLabel(true);
           updateTimer = setTimeout(() => setShowUpdateLabel(false), 5000);
         }
+        showWhatsNew();
       });
     }
     return () => {
@@ -171,6 +175,14 @@ const Home = ({navigation, route}) => {
     console.log('UE Home [mapMode]', mapMode);
     if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current?.endMapMeasurement();
   }, [mapMode]);
+
+  const showWhatsNew = async () => {
+    const currentVersion = parseFloat(useVersionCheck.getVersion());
+    if (appVersion !== null && currentVersion > appVersion) {
+      setIsWhatsNewModalVisible(true);
+    }
+    dispatch(setAppVersion(currentVersion));
+  };
 
   const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
     animatedValueTextInputs);
@@ -551,6 +563,11 @@ const Home = ({navigation, route}) => {
       <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
       <UploadProgressModal/>
       <WarningModal/>
+      <WhatsNewModal
+        currentVersion={appVersion}
+        isWhatsNewModalVisible={isWhatsNewModalVisible}
+        closeModal={() => setIsWhatsNewModalVisible(false)}
+      />
       {/*------------------------*/}
       <LoadingSpinner isLoading={isHomeLoading}/>
       {MainMenu}

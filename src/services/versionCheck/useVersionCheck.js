@@ -28,9 +28,14 @@ const useVersionCheck = () => {
     return version;
   };
 
+  const getVersion = () => {
+    return DeviceInfo.getVersion();
+  };
+
   return {
     animateLabel: animateLabel,
     checkAppStoreVersion: checkAppStoreVersion,
+    getVersion: getVersion,
   };
 };
 
