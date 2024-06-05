@@ -4,6 +4,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 const usePermissions = () => {
 
@@ -31,7 +32,10 @@ const usePermissions = () => {
     let granted;
     let deviceVersion = DeviceInfo.getSystemVersion();
 
-    if ((permission === PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE || permission === PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE) && deviceVersion >= 13) {
+    // No Longer need to request permission for Android 13+
+    if ((permission === PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+        || permission === PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE)
+      && deviceVersion >= 13) {
       return PermissionsAndroid.RESULTS.GRANTED;
     }
 
@@ -40,6 +44,32 @@ const usePermissions = () => {
     else granted = await requestPermission(permission);
     console.log('Permissions', granted);
     return granted;
+  };
+
+  const checkIOSPermission = async () => {
+    return check(PERMISSIONS.IOS.CAMERA)
+      .then((result) => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            console.log('This feature is not available (on this device / in this context)');
+            return false;
+          case RESULTS.DENIED:
+            console.log('The permission has not been requested / is denied but requestable');
+            return false;
+          case RESULTS.LIMITED:
+            console.log('The permission is limited: some actions are possible');
+            return false;
+          case RESULTS.GRANTED:
+            console.log('The permission is granted');
+            return true;
+          case RESULTS.BLOCKED:
+            console.log('The permission is denied and not requestable anymore');
+            return false;
+        }
+      })
+      .catch((error) => {
+        // …
+      });
   };
 
   const requestPermission = async (permission) => {
@@ -52,7 +82,10 @@ const usePermissions = () => {
     if (result === PermissionsAndroid.RESULTS.GRANTED) {
       return PermissionsAndroid.RESULTS.GRANTED;
     }
-    else alert('Permission Denied', 'You may have denied this permission previously. \nTo allow permission please go to Settings -> App -> StraboSpot2 -> Permissions');
+    else {
+      alert('Permission Denied',
+        'You may have denied this permission previously. \nTo allow permission please go to Settings -> App -> StraboSpot2 -> Permissions');
+    }
   };
 
   const requestPermissions = async (permissions) => {
@@ -64,6 +97,7 @@ const usePermissions = () => {
 
   return {
     checkPermission: checkPermission,
+    checkIOSPermission: checkIOSPermission,
     requestPermission: requestPermission,
     requestPermissions: requestPermissions,
   };

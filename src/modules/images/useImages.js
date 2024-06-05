@@ -260,9 +260,11 @@ const useImages = () => {
   };
 
   const launchCameraFromNotebook = async (newSpotId) => {
+    let permission = true;
     try {
-      const permissionResult = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-      if (permissionResult) {
+      if (Platform.OS === 'android') permission = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+      // if (Platform.OS === 'ios') permission = await usePermissions.checkIOSPermission();
+      if (permission) {
         const savedPhoto = await takePicture();
         dispatch(setLoadingStatus({view: 'home', bool: true}));
         if (savedPhoto === 'cancelled') {
@@ -412,16 +414,15 @@ const useImages = () => {
 
   // Called from Notebook Panel Footer and opens camera only
   const takePicture = async () => {
-    let permissionGranted;
-    console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (Platform.OS === 'android') permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (permissionGranted === 'granted' || Platform.OS === 'ios') {
+    // let permissionGranted;
+    // if (Platform.OS === 'android') permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+    // if (permissionGranted === 'granted' || Platform.OS === 'ios') {
       return new Promise((resolve, reject) => {
         try {
           launchCamera({saveToPhotos: true}, async (response) => {
             console.log('Response = ', response);
             if (response.didCancel) resolve('cancelled');
-            else if (response.error) reject();
+            else if (response.errorCode) reject();
             else {
               const imageAsset = response.assets[0];
               const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
@@ -436,7 +437,7 @@ const useImages = () => {
           reject(e);
         }
       });
-    }
+    // }
   };
 
   return {
