@@ -33,15 +33,12 @@ const TephraPage = ({page}) => {
   const attributes = spot && spot.properties && spot.properties.tephra || [];
 
   useEffect(() => {
-    setData(attributes);
-  }, []);
-
-  useEffect(() => {
     console.log('UE TephraPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (!isEmpty(selectedAttributes)) {
       setSelectedAttribute(selectedAttributes[0]);
       setIsDetailView(true);
     }
+    setData(attributes);
   }, [selectedAttributes, spot]);
 
   const addAttribute = () => {
