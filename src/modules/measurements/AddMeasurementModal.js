@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, PermissionsAndroid, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup, Overlay} from 'react-native-elements';
+import {ButtonGroup, Switch} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -22,7 +22,6 @@ import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import compassStyles from '../compass/compass.styles';
 import {Form, formStyles, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
-import overlayStyles from '../home/overlays/overlay.styles';
 import useMapLocationHook from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -40,14 +39,12 @@ const AddMeasurementModal = ({onPress}) => {
   const [assocChoicesViewKey, setAssocChoicesViewKey] = useState(null);
   const [choices, setChoices] = useState({});
   const [choicesViewKey, setChoicesViewKey] = useState(null);
-  const [compassData, setCompassData] = useState({});
   const [initialValues, setInitialValues] = useState({id: getNewUUID()});
-  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
+  const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS === 'web');
   const [isShowTemplates, setIsShowTemplates] = useState(false);
   const [measurementTypeForForm, setMeasurementTypeForForm] = useState(null);
   const [relevantTemplates, setRelevantTemplates] = useState([]);
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
-  const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
   const [survey, setSurvey] = useState({});
   const [sliderValue, setSliderValue] = useState(6);
   const [locationPermission, setLocationPermission] = useState('');
@@ -172,48 +169,6 @@ const AddMeasurementModal = ({onPress}) => {
     setAssocChoicesViewKey(null);
   };
 
-  const renderCompassData = () => (
-    <View style={{
-      backgroundColor: 'white',
-      padding: 20,
-      borderBottomRightRadius: 20,
-      borderTopRightRadius: 20,
-      zIndex: 100,
-    }}>
-      <View style={overlayStyles.titleContainer}>
-        <Text style={overlayStyles.titleText}>Compass Data</Text>
-      </View>
-      <View>
-        <Text style={overlayStyles.titleText}>Matrix Rotation</Text>
-        <View>
-          <Text style={compassStyles.compassMatrixHeader}>North</Text>
-          <Text style={compassStyles.compassMatrixDataText}>M11: {compassData.M11}</Text>
-          <Text style={compassStyles.compassMatrixDataText}>M21: {compassData.M21} </Text>
-          <Text style={compassStyles.compassMatrixDataText}>M31: {compassData.M31}</Text>
-        </View>
-        <View>
-          <Text style={compassStyles.compassMatrixHeader}>West</Text>
-          <Text style={compassStyles.compassMatrixDataText}>M12: {compassData.M12}</Text>
-          <Text style={compassStyles.compassMatrixDataText}>M22: {compassData.M22} </Text>
-          <Text style={compassStyles.compassMatrixDataText}>M32: {compassData.M32}</Text>
-        </View>
-        <View>
-          <Text style={compassStyles.compassMatrixHeader}>Up</Text>
-          <Text style={compassStyles.compassMatrixDataText}>M13: {compassData.M13}</Text>
-          <Text style={compassStyles.compassMatrixDataText}>M23: {compassData.M23} </Text>
-          <Text style={compassStyles.compassMatrixDataText}>M33: {compassData.M33}</Text>
-        </View>
-      </View>
-      <View style={overlayStyles.overlayContent}>
-        <Text>Heading: {compassData.heading}</Text>
-        <Text>Strike: {compassData.strike}</Text>
-        <Text>Dip: {compassData.dip}</Text>
-        <Text>Plunge: {compassData.plunge}</Text>
-        <Text>Trend: {compassData.trend}</Text>
-      </View>
-    </View>
-  );
-
   const renderForm = (formProps) => {
     const assocFormName = [groupKey, 'linear_orientation'];
     const assocSurvey = useForm.getSurvey(assocFormName);
@@ -225,91 +180,88 @@ const AddMeasurementModal = ({onPress}) => {
       : measurementTypeForForm;
     return (
       <>
-      {!isShowTemplates && !isSelectedAttitude && (
-        <ButtonGroup
-          selectedIndex={selectedTypeIndex}
-          onPress={onMeasurementTypePress}
-          buttons={Object.values(MEASUREMENT_TYPES).map(t => t.add_title)}
-          containerStyle={{height: 40, borderRadius: 10}}
-          buttonStyle={{padding: 5}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: PRIMARY_TEXT_COLOR}}
-        />
-      )}
-      {!isSelectedAttitude && (
-        <Templates
-          isShowTemplates={isShowTemplates}
-          setIsShowTemplates={bool => setIsShowTemplates(bool)}
-          typeKey={typeKey}
-        />
-      )}
-      {!isShowTemplates && (
-        <>
-          {Platform.OS === 'ios' && (
-            <Button
-              buttonStyle={formStyles.formButtonSmall}
-              titleProps={formStyles.formButtonTitle}
-              title={isManualMeasurement ? 'Switch to Compass Input' : 'Manually Add Measurement'}
-              type={'clear'}
-              onPress={() => setIsManualMeasurement(!isManualMeasurement)}
-            />
-          )}
-          {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
-            : (
+        {!isShowTemplates && !isSelectedAttitude && (
+          <ButtonGroup
+            selectedIndex={selectedTypeIndex}
+            onPress={onMeasurementTypePress}
+            buttons={Object.values(MEASUREMENT_TYPES).map(t => t.add_title)}
+            containerStyle={{height: 40, borderRadius: 10}}
+            buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+            textStyle={{color: PRIMARY_TEXT_COLOR}}
+          />
+        )}
+        {!isSelectedAttitude && (
+          <Templates
+            isShowTemplates={isShowTemplates}
+            setIsShowTemplates={bool => setIsShowTemplates(bool)}
+            typeKey={typeKey}
+          />
+        )}
+        {!isShowTemplates && (
+          <>
+            {Platform.OS !== 'web' && (
               <>
-                <Compass
-                  setMeasurements={setMeasurements}
-                  formValues={formProps.values}
-                  showCompassDataModal={showCompassMetadataModal}
-                  setCompassRawDataToDisplay={data => showCompassRawDataView && setCompassData(data)}
-                  sliderValue={sliderValue}
-                />
-                <View style={compassStyles.sliderContainer}>
-                  <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
-                  <SliderBar
-                    onSlidingComplete={setSliderValue}
-                    value={sliderValue}
-                    step={1}
-                    maximumValue={6}
-                    minimumValue={1}
-                    labels={['Low', '', '', '', 'High', 'N/R']}
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', padding: 5}}>
+                  <Text style={{}}>Compass</Text>
+                  <Switch
+                    color={'transparent'}
+                    value={isManualMeasurement}
+                    onValueChange={value => setIsManualMeasurement(value)}
                   />
+                  <Text style={{}}>Manual</Text>
                 </View>
               </>
+
             )}
-          {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
-            && getPlanarTemplates(relevantTemplates).length <= 1 && (
-              <AddPlane
-                survey={survey}
-                choices={choices}
-                setChoicesViewKey={onSetChoicesViewKey}
-                formName={[groupKey, MEASUREMENT_KEYS.PLANAR]}
-                formProps={formProps}
-                isManualMeasurement={isManualMeasurement}
-              />
-            )}
-          {(measurementTypeForForm === MEASUREMENT_KEYS.LINEAR || typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)
-            && getLinearTemplates(relevantTemplates).length <= 1 && (
-              <AddLine
-                survey={assocSurvey}
-                choices={assocChoices}
-                setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey
-                  : onSetChoicesViewKey}
-                formName={[groupKey, MEASUREMENT_KEYS.LINEAR]}
-                formProps={formProps}
-                isManualMeasurement={isManualMeasurement}
-                isPlanarLinear={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR}
-              />
-            )}
-          <Overlay
-            isVisible={showCompassRawDataView}
-            overlayStyle={[{...overlayStyles.overlayContainer}, compassStyles.compassDataModalPosition]}
-            onBackdropPress={() => showCompassMetadataModal(false)}
-          >
-            {renderCompassData()}
-          </Overlay>
-        </>
-      )}
+            {isManualMeasurement ? <AddManualMeasurements formProps={formProps} measurementType={typeKey}/>
+              : (
+                <>
+                  <Compass
+                    setMeasurements={setMeasurements}
+                    formValues={formProps.values}
+                    sliderValue={sliderValue}
+                  />
+                  <View style={compassStyles.sliderContainer}>
+                    <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
+                    <SliderBar
+                      onSlidingComplete={setSliderValue}
+                      value={sliderValue}
+                      step={1}
+                      maximumValue={6}
+                      minimumValue={1}
+                      labels={['Low', '', '', '', 'High', 'N/R']}
+                    />
+                  </View>
+                </>
+              )
+            }
+            {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
+              && getPlanarTemplates(relevantTemplates).length <= 1 && (
+                <AddPlane
+                  survey={survey}
+                  choices={choices}
+                  setChoicesViewKey={onSetChoicesViewKey}
+                  formName={[groupKey, MEASUREMENT_KEYS.PLANAR]}
+                  formProps={formProps}
+                  isManualMeasurement={isManualMeasurement}
+                />
+              )}
+            {(measurementTypeForForm === MEASUREMENT_KEYS.LINEAR || typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)
+              && getLinearTemplates(relevantTemplates).length <= 1 && (
+                <AddLine
+                  survey={assocSurvey}
+                  choices={assocChoices}
+                  setChoicesViewKey={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR ? onSetChoicesAssocViewKey
+                    : onSetChoicesViewKey}
+                  formName={[groupKey, MEASUREMENT_KEYS.LINEAR]}
+                  formProps={formProps}
+                  isManualMeasurement={isManualMeasurement}
+                  isPlanarLinear={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR}
+                />
+              )}
+          </>
+        )}
       </>
     );
   };
@@ -508,10 +460,6 @@ const AddMeasurementModal = ({onPress}) => {
       });
     }
     saveMeasurement().catch(console.error);
-  };
-
-  const showCompassMetadataModal = (value) => {
-    setShowCompassRawDataView(!value ? value : !showCompassRawDataView);
   };
 
   return renderMeasurementModalContent();

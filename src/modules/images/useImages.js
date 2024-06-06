@@ -90,7 +90,7 @@ const useImages = () => {
 
   const editImage = (image) => {
     dispatch(setSelectedAttributes([image]));
-    navigation.navigate('ImageInfo', {imageId: image.id});
+    navigation.navigate('ImageInfo', {imageInfo: image});
   };
 
   const gatherNeededImages = async (spotsOnServer, dataset) => {
@@ -178,6 +178,15 @@ const useImages = () => {
     return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
   };
 
+  const getImageSize = (image, resizedImage) => {
+    let imageSizeText;
+    if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
+    else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
+    else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
+    else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
+    console.log(name + ': Finished Resizing Image', image?.id, 'New Size', imageSizeText);
+  };
+
   const getImageThumbnailURI = (id) => {
     return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
   };
@@ -252,28 +261,36 @@ const useImages = () => {
 
   const launchCameraFromNotebook = async (newSpotId) => {
     try {
-      const savedPhoto = await takePicture();
-      dispatch(setLoadingStatus({view: 'home', bool: true}));
-      if (savedPhoto === 'cancelled') {
-        if (newImages.length > 0) {
-          console.log('ALL PHOTOS SAVED', newImages);
-          dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
-          dispatch(editedSpotImages(newImages));
+      const permissionResult = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+      if (permissionResult) {
+        const savedPhoto = await takePicture();
+        dispatch(setLoadingStatus({view: 'home', bool: true}));
+        if (savedPhoto === 'cancelled') {
+          if (newImages.length > 0) {
+            console.log('ALL PHOTOS SAVED', newImages);
+            dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
+            dispatch(editedSpotImages(newImages));
+          }
+          else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+          return newImages.length;
         }
-        else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
-        dispatch(setLoadingStatus({view: 'home', bool: false}));
-        return newImages.length;
+        else {
+          const photoProperties = {
+            id: savedPhoto.id,
+            image_type: 'photo',
+            height: savedPhoto.height,
+            width: savedPhoto.width,
+          };
+          console.log('Photos to Save:', [...newImages, photoProperties]);
+          newImages.push(photoProperties);
+          return launchCameraFromNotebook(newSpotId);
+        }
       }
       else {
-        const photoProperties = {
-          id: savedPhoto.id,
-          image_type: 'photo',
-          height: savedPhoto.height,
-          width: savedPhoto.width,
-        };
-        console.log('Photos to Save:', [...newImages, photoProperties]);
-        newImages.push(photoProperties);
-        return launchCameraFromNotebook(newSpotId);
+        const permissionRequestResult = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+        if (permissionRequestResult ===  'granted' || permissionRequestResult === 'never_ask_again') await launchCameraFromNotebook();
+        else toast.show('StraboSpot can not access your camera due to permission denial.');
       }
     }
     catch (err) {
@@ -323,7 +340,11 @@ const useImages = () => {
     let imgHeight = imageData.height;
     let imgWidth = imageData.width;
     const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!imgHeight || !imgWidth) ({imgHeight, imgWidth} = await getImageHeightAndWidth(tempImageURI));
+    if (!imgHeight || !imgWidth) {
+      const newImageDimensions = await getImageHeightAndWidth(tempImageURI);
+      imgHeight = newImageDimensions.height;
+      imgWidth = newImageDimensions.width;
+    }
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
@@ -426,6 +447,7 @@ const useImages = () => {
     getImageBasemap: getImageBasemap,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,
+    getImageSize: getImageSize,
     getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
     getImagesFromCameraRoll: getImagesFromCameraRoll,

@@ -29,7 +29,7 @@ import UploadBackupAndExport from '../project/UploadBackupExport';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {SpotsList} from '../spots';
 import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel, Tags} from '../tags';
-import UserProfile from '../user/UserProfilePage';
+import UserProfilePage from '../user/UserProfilePage';
 
 const MainMenuPanel = ({
                          closeMainMenuPanel,
@@ -133,7 +133,7 @@ const MainMenuPanel = ({
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
         return <AddRemoveTagFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
-        return <UserProfile toast={(message, type) => toast.show(message, {type: type})}/>;
+        return <UserProfilePage/>;
     }
   };
 

@@ -3,11 +3,12 @@ import {View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
+import Toast from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getNewId} from '../../shared/Helpers';
+import {getNewId, isEmpty, numToLetter} from '../../shared/Helpers';
 import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import {Form, FormSlider, useFormHook} from '../form';
@@ -28,10 +29,13 @@ const SampleModal = (props) => {
   const useSpots = useSpotsHook();
   const useMapLocation = useMapLocationHook();
 
-  const [namePrefix, setNamePrefix] = useState(null);
+  const initialNamePrefix = preferences.sample_prefix || '';
+  const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
+  const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
 
   const formRef = useRef(null);
+  const toastRef = useRef();
 
   const formName = ['general', 'samples'];
 
@@ -56,18 +60,40 @@ const SampleModal = (props) => {
 
   useEffect(() => {
     console.log('UE SampleModal [spot]', spot);
-    setNamePrefix(preferences.sample_prefix || 'Unnamed');
 
-    setStartingNumber(
-      preferences.starting_sample_number
-      || spot.properties?.samples?.length + 1
-      || getAllSamplesCount(),
-    );
-    // preferences.starting_sample_number || (spot.properties?.samples?.length + 1) || 1);
+    if (preferences.prepend_spot_name_sample_name) {
+      const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? useSpots.getNewSpotName()
+        : spot?.properties?.name;
+      setNamePrefix(spotName + initialNamePrefix);
+    }
+
+    if (preferences.sample_postfix_letter) {
+      let postfixLetter = 'a';
+      if (spot?.properties?.samples && !isEmpty(spot?.properties?.samples)) {
+        postfixLetter = numToLetter(spot.properties.samples.length + 1);
+        postfixLetter = postfixLetter.toLowerCase();
+      }
+      setNamePostfix(postfixLetter);
+    }
+    else if (preferences.restart_sample_num_each_spot) {
+      let postfixNumber = 1;
+      if (spot?.properties?.samples && !isEmpty(spot?.properties?.samples)) {
+        postfixNumber = spot.properties?.samples?.length + 1;
+      }
+      postfixNumber = postfixNumber < 10 ? '0' + postfixNumber : postfixNumber;
+      setNamePostfix(postfixNumber);
+    }
+    else {
+      setStartingNumber(
+        preferences.starting_sample_number
+        || spot.properties?.samples?.length + 1
+        || getAllSamplesCount(),
+      );
+    }
   }, [spot]);
 
   const confirmLeavePage = () => {
-    if (formRef.current && formRef.current.dirty) {
+    if (formRef.current && formRef.current.dirty && modalVisible !== MODAL_KEYS.SHORTCUTS.SAMPLE) {
       const formCurrent = formRef.current;
       alert(
         'Unsaved Changes',
@@ -153,8 +179,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        let pointSetAtCurrentLocation
-          = await useMapLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {
@@ -175,15 +200,14 @@ const SampleModal = (props) => {
         dispatch(editedSpotProperties({field: 'samples', value: samples}));
         const updatedPreferences = {
           ...preferences,
-          sample_prefix: namePrefix,
-          starting_sample_number: startingNumber + 1,
+          starting_sample_number: namePostfix ? startingNumber : startingNumber + 1,
         };
-        dispatch(
-          updatedProject({field: 'preferences', value: updatedPreferences}),
-        );
+        dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
       }
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
+
+      if (newSample.sample_id_name) await useSpots.checkSampleName(newSample.sample_id_name, toastRef);
     }
     catch (err) {
       console.error('Error saving Sample', err);
@@ -196,7 +220,7 @@ const SampleModal = (props) => {
       <Formik
         innerRef={formRef}
         initialValues={{
-          sample_id_name: namePrefix + startingNumber,
+          sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
           inplaceness_of_sample: '5___definitely',
         }}
         onSubmit={values => console.log('Submitting form...', values)}
@@ -207,6 +231,7 @@ const SampleModal = (props) => {
         title={'Save Sample'}
         onPress={() => saveForm(formRef.current)}
       />
+      {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>
   );
 };

@@ -25,6 +25,7 @@ import {
 } from './modals';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
+import usePermissionsHook from '../../services/usePermissions';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import * as Helpers from '../../shared/Helpers';
 import {animateDrawer} from '../../shared/Helpers';

@@ -53,7 +53,7 @@ const RightSideButtons = ({
       </Animated.View>
 
 
-      {!currentImageBasemap && !stratSection && !isNotebookPanelVisible && (
+      {!currentImageBasemap && !stratSection && (
         <Animated.View style={[homeStyles.shortcutButtons, animateRightSide]}>
           <ShortcutButtons openNotebookPanel={openNotebookPanel}/>
         </Animated.View>

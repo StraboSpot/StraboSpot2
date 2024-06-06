@@ -17,7 +17,7 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const TephraPage = (props) => {
+const TephraPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -37,16 +37,14 @@ const TephraPage = (props) => {
   }, [selectedAttributes, spot]);
 
   const addAttribute = () => {
-    setIsDetailView(true);
-    setSelectedAttribute({id: getNewUUID()});
-    dispatch(setModalVisible({modal: null}));
+    dispatch(setModalVisible({modal: page.key}));
   };
 
   const editAttribute = (attribute, i) => {
     if (!attribute.id) {
       let editedTephraData = JSON.parse(JSON.stringify(spot.properties.tephra));
       attribute = {...attribute, id: getNewUUID()};
-      editedTephraData[props.page.key].splice(i, 1, attribute);
+      editedTephraData[page.key].splice(i, 1, attribute);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'tephra', value: editedTephraData}));
     }
@@ -70,7 +68,7 @@ const TephraPage = (props) => {
         />
         <BasicPageDetail
           closeDetailView={() => setIsDetailView(false)}
-          page={{...props.page, key: 'tephra', subkey: Object.values(subpages)[selectedTypeIndex]}}
+          page={{...page, key: 'tephra', subkey: Object.values(subpages)[selectedTypeIndex]}}
           selectedFeature={selectedAttribute}
         />
       </>
@@ -82,7 +80,7 @@ const TephraPage = (props) => {
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <ReturnToOverviewButton/>
         <SectionDividerWithRightButton
-          dividerText={props.page.label}
+          dividerText={page.label}
           onPress={addAttribute}
         />
         <FlatList
@@ -92,12 +90,12 @@ const TephraPage = (props) => {
             <BasicListItem
               item={item}
               index={index}
-              page={props.page}
+              page={page}
               editItem={itemToEdit => editAttribute(itemToEdit, index)}
             />
           )}
           ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText text={'No ' + props.page.label}/>}
+          ListEmptyComponent={<ListEmptyText text={'No ' + page.label}/>}
         />
       </View>
     );

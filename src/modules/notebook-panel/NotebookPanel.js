@@ -48,7 +48,11 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
     else if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
-    else if (page.modal_component) dispatch(setModalVisible({modal: page.key}));
+    else if (page.modal_component) {
+      const populatedPagesKeys = usePage.getPopulatedPagesKeys(spot);
+      if (populatedPagesKeys.includes(page.key)) dispatch(setModalVisible({modal: null}));
+      else dispatch(setModalVisible({modal: page.key}));
+    }
     else dispatch(setModalVisible({modal: null}));
   };
 
@@ -115,7 +119,6 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
   };
 
   const renderRecentSpotsList = () => {
-    if (modalVisible !== null && !SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
     let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
       if (spots?.[key]) obj.push(spots[key]);
       return obj;

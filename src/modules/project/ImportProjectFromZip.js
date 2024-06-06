@@ -69,8 +69,7 @@ const ImportProjectFromZip = ({
     try {
       setIsLoading(true);
       dispatch(setStatusMessageModalTitle('Importing Project...'));
-      const project = importedProject;
-      await useDevice.unZipAndCopyImportedData(project);
+      await useDevice.unZipAndCopyImportedData(importedProject);
       setImportComplete(true);
       dispatch(setStatusMessageModalTitle('Project Imported'));
       setIsLoading(false);

@@ -3,6 +3,7 @@ import { FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import DailyNotesSection from './description/DailyNotesSection';
@@ -14,11 +15,12 @@ import {Form, useFormHook} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
-const ProjectDescription = ({toastMessage}) => {
+const ProjectDescription = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
 
   const useForm = useFormHook();
+  const toast = useToast();
 
   const formRef = useRef(null);
   const publicRef = useRef(null);
@@ -77,9 +79,9 @@ const ProjectDescription = ({toastMessage}) => {
         backButton={() => {
           console.log('DIRTY', publicRef.current.dirty);
           if (!publicRef?.current?.dirty && !formRef?.current?.dirty) {
-            toastMessage('No Changes Were Made.');
+            toast.show('No Changes Were Made.');
           }
-          else toastMessage('Changes Saved!', 'success');
+          else toast.show('Changes Saved!', 'success');
           dispatch(setSidePanelVisible({bool: false}));
         }}
       />

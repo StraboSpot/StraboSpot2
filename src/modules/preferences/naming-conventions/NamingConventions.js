@@ -29,7 +29,7 @@ const NamingConventions = () => {
       validateOnChange={false}
       enableReinitialize={true}  // Update values if preferences change while form open, like when number incremented
     >
-      {formProps => <Form {...{...formProps, formName: formName, onMyChange: onMyChange}}/>}
+      {formProps => <Form {...{...formProps, formName: formName, onMyChange: onMyChange, setFieldValue: onMyChange}}/>}
     </Formik>
   );
 };

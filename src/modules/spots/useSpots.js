@@ -1,8 +1,12 @@
+import {Platform} from 'react-native';
+
 import * as Sentry from '@sentry/react-native';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
-import {getNewId, isEmpty, isEqual} from '../../shared/Helpers';
+import {getNewId, isEmpty, isEqual, sleep} from '../../shared/Helpers';
+import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import {clearedStratSection, setCurrentImageBasemap, setStratSection} from '../maps/maps.slice';
@@ -36,6 +40,8 @@ const useSpots = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
+  const toast = useToast();
+
   const checkIsSafeDelete = (spotToDelete) => {
     // Check if Spot is manually nested - get the first Spot that has this Spot nested manually in spot.properties.nesting
     const spotWithManualNest = Object.values(spots).find(
@@ -57,6 +63,36 @@ const useSpots = () => {
     // if (!_.isEmpty(altMappedChildrenSpots)) return 'Delete the nested Spots for this Spot before deleting.';
 
     return null;
+  };
+
+  // Show toast warning if duplicate Sample name used
+  const checkSampleName = async (name, toastRef) => {
+    if (preferences.warn_on_dupe_sample_name) {
+      const sampleNames = Object.values(spots).reduce((acc, spot) => {
+        const spotSampleNames = spot.properties.samples?.map(sample => sample.sample_id_name);
+        return spotSampleNames ? [...new Set([...acc, ...spotSampleNames])] : acc;
+      }, []);
+      const foundDuplicateName = sampleNames.includes(name);
+      if (foundDuplicateName) {
+        const toastMsg = 'Warning! Sample Name has Already Been Used.';
+        const toastOptions = {duration: 3000, type: 'warning', placement: 'top'};
+        if (SMALL_SCREEN && toastRef) toastRef.current.show(toastMsg, toastOptions);
+        else toast.show(toastMsg, toastOptions);
+        if (Platform.OS === 'web') await sleep(3000);
+      }
+    }
+  };
+
+  // Show toast warning if duplicate Spot name used
+  const checkSpotName = async (name) => {
+    if (preferences.warn_on_dupe_spot_name) {
+      const spotNames = Object.values(spots).map(spot => spot.properties.name);
+      const foundDuplicateName = spotNames.includes(name);
+      if (foundDuplicateName) {
+        toast.show('Warning! Spot Name has Already Been Used.', {duration: 3000, type: 'warning', placement: 'top'});
+        if (Platform.OS === 'web') await sleep(3000);
+      }
+    }
   };
 
   // Copy Spot to a new Spot omitting specific properties
@@ -98,23 +134,21 @@ const useSpots = () => {
 
     // Set spot name
     if (!newSpot.properties.name) {
-      const defaultName = preferences.spot_prefix || 'Unnamed';
-      const defaultNumber = preferences.starting_number_for_spot || Object.keys(spots).length + 1;
-      newSpot.properties.name = defaultName + defaultNumber;
-      let updatedPreferences = {
-        ...preferences,
-        spot_prefix: defaultName,
-        starting_number_for_spot: defaultNumber + 1,
-      };
+      const {spotName, spotNumber} = getNewSpotNameObj(newSpot);
+      newSpot.properties.name = spotName;
+      let updatedPreferences;
+      if (!(preferences.restart_num_each_nested_spot && (isOnImageBasemap(newSpot) || isOnStratSection(newSpot)))) {
+        updatedPreferences = {...preferences, starting_number_for_spot: spotNumber + 1};
+      }
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         updatedPreferences = {
           ...updatedPreferences,
-          sample_prefix: preferences.sample_prefix || 'Unnamed',
           starting_sample_number: (preferences.starting_sample_number || 1) + 1,
         };
       }
       dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
     }
+    await checkSpotName(newSpot.properties.name);
 
     if ((currentImageBasemap || stratSection) && newSpot.geometry && newSpot.geometry.type === 'Point') { //newSpot geometry is unavailable when spot is copied.
       const rootSpot = currentImageBasemap ? getRootSpot(currentImageBasemap.id)
@@ -222,7 +256,8 @@ const useSpots = () => {
 
   // Get parent Spot for image basemap
   const getImageBasemapBySpot = (spot) => {
-    const imageBasemapFound = getImageBasemaps().find(imageBasemap => imageBasemap.id === spot.properties.image_basemap);
+    const imageBasemapFound = getImageBasemaps().find(
+      imageBasemap => imageBasemap.id === spot.properties.image_basemap);
     return imageBasemapFound;
   };
 
@@ -264,6 +299,49 @@ const useSpots = () => {
     });
     console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
     return allSpotsCopyFiltered;
+  };
+
+  const getNewSpotName = () => {
+    const {spotName} = getNewSpotNameObj();
+    return spotName;
+  };
+
+  const getNewSpotNameObj = (newSpot) => {
+    let namePrefix = preferences.spot_prefix || '';
+    if (newSpot && preferences.nested_spot_prefix && (isOnImageBasemap(newSpot) || isOnStratSection(newSpot))) {
+      namePrefix = preferences.nested_spot_prefix;
+    }
+
+    let newSpotName = namePrefix;
+    if (newSpot && preferences.prepend_spot_name_nested_spot && (isOnImageBasemap(newSpot) || isOnStratSection(
+      newSpot))) {
+      if (isOnImageBasemap(newSpot)) {
+        const parentSpot = getSpotWithThisImageBasemap(newSpot.properties.image_basemap);
+        newSpotName = parentSpot.properties.name + namePrefix;
+      }
+      else {
+        const parentSpot = getSpotWithThisStratSection(newSpot.properties.strat_section_id);
+        newSpotName = parentSpot.properties.name + namePrefix;
+      }
+    }
+
+    let spotNumber;
+    if (newSpot && preferences.restart_num_each_nested_spot
+      && (isOnImageBasemap(newSpot) || isOnStratSection(newSpot))) {
+      if (isOnImageBasemap(newSpot)) {
+        const spotsMappedOnGivenImageBasemap = getSpotsMappedOnGivenImageBasemap(newSpot.properties.image_basemap);
+        spotNumber = spotsMappedOnGivenImageBasemap.length + 1;
+      }
+      else {
+        const spotsMappedOnGivenStratSection = getSpotsMappedOnGivenStratSection(newSpot.properties.strat_section_id);
+        spotNumber = spotsMappedOnGivenStratSection.length + 1;
+      }
+    }
+    else spotNumber = parseInt(preferences.starting_number_for_spot, 10) || Object.keys(spots).length + 1;
+
+    newSpotName = spotNumber < 10 ? newSpotName + '0' + spotNumber : newSpotName + spotNumber;
+
+    return {spotName: newSpotName, spotNumber: spotNumber};
   };
 
   // Find the rootSpot for a given image id.
@@ -336,6 +414,13 @@ const useSpots = () => {
       if (spotIds.includes(obj[1].properties.id)) foundSpots.push(obj[1]);
     });
     return foundSpots;
+  };
+
+  // Get all the Spots mapped on a specific image basemap
+  const getSpotsMappedOnGivenImageBasemap = (basemapId) => {
+    return Object.values(spots).reduce((acc, s) => {
+      return s.properties?.image_basemap == basemapId ? [...acc, s] : acc;
+    }, []);
   };
 
   // Get all the Spots mapped on a specific strat section
@@ -425,6 +510,8 @@ const useSpots = () => {
 
   return {
     checkIsSafeDelete: checkIsSafeDelete,
+    checkSampleName: checkSampleName,
+    checkSpotName: checkSpotName,
     copySpot: copySpot,
     createSpot: createSpot,
     deleteSpot: deleteSpot,
@@ -434,6 +521,7 @@ const useSpots = () => {
     getImageBasemapBySpot: getImageBasemapBySpot,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
+    getNewSpotName: getNewSpotName,
     getMappableSpots: getMappableSpots,
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
@@ -442,6 +530,7 @@ const useSpots = () => {
     getSpotWithThisImageBasemap: getSpotWithThisImageBasemap,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
+    getSpotsMappedOnGivenImageBasemap: getSpotsMappedOnGivenImageBasemap,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,

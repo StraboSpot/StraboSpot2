@@ -50,7 +50,7 @@ const MyStraboSpot = ({logout}) => {
     if (!exists) await useDevice.makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
   };
 
-  const getExportedAndroidProject = async () => {
+  const getExportedProject = async () => {
     try {
       dispatch(setLoadingStatus({bool: true, view: 'home'}));
       const res = await useDevice.getExternalProjectData();
@@ -93,7 +93,7 @@ const MyStraboSpot = ({logout}) => {
                 <ProjectTypesButtons
                   onLoadProjectsFromServer={() => setShowSection('serverProjects')}
                   onLoadProjectsFromDevice={() => setShowSection('deviceProjects')}
-                  onLoadProjectsFromDownloadsFolder={() => getExportedAndroidProject()}
+                  onLoadProjectsFromDownloadsFolder={() => getExportedProject()}
                   onStartNewProject={() => setShowSection('new')}
                 />
               </>

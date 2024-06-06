@@ -49,6 +49,7 @@ import {
   TagsNotebookModal,
   TagsShortcutModal,
 } from '../tags';
+import AddTephraModal from '../tephra/AddTephraModal';
 import TephraPage from '../tephra/TephraPage';
 import AddThreeDStructureModal from '../three-d-structures/AddThreeDStructureModal';
 import ThreeDStructuresOverview from '../three-d-structures/ThreeDStructuresOverview';
@@ -195,10 +196,13 @@ export const SECONDARY_PAGES = [
     page_component: SiteSafetyPage,
   }, {
     key: PAGE_KEYS.TEPHRA,
-    label: 'Tephra Intervals',
+    label: 'Tephra Layers',
     icon_src: require('../../assets/icons/Tephra.png'),
     icon_pressed_src: require('../../assets/icons/Tephra_pressed.png'),
     page_component: TephraPage,
+    modal_component: AddTephraModal,
+    overview_component: BasicOverviewList,
+    action_label: 'Add a Tephra Layer',
     testing: true,
   }, {
     key: PAGE_KEYS.EARTHQUAKES,
@@ -207,6 +211,7 @@ export const SECONDARY_PAGES = [
     icon_pressed_src: require('../../assets/icons/Earthquake_pressed.png'),
     page_component: EarthquakesPage,
     modal_component: AddEarthquakeModal,
+    overview_component: BasicOverviewList,
     action_label: 'Add an Earthquake Feature',
     testing: true,
   },

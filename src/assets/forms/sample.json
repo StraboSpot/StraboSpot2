@@ -125,7 +125,8 @@
       "type": "text",
       "name": "sample_description",
       "label": "Sample Description",
-      "required": "false"
+      "required": "false",
+      "appearance": "multiline"
     },
     {
       "type": "select_one jq8qd30",
@@ -253,67 +254,67 @@
       "list_name": "to0mv13",
       "name": "petrology",
       "label": "petrology",
-      "order": "1"
+      "order": 1
     },
     {
       "list_name": "to0mv13",
       "name": "geochronology",
       "label": "geochronology",
-      "order": "2"
+      "order": 2
     },
     {
       "list_name": "to0mv13",
       "name": "geochemistry",
       "label": "geochemistry",
-      "order": "3"
+      "order": 3
     },
     {
       "list_name": "to0mv13",
       "name": "active_eruptio",
       "label": "active eruption",
-      "order": "4"
+      "order": 4
     },
     {
       "list_name": "to0mv13",
       "name": "micro_beam",
       "label": "microbeam",
-      "order": "5"
+      "order": 5
     },
     {
       "list_name": "to0mv13",
       "name": "particle_size",
       "label": "particle size",
-      "order": "6"
+      "order": 6
     },
     {
       "list_name": "to0mv13",
       "name": "dre_density",
       "label": "DRE density",
-      "order": "7"
+      "order": 7
     },
     {
       "list_name": "to0mv13",
       "name": "clast_density",
       "label": "clast density",
-      "order": "8"
+      "order": 8
     },
     {
       "list_name": "to0mv13",
       "name": "particle_shape",
       "label": "particle shape",
-      "order": "9"
+      "order": 9
     },
     {
       "list_name": "to0mv13",
       "name": "cryptotephra",
       "label": "cryptotephra",
-      "order": "10"
+      "order": 10
     },
     {
       "list_name": "to0mv13",
       "name": "other",
       "label": "other",
-      "order": "11"
+      "order": 11
     },
     {
       "list_name": "nn0jd25",

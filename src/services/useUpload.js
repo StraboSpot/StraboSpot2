@@ -26,6 +26,7 @@ const useUpload = () => {
   const dispatch = useDispatch();
   const projectDatasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
+  const spots = useSelector(state => state.spot.spots);
   const user = useSelector(state => state.user);
 
   const useServerRequests = useServerRequestsHook();
@@ -39,6 +40,7 @@ const useUpload = () => {
     try {
       await uploadProject();
       const uploadStatus = await uploadDatasets();
+      await uploadImages(Object.values(spots));
       Platform.OS !== 'web' && KeepAwake.deactivate();
       return {status: uploadStatus, datasets: datasetsNotUploaded};
     }
@@ -49,17 +51,27 @@ const useUpload = () => {
     }
   };
 
+  const resizeProfileImageForUpload = async (imageProps) => {
+    const {uri, width, height} = imageProps;
+    if (width && height) {
+      await useDevice.doesDeviceDirectoryExist(tempImagesDownsizedDirectory);
+      const resizedProfileImage = await ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 100, 0, tempImagesDownsizedDirectory);
+      useImages.getImageSize(imageProps, resizedProfileImage);
+      return resizedProfileImage;
+    }
+  };
+
   // Downsize image for upload
-  const resizeImageForUpload = async (imageProps, imageURI, name) => {
+  const resizeImageForUpload = async (imageProps, imageURI) => {
     try {
-      console.log(name + ': Resizing Image', imageProps?.id, '...');
+      console.log('Resizing Image', imageProps?.id, '...');
       let height = imageProps?.height;
       let width = imageProps?.width;
 
       if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
 
       if (width && height) {
-        const max_size = name === 'profileImage' ? 300 : 2000;
+        const max_size = 2000;
         if (width > height && width > max_size) {
           height = max_size * height / width;
           width = max_size;
@@ -72,12 +84,7 @@ const useUpload = () => {
         await useDevice.makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        let imageSizeText;
-        if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
-        else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
-        else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
-        else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-        console.log(name + ': Finished Resizing Image', imageProps?.id, 'New Size', imageSizeText);
+       useImages.getImageSize(imageProps, resizedImage);
         return resizedImage;
       }
     }
@@ -210,7 +217,7 @@ const useUpload = () => {
     const startUploadingImage = async (imageProps) => {
       try {
         const imageURI = await getImageFile(imageProps);
-        const resizedImage = await resizeImageForUpload(imageProps, imageURI, datasetName);
+        const resizedImage = await resizeImageForUpload(imageProps, imageURI);
         await uploadImage(imageProps.id, resizedImage);
         imagesUploadedCount++;
       }
@@ -346,14 +353,14 @@ const useUpload = () => {
 
   // Upload Spots
   const uploadSpots = async (dataset) => {
-    let spots;
+    let datasetSpots;
     dispatch(removedLastStatusMessage());
     if (dataset.spotIds) {
-      spots = useSpots.getSpotsByIds(dataset.spotIds);
-      spots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
+      datasetSpots = useSpots.getSpotsByIds(dataset.spotIds);
+      datasetSpots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
     }
     try {
-      if (isEmpty(spots)) {
+      if (isEmpty(datasetSpots)) {
         console.log(dataset.name + ': No Spots to Upload.');
         dispatch(addedStatusMessage('There are no spots to upload.'));
         await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
@@ -362,7 +369,7 @@ const useUpload = () => {
       else {
         const spotCollection = {
           type: 'FeatureCollection',
-          features: Object.values(spots),
+          features: Object.values(datasetSpots),
         };
         console.log(dataset.name + ': Uploading Spots...', spotCollection);
         dispatch(addedStatusMessage(`\nUploading ${dataset.name} spots...`));
@@ -370,7 +377,7 @@ const useUpload = () => {
         console.log(`Finished uploading ${dataset.name} spots.`);
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`\nFinished uploading ${dataset.name} spots.\n`));
-        await uploadImages(Object.values(spots), dataset.name);
+        // await uploadImages(Object.values(datasetSpots), dataset.name);
       }
 
     }
@@ -393,6 +400,7 @@ const useUpload = () => {
   return {
     initializeUpload: initializeUpload,
     resizeImageForUpload: resizeImageForUpload,
+    resizeProfileImageForUpload: resizeProfileImageForUpload,
     uploadDatasets: uploadDatasets,
     uploadFromWeb: uploadFromWeb,
     uploadProfile: uploadProfile,

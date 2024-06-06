@@ -1,3 +1,4 @@
+import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
 
@@ -7,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 
 const useMapCoords = () => {
   const isOnline = useSelector(state => state.connections.isOnline);
-
+  const {geometry, properties} = useSelector(state => state.spot.selectedSpot);
   const useServerRequests = useServerRequestsHook();
 
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
@@ -50,9 +51,14 @@ const useMapCoords = () => {
     return convertCoords(feature, PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION);
   };
 
+  const getCenterCoordsOfFeature = () => {
+    if (geometry.type === 'Point') return geometry.coordinates;
+    else if (geometry.type === 'Polygon' || geometry.type === 'LineString') return (turf.centroid(geometry)).geometry.coordinates;
+  };
+
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
   const getCoordQuad = (imageBasemapProps, altOrigin) => {
-    if (!imageBasemapProps) return undefined;
+    if (!imageBasemapProps || !imageBasemapProps.width || !imageBasemapProps.height) return undefined;
     // identify the [lat,lng] corners of the image basemap
     const x = altOrigin && altOrigin.x || 0;
     const y = altOrigin && altOrigin.y || 0;
@@ -76,6 +82,7 @@ const useMapCoords = () => {
   return {
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    getCenterCoordsOfFeature: getCenterCoordsOfFeature,
     getCoordQuad: getCoordQuad,
     getMyMapsBboxCoords: getMyMapsBboxCoords,
   };

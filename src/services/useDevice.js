@@ -313,11 +313,11 @@ const useDevice = () => {
     try {
       // const granted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
       // if (granted) {
-        const dataFile = '/data.json';
-        console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-        const response = await readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-        console.log(JSON.parse(response));
-        return JSON.parse(response);
+      const dataFile = '/data.json';
+      console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+      const response = await readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+      console.log(JSON.parse(response));
+      return JSON.parse(response);
       // }
       // else {
       //  const permissionStatus = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
@@ -357,28 +357,29 @@ const useDevice = () => {
   const unZipAndCopyImportedData = async (zipFile) => {
     try {
       let fileName = '';
-      const exists = await RNFS.exists(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
-      if (Platform.OS === 'android' && exists) {
-        await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
-        fileName = zipFile.name.replace('.zip', '');
-        console.log('Files copied to export folder!');
-        const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
-        const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR : APP_DIRECTORIES.BACKUP_DIR + fileName;
-
-        console.log('SOURCE', source);
-        console.log('DEST', dest);
-
-        await unzip(source, dest);
+      if (Platform.OS === 'android') {
+        if (await RNFS.exists(APP_DIRECTORIES.EXPORT_FILES_ANDROID)) {
+          await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
+          console.log('Files copied to Android export folder!');
+        }
+        else {
+          await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+          await unZipAndCopyImportedData(zipFile);
+        }
       }
-      else {
+      fileName = zipFile.name.replace('.zip', '');
+      const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+      const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR + fileName : APP_DIRECTORIES.BACKUP_DIR + fileName;
 
-      }
+      console.log('SOURCE', source);
+      console.log('DEST', dest);
+
+      await unzip(source, dest);
     }
     catch (err) {
       console.error('Error unzipping imported file', err);
       throw Error(err);
     }
-
   };
 
   const writeFileToDevice = async (path, filename, data) => {

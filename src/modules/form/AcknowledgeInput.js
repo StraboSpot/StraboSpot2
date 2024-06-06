@@ -22,7 +22,7 @@ const AcknowledgeInput = ({
           onValueChange={bool => setFieldValue(name, bool)}
         />
       </View>
-      <View style={[formStyles.fieldLabelContainer, {flex: 1}]}>
+      <View style={[formStyles.fieldLabelContainer, {flex: 1, paddingLeft: 5}]}>
         <Text style={formStyles.fieldLabel}>{label}</Text>
         {placeholder && (
           <Icon

@@ -25,7 +25,7 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
-const UserProfile = () => {
+const UserProfilePage = () => {
   const formRef = useRef(null);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -146,9 +146,8 @@ const UserProfile = () => {
 
   const saveImage = async () => {
     try {
-      const imageProps = {width: avatar.width, height: avatar.height};
-      const uri = avatar.uri;
-      const resizedProfileImage = await useUpload.resizeImageForUpload(imageProps, uri, 'profileImage');
+      const imageProps = {width: avatar.width, height: avatar.height, uri: avatar.uri};
+      const resizedProfileImage = await useUpload.resizeProfileImageForUpload(imageProps);
       console.log('RESIZED PROFILE IMAGE', resizedProfileImage);
       formRef.current.setFieldValue('image', resizedProfileImage.uri);
       dispatch(setUserData({...userData, image: resizedProfileImage.uri}));
@@ -265,15 +264,19 @@ const UserProfile = () => {
             renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')}
                                              style={{width: '70%', height: '70%'}}/>}
             source={!isEmpty(userData.image) && {uri: userData.image}}
-          />
-        </View>
-        <View>
-          <Button
-            title={'Edit Profile Photo'}
-            titleStyle={commonStyles.standardButtonText}
-            type={'clear'}
-            onPress={() => setImageDialogVisible(true)}
-          />
+          >
+            <View style={{position: 'relative', right: 15, bottom: 15}}>
+              <Avatar.Accessory
+                reverse
+                name={'pencil'}
+                type={'font-awesome'}
+                size={23}
+                iconStyle={{color: 'white'}}
+                color={'grey'}
+                onPress={() => setImageDialogVisible(true)}
+              />
+            </View>
+          </Avatar>
         </View>
         <View style={{flex: 1}}>
           <Formik
@@ -286,14 +289,14 @@ const UserProfile = () => {
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
           />
           <View style={userStyles.saveButtonContainer}>
-              <Button
-                onPress={() => saveForm()}
-                type={'clear'}
-                title={'Save Changes'}
-                disabled={saveButtonDisabled}
-                loading={isLoading}
-                loadingProps={userStyles.loadingSpinnerProps}
-              />
+            <Button
+              onPress={() => saveForm()}
+              type={'clear'}
+              title={'Save Changes'}
+              disabled={saveButtonDisabled}
+              loading={isLoading}
+              loadingProps={userStyles.loadingSpinnerProps}
+            />
           </View>
         </View>
         <View style={commonStyles.buttonContainer}>
@@ -314,4 +317,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserProfilePage;
