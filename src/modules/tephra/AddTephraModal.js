@@ -7,9 +7,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {TEPHRA_SUBPAGES} from './tephra.constants';
 import {getNewUUID, toTitleCase} from '../../shared/Helpers';
-import SaveButton from '../../shared/SaveButton';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
+import SaveButton from '../../shared/ui/SaveButton';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';

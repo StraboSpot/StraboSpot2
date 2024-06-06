@@ -6,9 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import usePetrologyHook from './usePetrology';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import SaveButton from '../../shared/SaveButton';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
+import SaveButton from '../../shared/ui/SaveButton';
 import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';

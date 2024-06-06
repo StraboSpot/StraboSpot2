@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import NoteForm from './NoteForm';
 import noteStyle from './notes.styles';
 import {isEmpty} from '../../shared/Helpers';
-import SaveButton from '../../shared/SaveButton';
+import SaveButton from '../../shared/ui/SaveButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setLoadingStatus} from '../home/home.slice';
 import useMapLocationHook from '../maps/useMapLocation';
