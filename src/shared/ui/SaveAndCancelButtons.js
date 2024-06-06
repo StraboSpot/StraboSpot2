@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 
 import styles from '../../shared/ui/ui.styles';
 
-const saveAndClose = ({cancel, save}) => {
+const SaveAndCancelButtons = ({cancel, save}) => {
   return (
     <View style={styles.navButtonsContainer}>
       <View style={styles.leftContainer}>
@@ -30,4 +30,4 @@ const saveAndClose = ({cancel, save}) => {
   );
 };
 
-export default saveAndClose;
+export default SaveAndCancelButtons;

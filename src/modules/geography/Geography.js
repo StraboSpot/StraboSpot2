@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
 import useMapLocationHook from '../maps/useMapLocation';
@@ -48,7 +48,7 @@ const Geography = () => {
   const renderCancelSaveButtons = () => {
     return (
       <View>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => cancelFormAndGo()}
           save={() => saveFormAndGo()}
         />

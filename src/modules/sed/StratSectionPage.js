@@ -13,7 +13,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {Form, useFormHook} from '../form';
@@ -85,7 +85,7 @@ const StratSectionPage = ({page}) => {
     return (
       <View style={{flex: 1}}>
         <SectionDivider dividerText={'Section Settings'}/>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
           save={saveStratSection}
         />

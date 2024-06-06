@@ -6,7 +6,7 @@ import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {isEmpty} from '../../shared/Helpers';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -60,7 +60,7 @@ const SiteSafetyPage = () => {
   const renderCancelSaveButtons = () => {
     return (
       <View>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => cancelFormAndGo()}
           save={() => saveFormAndGo()}
         />

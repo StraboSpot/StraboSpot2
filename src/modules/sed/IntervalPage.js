@@ -5,7 +5,7 @@ import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import alert from '../../shared/ui/alert';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, useFormHook} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -71,7 +71,7 @@ const IntervalPage = ({page}) => {
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <ReturnToOverviewButton/>
         <SectionDivider dividerText={page.label}/>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
           save={() => saveInterval(intervalRef.current)}
         />

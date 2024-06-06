@@ -10,7 +10,7 @@ import usePageHook from './usePage';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
@@ -79,7 +79,7 @@ const Overview = ({openMainMenu}) => {
   const renderCancelSaveButtons = () => {
     return (
       <View>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => cancelFormAndGo()}
           save={() => saveFormAndGo()}
         />

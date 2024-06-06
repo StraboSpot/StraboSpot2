@@ -9,7 +9,7 @@ import {PAGE_KEYS} from './page.constants';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import {Form, useFormHook} from '../form';
 import NoteForm from '../notes/NoteForm';
 import usePetrologyHook from '../petrology/usePetrology';
@@ -234,7 +234,7 @@ const BasicPageDetail = ({
     <>
       {(isTemplate || !isEmpty(selectedFeature)) && (
         <React.Fragment>
-          <SaveAndCloseButton
+          <SaveAndCancelButtons
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />

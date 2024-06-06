@@ -10,7 +10,7 @@ import {isEmpty} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import Modal from '../../../shared/ui/modal/Modal';
-import SaveAndCloseButtons from '../../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../../shared/ui/SaveAndCancelButtons';
 import {DateInputField, TextInputField} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
 import overlayStyles from '../../home/overlays/overlay.styles';
@@ -67,7 +67,7 @@ const DailyNotesModal = () => {
       <Modal
         buttonTitleRight={''}
       >
-        <SaveAndCloseButtons
+        <SaveAndCancelButtons
           cancel={() => close()}
           save={() => saveNote(formRef?.current?.values)}
         />
