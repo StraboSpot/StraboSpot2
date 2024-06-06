@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {Platform, View} from 'react-native';
 
-import {ButtonGroup} from 'react-native-elements';
+import DraggableFlatList, {ShadowDecorator} from 'react-native-draggable-flatlist';
+import {Button, ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {TEPHRA_SUBPAGES} from './tephra.constants';
+import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -22,11 +24,17 @@ const TephraPage = ({page}) => {
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
+  const [data, setData] = useState([]);
   const [isDetailView, setIsDetailView] = useState(false);
+  const [isReorderingActive, setIsReorderingActive] = useState(false);
   const [selectedAttribute, setSelectedAttribute] = useState({});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
 
   const attributes = spot && spot.properties && spot.properties.tephra || [];
+
+  useEffect(() => {
+    setData(attributes);
+  }, []);
 
   useEffect(() => {
     console.log('UE TephraPage [selectedAttributes, spot]', selectedAttributes, spot);
@@ -37,6 +45,7 @@ const TephraPage = ({page}) => {
   }, [selectedAttributes, spot]);
 
   const addAttribute = () => {
+    setIsReorderingActive(false);
     dispatch(setModalVisible({modal: page.key}));
   };
 
@@ -83,22 +92,42 @@ const TephraPage = ({page}) => {
           dividerText={page.label}
           onPress={addAttribute}
         />
-        <FlatList
-          keyExtractor={(item, index) => index.toString()}
-          data={attributes}
-          renderItem={({item, index}) => (
-            <BasicListItem
-              item={item}
-              index={index}
-              page={page}
-              editItem={itemToEdit => editAttribute(itemToEdit, index)}
-            />
+        <DraggableFlatList
+          keyExtractor={item => item.id}
+          data={data}
+          onDragBegin={() => setIsReorderingActive(true)}
+          onDragEnd={({data}) => setData(data)}
+          renderItem={({item, index, drag}) => (
+            <ShadowDecorator>
+              <BasicListItem
+                drag={Platform.OS === 'web' ? undefined : drag}
+                item={item}
+                index={index}
+                page={page}
+                editItem={itemToEdit => editAttribute(itemToEdit, index)}
+                isReorderingActive={isReorderingActive}
+              />
+            </ShadowDecorator>
           )}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No ' + page.label}/>}
         />
+        {isReorderingActive && (
+          <Button
+            onPress={updateOrder}
+            type={'clear'}
+            title={'Done Reordering ' + page.label}
+            titleStyle={commonStyles.standardButtonText}
+          />
+        )}
       </View>
     );
+  };
+
+  const updateOrder = () => {
+    setIsReorderingActive(false);
+    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    dispatch(editedSpotProperties({field: 'tephra', value: data}));
   };
 
   return isDetailView ? renderAttributeDetail() : renderAttributesMain();

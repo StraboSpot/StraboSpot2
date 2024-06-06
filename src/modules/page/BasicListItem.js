@@ -1,16 +1,19 @@
 import React from 'react';
 
-import {ListItem} from 'react-native-elements';
+import {Icon, ListItem} from 'react-native-elements';
 
 import {PAGE_KEYS} from './page.constants';
 import commonStyles from '../../shared/common.styles';
+import {MEDIUMGREY} from '../../shared/styles.constants';
 import {useFormHook} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
 import useSedHook from '../sed/useSed';
 
 const BasicListItem = ({
+                         drag,
                          editItem,
                          index,
+                         isReorderingActive,
                          item,
                          page,
                        }) => {
@@ -55,12 +58,21 @@ const BasicListItem = ({
     <ListItem
       containerStyle={commonStyles.listItem}
       key={item.id}
-      onPress={() => editItem(item)}
+      onPress={() => !isReorderingActive && editItem(item)}
+      onLongPress={drag}
+      delayLongPress={250}
     >
       <ListItem.Content style={{overflow: 'hidden'}}>
         <ListItem.Title style={commonStyles.listItemTitle}>{getTitle()}</ListItem.Title>
       </ListItem.Content>
-      <ListItem.Chevron/>
+      {isReorderingActive ? (
+        <Icon
+          color={MEDIUMGREY}
+          name={'chevron-expand'}
+          size={20}
+          type={'ionicon'}
+        />
+      ) : <ListItem.Chevron color={MEDIUMGREY}/>}
     </ListItem>
   );
 };
