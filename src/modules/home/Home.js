@@ -53,7 +53,7 @@ import {logout} from '../user/userProfile.slice';
 const {State: TextInputState} = TextInput;
 
 const Home = ({navigation, route}) => {
-  console.log('Rendering Home...');
+  // console.log('Rendering Home...');
 
   const useHome = useHomeHook();
   const useProject = useProjectHook();

@@ -22,7 +22,7 @@ const RightSideButtons = ({
                             openNotebookPanel,
                             toggleNotebookPanel,
                           }) => {
-  console.log('Rendering RightSideButtons...');
+  // console.log('Rendering RightSideButtons...');
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);

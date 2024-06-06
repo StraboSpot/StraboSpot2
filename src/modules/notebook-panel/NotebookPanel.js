@@ -22,7 +22,7 @@ import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
 
 const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoomToSpots}) => {
-  console.log('Rendering NotebookPanel...');
+  // console.log('Rendering NotebookPanel...');
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);

@@ -40,7 +40,7 @@ const MainMenuPanel = ({
                          zoomToCenterOfflineTile,
                          zoomToCustomMap,
                        }) => {
-  console.log('Rendering MainMenuPanel...');
+  // console.log('Rendering MainMenuPanel...');
 
   const dispatch = useDispatch();
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);

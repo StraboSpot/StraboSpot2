@@ -35,7 +35,7 @@ const HomeView = ({
                     toggleDialog,
                     toggleHomeDrawer,
                   }) => {
-  console.log('Rendering HomeView...');
+  // console.log('Rendering HomeView...');
 
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
 

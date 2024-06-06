@@ -50,7 +50,7 @@ const Map = ({
                setDistance,
                startEdit,
              }) => {
-  console.log('Rendering Map...');
+  // console.log('Rendering Map...');
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -103,24 +103,24 @@ const Map = ({
   const [vertexToEdit, setVertexToEdit] = useState([]);
 
   useEffect(() => {
-    console.log('UE Map [currentImageBasemap]', currentImageBasemap);
+    // console.log('UE Map [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
   }, [currentImageBasemap]);
 
   useEffect(() => {
-    console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
+    // console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
     updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
+    // console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
     if (isOnline && !currentBasemap) useMap.setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
-      console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
+      // console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       useMap.setBasemap(currentBasemap.id).catch((error) => {
-        console.log('Error Setting Basemap', error);
+        // console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.' + error));
@@ -130,7 +130,7 @@ const Map = ({
       });
     }
     else if (!isOnline && isOnline !== null && currentBasemap && Platform.OS !== 'web') {
-      console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
+      // console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       Object.values(customBasemap).map((map) => {
         if (offlineMaps[map.id]?.id !== map.id) useCustomMap.setCustomMapSwitchValue(false, map);
       });
@@ -140,30 +140,30 @@ const Map = ({
   }, [userEmail, isOnline]);
 
   useEffect(() => {
-    console.log(
-      'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]',
-      spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection);
+    // console.log(
+    //   'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]',
+    //   spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection);
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]);
 
   useEffect(() => {
-    console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
+    // console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
     //conditional call to avoid multiple renders during edit mode.
     if (mapMode !== MAP_MODES.EDIT) setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
-    console.log('UE Map [vertexEndCoords]', vertexEndCoords);
+    // console.log('UE Map [vertexEndCoords]', vertexEndCoords);
     if (!isEmpty(vertexEndCoords && mapMode === MAP_MODES.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
-    console.log('UE Map [drawFeatures]', drawFeatures);
+    // console.log('UE Map [drawFeatures]', drawFeatures);
     if (mapMode === MAP_MODES.DRAW.POINT && drawFeatures.length === 1) onEndDrawPressed();
   }, [drawFeatures]);
 
   useEffect(() => {
-    console.log('UE Map [defaultGeomType]', defaultGeomType);
+    // console.log('UE Map [defaultGeomType]', defaultGeomType);
     if (defaultGeomType) createDefaultGeomContinued();
   }, [defaultGeomType]);
 
@@ -219,7 +219,7 @@ const Map = ({
   };
 
   const updateMapView = async () => {
-    console.log('Updating map view from Map.js');
+    // console.log('Updating map view from Map.js');
     if (!isEmpty(currentBasemap) && isZoomToCenterOffline) {
       const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
       const newZoom = 12;
@@ -236,11 +236,11 @@ const Map = ({
       if ((currentImageBasemap || stratSection) && spotEditing && turf.getType(spotEditing) === 'Point') {
         const vertexCoordinates = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
-        console.log('Move vertex to:', vertexCoordinates);
+        // console.log('Move vertex to:', vertexCoordinates);
         editSpotCoordinates([vertexCoordinates[0], vertexCoordinates[1]]);
       }
       else {
-        console.log('Move vertex to:', newVertexCoords);
+        // console.log('Move vertex to:', newVertexCoords);
         editSpotCoordinates(newVertexCoords);
       }
     }
@@ -273,8 +273,8 @@ const Map = ({
     if (!isEmpty(spotEditingTmp)) {
       spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
     }
-    console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
-      spotsNotEditedTmp);
+    // console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
+    //   spotsNotEditedTmp);
     if (!currentImageBasemap && !stratSection) {
       setSpotsSelected(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]);
       setSpotsNotSelected([...spotsEditedTmp, ...spotsNotEditedTmp]);
@@ -314,21 +314,21 @@ const Map = ({
   };
 
   const clearSelectedSpots = () => {
-    console.log('Clear selected Spots.');
+    // console.log('Clear selected Spots.');
     setDisplayedSpots([]);
     dispatch(clearedSelectedSpots());
   };
 
   const clearSelectedSpotsWhileEditing = () => {
-    console.log('Clear selected Spots.');
+    // console.log('Clear selected Spots.');
     setDisplayedSpotsWhileEditing([], spotsEdited, spotsNotEdited);
     dispatch(clearedSelectedSpots());
   };
 
   // Mapbox: Handle map press
   const onMapPress = async (e) => {
-    console.log('Map press detected:', e);
-    console.log('Map mode:', mapMode);
+    // console.log('Map press detected:', e);
+    // console.log('Map mode:', mapMode);
     if (mapMode === MAP_MODES.DRAW.MEASURE) {
       const updatedMeasureFeatures = await useMapFeaturesCalculated.getMeasureFeatures(e, [...measureFeatures],
         setDistance);
@@ -337,7 +337,7 @@ const Map = ({
     else if (mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
       // Select/Unselect a feature
       if (mapMode === MAP_MODES.VIEW) {
-        console.log('Selecting or unselect a feature ...');
+        // console.log('Selecting or unselect a feature ...');
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
             : [e.properties.screenPointX, e.properties.screenPointY];
@@ -350,7 +350,7 @@ const Map = ({
       }
       // Draw a feature
       else if (useMap.isDrawMode(mapMode)) {
-        console.log('Drawing', mapMode, '...');
+        // console.log('Drawing', mapMode, '...');
         let feature = {};
         const newCoord = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
         // Draw a point for the last coordinate touched
@@ -397,8 +397,8 @@ const Map = ({
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
             : [e.properties.screenPointX, e.properties.screenPointY];
-        console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
-        console.log('Selecting feature to edit...');
+        // console.log('Select/Unselect vertex (and thus feature with the vertex) to edit');
+        // console.log('Selecting feature to edit...');
 
         // If we don't have a selected feature, check to see if point pressed was at a feature
         //   If not, do nothing
@@ -470,24 +470,24 @@ const Map = ({
   };
 
   const setSelectedSpotToEdit = (spotToEdit) => {
-    console.log('setSelectedSpotToEdit spotToEdit', spotToEdit);
+    // console.log('setSelectedSpotToEdit spotToEdit', spotToEdit);
     setSpotEditing(spotToEdit);
-    console.log('Set Spot to edit:', spotToEdit);
+    // console.log('Set Spot to edit:', spotToEdit);
     setDisplayedSpotsWhileEditing(spotToEdit, spotsEdited, spotsNotEdited);
     setEditFeatures(spotToEdit);
     if (turf.getType(spotToEdit) === 'Point') setSelectedVertexToEdit(spotToEdit);
   };
 
   const clearSelectedFeatureToEdit = () => {
-    console.log('Clearing selected Spot.');
+    // console.log('Clearing selected Spot.');
     clearSelectedSpotsWhileEditing();
     setDrawFeatures([]);
     clearSelectedVertexToEdit();                        // Not really needed here?
-    console.log('Cleared selected Spot.');
+    // console.log('Cleared selected Spot.');
   };
 
   const setSelectedVertexToEdit = async (vertex) => {
-    console.log('setSelectedVertexToEdit, vertex:', vertex);
+    // console.log('setSelectedVertexToEdit, vertex:', vertex);
     let vertexToEditWithGeoCoords = JSON.parse(JSON.stringify(vertex));
     if ((currentImageBasemap || stratSection)
       && ((isEmpty(spotEditing) || ((!isEmpty(spotEditing) && spotEditing.geometry.type === 'Point'))
@@ -497,7 +497,7 @@ const Map = ({
     clearVertexes();
     setVertexToEdit(vertexToEditWithGeoCoords);
     setVertexIndex(undefined);
-    console.log('Set vertex to edit:', vertexToEditWithGeoCoords);
+    // console.log('Set vertex to edit:', vertexToEditWithGeoCoords);
     setEditFeatureVertex([vertexToEditWithGeoCoords]);
     setAllowMapViewMove(false);
     const vertexGeoCoords = vertexToEditWithGeoCoords.geometry.coordinates;
@@ -514,7 +514,7 @@ const Map = ({
     setVertexToEdit({});
     setEditFeatureVertex([]);
     setAllowMapViewMove(true);
-    console.log('Cleared selected vertex to edit.');
+    // console.log('Cleared selected vertex to edit.');
     //if (turf.getType(spotsEditing[0]) === 'Point') clearSelectedFeatureToEdit();
     clearVertexes();
   };
@@ -535,20 +535,20 @@ const Map = ({
 
   // Edit the coordinates of a selected feature
   const editSpotCoordinates = (newCoord) => {
-    console.log('In editSpotCoordinates', newCoord);
+    // console.log('In editSpotCoordinates', newCoord);
     if (isEmpty(spotEditing)) console.log('No Spot to edit selected');
     else {
       if (!vertexToEdit) console.log('No vertex to edit selected');
       else {
-        console.log('Editing Coordinate');
+        // console.log('Editing Coordinate');
         let spotEditingCopy = JSON.parse(JSON.stringify(spotEditing));
-        console.log('Feature Editing:', spotEditingCopy);
+        // console.log('Feature Editing:', spotEditingCopy);
         let coords;
         try {
           coords = turf.getCoords(spotEditingCopy);
         }
         catch {
-          console.warn('error use getCoords on spotEditingCopy', spotEditingCopy);
+          // consolewarn('error use getCoords on spotEditingCopy', spotEditingCopy);
           coords = spotEditingCopy.geometry.coordinates;
         }
         let isModified = false;
@@ -603,10 +603,10 @@ const Map = ({
         }
         if (isModified) {
           spotEditingCopy.properties.modified_timestamp = Date.now();
-          console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'spotsSelected', spotsSelected);
+          // console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'spotsSelected', spotsSelected);
         }
         else console.warn('Problem editing Spot');
-        console.log('Edited coords:', turf.getCoords(spotEditingCopy));
+        // console.log('Edited coords:', turf.getCoords(spotEditingCopy));
         let explodedFeatures = turf.explode(spotEditingCopy).features;
         // If polygon remove last exploded point because it is the same as the first
         if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
@@ -636,7 +636,7 @@ const Map = ({
         setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
         // this clears the initial feature vertex that is selected.
         setEditFeatureVertex([]);
-        console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
+        // console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
       }
     }
   };
@@ -666,11 +666,11 @@ const Map = ({
     const extentString = await getExtentString();
     try {
       //Assign the promise unresolved first then get the data using the json method.
-      console.log('sending this extent to server: ', extentString);
-      console.log('sending zoom to server: ', zoomLevel);
+      // console.log('sending this extent to server: ', extentString);
+      // console.log('sending zoom to server: ', zoomLevel);
       const tileCountApiCall = await fetch(useMap.getExtentAndZoomCall(extentString, zoomLevel));
       const tileCountThisScope = await tileCountApiCall.json();
-      console.log('got count from server: ', tileCountThisScope);
+      // console.log('got count from server: ', tileCountThisScope);
       return tileCountThisScope;
     }
     catch (err) {
@@ -684,7 +684,7 @@ const Map = ({
   // Fly the map to the current location
   const goToCurrentLocation = async () => {
     if (cameraRef.current || Platform.OS === 'web') {
-      console.log('%cFlying to location', 'color: red');
+      // console.log('%cFlying to location', 'color: red');
       const currentLocation = await useMapLocation.getCurrentLocation();
       if (Platform.OS === 'web') {
         mapRef.current.flyTo({center: [currentLocation.longitude, currentLocation.latitude], maxDuration: 2500});
@@ -755,7 +755,7 @@ const Map = ({
       }
       setDrawFeatures([]);
     }
-    console.log('Draw ended.');
+    // console.log('Draw ended.');
     return Promise.resolve(newOrEditedSpot);
   };
 
@@ -775,17 +775,17 @@ const Map = ({
 
   const getStereonetForFeature = async (feature) => {
     const selectedSpots = useMapFeaturesCalculated.getLassoedSpots(spotsNotSelected, feature);
-    console.log('Selected Spots', selectedSpots);
+    // console.log('Selected Spots', selectedSpots);
     await useStereonet.getStereonet(selectedSpots);
   };
 
   const cancelDraw = () => {
     setDrawFeatures([]);
-    console.log('Draw canceled.');
+    // console.log('Draw canceled.');
   };
 
   const cancelEdits = async () => {
-    console.log('Canceling editing...');
+    // console.log('Canceling editing...');
     if (!isEmpty(spotEditing)) {
       const spotOrig = spots[spotEditing.properties.id];
       setDisplayedSpots([spotOrig]);
@@ -796,7 +796,7 @@ const Map = ({
   };
 
   const saveEdits = async () => {
-    console.log('Saving edits...', 'spotsNotEdited', spotsNotEdited, 'spotsEdited', spotsEdited);
+    // console.log('Saving edits...', 'spotsNotEdited', spotsNotEdited, 'spotsEdited', spotsEdited);
     if (isEmpty(spotEditing)) setDisplayedSpots([]);
     else {
       setDisplayedSpots([spotEditing]);
@@ -811,7 +811,7 @@ const Map = ({
   };
 
   const clearEditing = () => {
-    console.log('Clearing editing data...');
+    // console.log('Clearing editing data...');
     clearVertexes();
     setSpotEditing({});
     setSpotsEdited([]);
@@ -848,7 +848,7 @@ const Map = ({
 
   // Handle a long press on the map by making the point or vertex at the point "selected"
   const onMapLongPress = async (e) => {
-    console.log('Map long press detected:', e);
+    // console.log('Map long press detected:', e);
     const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
       : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
         : [e.properties.screenPointX, e.properties.screenPointY];
@@ -874,7 +874,7 @@ const Map = ({
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
             let vertexAdded = {};
             if (isEmpty(vertexSelected)) {
-              console.log('Adding new vertex...');
+              // console.log('Adding new vertex...');
               const newVertexCoords = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
               const newVertex = turf.point(newVertexCoords);
               // To add a vertex to a line the new point selected must be on the line
@@ -906,7 +906,7 @@ const Map = ({
               }
             }
             else {
-              console.log('Deleting selected vertex...');
+              // console.log('Deleting selected vertex...');
               const coords = turf.getCoords(spotEditingCopy);
               const indexOfCoordinatesToUpdate = getVertexIndexInSpotToEdit(vertexSelected);
               let isModified = false;
@@ -935,11 +935,11 @@ const Map = ({
               else console.log('Not enough vertices in selected feature to delete one.');
               if (isModified) {
                 spotEditingCopy.properties.modified_timestamp = Date.now();
-                console.log('Finished deleting vertex. Edited Spot:', spotEditingCopy);
+                // console.log('Finished deleting vertex. Edited Spot:', spotEditingCopy);
               }
               else console.warn('Problem editing Spot');
             }
-            console.log('Edited coords:', turf.getCoords(spotEditingCopy));
+            // console.log('Edited coords:', turf.getCoords(spotEditingCopy));
             let explodedFeatures = turf.explode(spotEditingCopy).features;
             // If polygon remove last exploded point because it is the same as the first
             if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
@@ -969,7 +969,7 @@ const Map = ({
             setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
             clearSelectedVertexToEdit();
             //setSelectedVertexToEdit(vertexToEditThisScope);
-            console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
+            // console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
           }
           else console.log('Invalid vertex selected. No action');
         }
@@ -982,7 +982,7 @@ const Map = ({
 
   // Add a new vertex to a polygon
   const addVertexToPolygon = (polygon, newVertex) => {
-    console.log('Adding vertex to selected polygon feature...');
+    // console.log('Adding vertex to selected polygon feature...');
 
     // Get all the lines that make up the polygon
     let lines = [];
@@ -1008,7 +1008,7 @@ const Map = ({
 
   // Add a new vertex to a line
   const addVertexToLine = (line, newVertex) => {
-    console.log('Adding vertex to selected line feature...');
+    // console.log('Adding vertex to selected line feature...');
     const newPointOnLine = turf.nearestPointOnLine(line, newVertex);
     const i = newPointOnLine.properties.index;
     line.geometry.coordinates.splice(i + 1, 0, newPointOnLine.geometry.coordinates);
@@ -1071,7 +1071,7 @@ const Map = ({
   // Calculate the Spots in the current map extent and send to redux
   const updateSpotsInMapExtent = async () => {
     if (mapRef && mapRef.current) {
-      console.log('Updating spots in map extent...');
+      // console.log('Updating spots in map extent...');
       const mapBounds = Platform.OS === 'web' ? await mapRef.current.getBounds().toArray()
         : await mapRef.current.getVisibleBounds();
       let right = mapBounds[0][0];

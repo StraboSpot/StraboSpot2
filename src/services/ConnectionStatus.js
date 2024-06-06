@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {setOnlineStatus} from './connections.slice';
 
 const ConnectionStatus = () => {
-  console.log('Rendering ConnectionStatus...');
+  // console.log('Rendering ConnectionStatus...');
 
   const dispatch = useDispatch();
 

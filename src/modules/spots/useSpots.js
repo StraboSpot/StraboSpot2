@@ -118,7 +118,7 @@ const useSpots = () => {
     copiedSpot.properties = properties;
     const newSpot = await createSpot(copiedSpot);
     dispatch(setSelectedSpot(newSpot));
-    console.log('Spot Copied. New Spot', newSpot);
+    // console.log('Spot Copied. New Spot', newSpot);
   };
 
   // Create a new Spot
@@ -163,7 +163,7 @@ const useSpots = () => {
       let continuousTaggingList = tags.filter(tag => tag.continuousTagging);
       useTags.addSpotsToTags(continuousTaggingList, [newSpot]);
     }
-    console.log('Creating new Spot:', newSpot);
+    // console.log('Creating new Spot:', newSpot);
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
     let currentDataset = datasets[selectedDatasetId];
     if (isEmpty(currentDataset)) {
@@ -173,15 +173,15 @@ const useSpots = () => {
       dispatch(setActiveDatasets({bool: true, dataset: currentDataset.id}));
       dispatch(setSelectedDataset(currentDataset.id));
     }
-    console.log('Active Dataset', currentDataset);
+    // console.log('Active Dataset', currentDataset);
     dispatch(addedNewSpotIdToDataset({datasetId: currentDataset.id, spotId: newSpot.properties.id}));
     dispatch(editedOrCreatedSpot(newSpot));
-    console.log('Finished creating new Spot. All Spots: ', spots);
+    // console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
   };
 
   const deleteSpot = (spotId) => {
-    console.log('Deleting Spot ID', spotId, '...');
+    // console.log('Deleting Spot ID', spotId, '...');
     dispatch(deletedSpotIdFromTags(spotId));
     dispatch(deletedSpotIdFromDatasets(spotId));
     dispatch(deletedSpot(spotId));
@@ -235,18 +235,18 @@ const useSpots = () => {
             if (!isEmpty(spotObj?.properties?.samples)) {
               spotObj.properties.samples.map((sample) => {
                 samplesArr.push(sample);
-                console.log(1);
+                // console.log(1);
               });
-              console.log(2);
+              // console.log(2);
             }
-            console.log(3);
+            // console.log(3);
           });
-          console.log(4);
+          // console.log(4);
         }
       }),
     );
-    console.log(5);
-    console.log('SamplesArr', samplesArr.length);
+    // console.log(5);
+    // console.log('SamplesArr', samplesArr.length);
     return samplesArr.length;
 
     //filter out spots with samples in separate array
@@ -293,11 +293,11 @@ const useSpots = () => {
       if (spot.geometry && !hasValidGeometry) {
         alert('Invalid Geometry', 'Found a Spot with invalid geometry. Unable to map this Spot.'
           + '\nSpot Name: ' + spot.properties.name);
-        console.error('INVALID Geometry! Spot:', spot);
+        // console.error('INVALID Geometry! Spot:', spot);
       }
       return hasValidGeometry;
     });
-    console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
+    // console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
     return allSpotsCopyFiltered;
   };
 

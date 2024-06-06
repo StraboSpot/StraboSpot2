@@ -14,7 +14,7 @@ import {clearedSelectedSpots} from '../../spots/spots.slice';
 import {setLoadingStatus, setModalVisible} from '../home.slice';
 
 const ShortcutButtons = ({openNotebookPanel}) => {
-  console.log('Rendering ShortcutButtons...');
+  // console.log('Rendering ShortcutButtons...');
 
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);

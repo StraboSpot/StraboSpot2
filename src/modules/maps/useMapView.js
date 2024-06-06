@@ -29,7 +29,7 @@ const useMapView = () => {
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
-    console.log('Getting initial map center...');
+    // console.log('Getting initial map center...');
     if (currentImageBasemap || stratSection) {
       if ((selectedSpot?.properties?.image_basemap && selectedSpot?.properties.image_basemap === currentImageBasemap?.id)
         || (selectedSpot?.properties?.strat_section_id && selectedSpot?.properties.strat_section_id === stratSection?.strat_section_id)) {
@@ -56,12 +56,12 @@ const useMapView = () => {
       zoom: initialZoom,
     };
 
-    console.log('Setting Initial View State', initialViewState);
+    // console.log('Setting Initial View State', initialViewState);
     return initialViewState;
   };
 
   const getZoomLevel = () => {
-    console.log('Getting initial zoom...');
+    // console.log('Getting initial zoom...');
     if (currentImageBasemap) return ZOOM;
     else if (stratSection) return ZOOM_STRAT_SECTION;
     return zoom;
@@ -79,13 +79,13 @@ const useMapView = () => {
 
   const setMapView = (newCenter, newZoom) => {
     if (!isEqual(center, newCenter)) {
-      console.log('Prev Center:', center, 'New Center:', newCenter);
-      console.log('Setting new map center...');
+      // console.log('Prev Center:', center, 'New Center:', newCenter);
+      // console.log('Setting new map center...');
       dispatch(setCenter(newCenter));
     }
     if (zoom !== newZoom) {
-      console.log('Prev Zoom:', zoom, 'New Zoom:', newZoom);
-      console.log('Setting new zoom...');
+      // console.log('Prev Zoom:', zoom, 'New Zoom:', newZoom);
+      // console.log('Setting new zoom...');
       dispatch(setZoom(newZoom));
     }
   };
@@ -95,11 +95,11 @@ const useMapView = () => {
       || spotsToZoomTo.every(s => isOnStratSection(s))) {
       if (camera || Platform.OS === 'web') {
         try {
-          console.log('spotsToZoomTo[0]', spotsToZoomTo[0]);
+          // console.log('spotsToZoomTo[0]', spotsToZoomTo[0]);
           if (isOnImageBasemap(spotsToZoomTo[0]) || isOnStratSection(spotsToZoomTo[0])) {
             const spotsCopy = JSON.parse(JSON.stringify(spotsToZoomTo));
             spotsToZoomTo = spotsCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
-            console.log('spotsToZoomToNew', spotsToZoomTo);
+            // console.log('spotsToZoomToNew', spotsToZoomTo);
           }
           if (spotsToZoomTo.length === 1) {
             let centroidCoords = turf.getCoord(turf.centroid(spotsToZoomTo[0]));
