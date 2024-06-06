@@ -9,7 +9,7 @@ import {TEPHRA_SUBPAGES} from './tephra.constants';
 import {getNewUUID, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
-import SaveButton from '../../shared/ui/SaveButton';
+import SaveAndCloseModalButtons from '../../shared/ui/SaveAndCloseModalButtons';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -72,7 +72,7 @@ const AddTephraModal = ({onPress}) => {
             </View>
           }
         />
-        {!choicesViewKey && <SaveButton title={'Save Tephra Layer'} onPress={saveTephra}/>}
+        {!choicesViewKey && <SaveAndCloseModalButtons saveAction={saveTephra}/>}
       </Modal>
     );
   };
