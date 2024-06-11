@@ -88,6 +88,7 @@ const Home = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
+    //test comment
     console.log('UE Home', '[navigation, route.params]', route.params);
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
