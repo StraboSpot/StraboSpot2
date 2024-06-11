@@ -8,6 +8,7 @@ export const LIGHTGREY = '#f7f7f7'; //(lightgrey)
 export const MEDIUMGREY = 'darkgray'; //(#d3d3d3)
 export const DARKGREY = 'dimgray';
 export const BLUE = 'dodgerblue'; // (#1e90ff)
+export const GREEN = 'green';
 export const RED = 'red';
 export const WHITE = '#ffffff';
 export const BLACK = 'black';
@@ -19,9 +20,13 @@ export const SECONDARY_BACKGROUND_COLOR = WHITE;
 
 export const PRIMARY_TEXT_COLOR = BLACK;
 
+export const PRIMARY_ACCENT_COLOR = BLUE;
+
+export const POSITIVE_COLOR = GREEN;
+export const NEGATIVE_COLOR = RED;
+export const NEUTRAL_COLOR = PRIMARY_ACCENT_COLOR;
 export const WARNING_COLOR = RED;
 
-export const PRIMARY_ACCENT_COLOR = BLUE;
 
 export const LIST_BORDER_COLOR = MEDIUMGREY;
 

@@ -8,7 +8,7 @@ import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {useTagsHook} from '../tags';
@@ -52,7 +52,7 @@ const TagDetailModal = ({
   const renderCancelSaveButtons = () => {
     return (
       <View>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => closeModal()}
           save={() => saveFormAndClose()}
         />

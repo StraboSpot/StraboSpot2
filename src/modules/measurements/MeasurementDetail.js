@@ -13,7 +13,7 @@ import {isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/
 import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
@@ -304,7 +304,7 @@ const MeasurementDetail = ({
   const renderCancelSaveButtons = () => {
     return (
       <View>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => cancelFormAndGo()}
           save={() => isTemplate ? saveTemplateForm(formRef.current) : saveFormAndGo()}
         />

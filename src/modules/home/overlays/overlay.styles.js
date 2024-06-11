@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   overlayContainerFullScreen: {
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
+    backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     overflow: 'hidden',
     paddingTop: Platform.OS === 'ios' && SMALL_SCREEN ? 30 : 0,
     zIndex: 1,

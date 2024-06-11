@@ -11,7 +11,7 @@ import {WARNING_COLOR} from '../../shared/styles.constants';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import SaveAndCloseButton from '../../shared/ui/SaveAndCloseButtons';
+import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import {formStyles, SelectInputField, TextInputField, useFormHook} from '../form';
 import {DEFAULT_GEOLOGIC_TYPES} from '../project/project.constants';
 import {addedCustomFeatureTypes, updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -271,7 +271,7 @@ const OtherFeatureDetail = ({
   return (
     <React.Fragment>
       <React.Fragment>
-        <SaveAndCloseButton
+        <SaveAndCancelButtons
           cancel={() => cancelForm()}
           save={() => saveForm(formRef.current)}
         />

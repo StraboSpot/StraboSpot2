@@ -2,14 +2,19 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {ButtonGroup} from 'react-native-elements';
+import {Tab} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {TEPHRA_SUBPAGES} from './tephra.constants';
 import {getNewUUID, toTitleCase} from '../../shared/Helpers';
-import SaveButton from '../../shared/SaveButton';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import {
+  PRIMARY_ACCENT_COLOR,
+  PRIMARY_TEXT_COLOR,
+  PRIMARY_TEXT_SIZE,
+  SECONDARY_BACKGROUND_COLOR,
+} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
+import SaveAndCloseModalButtons from '../../shared/ui/SaveAndCloseModalButtons';
 import {Form, useFormHook} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -21,11 +26,10 @@ const AddTephraModal = ({onPress}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [choicesViewKey, setChoicesViewKey] = useState(null);
+  const [tabIndex, setTabIndex] = React.useState(0);
 
   const formRef = useRef(null);
   const useForm = useFormHook();
-
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
 
   const pageKey = PAGE_KEYS.TEPHRA;
 
@@ -36,22 +40,29 @@ const AddTephraModal = ({onPress}) => {
 
   const renderNotebookTephraModal = () => {
     const subpages = TEPHRA_SUBPAGES;
-    const formName = [pageKey, Object.values(subpages)[selectedTypeIndex]];
+    const formName = [pageKey, Object.values(subpages)[tabIndex]];
     return (
       <Modal
         closeModal={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
         buttonTitleRight={choicesViewKey && 'Done'}
         onPress={onPress}
       >
-        <ButtonGroup
-          selectedIndex={selectedTypeIndex}
-          onPress={i => setSelectedTypeIndex(i)}
-          buttons={Object.values(subpages).map(v => toTitleCase(v.replace(/interval_/g, ' ')))}
-          containerStyle={{height: 40, borderRadius: 10}}
-          buttonStyle={{padding: 5}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: PRIMARY_TEXT_COLOR}}
-        />
+        <Tab
+          indicatorStyle={{backgroundColor: PRIMARY_ACCENT_COLOR, height: 3}}
+          onChange={setTabIndex}
+          value={tabIndex}
+        >
+          {Object.values(subpages).map((subpage, i) => (
+            <Tab.Item
+              buttonStyle={{backgroundColor: SECONDARY_BACKGROUND_COLOR, padding: 0}}
+              containerStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+              key={subpage}
+              title={toTitleCase(subpage.replace(/interval_/g, ' '))}
+              titleProps={{numberOfLines: 1}}
+              titleStyle={{color: PRIMARY_TEXT_COLOR, fontSize: PRIMARY_TEXT_SIZE, fontWeight: 'bold'}}
+            />
+          ))}
+        </Tab>
         <FlatList
           bounces={false}
           ListHeaderComponent={
@@ -72,7 +83,7 @@ const AddTephraModal = ({onPress}) => {
             </View>
           }
         />
-        {!choicesViewKey && <SaveButton title={'Save Tephra Layer'} onPress={saveTephra}/>}
+        {!choicesViewKey && <SaveAndCloseModalButtons saveAction={saveTephra}/>}
       </Modal>
     );
   };
