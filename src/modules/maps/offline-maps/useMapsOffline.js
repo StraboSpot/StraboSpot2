@@ -194,14 +194,6 @@ const useMapsOffline = () => {
     }
   };
 
-  const getMapName = (map) => {
-    if (map.id === 'mapbox.outdoors' || map.id === 'mapbox.satellite' || map.id === 'osm'
-      || map.id === 'macrostrat' || map.source === 'map_warper' || map.source === 'strabospot_mymaps') {
-      return map.name;
-    }
-    else return null;
-  };
-
   const getMapNameFromId = (mapID) => {
     const mapObj = DEFAULT_MAPS.find(mapType => mapType.id === mapID);
     if (!mapObj) {
@@ -420,7 +412,6 @@ const useMapsOffline = () => {
     checkZipStatus: checkZipStatus,
     doUnzip: doUnzip,
     getMapCenterTile: getMapCenterTile,
-    getMapName: getMapName,
     getMapTiles: getMapTiles,
     getSavedMapsFromDevice: getSavedMapsFromDevice,
     initializeSaveMap: initializeSaveMap,
