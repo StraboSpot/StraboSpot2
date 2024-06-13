@@ -29,11 +29,11 @@ export const DEFAULT_MAPS = [
   {
     title: 'Mapbox Topo',
     id: 'mapbox.outdoors',
-    source: 'strabo_spot_mapbox',
+    source: 'strabospot_mapbox',
   }, {
     title: 'Mapbox Satellite',
     id: 'mapbox.satellite',
-    source: 'strabo_spot_mapbox',
+    source: 'strabospot_mapbox',
   }, {
     title: 'OSM Streets',
     id: 'osm',
@@ -42,6 +42,10 @@ export const DEFAULT_MAPS = [
     title: 'Geology from Macrostrat',
     id: 'macrostrat',
     source: 'macrostrat',
+  }, {
+    title: 'USGS Hillshade',
+    id: 'usgs.hillshade',
+    source: 'strabospot_usgs_hillshade',
   }];
 
 export const CUSTOM_MAP_TYPES = [
@@ -103,7 +107,7 @@ export const MAP_PROVIDERS = {
     tilePath: '{z}/{x}/{y}.png',
     url: ['https://www.strabospot.org/mwproxy/'],
   },
-  strabo_spot_mapbox: {
+  strabospot_mapbox: {
     attributions: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.',
     imageType: 'png',
     mime: 'image/png',
@@ -118,6 +122,13 @@ export const MAP_PROVIDERS = {
     tilePath: '{z}/{x}/{y}.png',
     url: [STRABO_APIS.MY_MAPS_TILES],
     maxZoom: 25,
+  },
+  strabospot_usgs_hillshade: {
+    attributions: '© <a href="https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer">The USGS 3D Elevation Program (3DEP) Bare Earth DEM Dynamic Service</a>',
+    imageType: 'png',
+    mime: 'image/png',
+    tilePath: '/{z}/{x}/{y}.png',
+    url: ['https://tiles.strabospot.org/v5/'],
   },
 };
 

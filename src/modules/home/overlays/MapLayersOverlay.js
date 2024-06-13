@@ -45,8 +45,9 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
     let mapsToDisplay = BASEMAPS;
     if (!isInternetReachable && !isConnected) {
       mapsToDisplay = Object.values(offlineMaps).reduce((acc, offlineMap) => {
-        return offlineMap.source === 'strabo_spot_mapbox' || offlineMap.id === 'mapbox.outdoors'
-        || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm' || offlineMap.id === 'macrostrat'
+        return offlineMap.source === 'strabospot_mapbox' || offlineMap.source === 'strabospot_usgs_hillshade'
+        || offlineMap.id === 'mapbox.outdoors' || offlineMap.id === 'mapbox.satellite' || offlineMap.id === 'osm'
+        || offlineMap.id === 'macrostrat'
           ? [...acc, offlineMap]
           : acc;
       }, []);
