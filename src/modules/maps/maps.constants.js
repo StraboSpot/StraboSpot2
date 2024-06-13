@@ -54,11 +54,6 @@ export const CUSTOM_MAP_TYPES = [
     id: 'mapbox.styles',
     source: 'mapbox_styles',
   },
-  // {
-  //   title: 'Map Warper',
-  //   id: 'map.warper',
-  //   source: 'map_warper',
-  // },
   {
     title: 'Strabospot My Maps',
     id: 'strabospot.mymaps',
