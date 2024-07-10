@@ -1,28 +1,18 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 
-import {Formik} from 'formik';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
-import {getNewUUID} from '../../shared/Helpers';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import Modal from '../../shared/ui/modal/Modal';
-import SaveButton from '../../shared/ui/SaveButton';
+import QEM from '../../shared/ui/QEM';
 import {Form, FormSlider, MainButtons, useFormHook} from '../form';
 import MeasurementButtons from '../form/MeasurementButtons';
 import MeasurementModal from '../form/MeasurementModal';
-import {setModalValues, setModalVisible} from '../home/home.slice';
+import {setModalValues} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {editedSpotProperties} from '../spots/spots.slice';
 
 const AddEarthquakeModal = ({onPress}) => {
   const dispatch = useDispatch();
-  const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [choicesViewKey, setChoicesViewKey] = useState(null);
-
-  const formRef = useRef(null);
   const useForm = useFormHook();
 
   const [isFaultOrientationModalVisible, setIsFaultOrientationModalVisible] = useState(false);
@@ -72,7 +62,7 @@ const AddEarthquakeModal = ({onPress}) => {
     return () => dispatch(setModalValues({}));
   }, []);
 
-  const renderForm = (formProps) => {
+  const renderForm = ({formProps, setChoicesViewKey}) => {
     const mainButtonsKeysRelevant1 = mainButtonsKeys1.filter((k) => {
       const field = survey.find(f => f.name === k);
       return useForm.isRelevant(field, formProps.values);
@@ -147,62 +137,11 @@ const AddEarthquakeModal = ({onPress}) => {
     );
   };
 
-  const renderNotebookEarthquakeModal = () => {
-    return (
-      <Modal
-        closeModal={() => choicesViewKey ? setChoicesViewKey(null) : dispatch(setModalVisible({modal: null}))}
-        buttonTitleRight={choicesViewKey && 'Done'}
-        onPress={onPress}
-      >
-        <FlatList
-          bounces={false}
-          ListHeaderComponent={
-            <View style={{flex: 1}}>
-              <Formik
-                innerRef={formRef}
-                initialValues={{}}
-                onSubmit={values => console.log('Submitting form...', values)}
-                validate={values => useForm.validateForm({formName: formName, values: values})}
-                validateOnChange={false}
-              >
-                {formProps => (
-                  <View style={{flex: 1}}>
-                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                  </View>
-                )}
-              </Formik>
-            </View>
-          }
-        />
-        {!choicesViewKey && <SaveButton title={'Save Earthquake'} onPress={saveEarthquake}/>}
-      </Modal>
-    );
-  };
-
-  const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
-    return (
-      <Form {...{formName: [groupKey, pageKey], surveyFragment: relevantFields, ...formProps}}/>
-    );
-  };
-
-  const saveEarthquake = async () => {
-    try {
-      await formRef.current.submitForm();
-      const editedEarthquakeData = useForm.showErrors(formRef.current);
-      console.log('Saving earthquake data to Spot ...');
-      let editedEarthquakesData = spot.properties.earthquakes ? JSON.parse(
-        JSON.stringify(spot.properties.earthquakes)) : [];
-      editedEarthquakesData.push({...editedEarthquakeData, id: getNewUUID()});
-      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-      dispatch(editedSpotProperties({field: pageKey, value: editedEarthquakesData}));
-    }
-    catch (err) {
-      console.log('Error submitting form', err);
-    }
-  };
-
-  return renderNotebookEarthquakeModal();
+  return (
+    <QEM groupKey={groupKey} onPress={onPress} pageKey={pageKey}>
+      {renderForm}
+    </QEM>
+  );
 };
 
 export default AddEarthquakeModal;
