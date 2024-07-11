@@ -142,11 +142,11 @@ const useSpots = () => {
       }
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
         updatedPreferences = {
-          ...updatedPreferences,
+          ...(updatedPreferences || preferences),
           starting_sample_number: (preferences.starting_sample_number || 1) + 1,
         };
       }
-      dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+      if (updatedPreferences) dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
     }
     await checkSpotName(newSpot.properties.name);
 
