@@ -23,8 +23,10 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setBackupModalVisible,
-  setErrorMessagesModalVisible,
+  setIsBackupModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsProgressModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
   setProgressModalVisible,
   setStatusMessagesModalVisible,
@@ -40,11 +42,11 @@ const useProject = () => {
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const user = useSelector(state => state.user);
 
-  const useServerRequests = useServerRequestsHook();
   const toast = useToast();
-  const useDownload = useDownloadHook();
   const useDevice = useDeviceHook();
+  const useDownload = useDownloadHook();
   const useImport = useImportHook();
+  const useServerRequests = useServerRequestsHook();
 
   const addDataset = async (name) => {
     const datasetObj = createDataset(name);
@@ -107,7 +109,7 @@ const useProject = () => {
 
   const destroyDataset = async (id) => {
     try {
-      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setIsStatusMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Deleting Dataset...'));
@@ -229,7 +231,7 @@ const useProject = () => {
       console.error('Error loading project', err);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Error loading project!'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       throw Error;
     }
@@ -258,14 +260,14 @@ const useProject = () => {
 
   const switchProject = async (action) => {
     console.log('User wants to:', action);
-    if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setProgressModalVisible(true));
-    else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setBackupModalVisible(true));
+    if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setIsProgressModalVisible(true));
+    else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setIsBackupModalVisible(true));
     else if (action === ProjectActions.OVERWRITE) {
       if (selectedProject.source === 'device') {
         dispatch(clearedStatusMessages());
-        dispatch(setStatusMessagesModalVisible(true));
+        dispatch(setIsStatusMessagesModalVisible(true));
         const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
-        dispatch(setStatusMessagesModalVisible(false));
+        dispatch(setIsStatusMessagesModalVisible(false));
         console.log('Done loading project', res);
       }
       else if (selectedProject.source === 'server') {

@@ -8,7 +8,6 @@ import {
   clearedStatusMessages,
   removedLastStatusMessage,
   setLoadingStatus,
-  setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';

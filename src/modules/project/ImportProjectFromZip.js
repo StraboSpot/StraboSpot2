@@ -12,8 +12,9 @@ import alert from '../../shared/ui/alert';
 import Loading from '../../shared/ui/Loading';
 import {
   addedStatusMessage,
-  setErrorMessagesModalVisible,
-  setProjectLoadSelectionModalVisible, setStatusMessageModalTitle,
+  setIsErrorMessagesModalVisible,
+  setIsProjectLoadSelectionModalVisible,
+  setStatusMessageModalTitle,
 } from '../home/home.slice';
 
 const ImportProjectFromZip = ({
@@ -53,7 +54,7 @@ const ImportProjectFromZip = ({
           {isProjectLoadSelectionModalVisible && (
             <Button
               title={'Close'}
-              onPress={() => dispatch(setProjectLoadSelectionModalVisible(false))}
+              onPress={() => dispatch(setIsProjectLoadSelectionModalVisible(false))}
               type={'clear'}
               containerStyle={{alignItems: 'flex-start'}}
               titleStyle={commonStyles.standardButtonText}
@@ -76,7 +77,7 @@ const ImportProjectFromZip = ({
     }
     catch (err) {
       console.error('Error Writing Project Data', err);
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
       dispatch(addedStatusMessage(err.toString()));
       setImportComplete(false);
       setIsLoading(false);

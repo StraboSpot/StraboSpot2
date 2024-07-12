@@ -20,30 +20,31 @@ import alert from '../../shared/ui/alert';
 import TextInputModal from '../../shared/ui/TextInputModal';
 import {Form} from '../form';
 import useFormHook from '../form/useForm';
-import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
 const UserProfilePage = () => {
   const formRef = useRef(null);
+
   const dispatch = useDispatch();
-  const userData = useSelector(state => state.user);
   const isOnline = useSelector(state => state.connections.isOnline);
+  const userData = useSelector(state => state.user);
 
   const [avatar, setAvatar] = useState(userData.image);
-  const [isImageDialogVisible, setImageDialogVisible] = useState(false);
-  const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
+  const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
+  const [isImageDialogVisible, setImageDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
 
-  const useForm = useFormHook();
   const navigation = useNavigation();
   const toast = useToast();
-  const useUpload = useUploadHook();
+  const useForm = useFormHook();
   const useServerRequest = useServerRequestsHook();
+  const useUpload = useUploadHook();
 
   const formName = ['general', 'user_profile'];
 
@@ -158,7 +159,7 @@ const UserProfilePage = () => {
       setImageDialogVisible(false);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Error saving image profile...' + err));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 

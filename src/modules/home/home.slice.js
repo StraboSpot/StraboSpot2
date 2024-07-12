@@ -50,42 +50,45 @@ const homeSlice = createSlice({
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
     },
-    setBackupModalVisible(state, action) {
+    setIsBackupModalVisible(state, action) {
       state.isBackupModalVisible = action.payload;
     },
-    setErrorMessagesModalVisible(state, action) {
+    setIsErrorMessagesModalVisible(state, action) {
       state.isErrorMessagesModalVisible = action.payload;
+    },
+    setIsMainMenuPanelVisible(state, action) {
+      state.isMainMenuPanelVisible = action.payload;
+    },
+    setIsOfflineMapsModalVisible(state, action) {
+      state.isOfflineMapModalVisible = action.payload;
+    },
+    setIsProgressModalVisible(state, action) {
+      state.isProgressModalVisible = action.payload;
+    },
+    setIsProjectLoadComplete(state, action) {
+      state.isProjectLoadComplete = action.payload;
+    },
+    setIsProjectLoadSelectionModalVisible(state, action) {
+      state.isProjectLoadSelectionModalVisible = action.payload;
+    },
+    setIsStatusMessagesModalVisible(state, action) {
+      state.isStatusMessagesModalVisible = action.payload;
+    },
+    setIsUploadModalVisible(state, action) {
+      state.isUploadModalVisible = action.payload;
+    },
+    setIsWarningMessagesModalVisible(state, action) {
+      state.isWarningMessagesModalVisible = action.payload;
     },
     setLoadingStatus(state, action) {
       const {bool, view} = action.payload;
       state.loading[view] = bool;
-    },
-    setMainMenuPanelVisible(state, action) {
-      state.isMainMenuPanelVisible = action.payload;
     },
     setModalValues(state, action) {
       state.modalValues = action.payload;
     },
     setModalVisible(state, action) {
       state.modalVisible = action.payload.modal;
-    },
-    setOfflineMapsModalVisible(state, action) {
-      state.isOfflineMapModalVisible = action.payload;
-    },
-    setProgressModalVisible(state, action) {
-      state.isProgressModalVisible = action.payload;
-    },
-    setProjectLoadComplete(state, action) {
-      state.isProjectLoadComplete = action.payload;
-    },
-    setProjectLoadSelectionModalVisible(state, action) {
-      state.isProjectLoadSelectionModalVisible = action.payload;
-    },
-    setStatusMessagesModalVisible(state, action) {
-      state.isStatusMessagesModalVisible = action.payload;
-    },
-    setStatusMessageModalTitle(state, action) {
-      state.statusMessageModalTitle = action.payload;
     },
     setShortcutSwitchPositions(state, action) {
       console.log('Toggling Shortcut', action.payload.switchName);
@@ -97,11 +100,8 @@ const homeSlice = createSlice({
       else state.shortcutSwitchPosition.all = false;
       console.log('Shortcut Switch Positions', JSON.stringify(Object.entries(state.shortcutSwitchPosition)));
     },
-    setUploadModalVisible(state, action) {
-      state.isUploadModalVisible = action.payload;
-    },
-    setWarningModalVisible(state, action) {
-      state.isWarningMessagesModalVisible = action.payload;
+    setStatusMessageModalTitle(state, action) {
+      state.statusMessageModalTitle = action.payload;
     },
   },
 });
@@ -110,21 +110,21 @@ export const {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setBackupModalVisible,
-  setErrorMessagesModalVisible,
+  setIsBackupModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsMainMenuPanelVisible,
+  setIsOfflineMapsModalVisible,
+  setIsProgressModalVisible,
+  setIsProjectLoadComplete,
+  setIsProjectLoadSelectionModalVisible,
+  setIsStatusMessagesModalVisible,
+  setIsUploadModalVisible,
+  setIsWarningMessagesModalVisible,
   setLoadingStatus,
-  setMainMenuPanelVisible,
   setModalValues,
   setModalVisible,
-  setOfflineMapsModalVisible,
-  setProgressModalVisible,
-  setProjectLoadComplete,
-  setProjectLoadSelectionModalVisible,
-  setStatusMessagesModalVisible,
-  setStatusMessageModalTitle,
   setShortcutSwitchPositions,
-  setUploadModalVisible,
-  setWarningModalVisible,
+  setStatusMessageModalTitle,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;

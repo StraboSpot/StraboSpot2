@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/urls.constants';
 import useServerRequestsHook from '../../../services/useServerRequests';
-import {addedStatusMessage, clearedStatusMessages, setWarningModalVisible} from '../../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsWarningMessagesModalVisible} from '../../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../../project/projects.slice';
@@ -44,7 +44,7 @@ const useCustomMap = () => {
         + ' file from Mapwarper.net and upload it into your Strabo MyMaps account.';
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(warningMessage));
-      dispatch(setWarningModalVisible(true));
+      dispatch(setIsWarningMessagesModalVisible(true));
     }
     dispatch(selectedCustomMapToEdit(map));
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));

@@ -13,7 +13,7 @@ import {BLUE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import TextInputModal from '../../shared/ui/TextInputModal';
-import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 
@@ -22,11 +22,13 @@ const UrlData = ({
                    initializeDelete,
                    spot,
                  }) => {
-  const useDevice = useDeviceHook();
   const dispatch = useDispatch();
-  const [urlToEdit, setUrlToEdit] = useState({});
-  const useExternalData = useExternalDataHook();
+
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [urlToEdit, setUrlToEdit] = useState({});
+
+  const useDevice = useDeviceHook();
+  const useExternalData = useExternalDataHook();
 
   const editUrl = (inURLToEdit, i) => {
     if (editable) {
@@ -108,7 +110,7 @@ const UrlData = ({
       console.error('Error saving edits', err);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Please make sure you enter a valid url. ' + err));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 

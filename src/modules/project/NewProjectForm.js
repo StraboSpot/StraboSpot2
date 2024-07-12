@@ -10,7 +10,7 @@ import useProjectHook from './useProject';
 import {isEmpty} from '../../shared/Helpers';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import {Form, useFormHook} from '../form';
-import {setProjectLoadSelectionModalVisible} from '../home/home.slice';
+import {setIsProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
@@ -21,6 +21,7 @@ const NewProjectForm = ({
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
 
   const useForm = useFormHook();
@@ -77,7 +78,7 @@ const NewProjectForm = ({
       if (isProjectLoadSelectionModalVisible) {
         dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
         openMainMenu();
-        dispatch(setProjectLoadSelectionModalVisible(false));
+        dispatch(setIsProjectLoadSelectionModalVisible(false));
       }
       else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       return Promise.resolve();

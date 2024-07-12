@@ -12,7 +12,7 @@ import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialo
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import StandardModal from '../../shared/ui/StandardModal';
 import TextInputModal from '../../shared/ui/TextInputModal';
-import {setProjectLoadComplete} from '../home/home.slice';
+import {setIsProjectLoadComplete} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import useProjectHook from '../project/useProject';
 
@@ -215,7 +215,7 @@ const DatasetList = () => {
     const value = await useProject.setSwitchValue(val, dataset);
     console.log('Value has been switched', value);
     val && setMakeIsDatasetCurrentModalVisible(true);
-    dispatch(setProjectLoadComplete(true));
+    dispatch(setIsProjectLoadComplete(true));
   };
 
   return (

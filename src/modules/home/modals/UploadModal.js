@@ -7,7 +7,7 @@ import {STRABO_APIS} from '../../../services/urls.constants';
 import {isEmpty} from '../../../shared/Helpers';
 import Spacer from '../../../shared/ui/Spacer';
 import UploadDialogBox from '../../project/UploadDialogBox';
-import {setProgressModalVisible, setUploadModalVisible} from '../home.slice';
+import {setIsProgressModalVisible, setIsUploadModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
 const UploadModal = () => {
@@ -17,15 +17,15 @@ const UploadModal = () => {
   const isUploadModalVisible = useSelector(state => state.home.isUploadModalVisible);
 
   const renderUploadProgressModal = async () => {
-    dispatch(setUploadModalVisible(false));
-    dispatch(setProgressModalVisible(true));
+    dispatch(setIsUploadModalVisible(false));
+    dispatch(setIsProgressModalVisible(true));
   };
 
   return (
     <UploadDialogBox
       dialogTitle={'OVERWRITE WARNING!'}
       visible={isUploadModalVisible}
-      cancel={() => dispatch(setUploadModalVisible(false))}
+      cancel={() => dispatch(setIsUploadModalVisible(false))}
       buttonText={'Upload'}
       onPress={() => renderUploadProgressModal()}
     >

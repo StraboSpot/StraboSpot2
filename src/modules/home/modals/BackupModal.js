@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useExportHook from '../../../services/useExport';
 import {isEmpty} from '../../../shared/Helpers';
 import UploadDialogBox from '../../project/UploadDialogBox';
-import {setBackupModalVisible} from '../home.slice';
+import {setIsBackupModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
 const BackupModal = () => {
@@ -32,7 +32,7 @@ const BackupModal = () => {
     <UploadDialogBox
       dialogTitle={'Confirm or Change Folder Name'}
       visible={isBackModalVisible}
-      cancel={() => dispatch(setBackupModalVisible(false))}
+      cancel={() => dispatch(setIsBackupModalVisible(false))}
       onPress={() => useExport.initializeBackup(backupFileName)}
       buttonText={'Backup'}
       disabled={backupFileName === ''}

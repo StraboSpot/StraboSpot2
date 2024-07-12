@@ -15,23 +15,24 @@ import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import TextInputModal from '../../../shared/ui/TextInputModal';
-import {setOfflineMapsModalVisible} from '../../home/home.slice';
+import {setIsOfflineMapsModalVisible} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
 import useMapHook from '../useMap';
 
 const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   console.log('Rendering ManageOfflineMaps...');
 
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const dispatch = useDispatch();
   const isOnline = useSelector(state => state.connections.isOnline);
   const mainMenuPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
-  const dispatch = useDispatch();
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
 
   const animatedPulse = useMemo(() => new Animated.Value(1), []);
+
   const [availableMaps, setAvailableMaps] = useState({});
-  const [loading, setLoading] = useState(false);
   const [isNameModalVisible, setIsNameModalVisible] = useState(false);
   const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedMap, setSelectedMap] = useState({});
 
   const useDevice = useDeviceHook();
@@ -239,7 +240,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
           || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
         onPress={() => {
           closeMainMenuPanel();
-          dispatch(setOfflineMapsModalVisible(true));
+          dispatch(setIsOfflineMapsModalVisible(true));
         }}
         containerStyle={styles.buttonContainer}
         buttonStyle={commonStyles.standardButton}

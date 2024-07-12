@@ -7,9 +7,9 @@ import {csvToArray, getNewUUID, urlValidator} from '../../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setErrorMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -100,7 +100,7 @@ const useExternalData = () => {
         dispatch(addedStatusMessage(`Something went wrong opening ${csvObject.name}!`));
         if (err === 'Error reading file') dispatch(addedStatusMessage('Error reading file'));
         else dispatch(addedStatusMessage('No such file or directory!'));
-        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setIsErrorMessagesModalVisible(true));
         throw err;
       }
     }
@@ -148,7 +148,7 @@ const useExternalData = () => {
       else {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('URL is already in list.'));
-        dispatch(setStatusMessagesModalVisible(true));
+        dispatch(setIsStatusMessagesModalVisible(true));
       }
     }
     else throw Error();

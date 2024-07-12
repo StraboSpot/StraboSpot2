@@ -8,12 +8,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   addedStatusMessage,
   clearedStatusMessages,
+  setIsMainMenuPanelVisible,
+  setIsOfflineMapsModalVisible,
+  setIsProjectLoadComplete,
+  setIsProjectLoadSelectionModalVisible,
   setLoadingStatus,
-  setMainMenuPanelVisible,
   setModalVisible,
-  setOfflineMapsModalVisible,
-  setProjectLoadComplete,
-  setProjectLoadSelectionModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import HomeView from './HomeView';
@@ -29,7 +29,6 @@ import {
 } from './modals';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
-import usePermissionsHook from '../../services/usePermissions';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import * as Helpers from '../../shared/Helpers';
@@ -162,7 +161,7 @@ const Home = ({navigation, route}) => {
     console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
       mapComponentRef.current?.zoomToSpotsExtent();
-      dispatch(setProjectLoadComplete(false));
+      dispatch(setIsProjectLoadComplete(false));
       // toggles off whenever new project is loaded successfully to trigger the same for next project load.
     }
   }, [projectLoadComplete]);
@@ -231,7 +230,7 @@ const Home = ({navigation, route}) => {
         mapComponentRef.current?.zoomToSpotsExtent();
         break;
       case 'saveMap':
-        dispatch(setOfflineMapsModalVisible(!isOfflineMapModalVisible));
+        dispatch(setIsOfflineMapsModalVisible(!isOfflineMapModalVisible));
         toggleHomeDrawerButton();
         break;
       case 'addTag':
@@ -261,11 +260,11 @@ const Home = ({navigation, route}) => {
 
   const closeInitialProjectLoadModal = () => {
     console.log('Starting Project...');
-    dispatch(setProjectLoadSelectionModalVisible(false));
+    dispatch(setIsProjectLoadSelectionModalVisible(false));
   };
 
   const closeMainMenu = () => {
-    dispatch(setMainMenuPanelVisible(false));
+    dispatch(setIsMainMenuPanelVisible(false));
     dispatch(setMenuSelectionPage({name: null}));
     SMALL_SCREEN && dispatch(setSidePanelVisible(false));
     animateDrawer(animatedValueMainMenuDrawer, -MAIN_MENU_DRAWER_WIDTH);
@@ -344,7 +343,7 @@ const Home = ({navigation, route}) => {
   };
 
   const openMainMenu = () => {
-    dispatch(setMainMenuPanelVisible(true));
+    dispatch(setIsMainMenuPanelVisible(true));
     animateDrawer(animatedValueMainMenuDrawer, 0);
     animateDrawer(animatedValueLeftSide, MAIN_MENU_DRAWER_WIDTH);
   };

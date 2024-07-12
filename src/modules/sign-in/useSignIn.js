@@ -10,10 +10,10 @@ import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setErrorMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsProjectLoadSelectionModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setProjectLoadSelectionModalVisible,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {setSelectedProject} from '../project/projects.slice';
 import {login, logout, setUserData} from '../user/userProfile.slice';
@@ -55,10 +55,10 @@ const useSignIn = () => {
 
   const autoLoginError = (err) => {
     console.log('Auto Login Error', err);
-    dispatch(setStatusMessagesModalVisible(false));
+    dispatch(setIsStatusMessagesModalVisible(false));
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage('Error loading project!'));
-    dispatch(setErrorMessagesModalVisible(true));
+    dispatch(setIsErrorMessagesModalVisible(true));
     dispatch(setLoadingStatus({view: 'home', bool: false}));
     throw Error;
   };
@@ -81,7 +81,7 @@ const useSignIn = () => {
     });
     if (!isEmpty(userEmail)) dispatch({type: 'CLEAR_STORE'});
     console.log('Loading user: GUEST');
-    setTimeout(() => isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true)), 500);
+    setTimeout(() => isEmpty(currentProject) && dispatch(setIsProjectLoadSelectionModalVisible(true)), 500);
   };
 
   const signIn = async (email, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible) => {
@@ -100,7 +100,7 @@ const useSignIn = () => {
       });
 
       if (Platform.OS !== 'web') {
-        isEmpty(currentProject) && dispatch(setProjectLoadSelectionModalVisible(true));
+        isEmpty(currentProject) && dispatch(setIsProjectLoadSelectionModalVisible(true));
         dispatch(setLoadingStatus({view: 'home', bool: false}));
       }
       if (setUsername) setUsername('');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linking, Platform, Text, View} from 'react-native';
+import {Linking, Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,17 +15,17 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setBackupModalVisible,
-  setErrorMessagesModalVisible,
-  setUploadModalVisible,
+  setIsBackupModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsUploadModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 
 const UploadBackAndExport = () => {
 
   const dispatch = useDispatch();
-  const isOnline = useSelector(state => state.connections.isOnline);
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
+  const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
 
   const useDevice = useDeviceHook();
@@ -33,12 +33,12 @@ const UploadBackAndExport = () => {
   const checkForActiveDatasets = () => {
     if (activeDatasets.length > 0) {
       dispatch(setSelectedProject({source: '', project: ''}));
-      dispatch(setBackupModalVisible(true));
+      dispatch(setIsBackupModalVisible(true));
     }
     else {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('There are no active datasets selected.'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 
@@ -57,7 +57,7 @@ const UploadBackAndExport = () => {
             titleStyle={commonStyles.standardButtonText}
             onPress={() => {
               dispatch(setSelectedProject({source: '', project: ''}));
-              dispatch(setUploadModalVisible(true));
+              dispatch(setIsUploadModalVisible(true));
             }}
             disabled={!isOnline.isConnected}
           />

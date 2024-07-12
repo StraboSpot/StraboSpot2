@@ -20,28 +20,29 @@ import Loading from '../../shared/ui/Loading';
 import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {
+  setIsProjectLoadSelectionModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 
 const ProjectList = ({source}) => {
+  const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.connections.databaseEndpoint);
   const isInitialProjectLoadModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
-  const dispatch = useDispatch();
-  const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
-  const [projectsArr, setProjectsArr] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
+  const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [projectsArr, setProjectsArr] = useState([]);
 
   const useDownload = useDownloadHook();
-  const useProject = useProjectHook();
   const useImport = useImportHook();
+  const useProject = useProjectHook();
 
   useEffect(() => {
     console.log('UE ProjectList []');
@@ -138,10 +139,10 @@ const ProjectList = ({source}) => {
         console.log('Getting project...');
         if (!isEmpty(project)) useProject.destroyOldProject();
         if (source === 'device') {
-          dispatch(setProjectLoadSelectionModalVisible(false));
-          dispatch(setStatusMessagesModalVisible(true));
+          dispatch(setIsProjectLoadSelectionModalVisible(false));
+          dispatch(setIsStatusMessagesModalVisible(true));
           const res = await useImport.loadProjectFromDevice(project.fileName);
-          dispatch(setStatusMessagesModalVisible(false));
+          dispatch(setIsStatusMessagesModalVisible(false));
           setLoading(false);
           dispatch(setStatusMessageModalTitle(res.project.description.project_name));
           console.log('Done loading project', res);
@@ -154,7 +155,7 @@ const ProjectList = ({source}) => {
       alert('Project not found!', 'Make sure there is a "data.json" file and it is properly named.');
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
       setLoading(false);
-      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(setIsStatusMessagesModalVisible(false));
     }
   };
 

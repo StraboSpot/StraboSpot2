@@ -19,9 +19,9 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setErrorMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setStatusMessagesModalVisible,
 } from '../../home/home.slice';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
@@ -58,7 +58,7 @@ const CustomMapDetails = () => {
   const addMap = async () => {
     try {
       dispatch(clearedStatusMessages());
-      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setIsStatusMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(addedStatusMessage('Saving Custom Map...'));
       const customMap = await useCustomMap.saveCustomMap(editableCustomMapData);
@@ -73,11 +73,11 @@ const CustomMapDetails = () => {
     catch (err) {
       console.error('Error saving custom map', err);
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(setIsStatusMessagesModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(
         `Something Went Wrong \n\nCheck the id and/or the map type you are trying to save. \n\n ${err}`));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 

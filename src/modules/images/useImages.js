@@ -16,7 +16,7 @@ import alert from '../../shared/ui/alert';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setErrorMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
@@ -51,7 +51,7 @@ const useImages = () => {
       dispatch(clearedStatusMessages());
       dispatch(
         addedStatusMessage('Image Basemap contains Spots! \n\nDelete the spots, before trying to delete the image'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
       return false;
     }
     else if (spotWithImage) {
@@ -71,7 +71,7 @@ const useImages = () => {
     else {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(`There was an error deleting image ${imageId}`));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 
@@ -297,7 +297,7 @@ const useImages = () => {
       console.error(`Error Taking picture ${err}`);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };

@@ -8,7 +8,7 @@ import {useDispatch} from 'react-redux';
 
 import DateDialogBox from '../../shared/ui/StatusDialogBox';
 import {formStyles} from '../form';
-import {addedStatusMessage, clearedStatusMessages, setErrorMessagesModalVisible} from '../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 
 const DateInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -48,7 +48,7 @@ const DateInputField = ({
       else {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Date Error!\nStart Date must be before End Date.'));
-        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setIsErrorMessagesModalVisible(true));
       }
     }
     else if (selectedDate && name === 'end_date' && values.start_date) {
@@ -56,7 +56,7 @@ const DateInputField = ({
       else {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Date Error!\nStart Date must be before End Date.'));
-        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setIsErrorMessagesModalVisible(true));
       }
     }
     else setFieldValue(name, selectedDate);

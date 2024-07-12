@@ -9,11 +9,11 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setErrorMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsProjectLoadSelectionModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setProjectLoadSelectionModalVisible,
   setStatusMessageModalTitle,
-  setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
@@ -45,9 +45,9 @@ const useDownload = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const project = useSelector(state => state.project.project);
 
+  const useDevice = useDeviceHook();
   const useImages = useImagesHook();
   const useServerRequests = useServerRequestsHook();
-  const useDevice = useDeviceHook();
 
   const destroyOldProject = () => {
     dispatch(clearedSpots());
@@ -158,10 +158,10 @@ const useDownload = () => {
 
   const initializeDownload = async (selectedProject) => {
     const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
-    if (isProjectLoadSelectionModalVisible) dispatch(setProjectLoadSelectionModalVisible(false));
+    if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
     dispatch(setStatusMessageModalTitle(projectName));
     dispatch(clearedStatusMessages());
-    if (Platform.OS !== 'web') dispatch(setStatusMessagesModalVisible(true));
+    if (Platform.OS !== 'web') dispatch(setIsStatusMessagesModalVisible(true));
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
     try {
@@ -181,7 +181,7 @@ const useDownload = () => {
       if (Platform.OS === 'web') {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Error loading project!', err));
-        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setIsErrorMessagesModalVisible(true));
       }
       else dispatch(addedStatusMessage('Download Failed!', err));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
@@ -193,7 +193,7 @@ const useDownload = () => {
     try {
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
-      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setIsStatusMessagesModalVisible(true));
       console.log('Downloading Needed Images...');
       dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImageIds)) {

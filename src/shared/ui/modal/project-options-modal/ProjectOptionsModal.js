@@ -9,8 +9,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import projectOptionsModalStyle from './projectOptionsModal.style';
 import {
   setLoadingStatus,
-  setProgressModalVisible,
-  setStatusMessagesModalVisible,
+  setIsProgressModalVisible,
+  setIsStatusMessagesModalVisible,
 } from '../../../../modules/home/home.slice';
 import overlayStyles from '../../../../modules/home/overlays/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
@@ -47,7 +47,7 @@ const ProjectOptionsDialogBox = ({
   const [exportFileName, setExportFileName] = useState('');
   const [includeImages, setIncludeImages] = useState(true);
   const [includeMapTiles, setIncludeMapTiles] = useState(true);
-  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
+  const [isProgressModalVisibleLocal, setIsProgressModalVisibleLocal] = useState(false);
   const [projectToDeleteName, setProjectToDeleteName] = useState('');
 
   const useProject = useProjectHook();
@@ -71,7 +71,7 @@ const ProjectOptionsDialogBox = ({
     try {
       closeModal();
       setDeletingProjectStatus('deleting');
-      setIsProgressModalVisible(true);
+      setIsProgressModalVisibleLocal(true);
       setTimeout(async () => {
         setChecked(1);
         setProjectToDeleteName(selectedProject?.project?.fileName || '');
@@ -120,14 +120,14 @@ const ProjectOptionsDialogBox = ({
       }
       catch (err) {
         console.error('Error switching project in useProject', err);
-        dispatch(setStatusMessagesModalVisible(false));
+        dispatch(setIsStatusMessagesModalVisible(false));
       }
     }
     else {
       closeModal();
       setAction('');
       setChecked(1);
-      dispatch(setProgressModalVisible(true));
+      dispatch(setIsProgressModalVisible(true));
       // console.log('Project Overwritten or Uploaded!');
     }
   };
@@ -392,7 +392,7 @@ const ProjectOptionsDialogBox = ({
         </View>}
       </Overlay>
       <Overlay
-        isVisible={isProgressModalVisible}
+        isVisible={isProgressModalVisibleLocal}
         overlayStyle={overlayStyles.overlayContainer}
       >
         <Text style={modalStyle.modalTitle}>{'Deleting...'}</Text>
@@ -409,7 +409,7 @@ const ProjectOptionsDialogBox = ({
         </View>
         {deletingProjectStatus === 'complete' && (
           <Button
-            onPress={() => setIsProgressModalVisible(false)}
+            onPress={() => setIsProgressModalVisibleLocal(false)}
             title={'Close'}
             type={'clear'}
           />

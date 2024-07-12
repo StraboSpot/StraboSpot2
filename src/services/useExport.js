@@ -10,9 +10,9 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setBackupModalVisible,
+  setIsBackupModalVisible,
+  setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setStatusMessagesModalVisible,
 } from '../modules/home/home.slice';
 import {setBackupFileName} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
@@ -174,11 +174,11 @@ const useExport = () => {
   const initializeBackup = async (fileName) => {
     try {
       dispatch(setBackupFileName(fileName));
-      dispatch(setBackupModalVisible(false));
+      dispatch(setIsBackupModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Backing up Project to Device...'));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setIsStatusMessagesModalVisible(true));
 
       const hasBackupDir = await useDevice.doesDeviceBackupDirExist();
       console.log('Has Backup Dir?: ', hasBackupDir);

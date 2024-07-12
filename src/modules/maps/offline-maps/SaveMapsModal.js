@@ -17,7 +17,7 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setOfflineMapsModalVisible,
+  setIsOfflineMapsModalVisible,
 } from '../../home/home.slice';
 // import ProgressBar from '../../../shared/ui/ProgressBar';
 import overlayStyles from '../../home/overlays/overlay.styles';
@@ -30,30 +30,30 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
   const useMapsOffline = useMapsOfflineHook();
   const useServerRequests = useServerRequestHook();
 
+  const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const dispatch = useDispatch();
 
   const currentMapName = currentBasemap && currentBasemap.title;
   const maxZoom = MAP_PROVIDERS[currentBasemap.source]?.maxZoom;
 
-  const [tileCount, setTileCount] = useState(0);
-  const [installedTiles, setInstalledTiles] = useState(0);
-  const [tilesToInstall, setTilesToInstall] = useState(0);
-  const [showComplete, setShowComplete] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showMainMenu, setShowMainMenu] = useState(true);
-  const [showLoadingMenu, setShowLoadingMenu] = useState(false);
-  const [showLoadingBar, setShowLoadingBar] = useState(false);
-  const [isLoadingWave, setIsLoadingWave] = useState(false);
-  const [isLoadingCircle, setIsLoadingCircle] = useState(false);
-  const [percentDone, setPercentDone] = useState(0);
   const [downloadZoom, setDownloadZoom] = useState(0);
-  const [zoomLevels, setZoomLevels] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   const [extentString, setExtentString] = useState('');
+  const [installedTiles, setInstalledTiles] = useState(0);
+  const [isError, setIsError] = useState(false);
+  const [isLoadingCircle, setIsLoadingCircle] = useState(false);
+  const [isLoadingWave, setIsLoadingWave] = useState(false);
+  const [percentDone, setPercentDone] = useState(0);
+  const [showComplete, setShowComplete] = useState(false);
+  const [showLoadingBar, setShowLoadingBar] = useState(false);
+  const [showLoadingMenu, setShowLoadingMenu] = useState(false);
+  const [showMainMenu, setShowMainMenu] = useState(true);
+  const [tileCount, setTileCount] = useState(0);
+  const [tilesToInstall, setTilesToInstall] = useState(0);
+  const [zoomLevels, setZoomLevels] = useState([]);
 
   useEffect(() => {
     console.log('UE SaveMapsModal []');
@@ -245,7 +245,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
         type={'ionicon'}
         size={20}
         color={'darkgrey'}
-        onPress={() => dispatch(setOfflineMapsModalVisible(false))}
+        onPress={() => dispatch(setIsOfflineMapsModalVisible(false))}
         containerStyle={overlayStyles.closeButton}
       />
       <View style={overlayStyles.titleContainer}>

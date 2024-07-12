@@ -13,7 +13,7 @@ import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 // import useAnimationsHook from '../../../shared/ui/useAnimations';
 import LottieAnimation from '../../../utils/animations/LottieAnimations';
 import {setSelectedProject} from '../../project/projects.slice';
-import {addedStatusMessage, setProgressModalVisible} from '../home.slice';
+import {addedStatusMessage, setIsProgressModalVisible} from '../home.slice';
 
 const UploadProgressModal = () => {
 
@@ -23,9 +23,10 @@ const UploadProgressModal = () => {
   const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
-  const [uploadComplete, setUploadComplete] = useState('');
-  const [error, setError] = useState(false);
+
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
+  const [error, setError] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState('');
 
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
@@ -39,7 +40,7 @@ const UploadProgressModal = () => {
     try {
       const project = selectedProject.project;
       dispatch(setSelectedProject({project: '', source: ''}));
-      dispatch(setProgressModalVisible(false));
+      dispatch(setIsProgressModalVisible(false));
       if (selectedProject.source === 'server' && !isEmpty(project)) {
         console.log('Downloading Project');
         await useDownload.initializeDownload(project);
@@ -109,7 +110,7 @@ const UploadProgressModal = () => {
   return (
     <ProgressModal
       buttonText={selectedProject.source !== '' && 'Continue'}
-      closeProgressModal={() => setProgressModalVisible(false)}
+      closeProgressModal={() => setIsProgressModalVisible(false)}
       dialogTitle={'UPLOADING...'}
       isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}

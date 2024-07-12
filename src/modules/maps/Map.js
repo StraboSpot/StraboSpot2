@@ -25,7 +25,7 @@ import IconButton from '../../shared/ui/IconButton';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setErrorMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
   setModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
@@ -124,7 +124,7 @@ const Map = ({
         // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.' + error));
-        dispatch(setErrorMessagesModalVisible(true));
+        dispatch(setIsErrorMessagesModalVisible(true));
         // useMap.setBasemap();
         // Sentry.captureException(error);
       });
@@ -677,7 +677,7 @@ const Map = ({
       console.error(err);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Error fetching data from tile count service.'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 
@@ -1106,7 +1106,7 @@ const Map = ({
       console.error('Error: not able to get Custom Map bbox coords...');
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Not able to zoom to custom map while offline.'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 

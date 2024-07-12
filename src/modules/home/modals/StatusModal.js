@@ -13,13 +13,13 @@ import LottieAnimations from '../../../utils/animations/LottieAnimations';
 import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedProject} from '../../project/projects.slice';
-import {setStatusMessagesModalVisible} from '../home.slice';
+import {setIsStatusMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
 const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
   const dispatch = useDispatch();
-  const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const isModalLoading = useSelector(state => state.home.loading.modal);
+  const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const statusMessages = useSelector(state => state.home.statusMessages);
 
@@ -41,7 +41,7 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
       await useDownload.initializeDownload(selectedProject.project);
     }
     else {
-      dispatch(setStatusMessagesModalVisible(false));
+      dispatch(setIsStatusMessagesModalVisible(false));
       openMainMenu();
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
     }
@@ -51,9 +51,9 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
     <StatusDialogBox
       title={'Status'}
       isVisible={isStatusMessagesModalVisible}
-      closeModal={() => dispatch(setStatusMessagesModalVisible(false))}
+      closeModal={() => dispatch(setIsStatusMessagesModalVisible(false))}
       showConfirmButton={!isModalLoading && selectedProject.source === ''}
-      onConfirmPress={() => dispatch(setStatusMessagesModalVisible(false))}
+      onConfirmPress={() => dispatch(setIsStatusMessagesModalVisible(false))}
     >
       <View>
         {isModalLoading && (
@@ -80,7 +80,7 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
                 title={'Cancel'}
                 containerStyle={{padding: 10}}
                 type={'clear'}
-                onPress={() => dispatch(setStatusMessagesModalVisible(false))}
+                onPress={() => dispatch(setIsStatusMessagesModalVisible(false))}
               />
             )}
 

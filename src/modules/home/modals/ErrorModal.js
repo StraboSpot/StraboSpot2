@@ -4,7 +4,7 @@ import {Platform, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
-import {setErrorMessagesModalVisible} from '../home.slice';
+import {setIsErrorMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
 const ErrorModal = ({closeModal, children, isVisible}) => {
@@ -13,7 +13,7 @@ const ErrorModal = ({closeModal, children, isVisible}) => {
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const closeErrorModal = () => {
-    dispatch(setErrorMessagesModalVisible(false));
+    dispatch(setIsErrorMessagesModalVisible(false));
   };
 
   return (

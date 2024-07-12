@@ -4,7 +4,7 @@ import {Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
-import {setWarningModalVisible} from '../home.slice';
+import {setIsWarningMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
 const WarningModal = ({
@@ -24,7 +24,7 @@ const WarningModal = ({
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const closeWarningModal = () => {
-    dispatch(setWarningModalVisible(false));
+    dispatch(setIsWarningMessagesModalVisible(false));
   };
 
   return (

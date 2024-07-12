@@ -5,8 +5,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setErrorMessagesModalVisible,
-  setStatusMessagesModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
 
@@ -156,12 +156,12 @@ const useStereonet = () => {
       Clipboard.setString(out);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Success!\n\nData has been copied to clipboard.'));
-      dispatch(setStatusMessagesModalVisible(true));
+      dispatch(setIsStatusMessagesModalVisible(true));
     }
     else {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Error!\n\nYour selected spots contained no valid stereonet data.'));
-      dispatch(setErrorMessagesModalVisible(true));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 

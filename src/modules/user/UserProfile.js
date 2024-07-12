@@ -10,15 +10,17 @@ import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
-import {setMainMenuPanelVisible} from '../home/home.slice';
+import {setIsMainMenuPanelVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const UserProfile = ({logout}) => {
   const defaultAvatar = require('../../assets/images/splash.png');
+
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
   const useUserProfile = useUserProfileHook();
@@ -39,13 +41,13 @@ const UserProfile = ({logout}) => {
 
   const doLogOut = (type) => {
     if (type === 'signIn') {
-      dispatch(setMainMenuPanelVisible(false));
+      dispatch(setIsMainMenuPanelVisible(false));
       logout();
     }
     else if (type === 'clear') {
       setIsLogoutModalVisible(false);
       setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
-        dispatch(setMainMenuPanelVisible(false));
+        dispatch(setIsMainMenuPanelVisible(false));
         dispatch({type: REDUX.CLEAR_STORE});
         logout();
       }, 200);

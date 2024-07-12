@@ -9,8 +9,8 @@ import useServerRequestsHook from '../../services/useServerRequests';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setErrorMessagesModalVisible,
-  setOfflineMapsModalVisible,
+  setIsErrorMessagesModalVisible,
+  setIsOfflineMapsModalVisible,
 } from '../home/home.slice';
 
 const useMap = () => {
@@ -32,8 +32,8 @@ const useMap = () => {
   const handleError = (message, err) => {
     dispatch(clearedStatusMessages());
     dispatch(addedStatusMessage(`${message} \n\n${err}`));
-    dispatch(setOfflineMapsModalVisible(false));
-    dispatch(setErrorMessagesModalVisible(true));
+    dispatch(setIsOfflineMapsModalVisible(false));
+    dispatch(setIsErrorMessagesModalVisible(true));
   };
 
   const isDrawMode = mode => Object.values(MAP_MODES.DRAW).includes(mode);
@@ -58,7 +58,7 @@ const useMap = () => {
         else {
           dispatch(clearedStatusMessages());
           dispatch(addedStatusMessage(`Map ${mapId} not found. Setting basemap to Mapbox Topo.`));
-          dispatch(setErrorMessagesModalVisible(true));
+          dispatch(setIsErrorMessagesModalVisible(true));
           await setBasemap(null);
         }
       }
