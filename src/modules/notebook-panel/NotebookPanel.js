@@ -21,13 +21,12 @@ import usePageHook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
 import {SpotsListItem, useSpotsHook} from '../spots';
 
-const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoomToSpots}) => {
+const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenuPanel, zoomToSpots}) => {
   console.log('Rendering NotebookPanel...');
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
-  const modalVisible = useSelector(state => state.home.modalVisible);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -67,7 +66,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
     let pageKey = isRelevantPage ? pageVisible : PAGE_KEYS.OVERVIEW;
     const page = NOTEBOOK_PAGES.find(p => p.key === pageKey);
     const Page = page?.page_component || Overview;
-    let pageProps = {page: page, openMainMenu: openMainMenu};
+    let pageProps = {openMainMenuPanel: openMainMenuPanel, page: page};
     if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
     return (
       <>
@@ -100,7 +99,7 @@ const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenu, zoo
     const parentSpot = useSpots.getRootSpot(currentImageBasemap.id);
     return (
       <View style={{justifyContent: 'flex-start'}}>
-      <SectionDivider dividerText={'Parent Spot'}/>
+        <SectionDivider dividerText={'Parent Spot'}/>
         <FlatList
           keyExtractor={item => item?.properties?.id?.toString()}
           data={[parentSpot]}

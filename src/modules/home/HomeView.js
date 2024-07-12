@@ -29,6 +29,7 @@ const HomeView = ({
                     mapComponentRef,
                     mapMode,
                     onEndDrawPressed,
+                    openMainMenuPanel,
                     openNotebookPanel,
                     setDistance,
                     startEdit,
@@ -86,7 +87,7 @@ const HomeView = ({
         <NotebookPanel
           closeNotebookPanel={closeNotebookPanel}
           createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
-          openMainMenu={toggleHomeDrawer}
+          openMainMenuPanel={openMainMenuPanel}
           zoomToSpots={mapComponentRef.current?.zoomToSpots}
         />
       </Animated.View>

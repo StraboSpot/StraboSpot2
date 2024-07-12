@@ -21,7 +21,7 @@ import useUserProfileHook from '../../user/useUserProfile';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
-const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) => {
+const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible}) => {
   console.log('Rendering InitialProjectLoadModal...');
 
   const dispatch = useDispatch();
@@ -233,7 +233,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenu, visible}) =>
           titleStyle={commonStyles.standardButtonText}
         />
         <View style={{height: 400}}>
-          <NewProject openMainMenu={openMainMenu} onPress={() => closeModal()}/>
+          <NewProject onPress={closeModal} openMainMenuPanel={openMainMenuPanel}/>
         </View>
       </>
     );

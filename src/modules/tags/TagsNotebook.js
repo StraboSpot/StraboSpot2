@@ -12,7 +12,7 @@ import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, TagsAtSpotList} from '../tags';
 
-const TagsNotebook = ({openMainMenu, page}) => {
+const TagsNotebook = ({openMainMenuPanel, page}) => {
   const dispatch = useDispatch();
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
 
@@ -36,13 +36,13 @@ const TagsNotebook = ({openMainMenu, page}) => {
               buttonTitle={'Assign/Remove'}
               onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
             />
-            <TagsAtSpotList page={page} openMainMenu={openMainMenu}/>
+            <TagsAtSpotList openMainMenuPanel={openMainMenuPanel} page={page}/>
           </React.Fragment>
         }
         ListFooterComponent={pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS && (
           <React.Fragment>
             <SectionDivider dividerText={'Feature Tags'}/>
-            <FeatureTagsAtSpotList page={page} openMainMenu={openMainMenu}/>
+            <FeatureTagsAtSpotList openMainMenuPanel={openMainMenuPanel} page={page}/>
           </React.Fragment>
         )}
       />

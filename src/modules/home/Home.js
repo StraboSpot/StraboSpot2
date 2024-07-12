@@ -263,7 +263,7 @@ const Home = ({navigation, route}) => {
     dispatch(setIsProjectLoadSelectionModalVisible(false));
   };
 
-  const closeMainMenu = () => {
+  const closeMainMenuPanel = () => {
     dispatch(setIsMainMenuPanelVisible(false));
     dispatch(setMenuSelectionPage({name: null}));
     SMALL_SCREEN && dispatch(setSidePanelVisible(false));
@@ -342,7 +342,7 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const openMainMenu = () => {
+  const openMainMenuPanel = () => {
     dispatch(setIsMainMenuPanelVisible(true));
     animateDrawer(animatedValueMainMenuDrawer, 0);
     animateDrawer(animatedValueLeftSide, MAIN_MENU_DRAWER_WIDTH);
@@ -357,7 +357,7 @@ const Home = ({navigation, route}) => {
     animateDrawer(animatedValueRightSide, -NOTEBOOK_DRAWER_WIDTH);
     if (SMALL_SCREEN) {
       navigation.navigate('HomeScreen', {screen: 'Notebook'});
-      closeMainMenu();
+      closeMainMenuPanel();
     }
   };
 
@@ -452,8 +452,8 @@ const Home = ({navigation, route}) => {
   };
 
   const toggleHomeDrawerButton = () => {
-    if (isMainMenuPanelVisible) closeMainMenu();
-    else openMainMenu();
+    if (isMainMenuPanelVisible) closeMainMenuPanel();
+    else openMainMenuPanel();
   };
 
   const onLogout = () => {
@@ -465,9 +465,9 @@ const Home = ({navigation, route}) => {
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
       <MainMenuPanel
-        closeMainMenuPanel={toggleHomeDrawerButton}
+        closeMainMenuPanel={closeMainMenuPanel}
         logout={onLogout}
-        openMainMenu={openMainMenu}
+        openMainMenuPanel={openMainMenuPanel}
         openNotebookPanel={openNotebookPanel}
         openSpotInNotebook={openSpotInNotebook}
         updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
@@ -497,14 +497,15 @@ const Home = ({navigation, route}) => {
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
+          openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
+          renderVersionCheckLabel={renderVersionCheckLabel()}
           setDistance={setDistance}
+          showUpdateLabel={showUpdateLabel}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
           toggleHomeDrawer={toggleHomeDrawerButton}
-          showUpdateLabel={showUpdateLabel}
-          renderVersionCheckLabel={renderVersionCheckLabel()}
         />
       ) : (
         <HomeView
@@ -524,6 +525,7 @@ const Home = ({navigation, route}) => {
           mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
+          openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
           setDistance={setDistance}
           startEdit={startEdit}
@@ -538,14 +540,14 @@ const Home = ({navigation, route}) => {
         <InitialProjectLoadModal
           closeModal={closeInitialProjectLoadModal}
           logout={onLogout}
-          openMainMenu={toggleHomeDrawerButton}
+          openMainMenuPanel={openMainMenuPanel}
           visible={isProjectLoadSelectionModalVisible}
         />
       )}
       <ErrorModal/>
       <StatusModal
         exportProject={exportProject}
-        openMainMenu={!isMainMenuPanelVisible && toggleHomeDrawerButton}
+        openMainMenuPanel={openMainMenuPanel}
         openUrl={openStraboSpotURL}
       />
       <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>

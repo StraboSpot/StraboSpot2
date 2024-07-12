@@ -32,6 +32,7 @@ const HomeViewSmallScreen = ({
                                mapComponentRef,
                                mapMode,
                                onEndDrawPressed,
+                               openMainMenuPanel,
                                openNotebookPanel,
                                openSpotInNotebook,
                                renderVersionCheckLabel,
@@ -211,7 +212,7 @@ const HomeViewSmallScreen = ({
               <NotebookPanel
                 closeNotebookPanel={closeNotebookPanel}
                 createDefaultGeom={mapComponentRef.current?.createDefaultGeom}
-                openMainMenu={toggleHomeDrawer}
+                openMainMenuPanel={openMainMenuPanel}
                 zoomToSpots={mapComponentRef.current?.zoomToSpots}
               />
             }

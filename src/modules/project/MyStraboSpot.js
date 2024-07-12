@@ -20,7 +20,7 @@ import Spacer from '../../shared/ui/Spacer';
 import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
 
-const MyStraboSpot = ({logout, openMainMenu}) => {
+const MyStraboSpot = ({logout, openMainMenuPanel}) => {
   const [showSection, setShowSection] = useState('none');
   const [importedProject, setImportedProject] = useState({});
   const [importComplete] = useState(false);
@@ -143,7 +143,7 @@ const MyStraboSpot = ({logout, openMainMenu}) => {
       case 'new':
         return (
           <View style={{flex: 1}}>
-            <NewProjectForm openMainMenu={openMainMenu} source={'new'}/>
+            <NewProjectForm openMainMenuPanel={openMainMenuPanel} source={'new'}/>
           </View>
         );
     }

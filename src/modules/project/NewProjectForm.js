@@ -15,7 +15,7 @@ import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
 
 const NewProjectForm = ({
-                          openMainMenu,
+                          openMainMenuPanel,
                           source,
                         }) => {
   const dispatch = useDispatch();
@@ -77,7 +77,7 @@ const NewProjectForm = ({
       console.log('New Project created', newProject);
       if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      openMainMenu();
+      openMainMenuPanel();
       return Promise.resolve();
     }
     catch (e) {

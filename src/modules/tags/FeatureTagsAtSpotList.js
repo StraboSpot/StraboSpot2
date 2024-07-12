@@ -9,7 +9,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import {useSpotsHook} from '../spots';
 import {TagsListItem, useTagsHook} from '../tags';
 
-const FeatureTagsAtSpotList = ({openMainMenu, page}) => {
+const FeatureTagsAtSpotList = ({openMainMenuPanel, page}) => {
   const useTags = useTagsHook();
   const useSpots = useSpotsHook();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
@@ -23,7 +23,7 @@ const FeatureTagsAtSpotList = ({openMainMenu, page}) => {
   };
 
   const renderTag = (tag) => {
-    return <TagsListItem tag={tag} openMainMenu={openMainMenu}/>;
+    return <TagsListItem openMainMenuPanel={openMainMenuPanel} tag={tag}/>;
   };
 
   return (

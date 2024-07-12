@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { FlatList, Pressable, SectionList, Switch, Text, View} from 'react-native';
+import {FlatList, Pressable, SectionList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -20,7 +20,7 @@ import notebookStyles from '../notebook-panel/notebookPanel.styles';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 
-const Overview = ({openMainMenu}) => {
+const Overview = ({openMainMenuPanel}) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
@@ -44,7 +44,7 @@ const Overview = ({openMainMenu}) => {
       const SectionOverview = page.overview_component;
       const sectionOverview = {
         title: page,
-        data: [<SectionOverview key={key} page={page} openMainMenu={openMainMenu}/>],
+        data: [<SectionOverview key={key} openMainMenuPanel={openMainMenuPanel} page={page}/>],
       };
       return [...acc, sectionOverview];
     }

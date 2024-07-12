@@ -16,7 +16,7 @@ import {setSelectedProject} from '../../project/projects.slice';
 import {setIsStatusMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
-const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
+const StatusModal = ({exportProject, openMainMenuPanel, openUrl}) => {
   const dispatch = useDispatch();
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
@@ -42,7 +42,7 @@ const StatusModal = ({exportProject, openMainMenu, openUrl}) => {
     }
     else {
       dispatch(setIsStatusMessagesModalVisible(false));
-      openMainMenu();
+      openMainMenuPanel();
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
     }
   };

@@ -10,26 +10,26 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import {setSelectedTag} from '../project/projects.slice';
 
 const TagsListItem = ({
-                        openMainMenu,
+                        openMainMenuPanel,
                         tag,
                       }) => {
   const useTags = useTagsHook();
   const dispatch = useDispatch();
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
 
-  const openTag = (tag) => {
+  const openTag = () => {
     dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_DETAIL}));
     dispatch(setSelectedTag(tag));
     if (tag.type === 'geologic_unit') dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS}));
     else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}));
-    if (!isMainMenuPanelVisible) openMainMenu();
+    if (!isMainMenuPanelVisible) openMainMenuPanel();
   };
 
   return (
     <ListItem
       containerStyle={commonStyles.listItem}
       key={tag.id}
-      onPress={() => openTag(tag)}
+      onPress={openTag}
       pad={5}
     >
       <ListItem.Content>
