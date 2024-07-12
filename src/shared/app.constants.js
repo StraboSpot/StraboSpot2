@@ -1,6 +1,7 @@
 import {name, version} from '../../package.json';
 
 export const REDUX = {
+  CLEAR_PROJECT: 'CLEAR_PROJECT',
   CLEAR_STORE: 'CLEAR_STORE',
 };
 

@@ -6,7 +6,6 @@ import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.cons
 import {
   addedDataset,
   addedProjectDescription,
-  clearedDatasets,
   deletedDataset,
   deletedSpotIdFromDatasets,
   setActiveDatasets,
@@ -18,6 +17,7 @@ import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequestsHook from '../../services/useServerRequests';
+import {REDUX} from '../../shared/app.constants';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -29,8 +29,7 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {clearedMaps} from '../maps/maps.slice';
-import {clearedSpots, deletedSpot} from '../spots/spots.slice';
+import {deletedSpot} from '../spots/spots.slice';
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -135,13 +134,6 @@ const useProject = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
-  const destroyOldProject = () => {
-    dispatch(clearedSpots());
-    dispatch(clearedDatasets());
-    dispatch(clearedMaps());
-    console.log('Destroy complete');
-  };
-
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     else return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
@@ -215,7 +207,7 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    destroyOldProject();
+    dispatch({type: REDUX.CLEAR_PROJECT});
     await createProject(descriptionData);
     return Promise.resolve();
   };
@@ -282,7 +274,6 @@ const useProject = () => {
     createProject: createProject,
     deleteProject: deleteProject,
     destroyDataset: destroyDataset,
-    destroyOldProject: destroyOldProject,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
