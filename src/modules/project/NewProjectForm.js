@@ -75,12 +75,9 @@ const NewProjectForm = ({
       console.log('Saving form...');
       const newProject = await useProject.initializeNewProject(formValues);
       console.log('New Project created', newProject);
-      if (isProjectLoadSelectionModalVisible) {
-        dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-        openMainMenu();
-        dispatch(setIsProjectLoadSelectionModalVisible(false));
-      }
-      else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
+      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      openMainMenu();
       return Promise.resolve();
     }
     catch (e) {
