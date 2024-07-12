@@ -28,8 +28,6 @@ import {
   setIsProgressModalVisible,
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
-  setProgressModalVisible,
-  setStatusMessagesModalVisible,
 } from '../home/home.slice';
 import {clearedMaps} from '../maps/maps.slice';
 import {clearedSpots, deletedSpot} from '../spots/spots.slice';
