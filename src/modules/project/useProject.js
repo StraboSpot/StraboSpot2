@@ -6,7 +6,6 @@ import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.cons
 import {
   addedDataset,
   addedProjectDescription,
-  clearedDatasets,
   deletedDataset,
   deletedSpotIdFromDatasets,
   setActiveDatasets,
@@ -18,6 +17,7 @@ import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useServerRequestsHook from '../../services/useServerRequests';
+import {REDUX} from '../../shared/app.constants';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -29,8 +29,7 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {clearedMaps} from '../maps/maps.slice';
-import {clearedSpots, deletedSpot} from '../spots/spots.slice';
+import {deletedSpot} from '../spots/spots.slice';
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -136,9 +135,7 @@ const useProject = () => {
   };
 
   const destroyOldProject = () => {
-    dispatch(clearedSpots());
-    dispatch(clearedDatasets());
-    dispatch(clearedMaps());
+    dispatch({type: REDUX.CLEAR_PROJECT});
     console.log('Destroy complete');
   };
 
