@@ -220,13 +220,13 @@ const Map = ({
 
   const updateMapView = async () => {
     console.log('Updating map view from Map.js');
-    if (!isEmpty(currentBasemap) && isZoomToCenterOffline) {
+    if (isEmpty(currentBasemap)) await useMap.setBasemap();
+    else if (isZoomToCenterOffline) {
       const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
       const newZoom = 12;
       useMapView.setMapView(newCenter, newZoom);
+      setIsZoomToCenterOffline(false);
     }
-    setBasemap(currentBasemap);
-    setIsZoomToCenterOffline(false);
   };
 
   const moveVertex = async () => {
@@ -1146,10 +1146,10 @@ const Map = ({
 
   return (
     <View style={{flex: 1, zIndex: -1}}>
-      {basemap && (
+      {currentBasemap && (
         <Basemap
           allowMapViewMove={allowMapViewMove}
-          basemap={basemap}
+          basemap={currentBasemap}
           drawFeatures={drawFeatures}
           editFeatureVertex={editFeatureVertex}
           mapMode={mapMode}
