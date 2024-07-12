@@ -44,7 +44,7 @@ const useSignIn = () => {
         const password = credentials.split('*****')[1];
         console.log('Got Credentials:', credentialsEncoded, '\nGot Project Id:', projectId);
         await signIn(email, password);
-        dispatch(setSelectedProject({project: {id: projectId}}));
+        dispatch(setSelectedProject({project: {id: projectId}, source: ''}));
       }
       catch (err) {
         autoLoginError(err);
