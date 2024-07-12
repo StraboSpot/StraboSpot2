@@ -14,12 +14,12 @@ import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slic
 import {
   addedDatasets,
   addedProject,
-  clearedDatasets,
   setActiveDatasets,
   setSelectedDataset,
   setSelectedProject,
 } from '../modules/project/projects.slice';
-import {addedSpotsFromDevice, clearedSpots} from '../modules/spots/spots.slice';
+import {addedSpotsFromDevice} from '../modules/spots/spots.slice';
+import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
 
 const useImport = () => {
@@ -137,13 +137,6 @@ const useImport = () => {
     }
   };
 
-  const destroyOldProject = () => {
-    dispatch(clearedSpots());
-    dispatch(clearedDatasets());
-    dispatch(clearedMaps());
-    console.log('Destroy complete');
-  };
-
   const loadProjectFromDevice = async (selectedProject, isExternal) => {
     dispatch(clearedStatusMessages());
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
@@ -157,7 +150,7 @@ const useImport = () => {
     const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject);
     if (dirExists) {
       const dataFile = await useDevice.readDeviceJSONFile(selectedProject);
-      if (!isEmpty(project) && dataFile) destroyOldProject();
+      if (!isEmpty(project) && dataFile) dispatch({type: REDUX.CLEAR_PROJECT});
       const {projectDb, spotsDb} = dataFile;
       console.log('DataFile', dataFile);
       dispatch(addedSpotsFromDevice(spotsDb));

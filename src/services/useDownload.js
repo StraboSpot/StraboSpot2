@@ -24,11 +24,11 @@ import {
   addedDatasets,
   addedNeededImagesToDataset,
   addedProject,
-  clearedDatasets,
   setActiveDatasets,
   setSelectedDataset,
 } from '../modules/project/projects.slice';
-import {addedSpotsFromServer, clearedSpots} from '../modules/spots/spots.slice';
+import {addedSpotsFromServer} from '../modules/spots/spots.slice';
+import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
 
 const useDownload = () => {
@@ -48,13 +48,6 @@ const useDownload = () => {
   const useDevice = useDeviceHook();
   const useImages = useImagesHook();
   const useServerRequests = useServerRequestsHook();
-
-  const destroyOldProject = () => {
-    dispatch(clearedSpots());
-    dispatch(clearedDatasets());
-    dispatch(clearedMaps());
-    console.log('Destroy complete');
-  };
 
   const downloadDatasets = async (selectedProject) => {
     try {
@@ -84,7 +77,7 @@ const useDownload = () => {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await useServerRequests.getProject(selectedProject.id, encodedLogin);
-      if (!isEmpty(project)) destroyOldProject();
+      if (!isEmpty(project)) dispatch({type: REDUX.CLEAR_PROJECT});
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);

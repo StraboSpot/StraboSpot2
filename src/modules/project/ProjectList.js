@@ -132,12 +132,9 @@ const ProjectList = ({source}) => {
     try {
       console.log('Selected Project:', project);
       setLoading(true);
-      if (!isEmpty(currentProject)) {
-        dispatch(setSelectedProject({project: project, source: source}));
-      }
+      if (!isEmpty(currentProject)) dispatch(setSelectedProject({project: project, source: source}));
       else {
         console.log('Getting project...');
-        if (!isEmpty(project)) useProject.destroyOldProject();
         if (source === 'device') {
           dispatch(setIsProjectLoadSelectionModalVisible(false));
           dispatch(setIsStatusMessagesModalVisible(true));

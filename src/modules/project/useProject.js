@@ -134,11 +134,6 @@ const useProject = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
-  const destroyOldProject = () => {
-    dispatch({type: REDUX.CLEAR_PROJECT});
-    console.log('Destroy complete');
-  };
-
   const doesDeviceBackupDirExist = async (subDirectory) => {
     if (subDirectory !== undefined) return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
     else return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
@@ -212,7 +207,7 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    destroyOldProject();
+    dispatch({type: REDUX.CLEAR_PROJECT});
     await createProject(descriptionData);
     return Promise.resolve();
   };
@@ -279,7 +274,6 @@ const useProject = () => {
     createProject: createProject,
     deleteProject: deleteProject,
     destroyDataset: destroyDataset,
-    destroyOldProject: destroyOldProject,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
