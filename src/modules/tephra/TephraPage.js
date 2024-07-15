@@ -97,14 +97,14 @@ const TephraPage = ({page}) => {
           data={data}
           onDragBegin={() => setIsReorderingActive(true)}
           onDragEnd={({data}) => setData(data)}
-          renderItem={({item, index, drag}) => (
+          renderItem={({item, getIndex, drag}) => (
             <ShadowDecorator>
               <BasicListItem
                 drag={Platform.OS === 'web' ? undefined : drag}
                 item={item}
-                index={index}
+                index={getIndex()}
                 page={page}
-                editItem={itemToEdit => editAttribute(itemToEdit, index)}
+                editItem={editAttribute}
                 isReorderingActive={isReorderingActive}
               />
             </ShadowDecorator>
