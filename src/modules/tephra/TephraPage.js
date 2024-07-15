@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import DraggableFlatList, {ShadowDecorator} from 'react-native-draggable-flatlist';
 import {Button, ButtonGroup} from 'react-native-elements';
@@ -89,6 +89,9 @@ const TephraPage = ({page}) => {
           dividerText={page.label}
           onPress={addAttribute}
         />
+        {data.length > 1 && (
+          <Text style={{...commonStyles.listItemTitle, ...commonStyles.textBold, paddingLeft: 10}}>Top</Text>
+        )}
         <DraggableFlatList
           keyExtractor={item => item.id}
           data={data}
@@ -109,6 +112,9 @@ const TephraPage = ({page}) => {
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No ' + page.label}/>}
         />
+        {data.length > 1 && (
+          <Text style={{...commonStyles.listItemTitle, ...commonStyles.textBold, paddingLeft: 10}}>Bottom</Text>
+        )}
         {isReorderingActive && (
           <Button
             onPress={updateOrder}
