@@ -19,7 +19,7 @@ import useImagesHook from '../modules/images/useImages';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
-import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
+import {addedCustomMapsFromBackup} from '../modules/maps/maps.slice';
 import {
   addedDatasets,
   addedNeededImagesToDataset,
@@ -53,7 +53,7 @@ const useDownload = () => {
     try {
       dispatch(addedStatusMessage('Downloading Datasets...'));
       const res = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
-      const datasets = res.datasets;
+      const datasets = res?.datasets || [];
       if (datasets.length === 1) {
         dispatch(setActiveDatasets({bool: true, dataset: datasets[0].id}));
         dispatch(setSelectedDataset(datasets[0].id));
