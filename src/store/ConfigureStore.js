@@ -157,7 +157,7 @@ const rootReducer = (state, action) => {
     state = {
       compass: undefined,
       connections: {...state.connections},
-      home: undefined,
+      home: {...state.home},
       map: undefined,
       notebook: undefined,
       offlineMap: {...state.offlineMap},
