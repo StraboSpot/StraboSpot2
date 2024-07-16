@@ -10,7 +10,6 @@ import projectOptionsModalStyle from './projectOptionsModal.style';
 import {
   setLoadingStatus,
   setIsProgressModalVisible,
-  setIsStatusMessagesModalVisible,
 } from '../../../../modules/home/home.slice';
 import overlayStyles from '../../../../modules/home/overlays/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
@@ -113,15 +112,9 @@ const ProjectOptionsDialogBox = ({
       console.log('Project Saved!');
     }
     else if (userAction === OVERWRITE) {
-      try {
-        closeModal();
-        await useProject.switchProject(OVERWRITE);
-        console.log('Project overwritten!');
-      }
-      catch (err) {
-        console.error('Error switching project in useProject', err);
-        dispatch(setIsStatusMessagesModalVisible(false));
-      }
+      closeModal();
+      await useProject.switchProject(OVERWRITE);
+      console.log('Project overwritten!');
     }
     else {
       closeModal();

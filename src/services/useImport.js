@@ -139,7 +139,6 @@ const useImport = () => {
 
   const loadProjectFromDevice = async (selectedProject, isExternal) => {
     dispatch(clearedStatusMessages());
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Importing ${selectedProject}...`));
 
     console.log('SELECTED PROJECT', selectedProject);
@@ -165,7 +164,6 @@ const useImport = () => {
       dispatch(addedStatusMessage('Importing image files...'));
       await copyImages(selectedProject);
       await checkForMaps(dataFile, selectedProject, isExternal);
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
       dispatch(setSelectedProject({project: '', source: ''}));
       return Promise.resolve({project: dataFile.projectDb.project});
     }

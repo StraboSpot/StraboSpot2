@@ -304,7 +304,8 @@ const useDevice = () => {
       }
       catch (e2) {
         console.error('Error reading file as ascii:', e2);
-        return undefined;
+        throw Error()
+        // return undefined;
       }
     }
   };

@@ -249,21 +249,33 @@ const useProject = () => {
   };
 
   const switchProject = async (action) => {
-    console.log('User wants to:', action);
-    if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setIsProgressModalVisible(true));
-    else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setIsBackupModalVisible(true));
-    else if (action === ProjectActions.OVERWRITE) {
-      if (selectedProject.source === 'device') {
-        dispatch(clearedStatusMessages());
-        dispatch(setIsStatusMessagesModalVisible(true));
-        const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
-        dispatch(setIsStatusMessagesModalVisible(false));
-        console.log('Done loading project', res);
+    try {
+      console.log('User wants to:', action);
+      if (action === ProjectActions.BACKUP_TO_SERVER) dispatch(setIsProgressModalVisible(true));
+      else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setIsBackupModalVisible(true));
+      else if (action === ProjectActions.OVERWRITE) {
+        if (selectedProject.source === 'device') {
+          dispatch(clearedStatusMessages());
+          dispatch(setLoadingStatus({view: 'home', bool: true}));
+          const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
+          dispatch(setLoadingStatus({view: 'home', bool: false}));
+          toast.show('Project was loaded successfully!', {duration: 4000, type: 'success'})
+          console.log('Done loading project', res);
+        }
+        else if (selectedProject.source === 'server') {
+          dispatch(setSelectedProject({project: '', source: ''}));
+          await useDownload.initializeDownload(selectedProject.project);
+        }
       }
-      else if (selectedProject.source === 'server') {
-        dispatch(setSelectedProject({project: '', source: ''}));
-        await useDownload.initializeDownload(selectedProject.project);
-      }
+    }
+    catch (err) {
+      dispatch(setIsStatusMessagesModalVisible(false));
+      console.error('Error switching project in useProject', err);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(`There was an error loading the project. \n\nMessage:\n${err}`))
+      dispatch(setIsErrorMessagesModalVisible(true));
+      throw Error('Project Error');
     }
   };
 
