@@ -35,7 +35,7 @@ const DatasetList = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   const downloadImages = async (dataset) => {
-    const imageRes = await useDownload.initializeDownloadImages(dataset?.images?.neededImagesIds, dataset);
+    const imageRes = await useDownload.initializeDownloadImages(dataset);
     console.log('Image Res', imageRes);
   };
 
