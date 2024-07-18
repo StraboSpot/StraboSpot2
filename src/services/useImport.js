@@ -3,13 +3,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  removedLastStatusMessage,
-  setLoadingStatus,
-} from '../modules/home/home.slice';
-import {addedCustomMapsFromBackup, clearedMaps} from '../modules/maps/maps.slice';
+import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
+import {addedCustomMapsFromBackup} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {
   addedDatasets,
@@ -19,8 +14,8 @@ import {
   setSelectedProject,
 } from '../modules/project/projects.slice';
 import {addedSpotsFromDevice} from '../modules/spots/spots.slice';
-import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
+import {persistor} from '../store/ConfigureStore';
 
 const useImport = () => {
   let isOldBackup;
@@ -149,7 +144,7 @@ const useImport = () => {
     const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject);
     if (dirExists) {
       const dataFile = await useDevice.readDeviceJSONFile(selectedProject);
-      if (!isEmpty(project) && dataFile) dispatch({type: REDUX.CLEAR_PROJECT});
+      if (!isEmpty(project) && dataFile) await persistor.purge();
       const {projectDb, spotsDb} = dataFile;
       console.log('DataFile', dataFile);
       dispatch(addedSpotsFromDevice(spotsDb));

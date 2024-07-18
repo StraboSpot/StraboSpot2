@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {PURGE} from 'redux-persist';
 
 import {LATITUDE, LONGITUDE, ZOOM} from './maps.constants';
 
@@ -106,6 +107,11 @@ const mapsSlice = createSlice({
     setZoom(state, action) {
       state.zoom = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => {
+      return initialMapsState;
+    });
   },
 });
 

@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {PURGE} from 'redux-persist';
 
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {isEmpty, isEqual} from '../../shared/Helpers';
@@ -251,6 +252,11 @@ const projectSlice = createSlice({
       state.project[field] = value;
       state.project.modified_timestamp = Date.now();
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => {
+      return initialProjectState;
+    });
   },
 });
 

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
 import {createLogger} from 'redux-logger';
-import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
+import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE, persistStore} from 'redux-persist';
 
 import listenerMiddleware from './listenerMiddleware';
 import compassSlice from '../modules/compass/compass.slice';
@@ -153,19 +153,6 @@ const rootReducer = (state, action) => {
       user: undefined,
     };
   }
-  else if (action.type === REDUX.CLEAR_PROJECT) {
-    state = {
-      compass: undefined,
-      connections: {...state.connections},
-      home: {...state.home},
-      map: undefined,
-      notebook: undefined,
-      offlineMap: {...state.offlineMap},
-      project: undefined,
-      spot: undefined,
-      user: {...state.user},
-    };
-  }
   return combinedReducers(state, action);
 };
 
@@ -173,10 +160,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const defaultMiddlewareOptions = {
   immutableCheck: false,
-  serializableCheck: {
-    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    warnAfter: 60,
-  },
+  serializableCheck: false,
 };
 
 const store = configureStore({
@@ -187,4 +171,6 @@ const store = configureStore({
     : getDefaultMiddleware(defaultMiddlewareOptions).concat(listenerMiddleware.middleware),
 });
 
-export default store;
+let persistor = persistStore(store);
+
+export {store, persistor};

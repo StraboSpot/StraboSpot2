@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {PURGE} from 'redux-persist';
 
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 
@@ -18,6 +19,11 @@ const compassSlice = createSlice({
     setCompassMeasurementTypes(state, action) {
       state.measurementTypes = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => {
+      return initialCompassState;
+    });
   },
 });
 

@@ -1,4 +1,5 @@
 import {createSlice, current} from '@reduxjs/toolkit';
+import {PURGE} from 'redux-persist';
 
 import {isEmpty} from '../../shared/Helpers';
 
@@ -117,6 +118,11 @@ const spotSlice = createSlice({
       state.selectedSpot.properties.notesTimestamp = Date();
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => {
+      return initialSpotState;
+    });
   },
 });
 

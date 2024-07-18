@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {PURGE} from 'redux-persist';
 
 import {isEmpty} from '../../shared/Helpers';
 
@@ -37,6 +38,11 @@ const notebookSlice = createSlice({
     removedNotebookPageOn(state, action) {
       state.notebookPagesOn = state.notebookPagesOn.filter(s => s !== action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => {
+      return initialNotebookState;
+    });
   },
 });
 

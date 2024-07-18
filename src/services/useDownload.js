@@ -28,8 +28,8 @@ import {
   setSelectedDataset,
 } from '../modules/project/projects.slice';
 import {addedSpotsFromServer} from '../modules/spots/spots.slice';
-import {REDUX} from '../shared/app.constants';
 import {isEmpty} from '../shared/Helpers';
+import {persistor} from '../store/ConfigureStore';
 
 const useDownload = () => {
   let customMapsToSave = {};
@@ -77,7 +77,7 @@ const useDownload = () => {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await useServerRequests.getProject(selectedProject.id, encodedLogin);
-      if (!isEmpty(project)) dispatch({type: REDUX.CLEAR_PROJECT});
+      if (!isEmpty(project)) await persistor.purge();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);
