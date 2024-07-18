@@ -141,8 +141,10 @@ const Map = ({
 
   useEffect(() => {
     console.log(
-      'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]',
-      spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection);
+      'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]');
+    // console.log(
+    //   'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]',
+    //   spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection);
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]);
 
@@ -431,7 +433,8 @@ const Map = ({
             }
             if (isEmpty(vertexSelected)) {
               // draw features did not return anything - generally a scenario of selecting a vertex on a spot press.
-              closestVertexDetails = await useMapFeaturesCalculated.identifyClosestVertexOnSpotPress(spotFound, screenPointX,
+              closestVertexDetails = await useMapFeaturesCalculated.identifyClosestVertexOnSpotPress(spotFound,
+                screenPointX,
                 screenPointY, spotsEdited);
               vertexSelected = closestVertexDetails[0];
               isVertexIdentifiedAtSpotPress = true;
@@ -492,7 +495,7 @@ const Map = ({
     if ((currentImageBasemap || stratSection)
       && ((isEmpty(spotEditing) || ((!isEmpty(spotEditing) && spotEditing.geometry.type === 'Point'))
         || (!isEmpty(spotEditing) && spotEditing.properties.name !== vertex.properties.name)))) {
-      vertexToEditWithGeoCoords  = useMapCoords.convertImagePixelsToLatLong(vertexToEditWithGeoCoords);
+      vertexToEditWithGeoCoords = useMapCoords.convertImagePixelsToLatLong(vertexToEditWithGeoCoords);
     }
     clearVertexes();
     setVertexToEdit(vertexToEditWithGeoCoords);
@@ -859,7 +862,8 @@ const Map = ({
       let closestVertexToSelect = await useMapFeaturesCalculated.getDrawFeatureAtPress(screenPointX, screenPointY);
       if (isEmpty(closestVertexToSelect)) {
         // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
-        closestVertexDetails = await useMapFeaturesCalculated.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
+        closestVertexDetails = await useMapFeaturesCalculated.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX,
+          screenPointY,
           spotsEdited);
         closestVertexToSelect = closestVertexDetails[0];
         startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
@@ -1080,7 +1084,8 @@ const Map = ({
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots([...spotsSelected, ...spotsNotSelected], bboxPoly);
+      const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots([...spotsSelected, ...spotsNotSelected],
+        bboxPoly);
       dispatch(setSpotsInMapExtent(gotSpotsInMapExtent));
     }
   };
