@@ -386,7 +386,6 @@ const useDevice = () => {
     }
   };
 
-
   return {
     copyFiles: copyFiles,
     createProjectDirectories: createProjectDirectories,

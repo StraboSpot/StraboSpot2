@@ -183,6 +183,7 @@ const useDownload = () => {
   const initializeDownloadImages = async (dataset) => {
     try {
       const neededImagesIds = dataset.images?.neededImagesIds;
+      let updatedNeededImagesIds = JSON.parse(JSON.stringify(neededImagesIds));
       dispatch(setLoadingStatus({view: 'modal', bool: true}));
       dispatch(clearedStatusMessages());
       dispatch(setIsStatusMessagesModalVisible(true));
@@ -196,7 +197,7 @@ const useDownload = () => {
             const statusCode = await useDevice.downloadAndSaveImage(imageId);
             if (statusCode === 200) {
               imagesDownloadedCount++;
-              const updatedNeededImagesIds = neededImagesIds.filter(id => id !== imageId);
+              updatedNeededImagesIds = updatedNeededImagesIds.filter(id => id !== imageId);
               dispatch(addedNeededImagesToDataset({
                 datasetId: dataset.id,
                 images: {...dataset.images, neededImagesIds: updatedNeededImagesIds},
