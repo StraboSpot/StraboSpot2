@@ -396,7 +396,6 @@ const useUpload = () => {
 
   return {
     initializeUpload: initializeUpload,
-    resizeImageForUpload: resizeImageForUpload,
     resizeProfileImageForUpload: resizeProfileImageForUpload,
     uploadDatasets: uploadDatasets,
     uploadFromWeb: uploadFromWeb,
