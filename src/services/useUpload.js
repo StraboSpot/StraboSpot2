@@ -9,10 +9,7 @@ import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
-import {
-  deletedSpotIdFromDataset,
-  setIsImageTransferring,
-} from '../modules/project/projects.slice';
+import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
 import useDeviceHook from '../services/useDevice';
@@ -55,7 +52,8 @@ const useUpload = () => {
     const {uri, width, height} = imageProps;
     if (width && height) {
       await useDevice.doesDeviceDirectoryExist(tempImagesDownsizedDirectory);
-      const resizedProfileImage = await ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 100, 0, tempImagesDownsizedDirectory);
+      const resizedProfileImage = await ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 100, 0,
+        tempImagesDownsizedDirectory);
       useImages.getImageSize(imageProps, resizedProfileImage);
       return resizedProfileImage;
     }
@@ -84,7 +82,7 @@ const useUpload = () => {
         await useDevice.makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-       useImages.getImageSize(imageProps, resizedImage);
+        useImages.getImageSize(imageProps, resizedImage);
         return resizedImage;
       }
     }
@@ -234,7 +232,6 @@ const useUpload = () => {
         failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
         dispatch(addedStatusMessage(`\n ${failedCountMsgText}`));
       }
-
 
       if (imagesUploadedCount + imagesUploadFailedCount < imagesToUpload.length) {
         await startUploadingImage(imagesToUpload[imagesUploadedCount + imagesUploadFailedCount]);
