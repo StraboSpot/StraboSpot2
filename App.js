@@ -18,6 +18,8 @@ import Toast from './src/shared/ui/Toast';
 import {store, persistor} from './src/store/ConfigureStore';
 import config from './src/utils/config';
 
+let didInit = false;
+
 Sentry.init({
   dsn: config.get('Error_reporting_DSN'),
   enableNative: Platform.OS !== 'web',
@@ -42,8 +44,12 @@ NetInfo.configure({
 });
 
 const App = () => {
-  console.log('Rendering App...');
-  if (Platform.OS === 'web') persistor.purge(); // Use this to clear persistStore completely
+  if (Platform.OS === 'web' && !didInit) {
+    console.count('Rendering App...');
+    persistor.purge(); // Use this to clear persistStore completely
+  }
+  else console.log('Rendering App...');
+  didInit = true;
 
   return (
     <SafeAreaProvider>
