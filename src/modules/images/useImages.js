@@ -261,7 +261,7 @@ const useImages = () => {
 
   const launchCameraFromNotebook = async (newSpotId) => {
     try {
-      const permissionResult = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+      const permissionResult =Platform.OS === 'ios' ? true : await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
       if (permissionResult) {
         const savedPhoto = await takePicture();
         dispatch(setLoadingStatus({view: 'home', bool: true}));
