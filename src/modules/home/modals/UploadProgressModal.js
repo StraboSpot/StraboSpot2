@@ -20,7 +20,7 @@ const UploadProgressModal = () => {
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
   const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
-  const projectTransferProgress = useSelector(state => state.project.projectTransferProgress);
+  const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
