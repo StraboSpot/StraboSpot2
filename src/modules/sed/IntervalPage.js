@@ -31,10 +31,10 @@ const IntervalPage = ({page}) => {
   const formName = ['sed', 'interval'];
 
   useLayoutEffect(() => {
-    console.log('ULE IntervalPage []');
-    console.log('Spot:', spot);
-    console.log('Interval:', interval);
-    console.log('Character:', character);
+    // console.log('ULE IntervalPage []');
+    // console.log('Spot:', spot);
+    // console.log('Interval:', interval);
+    // console.log('Character:', character);
 
     if (spot.properties?.sed?.interval_type) {
       let editedSedData = JSON.parse(JSON.stringify(spot.properties.sed));

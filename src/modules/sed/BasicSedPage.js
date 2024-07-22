@@ -30,7 +30,7 @@ const BasicSedPage = ({page}) => {
   const attributes = spot && spot.properties && spot.properties.sed && spot.properties.sed[page.key] || [];
 
   useEffect(() => {
-    console.log('UE BasicSedPage [selectedAttributes, spot]', selectedAttributes, spot);
+    // console.log('UE BasicSedPage [selectedAttributes, spot]', selectedAttributes, spot);
     if (!isEmpty(selectedAttributes)) {
       setSelectedAttribute(selectedAttributes[0]);
       setIsDetailView(true);

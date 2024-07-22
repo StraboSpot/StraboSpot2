@@ -20,7 +20,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useSpotsHook from '../spots/useSpots';
 
 const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
-  console.log('Rendering ImageGallery...');
+  // console.log('Rendering ImageGallery...');
 
   const navigate = useNavigation();
   const useImages = useImagesHook();
@@ -39,17 +39,17 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   let sortedSpotsWithImages = [];
 
   useEffect(() => {
-    console.log('UE ImageGallery []');
+    // console.log('UE ImageGallery []');
     getImageThumbnailURIs().catch(err => console.error(err));
   }, []);
 
   const getImageThumbnailURIs = async () => {
     try {
       const spotsWithImages = useSpots.getSpotsWithImages();
-      console.log('Getting Image URI Thumbnails!');
+      // console.log('Getting Image URI Thumbnails!');
       const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
       setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
-      console.log('Image URI Thumbnails are done!');
+      // console.log('Image URI Thumbnails are done!');
       setImageThumbnails(imageThumbnailURIsTemp);
       setIsError(false);
     }

@@ -218,7 +218,7 @@ const AddImageOverlayModal = ({
   const saveImageOverlay = async () => {
     await overlayFormRef.current.submitForm();
     const editedImageOverlayData = useForm.showErrors(overlayFormRef.current);
-    console.log('Image Overlay Data', editedImageOverlayData);
+    // console.log('Image Overlay Data', editedImageOverlayData);
     if (!isEmpty(editedImageOverlayData) && editedImageOverlayData.id) {
       let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};
       let editedStratSectionData = editedSedData.strat_section ? JSON.parse(
@@ -247,7 +247,7 @@ const AddImageOverlayModal = ({
 
   const validateImageOverlay = (values) => {
     let errors = {};
-    console.log('Values before image overlay validation:', values);
+    // console.log('Values before image overlay validation:', values);
     if ((values.image_height && !values.image_width) || (values.image_width && !values.image_height)) {
       delete values.image_height;
       delete values.image_width;
@@ -274,7 +274,7 @@ const AddImageOverlayModal = ({
           break;
       }
     });
-    console.log('Values after image overlay validation:', values);
+    // console.log('Values after image overlay validation:', values);
     return errors;
   };
 

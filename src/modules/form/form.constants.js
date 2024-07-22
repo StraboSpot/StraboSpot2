@@ -13,4 +13,4 @@ export const LABEL_DICTIONARY = Object.keys(forms.default).reduce((acc, key) => 
   return {...acc, [key]: res};
 }, {});
 
-console.log('LABEL_DICTIONARY', LABEL_DICTIONARY);
+// console.log('LABEL_DICTIONARY', LABEL_DICTIONARY);

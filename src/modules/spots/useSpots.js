@@ -192,7 +192,7 @@ const useSpots = () => {
   const getActiveSpotsObj = () => {
     let activeSpots = {};
     const activeDatasets = useProject.getActiveDatasets();
-    console.groupCollapsed('Getting Spots in Active Datasets...');
+    // console.groupCollapsed('Getting Spots in Active Datasets...');
     Object.values(activeDatasets).forEach((dataset) => {
       let missingSpotsCount = 0;
       let missingSpotsIds = [];
@@ -203,8 +203,7 @@ const useSpots = () => {
           missingSpotsIds.push(spotId);
         }
       });
-      console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots',
-        missingSpotsIds);
+      // console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
     });
     console.groupEnd();
     return activeSpots;

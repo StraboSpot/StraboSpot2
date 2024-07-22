@@ -148,12 +148,12 @@ export const BASEMAPS = DEFAULT_MAPS.map((map) => {
   }];
   return map;
 });
-console.log('BASEMAPS', BASEMAPS);
+// console.log('BASEMAPS', BASEMAPS);
 
 export const CUSTOMBASEMAPS = CUSTOM_MAP_TYPES.map((map) => {
   return {...map, ...MAP_PROVIDERS[map.source]};
 });
-console.log('CUSTOMBASEMAPS', BASEMAPS);
+// console.log('CUSTOMBASEMAPS', BASEMAPS);
 
 export const BACKGROUND = {
   title: 'Background',

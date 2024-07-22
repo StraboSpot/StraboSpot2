@@ -26,7 +26,6 @@ const useDevice = () => {
       await RNFS.copyFile(source, target);
     }
     catch (err) {
-      console.error('Error Copying Image Files to Backup', err);
       throw Error(err);
     }
   };
@@ -45,7 +44,7 @@ const useDevice = () => {
   };
 
   const createProjectDirectories = async () => {
-    console.log('STOP!!');
+    // console.log('STOP!!');
     if (Platform.OS === 'android') {
       const permissionsGranted = await usePermissions.checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       if (permissionsGranted === RESULTS.GRANTED) {

@@ -32,7 +32,7 @@ const useMapFeatures = () => {
         spot => !spot.properties.strat_section_id && !spot.properties.image_basemap);
     }
     // console.log('All Mapped Active Spots on this map', mappedSpots);
-    console.log('Number of Active Spots Mapped on this map:', mappedSpots.length);
+    // console.log('Number of Active Spots Mapped on this map:', mappedSpots.length);
     return mappedSpots;
   };
 

@@ -38,8 +38,8 @@ const BeddingPage = ({page}) => {
   const bedding = spot.properties?.sed?.bedding || {};
 
   useEffect(() => {
-    console.log('UE BeddingPage [selectedAttributes, spot]', selectedAttributes, spot);
-    console.log('Bedding:', bedding);
+    // console.log('UE BeddingPage [selectedAttributes, spot]', selectedAttributes, spot);
+    // console.log('Bedding:', bedding);
     if (!isEmpty(selectedAttributes)) {
       setSelectedAttribute(selectedAttributes[0]);
       setIsDetailView(true);
@@ -47,7 +47,7 @@ const BeddingPage = ({page}) => {
   }, [selectedAttributes, spot]);
 
   useLayoutEffect(() => {
-    console.log('ULE BeddingPage []');
+    // console.log('ULE BeddingPage []');
     return () => confirmLeavePage();
   }, []);
 

@@ -50,7 +50,7 @@ const Map = ({
                setDistance,
                startEdit,
              }) => {
-  console.log('Rendering Map...');
+  // console.log('Rendering Map...');
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -103,22 +103,22 @@ const Map = ({
   const [vertexToEdit, setVertexToEdit] = useState([]);
 
   useEffect(() => {
-    console.log('UE Map [currentImageBasemap]', currentImageBasemap);
+    // console.log('UE Map [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
       useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
   }, [currentImageBasemap]);
 
   useEffect(() => {
-    console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
+    // console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
     updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
+    // console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
     if (isOnline && !currentBasemap) useMap.setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
-      console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
+      // console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       useMap.setBasemap(currentBasemap.id).catch((error) => {
         console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
@@ -130,7 +130,7 @@ const Map = ({
       });
     }
     else if (!isOnline && isOnline !== null && currentBasemap && Platform.OS !== 'web') {
-      console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
+      // console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       Object.values(customBasemap).map((map) => {
         if (offlineMaps[map.id]?.id !== map.id) useCustomMap.setCustomMapSwitchValue(false, map);
       });
@@ -140,8 +140,7 @@ const Map = ({
   }, [userEmail, isOnline]);
 
   useEffect(() => {
-    console.log(
-      'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]');
+    // console.log('UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]');
     // console.log(
     //   'UE Map [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]',
     //   spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection);
@@ -149,23 +148,23 @@ const Map = ({
   }, [spots, datasets, currentBasemap, currentImageBasemap, selectedSymbols, isAllSymbolsOn, stratSection]);
 
   useEffect(() => {
-    console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
+    // console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
     //conditional call to avoid multiple renders during edit mode.
     if (mapMode !== MAP_MODES.EDIT) setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [selectedSpot, activeDatasetsIds]);
 
   useEffect(() => {
-    console.log('UE Map [vertexEndCoords]', vertexEndCoords);
+    // console.log('UE Map [vertexEndCoords]', vertexEndCoords);
     if (!isEmpty(vertexEndCoords && mapMode === MAP_MODES.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
-    console.log('UE Map [drawFeatures]', drawFeatures);
+    // console.log('UE Map [drawFeatures]', drawFeatures);
     if (mapMode === MAP_MODES.DRAW.POINT && drawFeatures.length === 1) onEndDrawPressed();
   }, [drawFeatures]);
 
   useEffect(() => {
-    console.log('UE Map [defaultGeomType]', defaultGeomType);
+    // console.log('UE Map [defaultGeomType]', defaultGeomType);
     if (defaultGeomType) createDefaultGeomContinued();
   }, [defaultGeomType]);
 
@@ -221,7 +220,7 @@ const Map = ({
   };
 
   const updateMapView = async () => {
-    console.log('Updating map view from Map.js');
+    // console.log('Updating map view from Map.js');
     if (isEmpty(currentBasemap)) await useMap.setBasemap();
     else if (isZoomToCenterOffline) {
       const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
@@ -238,16 +237,16 @@ const Map = ({
       if ((currentImageBasemap || stratSection) && spotEditing && turf.getType(spotEditing) === 'Point') {
         const vertexCoordinates = proj4(GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION,
           [newVertexCoords[0], newVertexCoords[1]]);
-        console.log('Move vertex to:', vertexCoordinates);
+        // console.log('Move vertex to:', vertexCoordinates);
         editSpotCoordinates([vertexCoordinates[0], vertexCoordinates[1]]);
       }
       else {
-        console.log('Move vertex to:', newVertexCoords);
+        // console.log('Move vertex to:', newVertexCoords);
         editSpotCoordinates(newVertexCoords);
       }
     }
     catch {
-      console.log('Problem moving the vertex');
+      console.error('Problem moving the vertex');
     }
   };
 
@@ -275,8 +274,7 @@ const Map = ({
     if (!isEmpty(spotEditingTmp)) {
       spotsNotEditedTmp = spotsNotEditedTmp.filter(spot => spot.properties.id !== spotEditingTmp.properties.id);
     }
-    console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
-      spotsNotEditedTmp);
+    // console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:', spotsNotEditedTmp);
     if (!currentImageBasemap && !stratSection) {
       setSpotsSelected(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]);
       setSpotsNotSelected([...spotsEditedTmp, ...spotsNotEditedTmp]);
@@ -316,7 +314,7 @@ const Map = ({
   };
 
   const clearSelectedSpots = () => {
-    console.log('Clear selected Spots.');
+    // console.log('Clear selected Spots.');
     setDisplayedSpots([]);
     dispatch(clearedSelectedSpots());
   };

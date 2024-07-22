@@ -29,7 +29,7 @@ const mapsSlice = createSlice({
   reducers: {
     addedCustomMap(state, action) {
       const newMapObject = Object.assign({}, {[action.payload.id]: action.payload});
-      console.log('Setting custom maps: ', newMapObject);
+      // console.log('Setting custom maps: ', newMapObject);
       state.customMaps = {...state.customMaps, ...newMapObject};
     },
     addedCustomMapsFromBackup(state, action) {
@@ -52,7 +52,7 @@ const mapsSlice = createSlice({
       state.selectedCustomMapToEdit = action.payload;
     },
     setAllSymbolsToggled(state, action) {
-      console.log('Map All Symbols Toggled', action.payload);
+      // console.log('Map All Symbols Toggled', action.payload);
       state.isAllSymbolsOn = action.payload;
       state.symbolsOn = action.payload ? state.mapSymbols : state.symbolsOn;
     },
@@ -78,7 +78,7 @@ const mapsSlice = createSlice({
       state.isShowSpotLabelsOn = action.payload;
     },
     setMapSymbols(state, action) {
-      console.log('Set Map Symbols', action.payload);
+      // console.log('Set Map Symbols', action.payload);
       state.mapSymbols = action.payload;
     },
     setSpotsInMapExtent(state, action) {
@@ -89,7 +89,7 @@ const mapsSlice = createSlice({
       state.stratSection = action.payload;
     },
     setSymbolsDisplayed(state, action) {
-      console.log('Map Symbols Displayed', action.payload);
+      // console.log('Map Symbols Displayed', action.payload);
       state.symbolsOn = action.payload;
       state.isAllSymbolsOn = action.payload.length < state.mapSymbols.length ? false : state.isAllSymbolsOn;
     },
@@ -97,11 +97,11 @@ const mapsSlice = createSlice({
       state.tagTypeForColor = action.payload;
     },
     setVertexEndCoords(state, action) {
-      console.log('Set vertex selected end coords: ', action.payload);
+      // console.log('Set vertex selected end coords: ', action.payload);
       state.vertexEndCoords = action.payload;
     },
     setVertexStartCoords(state, action) {
-      console.log('Set vertex selected start coords: ', action.payload);
+      // console.log('Set vertex selected start coords: ', action.payload);
       state.vertexStartCoords = action.payload;
     },
     setZoom(state, action) {

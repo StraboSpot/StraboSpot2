@@ -104,17 +104,17 @@ const useUpload = () => {
       const resJSON = await useServerRequests.updateDataset(datasetCopy, user.encoded_login);
       if (resJSON.modified_on_server) {
         console.log('Dataset that was uploaded:', resJSON);
-        console.log(dataset.name + ': Uploading Dataset Properties...');
+        // console.log(dataset.name + ': Uploading Dataset Properties...');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Uploading ${dataset.name} Properties...`));
         await useServerRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
-        console.log(`Finished Uploading Dataset ${dataset.name} Properties...`);
+        // console.log(`Finished Uploading Dataset ${dataset.name} Properties...`);
         dispatch(addedStatusMessage(`Finished Uploading Dataset ${dataset.name} Properties...\n`));
         await uploadSpots(dataset);
       }
       else {
         datasetsNotUploaded.push(datasetCopy);
-        console.log(`Did not upload: Dataset ${datasetCopy.name} has not changed or is newer.`);
+        // console.log(`Did not upload: Dataset ${datasetCopy.name} has not changed or is newer.`);
       }
     }
     catch (err) {
@@ -361,20 +361,20 @@ const useUpload = () => {
     }
     try {
       if (isEmpty(datasetSpots)) {
-        console.log(dataset.name + ': No Spots to Upload.');
+        // console.log(dataset.name + ': No Spots to Upload.');
         dispatch(addedStatusMessage('There are no spots to upload.'));
         await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
-        console.log(dataset.name + ': Finished Removing All Spots from Dataset on Server.');
+        // console.log(dataset.name + ': Finished Removing All Spots from Dataset on Server.');
       }
       else {
         const spotCollection = {
           type: 'FeatureCollection',
           features: Object.values(datasetSpots),
         };
-        console.log(dataset.name + ': Uploading Spots...', spotCollection);
+        // console.log(dataset.name + ': Uploading Spots...', spotCollection);
         dispatch(addedStatusMessage(`\nUploading ${dataset.name} spots...`));
         await useServerRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
-        console.log(`Finished uploading ${dataset.name} spots.`);
+        // console.log(`Finished uploading ${dataset.name} spots.`);
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`\nFinished uploading ${dataset.name} spots.\n`));
         // await uploadImages(Object.values(datasetSpots), dataset.name);
@@ -382,13 +382,13 @@ const useUpload = () => {
 
     }
     catch (err) {
-      console.error(dataset.name + ': Error Uploading Project Spots.', err);
+      // console.error(dataset.name + ': Error Uploading Project Spots.', err);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
       // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
       if (err?.startsWith('Spot(s) already exist in another dataset')) {
         const spotId = parseInt(err.split(')')[1].split('(')[1].split(')')[0], 10);
-        console.log('dupes', spotId);
+        // console.log('dupes', spotId);
         dispatch(deletedSpotIdFromDataset({datasetId: dataset.id, spotId: spotId}));
         alert('Fixed Spot in Another Dataset Error',
           'Spot removed from ' + dataset.name + '. Please try uploading again.');

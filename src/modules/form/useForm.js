@@ -127,7 +127,7 @@ const useForm = () => {
   };
 
   const validateForm = ({formName, values}) => {
-    console.log('Validating', formName, 'with', values);
+    // console.log('Validating', formName, 'with', values);
     const errors = {};
 
     getSurvey(formName).forEach((fieldModel) => {

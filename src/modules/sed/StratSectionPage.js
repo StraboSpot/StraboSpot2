@@ -24,7 +24,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
 const StratSectionPage = ({page}) => {
-  console.log('Rendering StratSectionPage...');
+  // console.log('Rendering StratSectionPage...');
 
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -39,8 +39,8 @@ const StratSectionPage = ({page}) => {
 
   const stratSection = spot.properties?.sed?.strat_section || {};
 
-  console.log('Spot:', spot);
-  console.log('Strat Section:', stratSection);
+  // console.log('Spot:', spot);
+  // console.log('Strat Section:', stratSection);
 
   const renderImageItem = (image) => {
     return (

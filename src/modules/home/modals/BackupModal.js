@@ -20,7 +20,7 @@ const BackupModal = () => {
   const useExport = useExportHook();
 
   useEffect(() => {
-    console.log('UE BackupModal [currentProject, user]');
+    // console.log('UE BackupModal [currentProject, user]');
     // console.log('UE BackupModal [currentProject, user]', currentProject, userEmail);
     if (!isEmpty(currentProject) && isBackModalVisible) {
       setBackupFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);

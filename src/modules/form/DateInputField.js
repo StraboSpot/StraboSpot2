@@ -33,7 +33,7 @@ const DateInputField = ({
   };
 
   const saveDate = (event, selectedDate) => {
-    console.log('Change Date', name, event, selectedDate);
+    // console.log('Change Date', name, event, selectedDate);
     if (Platform.OS === 'ios') selectedDate = selectedDate.toISOString();
     else {
       setIsDatePickerModalVisible(false);

@@ -8,7 +8,7 @@ import {setVertexEndCoords} from './maps.slice';
 import mapStyles from './maps.styles';
 
 const VertexDrag = () => {
-  console.log('Rendering VertexDrag...');
+  // console.log('Rendering VertexDrag...');
 
   const dispatch = useDispatch();
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);

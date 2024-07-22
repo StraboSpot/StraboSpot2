@@ -93,11 +93,11 @@ const useDownload = () => {
 
   const downloadSpots = async (dataset) => {
     try {
-      console.log(dataset.name, ':', 'Downloading Spots...');
+      // console.log(dataset.name, ':', 'Downloading Spots...');
       const featureCollection = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
-      console.log(dataset.name, ':', 'Finished Downloading Spots.');
+      // console.log(dataset.name, ':', 'Finished Downloading Spots.');
       if (isEmpty(featureCollection) || !featureCollection.features) {
-        console.log(dataset.name, ': No Spots in dataset.');
+        // console.log(dataset.name, ': No Spots in dataset.');
       }
       else {
         const spots = featureCollection.features;
@@ -106,7 +106,7 @@ const useDownload = () => {
         spotsToSave.push(...spots);
         const spotIds = Object.values(spots).map(spot => spot.properties.id);
         datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], spotIds: spotIds};
-        console.log(dataset.name, ':', 'Got Spots', spots);
+        // console.log(dataset.name, ':', 'Got Spots', spots);
       }
     }
     catch (err) {
@@ -118,11 +118,10 @@ const useDownload = () => {
 
   const gatherNeededImages = async (spots, dataset) => {
     try {
-      console.log(dataset.name, ':', 'Gathering Needed Images...');
+      // console.log(dataset.name, ':', 'Gathering Needed Images...');
       const spotImages = await useImages.gatherNeededImages(spots);
       if (spotImages?.imageIds.length > 0) {
-        console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of',
-          spotImages?.imageIds.length);
+        // console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length);
         return spotImages;
       }
       else {
@@ -137,7 +136,7 @@ const useDownload = () => {
 
   const getDatasetSpots = async (datasets) => {
     if (datasets.length >= 1) {
-      console.log('Starting Dataset Spots Download!');
+      // console.log('Starting Dataset Spots Download!');
 
       // Synchronous download
       await datasets.reduce(async (previousPromise, dataset, i) => {

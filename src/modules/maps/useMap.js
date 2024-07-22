@@ -62,7 +62,7 @@ const useMap = () => {
           await setBasemap(null);
         }
       }
-      console.log('Setting current basemap to a default basemap...');
+      // console.log('Setting current basemap to a default basemap...');
       dispatch(setCurrentBasemap(newBasemap));
       return newBasemap;
     }

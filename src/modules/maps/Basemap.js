@@ -38,7 +38,7 @@ const Basemap = ({
                    spotsNotSelected,
                    spotsSelected,
                  }, forwardedRef) => {
-  console.log('Rendering Basemap...');
+  // console.log('Rendering Basemap...');
   const zoomTextStyle = basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
     : homeStyles.currentZoomTextBlack;
 
@@ -84,14 +84,14 @@ const Basemap = ({
       acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
 
   useEffect(() => {
-      console.log('UE Basemap');
+      // console.log('UE Basemap');
       setInitialCenter(useMapView.getCenterCoordinates());
       setInitialZoom(useMapView.getZoomLevel());
     }, [currentImageBasemap, stratSection],
   );
 
   useEffect(() => {
-    console.log('UE Basemap [currentImageBasemap]', currentImageBasemap);
+    // console.log('UE Basemap [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && currentImageBasemap.id) checkImageExistence().catch(console.error);
   }, [currentImageBasemap]);
 

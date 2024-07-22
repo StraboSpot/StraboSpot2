@@ -14,7 +14,7 @@ import SectionDivider from '../../../shared/ui/SectionDivider';
 import useMapHook from '../useMap';
 
 const ManageCustomMaps = ({zoomToCustomMap}) => {
-  console.log('Rendering ManageCustomMaps...');
+  // console.log('Rendering ManageCustomMaps...');
 
   const customMaps = useSelector(state => state.map.customMaps);
   const isOnline = useSelector(state => state.connections.isOnline);

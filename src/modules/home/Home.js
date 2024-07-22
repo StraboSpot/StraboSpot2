@@ -52,7 +52,7 @@ import {logout} from '../user/userProfile.slice';
 const {State: TextInputState} = TextInput;
 
 const Home = ({navigation, route}) => {
-  console.log('Rendering Home...');
+  // console.log('Rendering Home...');
 
   const useHome = useHomeHook();
   const useProject = useProjectHook();
@@ -124,18 +124,18 @@ const Home = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE Home', '[navigation, route.params]', route.params);
+    // console.log('UE Home', '[navigation, route.params]', route.params);
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });
     return () => {
-      console.log('Navigation Unsubscribed');
+      // console.log('Navigation Unsubscribed');
       return unsubscribe;
     };
   }, [navigation, route.params]);
 
   useEffect(() => {
-    console.log('UE Home [user]', userEmail);
+    // console.log('UE Home [user]', userEmail);
     if (userEmail && userName) {
       Sentry.configureScope((scope) => {
         scope.setUser({'email': userEmail, 'username': userName});
@@ -144,21 +144,21 @@ const Home = ({navigation, route}) => {
   }, [userEmail, userName]);
 
   useEffect(() => {
-    console.log('UE Home [modalVisible]', modalVisible);
+    // console.log('UE Home [modalVisible]', modalVisible);
     if (Platform.OS === 'ios') {
       Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
       Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
-      console.log('Keyboard listeners added to HOME');
+      // console.log('Keyboard listeners added to HOME');
       return function cleanup() {
         Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome).remove();
         Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome).remove();
-        console.log('Home Keyboard Listeners Removed');
+        // console.log('Home Keyboard Listeners Removed');
       };
     }
   }, [modalVisible]);
 
   useEffect(() => {
-    console.log('UE Home [projectLoadComplete]', projectLoadComplete);
+    // console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
       mapComponentRef.current?.zoomToSpotsExtent();
       dispatch(setIsProjectLoadComplete(false));
@@ -167,7 +167,7 @@ const Home = ({navigation, route}) => {
   }, [projectLoadComplete]);
 
   useEffect(() => {
-    console.log('UE Home [mapMode]', mapMode);
+    // console.log('UE Home [mapMode]', mapMode);
     if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current?.endMapMeasurement();
   }, [mapMode]);
 
@@ -234,7 +234,7 @@ const Home = ({navigation, route}) => {
         toggleHomeDrawerButton();
         break;
       case 'addTag':
-        console.log(`${name}`, ' was clicked');
+        // console.log(`${name}`, ' was clicked');
         mapComponentRef.current?.clearSelectedSpots();
         setIsSelectingForTagging(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
@@ -242,7 +242,7 @@ const Home = ({navigation, route}) => {
         else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
         break;
       case 'stereonet':
-        console.log(`${name}`, ' was clicked');
+        // console.log(`${name}`, ' was clicked');
         mapComponentRef.current?.clearSelectedSpots();
         setIsSelectingForStereonet(true);
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
@@ -259,7 +259,7 @@ const Home = ({navigation, route}) => {
   };
 
   const closeInitialProjectLoadModal = () => {
-    console.log('Starting Project...');
+    // console.log('Starting Project...');
     dispatch(setIsProjectLoadSelectionModalVisible(false));
   };
 
@@ -272,7 +272,7 @@ const Home = ({navigation, route}) => {
   };
 
   const closeNotebookPanel = () => {
-    console.log('Closing Notebook...');
+    // console.log('Closing Notebook...');
     animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
     dispatch(setNotebookPanelVisible(false));
@@ -309,12 +309,12 @@ const Home = ({navigation, route}) => {
       : `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`;
 
     dispatch(clearedStatusMessages());
-    console.log('Exporting Project');
+    // console.log('Exporting Project');
     dispatch(addedStatusMessage(`Exporting ${backupFileName}!`));
     await useExport.zipAndExportProjectFolder(true);
     dispatch(addedStatusMessage(exportCompleteMessage));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
-    console.log(`Project ${backupFileName} has been exported!`);
+    // console.log(`Project ${backupFileName} has been exported!`);
   };
 
   const goToCurrentLocation = async () => {
@@ -324,7 +324,7 @@ const Home = ({navigation, route}) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
-      console.error('Geolocation Error:', err);
+      // console.error('Geolocation Error:', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(`${err.toString()}`);
     }
@@ -349,7 +349,7 @@ const Home = ({navigation, route}) => {
   };
 
   const openNotebookPanel = (pageView) => {
-    console.log('Opening Notebook', pageView, '...');
+    // console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
     dispatch(setNotebookPanelVisible(true));

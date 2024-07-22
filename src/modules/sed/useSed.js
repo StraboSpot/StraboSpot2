@@ -46,7 +46,7 @@ const useSed = () => {
           if (spot.geometry) {
             if (!spot.properties.sed) spot.properties.sed = {};
             if (!spot.properties.sed.interval) spot.properties.sed.interval = {};
-            console.log('Updating interval thickness ...');
+            // console.log('Updating interval thickness ...');
             extent = turf.bbox(spot);
             let thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
             thickness = roundToDecimalPlaces(thickness, 2);
@@ -180,7 +180,7 @@ const useSed = () => {
     if (!editedSedData[pageKey]) editedSedData[pageKey] = [];
     if (pageKey === PAGE_KEYS.STRAT_SECTION) {
       // ToDo Check if any spots mapped on this strat section before deleting
-      console.log('Delete not implemented yet.');
+      // console.log('Delete not implemented yet.');
       alert('Notice', 'Unable to delete. This feature has not been implemented yet.');
     }
     else if (pageKey === PAGE_KEYS.BEDDING) {
@@ -247,7 +247,7 @@ const useSed = () => {
   };
 
   const onSedFormChange = (formCurrent, name, value) => {
-    console.log(name, 'changed to', value);
+    // console.log(name, 'changed to', value);
     if (name === 'siliciclastic_type' && (value === 'claystone' || value === 'mudstone')) {
       formCurrent.setFieldValue('mud_silt_grain_size', 'clay');
     }
@@ -305,13 +305,13 @@ const useSed = () => {
       // Update geometry if Interval
       if (useSpots.isStratInterval(spot)) {
         const updatedSpot = checkForIntervalUpdates(pageKey, editedSpot, spot);
-        console.log('Saving', pageKey, 'data to Spot ...');
+        // console.log('Saving', pageKey, 'data to Spot ...');
         dispatch(updatedModifiedTimestampsBySpotsIds([updatedSpot.properties.id]));
         dispatch(editedOrCreatedSpot(updatedSpot));
       }
       // Update Sed data
       else {
-        console.log('Saving', pageKey, 'data to Spot ...');
+        // console.log('Saving', pageKey, 'data to Spot ...');
         dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
         dispatch(editedSpotProperties({field: 'sed', value: editedSedData}));
       }
@@ -324,7 +324,7 @@ const useSed = () => {
       }
     }
     catch (err) {
-      console.log('Error saving', pageKey, err);
+      // console.log('Error saving', pageKey, err);
       throw Error;
     }
   };
