@@ -513,12 +513,6 @@ const useSpots = () => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
   };
 
-  const getSpots = () => spots;
-  const getFirstSpot = () => {
-    const id = Object.keys(spots)[0];
-    return spots[id];
-  };
-
   return {
     checkIsSafeDelete: checkIsSafeDelete,
     checkSampleName: checkSampleName,
@@ -540,8 +534,6 @@ const useSpots = () => {
     getSpotGeometryIconSource: getSpotGeometryIconSource,
     getSpotWithThisImageBasemap: getSpotWithThisImageBasemap,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
-    getSpots: getSpots,
-    getFirstSpot: getFirstSpot,
     getSpotsByIds: getSpotsByIds,
     getSpotsMappedOnGivenImageBasemap: getSpotsMappedOnGivenImageBasemap,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
