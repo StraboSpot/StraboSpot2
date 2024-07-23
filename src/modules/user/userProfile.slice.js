@@ -30,9 +30,12 @@ const userProfileSlice = createSlice({
     logout(state) {
       state.isAuthenticated = false;
     },
+    resetUserState() {
+      return initialUserState;
+    },
   },
 });
 
-export const {login, logout, setUserData} = userProfileSlice.actions;
+export const {login, logout, resetUserState, setUserData} = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;

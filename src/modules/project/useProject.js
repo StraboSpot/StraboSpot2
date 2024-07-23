@@ -16,9 +16,9 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
+import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
-import {persistor} from '../../store/ConfigureStore';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -43,6 +43,7 @@ const useProject = () => {
   const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
+  const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
 
   const addDataset = async (name) => {
@@ -207,7 +208,7 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    await persistor.purge();
+    useResetState.clearProject();
     await createProject(descriptionData);
     return Promise.resolve();
   };

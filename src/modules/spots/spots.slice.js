@@ -1,5 +1,4 @@
 import {createSlice, current} from '@reduxjs/toolkit';
-import {PURGE} from 'redux-persist';
 
 import {isEmpty} from '../../shared/Helpers';
 
@@ -98,6 +97,9 @@ const spotSlice = createSlice({
         console.log('UPDATED Selected Spot:', state.selectedSpot);
       }
     },
+    resetSpotState() {
+      return initialSpotState;
+    },
     setIntersectedSpotsForTagging(state, action) {
       state.intersectedSpotsForTagging = action.payload;
     },
@@ -119,11 +121,6 @@ const spotSlice = createSlice({
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => {
-      return initialSpotState;
-    });
-  },
 });
 
 export const {
@@ -137,6 +134,7 @@ export const {
   editedSpotImages,
   editedSpotProperties,
   editedSpots,
+  resetSpotState,
   setIntersectedSpotsForTagging,
   setSelectedAttributes,
   setSelectedSpot,

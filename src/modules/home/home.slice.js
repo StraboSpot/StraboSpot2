@@ -50,6 +50,9 @@ const homeSlice = createSlice({
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
     },
+    resetHomeState() {
+      return initialHomeState;
+    },
     setIsBackupModalVisible(state, action) {
       state.isBackupModalVisible = action.payload;
     },
@@ -110,6 +113,7 @@ export const {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
+  resetHomeState,
   setIsBackupModalVisible,
   setIsErrorMessagesModalVisible,
   setIsMainMenuPanelVisible,

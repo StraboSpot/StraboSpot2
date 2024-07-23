@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {PURGE} from 'redux-persist';
 
 import {LATITUDE, LONGITUDE, ZOOM} from './maps.constants';
 
@@ -47,6 +46,9 @@ const mapsSlice = createSlice({
     },
     deletedCustomMap(state, action) {
       state.customMaps = action.payload;
+    },
+    resetMapState() {
+      return initialMapsState;
     },
     selectedCustomMapToEdit(state, action) {
       state.selectedCustomMapToEdit = action.payload;
@@ -108,11 +110,6 @@ const mapsSlice = createSlice({
       state.zoom = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => {
-      return initialMapsState;
-    });
-  },
 });
 
 export const {
@@ -122,6 +119,7 @@ export const {
   clearedStratSection,
   clearedVertexes,
   deletedCustomMap,
+  resetMapState,
   selectedCustomMapToEdit,
   setAllSymbolsToggled,
   setCenter,

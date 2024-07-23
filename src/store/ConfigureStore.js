@@ -139,19 +139,6 @@ const combinedReducers = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === REDUX.CLEAR_STORE) {
-    state = {
-      compass: undefined,
-      connections: {...state.connections},
-      home: undefined,
-      map: undefined,
-      notebook: undefined,
-      offlineMap: undefined,
-      project: undefined,
-      spot: undefined,
-      user: undefined,
-    };
-  }
   return combinedReducers(state, action);
 };
 

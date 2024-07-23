@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {PURGE} from 'redux-persist';
 
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
 import {isEmpty, isEqual} from '../../shared/Helpers';
@@ -164,6 +163,9 @@ const projectSlice = createSlice({
       state.datasets = updatedDatasets;
       state.project.modified_timestamp = timestamp;
     },
+    resetProjectState() {
+      return initialProjectState;
+    },
     setIsImageTransferring(state, action) {
       state.isImageTransferring = action.payload;
     },
@@ -253,11 +255,6 @@ const projectSlice = createSlice({
       state.project.modified_timestamp = Date.now();
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => {
-      return initialProjectState;
-    });
-  },
 });
 
 export const {
@@ -279,6 +276,7 @@ export const {
   doesBackupDirectoryExist,
   doesDownloadsDirectoryExist,
   movedSpotIdBetweenDatasets,
+  resetProjectState,
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,

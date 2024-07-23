@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
+import useResetStateHook from './useResetState';
 import useServerRequestsHook from './useServerRequests';
 import {
   addedStatusMessage,
@@ -29,7 +30,6 @@ import {
 } from '../modules/project/projects.slice';
 import {addedSpotsFromServer} from '../modules/spots/spots.slice';
 import {isEmpty} from '../shared/Helpers';
-import {persistor} from '../store/ConfigureStore';
 
 const useDownload = () => {
   let customMapsToSave = {};
@@ -45,6 +45,7 @@ const useDownload = () => {
 
   const useDevice = useDeviceHook();
   const useImages = useImagesHook();
+  const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
 
   const downloadDatasets = async (selectedProject) => {
@@ -75,7 +76,7 @@ const useDownload = () => {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await useServerRequests.getProject(selectedProject.id, encodedLogin);
-      if (!isEmpty(project)) await persistor.purge();
+      if (!isEmpty(project)) useResetState.clearProject();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);

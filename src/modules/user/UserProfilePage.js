@@ -11,9 +11,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
+import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
-import {REDUX} from '../../shared/app.constants';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -43,6 +43,7 @@ const UserProfilePage = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const useForm = useFormHook();
+  const useResetState = useResetStateHook();
   const useServerRequest = useServerRequestsHook();
   const useUpload = useUploadHook();
 
@@ -68,7 +69,7 @@ const UserProfilePage = () => {
         const res = await useServerRequest.deleteProfile(encodedLogin);
         console.log('PROFILE DELETED!', res);
         setDeleteProfileModalVisible(false);
-        dispatch({type: REDUX.CLEAR_STORE});
+        useResetState.clearUser();
         toast.show('Profile Successfully Deleted!', {type: 'success', duration: 2000});
         setTimeout(() => navigation.navigate('SignIn'), 200);
       }

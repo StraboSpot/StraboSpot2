@@ -26,6 +26,9 @@ const offlineMapsSlice = createSlice({
     editedOfflineMap(state, action) {
       state.offlineMaps[action.payload.id].name = action.payload.name;
     },
+    resetOfflineMapsState() {
+      return initialOfflineMapsState;
+    },
     setOfflineMap(state, action) {
       console.log('Setting offline maps: ', action.payload);
       if (isEmpty(action.payload)) state.offlineMaps = initialOfflineMapsState.offlineMaps;
@@ -49,6 +52,7 @@ export const {
   clearedMapsFromRedux,
   deletedOfflineMap,
   editedOfflineMap,
+  resetOfflineMapsState,
   setOfflineMap,
   setOfflineMapVisible,
 } = offlineMapsSlice.actions;
