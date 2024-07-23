@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {configureStore, combineReducers} from '@reduxjs/toolkit';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {createLogger} from 'redux-logger';
-import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE, persistStore} from 'redux-persist';
+import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
 
 import listenerMiddleware from './listenerMiddleware';
 import compassSlice from '../modules/compass/compass.slice';
@@ -14,7 +14,6 @@ import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
 import connectionsSlice from '../services/connections.slice';
-import {REDUX} from '../shared/app.constants';
 
 // Redux Persist
 export const persistConfig = {
@@ -160,7 +159,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const defaultMiddlewareOptions = {
   immutableCheck: false,
-  serializableCheck: false,
+  serializableCheck: {
+    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    warnAfter: 60,
+  },
 };
 
 const store = configureStore({
