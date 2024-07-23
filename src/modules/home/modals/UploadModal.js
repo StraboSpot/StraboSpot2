@@ -39,7 +39,7 @@ const UploadModal = () => {
         <Spacer/>
         <Text>
           <Text style={overlayStyles.importantText}>{!isEmpty(
-            currentProject) && currentProject.description.project_name} </Text>
+            currentProject) && currentProject.description?.project_name} </Text>
           project properties and datasets will be uploaded and will
           <Text style={overlayStyles.importantText}> OVERWRITE</Text> any data already on the server
           for this project:

@@ -28,8 +28,8 @@ const ProjectDescription = () => {
   const formName = ['general', 'project_description'];
   const projectDescription = {
     ...project.description,
-    gps_datum: project.description.gps_datum || 'WGS84 (Default)',
-    magnetic_declination: project.description.magnetic_declination || 0,
+    gps_datum: project.description?.gps_datum || 'WGS84 (Default)',
+    magnetic_declination: project.description?.magnetic_declination || 0,
   };
 
   useLayoutEffect(() => {
