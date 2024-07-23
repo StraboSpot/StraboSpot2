@@ -163,6 +163,9 @@ const projectSlice = createSlice({
       state.datasets = updatedDatasets;
       state.project.modified_timestamp = timestamp;
     },
+    resetProjectState() {
+      return initialProjectState;
+    },
     setIsImageTransferring(state, action) {
       state.isImageTransferring = action.payload;
     },
@@ -273,6 +276,7 @@ export const {
   doesBackupDirectoryExist,
   doesDownloadsDirectoryExist,
   movedSpotIdBetweenDatasets,
+  resetProjectState,
   setIsImageTransferring,
   setActiveDatasets,
   setActiveTemplates,

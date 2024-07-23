@@ -24,7 +24,7 @@ import overlayStyles from '../../home/overlays/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
 
 const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
-  console.log('Rendering SaveMapsModal...');
+  // console.log('Rendering SaveMapsModal...');
 
   const useDevice = useDeviceHook();
   const useMapsOffline = useMapsOfflineHook();

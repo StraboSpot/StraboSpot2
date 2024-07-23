@@ -29,7 +29,7 @@ const useMapView = () => {
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
-    console.log('Getting initial map center...');
+    // console.log('Getting initial map center...');
     if (currentImageBasemap || stratSection) {
       if ((selectedSpot?.properties?.image_basemap && selectedSpot?.properties.image_basemap === currentImageBasemap?.id)
         || (selectedSpot?.properties?.strat_section_id && selectedSpot?.properties.strat_section_id === stratSection?.strat_section_id)) {
@@ -56,12 +56,12 @@ const useMapView = () => {
       zoom: initialZoom,
     };
 
-    console.log('Setting Initial View State', initialViewState);
+    // console.log('Setting Initial View State', initialViewState);
     return initialViewState;
   };
 
   const getZoomLevel = () => {
-    console.log('Getting initial zoom...');
+    // console.log('Getting initial zoom...');
     if (currentImageBasemap) return ZOOM;
     else if (stratSection) return ZOOM_STRAT_SECTION;
     return zoom;

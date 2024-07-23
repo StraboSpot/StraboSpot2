@@ -91,4 +91,4 @@ export const SED_LABEL_DICTIONARY = ['clastic', 'carbonate', 'lithologies', 'wea
   return {...acc, [key]: [...groupChoices]};
 }, {});
 
-console.log('SED LABEL_DICTIONARY', SED_LABEL_DICTIONARY);
+// console.log('SED LABEL_DICTIONARY', SED_LABEL_DICTIONARY);

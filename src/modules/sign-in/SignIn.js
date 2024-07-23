@@ -14,7 +14,7 @@ import SplashScreen from '../splash-screen/SplashScreen';
 import {login} from '../user/userProfile.slice';
 
 const SignIn = ({navigation, route}) => {
-  console.log('Rendering SignIn...');
+  // console.log('Rendering SignIn...');
   // console.count('Rendering SignIn...');
 
   const dispatch = useDispatch();

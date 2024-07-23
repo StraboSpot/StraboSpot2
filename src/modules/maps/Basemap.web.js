@@ -33,7 +33,7 @@ const Basemap = ({
                    spotsNotSelected,
                    spotsSelected,
                  }, forwardedRef) => {
-  console.log('Rendering Basemap...');
+  // console.log('Rendering Basemap...');
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -83,14 +83,14 @@ const Basemap = ({
       acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
 
   useEffect(() => {
-      console.log('UE Basemap', viewState);
-      console.log('Dimensions', useDimensions);
+      // console.log('UE Basemap', viewState);
+      // console.log('Dimensions', useDimensions);
       setViewState(useMapView.getInitialViewState());
     }, [currentImageBasemap, stratSection],
   );
 
   if (mapMode !== prevMapMode) {
-    console.log('MapMode changed from', prevMapMode, 'to', mapMode);
+    // console.log('MapMode changed from', prevMapMode, 'to', mapMode);
     setPrevMapMode(mapMode);
     if (useMap.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
     else setCursor('');

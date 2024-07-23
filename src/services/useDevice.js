@@ -2,7 +2,6 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-import {useToast} from 'react-native-toast-notifications';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -27,7 +26,6 @@ const useDevice = () => {
       await RNFS.copyFile(source, target);
     }
     catch (err) {
-      console.error('Error Copying Image Files to Backup', err);
       throw Error(err);
     }
   };
@@ -46,7 +44,7 @@ const useDevice = () => {
   };
 
   const createProjectDirectories = async () => {
-    console.log('STOP!!');
+    // console.log('STOP!!');
     if (Platform.OS === 'android') {
       const permissionsGranted = await usePermissions.checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       if (permissionsGranted === RESULTS.GRANTED) {
@@ -143,11 +141,10 @@ const useDevice = () => {
   const doesDeviceDirectoryExist = async (directory) => {
     try {
       let checkDirSuccess = await RNFS.exists(directory);
-      console.log(checkDirSuccess);
-      if (checkDirSuccess) console.log('Directory', directory, 'exists.', checkDirSuccess);
-      // If directory does not exist then one is created
-      else checkDirSuccess = await createAppDirectory(directory);
-      console.log(checkDirSuccess);
+      // Create Images directory if it does not exist
+      if (!checkDirSuccess) checkDirSuccess = await createAppDirectory(directory);
+      if (checkDirSuccess) console.log('Images directory exists:', directory);
+      else throw Error;
       return checkDirSuccess;
     }
     catch (err) {
@@ -162,34 +159,27 @@ const useDevice = () => {
 
   const downloadAndSaveImage = async (imageId) => {
     const imageURI = useServerRequests.getImageUrl();
-    const begin = (res) => {
-      console.log('BEGIN DOWNLOAD RES', res);
-    };
-    // return request('GET', '/pi/' + imageId, user.encoded_login, {responseType: 'blob'});
     return RNFS.downloadFile({
       fromUrl: imageURI + imageId,
       toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
-      begin: (begin),
+      begin: res => console.log('Starting to download Image', imageId, res),
       headers: {
         'Authorization': 'Basic ' + user.encoded_login,
         'Accept': 'application/json',
       },
     }).promise.then(async (res) => {
-        console.log('Image Info', res, ' JobID:', res.jobId);
+        console.log('Image', imageId, 'RNFS downloadFile response:', res);
         if (res.statusCode === 200) {
-          console.log(`File ${imageId} saved to: ${APP_DIRECTORIES.IMAGES}`);
+          console.log(`Image ${imageId} downloaded and saved to: ${APP_DIRECTORIES.IMAGES}`, res);
           return res.statusCode;
         }
-        else if (res.statusCode === 404) {
-          console.log('Image not found!');
-          return res.statusCode;
-        }
+        else if (res.statusCode === 404) throw Error('Image ' + imageId + ' not found on Server');
+        else throw Error('Image ' + imageId + ' unknown error');
       },
     )
       .catch((err) => {
-        console.log('err', err);
+        console.log('RNFS Download Error', err);
         console.warn(`Current URL ${imageURI + imageId}`);
-        return {error: err, imageId: imageId};
       });
   };
 
@@ -304,7 +294,7 @@ const useDevice = () => {
       }
       catch (e2) {
         console.error('Error reading file as ascii:', e2);
-        throw Error()
+        throw Error();
         // return undefined;
       }
     }
@@ -394,7 +384,6 @@ const useDevice = () => {
       throw Error(err);
     }
   };
-
 
   return {
     copyFiles: copyFiles,

@@ -16,8 +16,8 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
+import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
-import {REDUX} from '../../shared/app.constants';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {
   addedStatusMessage,
@@ -43,6 +43,7 @@ const useProject = () => {
   const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
+  const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
 
   const addDataset = async (name) => {
@@ -207,7 +208,7 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    dispatch({type: REDUX.CLEAR_PROJECT});
+    useResetState.clearProject();
     await createProject(descriptionData);
     return Promise.resolve();
   };
@@ -259,7 +260,7 @@ const useProject = () => {
           dispatch(setLoadingStatus({view: 'home', bool: true}));
           const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
           dispatch(setLoadingStatus({view: 'home', bool: false}));
-          toast.show('Project was loaded successfully!', {duration: 4000, type: 'success'})
+          toast.show('Project was loaded successfully!', {duration: 4000, type: 'success'});
           console.log('Done loading project', res);
         }
         else if (selectedProject.source === 'server') {
@@ -273,7 +274,7 @@ const useProject = () => {
       console.error('Error switching project in useProject', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(`There was an error loading the project. \n\nMessage:\n${err}`))
+      dispatch(addedStatusMessage(`There was an error loading the project. \n\nMessage:\n${err}`));
       dispatch(setIsErrorMessagesModalVisible(true));
       throw Error('Project Error');
     }

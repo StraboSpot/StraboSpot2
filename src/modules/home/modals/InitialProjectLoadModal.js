@@ -6,7 +6,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDeviceHook from '../../../services/useDevice';
-import {REDUX} from '../../../shared/app.constants';
+import useResetStateHook from '../../../services/useResetState';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
@@ -37,6 +37,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible
 
   const toast = useToast();
   const useDevice = useDeviceHook();
+  const useResetState = useResetStateHook();
   const useUserProfile = useUserProfileHook();
 
   const displayFirstName = () => {
@@ -262,7 +263,7 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible
             type={'clear'}
             titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
             onPress={() => {
-              if (user.name) dispatch({type: REDUX.CLEAR_STORE});
+              if (user.name) useResetState.clearUser();
               // dispatch(setSignedInStatus(false));
               closeModal();
               setVisibleInitialSection('none');

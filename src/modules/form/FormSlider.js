@@ -20,7 +20,7 @@ const FormSlider = ({
                       showSliderValue,
                       survey,
                     }) => {
-  console.log('Rendering FormSlider...');
+  // console.log('Rendering FormSlider...');
 
   const useForm = useFormHook();
 
@@ -33,17 +33,17 @@ const FormSlider = ({
     const value = choicesList.map(c => c.name);
     const formPropsValues = formProps?.values[fieldKey];
     const indexOfFormPropValues = value.indexOf(formPropsValues);
-    console.log('formPropsValues', formPropsValues);
-    console.log('indexOfFormPropValues', indexOfFormPropValues);
+    // console.log('formPropsValues', formPropsValues);
+    // console.log('indexOfFormPropValues', indexOfFormPropValues);
     // setSliderValue(b);
     return indexOfFormPropValues === -1 ? choicesList.length : indexOfFormPropValues;
   };
 
   const onSlideComplete = async (value) => {
-    console.log('value', value);
+    // console.log('value', value);
     if (value < choicesList.length) {
       const endValue = choicesList.map(c => c.name)[value];
-      console.log('Actual End Value', endValue);
+      // console.log('Actual End Value', endValue);
       formProps?.setFieldValue(fieldKey, endValue);
       setSliderValue(endValue);
     }

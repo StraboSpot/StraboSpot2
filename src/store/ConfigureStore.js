@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {configureStore, combineReducers} from '@reduxjs/toolkit';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {createLogger} from 'redux-logger';
-import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
+import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE} from 'redux-persist';
 
 import listenerMiddleware from './listenerMiddleware';
 import compassSlice from '../modules/compass/compass.slice';
@@ -14,7 +14,6 @@ import projectSlice from '../modules/project/projects.slice';
 import spotsSlice from '../modules/spots/spots.slice';
 import userSlice from '../modules/user/userProfile.slice';
 import connectionsSlice from '../services/connections.slice';
-import {REDUX} from '../shared/app.constants';
 
 // Redux Persist
 export const persistConfig = {
@@ -140,32 +139,6 @@ const combinedReducers = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === REDUX.CLEAR_STORE) {
-    state = {
-      compass: undefined,
-      connections: {...state.connections},
-      home: undefined,
-      map: undefined,
-      notebook: undefined,
-      offlineMap: undefined,
-      project: undefined,
-      spot: undefined,
-      user: undefined,
-    };
-  }
-  else if (action.type === REDUX.CLEAR_PROJECT) {
-    state = {
-      compass: undefined,
-      connections: {...state.connections},
-      home: {...state.home},
-      map: undefined,
-      notebook: undefined,
-      offlineMap: {...state.offlineMap},
-      project: undefined,
-      spot: undefined,
-      user: {...state.user},
-    };
-  }
   return combinedReducers(state, action);
 };
 
@@ -187,4 +160,6 @@ const store = configureStore({
     : getDefaultMiddleware(defaultMiddlewareOptions).concat(listenerMiddleware.middleware),
 });
 
-export default store;
+let persistor = persistStore(store);
+
+export {store, persistor};

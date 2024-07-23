@@ -41,7 +41,7 @@ const CustomMapDetails = () => {
   const [editableCustomMapData, setEditableCustomMapData] = useState({});
 
   useEffect(() => {
-    console.log('UE CustomMapDetails [customMapToEdit]', customMapToEdit);
+    // console.log('UE CustomMapDetails [customMapToEdit]', customMapToEdit);
     if (!isEmpty(customMapToEdit)) setEditableCustomMapData(customMapToEdit);
     else {
       setEditableCustomMapData({

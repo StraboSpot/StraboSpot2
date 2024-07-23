@@ -37,6 +37,9 @@ const notebookSlice = createSlice({
     removedNotebookPageOn(state, action) {
       state.notebookPagesOn = state.notebookPagesOn.filter(s => s !== action.payload);
     },
+    resetNotebookState() {
+      return initialNotebookState;
+    },
   },
 });
 
@@ -46,6 +49,7 @@ export const {
   setNotebookPanelVisible,
   addedNotebookPageOn,
   removedNotebookPageOn,
+  resetNotebookState,
 } = notebookSlice.actions;
 
 export default notebookSlice.reducer;

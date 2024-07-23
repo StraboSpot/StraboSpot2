@@ -50,6 +50,9 @@ const homeSlice = createSlice({
     removedLastStatusMessage(state) {
       state.statusMessages = state.statusMessages.slice(0, -1);
     },
+    resetHomeState() {
+      return initialHomeState;
+    },
     setIsBackupModalVisible(state, action) {
       state.isBackupModalVisible = action.payload;
     },
@@ -91,14 +94,14 @@ const homeSlice = createSlice({
       state.modalVisible = action.payload.modal;
     },
     setShortcutSwitchPositions(state, action) {
-      console.log('Toggling Shortcut', action.payload.switchName);
+      // console.log('Toggling Shortcut', action.payload.switchName);
       state.shortcutSwitchPosition[action.payload.switchName] = !state.shortcutSwitchPosition[action.payload.switchName];
       if (action.payload.switchName === 'all') {
         Object.keys(state.shortcutSwitchPosition).forEach(
           key => (state.shortcutSwitchPosition[key] = state.shortcutSwitchPosition.all));
       }
       else state.shortcutSwitchPosition.all = false;
-      console.log('Shortcut Switch Positions', JSON.stringify(Object.entries(state.shortcutSwitchPosition)));
+      // console.log('Shortcut Switch Positions', JSON.stringify(Object.entries(state.shortcutSwitchPosition)));
     },
     setStatusMessageModalTitle(state, action) {
       state.statusMessageModalTitle = action.payload;
@@ -110,6 +113,7 @@ export const {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
+  resetHomeState,
   setIsBackupModalVisible,
   setIsErrorMessagesModalVisible,
   setIsMainMenuPanelVisible,

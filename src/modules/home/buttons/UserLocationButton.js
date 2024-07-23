@@ -17,7 +17,7 @@ const UserLocationButton = ({clickHandler}) => {
   let timeout;
 
   useEffect(() => {
-    console.log('UE LeftSideButtons [userLocationButtonOn]', userLocationButtonOn);
+    // console.log('UE LeftSideButtons [userLocationButtonOn]', userLocationButtonOn);
     if (userLocationButtonOn) startLocationReminderTimer();
     return () => clearTimeout(timeout);
   }, [userLocationButtonOn]);
@@ -26,12 +26,12 @@ const UserLocationButton = ({clickHandler}) => {
     setUserLocationButtonOn(false);
     clickHandler('toggleUserLocation', false);
     toast.show('Geolocation turned off automatically to conserve battery.');
-    console.log('Location timer cleared');
+    // console.log('Location timer cleared');
   };
 
   const startLocationReminderTimer = () => {
     timeout = setTimeout(() => {
-      console.log(timeout);
+      // console.log(timeout);
       clearLocationTimer();
     }, 60000);
   };

@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
 import useUserProfileHook from './useUserProfile';
-import {REDUX} from '../../shared/app.constants';
+import useResetStateHook from '../../services/useResetState';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
@@ -23,6 +23,7 @@ const UserProfile = ({logout}) => {
 
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
+  const useResetState = useResetStateHook();
   const useUserProfile = useUserProfileHook();
 
   const getAvatarSource = () => {
@@ -48,7 +49,7 @@ const UserProfile = ({logout}) => {
       setIsLogoutModalVisible(false);
       setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
         dispatch(setIsMainMenuPanelVisible(false));
-        dispatch({type: REDUX.CLEAR_STORE});
+        useResetState.clearUser();
         logout();
       }, 200);
     }

@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
 import {
@@ -23,6 +24,7 @@ const useSignIn = () => {
   const currentProject = useSelector(state => state.project.project);
   const userEmail = useSelector(state => state.user.email);
 
+  const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
 
   const project = useRef(null);
@@ -79,7 +81,7 @@ const useSignIn = () => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(userEmail)) dispatch({type: 'CLEAR_STORE'});
+    if (!isEmpty(userEmail)) useResetState.clearUser();
     console.log('Loading user: GUEST');
     setTimeout(() => isEmpty(currentProject) && dispatch(setIsProjectLoadSelectionModalVisible(true)), 500);
   };

@@ -192,15 +192,20 @@ const useSpots = () => {
   const getActiveSpotsObj = () => {
     let activeSpots = {};
     const activeDatasets = useProject.getActiveDatasets();
-    //console.log('getActiveDatasetsFromId', activeDatasets);
-    const activeSpotIds = Object.values(activeDatasets).reduce((acc, dataset) => {
-      return (dataset && dataset.spotIds && !isEmpty(dataset.spotIds)) ? [...acc, ...dataset.spotIds] : acc;
-    }, []);
-    // Check for undefined Spot Ids and Spots referenced in a dataset but do not exist in the spots object
-    activeSpotIds.map((spotId) => {
-      if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
-      else console.log('Missing Spot', spotId);
+    // console.groupCollapsed('Getting Spots in Active Datasets...');
+    Object.values(activeDatasets).forEach((dataset) => {
+      let missingSpotsCount = 0;
+      let missingSpotsIds = [];
+      dataset.spotIds?.forEach((spotId) => {
+        if (spots[spotId]) activeSpots = {...activeSpots, [spotId]: spots[spotId]};
+        else {
+          missingSpotsCount++;
+          missingSpotsIds.push(spotId);
+        }
+      });
+      // console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
     });
+    console.groupEnd();
     return activeSpots;
   };
 
@@ -297,7 +302,7 @@ const useSpots = () => {
       }
       return hasValidGeometry;
     });
-    console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
+    // console.log('Spots with Valid Geometry:', allSpotsCopyFiltered);
     return allSpotsCopyFiltered;
   };
 

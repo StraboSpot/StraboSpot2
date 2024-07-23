@@ -97,6 +97,9 @@ const spotSlice = createSlice({
         console.log('UPDATED Selected Spot:', state.selectedSpot);
       }
     },
+    resetSpotState() {
+      return initialSpotState;
+    },
     setIntersectedSpotsForTagging(state, action) {
       state.intersectedSpotsForTagging = action.payload;
     },
@@ -131,6 +134,7 @@ export const {
   editedSpotImages,
   editedSpotProperties,
   editedSpots,
+  resetSpotState,
   setIntersectedSpotsForTagging,
   setSelectedAttributes,
   setSelectedSpot,

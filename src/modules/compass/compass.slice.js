@@ -12,6 +12,9 @@ const compassSlice = createSlice({
   name: 'compass',
   initialState: initialCompassState,
   reducers: {
+    resetCompassState() {
+      return initialCompassState;
+    },
     setCompassMeasurements(state, action) {
       state.measurements = action.payload;
     },
@@ -22,6 +25,7 @@ const compassSlice = createSlice({
 });
 
 export const {
+  resetCompassState,
   setCompassMeasurements,
   setCompassMeasurementTypes,
 } = compassSlice.actions;

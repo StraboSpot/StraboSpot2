@@ -7,7 +7,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Provider} from 'react-redux';
-import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
 import Routes from './src/routes/Routes';
@@ -15,8 +14,10 @@ import ConnectionStatus from './src/services/ConnectionStatus';
 import SystemBars from './src/services/SystemBars';
 import {RELEASE_NAME} from './src/shared/app.constants';
 import Toast from './src/shared/ui/Toast';
-import store from './src/store/ConfigureStore';
+import {store, persistor} from './src/store/ConfigureStore';
 import config from './src/utils/config';
+
+let didInit = false;
 
 Sentry.init({
   dsn: config.get('Error_reporting_DSN'),
@@ -42,9 +43,12 @@ NetInfo.configure({
 });
 
 const App = () => {
-  console.log('Rendering App...');
-  const persistor = persistStore(store);
-  if (Platform.OS === 'web') persistor.purge(); // Use this to clear persistStore completely
+  if (Platform.OS === 'web' && !didInit) {
+    console.count('Rendering App...');
+    persistor.purge(); // Use this to clear persistStore completely
+  }
+  else console.log('Rendering App...');
+  didInit = true;
 
   return (
     <SafeAreaProvider>

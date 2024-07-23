@@ -61,7 +61,7 @@ const useHome = () => {
   const getDrawTypes = ()=> drawTypes;
 
   const lockOrientation = () => {
-    console.log('Orientation', orientation);
+    // console.log('Orientation', orientation);
     if (orientation === PORTRAIT || orientation === PORTRAIT_UPSIDE_DOWN) Orientation.lockToPortrait();
     else Orientation.lockToLandscape();
     toast.show('Screen orientation LOCKED in EDIT mode');
@@ -111,7 +111,7 @@ const useHome = () => {
   };
 
   useDeviceOrientationChange((o) => {
-    console.log('Orientation Change', o);
+    // console.log('Orientation Change', o);
     setOrientation(o);
   });
 
