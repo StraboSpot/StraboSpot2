@@ -205,8 +205,8 @@ const useDownload = () => {
               }));
             }
             else imagesFailedCount++;
-            console.log('New/Modified Images Saved: ' + imagesDownloadedCount + ' / '
-              + neededImagesIds.length + 'Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length);
+            console.log('New/Modified Images Saved: ' + imagesDownloadedCount + '/'
+              + neededImagesIds.length + ' Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length);
             dispatch(removedLastStatusMessage());
             dispatch(addedStatusMessage('New/Modified Images Saved: ' + imagesDownloadedCount + ' / '
               + neededImagesIds.length + '\n Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length));
