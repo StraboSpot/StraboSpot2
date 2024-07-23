@@ -230,6 +230,7 @@ const useUpload = () => {
       dispatch(addedStatusMessage(`${msgText} \n ${countMsgText}`));
       if (imagesUploadFailedCount > 0) {
         failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
+        dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`\n ${failedCountMsgText}`));
       }
 
@@ -277,7 +278,7 @@ const useUpload = () => {
       }
       catch (err) {
         console.log(datasetName + ': Error Uploading Image', imageId, err);
-        dispatch(setIsImageTransferring(false));
+        // dispatch(setIsImageTransferring(false));
         throw Error;
       }
     };
