@@ -14,7 +14,6 @@ import Routes from './src/routes/Routes';
 import ConnectionStatus from './src/services/ConnectionStatus';
 import SystemBars from './src/services/SystemBars';
 import {RELEASE_NAME} from './src/shared/app.constants';
-import Loading from './src/shared/ui/Loading';
 import Toast from './src/shared/ui/Toast';
 import store from './src/store/ConfigureStore';
 import config from './src/utils/config';
@@ -51,7 +50,7 @@ const App = () => {
     <SafeAreaProvider>
       <Toast>
         <Provider store={store}>
-          <PersistGate loading={<Loading/>} persistor={persistor}>
+          <PersistGate loading={null} persistor={persistor}>
             {/*<Sentry.TouchEventBoundary>*/}
             <SystemBars/>
             <ConnectionStatus/>
