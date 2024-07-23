@@ -24,7 +24,7 @@ const useResetState = () => {
     clearProject();
     dispatch(resetHomeState());
     dispatch(resetOfflineMapsState());
-    dispatch(resetUserState);
+    dispatch(resetUserState());
   };
 
   return {
