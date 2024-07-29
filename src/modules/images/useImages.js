@@ -93,16 +93,15 @@ const useImages = () => {
     navigation.navigate('ImageInfo', {imageInfo: image});
   };
 
-  const gatherNeededImages = async (spotsOnServer, dataset) => {
+  const gatherNeededImages = async (spotsToSearch, dataset) => {
     try {
       let neededImagesIds = [];
       let imageIds;
-      console.log('Gathering Needed Images...');
-      // dispatch(addedStatusMessage('Gathering Needed Images...'));
-      if (dataset?.images?.imageIds) {
-        imageIds = dataset.images.imageIds;
-      }
-      else imageIds = getAllImagesIds(spotsOnServer);
+      console.log('Gathering Needed Images for dataset', dataset.name, '(' + dataset.id + ') ...');
+      if (dataset?.images?.imageIds) imageIds = dataset.images.imageIds;
+      else imageIds = getAllImagesIds(spotsToSearch);
+
+      if (Platform.OS === 'web') return {imageIds: imageIds};  // Don't care about neededImagesIds on web
       await Promise.all(
         imageIds.map(async (imageId) => {
           const doesExist = await doesImageExistOnDevice(imageId);

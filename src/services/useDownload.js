@@ -101,13 +101,13 @@ const useDownload = () => {
         // console.log(dataset.name, ': No Spots in dataset.');
       }
       else {
-        const spots = featureCollection.features;
-        const spotImages = Platform.OS === 'web' ? undefined : await gatherNeededImages(spots, dataset);
+        const spotsDownloaded = featureCollection.features;
+        const spotImages = await gatherNeededImages(spotsDownloaded, dataset);
         if (spotImages) datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], images: spotImages};
-        spotsToSave.push(...spots);
-        const spotIds = Object.values(spots).map(spot => spot.properties.id);
+        spotsToSave.push(...spotsDownloaded);
+        const spotIds = Object.values(spotsDownloaded).map(spot => spot.properties.id);
         datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], spotIds: spotIds};
-        // console.log(dataset.name, ':', 'Got Spots', spots);
+        // console.log(dataset.name, ':', 'Got Spots', spotsDownloaded);
       }
     }
     catch (err) {
@@ -117,10 +117,10 @@ const useDownload = () => {
     }
   };
 
-  const gatherNeededImages = async (spots, dataset) => {
+  const gatherNeededImages = async (spotsDownloaded, dataset) => {
     try {
       // console.log(dataset.name, ':', 'Gathering Needed Images...');
-      const spotImages = await useImages.gatherNeededImages(spots);
+      const spotImages = await useImages.gatherNeededImages(spotsDownloaded, dataset);
       if (spotImages?.imageIds.length > 0) {
         // console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length);
         return spotImages;
