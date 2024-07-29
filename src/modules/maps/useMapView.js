@@ -2,6 +2,7 @@ import {Platform} from 'react-native';
 
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -25,6 +26,7 @@ const useMapView = () => {
   const stratSection = useSelector(state => state.map.stratSection);
   const zoom = useSelector(state => state.map.zoom);
 
+  const toast = useToast();
   const useMapCoords = useMapCoordsHook();
 
   // Evaluate and return appropriate center coordinates
@@ -91,7 +93,11 @@ const useMapView = () => {
   };
 
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
-    if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))
+    if (spotsToZoomTo.length === 0) {
+      console.log('No Spots to Zoom to');
+      toast.show('No Spots to Zoom to');
+    }
+    else if (spotsToZoomTo.every(s => isOnGeoMap(s)) || spotsToZoomTo.every(s => isOnImageBasemap(s))
       || spotsToZoomTo.every(s => isOnStratSection(s))) {
       if (camera || Platform.OS === 'web') {
         try {
