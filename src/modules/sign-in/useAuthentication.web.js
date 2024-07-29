@@ -38,7 +38,7 @@ const useAuthentication = () => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       checkAuthentication();
-    }, 1000 * 20);  // 300 Seconds (5 minutes)
+    }, 10000 * 30);  // 300 Seconds (5 minutes)
   };
 
   const authenticateUser = async (email, password) => {
@@ -49,10 +49,10 @@ const useAuthentication = () => {
         if (!isAuthenticated) dispatch(login());
         console.log('User Authenticated.');
       }
-      else throw Error('Error Authenticating User!\nIncorrect username and/or password');
+      else throw Error('Incorrect username and/or password');
     }
     catch (err) {
-      console.error(err);
+      console.error('Authentication Error. Logging Out\n', err);
       dispatch(logout());
       throw Error;
     }

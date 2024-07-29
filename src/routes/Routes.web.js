@@ -30,7 +30,8 @@ const Routes = () => {
         console.log('Should be signed in');
       }
       catch (e) {
-        console.log('Error with the auto login.');
+        console.error('Error with the auto login.', e);
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -45,7 +46,7 @@ const Routes = () => {
           setIsLoading(false);
         }
         catch (e) {
-          console.log('Error getting the project.');
+          console.error('Error getting the project.');
         }
       })();
     }

@@ -8,14 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty, readDataUrl} from '../../shared/Helpers';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setIsErrorMessagesModalVisible,
-  setIsProjectLoadSelectionModalVisible,
-  setIsStatusMessagesModalVisible,
-  setLoadingStatus,
-} from '../home/home.slice';
+import {setIsProjectLoadSelectionModalVisible, setLoadingStatus} from '../home/home.slice';
 import {setSelectedProject} from '../project/projects.slice';
 import {login, logout, setUserData} from '../user/userProfile.slice';
 
@@ -49,20 +42,10 @@ const useSignIn = () => {
         dispatch(setSelectedProject({project: {id: projectId}, source: ''}));
       }
       catch (err) {
-        autoLoginError(err);
+        throw Error(err);
       }
     }
-    else autoLoginError('Credentials not found.');
-  };
-
-  const autoLoginError = (err) => {
-    console.log('Auto Login Error', err);
-    dispatch(setIsStatusMessagesModalVisible(false));
-    dispatch(clearedStatusMessages());
-    dispatch(addedStatusMessage('Error loading project!'));
-    dispatch(setIsErrorMessagesModalVisible(true));
-    dispatch(setLoadingStatus({view: 'home', bool: false}));
-    throw Error;
+    else throw Error('Credentials not found.');
   };
 
   const convertImageToBase64 = async (userProfileImage) => {
@@ -104,17 +87,20 @@ const useSignIn = () => {
       if (Platform.OS !== 'web') {
         isEmpty(currentProject) && dispatch(setIsProjectLoadSelectionModalVisible(true));
         dispatch(setLoadingStatus({view: 'home', bool: false}));
+        if (setUsername) setUsername('');
+        if (setPassword) setPassword('');
       }
-      if (setUsername) setUsername('');
-      if (setPassword) setPassword('');
     }
     catch (err) {
-      console.error(err);
+      console.error('Sign In Error:', err);
       Sentry.captureException(err);
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      if (setErrorMessage) setErrorMessage('Server request failed');
-      if (setIsErrorModalVisible) setIsErrorModalVisible(true);
-      if (setPassword) setPassword('');
+      if (Platform.OS !== 'web') {
+        dispatch(setLoadingStatus({view: 'home', bool: false}));
+        const errMsg = err.message || 'Credentials entered are incorrect. Please try again.';
+        if (setErrorMessage) setErrorMessage(errMsg);
+        if (setIsErrorModalVisible) setIsErrorModalVisible(true);
+        if (setPassword) setPassword('');
+      }
       dispatch(logout());
       throw Error;
     }
