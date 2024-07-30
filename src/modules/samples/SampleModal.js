@@ -56,7 +56,7 @@ const SampleModal = (props) => {
   useLayoutEffect(() => {
     console.log('ULE SampleModal []');
     return () => confirmLeavePage();
-  }, []);
+  }, [spot]);
 
   useEffect(() => {
     console.log('UE SampleModal [spot]', spot);
