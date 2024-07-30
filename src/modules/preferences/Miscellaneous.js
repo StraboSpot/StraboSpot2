@@ -34,11 +34,6 @@ const Miscellaneous = () => {
     if (isEmpty(password)) setIsErrorMessage(false);
   }, [password]);
 
-  useEffect(() => {
-    console.log('UE Miscellaneous [isTestingMode]', isTestingMode);
-    isTestingMode ? setIsTestingModalVisible(true) : setIsTestingModalVisible(false);
-  }, [isTestingMode]);
-
   const closeModal = () => {
     dispatch(setTestingMode(false));
     setIsTestingModalVisible(false);
@@ -47,6 +42,7 @@ const Miscellaneous = () => {
 
   const onTestingSwitchChange = (value) => {
     dispatch(setTestingMode(value));
+    if (value) setIsTestingModalVisible(true);
   };
 
   const userEntry = (value) => {
