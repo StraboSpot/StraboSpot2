@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup} from 'react-native-elements';
@@ -217,16 +217,21 @@ const SampleModal = (props) => {
 
   return (
     <Modal onPress={props.onPress}>
-      <Formik
-        innerRef={formRef}
-        initialValues={{
-          sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
-          inplaceness_of_sample: '5___definitely',
-        }}
-        onSubmit={values => console.log('Submitting form...', values)}
-        enableReinitialize={true}>
-        {formProps => <View style={{}}>{renderForm(formProps)}</View>}
-      </Formik>
+      <FlatList
+        bounces={false}
+        ListHeaderComponent={
+          <Formik
+            innerRef={formRef}
+            initialValues={{
+              sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
+              inplaceness_of_sample: '5___definitely',
+            }}
+            onSubmit={values => console.log('Submitting form...', values)}
+            enableReinitialize={true}>
+            {formProps => <View style={{}}>{renderForm(formProps)}</View>}
+          </Formik>
+        }
+      />
       <SaveButton
         title={'Save Sample'}
         onPress={() => saveForm(formRef.current)}
