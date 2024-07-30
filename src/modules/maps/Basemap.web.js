@@ -191,10 +191,10 @@ const Basemap = ({
       style={{flex: 1}}
       mapStyle={currentImageBasemap || stratSection ? BACKGROUND : basemap}
       boxZoom={allowMapViewMove}
-      dragRotate={allowMapViewMove}
+      dragRotate={false}
       dragPan={allowMapViewMove}
       pitchWithRotate={false}
-      touchPitch={!(stratSection || currentImageBasemap)}
+      touchPitch={false}
       touchZoomRotate={false}
       doubleClickZoom={!(useMap.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
       onClick={onMapPress}
