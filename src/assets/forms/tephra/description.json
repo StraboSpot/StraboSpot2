@@ -25,19 +25,19 @@
       "type": "decimal",
       "name": "thickness_typical",
       "label": "Typical Thickness",
-      "required": "${thickness_minimum} = '' or ${thickness_maximum} = ''"
+      "required": "${thickness_minimum} = '' and ${thickness_maximum} = ''"
     },
     {
       "type": "decimal",
       "name": "thickness_minimum",
       "label": "Minimum Thickness",
-      "required": "${thickness_typical} = ''"
+      "required": "${thickness_typical} = '' and ${thickness_maximum} = ''"
     },
     {
       "type": "decimal",
       "name": "thickness_maximum",
       "label": "Maximum Thickness",
-      "required": "${thickness_typical} = ''"
+      "required": "${thickness_typical} = '' and ${thickness_minimum} = ''"
     },
     {
       "type": "select_one uu5sd70",
