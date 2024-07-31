@@ -6,6 +6,20 @@ import alert from '../../shared/ui/alert';
 import {LABEL_DICTIONARY} from '../form';
 
 const useForm = () => {
+
+  const covertXLSFormLogicToJS = (logic) => {
+    logic = logic.replace(/not/g, '!');
+    logic = logic.replace(/selected\(\${(.*?)}, /g, 'values?.$1?.includes(');
+    logic = logic.replace(/\$/g, '');
+    logic = logic.replace(/{/g, 'values?.');
+    logic = logic.replace(/}/g, '');
+    logic = logic.replace(/''/g, 'undefined');
+    logic = logic.replace(/ = /g, ' == ');
+    logic = logic.replace(/ or /g, ' || ');
+    logic = logic.replace(/ and /g, ' && ');
+    return logic;
+  };
+
   // Return the choices object given the form category and name
   const getChoices = ([category, name]) => {
     const choices = forms.default[category] && forms.default[category][name] && forms.default[category][name].choices || [];
@@ -92,20 +106,23 @@ const useForm = () => {
   const isRelevant = (field, values) => {
     //console.log('values', values);
     if (isEmpty(field.relevant)) return true;
-    let relevant = field.relevant;
-    relevant = relevant.replace(/not/g, '!');
-    relevant = relevant.replace(/selected\(\${(.*?)}, /g, 'values?.$1?.includes(');
-    relevant = relevant.replace(/\$/g, '');
-    relevant = relevant.replace(/{/g, 'values?.');
-    relevant = relevant.replace(/}/g, '');
-    relevant = relevant.replace(/''/g, 'undefined');
-    relevant = relevant.replace(/ = /g, ' == ');
-    relevant = relevant.replace(/ or /g, ' || ');
-    relevant = relevant.replace(/ and /g, ' && ');
-    //console.log(field.name, 'relevant:', relevant);
+    const relevantLogicJS = covertXLSFormLogicToJS(field.relevant);
+    // console.log(field.name, 'relevant:', relevantLogicJS);
 
-    const F = new Function('values', 'return ' + relevant);
+    const F = new Function('values', 'return ' + relevantLogicJS);
     return F(values);
+  };
+
+  const isRequired = (field, values) => {
+    if (field.required === 'true' || field.required === true) return true;
+    else if (field.required === 'false' || field.required === false || isEmpty(field.required)) return false;
+    else {
+      const requiredLogicJS = covertXLSFormLogicToJS(field.required);
+      // console.log(field.name, 'required:', requiredLogicJS);
+
+      const F = new Function('values', 'return ' + requiredLogicJS);
+      return F(values);
+    }
   };
 
   // Remove errors from data, if any, and show alert. Throw error if not leaving page.
@@ -134,8 +151,9 @@ const useForm = () => {
       const key = fieldModel.name;
       if (values[key] && typeof values[key] === 'string') values[key] = values[key].trim();
       if (isEmpty(values[key]) || !isRelevant(fieldModel, values)) delete values[key];
-      if (isEmpty(values[key]) && (fieldModel.required === 'true' || fieldModel.required === true)
-        && isRelevant(fieldModel, values)) errors[key] = 'Required';
+      if (isEmpty(values[key]) && isRelevant(fieldModel, values) && isRequired(fieldModel, values)) {
+        errors[key] = 'Required';
+      }
       else if (values[key]) {
         if (fieldModel.type === 'integer') {
           values[key] = isNaN(parseInt(values[key])) ? undefined : parseInt(values[key]);
