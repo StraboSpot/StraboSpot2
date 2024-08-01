@@ -109,6 +109,7 @@ const projectConfig = {
   blacklist: [
     'datasets',
     'project',
+    'isImageTransferring',
   ],
   timeout: null,
 };
