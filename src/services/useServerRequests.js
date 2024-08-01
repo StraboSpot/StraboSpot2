@@ -256,7 +256,7 @@ const useServerRequests = () => {
     catch (err) {
       console.error('Error Fetching', err);
       alert('Error', `${err.toString()}`);
-      throw Error('Unable to Get Project from Server.');
+      throw Error(err);
     }
   };
 

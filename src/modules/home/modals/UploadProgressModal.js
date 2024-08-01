@@ -12,10 +12,10 @@ import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 // import useAnimationsHook from '../../../shared/ui/useAnimations';
 import LottieAnimation from '../../../utils/animations/LottieAnimations';
-import {setSelectedProject} from '../../project/projects.slice';
+import {setIsImageTransferring, setSelectedProject} from '../../project/projects.slice';
 import {addedStatusMessage, setIsProgressModalVisible} from '../home.slice';
 
-const UploadProgressModal = () => {
+const UploadProgressModal = ({}) => {
 
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
@@ -26,6 +26,7 @@ const UploadProgressModal = () => {
 
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
   const [error, setError] = useState(false);
+  // const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [uploadComplete, setUploadComplete] = useState('');
 
   const useDownload = useDownloadHook();
@@ -71,6 +72,7 @@ const UploadProgressModal = () => {
 
   const renderUploadProgressModal = async () => {
     try {
+      isImageTransferring && dispatch(setIsImageTransferring(false));
       setUploadComplete('uploading');
       const uploadStatusObj = await useUpload.initializeUpload();
       const {status, datasets} = uploadStatusObj;
@@ -110,7 +112,7 @@ const UploadProgressModal = () => {
   return (
     <ProgressModal
       buttonText={selectedProject.source !== '' && 'Continue'}
-      closeProgressModal={() => setIsProgressModalVisible(false)}
+      closeProgressModal={() => dispatch(setIsProgressModalVisible(false))}
       dialogTitle={'UPLOADING...'}
       isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}
@@ -131,7 +133,7 @@ const UploadProgressModal = () => {
               <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
             </View>
             {isImageTransferring && <View style={{paddingTop: 10}}>
-              <Text>Uploading image...</Text>
+              <Text style={{textAlign: 'center', paddingBottom: 5}}>Uploading images</Text>
               <ProgressBar
                 progress={projectTransferProgress}
                 width={250}
