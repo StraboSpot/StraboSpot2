@@ -188,6 +188,7 @@ const useUploadImages = () => {
       );
       await startUploadingImage(imagesToUpload[0]);
     }
+    else dispatch(addedStatusMessage('\nNo images to upload'))
     await deleteTempImagesFolder();
   };
 
