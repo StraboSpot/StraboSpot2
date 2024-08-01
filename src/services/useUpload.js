@@ -39,6 +39,7 @@ const useUpload = () => {
       await uploadProject();
       const uploadStatus = await uploadDatasets();
       await useUploadImages.uploadImages(Object.values(spots));
+      dispatch(setIsImageTransferring(false));
       Platform.OS !== 'web' && KeepAwake.deactivate();
       return {status: uploadStatus, datasets: datasetsNotUploaded};
     }
@@ -62,8 +63,7 @@ const useUpload = () => {
 
   const uploadDataset = async (dataset) => {
     try {
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(`Uploading dataset ${dataset.name}\n`));
+      // dispatch(addedStatusMessage(`\n${dataset.name}\n`));
       let datasetCopy = JSON.parse(JSON.stringify(dataset));
       delete datasetCopy.spotIds;
       datasetCopy.images && delete datasetCopy.images;
@@ -71,11 +71,10 @@ const useUpload = () => {
       if (resJSON.modified_on_server) {
         console.log('Dataset that was uploaded:', resJSON);
         // console.log(dataset.name + ': Uploading Dataset Properties...');
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`Uploading ${dataset.name} Properties...`));
+        // dispatch(addedStatusMessage('Uploading properties...'));
         await useServerRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
         // console.log(`Finished Uploading Dataset ${dataset.name} Properties...`);
-        dispatch(addedStatusMessage(`Finished Uploading Dataset ${dataset.name} Properties...\n`));
+        // dispatch(removedLastStatusMessage());
         await uploadSpots(dataset);
       }
       else {
@@ -98,16 +97,15 @@ const useUpload = () => {
 
       const makeNextDatasetRequest = async () => {
         await uploadDataset(datasets[currentRequest]);
-        dispatch(removedLastStatusMessage());
         currentRequest++;
         if (currentRequest < datasets.length) await makeNextDatasetRequest();
-        else {
-          const msgText = `Finished uploading ${datasets.length} Dataset${(datasets.length === 1 ? '!' : 's!')}\n`;
-          console.log(msgText);
-          // dispatch(removedLastStatusMessage());
-          dispatch(clearedStatusMessages());
-          dispatch(addedStatusMessage(msgText));
-        }
+        // else {
+        //   const msgText = `Finished uploading ${datasets.length} Dataset${(datasets.length === 1 ? '!' : 's!')}\n`;
+        //   console.log(msgText);
+        //   // dispatch(removedLastStatusMessage());
+        //   dispatch(clearedStatusMessages());
+        //   dispatch(addedStatusMessage(msgText));
+        // }
       };
 
       if (Object.values(projectDatasets).length === 0) {
@@ -115,13 +113,17 @@ const useUpload = () => {
         throw Error('No Datasets Found.');
       }
       else if (currentRequest < Object.values(projectDatasets).length) {
-        const msgText = '\nFound ' + Object.values(projectDatasets).length + ' Dataset' + (Object.values(
-          projectDatasets).length === 1 ? '' : 's') + ' to Upload.\n\n';
-        console.log(msgText);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(msgText));
+        // const msgText = '\nFound ' + Object.values(projectDatasets).length + ' Dataset' + (Object.values(
+        //   projectDatasets).length === 1 ? '' : 's') + ' to Upload.\n\n';
+        // console.log(msgText);
+        // dispatch(removedLastStatusMessage());
+        // dispatch(addedStatusMessage(msgText));
+        dispatch(clearedStatusMessages());
+        dispatch(addedStatusMessage(`Uploading ${datasets.length} datasets...\n`));
         await makeNextDatasetRequest();
+        dispatch(removedLastStatusMessage());
         console.log('Completed Uploading Datasets!');
+        dispatch(addedStatusMessage(`Finished uploading ${datasets.length} Dataset${(datasets.length === 1 ? '!' : 's!')}\n`));
         return 'complete';
       }
     }
@@ -175,8 +177,8 @@ const useUpload = () => {
       dispatch(addedStatusMessage('Uploading Project Properties...'));
       await useServerRequests.updateProject(project, user.encoded_login);
       console.log('Finished Uploading Project Properties...');
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
+      // dispatch(removedLastStatusMessage());
+      // dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
     }
     catch (err) {
       console.error('Error Uploading Project Properties.', err);
@@ -207,19 +209,18 @@ const useUpload = () => {
           type: 'FeatureCollection',
           features: Object.values(datasetSpots),
         };
-        // console.log(dataset.name + ': Uploading Spots...', spotCollection);
-        dispatch(addedStatusMessage(`\nUploading ${dataset.name} spots...`));
+        console.log(dataset.name + ': Uploading Spots...', spotCollection);
+        dispatch(addedStatusMessage(`\nUploading ${dataset.name}\nspots...\n`));
         await useServerRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
         // console.log(`Finished uploading ${dataset.name} spots.`);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`\nFinished uploading ${dataset.name} spots.\n`));
+        // dispatch(removedLastStatusMessage());
+        // dispatch(addedStatusMessage('\nFinished uploading spots.\n'));
         // await uploadImages(Object.values(datasetSpots), dataset.name);
       }
-
     }
     catch (err) {
       // console.error(dataset.name + ': Error Uploading Project Spots.', err);
-      dispatch(removedLastStatusMessage());
+      // dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
       // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
       if (err?.startsWith('Spot(s) already exist in another dataset')) {

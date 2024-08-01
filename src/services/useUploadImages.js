@@ -48,7 +48,7 @@ const useUploadImages = () => {
     }
     catch (err) {
       console.error('Error Resizing Image.', err);
-      throw Error;
+      // throw Error;
     }
   };
 
@@ -56,10 +56,11 @@ const useUploadImages = () => {
     let imagesFound = [];
     let imagesOnServer = [];
     let imagesToUpload = [];
+    let imagesOnServerCount = 0;
     let imagesUploadedCount = 0;
     let imagesUploadFailedCount = 0;
 
-    console.log(datasetName + ': Looking for Images to Upload in Spots...', spots);
+    console.log('Looking for Images to Upload in Spots...', spots);
     dispatch(addedStatusMessage('Looking for images to upload in spots...'));
 
     // Check if image is already on server and push image into either array imagesOnServer or imagesToUpload
@@ -72,7 +73,10 @@ const useUploadImages = () => {
             || (!response.modified_timestamp && imageProps.modified_timestamp))) {
           imagesToUpload.push(imageProps);
         }
-        else imagesOnServer.push(imageProps);
+        else {
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage(`Images already on server: ${imagesOnServerCount++}`));
+        }
       }
       catch (err) {
         console.error('Error at shouldUploadImage()', err);
@@ -88,29 +92,34 @@ const useUploadImages = () => {
         await uploadImage(imageProps.id, resizedImage);
         imagesUploadedCount++;
       }
-      catch {
+      catch (err) {
+        console.error(`Failed to upload image ${imageProps.id} because ${err.Error}`);
         imagesUploadFailedCount++;
       }
-      let msgText = 'Uploading Images...';
-      let countMsgText = `Image ${imagesUploadedCount} of ${imagesToUpload.length} uploaded.`;
-      let failedCountMsgText = '';
-      console.log(`${msgText} \n ${countMsgText}`);
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage(`${msgText} \n ${countMsgText}`));
-      if (imagesUploadFailedCount > 0) {
-        failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`\n ${failedCountMsgText}`));
-      }
+      let msgText = `Uploading Image ${imageProps.id}...`;
+      console.log(`${msgText} \n Success: ${imagesUploadedCount}/${imagesToUpload.length} uploaded.`);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(
+        `\n${msgText} 
+         \nSuccess: ${imagesUploadedCount}/${imagesToUpload.length} uploaded. 
+         \nFailed: ${imagesUploadFailedCount || 0}/${imagesToUpload.length}`)
+      );
+      // if (imagesUploadFailedCount > 0) {
+      //   failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
+      //   dispatch(removedLastStatusMessage());
+      //   dispatch(addedStatusMessage(`\n ${failedCountMsgText}`));
+      // }
 
       if (imagesUploadedCount + imagesUploadFailedCount < imagesToUpload.length) {
         await startUploadingImage(imagesToUpload[imagesUploadedCount + imagesUploadFailedCount]);
       }
       else {
-        msgText = `Finished uploading images ${(imagesUploadFailedCount > 0 ? ' with Errors' : '') + '.'}`;
-        console.log(msgText + '\n' + countMsgText);
-        dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(msgText + '\n' + countMsgText));
+        dispatch(clearedStatusMessages());
+        if (imagesUploadFailedCount > 0) {
+          dispatch(addedStatusMessage('Finished uploading images with Errors.\n'));
+          dispatch(addedStatusMessage(`\n${imagesUploadFailedCount} Images failed to upload\n`));
+        }
+        else dispatch(addedStatusMessage(`Finished uploading ${imagesUploadedCount} to server.`));
       }
     };
 
@@ -122,9 +131,9 @@ const useUploadImages = () => {
         if (isValidImageURI) return imageURI;
         throw Error;  // Webstorm giving warning here, but we want this caught locally so that we get the log
       }
-      catch {
+      catch (err) {
         console.log('Local file not found for image:' + imageProps.id);
-        throw Error;
+        throw Error(err);
       }
     };
 
@@ -143,12 +152,12 @@ const useUploadImages = () => {
         console.log(datasetName + ': Finished Uploading Image', imageId);
         dispatch(updatedProjectTransferProgress(0));
         dispatch(clearedStatusMessages());
-        dispatch(setIsImageTransferring(false));
+        // dispatch(setIsImageTransferring(false));
       }
       catch (err) {
         console.log(datasetName + ': Error Uploading Image', imageId, err);
         // dispatch(setIsImageTransferring(false));
-        throw Error;
+        throw Error(err);
       }
     };
 
