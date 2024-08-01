@@ -13,20 +13,20 @@ import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 // import useAnimationsHook from '../../../shared/ui/useAnimations';
 import LottieAnimation from '../../../utils/animations/LottieAnimations';
 import {setIsImageTransferring, setSelectedProject} from '../../project/projects.slice';
-import {addedStatusMessage, clearedStatusMessages} from '../home.slice';
+import {addedStatusMessage, setIsProgressModalVisible} from '../home.slice';
 
 const UploadProgressModal = ({}) => {
 
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
-  // const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
+  const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
   const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
   const [error, setError] = useState(false);
-  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
+  // const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [uploadComplete, setUploadComplete] = useState('');
 
   const useDownload = useDownloadHook();
@@ -41,7 +41,7 @@ const UploadProgressModal = ({}) => {
     try {
       const project = selectedProject.project;
       dispatch(setSelectedProject({project: '', source: ''}));
-      setIsProgressModalVisible(false);
+      dispatch(setIsProgressModalVisible(false));
       if (selectedProject.source === 'server' && !isEmpty(project)) {
         console.log('Downloading Project');
         await useDownload.initializeDownload(project);
@@ -112,7 +112,7 @@ const UploadProgressModal = ({}) => {
   return (
     <ProgressModal
       buttonText={selectedProject.source !== '' && 'Continue'}
-      closeProgressModal={() => setIsProgressModalVisible(false)}
+      closeProgressModal={() => dispatch(setIsProgressModalVisible(false))}
       dialogTitle={'UPLOADING...'}
       isProgressModalVisible={isProgressModalVisible}
       onPressComplete={() => handleCompletePress()}

@@ -119,7 +119,7 @@ const useUploadImages = () => {
           dispatch(addedStatusMessage('Finished uploading images with Errors.\n'));
           dispatch(addedStatusMessage(`\n${imagesUploadFailedCount} Images failed to upload\n`));
         }
-        else dispatch(addedStatusMessage(`Finished uploading ${imagesUploadedCount} to server.`));
+        else dispatch(addedStatusMessage(`Finished uploading ${imagesUploadedCount} images to server.`));
       }
     };
 
