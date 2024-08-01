@@ -12,20 +12,21 @@ import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 // import useAnimationsHook from '../../../shared/ui/useAnimations';
 import LottieAnimation from '../../../utils/animations/LottieAnimations';
-import {setSelectedProject} from '../../project/projects.slice';
-import {addedStatusMessage, setIsProgressModalVisible} from '../home.slice';
+import {setIsImageTransferring, setSelectedProject} from '../../project/projects.slice';
+import {addedStatusMessage, clearedStatusMessages} from '../home.slice';
 
-const UploadProgressModal = () => {
+const UploadProgressModal = ({}) => {
 
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
-  const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
+  // const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
   const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
   const [error, setError] = useState(false);
+  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [uploadComplete, setUploadComplete] = useState('');
 
   const useDownload = useDownloadHook();
@@ -40,7 +41,7 @@ const UploadProgressModal = () => {
     try {
       const project = selectedProject.project;
       dispatch(setSelectedProject({project: '', source: ''}));
-      dispatch(setIsProgressModalVisible(false));
+      setIsProgressModalVisible(false);
       if (selectedProject.source === 'server' && !isEmpty(project)) {
         console.log('Downloading Project');
         await useDownload.initializeDownload(project);
@@ -71,6 +72,7 @@ const UploadProgressModal = () => {
 
   const renderUploadProgressModal = async () => {
     try {
+      isImageTransferring && dispatch(setIsImageTransferring(false));
       setUploadComplete('uploading');
       const uploadStatusObj = await useUpload.initializeUpload();
       const {status, datasets} = uploadStatusObj;
@@ -131,7 +133,7 @@ const UploadProgressModal = () => {
               <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
             </View>
             {isImageTransferring && <View style={{paddingTop: 10}}>
-              <Text>Uploading image...</Text>
+              <Text style={{textAlign: 'center', paddingBottom: 5}}>Uploading images</Text>
               <ProgressBar
                 progress={projectTransferProgress}
                 width={250}
