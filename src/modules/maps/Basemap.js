@@ -43,12 +43,11 @@ const Basemap = ({
     : homeStyles.currentZoomTextBlack;
 
   const dispatch = useDispatch();
-  const center = useSelector(state => state.map.center) || [LONGITUDE, LATITUDE];
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const isMapMoved = useSelector(state => state.map.isMapMoved);
   const stratSection = useSelector(state => state.map.stratSection);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
-  const zoom = useSelector(state => state.map.zoom) || ZOOM;
 
   const {mapRef, cameraRef} = forwardedRef;
 
@@ -60,12 +59,13 @@ const Basemap = ({
   const useMapView = useMapViewHook();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
+  const [initialCenter, setInitialCenter] = useState();
+  const [initialZoom, setInitialZoom] = useState();
   const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
-  const [zoomText, setZoomText] = useState(zoom);
+  const [zoomText, setZoomText] = useState();
 
-  const [initialCenter, setInitialCenter] = useState(center);
-  const [initialZoom, setInitialZoom] = useState(zoom);
+  const cameraChangedTimestampRef = useRef(0);
 
   const coordQuad = useMapCoords.getCoordQuad(currentImageBasemap);
 
@@ -85,8 +85,11 @@ const Basemap = ({
 
   useEffect(() => {
       // console.log('UE Basemap');
-      setInitialCenter(useMapView.getCenterCoordinates());
-      setInitialZoom(useMapView.getZoomLevel());
+    if (!isMapMoved) dispatch(setIsMapMoved(true));
+    const {longitude, latitude, zoom} = useMapView.getInitialViewState();
+      console.log('Got initial center [' + longitude + ', ' + latitude + '] and zoom', zoom);
+      setInitialCenter([longitude, latitude]);
+      setInitialZoom(zoom);
     }, [currentImageBasemap, stratSection],
   );
 
@@ -100,22 +103,18 @@ const Basemap = ({
   };
 
   // Update spots in extent and saved view (center and zoom)
-  const onMapIdle = async (e) => {
-    // console.log('Event onMapIdle', e);
-    dispatch(setIsMapMoved(true));
-    if (!currentImageBasemap && !stratSection && mapRef?.current) {
-      const newCenter = await mapRef.current.getCenter();
-      const newZoom = await mapRef.current.getZoom();
-      useMapView.setMapView(newCenter, newZoom);
-    }
-  };
-
-  // Update scale bar and zoom text
-  const onCameraChanged = async (e) => {
-    // console.log('Event onCameraChanged', e);
-    if (!currentImageBasemap && !stratSection && mapRef?.current) {
-      const newZoom = await mapRef.current.getZoom();
-      setZoomText(newZoom);
+  const onMapMoved = async (e) => {
+    // console.log('Event onMapMoved Timestamp difference', e.timestamp - cameraChangedTimestampRef.current);
+    if (e.timestamp - cameraChangedTimestampRef.current > 1000) {
+      console.log('Map Moved. Updating View...');
+      cameraChangedTimestampRef.current = e.timestamp;
+      if (!isMapMoved) dispatch(setIsMapMoved(true));
+      if (!currentImageBasemap && !stratSection && mapRef?.current) {
+        const newCenter = await mapRef.current.getCenter();
+        const newZoom = await mapRef.current.getZoom();
+        setZoomText(newZoom);   // Update scale bar and zoom text
+        useMapView.setMapView(newCenter, newZoom);
+      }
     }
   };
 
@@ -132,7 +131,7 @@ const Basemap = ({
 
   return (
     <>
-      {!stratSection && !currentImageBasemap && (
+      {!stratSection && !currentImageBasemap && zoomText && (
         <View
           style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}
         >
@@ -159,8 +158,7 @@ const Basemap = ({
         onLongPress={onMapLongPress}
         scrollEnabled={allowMapViewMove}
         zoomEnabled={allowMapViewMove}
-        onMapIdle={onMapIdle}    // Update spots in extent and saved view (center and zoom)
-        onCameraChanged={onCameraChanged}  // Update scale bar and zoom text
+        onCameraChanged={onMapMoved}  // Update spots in extent and saved view (center and zoom)
         onDidFinishLoadingMap={onDidFinishLoadingMap}
         scaleBarEnabled={!currentImageBasemap && !stratSection}
         scaleBarPosition={scaleBarPosition()}

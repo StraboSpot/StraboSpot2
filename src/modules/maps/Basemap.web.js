@@ -38,6 +38,7 @@ const Basemap = ({
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
+  const isMapMoved = useSelector(state => state.map.isMapMoved);
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {mapRef} = forwardedRef;
@@ -85,7 +86,8 @@ const Basemap = ({
   useEffect(() => {
       // console.log('UE Basemap', viewState);
       // console.log('Dimensions', useDimensions);
-      setViewState(useMapView.getInitialViewState());
+    if (!isMapMoved) dispatch(setIsMapMoved(true));
+    setViewState(useMapView.getInitialViewState());
     }, [currentImageBasemap, stratSection],
   );
 
@@ -114,9 +116,9 @@ const Basemap = ({
   });
 
   // Update spots in extent and saved view (center and zoom)
-  const onMove = (e) => {
-    console.log('Event onMove', e);
-    dispatch(setIsMapMoved(true));
+  const onMapMoved = (e) => {
+    // console.log('Event onMapMoved', e);
+    if (!isMapMoved) dispatch(setIsMapMoved(true));
     if (currentImageBasemap || stratSection) {
       // TODO Next line is a hack to fix image basemaps and strat section zooming issue on fresh load
       const newZoom = e.viewState.zoom < 1 ? ZOOM_STRAT_SECTION : e.viewState.zoom;
@@ -201,7 +203,7 @@ const Basemap = ({
       onDblClick={onMapLongPress}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onMove={onMove}   // Update spots in extent and saved view (center and zoom)
+      onMoveEnd={onMapMoved}   // Update spots in extent and saved view (center and zoom)
       mapboxAccessToken={MAPBOX_TOKEN}
       cursor={cursor}
       interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}

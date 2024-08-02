@@ -31,7 +31,7 @@ const useMapView = () => {
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
-    // console.log('Getting initial map center...');
+    // console.log('Getting initial map center...', center);
     if (currentImageBasemap || stratSection) {
       if ((selectedSpot?.properties?.image_basemap && selectedSpot?.properties.image_basemap === currentImageBasemap?.id)
         || (selectedSpot?.properties?.strat_section_id && selectedSpot?.properties.strat_section_id === stratSection?.strat_section_id)) {
@@ -43,11 +43,10 @@ const useMapView = () => {
       }
       else if (stratSection) return STRAT_SECTION_CENTER;
     }
-    else if (selectedSpot?.geometry?.coordinates) return turf.centroid(selectedSpot).geometry.coordinates;
-    return [LONGITUDE, LATITUDE];
+    return center || [LONGITUDE, LATITUDE];  // ToDo Zoom to Extent of Spots if no saved center
   };
 
-  // Set initial center and zoom (WEB)
+  // Set initial center and zoom
   const getInitialViewState = () => {
     const initialCenter = getCenterCoordinates();
     const initialZoom = getZoomLevel();
@@ -63,7 +62,7 @@ const useMapView = () => {
   };
 
   const getZoomLevel = () => {
-    // console.log('Getting initial zoom...');
+    // console.log('Getting initial zoom...', zoom);
     if (currentImageBasemap) return ZOOM;
     else if (stratSection) return ZOOM_STRAT_SECTION;
     return zoom;
@@ -80,16 +79,8 @@ const useMapView = () => {
   const isOnStratSection = feature => feature.properties?.strat_section_id;
 
   const setMapView = (newCenter, newZoom) => {
-    if (!isEqual(center, newCenter)) {
-      console.log('Prev Center:', center, 'New Center:', newCenter);
-      console.log('Setting new map center...');
-      dispatch(setCenter(newCenter));
-    }
-    if (zoom !== newZoom) {
-      console.log('Prev Zoom:', zoom, 'New Zoom:', newZoom);
-      console.log('Setting new zoom...');
-      dispatch(setZoom(newZoom));
-    }
+    if (!isEqual(center, newCenter)) dispatch(setCenter(newCenter));
+    if (zoom !== newZoom) dispatch(setZoom(newZoom));
   };
 
   const zoomToSpots = async (spotsToZoomTo, map, camera) => {
