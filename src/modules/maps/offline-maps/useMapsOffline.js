@@ -35,16 +35,15 @@ const useMapsOffline = () => {
   const useServerRequests = useServerRequestsHook();
 
   //INTERNAL
-  const adjustTileCount = async () => {
-    Object.values(offlineMaps).map(async (map) => {
-      const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, map.id);
-      // if (!isEmpty(tileCount)) {
-      const tileCountLength = tileCount.length;
-      // if (map.count !== tileCountLength) {
-      const newOfflineMapCount = {...offlineMaps[map.id], count: tileCountLength};
-      console.log('newOfflineMapCount', newOfflineMapCount);
-      dispatch(setOfflineMap(newOfflineMapCount));
-    });
+  const adjustTileCount = async (files) => {
+    console.log(`Adjusting Tile Count... ${files}`);
+    for (const file of files) {
+      const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, file);
+      if (offlineMaps[file].count !== tileCount.length) {
+        const newOfflineMapCount = {...offlineMaps[file], count: tileCount.length};
+        dispatch(setOfflineMap(newOfflineMapCount));
+      }
+    }
   };
 
   const addMapFromDeviceToRedux = async (mapId) => {
@@ -273,20 +272,13 @@ const useMapsOffline = () => {
 
   const getSavedMapsFromDevice = async () => {
     try {
+      console.count('getSavedMapsFromDevice');
       const files = await useDevice.readDirectoryForMapFiles();
       if (!isEmpty(files)) {
-        files.map(async (file) => {
-          if (offlineMaps[file]) {
-            await adjustTileCount(file);
-            console.log('Tiles Adjusted');
-          }
-          else {
-            console.log(`Map ${file} not there`);
-            await addMapFromDeviceToRedux(file);
-          }
-        });
+        await adjustTileCount(files);
+        console.log('Done adjusting Tiles');
       }
-      else dispatch(clearedMapsFromRedux());
+      else dispatch(clearedMapsFromRedux());/**/
     }
     catch (err) {
       console.log('Error getting saved maps from device', err);
