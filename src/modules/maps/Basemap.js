@@ -1,11 +1,11 @@
-import React, {forwardRef, useEffect, useState} from 'react';
+import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {BACKGROUND, LATITUDE, LONGITUDE, MAP_MODES, MAPBOX_TOKEN, ZOOM} from './maps.constants';
+import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
 import {setIsMapMoved} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
