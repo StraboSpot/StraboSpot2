@@ -88,7 +88,11 @@ const useMapsOffline = () => {
     if (status.status === 'Invalid Map Specified') {
       throw Error(status.status);
     }
-    else if (status.status !== 'Zip File Ready.') await checkZipStatus(zipId);
+    else if (status.status !== 'Zip File Ready.') {
+      setTimeout(async () => {
+        await checkZipStatus(zipId);
+      }, 1000);
+    }
     // }
     // catch (err) {
     //   console.error('Error checking zip status', err);
