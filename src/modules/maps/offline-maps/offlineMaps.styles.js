@@ -31,12 +31,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   itemSubContainer: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     width: '100%',
   },
   itemSubTextStyle: {
-    fontSize: 14,
+    fontSize: 10,
   },
   itemTextStyle: {
     fontSize: themes.PRIMARY_TEXT_SIZE,

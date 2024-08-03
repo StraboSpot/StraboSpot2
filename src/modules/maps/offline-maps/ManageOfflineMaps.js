@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import { Animated, FlatList, Text, View} from 'react-native';
+import {Animated, FlatList, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,6 +13,7 @@ import {isEmpty, truncateText} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
+import Loading from '../../../shared/ui/Loading';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import TextInputModal from '../../../shared/ui/TextInputModal';
 import {setIsOfflineMapsModalVisible} from '../../home/home.slice';
@@ -42,8 +43,12 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   useEffect(() => {
     console.log('UE ManageOfflineMaps [mainMenuPageVisible]', mainMenuPageVisible);
     setLoading(true);
-    useMapsOffline.getSavedMapsFromDevice().then(r => console.log(`Got maps from device: ${r}`));
-    setLoading(false);
+    useMapsOffline.getSavedMapsFromDevice().then(() => {
+      console.log(`Got maps from device`);
+      setLoading(false);
+    });
+    return () => console.log('Left ManageMapsOffline');
+
   }, []);
 
   useEffect(() => {
@@ -68,11 +73,10 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     setAvailableMaps(offlineMaps);
   }, [offlineMaps]);
 
-  const confirmDeleteMap = async (map) => {
-    console.log(map);
+  const confirmDeleteMap = async () => {
     alert(
       'Delete Offline Map',
-      'Are you sure you want to delete ' + map.name + '?',
+      `Are you sure you want to delete ${selectedMap.count} tiles in ${selectedMap.name}?`,
       [
         {
           text: 'Cancel',
@@ -82,8 +86,9 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
         {
           text: 'OK',
           onPress: () => {
-            Object.values(availableMaps).filter(mapId => mapId.id !== map.id);
-            useDevice.deleteOfflineMap(map);
+            Object.values(availableMaps).filter(mapId => mapId.id !== selectedMap.id);
+            useDevice.deleteOfflineMap(selectedMap);
+            setIsNameModalVisible(false);
           },
         },
       ],
@@ -104,20 +109,30 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     else return name;
   };
 
-  const renderNameChangeModal = () => {
+  const renderEditMapModal = () => {
     return (
-      <View style={{backgroundColor: 'red', alignContent: 'flex-start'}}>
-        <TextInputModal
-          dialogTitle={'Edit Map Name'}
-          placeholder={selectedMap.name}
-          style={styles.dialogTitle}
-          visible={isNameModalVisible}
-          onPress={() => saveMapEdits()}
-          closeModal={() => setIsNameModalVisible(false)}
-          value={selectedMap.name}
-          onChangeText={text => setSelectedMap({...selectedMap, name: text})}
+      <TextInputModal
+        dialogTitle={'Edit Map Name'}
+        placeholder={selectedMap.name}
+        style={styles.dialogTitle}
+        visible={isNameModalVisible}
+        onPress={() => saveMapEdits()}
+        closeModal={() => setIsNameModalVisible(false)}
+        value={selectedMap.name}
+        onChangeText={text => setSelectedMap({...selectedMap, name: text})}
+      >
+        <Button
+          type={'clear'}
+          icon={
+            <Icon
+              name={'trash-outline'}
+              type={'ionicon'}
+              color={'red'}
+            />
+          }
+          onPress={() => confirmDeleteMap()}
         />
-      </View>
+      </TextInputModal>
     );
   };
 
@@ -134,31 +149,20 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     );
   };
 
-  const renderMapEditModal = (map) => {
-    if (map.id !== 'mapbox.outdoors' && map.id !== 'mapbox.satellite' && map.id !== 'osm' && map.id !== 'macrostrat') {
-      return (
-        <Button
-          onPress={() => editMap(map)}
-          titleStyle={commonStyles.viewMapsButtonText}
-          type={'clear'}
-          title={'Edit'}
-        />
-      );
-    }
-  };
-
   const renderMapsListItem = (item) => {
     return (
       <ListItem
         containerStyle={commonStyles.listItemFormField}
         key={item.id}
       >
-        <ListItem.Content>
-          <View style={styles.itemContainer}>
+        <ListItem.Content style={styles.itemContainer}>
+          <View style={{marginLeft: 10}}>
             <ListItem.Title style={commonStyles.listItemTitle}>
               {`${!isEmpty(item) ? truncateText(getTitle(item), 20) : 'No Name'}`}
             </ListItem.Title>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <ListItem.Subtitle style={styles.itemSubTextStyle}>{item.count} tiles</ListItem.Subtitle>
+          </View>
+            <View style={{flexDirection: 'row'}}>
               {item.count === 0 && (
                 <Animated.View style={{transform: [{scale: animatedPulse}]}}>
                   <Icon
@@ -170,36 +174,40 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
                   />
                 </Animated.View>
               )}
-              <ListItem.Title style={styles.itemSubTextStyle}>{`(${item.count} tiles)`}</ListItem.Title>
+              {isOnline.isInternetReachable && (
+                <Button
+                  onPress={() => toggleOfflineMap(item)}
+                  disabled={item.count === 0}
+                  containerStyle={{marginRight: 20}}
+                  titleStyle={commonStyles.viewMapsButtonText}
+                  type={'clear'}
+                  icon={<Icon
+                    type={'ionicon'}
+                    size={20}
+                    name={item.isOfflineMapVisible ? 'eye-off-outline' : item.count === 0 ? 'No tiles to view' : 'eye-outline'}
+                  />}
+                />
+              )}
+              {item.id !== 'mapbox.outdoors' && item.id !== 'mapbox.satellite' && item.id !== 'osm' && item.id !== 'macrostrat'
+                && <Button
+                  onPress={() => editMap(item)}
+                  type={'clear'}
+                  icon={
+                    <Icon
+                      type={'material'}
+                      name={'edit'}
+                      size={15}
+                    />
+                  }
+                />}
             </View>
-          </View>
-          <View style={styles.itemSubContainer}>
-            {isOnline.isInternetReachable && (
-              <Button
-                onPress={() => toggleOfflineMap(item)}
-                disabled={item.count === 0}
-                titleStyle={commonStyles.viewMapsButtonText}
-                type={'clear'}
-                title={item.isOfflineMapVisible ? 'Stop viewing offline maps' : item.count === 0 ? 'No tiles to view' : 'View offline map'}
-              />
-            )}
-            <View style={{flexDirection: 'row', padding: 0}}>
-              <Button
-                onPress={() => confirmDeleteMap(item)}
-                titleStyle={commonStyles.viewMapsButtonText}
-                type={'clear'}
-                title={'Delete'}
-              />
-              {renderMapEditModal(item)}
-            </View>
-          </View>
+          {/*</View>*/}
         </ListItem.Content>
       </ListItem>
     );
   };
 
   const renderWarningModal = () => {
-
     return (
       <WarningModal
         title={'Map Not Available!'}
@@ -233,7 +241,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Button
         title={'Download tiles of current map'}
         disabled={(!isOnline.isInternetReachable && !isOnline.isConnected)
@@ -247,10 +255,14 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
         titleStyle={commonStyles.standardButtonText}
       />
       <SectionDivider dividerText={'Offline Maps'}/>
-      {loading ? <Text style={{textAlign: 'center', padding: 15}}>Loading...</Text> : renderMapsList()}
-      {renderNameChangeModal()}
+      {!loading && renderMapsList()}
+      {renderEditMapModal()}
       {renderWarningModal()}
-    </React.Fragment>
+      <Loading
+        isLoading={loading}
+        text={'Checking and adjusting tile count'}
+      />
+    </>
   );
 };
 
