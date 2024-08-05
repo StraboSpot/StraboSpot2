@@ -50,9 +50,7 @@ const useCompass = () => {
 
   const getUserDeclination = async () => {
     let longitude, latitude;
-    if (!isEmpty(selectedSpot)) {
-      [longitude, latitude] = await useMapCoords.getCenterCoordsOfFeature();
-    }
+    if (!isEmpty(selectedSpot)) [longitude, latitude] = useMapCoords.getCentroidOfSelectedSpot();
     else {
       const locationData = await useMapLocation.getCurrentLocation();
       longitude = locationData.longitude;

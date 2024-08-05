@@ -10,7 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 
 const useMapCoords = () => {
   const isOnline = useSelector(state => state.connections.isOnline);
-  const {geometry, properties} = useSelector(state => state.spot.selectedSpot);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const useServerRequests = useServerRequestsHook();
 
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
@@ -76,11 +76,8 @@ const useMapCoords = () => {
     return [maxY, maxX, minY, minX]; // [top, right, bottom, left]
   };
 
-  const getCenterCoordsOfFeature = () => {
-    if (geometry.type === 'Point') return geometry.coordinates;
-    else if (geometry.type === 'Polygon' || geometry.type === 'LineString') {
-      return (turf.centroid(geometry)).geometry.coordinates;
-    }
+  const getCentroidOfSelectedSpot = () => {
+    return turf.getCoord(turf.centroid(selectedSpot));
   };
 
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
@@ -111,7 +108,7 @@ const useMapCoords = () => {
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
     getBBoxPaddedInPixels: getBBoxPaddedInPixels,
     getBoundsPadded: getBoundsPadded,
-    getCenterCoordsOfFeature: getCenterCoordsOfFeature,
+    getCentroidOfSelectedSpot: getCentroidOfSelectedSpot,
     getCoordQuad: getCoordQuad,
     getMyMapsBboxCoords: getMyMapsBboxCoords,
   };
