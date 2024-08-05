@@ -22,8 +22,8 @@ import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice'
 import {TagDetailModal, useTagsHook} from '../tags';
 
 const TagsModal = ({
-                     goToCurrentLocation,
                      isFeatureLevelTagging,
+                     zoomToCurrentLocation,
                    }) => {
   const toast = useToast();
   const useTags = useTagsHook();
@@ -85,7 +85,7 @@ const TagsModal = ({
             tagsToUpdate.push(tag);
           });
           useTags.saveTag(tagsToUpdate);
-          goToCurrentLocation();
+          zoomToCurrentLocation();
         });
       }
       else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
@@ -97,7 +97,6 @@ const TagsModal = ({
       console.error('Error saving Tag', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show('Tags Saved Error!', {type: 'danger'});
-
     }
   };
 

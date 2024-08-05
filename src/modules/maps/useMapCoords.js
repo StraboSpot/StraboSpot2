@@ -1,3 +1,5 @@
+import {PixelRatio, Platform} from 'react-native';
+
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
@@ -51,9 +53,34 @@ const useMapCoords = () => {
     return convertCoords(feature, PIXEL_PROJECTION, GEO_LAT_LNG_PROJECTION);
   };
 
+  // Get a pixel bounding box with padding around a point pressed on screen
+  const getBBoxPaddedInPixels = ([x, y]) => {
+    const pixelRatio = PixelRatio.get();
+    const r = 15;  // padding
+    const maxX = x + r;
+    const minX = x - r;
+    const maxY = y + r;
+    const minY = y - r;
+    return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]]
+      : Platform.OS === 'android' ? [maxY * pixelRatio, maxX * pixelRatio, minY * pixelRatio, minX * pixelRatio]
+        : [maxY, maxX, minY, minX];  // [top, right, bottom, left]
+  };
+
+  // Get geographic bounds with padding around a point
+  const getBoundsPadded = ([x, y]) => {
+    const r = 0.01;  // padding
+    const maxX = x + r;
+    const minX = x - r;
+    const maxY = y + r;
+    const minY = y - r;
+    return [maxY, maxX, minY, minX]; // [top, right, bottom, left]
+  };
+
   const getCenterCoordsOfFeature = () => {
     if (geometry.type === 'Point') return geometry.coordinates;
-    else if (geometry.type === 'Polygon' || geometry.type === 'LineString') return (turf.centroid(geometry)).geometry.coordinates;
+    else if (geometry.type === 'Polygon' || geometry.type === 'LineString') {
+      return (turf.centroid(geometry)).geometry.coordinates;
+    }
   };
 
   // Identify the coordinate span for the image basemap adjusted by the given [x,y] (adjustment used for strat sections)
@@ -82,6 +109,8 @@ const useMapCoords = () => {
   return {
     convertFeatureGeometryToImagePixels: convertFeatureGeometryToImagePixels,
     convertImagePixelsToLatLong: convertImagePixelsToLatLong,
+    getBBoxPaddedInPixels: getBBoxPaddedInPixels,
+    getBoundsPadded: getBoundsPadded,
     getCenterCoordsOfFeature: getCenterCoordsOfFeature,
     getCoordQuad: getCoordQuad,
     getMyMapsBboxCoords: getMyMapsBboxCoords,

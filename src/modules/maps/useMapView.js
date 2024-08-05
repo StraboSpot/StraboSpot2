@@ -103,11 +103,14 @@ const useMapView = () => {
             if (Platform.OS === 'web') {
               map.flyTo({center: centroidCoords, zoom: isOnStratSection(spotsToZoomTo[0]) ? ZOOM_STRAT_SECTION : ZOOM});
             }
-            else camera.flyTo(centroidCoords);
+            else {
+              const [maxY, maxX, minY, minX] = useMapCoords.getBoundsPadded(centroidCoords);
+              camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
+            }
           }
-          else if (spotsToZoomTo.length > 1) {
+          else {
             let featureCollection = turf.featureCollection(spotsToZoomTo);
-            const [minX, minY, maxX, maxY] = turf.bbox(featureCollection);  //bbox extent in minX, minY, maxX, maxY order
+            const [minX, minY, maxX, maxY] = turf.bbox(featureCollection);
             if (Platform.OS === 'web') map.fitBounds([[maxX, minY], [minX, maxY]], {padding: 100, duration: 2500});
             else camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
           }

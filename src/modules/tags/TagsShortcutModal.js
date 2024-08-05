@@ -4,14 +4,14 @@ import {TagsModal} from './index';
 import Modal from '../../shared/ui/modal/Modal';
 
 const TagsShortcutModal = ({
-                             goToCurrentLocation,
                              onPress,
+                             zoomToCurrentLocation,
                            }) => {
 
   const renderTagsShortcutModal = () => {
     return (
       <Modal onPress={onPress}>
-        <TagsModal goToCurrentLocation={goToCurrentLocation}/>
+        <TagsModal zoomToCurrentLocation={zoomToCurrentLocation}/>
       </Modal>
     );
   };

@@ -170,22 +170,8 @@ const useMapFeaturesCalculated = (mapRef) => {
 
   // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
   const getNearestFeatureInBBox = async ([x, y], layers) => {
-
-    // Get a bounding box for a pressed point on screen [top, right, bottom, left]
-    const getBoundingBox = () => {
-      const pixelRatio = PixelRatio.get();
-      const r = 15;
-      const maxX = x + r;
-      const minX = x - r;
-      const maxY = y + r;
-      const minY = y - r;
-      return Platform.OS === 'web' ? [[minX, minY], [maxX, maxY]]
-        : Platform.OS === 'android' ? [maxY * pixelRatio, maxX * pixelRatio, minY * pixelRatio, minX * pixelRatio]
-          : [maxY, maxX, minY, minX];
-    };
-
-    // Get all the features in the bounding box
-    const bbox = getBoundingBox();
+    // First get all the features in the bounding box
+    const bbox =  useMapCoords.getBBoxPaddedInPixels([x, y]);
     const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
       : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
     let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;

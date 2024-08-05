@@ -190,7 +190,7 @@ const SampleModal = (props) => {
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
         dispatch(updatedModifiedTimestampsBySpotsIds([pointSetAtCurrentLocation.properties.id]));
         dispatch(editedOrCreatedSpot(pointSetAtCurrentLocation));
-        await props.goToCurrentLocation();
+        await props.zoomToCurrentLocation();
       }
       else {
         const samples = spot.properties?.samples

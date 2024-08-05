@@ -18,7 +18,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpotNotesTimestamp} from '../spots/spots.slice';
 import Templates from '../templates/Templates';
 
-const Notes = ({goToCurrentLocation}) => {
+const Notes = ({zoomToCurrentLocation}) => {
   const dispatch = useDispatch();
   const initialNote = useSelector(state => state.spot.selectedSpot?.properties?.notes) || undefined;
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -77,7 +77,7 @@ const Notes = ({goToCurrentLocation}) => {
         await currentForm.resetForm();
       }
       if (pageTransition) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
-      else if (goToCurrentLocation) await goToCurrentLocation();
+      else if (zoomToCurrentLocation) await zoomToCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {

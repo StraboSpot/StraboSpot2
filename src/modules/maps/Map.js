@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import Basemap from './Basemap';
 import useCustomMapHook from './custom-maps/useCustomMap';
-import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION} from './maps.constants';
+import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.constants';
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapSymbologyHook from './symbology/useMapSymbology';
@@ -682,19 +682,6 @@ const Map = ({
     }
   };
 
-  // Fly the map to the current location
-  const goToCurrentLocation = async () => {
-    if (cameraRef.current || Platform.OS === 'web') {
-      console.log('%cFlying to location', 'color: red');
-      const currentLocation = await useMapLocation.getCurrentLocation();
-      if (Platform.OS === 'web') {
-        mapRef.current.flyTo({center: [currentLocation.longitude, currentLocation.latitude], maxDuration: 2500});
-      }
-      else await cameraRef.current.flyTo([currentLocation.longitude, currentLocation.latitude], 2500);
-    }
-    else throw 'Error Getting Map Camera';
-  };
-
   const endDraw = async () => {
     let newOrEditedSpot = {};
     if (mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE) {
@@ -1113,6 +1100,23 @@ const Map = ({
     }
   };
 
+  // Fly the map to the current location
+  const zoomToCurrentLocation = async () => {
+    if (cameraRef.current || Platform.OS === 'web') {
+      console.log('%cFlying to location', 'color: red');
+      const currentLocation = await useMapLocation.getCurrentLocation();
+      if (Platform.OS === 'web') {
+        mapRef.current.flyTo(
+          {center: [currentLocation.longitude, currentLocation.latitude], zoom: ZOOM, maxDuration: 2500});
+      }
+      else {
+        const currentLocationAsPoint = turf.point([currentLocation.longitude, currentLocation.latitude]);
+        await useMapView.zoomToSpots([currentLocationAsPoint], mapRef.current, cameraRef.current);
+      }
+    }
+    else throw 'Error Getting Map Camera';
+  };
+
   const zoomToSpots = (spotsToZoomTo) => {
     useMapView.zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
@@ -1135,12 +1139,12 @@ const Map = ({
       getCurrentZoom: getCurrentZoom,
       getExtentString: getExtentString,
       getTileCount: getTileCount,
-      goToCurrentLocation: goToCurrentLocation,
       moveVertex: moveVertex,
       saveEdits: saveEdits,
       toggleUserLocation: toggleUserLocation,
       updateSpotsInMapExtent: updateSpotsInMapExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
+      zoomToCurrentLocation: zoomToCurrentLocation,
       zoomToCustomMap: zoomToCustomMap,
       zoomToSpots: zoomToSpots,
       zoomToSpotsExtent: zoomToSpotsExtent,

@@ -214,7 +214,7 @@ const Home = ({navigation, route}) => {
         await saveEdits();
         break;
       case 'toggleUserLocation':
-        if (value) goToCurrentLocation().catch(console.error);
+        if (value) zoomToCurrentLocation().catch(console.error);
         mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
@@ -317,10 +317,10 @@ const Home = ({navigation, route}) => {
     // console.log(`Project ${backupFileName} has been exported!`);
   };
 
-  const goToCurrentLocation = async () => {
+  const zoomToCurrentLocation = async () => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     try {
-      await mapComponentRef.current?.goToCurrentLocation();
+      await mapComponentRef.current?.zoomToCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -379,7 +379,7 @@ const Home = ({navigation, route}) => {
           <ModalDisplayed
             modalKey={modal.key}
             onPress={modalHandler}
-            goToCurrentLocation={goToCurrentLocation}
+            zoomToCurrentLocation={zoomToCurrentLocation}
           />
         );
       }
