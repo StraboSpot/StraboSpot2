@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderWidth: 1,
-    width: 250,
   },
   mapActionsPosition: {
     bottom: SMALL_SCREEN ? 10 : 100,
