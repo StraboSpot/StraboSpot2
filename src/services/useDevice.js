@@ -159,7 +159,7 @@ const useDevice = () => {
 
   const downloadAndSaveImage = async (imageId) => {
     const imageURI = useServerRequests.getImageUrl();
-    return RNFS.downloadFile({
+    return await RNFS.downloadFile({
       fromUrl: imageURI + imageId,
       toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
       begin: res => console.log('Starting to download Image', imageId, res),
@@ -184,13 +184,14 @@ const useDevice = () => {
   };
 
   const downloadAndSaveMap = async (downloadOptions) => {
-    const res = await useServerRequests.timeoutPromise(60000, RNFS.downloadFile(downloadOptions).promise);
-    if (res.statusCode === 200) {
-      console.log(res);
+    try {
+      const res = await RNFS.downloadFile(downloadOptions).promise;
+      if (res.statusCode === 200) {
+          console.log(`Download Complete to ${downloadOptions.toFile}`);
+      }
     }
-    else {
-      console.error('Server Error');
-      throw new Error('Error downloading tiles from ' + downloadOptions.fromUrl);
+    catch (err) {
+      console.error('An error occurred:', err);
     }
   };
 

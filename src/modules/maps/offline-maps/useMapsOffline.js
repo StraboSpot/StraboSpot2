@@ -38,11 +38,14 @@ const useMapsOffline = () => {
   const adjustTileCount = async (files) => {
     console.log(`Adjusting Tile Count... ${files}`);
     for (const file of files) {
-      const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, file);
-      if (offlineMaps[file].count !== tileCount.length) {
-        const newOfflineMapCount = {...offlineMaps[file], count: tileCount.length};
-        dispatch(setOfflineMap(newOfflineMapCount));
+      if (offlineMaps[file]) {
+        const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, file);
+        if (offlineMaps[file].count !== tileCount.length) {
+          const newOfflineMapCount = {...offlineMaps[file], count: tileCount.length};
+          dispatch(setOfflineMap(newOfflineMapCount));
+        }
       }
+      else await addMapFromDeviceToRedux(file);
     }
   };
 
@@ -81,22 +84,28 @@ const useMapsOffline = () => {
     }
   };
 
+  const checkIfZipStatusReady = (data) => {
+    return data.status === 'Zip File Ready.';
+  };
+
   const checkZipStatus = async (zipId) => {
-    // try {
-    const status = await useServerRequests.zipURLStatus(zipId);
-    if (status.status === 'Invalid Map Specified') {
-      throw Error(status.status);
-    }
-    else if (status.status !== 'Zip File Ready.') {
-      setTimeout(async () => {
-        await checkZipStatus(zipId);
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(async () => {
+        const status = await useServerRequests.zipURLStatus(zipId);
+        if (checkIfZipStatusReady(status)) {
+          clearInterval(interval);
+          resolve(status.status);
+        }
       }, 1000);
-    }
-    // }
-    // catch (err) {
-    //   console.error('Error checking zip status', err);
-    //   throw new Error(err);
-    // }
+      // Set a timeout to reject the promise if the condition isn't met in a certain time
+      setTimeout(() => {
+        clearInterval(interval);
+        reject(new Error('Condition not met in time'));
+      }, 90000); // Timeout after 10 seconds
+    }).catch((error) => {
+      console.error('Error:', error);
+      return Promise.reject(error);
+    });
   };
 
   const createOfflineMapObject = async (mapId, customMap) => {

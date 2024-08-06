@@ -142,8 +142,8 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
       await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       await useMapsOffline.checkTileZipFileExistence();
-      const progress = await useDevice.downloadAndSaveMap(downloadOptions);
-      console.log('PROGRESS', progress);
+      await useDevice.downloadAndSaveMap(downloadOptions);
+      await doUnzip(zipUID);
     }
     catch (err) {
       console.error('Server error in downloadZipUrl', err);
@@ -168,8 +168,6 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Data ready to download.'));
       await downloadZip(zipId);
-      await delay(1000);
-      await doUnzip(zipId);
       const tileArray = await useMapsOffline.moveFiles(zipId);
       await tileMove(tileArray, zipId);
       await useMapsOffline.updateMapTileCountWhenSaving();
