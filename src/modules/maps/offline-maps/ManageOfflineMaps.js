@@ -25,8 +25,8 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
 
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.connections.isOnline);
-  const mainMenuPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const {isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const animatedPulse = useMemo(() => new Animated.Value(1), []);
 
@@ -245,7 +245,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     <>
       <Button
         title={'Download tiles of current map'}
-        disabled={(!isOnline.isInternetReachable && !isOnline.isConnected)
+        disabled={(!isOnline.isInternetReachable && !isOnline.isConnected) || isSelected
           || Object.values(offlineMaps).some(map => map.isOfflineMapVisible === true)}
         onPress={() => {
           closeMainMenuPanel();

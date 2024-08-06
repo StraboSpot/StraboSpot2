@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
   },
   customEndpointVerifyButtonContainer: {
     alignItems: 'center',
-    padding: 10,
+    flexDirection: 'row',
+    padding: 10
   },
   customEndpointVerifyIconContainer: {
     alignItems: 'center',

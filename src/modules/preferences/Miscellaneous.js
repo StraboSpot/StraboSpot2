@@ -16,7 +16,7 @@ import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
-  const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
@@ -25,7 +25,8 @@ const Miscellaneous = () => {
 
   const formRef = useRef('null');
 
-  const initialValues = {database_endpoint: databaseEndpoint.url};
+  const endpointURL = protocol + domain + path;
+  const initialValues = {database_endpoint: endpointURL};
   const testingModePassword = 'Strab0R0cks';
   const errorMessage = 'Wrong Password!';
 
@@ -75,14 +76,14 @@ const Miscellaneous = () => {
     <>
       <SectionDivider dividerText={'Endpoint'}/>
       <Text style={[commonStyles.noValueText, {paddingBottom: 0}]}>
-        Default Endpoint{'\n'}
-        https://strabospot.org/db
+        Current Endpoint{'\n'}
+        {endpointURL || 'https://strabospot.org/db'}
       </Text>
       <CustomEndpoint/>
-      <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
+      {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
         *If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
         and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.
-      </Text>
+      </Text>}
     </>
   );
 
