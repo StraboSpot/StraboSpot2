@@ -18,7 +18,7 @@ const useUserProfile = () => {
 
   const getName = () => {
     let name = '';
-    if (customDatabaseEndpoint.isSelected) name = userData.name.split(' ')[0];
+    if (customDatabaseEndpoint.isSelected && !isEmpty(userData.name)) name = userData.name.split(' ')[0];
     else !isEmpty(userData.name) ? name = userData.name : 'Guest';
     return name;
   };
