@@ -31,9 +31,7 @@ const CustomEndpoint = ({
 
     const handleEndpointSwitchValue = (value) => {
       dispatch(setDatabaseIsSelected(value));
-      if (!value) {
-        dispatch(setDatabaseUrl(''));
-      }
+
     };
 
     const handleEndpointTextValues = (value, input) => {
