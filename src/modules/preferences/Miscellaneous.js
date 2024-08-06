@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Switch, Text, View} from 'react-native';
+import {Switch, Text} from 'react-native';
 
 import {Formik} from 'formik';
 import {Input, ListItem} from 'react-native-elements';
@@ -72,19 +72,22 @@ const Miscellaneous = () => {
   );
 
   const renderEndpointFieldContent = () => (
-    <View>
+    <>
       <SectionDivider dividerText={'Endpoint'}/>
-      <Text style={commonStyles.textAlignCenter}>Default Endpoint:</Text>
-      <Text style={[commonStyles.textAlignCenter, commonStyles.textBold]}>https://strabospot.org/db</Text>
-      <Text style={{margin: 15}}>If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
-        and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.</Text>
+      <Text style={[commonStyles.noValueText, {paddingBottom: 0}]}>
+        Default Endpoint{'\n'}
+        https://strabospot.org/db
+      </Text>
       <CustomEndpoint/>
-    </View>
-
+      <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
+        *If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
+        and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.
+      </Text>
+    </>
   );
 
   const renderTestingModeField = () => (
-    <React.Fragment>
+    <>
       <SectionDivider dividerText={'Testing Mode'}/>
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content>
@@ -95,7 +98,7 @@ const Miscellaneous = () => {
           onValueChange={onTestingSwitchChange}
         />
       </ListItem>
-    </React.Fragment>
+    </>
   );
 
   const verifyPassword = () => {
@@ -113,11 +116,11 @@ const Miscellaneous = () => {
       initialValues={initialValues}
       enableReinitialize
     >
-      <React.Fragment>
+      <>
         {renderEndpointFieldContent()}
         {renderTestingModeField()}
         {renderPrompt()}
-      </React.Fragment>
+      </>
     </Formik>
   );
 };

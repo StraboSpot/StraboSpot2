@@ -18,14 +18,13 @@ const CustomEndpoint = ({
                           textStyles,
                         }) => {
   const dispatch = useDispatch();
-  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isOnline = useSelector(state => state.connections.isOnline);
-
-  const {protocol, domain, path, isSelected, isVerified} = customDatabaseEndpoint;
+  const {domain, isSelected, isVerified, path, protocol} = useSelector(state => state.connections.databaseEndpoint);
 
   const [domainValue, setDomainValue] = useState(domain);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
+  const [pathValue, setPathValue] = useState(path);
   const [protocolValue, setProtocolValue] = useState(protocol);
 
   const useServerRequests = useServerRequestsHook();
@@ -39,15 +38,15 @@ const CustomEndpoint = ({
     dispatch(setDatabaseVerify(false));
     if (input === 'domain') setDomainValue(value);
     if (input === 'protocol') setProtocolValue(value);
-    if (input === 'path') path(value);
+    if (input === 'path') setPathValue(value);
   };
 
   const verifyEndpoint = async () => {
     setIsLoadingEndpoint(true);
-    const isVerified = await useServerRequests.verifyEndpoint(protocolValue, domainValue, path);
-    if (isVerified) setIsLoadingEndpoint(false);
+    const isVerifiedLocal = await useServerRequests.verifyEndpoint(protocolValue, domainValue, pathValue);
+    if (isVerifiedLocal) setIsLoadingEndpoint(false);
     else {
-      setErrorMessage('Not Reachable');
+      setErrorMessage('Endpoint Unreachable');
       setIsLoadingEndpoint(false);
     }
   };
@@ -63,8 +62,8 @@ const CustomEndpoint = ({
           ios_backgroundColor={'white'}
         />
       </View>
-      {customDatabaseEndpoint.isSelected && (
-        <View>
+      {isSelected && (
+        <>
           <View style={uiStyles.customEndpointVerifyInputContainer}>
             <Input
               containerStyle={signInStyles.verifyProtocolInputContainer}
@@ -98,37 +97,36 @@ const CustomEndpoint = ({
               onChangeText={value => handleEndpointTextValues(value, 'path')}
               label={'Path'}
               labelStyle={{fontSize: 10}}
-              value={path}
+              value={pathValue}
               autoCapitalize={'none'}
             />
           </View>
           <View style={uiStyles.customEndpointVerifyButtonContainer}>
-            {isVerified
-              ? (
-                <View style={uiStyles.customEndpointVerifyIconContainer}>
-                  <Text style={[iconText]}>Verified</Text>
-                  <Icon
-                    reverse
-                    name={'checkmark-sharp'}
-                    type={'ionicon'}
-                    size={10}
-                    color={'green'}
-                  />
-                </View>
-              )
-              : <Button
-                title={'Verify'}
+            {isVerified ? (
+              <View style={uiStyles.customEndpointVerifyIconContainer}>
+                <Text style={[iconText]}>Verified</Text>
+                <Icon
+                  reverse
+                  name={'checkmark-sharp'}
+                  type={'ionicon'}
+                  size={10}
+                  color={'green'}
+                />
+              </View>
+            ) : (
+              <Button
+                title={'Verify Endpoint'}
                 disabled={!isOnline.isConnected || isEmpty(domainValue)}
                 buttonStyle={uiStyles.verifyButtonStyle}
                 titleStyle={{color: 'white'}}
                 containerStyle={uiStyles.customEndpointVerifyButtonContainer}
-                onPress={() => verifyEndpoint()}
+                onPress={verifyEndpoint}
                 loading={isLoadingEndpoint}
                 loadingStyle={{width: 60}}
               />
-            }
+            )}
           </View>
-        </View>
+        </>
       )}
     </View>
   );

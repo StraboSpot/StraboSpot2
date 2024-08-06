@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
+  resetDatabaseEndpoint,
   setDatabaseDomain,
   setDatabasePath,
   setDatabaseProtocol,
@@ -280,9 +281,9 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
-  const testCustomMapUrl = async (url) => {
+  const testCustomMapUrl = async (mapURL) => {
     try {
-      const response = await fetch(url);
+      const response = await fetch(mapURL);
       return response.ok;
     }
     catch (e) {
@@ -291,14 +292,14 @@ const useServerRequests = () => {
     }
   };
 
-  const testEndpoint = async (url) => {
+  const testEndpoint = async (endpointURL) => {
     try {
-      const res = await timeoutPromise(15000, fetch(url));
-      console.log(res);
+      const res = await timeoutPromise(15000, fetch(endpointURL));
+      console.log('Endpoint Test Response:', res);
       return res.ok;
     }
     catch (err) {
-      console.log('ERROR', err);
+      console.log('Endpoint Error:', err);
       return false;
     }
   };
@@ -388,17 +389,17 @@ const useServerRequests = () => {
   };
 
   const verifyEndpoint = async (protocolValue, domainValue, pathValue) => {
-    const isVerified = await testEndpoint(protocolValue + domainValue);
+    const isVerified = await testEndpoint(protocolValue + domainValue + pathValue);
     if (isVerified) {
-      console.log('VALID');
+      console.log('Endpoint is Valid');
       dispatch(setDatabaseProtocol(protocolValue));
       dispatch(setDatabaseDomain(domainValue));
       dispatch(setDatabasePath(pathValue));
       dispatch(setDatabaseVerify(isVerified));
     }
     else {
-      console.log('NOT VALID');
-      dispatch(setDatabaseVerify(isVerified));
+      console.log('Endpoint is Not Valid');
+      dispatch(resetDatabaseEndpoint());
     }
     return isVerified;
   };
@@ -409,8 +410,8 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const myMapsEndpoint = databaseEndpoint.isSelected ? databaseEndpoint.url.replace('/db',
-        '/strabotiles') : tilehost;
+      const myMapsEndpoint = databaseEndpoint.isSelected
+        ? databaseEndpoint.url.replace('/db', '/strabotiles') : tilehost;
 
       const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();

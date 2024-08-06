@@ -16,6 +16,12 @@ const connectionsSlice = createSlice({
   name: 'connections',
   initialState: initialConnectionsState,
   reducers: {
+    resetDatabaseEndpoint(state) {
+      state.databaseEndpoint = {
+        ...initialConnectionsState.databaseEndpoint,
+        isSelected: state.databaseEndpoint.isSelected,
+      };
+    },
     setOnlineStatus(state, action) {
       state.isOnline = action.payload;
     },
@@ -47,6 +53,7 @@ const connectionsSlice = createSlice({
 });
 
 export const {
+  resetDatabaseEndpoint,
   setDatabaseIsSelected,
   setDatabaseVerify,
   setDatabasePath,
