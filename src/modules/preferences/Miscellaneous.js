@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Switch, Text, View} from 'react-native';
+import {Switch, Text} from 'react-native';
 
 import {Formik} from 'formik';
 import {Input, ListItem} from 'react-native-elements';
@@ -16,7 +16,7 @@ import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
-  const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
@@ -25,7 +25,8 @@ const Miscellaneous = () => {
 
   const formRef = useRef('null');
 
-  const initialValues = {database_endpoint: databaseEndpoint.url};
+  const endpointURL = protocol + domain + path;
+  const initialValues = {database_endpoint: endpointURL};
   const testingModePassword = 'Strab0R0cks';
   const errorMessage = 'Wrong Password!';
 
@@ -72,19 +73,22 @@ const Miscellaneous = () => {
   );
 
   const renderEndpointFieldContent = () => (
-    <View>
+    <>
       <SectionDivider dividerText={'Endpoint'}/>
-      <Text style={commonStyles.textAlignCenter}>Default Endpoint:</Text>
-      <Text style={[commonStyles.textAlignCenter, commonStyles.textBold]}>https://strabospot.org/db</Text>
-      <Text style={{margin: 15}}>If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
-        and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.</Text>
+      <Text style={[commonStyles.noValueText, {paddingBottom: 0}]}>
+        Current Endpoint{'\n'}
+        {endpointURL || 'https://strabospot.org/db'}
+      </Text>
       <CustomEndpoint/>
-    </View>
-
+      {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
+        *If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
+        and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.
+      </Text>}
+    </>
   );
 
   const renderTestingModeField = () => (
-    <React.Fragment>
+    <>
       <SectionDivider dividerText={'Testing Mode'}/>
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content>
@@ -95,7 +99,7 @@ const Miscellaneous = () => {
           onValueChange={onTestingSwitchChange}
         />
       </ListItem>
-    </React.Fragment>
+    </>
   );
 
   const verifyPassword = () => {
@@ -113,11 +117,11 @@ const Miscellaneous = () => {
       initialValues={initialValues}
       enableReinitialize
     >
-      <React.Fragment>
+      <>
         {renderEndpointFieldContent()}
         {renderTestingModeField()}
         {renderPrompt()}
-      </React.Fragment>
+      </>
     </Formik>
   );
 };

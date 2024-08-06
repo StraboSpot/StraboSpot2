@@ -1,25 +1,16 @@
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {
-  setDatabaseDomain,
-  setDatabasePath,
-  setDatabaseProtocol,
-  setDatabaseVerify,
-  updatedProjectTransferProgress,
-} from './connections.slice';
+import {updatedProjectTransferProgress} from './connections.slice';
 import {STRABO_APIS} from './urls.constants';
 import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
-  const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const {url, isSelected} = databaseEndpoint;
-
-  const baseUrl = url && isSelected
-    ? url
-    : STRABO_APIS.DB;
+  const endpointURL = protocol + domain + path;
+  const baseUrl = endpointURL && isSelected ? endpointURL : STRABO_APIS.DB;
   const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
 
@@ -111,7 +102,7 @@ const useServerRequests = () => {
   };
 
   const getImageUrl = () => {
-    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/pi/');
+    if (isSelected) return baseUrl.replace('/db', '/pi/');
     return `${STRABO_APIS.STRABO}/pi/`;
   };
 
@@ -121,9 +112,9 @@ const useServerRequests = () => {
   };
 
   const getMyMapsBbox = async (mapId) => {
-    if (databaseEndpoint.isSelected) {
-      console.log(databaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
-      const bboxEndpoint = databaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
+    if (isSelected) {
+      console.log(endpointURL.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = endpointURL.replace('/db', '/geotiff/bbox/' + mapId);
       const response = await fetch(bboxEndpoint);
       return handleResponse(response);
     }
@@ -179,7 +170,7 @@ const useServerRequests = () => {
   };
 
   const getTilehostUrl = () => {
-    if (databaseEndpoint.isSelected) return baseUrl.replace('/db', '/strabotiles');
+    if (isSelected) return baseUrl.replace('/db', '/strabotiles');
     return tilehost;
   };
 
@@ -280,9 +271,9 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
-  const testCustomMapUrl = async (url) => {
+  const testCustomMapUrl = async (mapURL) => {
     try {
-      const response = await fetch(url);
+      const response = await fetch(mapURL);
       return response.ok;
     }
     catch (e) {
@@ -291,14 +282,14 @@ const useServerRequests = () => {
     }
   };
 
-  const testEndpoint = async (url) => {
+  const testEndpoint = async (endpointURL) => {
     try {
-      const res = await timeoutPromise(15000, fetch(url));
-      console.log(res);
+      const res = await timeoutPromise(15000, fetch(endpointURL));
+      console.log('Endpoint Test Response:', res);
       return res.ok;
     }
     catch (err) {
-      console.log('ERROR', err);
+      console.log('Endpoint Error:', err);
       return false;
     }
   };
@@ -388,19 +379,7 @@ const useServerRequests = () => {
   };
 
   const verifyEndpoint = async (protocolValue, domainValue, pathValue) => {
-    const isVerified = await testEndpoint(protocolValue + domainValue);
-    if (isVerified) {
-      console.log('VALID');
-      dispatch(setDatabaseProtocol(protocolValue));
-      dispatch(setDatabaseDomain(domainValue));
-      dispatch(setDatabasePath(pathValue));
-      dispatch(setDatabaseVerify(isVerified));
-    }
-    else {
-      console.log('NOT VALID');
-      dispatch(setDatabaseVerify(isVerified));
-    }
-    return isVerified;
+    return await testEndpoint(protocolValue + domainValue + pathValue);
   };
 
   const verifyImageExistence = (imageId, encodedLogin) => {
@@ -409,9 +388,7 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const myMapsEndpoint = databaseEndpoint.isSelected ? databaseEndpoint.url.replace('/db',
-        '/strabotiles') : tilehost;
-
+      const myMapsEndpoint = isSelected ? endpointURL.replace('/db', '/strabotiles') : tilehost;
       const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);

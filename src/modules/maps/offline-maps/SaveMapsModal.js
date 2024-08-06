@@ -32,7 +32,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const databaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
@@ -333,15 +333,13 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
                       title={`Download ${tileCount} Tiles`}
                     />
                   )}
-                {databaseEndpoint.isSelected
-                  && (
-                    <Text style={overlayStyles.contentText}>
-                      URL: {databaseEndpoint.url}
-                    </Text>
-                  )}
+                {isSelected && (
+                  <Text style={overlayStyles.contentText}>
+                    Endpoint URL: {protocol + domain + path}
+                  </Text>
+                )}
               </View>
-            )
-            }
+            )}
           </View>
         </View>
       </View>

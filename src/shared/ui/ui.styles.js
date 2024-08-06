@@ -43,23 +43,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  customEndpointSwitch: {
-    height: 48,
-    width: 48,
-  },
   customEndpointSwitchContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 50,
+    padding: 10,
   },
   customEndpointText: {
+    color: themes.PRIMARY_TEXT_COLOR,
     fontSize: themes.MEDIUM_TEXT_SIZE,
     marginEnd: 30,
     textAlign: 'center',
   },
   customEndpointVerifyButtonContainer: {
     alignItems: 'center',
-    padding: 20,
+    flexDirection: 'row',
+    padding: 10
   },
   customEndpointVerifyIconContainer: {
     alignItems: 'center',

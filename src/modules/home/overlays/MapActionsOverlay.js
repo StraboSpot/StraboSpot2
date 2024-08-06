@@ -19,6 +19,7 @@ const MapActionsOverlay = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
   const {isInternetReachable, isConnected} = useSelector(state => state.connections.isOnline);
+  const {isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const actions = [
     {key: 'zoom', title: 'Zoom to Extent of Spots'},
@@ -32,7 +33,7 @@ const MapActionsOverlay = ({
 
   const mapActionItem = (item) => {
     if ((item.key === 'saveMap' && ((isInternetReachable && isConnected)
-        || (!isInternetReachable && isConnected && currentBasemap?.source)) && Platform.OS !== 'web')
+        || (!isInternetReachable && isConnected && currentBasemap?.source)) && Platform.OS !== 'web' && !isSelected)
       || (item.key === 'stereonet' && Platform.OS === 'ios')
       || (item.key === 'stratSection' && stratSection)
       || (item.key === 'mapMeasurement' && !stratSection && !currentImageBasemap)
