@@ -14,7 +14,7 @@ import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import Loading from '../../../shared/ui/Loading';
-import SectionDivider from '../../../shared/ui/SectionDivider';
+import SectionDividerWithRightButton from '../../../shared/ui/SectionDividerWithRightButton';
 import TextInputModal from '../../../shared/ui/TextInputModal';
 import {setIsOfflineMapsModalVisible} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
@@ -39,17 +39,6 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   const useDevice = useDeviceHook();
   const useMap = useMapHook();
   const useMapsOffline = useMapsOfflineHook();
-
-  useEffect(() => {
-    console.log('UE ManageOfflineMaps [mainMenuPageVisible]', mainMenuPageVisible);
-    setLoading(true);
-    useMapsOffline.getSavedMapsFromDevice().then(() => {
-      console.log(`Got maps from device`);
-      setLoading(false);
-    });
-    return () => console.log('Left ManageMapsOffline');
-
-  }, []);
 
   useEffect(() => {
     Animated.sequence([
@@ -143,8 +132,13 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
         data={Object.values(offlineMaps)}
         renderItem={({item}) => renderMapsListItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Offline Maps. To download a map select area and zoom'
-          + ' level on map then select "Download tiles of current map"'}/>}
+        ListEmptyComponent={
+          <ListEmptyText
+            text={'No Offline Maps.\n\nIf you just logged in press the reload button in the upper right to load your offline maps from the device.\n\nTo download a map select area and zoom'
+              + ' level on map then select "Download tiles of current map"'}
+            textStyle={{textAlign: 'center'}}
+            containerStyle={{padding: 20}}
+          />}
       />
     );
   };
@@ -162,45 +156,45 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
             </ListItem.Title>
             <ListItem.Subtitle style={styles.itemSubTextStyle}>{item.count} tiles</ListItem.Subtitle>
           </View>
-            <View style={{flexDirection: 'row'}}>
-              {item.count === 0 && (
-                <Animated.View style={{transform: [{scale: animatedPulse}]}}>
-                  <Icon
-                    containerStyle={{margin: 5}}
-                    name={'alert'}
-                    type={'material-community'}
-                    size={17}
-                    color={'red'}
-                  />
-                </Animated.View>
-              )}
-              {isOnline.isInternetReachable && (
-                <Button
-                  onPress={() => toggleOfflineMap(item)}
-                  disabled={item.count === 0}
-                  containerStyle={{marginRight: 20}}
-                  titleStyle={commonStyles.viewMapsButtonText}
-                  type={'clear'}
-                  icon={<Icon
-                    type={'ionicon'}
-                    size={20}
-                    name={item.isOfflineMapVisible ? 'eye-off-outline' : item.count === 0 ? 'No tiles to view' : 'eye-outline'}
-                  />}
+          <View style={{flexDirection: 'row'}}>
+            {item.count === 0 && (
+              <Animated.View style={{transform: [{scale: animatedPulse}]}}>
+                <Icon
+                  containerStyle={{margin: 5}}
+                  name={'alert'}
+                  type={'material-community'}
+                  size={17}
+                  color={'red'}
                 />
-              )}
-              {item.id !== 'mapbox.outdoors' && item.id !== 'mapbox.satellite' && item.id !== 'osm' && item.id !== 'macrostrat'
-                && <Button
-                  onPress={() => editMap(item)}
-                  type={'clear'}
-                  icon={
-                    <Icon
-                      type={'material'}
-                      name={'edit'}
-                      size={15}
-                    />
-                  }
+              </Animated.View>
+            )}
+            {isOnline.isInternetReachable && (
+              <Button
+                onPress={() => toggleOfflineMap(item)}
+                disabled={item.count === 0}
+                containerStyle={{marginRight: 20}}
+                titleStyle={commonStyles.viewMapsButtonText}
+                type={'clear'}
+                icon={<Icon
+                  type={'ionicon'}
+                  size={20}
+                  name={item.isOfflineMapVisible ? 'eye-off-outline' : item.count === 0 ? 'No tiles to view' : 'eye-outline'}
                 />}
-            </View>
+              />
+            )}
+            {item.id !== 'mapbox.outdoors' && item.id !== 'mapbox.satellite' && item.id !== 'osm' && item.id !== 'macrostrat'
+              && <Button
+                onPress={() => editMap(item)}
+                type={'clear'}
+                icon={
+                  <Icon
+                    type={'material'}
+                    name={'edit'}
+                    size={15}
+                  />
+                }
+              />}
+          </View>
           {/*</View>*/}
         </ListItem.Content>
       </ListItem>
@@ -240,6 +234,13 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     }
   };
 
+  const updateMapsFromDevice = async () => {
+    setLoading(true);
+    await useMapsOffline.getSavedMapsFromDevice();
+    console.log(`Got maps from device`);
+    setLoading(false);
+  };
+
   return (
     <>
       <Button
@@ -254,7 +255,13 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
         buttonStyle={commonStyles.standardButton}
         titleStyle={commonStyles.standardButtonText}
       />
-      <SectionDivider dividerText={'Offline Maps'}/>
+      <SectionDividerWithRightButton
+        dividerText={'Offline Maps'}
+        iconName={'reload-outline'}
+        iconType={'ionicon'}
+        iconSize={20}
+        onPress={() => updateMapsFromDevice()}
+      />
       {!loading && renderMapsList()}
       {renderEditMapModal()}
       {renderWarningModal()}
