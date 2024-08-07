@@ -22,7 +22,7 @@ const BatteryInfo = () => {
 
   if (batteryPercentage !== '0') {
     return (
-      <>
+      <View style={uiStyles.batteryStatusContainer}>
         <Image
           source={getBatterySource()}
           style={uiStyles.statusBarIcon}
@@ -30,7 +30,7 @@ const BatteryInfo = () => {
         <View style={uiStyles.batteryLevelTextContainer}>
           <Text style={uiStyles.batteryLevelText}>{batteryPercentage}%</Text>
         </View>
-      </>
+      </View>
     );
   }
 };

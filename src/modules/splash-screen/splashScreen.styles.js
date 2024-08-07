@@ -53,6 +53,7 @@ const splashScreenStyles = StyleSheet.create({
   },
   wifiIndicatorContainer: {
     alignItems: 'flex-end',
+    flexDirection: 'row',
     position: 'absolute',
     right: 10,
     top: 10,

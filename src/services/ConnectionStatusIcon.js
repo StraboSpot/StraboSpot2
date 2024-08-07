@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image} from 'react-native';
+import {Image, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -19,10 +19,12 @@ const ConnectionStatusIcon = () => {
   };
 
   return (
-    <Image
-      source={getNetworkStatusIcon()}
-      style={uiStyles.statusBarIcon}
-    />
+    <View style={uiStyles.connectionStatusContainer}>
+      <Image
+        source={getNetworkStatusIcon()}
+        style={uiStyles.statusBarIcon}
+      />
+    </View>
   );
 };
 

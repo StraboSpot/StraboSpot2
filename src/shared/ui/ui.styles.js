@@ -25,19 +25,25 @@ const styles = StyleSheet.create({
   },
   batteryLevelText: {
     color: themes.BLACK,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
   },
   batteryLevelTextContainer: {
     alignItems: 'center',
-    height: 40,
+    height: 50,
     justifyContent: 'center',
     position: 'absolute',
-    width: 40,
+    width: 50,
+  },
+  batteryStatusContainer: {
+    padding: 5,
   },
   buttonText: {
     color: themes.PRIMARY_ACCENT_COLOR,
     fontSize: themes.PRIMARY_HEADER_TEXT_SIZE,
+  },
+  connectionStatusContainer: {
+    padding: 5,
   },
   customEndpointContainer: {
     alignItems: 'center',

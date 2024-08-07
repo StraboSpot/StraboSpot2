@@ -25,8 +25,8 @@ const SplashScreen = ({children}) => {
       style={splashScreenStyles.backgroundImage}>
       <ScrollView automaticallyAdjustKeyboardInsets={true} style={{flex: 1}}>
         <View style={splashScreenStyles.wifiIndicatorContainer}>
-          {Platform.OS === 'ios' && <BatteryInfo/>}
           <ConnectionStatusIcon/>
+          {Platform.OS === 'ios' && <BatteryInfo/>}
         </View>
         <View style={splashScreenStyles.contentContainer}>
           <View style={splashScreenStyles.titleContainer}>
@@ -40,20 +40,20 @@ const SplashScreen = ({children}) => {
         <View style={splashScreenStyles.versionPositionSplashScreen}>
           <VersionCheckLabel/>
         </View>
-        {!__DEV__ && (
-          <View style={splashScreenStyles.dimensionsContainer}>
-            <Text style={splashScreenStyles.dimensionsText}>
-              Screen Dimensions
-            </Text>
-            <Text style={splashScreenStyles.dimensionsText}>
-              {' '}
-              H: {height.toFixed(0)}{' '}
-            </Text>
-            <Text style={splashScreenStyles.dimensionsText}>
-              W: {width.toFixed(0)}{' '}
-            </Text>
-          </View>
-        )}
+        {/*{__DEV__ && (*/}
+        {/*  <View style={splashScreenStyles.dimensionsContainer}>*/}
+        {/*    <Text style={splashScreenStyles.dimensionsText}>*/}
+        {/*      Screen Dimensions*/}
+        {/*    </Text>*/}
+        {/*    <Text style={splashScreenStyles.dimensionsText}>*/}
+        {/*      {' '}*/}
+        {/*      H: {height.toFixed(0)}{' '}*/}
+        {/*    </Text>*/}
+        {/*    <Text style={splashScreenStyles.dimensionsText}>*/}
+        {/*      W: {width.toFixed(0)}{' '}*/}
+        {/*    </Text>*/}
+        {/*  </View>*/}
+        {/*)}*/}
       </ScrollView>
       <Loading isLoading={loading} size={60}/>
     </ImageBackground>
