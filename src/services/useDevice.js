@@ -251,9 +251,14 @@ const useDevice = () => {
   };
 
   const readDirectory = async (directory) => {
-    const files = await RNFS.readdir(directory);
-    console.log('Directory files', files);
-    return files;
+    console.log('Reading directory', directory);
+    const exists = await RNFS.exists(directory);
+    if (exists) {
+      const files = await RNFS.readdir(directory);
+      console.log('Directory', directory,' files:', files);
+      return files;
+    }
+    else console.log('Directory', directory, 'does not exist');
   };
 
   const readDirectoryForMapFiles = async () => {
@@ -295,8 +300,8 @@ const useDevice = () => {
       }
       catch (e2) {
         console.error('Error reading file as ascii:', e2);
-        throw Error();
-        // return undefined;
+        const errorMessage = e2.message || 'Unable to read data file.';
+        throw Error(errorMessage);
       }
     }
   };
