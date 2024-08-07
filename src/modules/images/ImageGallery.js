@@ -140,7 +140,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
         <SortingButtons/>
         {sortedView === SORTED_VIEWS.MAP_EXTENT && (
           <UpdateSpotsInMapExtentButton
-            title={'Update Samples in Map Extent'}
+            title={'Update Images in Map Extent'}
             updateSpotsInMapExtent={updateSpotsInMapExtent}
           />
         )}
