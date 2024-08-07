@@ -75,7 +75,6 @@ const Home = ({navigation, route}) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
-  const selectedProject = useSelector(state => state.project.selectedProject);
   const stratSection = useSelector(state => state.map.stratSection);
   const userEmail = useSelector(state => state.user.email);
   const userName = useSelector(state => state.user.name);
@@ -305,13 +304,12 @@ const Home = ({navigation, route}) => {
   const endMeasurement = () => setMapMode(MAP_MODES.VIEW);
 
   const exportProject = async () => {
-    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${backupFileName}) has been exported!`
-      : `\n\nProject (${selectedProject.project.fileName}) has been exported to the Downloads folder!`;
-
     dispatch(clearedStatusMessages());
     // console.log('Exporting Project');
     dispatch(addedStatusMessage(`Exporting ${backupFileName}!`));
     await useExport.zipAndExportProjectFolder(true);
+    const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${backupFileName}) has been exported!`
+      : `\n\nProject (${backupFileName}) has been exported to the Downloads folder!`;
     dispatch(addedStatusMessage(exportCompleteMessage));
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
     // console.log(`Project ${backupFileName} has been exported!`);
