@@ -39,7 +39,7 @@ const splashScreenStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  versionNumber: {
+  versionNumberText: {
     color: 'black',
     fontFamily: 'ChalkboardSE-Bold',
     fontSize: 25,
