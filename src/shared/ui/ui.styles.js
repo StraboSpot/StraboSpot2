@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     padding: 10,
+    width: '75%',
   },
   customEndpointText: {
     color: themes.PRIMARY_TEXT_COLOR,

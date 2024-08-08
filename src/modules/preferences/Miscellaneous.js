@@ -16,7 +16,7 @@ import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
-  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {endpointURL, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
@@ -25,7 +25,6 @@ const Miscellaneous = () => {
 
   const formRef = useRef('null');
 
-  const endpointURL = protocol + domain + path;
   const initialValues = {database_endpoint: endpointURL};
   const testingModePassword = 'Strab0R0cks';
   const errorMessage = 'Wrong Password!';

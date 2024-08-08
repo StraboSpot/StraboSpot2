@@ -24,8 +24,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  customEndpointInput: {
+    borderBottomColor: 'transparent',
+    fontSize: themes.SMALL_TEXT_SIZE,
+    marginLeft: 10,
+  },
+  customEndpointInputContainer: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    height: 55,
+    width: '95%',
+  },
   customEndpointText: {
     color: themes.WHITE,
+    flexWrap: 'wrap',
     fontSize: themes.MEDIUM_TEXT_SIZE,
     fontWeight: 'bold',
     marginEnd: 30,
@@ -48,50 +61,6 @@ const styles = StyleSheet.create({
   signInContainer: {
     alignItems: 'center',
   },
-  verifyButtonContainer: {
-    paddingLeft: 10,
-  },
-  verifyContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: 300,
-  },
-  verifyEndpointIconText: {
-    color: 'white',
-  },
-  verifyInput: {
-    borderBottomColor: 'transparent',
-    fontSize: themes.SMALL_TEXT_SIZE,
-  },
-  verifyProtocolInputContainer: {
-    backgroundColor: 'white',
-    borderBottomStartRadius: 15,
-    borderTopStartRadius: 15,
-    height: 45,
-    width: 70,
-  },
-  verifySchemeInputContainer: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    height: 45,
-    marginLeft: 3,
-    marginRight: 3,
-    width: 125,
-  },
-  verifySubdirectoryInputContainer: {
-    backgroundColor: 'white',
-    borderBottomEndRadius: 15,
-    borderTopEndRadius: 15,
-    height: 45,
-    width: 60,
-  },
-  version: {
-    fontFamily: 'ChalkboardSE-Bold',
-    fontSize: 32,
-    textAlign: 'center',
-  },
-
 });
 
 export default styles;

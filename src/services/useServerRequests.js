@@ -7,9 +7,8 @@ import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
-  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {endpointURL, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const endpointURL = protocol + domain + path;
   const baseUrl = endpointURL && isSelected ? endpointURL : STRABO_APIS.DB;
   const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
@@ -282,9 +281,9 @@ const useServerRequests = () => {
     }
   };
 
-  const testEndpoint = async (endpointURL) => {
+  const testEndpoint = async (customEndpointURL) => {
     try {
-      const res = await timeoutPromise(15000, fetch(endpointURL));
+      const res = await timeoutPromise(15000, fetch(customEndpointURL));
       console.log('Endpoint Test Response:', res);
       return res.ok;
     }
@@ -378,8 +377,8 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
-  const verifyEndpoint = async (protocolValue, domainValue, pathValue) => {
-    return await testEndpoint(protocolValue + domainValue + pathValue);
+  const verifyEndpoint = async (customEndpointURL) => {
+    return await testEndpoint(customEndpointURL);
   };
 
   const verifyImageExistence = (imageId, encodedLogin) => {
