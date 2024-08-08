@@ -12,6 +12,7 @@ import {
   removedLastStatusMessage,
   setIsBackupModalVisible,
   setIsStatusMessagesModalVisible,
+  setIsWarningMessagesModalVisible,
   setLoadingStatus,
 } from '../modules/home/home.slice';
 import {setBackupFileName} from '../modules/project/projects.slice';
@@ -48,14 +49,14 @@ const useExport = () => {
     spotsDb: spotsDb,
   };
 
-  const backupProjectToDevice = async (backupFileName) => {
-    await gatherDataForBackup(backupFileName);
+  const backupProjectToDevice = async (fileName) => {
+    await gatherDataForBackup(fileName);
     console.log('Added Project Data to backup.');
-    await gatherOtherMapsForDistribution(backupFileName);
+    await gatherOtherMapsForDistribution(fileName);
     console.log('Added Other Maps to backup.');
-    await gatherMapsForDistribution(dataForExport, backupFileName);
+    await gatherMapsForDistribution(dataForExport, fileName);
     console.log('Added Maps tiles to backup.');
-    await gatherImagesForDistribution(dataForExport, backupFileName);
+    await gatherImagesForDistribution(dataForExport, fileName);
     console.log('Added Images to backup.');
   };
 
@@ -83,9 +84,8 @@ const useExport = () => {
     try {
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
-      await useDevice.doesDeviceDirectoryExist(
-        deviceDir + fileName + '/images');
-      dispatch(addedStatusMessage('Exporting Images...'));
+      await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/images');
+      dispatch(addedStatusMessage((isBeingExported ? 'Exporting' : 'Backing up') + ' Images...'));
       if (data.spotsDb) {
         console.groupCollapsed('Found Spots. Gathering Images...');
         await Promise.all(
@@ -273,7 +273,6 @@ const useExport = () => {
   };
 
   return {
-    backupProjectToDevice: backupProjectToDevice,
     initializeBackup: initializeBackup,
     zipAndExportProjectFolder: zipAndExportProjectFolder,
   };
