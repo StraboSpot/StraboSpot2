@@ -50,16 +50,12 @@ const FoldGeometryButtons = ({formProps, setChoicesViewKey}) => {
   );
 
   return (
-    <React.Fragment>
-      <View
-        style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 10, paddingTop: 2.5, paddingBottom: 5}}
-      >
-        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'flex-start'}}>{renderFoldGeometryIcons()}</View>
-        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-          <FoldGeometryEditButton/>
-        </View>
+    <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 10, paddingTop: 2.5, paddingBottom: 5}}>
+      <View style={{flex: 3, flexDirection: 'row', justifyContent: 'flex-start'}}>{renderFoldGeometryIcons()}</View>
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <FoldGeometryEditButton/>
       </View>
-    </React.Fragment>
+    </View>
   );
 
 };

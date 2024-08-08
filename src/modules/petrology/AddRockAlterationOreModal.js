@@ -12,7 +12,7 @@ const AddRockAlterationOreModal = (props) => {
   const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
 
   return (
-    <React.Fragment>
+    <>
       <MainButtons
         mainKeys={firstKeys}
         formName={props.formName}
@@ -26,7 +26,7 @@ const AddRockAlterationOreModal = (props) => {
         setChoicesViewKey={props.setChoicesViewKey}
       />
       <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
-    </React.Fragment>
+    </>
   );
 };
 

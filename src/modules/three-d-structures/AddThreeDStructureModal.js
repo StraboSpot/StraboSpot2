@@ -68,7 +68,7 @@ const AddThreeDStructureModal = ({onPress}) => {
   const renderForm = (formProps) => {
     if (formProps && formProps.status && formProps.status.formName) {
       return (
-        <React.Fragment>
+        <>
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
             onPress={on3DStructureTypePress}
@@ -114,7 +114,7 @@ const AddThreeDStructureModal = ({onPress}) => {
               formProps={formProps}
             />
           )}
-        </React.Fragment>
+        </>
       );
     }
   };
@@ -127,28 +127,26 @@ const AddThreeDStructureModal = ({onPress}) => {
         buttonTitleRight={choicesViewKey && 'Done'}
         onPress={onPress}
       >
-        <React.Fragment>
-          <FlatList
-            bounces={false}
-            ListHeaderComponent={
-              <View style={{flex: 1}}>
-                <Formik
-                  innerRef={formRef}
-                  initialValues={{}}
-                  onSubmit={values => console.log('Submitting form...', values)}
-                  validate={values => useForm.validateForm({formName: formName, values: values})}
-                  validateOnChange={false}
-                >
-                  {formProps => (
-                    <View style={{flex: 1}}>
-                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                    </View>
-                  )}
-                </Formik>
-              </View>
-            }
-          />
-        </React.Fragment>
+        <FlatList
+          bounces={false}
+          ListHeaderComponent={
+            <View style={{flex: 1}}>
+              <Formik
+                innerRef={formRef}
+                initialValues={{}}
+                onSubmit={values => console.log('Submitting form...', values)}
+                validate={values => useForm.validateForm({formName: formName, values: values})}
+                validateOnChange={false}
+              >
+                {formProps => (
+                  <View style={{flex: 1}}>
+                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                  </View>
+                )}
+              </Formik>
+            </View>
+          }
+        />
         {!choicesViewKey && <SaveButton title={'Save 3D Structure'} onPress={save3DStructure}/>}
       </Modal>
     );

@@ -179,7 +179,7 @@ const AddMeasurementModal = ({onPress}) => {
     && MEASUREMENT_TYPES[selectedTypeIndex].key === MEASUREMENT_KEYS.PLANAR_LINEAR ? MEASUREMENT_KEYS.PLANAR_LINEAR
       : measurementTypeForForm;
     return (
-      <React.Fragment>
+      <>
         {!isShowTemplates && !isSelectedAttitude && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
@@ -199,7 +199,7 @@ const AddMeasurementModal = ({onPress}) => {
           />
         )}
         {!isShowTemplates && (
-          <React.Fragment>
+          <>
             {Platform.OS !== 'web' && (
               <>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', padding: 5}}>
@@ -238,7 +238,7 @@ const AddMeasurementModal = ({onPress}) => {
             }
             {measurementTypeForForm === MEASUREMENT_KEYS.PLANAR
               && getPlanarTemplates(relevantTemplates).length <= 1 && (
-                <React.Fragment>
+                <>
                   <AddPlane
                     survey={survey}
                     choices={choices}
@@ -247,11 +247,11 @@ const AddMeasurementModal = ({onPress}) => {
                     formProps={formProps}
                     isManualMeasurement={isManualMeasurement}
                   />
-                </React.Fragment>
+                </>
               )}
             {(measurementTypeForForm === MEASUREMENT_KEYS.LINEAR || typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)
               && getLinearTemplates(relevantTemplates).length <= 1 && (
-                <React.Fragment>
+                <>
                   <AddLine
                     survey={assocSurvey}
                     choices={assocChoices}
@@ -262,11 +262,11 @@ const AddMeasurementModal = ({onPress}) => {
                     isManualMeasurement={isManualMeasurement}
                     isPlanarLinear={typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR}
                   />
-                </React.Fragment>
+                </>
               )}
-          </React.Fragment>
+          </>
         )}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -280,7 +280,7 @@ const AddMeasurementModal = ({onPress}) => {
         buttonTitleRight={(choicesViewKey || assocChoicesViewKey) ? 'Done' : isShowTemplates ? '' : null}
         onPress={onPress}
       >
-        <React.Fragment>
+        <>
           {measurementTypeForForm && (
             <FlatList
               bounces={false}
@@ -304,7 +304,7 @@ const AddMeasurementModal = ({onPress}) => {
           {!choicesViewKey && !assocChoicesViewKey && !isShowTemplates && isManualMeasurement && (
             <SaveButton title={saveTitle} onPress={saveMeasurement}/>
           )}
-        </React.Fragment>
+        </>
       </Modal>
     );
   };

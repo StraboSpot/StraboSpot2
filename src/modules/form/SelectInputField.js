@@ -62,14 +62,14 @@ const SelectInputField = (props) => {
   const renderChoices = () => {
     // console.log('Field Choices', props.choices);
     return (
-      <React.Fragment>
+      <>
         <ListItem containerStyle={commonStyles.listItemFormField}>
           <ListItem.Content>
             {renderFieldLabel()}
           </ListItem.Content>
         </ListItem>
         {props.choices.map((item, index) => renderChoiceItem(item, index))}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -91,7 +91,7 @@ const SelectInputField = (props) => {
 
   const renderMultiSelect = () => {
     return (
-      <React.Fragment>
+      <>
         {renderFieldLabel()}
         <View style={formStyles.fieldValue}>
           <MultiSelect
@@ -123,14 +123,14 @@ const SelectInputField = (props) => {
         </View>
         {props.errors && props.errors[props.name]
           && <Text style={formStyles.fieldError}>{props.errors[props.name]}</Text>}
-      </React.Fragment>
+      </>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {props.showExpandedChoices ? renderChoices() : renderMultiSelect()}
-    </React.Fragment>
+    </>
   );
 };
 

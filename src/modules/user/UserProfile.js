@@ -142,17 +142,15 @@ const UserProfile = ({logout}) => {
   };
 
   return (
-    <React.Fragment>
-      <View>
-        {renderProfile()}
-        {Platform.OS !== 'web' && (
-          <>
-            {renderLogOutButton()}
-            {renderLogoutModal()}
-          </>
-        )}
-      </View>
-    </React.Fragment>
+    <View>
+      {renderProfile()}
+      {Platform.OS !== 'web' && (
+        <>
+          {renderLogOutButton()}
+          {renderLogoutModal()}
+        </>
+      )}
+    </View>
   );
 };
 

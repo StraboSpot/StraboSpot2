@@ -108,7 +108,7 @@ const ThreeDStructuresPage = ({page}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {!isDetailView && (
         <View>
           <NotebookContentTopSection/>
@@ -122,7 +122,7 @@ const ThreeDStructuresPage = ({page}) => {
           selectedFeature={selected3dStructure}
         />
       )}
-    </React.Fragment>
+    </>
   );
 };
 

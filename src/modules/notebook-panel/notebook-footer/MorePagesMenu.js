@@ -76,22 +76,22 @@ const MorePagesMenu = ({
         <ScrollView>
           {generalPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
           {!isEmpty(petPagesToShow) && (
-            <React.Fragment>
+            <>
               <SectionDivider
                 dividerText={'Rocks & Minerals'}
                 style={footerStyles.morePagesSectionDivider}
               />
               {petPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
-            </React.Fragment>
+            </>
           )}
           {!isEmpty(sedPagesToShow) && (
-            <React.Fragment>
+            <>
               <SectionDivider
                 dividerText={'Sedimentology'}
                 style={footerStyles.morePagesSectionDivider}
               />
               {sedPagesToShow.map((page, i, arr) => renderMenuItem(page, i < arr.length - 1))}
-            </React.Fragment>
+            </>
           )}
         </ScrollView>
       </View>

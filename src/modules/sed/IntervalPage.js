@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import { View} from 'react-native';
+import {View} from 'react-native';
 
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
@@ -67,27 +67,25 @@ const IntervalPage = ({page}) => {
   };
 
   return (
-    <React.Fragment>
-      <View style={{flex: 1, justifyContent: 'flex-start'}}>
-        <ReturnToOverviewButton/>
-        <SectionDivider dividerText={page.label}/>
-        <SaveAndCancelButtons
-          cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
-          save={() => saveInterval(intervalRef.current)}
-        />
-        <Formik
-          innerRef={intervalRef}
-          onSubmit={() => console.log('Submitting form...')}
-          onReset={() => console.log('Resetting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
-          initialValues={{...interval, character}}
-          validateOnChange={false}
-          enableReinitialize={true}
-        >
-          {formProps => <Form {...{...formProps, formName: formName}}/>}
-        </Formik>
-      </View>
-    </React.Fragment>
+    <View style={{flex: 1, justifyContent: 'flex-start'}}>
+      <ReturnToOverviewButton/>
+      <SectionDivider dividerText={page.label}/>
+      <SaveAndCancelButtons
+        cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
+        save={() => saveInterval(intervalRef.current)}
+      />
+      <Formik
+        innerRef={intervalRef}
+        onSubmit={() => console.log('Submitting form...')}
+        onReset={() => console.log('Resetting form...')}
+        validate={values => useForm.validateForm({formName: formName, values: values})}
+        initialValues={{...interval, character}}
+        validateOnChange={false}
+        enableReinitialize={true}
+      >
+        {formProps => <Form {...{...formProps, formName: formName}}/>}
+      </Formik>
+    </View>
   );
 };
 

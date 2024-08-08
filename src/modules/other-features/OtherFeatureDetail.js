@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
-import { FlatList, Text, TextInput, View} from 'react-native';
+import {FlatList, Text, TextInput, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {Button, ListItem} from 'react-native-elements';
@@ -7,8 +7,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import {WARNING_COLOR} from '../../shared/styles.constants';
 import * as themes from '../../shared/styles.constants';
+import {WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
@@ -158,7 +158,7 @@ const OtherFeatureDetail = ({
               </ListItem>
               <FlatListItemSeparator/>
               {formRef.current && formRef.current.values.type === 'other' && (
-                <React.Fragment>
+                <>
                   <ListItem containerStyle={commonStyles.listItemFormField}>
                     <ListItem.Content>
                       <View style={formStyles.fieldLabelContainer}>
@@ -174,7 +174,7 @@ const OtherFeatureDetail = ({
                     </ListItem.Content>
                   </ListItem>
                   <FlatListItemSeparator/>
-                </React.Fragment>
+                </>
               )}
               <ListItem containerStyle={commonStyles.listItemFormField}>
                 <ListItem.Content>
@@ -269,15 +269,13 @@ const OtherFeatureDetail = ({
   };
 
   return (
-    <React.Fragment>
-      <React.Fragment>
-        <SaveAndCancelButtons
-          cancel={() => cancelForm()}
-          save={() => saveForm(formRef.current)}
-        />
-        <FlatList ListHeaderComponent={renderForm()}/>
-      </React.Fragment>
-    </React.Fragment>
+    <>
+      <SaveAndCancelButtons
+        cancel={() => cancelForm()}
+        save={() => saveForm(formRef.current)}
+      />
+      <FlatList ListHeaderComponent={renderForm()}/>
+    </>
   );
 };
 

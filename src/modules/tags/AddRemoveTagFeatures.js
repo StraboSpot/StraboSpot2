@@ -59,7 +59,7 @@ const AddRemoveTagFeatures = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <SidePanelHeader
         backButton={() => dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_DETAIL}))}
         title={`${selectedTag.name}`}
@@ -73,7 +73,7 @@ const AddRemoveTagFeatures = () => {
           ListEmptyComponent={<ListEmptyText text={'No Features in Active Datasets'}/>}
         />
       </View>
-    </React.Fragment>
+    </>
   );
 };
 

@@ -98,7 +98,7 @@ const AddMineralModal = ({onPress}) => {
   const renderAddMineral = () => {
     tempValues = formRef.current?.values || {};
     return (
-      <React.Fragment>
+      <>
         {!choicesViewKey && !areMultipleTemplates && (
           <ButtonGroup
             selectedIndex={selectedTypeIndex}
@@ -113,7 +113,7 @@ const AddMineralModal = ({onPress}) => {
         {isEmpty(selectedTypeIndex) && renderForms()}
         {selectedTypeIndex === 0 && <MineralsByRockClass addMineral={addMineral}/>}
         {selectedTypeIndex === 1 && <MineralsGlossary addMineral={addMineral}/>}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -137,7 +137,7 @@ const AddMineralModal = ({onPress}) => {
 
   const renderForm = (formProps) => {
     return (
-      <React.Fragment>
+      <>
         <Form {...{
           formName: formName,
           onMyChange: (name, value) => usePetrology.onMineralChange(formProps, name, value),
@@ -171,14 +171,14 @@ const AddMineralModal = ({onPress}) => {
         )}
         <LittleSpacer/>
         <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
-      </React.Fragment>
+      </>
     );
   };
 
   const renderForms = () => {
     const saveMineralTitle = 'Save Mineral' + (areMultipleTemplates ? 's' : '');
     return (
-      <React.Fragment>
+      <>
         {!areMultipleTemplates && (
           <FlatList
             bounces={false}
@@ -201,7 +201,7 @@ const AddMineralModal = ({onPress}) => {
           />
         )}
         {!choicesViewKey && <SaveButton title={saveMineralTitle} onPress={saveMineral}/>}
-      </React.Fragment>
+      </>
     );
   };
 

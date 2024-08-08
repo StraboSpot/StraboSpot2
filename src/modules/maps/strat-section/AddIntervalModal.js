@@ -160,7 +160,7 @@ const AddIntervalModal = () => {
         validateOnChange={true}
       >
         {() => (
-          <React.Fragment>
+          <>
             <ListItem containerStyle={commonStyles.listItemFormField}>
               <ListItem.Content>
                 <Field
@@ -199,7 +199,7 @@ const AddIntervalModal = () => {
                 />
               </ListItem.Content>
             </ListItem>
-          </React.Fragment>
+          </>
         )}
       </Formik>
     );

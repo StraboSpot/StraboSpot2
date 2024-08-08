@@ -8,7 +8,7 @@ import styles from './ui.styles';
 const Loading = ({color, count, isLoading, size, style}) => {
 
   return (
-    <React.Fragment>
+    <>
       {isLoading && <View style={[styles.backdrop, style]}>
         {/*<View style={home.loadingContainer}>*/}
         <BallIndicator
@@ -18,7 +18,7 @@ const Loading = ({color, count, isLoading, size, style}) => {
         />
       </View>}
       {/*</View>*/}
-    </React.Fragment>
+    </>
   );
 };
 

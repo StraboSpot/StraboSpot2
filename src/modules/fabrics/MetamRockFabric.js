@@ -18,12 +18,12 @@ const MetamRockFabric = (props) => {
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
-    <React.Fragment>
+    <>
       <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
       <FormSlider {...{fieldKey: tectoniteTypesKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
-    </React.Fragment>
+    </>
   );
 };
 

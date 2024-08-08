@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -85,18 +85,16 @@ const CustomFeatureTypes = () => {
   };
 
   return (
-    <React.Fragment>
-      <FlatList
-        keyExtractor={item => item.toString()}
-        extraData={refresh}
-        data={customFeatureTypes}
-        renderItem={item => renderFeature(item.item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No custom feature types added yet. '
-          + 'Add a custom feature type in Other Features tab of a spot by selecting'
-          + ' the type \'other\' when adding a feature.'}/>}
-      />
-    </React.Fragment>
+    <FlatList
+      keyExtractor={item => item.toString()}
+      extraData={refresh}
+      data={customFeatureTypes}
+      renderItem={item => renderFeature(item.item)}
+      ItemSeparatorComponent={FlatListItemSeparator}
+      ListEmptyComponent={<ListEmptyText text={'No custom feature types added yet. '
+        + 'Add a custom feature type in Other Features tab of a spot by selecting'
+        + ' the type \'other\' when adding a feature.'}/>}
+    />
   );
 };
 

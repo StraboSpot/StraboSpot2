@@ -30,20 +30,20 @@ const TagsNotebook = ({openMainMenuPanel, page}) => {
       <ReturnToOverviewButton/>
       <FlatList
         ListHeaderComponent={
-          <React.Fragment>
+          <>
             <SectionDividerWithRightButton
               dividerText={pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS ? 'Spot Tags' : 'Geologic Units'}
               buttonTitle={'Assign/Remove'}
               onPress={() => dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.TAGS}))}
             />
             <TagsAtSpotList openMainMenuPanel={openMainMenuPanel} page={page}/>
-          </React.Fragment>
+          </>
         }
         ListFooterComponent={pageVisible !== PAGE_KEYS.GEOLOGIC_UNITS && (
-          <React.Fragment>
+          <>
             <SectionDivider dividerText={'Feature Tags'}/>
             <FeatureTagsAtSpotList openMainMenuPanel={openMainMenuPanel} page={page}/>
-          </React.Fragment>
+          </>
         )}
       />
       <TagDetailModal

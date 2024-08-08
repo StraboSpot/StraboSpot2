@@ -87,7 +87,7 @@ const NewProjectForm = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <FlatList ListHeaderComponent={renderFormFields()}/>
       <Button
         title={'Save New Project'}
@@ -95,7 +95,7 @@ const NewProjectForm = ({
         onPress={() => saveForm()}
       />
       {renderProjectOptionsModal()}
-    </React.Fragment>
+    </>
   );
 };
 

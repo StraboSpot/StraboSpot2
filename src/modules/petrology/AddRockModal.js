@@ -101,7 +101,7 @@ const AddRockModal = ({
   const renderAddRock = () => {
     const saveRockTitle = 'Save Rock' + (areMultipleTemplates ? 's' : '');
     return (
-      <React.Fragment>
+      <>
         {!areMultipleTemplates && (
           <FlatList
             bounces={false}
@@ -124,7 +124,7 @@ const AddRockModal = ({
           />
         )}
         {!choicesViewKey && <SaveButton title={saveRockTitle} onPress={saveRock}/>}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -160,7 +160,7 @@ const AddRockModal = ({
 
   const renderForm = (formProps) => {
     return (
-      <React.Fragment>
+      <>
         {Object.values(IGNEOUS_ROCK_CLASSES).includes(rockKey) && (
           <AddRockIgneousModal
             survey={survey}
@@ -209,7 +209,7 @@ const AddRockModal = ({
             formProps={formProps}
           />
         )}
-      </React.Fragment>
+      </>
     );
   };
 

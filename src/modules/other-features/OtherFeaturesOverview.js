@@ -26,15 +26,13 @@ const OtherFeaturesOverview = ({page}) => {
   };
 
   return (
-    <React.Fragment>
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        data={featuresData}
-        renderItem={({item}) => renderFeature(item)}
-        ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Other Features'}/>}
-      />
-    </React.Fragment>
+    <FlatList
+      keyExtractor={(item, index) => index.toString()}
+      data={featuresData}
+      renderItem={({item}) => renderFeature(item)}
+      ItemSeparatorComponent={FlatListItemSeparator}
+      ListEmptyComponent={<ListEmptyText text={'No Other Features'}/>}
+    />
   );
 };
 export default OtherFeaturesOverview;

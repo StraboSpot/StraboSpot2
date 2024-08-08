@@ -175,9 +175,9 @@ const StratSectionPage = ({page}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {renderStratSectionsMain()}
-    </React.Fragment>
+    </>
   );
 };
 
