@@ -52,6 +52,36 @@ const useUploadImages = () => {
     }
   };
 
+  // Upload the image to server
+  const uploadImage = async (imageId, imageURI, datasetName) => {
+    try {
+      if (datasetName) console.log(datasetName + ': Uploading Image', imageId, '...');
+      else console.log('Uploading Profile Image', imageURI);
+
+      dispatch(setIsImageTransferring(true));
+
+      let formdata = new FormData();
+      formdata.append('image_file', {uri: imageURI + '?' + new Date(), name: 'image.jpg', type: 'image/jpeg'});
+      formdata.append('id', imageId);
+      formdata.append('modified_timestamp', Date.now());
+
+      const res = await useServerRequests.uploadImage(formdata, user.encoded_login, !datasetName);
+      console.log('Image Upload Res', res);
+      if (datasetName) console.log(datasetName + ': Finished Uploading Image', imageId);
+      else console.log('Finished Uploading Profile Image');
+
+      dispatch(updatedProjectTransferProgress(0));
+      dispatch(clearedStatusMessages());
+      // dispatch(setIsImageTransferring(false));
+    }
+    catch (err) {
+      if (datasetName) console.log(datasetName + ': Error Uploading Image', imageId, err);
+      else console.log('Error Uploading Profile Image', err);
+      // dispatch(setIsImageTransferring(false));
+      throw Error(err);
+    }
+  };
+
   const uploadImages = async (spots, datasetName) => {
     let imagesFound = [];
     let imagesOnServer = [];
@@ -89,7 +119,7 @@ const useUploadImages = () => {
       try {
         const imageURI = await getImageFile(imageProps);
         const resizedImage = await resizeImageForUpload(imageProps, imageURI);
-        await uploadImage(imageProps.id, resizedImage);
+        await uploadImage(imageProps.id, resizedImage, datasetName);
         imagesUploadedCount++;
       }
       catch (err) {
@@ -102,7 +132,7 @@ const useUploadImages = () => {
       dispatch(addedStatusMessage(
         `\n${msgText} 
          \nSuccess: ${imagesUploadedCount}/${imagesToUpload.length} uploaded. 
-         \nFailed: ${imagesUploadFailedCount || 0}/${imagesToUpload.length}`)
+         \nFailed: ${imagesUploadFailedCount || 0}/${imagesToUpload.length}`),
       );
       // if (imagesUploadFailedCount > 0) {
       //   failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
@@ -137,30 +167,6 @@ const useUploadImages = () => {
       }
     };
 
-    // Upload the image to server
-    const uploadImage = async (imageId, resizedImage) => {
-      try {
-        console.log(datasetName + ': Uploading Image', imageId, '...');
-        dispatch(setIsImageTransferring(true));
-
-        let formdata = new FormData();
-        formdata.append('image_file', {uri: resizedImage.uri, name: 'image.jpg', type: 'image/jpeg'});
-        formdata.append('id', imageId);
-        formdata.append('modified_timestamp', Date.now());
-        const res = await useServerRequests.uploadImage(formdata, user.encoded_login);
-        console.log('Image Upload Res', res);
-        console.log(datasetName + ': Finished Uploading Image', imageId);
-        dispatch(updatedProjectTransferProgress(0));
-        dispatch(clearedStatusMessages());
-        // dispatch(setIsImageTransferring(false));
-      }
-      catch (err) {
-        console.log(datasetName + ': Error Uploading Image', imageId, err);
-        // dispatch(setIsImageTransferring(false));
-        throw Error(err);
-      }
-    };
-
     // Delete the folder used for downsized images
     const deleteTempImagesFolder = async () => {
       try {
@@ -188,13 +194,29 @@ const useUploadImages = () => {
       );
       await startUploadingImage(imagesToUpload[0]);
     }
-    else dispatch(addedStatusMessage('\nNo images to upload'))
+    else dispatch(addedStatusMessage('\nNo images to upload'));
     await deleteTempImagesFolder();
   };
 
+  const uploadProfileImage = async (imageURI) => {
+    try {
+      await uploadImage('profileImage', imageURI);
+      console.log('Profile Image Uploaded');
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Profile Image Uploaded'));
+    }
+    catch (err) {
+      console.error(`Failed to upload profile image because ${err.Error}`);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Failed to upload profile image'));
+      throw Error();
+    }
+  };
 
   return {
-    uploadImages,
+    resizeImageForUpload: resizeImageForUpload,
+    uploadImages: uploadImages,
+    uploadProfileImage: uploadProfileImage,
   };
 };
 

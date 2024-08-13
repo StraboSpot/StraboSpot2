@@ -1,19 +1,24 @@
 import React, {useRef, useState} from 'react';
-import {Animated, Image, Text, View} from 'react-native';
+import {Animated, PermissionsAndroid, Platform, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import {Base64} from 'js-base64';
-import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from 'react-native-elements';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
+import UserProfileAvatar from './UserProfileAvatar';
+import {APP_DIRECTORIES} from '../../services/directories.constants';
+import useDeviceHook from '../../services/useDevice';
+import usePermissionsHook from '../../services/usePermissions';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
+import useUploadImagesHook from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -32,32 +37,26 @@ const UserProfilePage = () => {
   const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
 
-  const [avatar, setAvatar] = useState(userData.image);
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
+  const [shouldUpdateImage, setShouldUpdateImage] = useState(false);
+  const [tempUserProfileImage, setTempUserProfileImage] = useState(null);
 
   const navigation = useNavigation();
   const toast = useToast();
+  const useDevice = useDeviceHook();
   const useForm = useFormHook();
+  const usePermissions = usePermissionsHook();
   const useResetState = useResetStateHook();
   const useServerRequest = useServerRequestsHook();
   const useUpload = useUploadHook();
+  const useUploadImages = useUploadImagesHook();
 
   const formName = ['general', 'user_profile'];
-
-  const deleteModalText
-    = <View><Text style={userStyles.deleteProfileText}>Deleting your profile will
-    <Text style={overlayStyles.importantText}> PERMANENTLY {'\n'} </Text>
-    remove any personal info and data saved for user{'\n'}{userData.email}{'\n'} from www.Strabospot.org!
-  </Text>
-    <Text style={userStyles.deleteProfileText}>Enter password to delete:</Text>
-  </View>;
-
-  const offlineText = <Text style={userStyles.deleteProfileText}>Need to be online in order to delete profile.</Text>;
 
   const deleteProfile = async () => {
     console.log(deleteProfileInputValue);
@@ -78,7 +77,18 @@ const UserProfilePage = () => {
     else setErrorMessage('Need to enter your password');
   };
 
-  const deleteProfileModal = () => {
+  const renderDeleteProfileModal = () => {
+    const deleteModalText = (
+      <View>
+        <Text style={userStyles.deleteProfileText}>
+          Deleting your profile will<Text style={overlayStyles.importantText}> PERMANENTLY {'\n'} </Text>
+          remove any personal info and data saved for user{'\n'}{userData.email}{'\n'} from www.Strabospot.org!
+        </Text>
+        <Text style={userStyles.deleteProfileText}>Enter password to delete:</Text>
+      </View>
+    );
+    const offlineText = <Text style={userStyles.deleteProfileText}>Need to be online in order to delete profile.</Text>;
+
     return (
       <TextInputModal
         topPosition={10}
@@ -105,66 +115,85 @@ const UserProfilePage = () => {
   const pickImageSource = async (source) => {
     if (source === 'gallery') {
       await launchImageLibrary({}, async (response) => {
-        console.log('Profile Image', response);
+        console.log('Launch Image Library Response:', response);
         if (response.didCancel) return;
-        if (response) setAvatar(response.assets[0]);
+        if (response) setTempUserProfileImage({...response.assets[0], id: 'profileImage'});
         else return require('../../assets/images/noimage.jpg');
       });
     }
     else {
-      await launchCamera({}, (response) => {
-        console.log('Response = ', response);
-        if (response.didCancel) return;
-        if (response) setAvatar(response.assets[0]);
-        else return require('../../assets/images/noimage.jpg');
-      });
+      let permissionGranted;
+      console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
+      if (Platform.OS === 'android') {
+        permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+      }
+      if (permissionGranted === 'granted' || Platform.OS === 'ios') {
+        await launchCamera({}, (response) => {
+          console.log('Launch Camera Response', response);
+          if (response.didCancel) return;
+          if (response) setTempUserProfileImage({...response.assets[0], id: 'profileImage'});
+          else return require('../../assets/images/noimage.jpg');
+        });
+      }
     }
   };
 
   const saveForm = async () => {
-    const formCurrent = formRef.current;
-    if (formCurrent.dirty) {
+    try {
+      const formCurrent = formRef.current;
       setIsLoading(true);
       await formRef.current.submitForm();
       let newValues = JSON.parse(JSON.stringify(formCurrent.values));
-      console.log(newValues);
-      if (useForm.hasErrors(formCurrent)) {
-        console.log(formCurrent.hasErrors());
-      }
+      if (useForm.hasErrors(formCurrent)) throw Error('Error in form.');
       dispatch(setUserData(newValues));
       if (isOnline.isInternetReachable) {
-        await upload(newValues).catch(err => console.error('Error:', err));
+        await useUpload.uploadProfile(newValues);
+        // await upload(newValues);
         toast.show('Profile uploaded successfully!', {type: 'success'});
         setIsLoading(false);
         dispatch(setSidePanelVisible({bool: false}));
       }
       else toast.show('Not connected to internet to upload profile changes', {type: 'warning'});
+      setIsSaveButtonDisabled(true);
     }
-    else {
-      setSaveButtonDisabled(true);
-      toast.show('No changes were made.');
+    catch (err) {
+      console.error('Error uploading profile', err);
+      toast.show('Error uploading profile', {type: 'danger'});
+      setIsLoading(false);
     }
   };
 
   const saveImage = async () => {
     try {
-      const imageProps = {width: avatar.width, height: avatar.height, uri: avatar.uri};
-      const resizedProfileImage = await useUpload.resizeProfileImageForUpload(imageProps);
-      console.log('RESIZED PROFILE IMAGE', resizedProfileImage);
-      formRef.current.setFieldValue('image', resizedProfileImage.uri);
-      dispatch(setUserData({...userData, image: resizedProfileImage.uri}));
-      setImageDialogVisible(false);
+      console.log('Need to upload', tempUserProfileImage.uri);
+      const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage, tempUserProfileImage.uri);
+      await useDevice.copyFiles(resizedProfileImage.uri, 'file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      await useDevice.deleteFromDevice(resizedProfileImage.uri);
+      await useUploadImages.uploadProfileImage('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      setShouldUpdateImage(true);
+      closeProfileImageModal();
+      toast.show('Profile image uploaded successfully!', {type: 'success'});
     }
     catch (err) {
-      console.error(err);
-      setImageDialogVisible(false);
+      console.error('Error saving new profile image:', err);
       dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error saving image profile...' + err));
+      dispatch(addedStatusMessage('Error uploading profile image: ' + err));
       dispatch(setIsErrorMessagesModalVisible(true));
+      closeProfileImageModal();
     }
   };
 
-  const ImageModal = () => {
+  const closeProfileImageModal = () => {
+    setImageDialogVisible(false);
+    setTempUserProfileImage(null);
+  };
+
+  const openProfileImageModal = () => {
+    setShouldUpdateImage(false);
+    setImageDialogVisible(true);
+  };
+
+  const renderProfileImageModal = () => {
     return (
       <Overlay
         overlayStyle={userStyles.imageSelectionModal}
@@ -174,21 +203,11 @@ const UserProfilePage = () => {
           <Icon
             name={'close-outline'}
             type={'ionicon'}
-            onPress={() => setImageDialogVisible(!isImageDialogVisible)}
+            onPress={closeProfileImageModal}
           />
         </View>
         <View style={{alignItems: 'center'}}>
-          <Avatar
-            rounded
-            renderPlaceholderContent={
-              <Image
-                source={require('../../assets/images/noimage.jpg')}
-                style={{width: '70%', height: '70%'}}
-              />
-            }
-            source={{uri: avatar?.uri || avatar}}
-            size={'xlarge'}
-          />
+          <UserProfileAvatar size={'xlarge'} tempUserProfileImageURI={tempUserProfileImage?.uri}/>
         </View>
         <Button
           containerStyle={commonStyles.buttonContainer}
@@ -206,31 +225,20 @@ const UserProfilePage = () => {
         />
         <Button
           containerStyle={commonStyles.buttonContainer}
+          disabled={isEmpty(tempUserProfileImage)}
           buttonStyle={{borderRadius: 10}}
-          title={'Save'}
-          onPress={() => saveImage()}
+          title={'Upload New Profile Image'}
+          onPress={saveImage}
         />
       </Overlay>
     );
   };
 
-  const upload = async (values) => {
-    try {
-      console.log(values);
-      await useUpload.uploadProfile(values);
-    }
-    catch (err) {
-      console.error('Error uploading profile', err);
-      toast.show('Profile uploaded UN-successfully...', {type: 'danger'});
-    }
-  };
-
   const validateForm = (values) => {
     console.log('DIRTY', formRef.current.dirty);
-    if (saveButtonDisabled) setSaveButtonDisabled(false);
     useForm.validateForm({formName: formName, values: values});
     console.log('DIRTY AFTER', formRef.current.dirty);
-
+    if (formRef.current.dirty || formRef.current.touched?.image) setIsSaveButtonDisabled(false);
   };
 
   return (
@@ -239,11 +247,8 @@ const UserProfilePage = () => {
         title={'My Strabo Spot'}
         headerTitle={'Profile'}
         backButton={() => {
-          console.log('DIRTY', formRef.current.dirty);
-          if (!formRef?.current?.dirty) {
-            toast.show('No Changes Were Made.');
-            dispatch(setSidePanelVisible({bool: false}));
-          }
+          console.log('Is User Profile page dirty?', formRef.current.dirty);
+          if (!formRef?.current?.dirty) dispatch(setSidePanelVisible({bool: false}));
           else {
             alert(
               'Changes Were Made',
@@ -256,29 +261,14 @@ const UserProfilePage = () => {
           }
         }}
       />
-      <Animated.View style={{flex: 1}}>
+      <Animated.View style={{flex: 1}} pointerEvents={isOnline.isInternetReachable ? 'auto' : 'none'}>
         <View style={{alignItems: 'center', marginTop: 15}}>
-          <Avatar
-            containerStyle={userStyles.avatarLabelContainer}
-            avatarStyle={userStyles.profilePageAvatarContainer}
+          <UserProfileAvatar
+            isEditable={true}
+            openProfileImageModal={openProfileImageModal}
+            shouldUpdateImage={shouldUpdateImage}
             size={200}
-            rounded={true}
-            renderPlaceholderContent={<Image source={require('../../assets/images/noimage.jpg')}
-                                             style={{width: '70%', height: '70%'}}/>}
-            source={!isEmpty(userData.image) && {uri: userData.image}}
-          >
-            <View style={{position: 'relative', right: 15, bottom: 15}}>
-              <Avatar.Accessory
-                reverse
-                name={'pencil'}
-                type={'font-awesome'}
-                size={23}
-                iconStyle={{color: 'white'}}
-                color={'grey'}
-                onPress={() => setImageDialogVisible(true)}
-              />
-            </View>
-          </Avatar>
+          />
         </View>
         <View style={{flex: 1}}>
           <Formik
@@ -289,31 +279,34 @@ const UserProfilePage = () => {
             initialValues={userData}
             validateOnChange={true}
             enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
+            disabled={true}
           />
-          <View style={userStyles.saveButtonContainer}>
-            <Button
-              onPress={() => saveForm()}
-              type={'clear'}
-              title={'Save Changes'}
-              disabled={saveButtonDisabled}
-              loading={isLoading}
-              loadingProps={userStyles.loadingSpinnerProps}
-            />
-          </View>
+          {isOnline.isInternetReachable ? (
+            <View style={userStyles.saveButtonContainer}>
+              <Button
+                onPress={() => saveForm()}
+                type={'clear'}
+                title={'Upload Profile Changes'}
+                disabled={isSaveButtonDisabled}
+                loading={isLoading}
+                loadingProps={userStyles.loadingSpinnerProps}
+              />
+              <View style={commonStyles.buttonContainer}>
+                <Button
+                  title={'DELETE PROFILE'}
+                  type={'clear'}
+                  onPress={() => setDeleteProfileModalVisible(true)}
+                  containerStyle={userStyles.deleteProfileButtonContainer}
+                  titleStyle={userStyles.deleteProfileButtonText}
+                />
+              </View>
+            </View>
+          ) : (
+            <Text style={commonStyles.noValueText}>Must be online to save changes to profile or delete profile.</Text>
+          )}
         </View>
-        <View style={commonStyles.buttonContainer}>
-          <Text>Need to be online to delete profile.</Text>
-          <Button
-            title={'DELETE PROFILE'}
-            disabled={!isOnline.isInternetReachable}
-            type={'clear'}
-            onPress={() => setDeleteProfileModalVisible(true)}
-            containerStyle={userStyles.deleteProfileButtonContainer}
-            titleStyle={userStyles.deleteProfileButtonText}
-          />
-        </View>
-        {ImageModal()}
-        {deleteProfileModal()}
+        {renderProfileImageModal()}
+        {renderDeleteProfileModal()}
       </Animated.View>
     </View>
   );

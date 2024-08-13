@@ -150,18 +150,16 @@ const useServerRequests = () => {
           Authorization: 'Basic ' + encodedLogin,
         },
       });
-      if (imageResponse.status === 200) {
-        imageBlob = imageResponse.blob();
-        return imageBlob;
-      }
-      else {
-        imageBlob = null;
-        return imageBlob;
-      }
+      if (imageResponse.status === 200) imageBlob = imageResponse.blob();
+      return imageBlob;
     }
     catch (error) {
       console.error(error);
     }
+  };
+
+  const getProfileImageURL = () => {
+    return baseUrl + '/profileimage';
   };
 
   const getProject = async (projectId, encodedLogin) => {
@@ -330,7 +328,7 @@ const useServerRequests = () => {
     return post('/project', encodedLogin, project);
   };
 
-  const uploadImage = async (formdata, encodedLogin) => {
+  const uploadImage = async (formdata, encodedLogin, isProfileImage) => {
     const xhr = new XMLHttpRequest();
     return new Promise((resolve, reject) => {
       xhr.upload.addEventListener('progress', uploadProgress);
@@ -339,28 +337,17 @@ const useServerRequests = () => {
         if (xhr.status === 404) reject(false);
         else resolve(xhr.response);
       });
-      xhr.addEventListener('error', () => {
-        console.error('REJECTED UPDATE');
+      xhr.addEventListener('error', (e) => {
+        console.error('REJECTED UPDATE', e);
         reject(false);
       });
 
-      xhr.open('POST', baseUrl + '/image');
+      if (isProfileImage) xhr.open('POST', baseUrl + '/profileImage');
+      else xhr.open('POST', baseUrl + '/image');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
       xhr.send(formdata);
     });
-  };
-
-  const uploadProfileImage = async (formdata, encodedLogin) => {
-    const response = await fetch(`${baseUrl}/profileImage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Basic ' + encodedLogin,
-      },
-      body: formdata,
-    });
-    return handleResponse(response);
   };
 
   const uploadWebImage = async (formData, encodedLogin) => {
@@ -417,6 +404,7 @@ const useServerRequests = () => {
     getMyProjects: getMyProjects,
     getProfile: getProfile,
     getProfileImage: getProfileImage,
+    getProfileImageURL: getProfileImageURL,
     getProject: getProject,
     getTilehostUrl: getTilehostUrl,
     registerUser: registerUser,
@@ -428,7 +416,6 @@ const useServerRequests = () => {
     updateProfile: updateProfile,
     updateProject: updateProject,
     uploadImage: uploadImage,
-    uploadProfileImage: uploadProfileImage,
     uploadWebImage: uploadWebImage,
     verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,
