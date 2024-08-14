@@ -48,7 +48,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
       title={useUserProfile.getInitials()}
       titleStyle={userStyles.avatarPlaceholderTitleStyle}
     >
-      {isEditable && isOnline.isInternetReachable && !Platform.OS === 'web' && (
+      {isEditable && isOnline.isInternetReachable && Platform.OS !== 'web' && (
         <View style={{position: 'relative', right: 15, bottom: 15}}>
           <Avatar.Accessory
             color={'grey'}
