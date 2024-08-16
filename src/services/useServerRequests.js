@@ -385,6 +385,19 @@ const useServerRequests = () => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
 
+  const verifyImagesExistence = async (imageIdsArray) => {
+    // return request('POST', '/verifyImages/', user.encoded_login, imageIdArray);
+    const response = await timeoutPromise(60000, fetch(baseUrl + '/verifyImages/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login + '/',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(imageIdsArray),
+    }));
+    return handleResponse(response);
+  };
+
   const zipURLStatus = async (zipId) => {
     try {
       const myMapsEndpoint = isSelected ? endpointURL.replace('/db', '/strabotiles') : tilehost;
@@ -432,6 +445,7 @@ const useServerRequests = () => {
     uploadWebImage: uploadWebImage,
     verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,
+    verifyImagesExistence: verifyImagesExistence,
     zipURLStatus: zipURLStatus,
   };
 };

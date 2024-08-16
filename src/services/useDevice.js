@@ -102,6 +102,18 @@ const useDevice = () => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
+  // Delete the folder used for downsized images
+  const deleteTempImagesFolder = async () => {
+    try {
+      const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
+      let dirExists = await doesDeviceDirExist(tempImagesDownsizedDirectory);
+      if (dirExists) await deleteFromDevice(tempImagesDownsizedDirectory);
+    }
+    catch (err) {
+      console.error('Error Deleting Temp Images Folder.', err);
+    }
+  };
+
   const doesBackupFileExist = (filename) => {
     return RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
   };
@@ -396,6 +408,7 @@ const useDevice = () => {
     createProjectDirectories: createProjectDirectories,
     deleteFromDevice: deleteFromDevice,
     deleteOfflineMap: deleteOfflineMap,
+    deleteTempImagesFolder: deleteTempImagesFolder,
     doesBackupFileExist: doesBackupFileExist,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirExist: doesDeviceDirExist,

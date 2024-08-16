@@ -23,7 +23,6 @@ const useUpload = () => {
   const dispatch = useDispatch();
   const projectDatasets = useSelector(state => state.project.datasets);
   const project = useSelector(state => state.project.project);
-  const spots = useSelector(state => state.spot.spots);
   const user = useSelector(state => state.user);
 
   const useDevice = useDeviceHook();
@@ -38,7 +37,7 @@ const useUpload = () => {
     try {
       await uploadProject();
       const uploadStatus = await uploadDatasets();
-      await useUploadImages.uploadImages(Object.values(spots));
+      await useUploadImages.uploadImages();
       dispatch(setIsImageTransferring(false));
       Platform.OS !== 'web' && KeepAwake.deactivate();
       return {status: uploadStatus, datasets: datasetsNotUploaded};
