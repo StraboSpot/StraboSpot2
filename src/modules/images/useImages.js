@@ -183,7 +183,7 @@ const useImages = () => {
     else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
     else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
     else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-    console.log(name + ': Finished Resizing Image', image?.id, 'New Size', imageSizeText);
+    console.log(resizedImage?.name + ': Finished Resizing Image', image?.id, 'New Size', imageSizeText);
   };
 
   const getImageThumbnailURI = (id) => {
@@ -260,7 +260,8 @@ const useImages = () => {
 
   const launchCameraFromNotebook = async (newSpotId) => {
     try {
-      const permissionResult =Platform.OS === 'ios' ? true : await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+      const permissionResult = Platform.OS === 'ios' ? true
+        : await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
       if (permissionResult) {
         const savedPhoto = await takePicture();
         dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -288,12 +289,12 @@ const useImages = () => {
       }
       else {
         const permissionRequestResult = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-        if (permissionRequestResult ===  'granted' || permissionRequestResult === 'never_ask_again') await launchCameraFromNotebook();
+        if (permissionRequestResult === 'granted' || permissionRequestResult === 'never_ask_again') await launchCameraFromNotebook();
         else toast.show('StraboSpot can not access your camera due to permission denial.');
       }
     }
     catch (err) {
-      console.error(`Error Taking picture ${err}`);
+      console.error(`Error Taking Picture: ${err}`);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(`There was an error getting image:\n${err}`));
       dispatch(setIsErrorMessagesModalVisible(true));
@@ -413,19 +414,21 @@ const useImages = () => {
   const takePicture = async () => {
     let permissionGranted;
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (Platform.OS === 'android') permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+    if (Platform.OS === 'android') {
+      permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+    }
     if (permissionGranted === 'granted' || Platform.OS === 'ios') {
       return new Promise((resolve, reject) => {
         try {
           launchCamera({saveToPhotos: true}, async (response) => {
-            console.log('Response = ', response);
+            console.log('Launch Camera Response:', response);
             if (response.didCancel) resolve('cancelled');
             else if (response.error) reject();
             else {
               const imageAsset = response.assets[0];
               const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
               const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-              console.log('resizedImage', resizedImage);
+              console.log('Resized Image:', resizedImage);
               resolve(saveFile(resizedImage));
             }
           });
@@ -452,6 +455,7 @@ const useImages = () => {
     getImagesFromCameraRoll: getImagesFromCameraRoll,
     getLocalImageURI: getLocalImageURI,
     launchCameraFromNotebook: launchCameraFromNotebook,
+    requestCameraPermission: requestCameraPermission,
     saveFile: saveFile,
     saveImageFromDownloadsDir: saveImageFromDownloadsDir,
     setAnnotation: setAnnotation,

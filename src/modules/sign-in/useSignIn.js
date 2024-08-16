@@ -5,9 +5,10 @@ import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useDeviceHook from '../../services/useDevice';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
-import {isEmpty, readDataUrl} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import {setIsProjectLoadSelectionModalVisible, setLoadingStatus} from '../home/home.slice';
 import {setSelectedProject} from '../project/projects.slice';
 import {login, logout, setUserData} from '../user/userProfile.slice';
@@ -17,6 +18,7 @@ const useSignIn = () => {
   const currentProject = useSelector(state => state.project.project);
   const userEmail = useSelector(state => state.user.email);
 
+  const useDevice = useDeviceHook();
   const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
 
@@ -48,18 +50,6 @@ const useSignIn = () => {
     else throw Error('Credentials not found.');
   };
 
-  const convertImageToBase64 = async (userProfileImage) => {
-    if (userProfileImage) {
-      return new Promise((resolve, reject) => {
-        readDataUrl(userProfileImage, (base64Image) => {
-          if (base64Image && typeof base64Image === 'string') resolve(base64Image);
-          else reject('Could not convert image to base64');
-        });
-      });
-    }
-    else return require('../../assets/images/noimage.jpg');
-  };
-
   const guestSignIn = async () => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
@@ -74,10 +64,18 @@ const useSignIn = () => {
     try {
       const newEncodedLogin = Base64.encode(email + ':' + password);
       let userProfileRes = await useServerRequests.getProfile(newEncodedLogin);
-      const userProfileImage = await useServerRequests.getProfileImage(newEncodedLogin);
-      const image = isEmpty(userProfileImage) ? null : await convertImageToBase64(userProfileImage);
+
+      let image;
+      if (Platform.OS === 'web') {
+        const userProfileImageBlob = await useServerRequests.getProfileImage(newEncodedLogin);
+        image = URL.createObjectURL(userProfileImageBlob);
+        dispatch(setUserData({...userProfileRes, image: image, encoded_login: newEncodedLogin}));
+      }
+      else {
+        await useDevice.downloadAndSaveProfileImage(newEncodedLogin);
+        dispatch(setUserData({...userProfileRes, encoded_login: newEncodedLogin}));
+      }
       console.log(`${email} is successfully logged in!`);
-      dispatch(setUserData({...userProfileRes, image: image, encoded_login: newEncodedLogin}));
       dispatch(login());
 
       Sentry.configureScope((scope) => {

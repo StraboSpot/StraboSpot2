@@ -77,10 +77,10 @@ const useDevice = () => {
   };
 
   const deleteFromDevice = async (dir, file) => {
-    console.log(dir + file);
     const filepath = file ? dir + file : dir;
+    console.log('Delete Path:', filepath);
     await RNFS.unlink(filepath);
-    console.log(`${file ? dir + file : dir} has been DELETED!`);
+    console.log(`${filepath} has been DELETED!`);
   };
 
   const deleteOfflineMap = async (map) => {
@@ -165,7 +165,7 @@ const useDevice = () => {
     }
   };
 
-  const doesFileExist = async (path, file) => {
+  const doesFileExist = async (path, file = '') => {
     return await RNFS.exists(path + file);
   };
 
@@ -195,11 +195,36 @@ const useDevice = () => {
       });
   };
 
+  const downloadAndSaveProfileImage = async (encodedLogin) => {
+    const profileImageURL = useServerRequests.getProfileImageURL();
+    return await RNFS.downloadFile({
+      fromUrl: profileImageURL,
+      toFile: APP_DIRECTORIES.PROFILE_IMAGE,
+      begin: res => console.log('Starting to download Image', 'profile', res),
+      headers: {
+        'Authorization': 'Basic ' + encodedLogin,
+        'Accept': 'application/json',
+      },
+    }).promise.then(async (res) => {
+        console.log('RNFS Download Profile Image Response:', res);
+        if (res.statusCode === 200) {
+          console.log(`Profile image downloaded and saved to: ${APP_DIRECTORIES.PROFILE_IMAGE}`);
+          return res.statusCode;
+        }
+        else if (res.statusCode === 404) throw Error('Profile image not found on server');
+        else throw Error('Unknown Error');
+      },
+    )
+      .catch((err) => {
+        console.warn(`Error Downloading Profile Image using URL ${profileImageURL}:`, err);
+      });
+  };
+
   const downloadAndSaveMap = async (downloadOptions) => {
     try {
       const res = await RNFS.downloadFile(downloadOptions).promise;
       if (res.statusCode === 200) {
-          console.log(`Download Complete to ${downloadOptions.toFile}`);
+        console.log(`Download Complete to ${downloadOptions.toFile}`);
       }
     }
     catch (err) {
@@ -267,7 +292,7 @@ const useDevice = () => {
     const exists = await RNFS.exists(directory);
     if (exists) {
       const files = await RNFS.readdir(directory);
-      console.log('Directory', directory,' files:', files);
+      console.log('Directory', directory, ' files:', files);
       return files;
     }
     else console.log('Directory', directory, 'does not exist');
@@ -415,6 +440,7 @@ const useDevice = () => {
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesFileExist: doesFileExist,
     downloadAndSaveImage: downloadAndSaveImage,
+    downloadAndSaveProfileImage: downloadAndSaveProfileImage,
     downloadAndSaveMap: downloadAndSaveMap,
     getExternalProjectData: getExternalProjectData,
     isPickDocumentCanceled: isPickDocumentCanceled,

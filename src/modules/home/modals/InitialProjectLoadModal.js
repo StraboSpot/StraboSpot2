@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {Avatar, Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -17,7 +17,7 @@ import projectStyles from '../../project/project.styles';
 import ProjectList from '../../project/ProjectList';
 import ProjectTypesButtons from '../../project/ProjectTypesButtons';
 import userStyles from '../../user/user.styles';
-import useUserProfileHook from '../../user/useUserProfile';
+import UserProfileAvatar from '../../user/UserProfileAvatar';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
@@ -38,7 +38,6 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useResetState = useResetStateHook();
-  const useUserProfile = useUserProfileHook();
 
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
@@ -126,8 +125,6 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible
         setVisibleInitialSection('none');
         dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
     }
-
-
   };
 
   const renderListOfProjectsOnDevice = () => {
@@ -243,21 +240,10 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible
   const renderUserProfile = () => {
     return (
       <View style={userStyles.initialProjectLoadProfileContainer}>
-        {user.name && <Avatar
-          source={user.image && {uri: user.image}}
-          title={useUserProfile.getInitials()}
-          titleStyle={userStyles.avatarPlaceholderTitleStyle}
-          size={80} rounded
-        />}
+        {user.name && <UserProfileAvatar size={80}/>}
         <View style={userStyles.initialProjectLoadProfileHeaderContainer}>
           <Text style={userStyles.initialProjectLoadProfileHeaderText}>Hello, {displayName}!</Text>
-          {user.email
-            && (
-              <Text>
-                Signed in as {truncateText(user.email, 15)}
-              </Text>
-            )
-          }
+          {user.email && <Text>Signed in as {truncateText(user.email, 15)}</Text>}
           <Button
             title={user.name ? `Not ${user.name}?` : 'Sign in?'}
             type={'clear'}
