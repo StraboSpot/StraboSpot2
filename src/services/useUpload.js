@@ -136,7 +136,7 @@ const useUpload = () => {
 
   const uploadProfile = async (userValues) => {
     try {
-      const profileData = {name: userValues.name, password: userValues.password, mapboxToken: userValues.mapboxToken};
+      const profileData = {name: userValues.name, mapboxToken: userValues.mapboxToken};
       await useServerRequests.updateProfile(profileData);
     }
     catch (err) {

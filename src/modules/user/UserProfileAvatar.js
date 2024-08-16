@@ -13,7 +13,7 @@ import {isEmpty} from '../../shared/Helpers';
 
 const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage, size, tempUserProfileImageURI}) => {
   const isOnline = useSelector(state => state.connections.isOnline);
-  const imageURIWeb = useSelector(state => state.user?.image);
+  const imageURI = useSelector(state => state.user?.image);
 
   const useUserProfile = useUserProfileHook();
   const useDevice = useDeviceHook();
@@ -27,7 +27,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
   const getAvatarSource = async () => {
     console.log('tempUserProfileImageURI', tempUserProfileImageURI);
     if (Platform.OS === 'web') {
-      if (!isEmpty(imageURIWeb)) setSource({uri: imageURIWeb});
+      if (!isEmpty(imageURI)) setSource({uri: imageURI});
       else setSource(defaultAvatar);
     }
     else if (!isEditable && !isEmpty(tempUserProfileImageURI)) setSource({uri: tempUserProfileImageURI});
@@ -35,6 +35,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
       const doesProfileImageExist = await useDevice.doesFileExist(APP_DIRECTORIES.PROFILE_IMAGE);
       console.log('doesProfileImageExist', doesProfileImageExist);
       if (doesProfileImageExist) setSource({uri: 'file://' + APP_DIRECTORIES.PROFILE_IMAGE + '?' + new Date()}); // Avoid caching with date
+      else if (!isEmpty(imageURI) && typeof imageURI.valueOf() === 'string') setSource({uri: imageURI});
       else setSource(defaultAvatar);
     }
   };
