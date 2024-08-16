@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {setSelectedProject} from './projects.slice';
 import useDeviceHook from '../../services/useDevice';
+import useUploadImagesHook from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -17,8 +18,10 @@ import {
   clearedStatusMessages,
   setIsBackupModalVisible,
   setIsErrorMessagesModalVisible,
+  setIsProgressModalVisible,
   setIsUploadModalVisible,
 } from '../home/home.slice';
+import {UploadModal} from '../home/modals';
 import overlayStyles from '../home/overlays/overlay.styles';
 
 const UploadBackAndExport = () => {
@@ -29,6 +32,7 @@ const UploadBackAndExport = () => {
   const user = useSelector(state => state.user);
 
   const useDevice = useDeviceHook();
+  const useUploadImages = useUploadImagesHook();
 
   const checkForActiveDatasets = () => {
     if (activeDatasets.length > 0) {
@@ -46,6 +50,16 @@ const UploadBackAndExport = () => {
     const url = 'https://strabospot.org/files/helpFiles/Moving_Project_Backups_Out_of%20StraboSpot2.pdf';
     const canOpen = await Linking.canOpenURL(url);
     canOpen ? await Linking.openURL(url) : alert('Need to be online');
+  };
+
+  const uploadImagesOnly = async () => {
+    try {
+      dispatch(setIsProgressModalVisible(true));
+      await useUploadImages.initializeImageUpload();
+    }
+    catch (err) {
+      console.error('Error uploading some images', err);
+    }
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -74,6 +88,25 @@ const UploadBackAndExport = () => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => checkForActiveDatasets()}
         />
+        {__DEV__
+          && <View>
+            <Button
+              title={'Upload Images Only'}
+              buttonStyle={commonStyles.standardButton}
+              titleStyle={commonStyles.standardButtonText}
+              onPress={uploadImagesOnly}
+            />
+            {/*<Button*/}
+            {/*  title={'Ready Images Dir'}*/}
+            {/*  buttonStyle={commonStyles.standardButton}*/}
+            {/*  titleStyle={commonStyles.standardButtonText}*/}
+            {/*  onPress={async () => {*/}
+            {/*    console.log(await useDevice.readDirectory(APP_DIRECTORIES.IMAGES));*/}
+            {/*  }}*/}
+            {/*/>*/}
+          </View>
+
+        }
         {Platform.OS === 'ios'
           && (
             <View style={{padding: 10}}>
