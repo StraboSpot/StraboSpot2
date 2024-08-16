@@ -34,7 +34,7 @@ const UploadProgressModal = ({}) => {
   const useUpload = useUploadHook();
 
   useEffect(() => {
-    if (isProgressModalVisible) renderUploadProgressModal().catch(err => console.error('Error in UploadProgressModal', err));
+    // if (isProgressModalVisible) renderUploadProgressModal().catch(err => console.error('Error in UploadProgressModal', err));
   }, [isProgressModalVisible]);
 
   const handleCompletePress = async () => {
