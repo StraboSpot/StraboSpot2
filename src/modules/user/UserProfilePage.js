@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Animated, PermissionsAndroid, Platform, Text, View} from 'react-native';
+import {FlatList, PermissionsAndroid, Platform, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
@@ -14,6 +14,7 @@ import {setUserData} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
+import useDownloadHook from '../../services/useDownload';
 import usePermissionsHook from '../../services/usePermissions';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
@@ -40,15 +41,17 @@ const UserProfilePage = () => {
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [shouldUpdateImage, setShouldUpdateImage] = useState(false);
   const [tempUserProfileImage, setTempUserProfileImage] = useState(null);
 
   const navigation = useNavigation();
   const toast = useToast();
   const useDevice = useDeviceHook();
+  const useDownload = useDownloadHook();
   const useForm = useFormHook();
   const usePermissions = usePermissionsHook();
   const useResetState = useResetStateHook();
@@ -75,6 +78,12 @@ const UserProfilePage = () => {
       else setErrorMessage('Wrong password');
     }
     else setErrorMessage('Need to enter your password');
+  };
+
+  const downloadUserProfile = async () => {
+    setIsDownloading(true);
+    await useDownload.downloadUserProfile();
+    setIsDownloading(false);
   };
 
   const renderDeleteProfileModal = () => {
@@ -141,16 +150,15 @@ const UserProfilePage = () => {
   const saveForm = async () => {
     try {
       const formCurrent = formRef.current;
-      setIsLoading(true);
+      setIsUploading(true);
       await formRef.current.submitForm();
       let newValues = JSON.parse(JSON.stringify(formCurrent.values));
       if (useForm.hasErrors(formCurrent)) throw Error('Error in form.');
       dispatch(setUserData(newValues));
       if (isOnline.isInternetReachable) {
         await useUpload.uploadProfile(newValues);
-        // await upload(newValues);
         toast.show('Profile uploaded successfully!', {type: 'success'});
-        setIsLoading(false);
+        setIsUploading(false);
         dispatch(setSidePanelVisible({bool: false}));
       }
       else toast.show('Not connected to internet to upload profile changes', {type: 'warning'});
@@ -159,14 +167,15 @@ const UserProfilePage = () => {
     catch (err) {
       console.error('Error uploading profile', err);
       toast.show('Error uploading profile', {type: 'danger'});
-      setIsLoading(false);
+      setIsUploading(false);
     }
   };
 
   const saveImage = async () => {
     try {
       console.log('Need to upload', tempUserProfileImage.uri);
-      const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage, tempUserProfileImage.uri);
+      const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
+        tempUserProfileImage.uri);
       await useDevice.copyFiles(resizedProfileImage.uri, 'file://' + APP_DIRECTORIES.PROFILE_IMAGE);
       await useDevice.deleteFromDevice(resizedProfileImage.uri);
       await useUploadImages.uploadProfileImage('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
@@ -235,14 +244,12 @@ const UserProfilePage = () => {
   };
 
   const validateForm = (values) => {
-    console.log('DIRTY', formRef.current.dirty);
     useForm.validateForm({formName: formName, values: values});
-    console.log('DIRTY AFTER', formRef.current.dirty);
-    if (formRef.current.dirty || formRef.current.touched?.image) setIsSaveButtonDisabled(false);
+    setIsSaveButtonDisabled(false);
   };
 
   return (
-    <View style={{flex: 1}}>
+    <>
       <SidePanelHeader
         title={'My Strabo Spot'}
         headerTitle={'Profile'}
@@ -252,63 +259,78 @@ const UserProfilePage = () => {
           else {
             alert(
               'Changes Were Made',
-              'Do you want to save your Changes',
+              'Do you want to save your changes?',
               [
-                {text: 'Ok', onPress: async () => await saveForm()},
-                {text: 'Cancel', onPress: () => dispatch(setSidePanelVisible({bool: false}))},
+                {text: 'Save Changes', onPress: async () => await saveForm()},
+                {text: 'Clear Changes', onPress: () => dispatch(setSidePanelVisible({bool: false}))},
               ],
             );
           }
         }}
       />
-      <Animated.View style={{flex: 1}} pointerEvents={isOnline.isInternetReachable ? 'auto' : 'none'}>
-        <View style={{alignItems: 'center', marginTop: 15}}>
-          <UserProfileAvatar
-            isEditable={true}
-            openProfileImageModal={openProfileImageModal}
-            shouldUpdateImage={shouldUpdateImage}
-            size={200}
-          />
-        </View>
-        <View style={{flex: 1}}>
-          <Formik
-            innerRef={formRef}
-            onSubmit={values => console.log('Submitting form...', values)}
-            validate={values => validateForm(values)}
-            component={formProps => Form({formName: formName, ...formProps})}
-            initialValues={userData}
-            validateOnChange={true}
-            enableReinitialize={false}  // Update values if preferences change while form open, like when number incremented
-            disabled={true}
-          />
-          {isOnline.isInternetReachable ? (
-            <View style={userStyles.saveButtonContainer}>
-              <Button
-                onPress={() => saveForm()}
-                type={'clear'}
-                title={'Upload Profile Changes'}
-                disabled={isSaveButtonDisabled}
-                loading={isLoading}
-                loadingProps={userStyles.loadingSpinnerProps}
-              />
-              <View style={commonStyles.buttonContainer}>
-                <Button
-                  title={'DELETE PROFILE'}
-                  type={'clear'}
-                  onPress={() => setDeleteProfileModalVisible(true)}
-                  containerStyle={userStyles.deleteProfileButtonContainer}
-                  titleStyle={userStyles.deleteProfileButtonText}
+      <View style={{flex: 1}} pointerEvents={isOnline.isInternetReachable ? 'auto' : 'none'}>
+        <FlatList
+          ListHeaderComponent={
+            <>
+              <View style={{alignItems: 'center', marginTop: 15}}>
+                <UserProfileAvatar
+                  isEditable={true}
+                  openProfileImageModal={openProfileImageModal}
+                  shouldUpdateImage={shouldUpdateImage}
+                  size={200}
                 />
               </View>
-            </View>
-          ) : (
-            <Text style={commonStyles.noValueText}>Must be online to save changes to profile or delete profile.</Text>
-          )}
-        </View>
-        {renderProfileImageModal()}
-        {renderDeleteProfileModal()}
-      </Animated.View>
-    </View>
+              <Formik
+                innerRef={formRef}
+                onSubmit={values => console.log('Submitting form...', values)}
+                validate={values => validateForm(values)}
+                component={formProps => Form({formName: formName, ...formProps})}
+                initialValues={userData}
+                validateOnChange={true}
+                enableReinitialize={true}  // Update values if preferences change while form open
+                disabled={true}
+              />
+              {isOnline.isInternetReachable ? (
+                <View style={userStyles.saveButtonContainer}>
+                  <Button
+                    onPress={saveForm}
+                    type={'clear'}
+                    title={'Save Profile Changes'}
+                    disabled={isSaveButtonDisabled}
+                    loading={isUploading}
+                    loadingProps={userStyles.loadingSpinnerProps}
+                  />
+                  {Platform.OS !== 'web' && (
+                    <Button
+                      onPress={downloadUserProfile}
+                      type={'clear'}
+                      title={'Download Profile'}
+                      loading={isDownloading}
+                      loadingProps={userStyles.loadingSpinnerProps}
+                    />
+                  )}
+                  <View style={commonStyles.buttonContainer}>
+                    <Button
+                      title={'DELETE PROFILE'}
+                      type={'clear'}
+                      onPress={() => setDeleteProfileModalVisible(true)}
+                      containerStyle={userStyles.deleteProfileButtonContainer}
+                      titleStyle={userStyles.deleteProfileButtonText}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <Text style={commonStyles.noValueText}>
+                  Must be online to save changes to profile or delete profile.
+                </Text>
+              )}
+              {renderProfileImageModal()}
+              {renderDeleteProfileModal()}
+            </>
+          }
+        />
+      </View>
+    </>
   );
 };
 
