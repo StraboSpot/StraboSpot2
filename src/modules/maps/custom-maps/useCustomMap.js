@@ -75,7 +75,7 @@ const useCustomMap = () => {
     const tileUrl = useMapURL.buildTileURL(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
-      const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
+      const customEndpointTest = customDatabaseEndpoint?.url?.replace('/db', '/strabo_mymaps_check/');
       testTileUrl = customDatabaseEndpoint.isSelected
         ? customEndpointTest + map.id
         : STRABO_APIS.MY_MAPS_CHECK + map.id;
