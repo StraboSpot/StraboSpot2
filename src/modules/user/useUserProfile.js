@@ -13,7 +13,7 @@ const useUserProfile = () => {
   };
 
   const getInitials = () => {
-    return userData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+    return userData?.name?.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
   };
 
   const getName = () => {

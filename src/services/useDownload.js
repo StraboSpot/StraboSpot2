@@ -1,5 +1,6 @@
 import {Platform} from 'react-native';
 
+import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
@@ -29,6 +30,7 @@ import {
   setSelectedDataset,
 } from '../modules/project/projects.slice';
 import {addedSpotsFromServer} from '../modules/spots/spots.slice';
+import {setUserData} from '../modules/user/userProfile.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useDownload = () => {
@@ -114,6 +116,29 @@ const useDownload = () => {
       console.error(dataset.name, ':', 'Error Downloading Spots.', err);
       dispatch(addedStatusMessage('Error Downloading Spots.' + err));
       throw Error;
+    }
+  };
+
+  const downloadUserProfile = async (encodedLoginScoped = encodedLogin) => {
+    try {
+      let userProfileRes = await useServerRequests.getProfile(encodedLoginScoped);
+
+      if (Platform.OS === 'web') {
+        const userProfileImageBlob = await useServerRequests.getProfileImage(encodedLoginScoped);
+        const image = URL.createObjectURL(userProfileImageBlob);
+        dispatch(setUserData({...userProfileRes, image: image, encoded_login: encodedLoginScoped}));
+      }
+      else {
+        await useDevice.downloadAndSaveProfileImage(encodedLoginScoped);
+        dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
+      }
+
+      Sentry.configureScope((scope) => {
+        scope.setUser({'username': userProfileRes.name, 'email': userProfileRes.email});
+      });
+    }
+    catch (err) {
+      throw Error(err);
     }
   };
 
@@ -254,6 +279,7 @@ const useDownload = () => {
   };
 
   return {
+    downloadUserProfile: downloadUserProfile,
     initializeDownload: initializeDownload,
     initializeDownloadImages: initializeDownloadImages,
   };
