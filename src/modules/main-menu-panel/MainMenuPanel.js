@@ -2,12 +2,11 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 
 import {useToast} from 'react-native-toast-notifications';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import About from './About';
 import Documentation from './Documentation';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from './mainMenu.constants';
-import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import mainMenuPanelStyles from './mainMenuPanel.styles';
 import MainMenuPanelHeader from './MainMenuPanelHeader';
 import MainMenuPanelList from './MainMenuPanelList';
@@ -43,7 +42,6 @@ const MainMenuPanel = ({
                        }) => {
   console.log('Rendering MainMenuPanel...');
 
-  const dispatch = useDispatch();
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
   const project = useSelector(state => state.project.project);
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
@@ -54,7 +52,7 @@ const MainMenuPanel = ({
   const renderMainMenuContent = () => {
     return (
       <>
-        <MainMenuPanelHeader onPress={() => dispatch(setMenuSelectionPage({name: null}))}/>
+        <MainMenuPanelHeader/>
         {renderMainMenuList()}
       </>
     );
@@ -113,7 +111,6 @@ const MainMenuPanel = ({
       default:
         return (
           <MainMenuPanelList
-            onPress={setVisibleMenu}
             activeProject={!isEmpty(project) && project.description ? project.description.project_name
               : 'No Active Project'}
           />
@@ -136,10 +133,6 @@ const MainMenuPanel = ({
       case SIDE_PANEL_VIEWS.USER_PROFILE:
         return <UserProfilePage/>;
     }
-  };
-
-  const setVisibleMenu = (name) => {
-    dispatch(setMenuSelectionPage({name: name}));
   };
 
   return (

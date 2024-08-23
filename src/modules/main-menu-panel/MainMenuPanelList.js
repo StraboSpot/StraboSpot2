@@ -8,11 +8,13 @@ import commonStyles from '../../shared/common.styles';
 import {toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
+import {useDispatch} from 'react-redux';
 
 const MainMenuPanelList = ({
                              activeProject,
-                             onPress,
                            }) => {
+  const dispatch = useDispatch();
 
   const renderMenuListItem = (name) => {
     if (name !== MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT && name !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS
@@ -21,7 +23,7 @@ const MainMenuPanelList = ({
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => onPress(name)}
+          onPress={() => setVisibleMenu(name)}
         >
           <ListItem.Content>
             {<ListItem.Title style={commonStyles.listItemTitle}>
@@ -48,6 +50,10 @@ const MainMenuPanelList = ({
         />
       </>
     );
+  };
+
+  const setVisibleMenu = (name) => {
+    dispatch(setMenuSelectionPage({name: name}));
   };
 
   return (
