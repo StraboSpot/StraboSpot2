@@ -25,6 +25,31 @@ const styles = StyleSheet.create({
     fontSize: themes.PRIMARY_TEXT_SIZE,
     marginLeft: 10,
   },
+  loadingMapButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingMapContentContainer: {
+    flex: 2,
+    justifyContent: 'center',
+  },
+  loadingMapModalContainer: {
+    height: 250,
+  },
+  loadingMapModalContentText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    fontWeight: themes.TEXT_WEIGHT,
+  },
+  loadingMapModalTitleContainer: {
+    flex: 1,
+  },
+  mapOverviewBboxText: {
+    paddingLeft: 20,
+  },
+  mapOverviewText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    padding: 10,
+  },
   mapTypeInfoContainer: {
     alignItems: 'center',
     padding: 10,
