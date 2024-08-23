@@ -5,8 +5,8 @@ import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {MAIN_MENU_TITLE} from './mainMenu.constants';
-import mainMenuPanelStyles from './mainMenuPanel.styles';
 import {setMenuSelectionPage} from './mainMenuPanel.slice';
+import mainMenuPanelStyles from './mainMenuPanel.styles';
 
 const MainMenuPanelHeader = ({onPress}) => {
   const dispatch = useDispatch();

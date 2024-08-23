@@ -2,14 +2,14 @@ import React from 'react';
 import {FlatList, Platform} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
+import {useDispatch} from 'react-redux';
 
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import commonStyles from '../../shared/common.styles';
 import {toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {setMenuSelectionPage} from './mainMenuPanel.slice';
-import {useDispatch} from 'react-redux';
 
 const MainMenuPanelList = ({
                              activeProject,
