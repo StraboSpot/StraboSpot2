@@ -42,7 +42,7 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import {MAP_MODES} from '../maps/maps.constants';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapLocationHook from '../maps/useMapLocation';
-import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
+import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
@@ -266,7 +266,7 @@ const Home = ({navigation, route}) => {
     // console.log('Closing Notebook...');
     animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
-    dispatch(setNotebookPanelVisible(false));
+    dispatch(setIsNotebookPanelVisible(false));
     if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
       dispatch(setModalVisible({modal: null}));
     }
@@ -342,7 +342,7 @@ const Home = ({navigation, route}) => {
     // console.log('Opening Notebook', pageView, '...');
     if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
-    dispatch(setNotebookPanelVisible(true));
+    dispatch(setIsNotebookPanelVisible(true));
     animateDrawer(animatedValueNotebookDrawer, 0);
     animateDrawer(animatedValueRightSide, -NOTEBOOK_DRAWER_WIDTH);
     if (SMALL_SCREEN) {
