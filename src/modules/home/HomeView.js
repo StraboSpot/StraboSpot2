@@ -18,6 +18,7 @@ const HomeView = ({
                     animateRightSide,
                     areEditButtonsVisible,
                     clickHandler,
+                    closeMainMenuPanel,
                     closeNotebookPanel,
                     dialogClickHandler,
                     dialogs,
@@ -34,7 +35,6 @@ const HomeView = ({
                     setDistance,
                     startEdit,
                     toggleDialog,
-                    toggleHomeDrawer,
                   }) => {
   console.log('Rendering HomeView...');
 
@@ -76,11 +76,12 @@ const HomeView = ({
       <LeftSideButtons
         animateLeftSide={animateLeftSide}
         clickHandler={clickHandler}
+        closeMainMenuPanel={closeMainMenuPanel}
         dialogClickHandler={dialogClickHandler}
         dialogs={dialogs}
         mapComponentRef={mapComponentRef}
+        openMainMenuPanel={openMainMenuPanel}
         toggleDialog={toggleDialog}
-        toggleHomeDrawer={toggleHomeDrawer}
       />
 
       <Animated.View style={[notebookStyles.notebookDrawer, animateNotebookDrawer]}>

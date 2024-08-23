@@ -69,7 +69,6 @@ const Home = ({navigation, route}) => {
   const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isHomeLoading = useSelector(state => state.home.loading.home);
-  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
@@ -187,13 +186,6 @@ const Home = ({navigation, route}) => {
 
   const clickHandler = async (name, value) => {
     switch (name) {
-      // case 'search':
-      //   toast.show(`Still in the works. \n The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
-      //   break;
-      case 'home':
-        toggleHomeDrawerButton();
-        break;
-
       // Map Actions
       case MAP_MODES.DRAW.POINT:
       case MAP_MODES.DRAW.LINE:
@@ -230,7 +222,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'saveMap':
         dispatch(setIsOfflineMapsModalVisible(!isOfflineMapModalVisible));
-        toggleHomeDrawerButton();
+        closeMainMenuPanel();
         break;
       case 'addTag':
         // console.log(`${name}`, ' was clicked');
@@ -449,13 +441,8 @@ const Home = ({navigation, route}) => {
     console.log(dialog, 'is set to', dialogs[dialog]);
   };
 
-  const toggleHomeDrawerButton = () => {
-    if (isMainMenuPanelVisible) closeMainMenuPanel();
-    else openMainMenuPanel();
-  };
-
   const onLogout = () => {
-    toggleHomeDrawerButton();
+    closeMainMenuPanel();
     closeNotebookPanel();
     dispatch(logout());
   };
@@ -483,13 +470,13 @@ const Home = ({navigation, route}) => {
           animatedValueLeftSide={animatedValueLeftSide}
           areEditButtonsVisible={buttons.editButtonsVisible}
           clickHandler={clickHandler}
+          closeMainMenuPanel={closeMainMenuPanel}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           dialogs={dialogs}
           distance={distance}
           drawButtonsVisible={buttons.drawButtonsVisible}
           endMeasurement={endMeasurement}
-          isMainMenuPanelVisible={isMainMenuPanelVisible}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
           mapComponentRef={mapComponentRef}
@@ -503,7 +490,6 @@ const Home = ({navigation, route}) => {
           showUpdateLabel={showUpdateLabel}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
-          toggleHomeDrawer={toggleHomeDrawerButton}
         />
       ) : (
         <HomeView
@@ -512,6 +498,7 @@ const Home = ({navigation, route}) => {
           animateRightSide={animateRightSide}
           areEditButtonsVisible={buttons.editButtonsVisible}
           clickHandler={clickHandler}
+          closeMainMenuPanel={closeMainMenuPanel}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           dialogs={dialogs}
@@ -528,7 +515,6 @@ const Home = ({navigation, route}) => {
           setDistance={setDistance}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
-          toggleHomeDrawer={toggleHomeDrawerButton}
         />
       )}
       {/*Modals for Home Page*/}
@@ -548,7 +534,7 @@ const Home = ({navigation, route}) => {
         openMainMenuPanel={openMainMenuPanel}
         openUrl={openStraboSpotURL}
       />
-      <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
+      <UploadModal/>
       <UploadProgressModal/>
       <WarningModal/>
       {/*------------------------*/}
