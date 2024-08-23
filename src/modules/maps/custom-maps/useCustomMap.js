@@ -76,10 +76,11 @@ const useCustomMap = () => {
     const tileUrl = useMapURL.buildTileURL(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
-      const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
-      testTileUrl = customDatabaseEndpoint.isSelected
-        ? customEndpointTest + map.id
-        : STRABO_APIS.MY_MAPS_CHECK + map.id;
+      if (!isEmpty(customDatabaseEndpoint.url) && customDatabaseEndpoint.isSelected) {
+        const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
+        testTileUrl = customEndpointTest + map.id;
+      }
+      else testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
     }
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
@@ -102,7 +103,7 @@ const useCustomMap = () => {
       dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
       return customMap;
     }
-    else throw (customMap.id);
+    else throw (`${customMap.id} is not a valid ID for this map.  Please check the id and try again.`);
   };
 
   const setCustomMapSwitchValue = (value, map) => {
