@@ -65,7 +65,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
         )}
         <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
         {!isModalLoading && <View style={{alignItems: 'center'}}>
-          {(selectedProject.source === 'Device' || selectedProject.source === 'server') && (
+          {(selectedProject.source === 'device' || selectedProject.source === 'server') && (
             <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load project</Text>
           )}
           <View style={{flexDirection: 'row'}}>
