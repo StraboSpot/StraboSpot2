@@ -17,9 +17,9 @@ const CustomEndpoint = ({
                         }) => {
     const dispatch = useDispatch();
     const isOnline = useSelector(state => state.connections.isOnline);
-    const {endpointURL, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+    const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-    const [customEndpointURLLocal, setCustomEndpointURLLocal] = useState(endpointURL);
+    const [customEndpointURLLocal, setCustomEndpointURLLocal] = useState(url);
     const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
     const [isVerified, setIsVerified] = useState(null);
     const [verifiedButtonTitle, setVerifiedButtonTitle] = useState('Test Endpoint');
@@ -77,7 +77,7 @@ const CustomEndpoint = ({
                 inputStyle={signInStyles.customEndpointInput}
                 onChangeText={value => handleEndpointTextValues(value)}
                 label={'Enter full endpoint address'}
-                placeholder={'http://192.168.xxx'}
+                placeholder={'http://192.168.xxx/db/'}
                 labelStyle={{fontSize: 10}}
                 defaultValue={customEndpointURLLocal}
                 autoCapitalize={'none'}
