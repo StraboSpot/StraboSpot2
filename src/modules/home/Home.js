@@ -22,8 +22,6 @@ import {
   ErrorModal,
   InitialProjectLoadModal,
   StatusModal,
-  UploadModal,
-  UploadProgressModal,
   WarningModal,
 } from './modals';
 import useDeviceHook from '../../services/useDevice';
@@ -464,7 +462,7 @@ const Home = ({navigation, route}) => {
         />
       )}
       {/*Modals for Home Page*/}
-      <BackupModal/>
+      {/*<BackupModal/>*/}
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
@@ -480,8 +478,6 @@ const Home = ({navigation, route}) => {
         openMainMenuPanel={openMainMenuPanel}
         openUrl={openStraboSpotURL}
       />
-      <UploadModal/>
-      <UploadProgressModal/>
       <WarningModal/>
       {/*------------------------*/}
       <LoadingSpinner isLoading={isHomeLoading}/>
