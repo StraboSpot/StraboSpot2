@@ -189,7 +189,7 @@ const Basemap = ({
                 tileUrlTemplates={[useMapURL.buildTileURL(customMap)]}
               >
                 <MapboxGL.RasterLayer
-                  belowLayerID={'pointLayerSelectedHalo'}
+                  aboveLayerID={basemap.id}
                   id={customMap.id + 'Layer'}
                   sourceID={customMap.id}
                   style={{
