@@ -15,19 +15,19 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setIsBackupModalVisible,
   setIsErrorMessagesModalVisible,
   setIsUploadModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 
 const UploadBackAndExport = () => {
-
   const dispatch = useDispatch();
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
   const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
 
+  const [isBackupModalVisible, setIsBackupModalVisible] =  useState(false);
+  const [isUploadModalVisible, setIsUploadModalVisible] =  useState(false);
   const useDevice = useDeviceHook();
 
   const checkForActiveDatasets = () => {

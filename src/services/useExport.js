@@ -10,10 +10,8 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setIsBackupModalVisible,
-  setIsStatusMessagesModalVisible,
   setIsWarningMessagesModalVisible,
-  setLoadingStatus,
+  // setLoadingStatus,
 } from '../modules/home/home.slice';
 import {setBackupFileName} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
@@ -67,6 +65,7 @@ const useExport = () => {
 
   const gatherDataForBackup = async (filename) => {
     try {
+      dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Project Data...'));
       console.log(dataForExport);
       await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport, 'data.json');
@@ -106,7 +105,7 @@ const useExport = () => {
         dispatch(removedLastStatusMessage());
         if (imageBackupFailures > 0) {
           dispatch(addedStatusMessage(
-            `Images backed up: ${imageSuccess}.\nImages NOT backed up: ${imageBackupFailures}.`,
+            `Images backed up: ${imageSuccess}\nImages missing: ${imageBackupFailures}`,
           ));
         }
         else dispatch(addedStatusMessage(`${imageSuccess} Images backed up.`));
@@ -124,13 +123,14 @@ const useExport = () => {
       const maps = data.mapNamesDb;
       const mapCount = Object.values(maps).length;
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
+      dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
         await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
         await zip(APP_DIRECTORIES.TILE_CACHE, deviceDir + fileName + '/maps/OfflineTiles.zip');
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`Finished Exporting ${mapCount} Offline Map${mapCount > 1 ? 's' : ''}.`));
+        dispatch(addedStatusMessage(`Offline Map${mapCount > 1 ? 's' : ''} backed up: ${mapCount}`));
       }
       else {
         dispatch(removedLastStatusMessage());
@@ -148,6 +148,7 @@ const useExport = () => {
     try {
       console.log(configDb);
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
+      dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
         await exportData(deviceDir + exportedFileName, configDb.other_maps,
@@ -170,11 +171,9 @@ const useExport = () => {
   const initializeBackup = async (fileName) => {
     try {
       dispatch(setBackupFileName(fileName));
-      dispatch(setIsBackupModalVisible(false));
+      // dispatch(setIsBackupModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Backing up Project to Device...'));
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      dispatch(setIsStatusMessagesModalVisible(true));
 
       const hasBackupDir = await useDevice.doesDeviceBackupDirExist();
       console.log('Has Backup Dir?: ', hasBackupDir);
@@ -183,9 +182,6 @@ const useExport = () => {
         await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
         await backupProjectToDevice(fileName);
       }
-      dispatch(addedStatusMessage('---------------'));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(addedStatusMessage('Project Backup Complete!'));
     }
     catch (err) {
       console.error('Error Backing Up Project!: ', err);
@@ -232,7 +228,7 @@ const useExport = () => {
 
   const zipAndExportProjectFolder = async (isBeingExported) => {
     try {
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      // dispatch(setLoadingStatus({view: 'modal', bool: true}));
       await useDevice.makeDirectory(appExportDirectory + backupFileName);
 
       // Make temp directory for the export files to be zipped up.
