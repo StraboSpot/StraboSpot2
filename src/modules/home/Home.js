@@ -19,6 +19,7 @@ import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {
+  BackupModal,
   ErrorModal,
   InitialProjectLoadModal,
   StatusModal,
