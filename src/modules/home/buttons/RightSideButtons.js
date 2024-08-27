@@ -3,7 +3,8 @@ import {Animated} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {EditCancelSaveButtons, DrawActionButtons, ShortcutButtons} from './index';
+import {DrawActionButtons, EditCancelSaveButtons, ShortcutButtons} from './index';
+import NotebookButton from './NotebookButton';
 import IconButton from '../../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../../page/page.constants';
 import {setModalVisible} from '../home.slice';
@@ -14,19 +15,18 @@ const RightSideButtons = ({
                             animateRightSide,
                             areEditButtonsVisible,
                             clickHandler,
+                            closeNotebookPanel,
                             distance,
                             drawButtonsVisible,
                             endMeasurement,
                             mapMode,
                             onEndDrawPressed,
                             openNotebookPanel,
-                            toggleNotebookPanel,
                           }) => {
   console.log('Rendering RightSideButtons...');
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const stratSection = useSelector(state => state.map.stratSection);
 
@@ -44,14 +44,8 @@ const RightSideButtons = ({
       )}
 
       <Animated.View style={[homeStyles.notebookButton, animateRightSide]}>
-        <IconButton
-          source={isNotebookPanelVisible
-            ? require('../../../assets/icons/NotebookViewButton_pressed.png')
-            : require('../../../assets/icons/NotebookViewButton.png')}
-          onPress={toggleNotebookPanel}
-        />
+        <NotebookButton closeNotebookPanel={closeNotebookPanel} openNotebookPanel={openNotebookPanel}/>
       </Animated.View>
-
 
       {!currentImageBasemap && !stratSection && (
         <Animated.View style={[homeStyles.shortcutButtons, animateRightSide]}>

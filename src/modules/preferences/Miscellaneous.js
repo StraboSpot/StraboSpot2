@@ -16,7 +16,7 @@ import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
-  const {endpointURL, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
@@ -25,7 +25,7 @@ const Miscellaneous = () => {
 
   const formRef = useRef('null');
 
-  const initialValues = {database_endpoint: endpointURL};
+  const initialValues = {database_endpoint: url};
   const testingModePassword = 'Strab0R0cks';
   const errorMessage = 'Wrong Password!';
 
@@ -76,12 +76,12 @@ const Miscellaneous = () => {
       <SectionDivider dividerText={'Endpoint'}/>
       <Text style={[commonStyles.noValueText, {paddingBottom: 0}]}>
         Current Endpoint{'\n'}
-        {endpointURL || 'https://strabospot.org/db'}
+        {url || 'https://strabospot.org/db'}
       </Text>
       <CustomEndpoint/>
       {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
-        *If using StraboSpot Offline, the URL must be an &lsquo;http:&lsquo; URL
-        and NOT an &lsquo;https:&lsquo; URL. Also, make sure that there is a trailing &lsquo;/db&lsquo;.
+        *Currently StraboSpot <Text style={{fontWeight: themes.TEXT_WEIGHT}}>ONLY</Text> supports endpoints with the format StraboSpot Offline uses
+        (see placeholder in box for example). If you need to use an endpoint not associated with StraboSpot Offline, the URL must contain a trailing &lsquo;/db&lsquo;.
       </Text>}
     </>
   );

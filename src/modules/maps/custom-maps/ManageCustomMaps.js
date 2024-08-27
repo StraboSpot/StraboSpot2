@@ -11,12 +11,14 @@ import AddButton from '../../../shared/ui/AddButton';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
+import {DEFAULT_MAPS} from '../maps.constants';
 import useMapHook from '../useMap';
 
 const ManageCustomMaps = ({zoomToCustomMap}) => {
   // console.log('Rendering ManageCustomMaps...');
 
   const customMaps = useSelector(state => state.map.customMaps);
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.connections.isOnline);
 
   const useCustomMap = useCustomMapHook();
@@ -27,8 +29,8 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   const mapTypeName = (source) => {
     let name;
     if (source === 'mapbox_styles') name = 'Mapbox Styles';
-    if (source === 'map_warper') name = 'Map Warper';
-    if (source === 'strabospot_mymaps') name = 'Strabospot My Maps';
+    if (source === 'map_warper') name = 'Map Warper (Not Supported)';
+    if (source === 'strabospot_mymaps') name = 'Strabo MyMaps';
     return name;
   };
 
@@ -50,18 +52,24 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
               : !isInternetReachable && !isConnected ? 'cloud-offline' : null}
             type={'ionicon'}
             color={PRIMARY_ACCENT_COLOR}
-            onPress={async () => {
-              let customMapWithBbox;
-              if (item.overlay) customMapWithBbox = await useCustomMap.saveCustomMap({...item, isViewable: true});
-              else customMapWithBbox = await useMap.setBasemap(item.id);
-              customMapWithBbox.bbox && setTimeout(() => zoomToCustomMap(customMapWithBbox.bbox), 1000);
-            }}
+            onPress={() => viewCustomMap(item)}
           />
         )}
         <ListItem.Chevron/>
       </ListItem>
     );
   };
+
+  const viewCustomMap = async (item) => {
+    if (item.overlay) {
+      useCustomMap.updateMap({...item, isViewable: true});
+      if (DEFAULT_MAPS.every(map => currentBasemap.id !== map.id)) await useMap.setBasemap();
+    }
+    else {
+      await useMap.setBasemap(item.id);
+    }
+    item?.bbox && setTimeout(() => zoomToCustomMap(item.bbox), 1000);
+  }
 
   return (
     <>

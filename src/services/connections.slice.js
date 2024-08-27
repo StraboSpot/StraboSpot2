@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialConnectionsState = {
   isOnline: {},
   databaseEndpoint: {
-    endpointURL: '',
+    url: '',
     isSelected: false,
     isVerified: false,
   },

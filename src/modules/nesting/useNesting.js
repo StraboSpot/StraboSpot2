@@ -154,21 +154,21 @@ const useNesting = () => {
     console.log('Getting Parent Spots...');
     let parentSpots = [];
     // Find active parent spots based on image basemap
-    if (thisSpot.properties.image_basemap) {
+    if (thisSpot?.properties.image_basemap) {
       const parentImageBasemapSpot = activeSpots.find(spot => spot.properties.images && spot.properties.images.find(
         image => image.id === thisSpot.properties.image_basemap));
-      parentSpots.push(parentImageBasemapSpot);
+      if (!isEmpty(parentImageBasemapSpot)) parentSpots.push(parentImageBasemapSpot);
     }
     // Find active parent spots based on strat section
     if (thisSpot.properties.strat_section_id) {
       const parentStratSectionSpot = activeSpots.find(
         spot => spot.properties?.sed?.strat_section?.strat_section_id === thisSpot.properties.strat_section_id);
-      parentSpots.push(parentStratSectionSpot);
+      if (!isEmpty(parentStratSectionSpot)) parentSpots.push(parentStratSectionSpot);
     }
     // Find active parent Spots not nested through geometry - nested directly in spot.properties.nesting
     const parentNonGeomSpot = activeSpots.find(
       spot => spot.properties.nesting && spot.properties.nesting.includes(thisSpot.properties.id));
-    if (parentNonGeomSpot) parentSpots.push(parentNonGeomSpot);
+    if (!isEmpty(parentNonGeomSpot)) parentSpots.push(parentNonGeomSpot);
     parentSpots = parentSpots.flat();
     // Find active parent spots based on geometry
     if (thisSpot.geometry) {

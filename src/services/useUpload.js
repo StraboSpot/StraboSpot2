@@ -99,7 +99,7 @@ const useUpload = () => {
         // console.log(msgText);
         // dispatch(removedLastStatusMessage());
         // dispatch(addedStatusMessage(msgText));
-        dispatch(clearedStatusMessages());
+        dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Uploading ${datasets.length} datasets...\n`));
         await makeNextDatasetRequest();
         dispatch(removedLastStatusMessage());
@@ -152,9 +152,8 @@ const useUpload = () => {
       console.log('Uploading Project Properties...');
       dispatch(addedStatusMessage('Uploading Project Properties...'));
       await useServerRequests.updateProject(project, user.encoded_login);
-      console.log('Finished Uploading Project Properties...');
-      // dispatch(removedLastStatusMessage());
-      // dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
     }
     catch (err) {
       console.error('Error Uploading Project Properties.', err);

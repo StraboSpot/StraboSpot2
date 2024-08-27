@@ -256,11 +256,11 @@ const useProject = () => {
       else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setIsBackupModalVisible(true));
       else if (action === ProjectActions.OVERWRITE) {
         if (selectedProject.source === 'device') {
+          dispatch(setSelectedProject({project: '', source: ''}));
           dispatch(clearedStatusMessages());
-          dispatch(setLoadingStatus({view: 'home', bool: true}));
+          dispatch(setIsStatusMessagesModalVisible(true));
           const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
           dispatch(setLoadingStatus({view: 'home', bool: false}));
-          toast.show('Project was loaded successfully!', {duration: 4000, type: 'success'});
           console.log('Done loading project', res);
         }
         else if (selectedProject.source === 'server') {

@@ -7,9 +7,9 @@ import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
-  const {endpointURL, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const baseUrl = endpointURL && isSelected ? endpointURL : STRABO_APIS.DB;
+  const baseUrl = url && isSelected ? url : STRABO_APIS.DB;
   const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
 
@@ -112,8 +112,8 @@ const useServerRequests = () => {
 
   const getMyMapsBbox = async (mapId) => {
     if (isSelected) {
-      console.log(endpointURL.replace('/db', '/geotiff/bbox/' + mapId));
-      const bboxEndpoint = endpointURL.replace('/db', '/geotiff/bbox/' + mapId);
+      console.log(url.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = url.replace('/db', '/geotiff/bbox/' + mapId);
       const response = await fetch(bboxEndpoint);
       return handleResponse(response);
     }
@@ -387,7 +387,7 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const myMapsEndpoint = isSelected ? endpointURL.replace('/db', '/strabotiles') : tilehost;
+      const myMapsEndpoint = isSelected ? url.replace('/db', '/strabotiles') : tilehost;
       const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);

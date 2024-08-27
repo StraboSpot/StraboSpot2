@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, TextInput, View} from 'react-native';
+import {Animated, Platform, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import Dialog from './Dialog';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -13,25 +14,20 @@ import {
   setIsProjectLoadComplete,
   setIsProjectLoadSelectionModalVisible,
   setLoadingStatus,
-  setModalVisible,
 } from './home.slice';
 import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {
-  BackupModal,
   ErrorModal,
   InitialProjectLoadModal,
   StatusModal,
-  UploadModal,
-  UploadProgressModal,
   WarningModal,
 } from './modals';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
-import * as Helpers from '../../shared/Helpers';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -42,14 +38,12 @@ import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import {MAP_MODES} from '../maps/maps.constants';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapLocationHook from '../maps/useMapLocation';
-import {setNotebookPageVisible, setNotebookPanelVisible} from '../notebook-panel/notebook.slice';
-import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
+import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
+import {PAGE_KEYS} from '../page/page.constants';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 import {logout} from '../user/userProfile.slice';
-
-const {State: TextInputState} = TextInput;
 
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
@@ -69,8 +63,6 @@ const Home = ({navigation, route}) => {
   const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isHomeLoading = useSelector(state => state.home.loading.home);
-  const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
-  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
   const isOfflineMapModalVisible = useSelector(state => state.home.isOfflineMapModalVisible);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
@@ -143,20 +135,6 @@ const Home = ({navigation, route}) => {
   }, [userEmail, userName]);
 
   useEffect(() => {
-    // console.log('UE Home [modalVisible]', modalVisible);
-    if (Platform.OS === 'ios') {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
-      // console.log('Keyboard listeners added to HOME');
-      return function cleanup() {
-        Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome).remove();
-        Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome).remove();
-        // console.log('Home Keyboard Listeners Removed');
-      };
-    }
-  }, [modalVisible]);
-
-  useEffect(() => {
     // console.log('UE Home [projectLoadComplete]', projectLoadComplete);
     if (projectLoadComplete) {
       mapComponentRef.current?.zoomToSpotsExtent();
@@ -170,10 +148,6 @@ const Home = ({navigation, route}) => {
     if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current?.endMapMeasurement();
   }, [mapMode]);
 
-  const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
-    animatedValueTextInputs);
-
-  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(animatedValueTextInputs);
 
   const cancelEdits = async () => {
     await mapComponentRef.current?.cancelEdits();
@@ -187,13 +161,6 @@ const Home = ({navigation, route}) => {
 
   const clickHandler = async (name, value) => {
     switch (name) {
-      // case 'search':
-      //   toast.show(`Still in the works. \n The ${name.toUpperCase()} Shortcut button in the  will be functioning soon!`);
-      //   break;
-      case 'home':
-        toggleHomeDrawerButton();
-        break;
-
       // Map Actions
       case MAP_MODES.DRAW.POINT:
       case MAP_MODES.DRAW.LINE:
@@ -230,7 +197,7 @@ const Home = ({navigation, route}) => {
         break;
       case 'saveMap':
         dispatch(setIsOfflineMapsModalVisible(!isOfflineMapModalVisible));
-        toggleHomeDrawerButton();
+        closeMainMenuPanel();
         break;
       case 'addTag':
         // console.log(`${name}`, ' was clicked');
@@ -263,6 +230,7 @@ const Home = ({navigation, route}) => {
   };
 
   const closeMainMenuPanel = () => {
+    console.log('Closing Main Menu Panel...');
     dispatch(setIsMainMenuPanelVisible(false));
     dispatch(setMenuSelectionPage({name: null}));
     SMALL_SCREEN && dispatch(setSidePanelVisible(false));
@@ -271,13 +239,10 @@ const Home = ({navigation, route}) => {
   };
 
   const closeNotebookPanel = () => {
-    // console.log('Closing Notebook...');
+    console.log('Closing Notebook Panel...');
     animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
-    dispatch(setNotebookPanelVisible(false));
-    if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
-      dispatch(setModalVisible({modal: null}));
-    }
+    setTimeout(() => dispatch(setIsNotebookPanelVisible(false)), 1000);
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -328,29 +293,17 @@ const Home = ({navigation, route}) => {
     }
   };
 
-  const modalHandler = (modalKey) => {
-    if (isNotebookPanelVisible || SMALL_SCREEN) {
-      if (isNotebookPanelVisible) closeNotebookPanel();
-      if (Object.values(MODAL_KEYS.SHORTCUTS).includes(modalKey)) dispatch(clearedSelectedSpots());
-      dispatch(setModalVisible({modal: modalKey}));
-    }
-    else {
-      openNotebookPanel(modalKey);
-      if (modalKey !== PAGE_KEYS.NOTES) dispatch(setModalVisible({modal: modalKey}));
-    }
-  };
-
   const openMainMenuPanel = () => {
+    console.log('Opening Main Menu Panel...');
     dispatch(setIsMainMenuPanelVisible(true));
     animateDrawer(animatedValueMainMenuDrawer, 0);
     animateDrawer(animatedValueLeftSide, MAIN_MENU_DRAWER_WIDTH);
   };
 
   const openNotebookPanel = (pageView) => {
-    // console.log('Opening Notebook', pageView, '...');
-    if (modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) dispatch(setModalVisible({modal: null}));
+    console.log('Opening Notebook Panel...');
     dispatch(setNotebookPageVisible(pageView || PAGE_KEYS.OVERVIEW));
-    dispatch(setNotebookPanelVisible(true));
+    dispatch(setIsNotebookPanelVisible(true));
     animateDrawer(animatedValueNotebookDrawer, 0);
     animateDrawer(animatedValueRightSide, -NOTEBOOK_DRAWER_WIDTH);
     if (SMALL_SCREEN) {
@@ -367,23 +320,6 @@ const Home = ({navigation, route}) => {
   };
 
   const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
-
-  const renderFloatingView = () => {
-    const modal = MODALS.find(m => m.key === modalVisible);
-    if (modal?.modal_component) {
-      const ModalDisplayed = modal.modal_component;
-      if (modalVisible && !Object.keys(MODAL_KEYS.SHORTCUTS).find(s => s.key === modalVisible)) {
-        return (
-          <ModalDisplayed
-            modalKey={modal.key}
-            onPress={modalHandler}
-            zoomToCurrentLocation={zoomToCurrentLocation}
-          />
-        );
-      }
-      else return <ModalDisplayed modalKey={modal.key} onPress={modalHandler}/>;
-    }
-  };
 
   const renderVersionCheckLabel = () => (
     <View style={homeStyles.versionPositionHome}>
@@ -449,13 +385,8 @@ const Home = ({navigation, route}) => {
     console.log(dialog, 'is set to', dialogs[dialog]);
   };
 
-  const toggleHomeDrawerButton = () => {
-    if (isMainMenuPanelVisible) closeMainMenuPanel();
-    else openMainMenuPanel();
-  };
-
   const onLogout = () => {
-    toggleHomeDrawerButton();
+    closeMainMenuPanel();
     closeNotebookPanel();
     dispatch(logout());
   };
@@ -483,13 +414,13 @@ const Home = ({navigation, route}) => {
           animatedValueLeftSide={animatedValueLeftSide}
           areEditButtonsVisible={buttons.editButtonsVisible}
           clickHandler={clickHandler}
+          closeMainMenuPanel={closeMainMenuPanel}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           dialogs={dialogs}
           distance={distance}
           drawButtonsVisible={buttons.drawButtonsVisible}
           endMeasurement={endMeasurement}
-          isMainMenuPanelVisible={isMainMenuPanelVisible}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
           mapComponentRef={mapComponentRef}
@@ -503,7 +434,6 @@ const Home = ({navigation, route}) => {
           showUpdateLabel={showUpdateLabel}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
-          toggleHomeDrawer={toggleHomeDrawerButton}
         />
       ) : (
         <HomeView
@@ -512,6 +442,7 @@ const Home = ({navigation, route}) => {
           animateRightSide={animateRightSide}
           areEditButtonsVisible={buttons.editButtonsVisible}
           clickHandler={clickHandler}
+          closeMainMenuPanel={closeMainMenuPanel}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           dialogs={dialogs}
@@ -528,11 +459,10 @@ const Home = ({navigation, route}) => {
           setDistance={setDistance}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
-          toggleHomeDrawer={toggleHomeDrawerButton}
         />
       )}
       {/*Modals for Home Page*/}
-      <BackupModal/>
+      {/*<BackupModal/>*/}
       {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
@@ -548,13 +478,18 @@ const Home = ({navigation, route}) => {
         openMainMenuPanel={openMainMenuPanel}
         openUrl={openStraboSpotURL}
       />
-      <UploadModal toggleHomeDrawer={toggleHomeDrawerButton}/>
-      <UploadProgressModal/>
       <WarningModal/>
       {/*------------------------*/}
       <LoadingSpinner isLoading={isHomeLoading}/>
       {MainMenu}
-      {modalVisible && renderFloatingView()}
+      {modalVisible && (
+        <Dialog
+          animatedValueTextInputs={animatedValueTextInputs}
+          closeNotebookPanel={closeNotebookPanel}
+          openNotebookPanel={openNotebookPanel}
+          zoomToCurrentLocation={zoomToCurrentLocation}
+        />
+      )}
       {mapComponentRef.current && isOfflineMapModalVisible && <SaveMapsModal map={mapComponentRef.current}/>}
     </Animated.View>
   );

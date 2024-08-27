@@ -109,6 +109,9 @@ const mapsSlice = createSlice({
     setZoom(state, action) {
       state.zoom = action.payload;
     },
+    updateCustomMap(state, action) {
+      state.customMaps[action.payload.id] = action.payload;
+    },
   },
 });
 
@@ -136,6 +139,7 @@ export const {
   setVertexEndCoords,
   setVertexStartCoords,
   setZoom,
+  updateCustomMap,
 } = mapsSlice.actions;
 
 export default mapsSlice.reducer;

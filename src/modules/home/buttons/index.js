@@ -2,6 +2,7 @@ export {default as ActionButtonsSmallScreen} from './ActionButtonsSmallScreen';
 export {default as DrawActionButtons} from './DrawActionButtons';
 export {default as EditCancelSaveButtons} from './EditCancelSaveButtons';
 export {default as LeftSideButtons} from './LeftSideButtons';
+export {default as MainMenuButton} from './MainMenuButton';
 export {default as MapActionButtons} from './MapActionButtons';
 export {default as RightSideButtons} from './RightSideButtons';
 export {default as ShortcutButtons} from './ShortcutButtons';

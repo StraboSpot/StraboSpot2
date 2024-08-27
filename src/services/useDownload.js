@@ -188,7 +188,7 @@ const useDownload = () => {
       dispatch(addedSpotsFromServer(spotsToSave));
       dispatch(addedDatasets(datasetsObjToSave));
       dispatch(addedCustomMapsFromBackup(customMapsToSave));
-      dispatch(addedStatusMessage('Project Loaded!'));
+      dispatch(addedStatusMessage('Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }

@@ -105,9 +105,6 @@ const homeStyles = StyleSheet.create({
     top: 10,
     zIndex: -1,
   },
-  homeIconSmallScreen: {
-    height: 30,
-  },
   iconButton: {
     top: 5,
   },

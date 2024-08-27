@@ -5,7 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {Button, Header, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {EditCancelSaveButtons, ShortcutButtons, ActionButtonsSmallScreen} from './buttons';
+import {ActionButtonsSmallScreen, EditCancelSaveButtons, MainMenuButton, ShortcutButtons} from './buttons';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import * as themes from '../../shared/styles.constants';
@@ -20,13 +20,13 @@ const HomeViewSmallScreen = ({
                                animateLeftSide,
                                areEditButtonsVisible,
                                clickHandler,
+                               closeMainMenuPanel,
                                closeNotebookPanel,
                                dialogClickHandler,
                                dialogs,
                                distance,
                                drawButtonsVisible,
                                endMeasurement,
-                               isMainMenuPanelVisible,
                                isSelectingForStereonet,
                                isSelectingForTagging,
                                mapComponentRef,
@@ -40,7 +40,6 @@ const HomeViewSmallScreen = ({
                                showUpdateLabel,
                                startEdit,
                                toggleDialog,
-                               toggleHomeDrawer,
                              }) => {
   console.log('Rendering HomeViewSmallScreen...');
 
@@ -71,6 +70,8 @@ const HomeViewSmallScreen = ({
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         barStyle={'dark-content'}
+        containerStyle={{marginVertical: -10}}
+        centerContainerStyle={{justifyContent: 'center'}}
         leftComponent={isShowingSpotNavigator && !isNotebookPanelVisible ? (
           <Icon
             color={themes.PRIMARY_TEXT_COLOR}
@@ -78,24 +79,9 @@ const HomeViewSmallScreen = ({
             onPress={toggleSpotNavigator}
             type={'ionicon'}
           />
-        ) : (
-          isMainMenuPanelVisible ? (
-            <IconButton
-              source={require('../../assets/icons/Home_pressed.png')}
-              onPress={toggleHomeDrawer}
-              imageStyle={homeStyles.homeIconSmallScreen}
-            />
-          ) : (
-            <IconButton
-              source={require('../../assets/icons/Home.png')}
-              onPress={toggleHomeDrawer}
-              imageStyle={homeStyles.homeIconSmallScreen}
-            />
-          )
-        )}
+        ) : <MainMenuButton closeMainMenuPanel={closeMainMenuPanel} openMainMenuPanel={openMainMenuPanel}/>}
         centerComponent={
           <Button
-            buttonStyle={{padding: 0}}
             icon={!isShowingSpotNavigator && (
               <Icon
                 color={themes.PRIMARY_TEXT_COLOR}

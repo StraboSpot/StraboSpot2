@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Linking, Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
@@ -16,28 +16,26 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  setIsBackupModalVisible,
   setIsErrorMessagesModalVisible,
-  setIsProgressModalVisible,
-  setIsUploadModalVisible,
 } from '../home/home.slice';
-import {UploadModal} from '../home/modals';
 import overlayStyles from '../home/overlays/overlay.styles';
+import {BackupModal, UploadModal} from '../project/modals/index';
 
 const UploadBackAndExport = () => {
-
   const dispatch = useDispatch();
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
   const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
 
+  const [isBackupModalVisible, setIsBackupModalVisible] =  useState(false);
+  const [isUploadModalVisible, setIsUploadModalVisible] =  useState(false);
   const useDevice = useDeviceHook();
   const useUploadImages = useUploadImagesHook();
 
   const checkForActiveDatasets = () => {
     if (activeDatasets.length > 0) {
       dispatch(setSelectedProject({source: '', project: ''}));
-      dispatch(setIsBackupModalVisible(true));
+      setIsBackupModalVisible(true);
     }
     else {
       dispatch(clearedStatusMessages());
@@ -71,7 +69,7 @@ const UploadBackAndExport = () => {
             titleStyle={commonStyles.standardButtonText}
             onPress={() => {
               dispatch(setSelectedProject({source: '', project: ''}));
-              dispatch(setIsUploadModalVisible(true));
+              setIsUploadModalVisible(true);
             }}
             disabled={!isOnline.isConnected}
           />
@@ -156,6 +154,14 @@ const UploadBackAndExport = () => {
           </View>
         )
       }
+      <BackupModal
+        visible={isBackupModalVisible}
+        closeModal={() => setIsBackupModalVisible(false)}
+      />
+      <UploadModal
+        visible={isUploadModalVisible}
+        closeModal={() => setIsUploadModalVisible(false)}
+      />
       {/*<Divider sectionText={'export'}/>*/}
       {/*{renderExportButtons()}*/}
       {/*<Divider sectionText={'restore project from backup'}/>*/}
