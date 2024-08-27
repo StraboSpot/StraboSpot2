@@ -5,9 +5,9 @@ import moment from 'moment';
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useExportHook from '../../../services/useExport.web';
+import useExportHook from '../../../services/useExport';
 import {isEmpty} from '../../../shared/Helpers';
-import LottieAnimations from '../../../utils/animations/LottieAnimations.web';
+import LottieAnimations from '../../../utils/animations/LottieAnimations';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import MenuModal from '../MenuModal';
 
