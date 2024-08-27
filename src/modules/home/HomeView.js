@@ -2,15 +2,14 @@ import React from 'react';
 import {Animated} from 'react-native';
 
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
 
 import {LeftSideButtons, RightSideButtons} from './buttons';
 import DeviceInfo from './DeviceInfo';
 import uiStyles from '../../shared/ui/ui.styles';
 import Map from '../maps/Map';
 import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
+import notebookStyles from '../notebook-panel/notebook.styles';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
 
 const HomeView = ({
                     animateLeftSide,
@@ -38,13 +37,6 @@ const HomeView = ({
                   }) => {
   console.log('Rendering HomeView...');
 
-  const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
-
-  const toggleNotebookPanel = () => {
-    if (isNotebookPanelVisible) closeNotebookPanel();
-    else openNotebookPanel();
-  };
-
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
       <Map
@@ -64,13 +56,13 @@ const HomeView = ({
         animateRightSide={animateRightSide}
         areEditButtonsVisible={areEditButtonsVisible}
         clickHandler={clickHandler}
+        closeNotebookPanel={closeNotebookPanel}
         distance={distance}
         drawButtonsVisible={drawButtonsVisible}
         endMeasurement={endMeasurement}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}
         openNotebookPanel={openNotebookPanel}
-        toggleNotebookPanel={toggleNotebookPanel}
       />
 
       <LeftSideButtons
