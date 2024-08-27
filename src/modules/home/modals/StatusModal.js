@@ -85,7 +85,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
             )}
 
           </View>
-          {statusMessages.includes('Project Backup Complete!') && (
+          {statusMessages.includes('Complete!') && (
             <Button
               title={'Export Project?'}
               containerStyle={{padding: 10}}
