@@ -26,6 +26,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
   const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -38,7 +39,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
 
   useEffect(() => {
     console.log('UE NotebookContent [pageVisible, spot]', pageVisible, spot);
-    dispatch(setMultipleFeaturesTaggingEnabled(false));
+    if (isMultipleFeaturesTaggingEnabled) dispatch(setMultipleFeaturesTaggingEnabled(false));
   }, [pageVisible, spot]);
 
   const openPage = (key) => {
