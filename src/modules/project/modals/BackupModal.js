@@ -26,10 +26,15 @@ const BackupModal = ({closeModal, visible}) => {
     if (!isEmpty(currentProject) && visible) {
       setBackupFileName(moment(new Date()).format('YYYY-MM-DD_hmma') + '_' + currentProject.description.project_name);
     }
-    setBackingUpStatus('');
   }, [currentProject, visible]);
 
   const fileName = backupFileName.replace(/\s/g, '');
+
+  const handleClosePress = () => {
+    setBackingUpStatus('');
+    setModalTitle('Confirm or Change Folder Name');
+    closeModal();
+  };
 
   const initiateBackup = async () => {
     try {
@@ -53,6 +58,15 @@ const BackupModal = ({closeModal, visible}) => {
         doesLoop={backingUpStatus === 'inProgress'}
       />
       <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
+      <View style={overlayStyles.buttonContainer}>
+        <Button
+          title={'OK'}
+          type={'clear'}
+          titleStyle={overlayStyles.buttonText}
+          disabled={backingUpStatus !== 'complete'}
+          onPress={handleClosePress}
+        />
+      </View>
     </View>
   );
 
@@ -61,8 +75,6 @@ const BackupModal = ({closeModal, visible}) => {
       modalTitle={modalTitle}
       visible={visible}
       onPress={closeModal}
-      disabled={backupFileName === ''}
-      showOK={backingUpStatus === 'complete'}
       overlayStyle={{maxHeight: 400}}
     >
       {backingUpStatus === '' ? (
@@ -88,6 +100,7 @@ const BackupModal = ({closeModal, visible}) => {
               <Button
                 title={'BACKUP'}
                 type={'clear'}
+                disabled={backupFileName.trim() === ''}
                 titleStyle={overlayStyles.buttonText}
                 onPress={initiateBackup}
               />
@@ -95,7 +108,7 @@ const BackupModal = ({closeModal, visible}) => {
                 title={'CANCEL'}
                 type={'clear'}
                 titleStyle={overlayStyles.buttonText}
-                onPress={closeModal}
+                onPress={handleClosePress}
               />
             </View>
           </View>
