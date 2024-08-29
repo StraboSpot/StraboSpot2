@@ -29,6 +29,11 @@ const spotSlice = createSlice({
       state.spots = {};
       state.recentViews = [];
     },
+    createdSpots(state, action) {
+      let spotsObj = {};
+      action.payload.forEach((s) => {spotsObj = {...spotsObj, [s.properties.id]: s};});
+      state.spots = {...state.spots, ...spotsObj};
+    },
     deletedSpot(state, action) {
       const {[action.payload]: deletedSpot, ...remainingSpots} = state.spots;
       console.log('DELETED Spot:', action.payload, deletedSpot);
@@ -128,6 +133,7 @@ export const {
   addedSpotsFromServer,
   clearedSelectedSpots,
   clearedSpots,
+  createdSpots,
   deletedSpot,
   editedOrCreatedSpot,
   editedSpotImage,

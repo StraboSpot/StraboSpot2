@@ -19,6 +19,7 @@ import useImportHook from '../../services/useImport';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -203,8 +204,18 @@ const useProject = () => {
     return datasetIdFound;
   };
 
+  // Get selected dataset, if none selected make one
   const getSelectedDatasetFromId = () => {
-    return selectedDatasetId ? datasets[selectedDatasetId] : 'Unknown';
+    let selectedDataset = datasets[selectedDatasetId];
+    if (isEmpty(selectedDataset)) {
+      alert('No Selected Dataset. Creating a new Default Dataset.');
+      selectedDataset = useProject.createDataset();
+      dispatch(addedDataset(selectedDataset));
+      dispatch(setActiveDatasets({bool: true, dataset: selectedDataset.id}));
+      dispatch(setSelectedDataset(selectedDataset.id));
+    }
+    console.log('Selected Dataset', selectedDataset);
+    return selectedDataset;
   };
 
   const initializeNewProject = async (descriptionData) => {

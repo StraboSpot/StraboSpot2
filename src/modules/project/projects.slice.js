@@ -75,6 +75,14 @@ const projectSlice = createSlice({
       state.datasets = {...state.datasets, [datasetId]: dataset};
       state.project.modified_timestamp = timestamp;
     },
+    addedNewSpotIdsToDataset(state, action) {
+      const {datasetId, spotIds} = action.payload;
+      const timestamp = Date.now();
+      const spotIdsInDataset = [...state.datasets[action.payload.datasetId].spotIds || [], ...spotIds];
+      const dataset = {...state.datasets[datasetId], modified_timestamp: timestamp, spotIds: spotIdsInDataset};
+      state.datasets = {...state.datasets, [datasetId]: dataset};
+      state.project.modified_timestamp = timestamp;
+    },
     addedTagToSelectedSpot(state, action) {
       state.addTagToSelectedSpot = action.payload;
       state.project.modified_timestamp = Date.now();
@@ -265,6 +273,7 @@ export const {
   addedProjectDescription,
   addedNeededImagesToDataset,
   addedNewSpotIdToDataset,
+  addedNewSpotIdsToDataset,
   addedTagToSelectedSpot,
   addedTemplates,
   clearedDatasets,
