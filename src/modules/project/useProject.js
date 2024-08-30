@@ -200,11 +200,18 @@ const useProject = () => {
   const getSelectedDatasetFromId = () => {
     let selectedDataset = datasets[selectedDatasetId];
     if (isEmpty(selectedDataset)) {
-      alert('No Selected Dataset. Creating a new Default Dataset.');
-      selectedDataset = useProject.createDataset();
-      dispatch(addedDataset(selectedDataset));
-      dispatch(setActiveDatasets({bool: true, dataset: selectedDataset.id}));
-      dispatch(setSelectedDataset(selectedDataset.id));
+      const datasetToSelect = Object.values(datasets)?.[0];
+      if (!isEmpty(datasetToSelect) && datasetToSelect.id) {
+        dispatch(setActiveDatasets({bool: true, dataset: datasetToSelect.id}));
+        dispatch(setSelectedDataset(datasetToSelect.id));
+      }
+      else {
+        alert('No Selected Dataset. Creating a new Default Dataset.');
+        selectedDataset = useProject.createDataset();
+        dispatch(addedDataset(selectedDataset));
+        dispatch(setActiveDatasets({bool: true, dataset: selectedDataset.id}));
+        dispatch(setSelectedDataset(selectedDataset.id));
+      }
     }
     console.log('Selected Dataset', selectedDataset);
     return selectedDataset;
