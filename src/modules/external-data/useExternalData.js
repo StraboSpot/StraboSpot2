@@ -13,6 +13,7 @@ import {
 } from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
+import alert from '../../shared/ui/alert';
 
 const useExternalData = () => {
   const dispatch = useDispatch();
@@ -148,7 +149,7 @@ const useExternalData = () => {
       else {
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('URL is already in list.'));
-        dispatch(setIsStatusMessagesModalVisible(true));
+        alert('URL is already in list.');
       }
     }
     else throw Error();

@@ -17,6 +17,7 @@ import {setBackupFileName} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useExport = () => {
+  console.log('useExport Render')
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
   const mapNamesDb = useSelector(state => state.offlineMap.offlineMaps);
@@ -35,9 +36,9 @@ const useExport = () => {
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
-  useEffect(() => {
-    console.log(backupFileName);
-  }, [backupFileName]);
+  // useEffect(() => {
+  //   console.log(backupFileName);
+  // }, [backupFileName]);
 
   let dataForExport = {
     mapNamesDb: mapNamesDb,

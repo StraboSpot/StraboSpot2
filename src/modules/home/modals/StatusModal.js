@@ -52,7 +52,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
       title={'Status'}
       isVisible={visible || isStatusMessagesModalVisible}
       closeModal={() => dispatch(setIsStatusMessagesModalVisible(false))}
-      showConfirmButton={!isModalLoading && selectedProject.source === '' && statusMessages.includes(('Complete!'))}
+      showConfirmButton={!isModalLoading && selectedProject.source === ''}
       onConfirmPress={() => dispatch(setIsStatusMessagesModalVisible(false))}
     >
       <View>
