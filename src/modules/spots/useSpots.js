@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {createdSpots, deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
+import {deletedSpot, editedOrCreatedSpot, editedOrCreatedSpots, setSelectedSpot} from './spots.slice';
 import {getNewCopyId, getNewId, isEmpty, isEqual, sleep} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -147,7 +147,7 @@ const useSpots = () => {
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpots[0].properties.id]));
     const selectedDataset = useProject.getSelectedDatasetFromId();
     dispatch(addedNewSpotIdsToDataset({datasetId: selectedDataset.id, spotIds: newSpots.map(s => s.properties.id)}));
-    dispatch(createdSpots(newSpots));
+    dispatch(editedOrCreatedSpots(newSpots));
     console.log('Finished creating new random Spot. All Spots: ', spots);
   };
 

@@ -5,7 +5,7 @@ import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 import alert from '../../../shared/ui/alert';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
 import useSedValidationHook from '../../sed/useSedValidation';
-import {editedOrCreatedSpot, editedSpots} from '../../spots/spots.slice';
+import {editedOrCreatedSpot, editedOrCreatedSpots} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 
 const useStratSectionCalculations = () => {
@@ -255,7 +255,7 @@ const useStratSectionCalculations = () => {
       if (extent[1] >= cutoff) movedSpots.push(moveSpotByPixels(spot, pixels));
     });
     console.log('Dispatching', movedSpots);
-    dispatch(editedSpots(movedSpots));
+    dispatch(editedOrCreatedSpots(movedSpots));
   };
 
   const recalculateIntervalGeometry = (spot) => {

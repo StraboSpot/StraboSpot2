@@ -29,11 +29,6 @@ const spotSlice = createSlice({
       state.spots = {};
       state.recentViews = [];
     },
-    createdSpots(state, action) {
-      let spotsObj = {};
-      action.payload.forEach(s => spotsObj = {...spotsObj, [s.properties.id]: s});
-      state.spots = {...state.spots, ...spotsObj};
-    },
     deletedSpot(state, action) {
       const {[action.payload]: deletedSpot, ...remainingSpots} = state.spots;
       console.log('DELETED Spot:', action.payload, deletedSpot);
@@ -65,6 +60,18 @@ const spotSlice = createSlice({
       }
       else if (state.selectedSpot.properties.id === modifiedSpot.properties.id) {
         state.selectedSpot = modifiedSpot;
+        console.log('UPDATED Selected Spot:', state.selectedSpot);
+      }
+    },
+    editedOrCreatedSpots(state, action) {
+      const spotsWithTimestamp = action.payload.map(s => (
+        {...s, properties: {...s.properties, modified_timestamp: Date.now()}}
+      ));
+      const spots = Object.assign({}, ...spotsWithTimestamp.map(spot => ({[spot.properties.id]: spot})));
+      state.spots = {...state.spots, ...spots};
+      console.log('UPDATED Spots:', state.spots, 'in Existing Spots:', current(state));
+      if (!isEmpty(state.selectedSpot) && Object.keys(spots).includes(state.selectedSpot.properties.id)) {
+        state.selectedSpot = spots[state.selectedSpot.properties.id];
         console.log('UPDATED Selected Spot:', state.selectedSpot);
       }
     },
@@ -100,18 +107,6 @@ const spotSlice = createSlice({
       state.selectedSpot.properties.modified_timestamp = Date.now();
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },
-    editedSpots(state, action) {
-      const spotsWithTimestamp = action.payload.map(s => (
-        {...s, properties: {...s.properties, modified_timestamp: Date.now()}}
-      ));
-      const spots = Object.assign({}, ...spotsWithTimestamp.map(spot => ({[spot.properties.id]: spot})));
-      state.spots = {...state.spots, ...spots};
-      console.log('UPDATED Spots:', state.spots, 'in Existing Spots:', current(state));
-      if (!isEmpty(state.selectedSpot) && Object.keys(spots).includes(state.selectedSpot.properties.id)) {
-        state.selectedSpot = spots[state.selectedSpot.properties.id];
-        console.log('UPDATED Selected Spot:', state.selectedSpot);
-      }
-    },
     resetSpotState() {
       return initialSpotState;
     },
@@ -143,14 +138,13 @@ export const {
   addedSpotsFromServer,
   clearedSelectedSpots,
   clearedSpots,
-  createdSpots,
   deletedSpot,
   deletedSpots,
   editedOrCreatedSpot,
+  editedOrCreatedSpots,
   editedSpotImage,
   editedSpotImages,
   editedSpotProperties,
-  editedSpots,
   resetSpotState,
   setIntersectedSpotsForTagging,
   setSelectedAttributes,
