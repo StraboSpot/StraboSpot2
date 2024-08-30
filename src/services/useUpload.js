@@ -13,6 +13,7 @@ import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
 
 const useUpload = () => {
+  let projectUploadStatus = {};
   const datasetsNotUploaded = [];
 
   const dispatch = useDispatch();
@@ -29,11 +30,13 @@ const useUpload = () => {
     Platform.OS !== 'web' && KeepAwake.activate();
     try {
       await uploadProject();
-      const uploadStatus = await uploadDatasets();
-      await useUploadImages.uploadImages();
+      await uploadDatasets();
+      const imageStatus = await useUploadImages.initializeImageUpload();
+      projectUploadStatus = {...projectUploadStatus, images: imageStatus};
+      // projectUploadStatus = {...projectUploadStatus, images: imageStatus};
       dispatch(setIsImageTransferring(false));
       Platform.OS !== 'web' && KeepAwake.deactivate();
-      return {status: uploadStatus, datasets: datasetsNotUploaded};
+      return projectUploadStatus;
     }
     catch (err) {
       dispatch(addedStatusMessage(`\nUpload Failed!\n\n ${err}`));
@@ -102,14 +105,18 @@ const useUpload = () => {
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Uploading ${datasets.length} datasets...\n`));
         await makeNextDatasetRequest();
+        // projectUploadStatus = {...projectUploadStatus, datasets: true};
+        projectUploadStatus = {...projectUploadStatus, datasets: 'uploaded'};
         dispatch(removedLastStatusMessage());
         console.log('Completed Uploading Datasets!');
-        dispatch(addedStatusMessage(`Finished uploading ${datasets.length} Dataset${(datasets.length === 1 ? '!' : 's!')}\n`));
-        return 'complete';
+        dispatch(
+          addedStatusMessage(`Finished uploading ${datasets.length} Dataset${(datasets.length === 1 ? '!' : 's!')}\n`));
       }
+      return 'success';
     }
     catch (err) {
       console.error('Error uploading Datasets', err);
+      // projectUploadStatus = {...projectUploadStatus, datasets: false};
       throw Error(err);
     }
   };
@@ -152,15 +159,19 @@ const useUpload = () => {
       console.log('Uploading Project Properties...');
       dispatch(addedStatusMessage('Uploading Project Properties...'));
       await useServerRequests.updateProject(project, user.encoded_login);
+      // projectUploadStatus = {...projectUploadStatus, project: true};
+      // projectUploadStatus = {...projectUploadStatus, project: 'uploaded'};
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
+      return 'success';
     }
     catch (err) {
       console.error('Error Uploading Project Properties.', err);
-      dispatch(clearedStatusMessages());
-      let errMessage = 'Uploading Project Properties.';
-      errMessage = err ? errMessage + '\n\n' + err + '\n\n' : errMessage;
-      throw Error(errMessage);
+      // projectUploadStatus = {...projectUploadStatus, project: false};
+      // dispatch(clearedStatusMessages());
+      // let errMessage = 'Uploading Project Properties.';
+      // errMessage = err ? errMessage + '\n\n' + err + '\n\n' : errMessage;
+      throw Error(err);
     }
   };
 
@@ -194,7 +205,7 @@ const useUpload = () => {
       }
     }
     catch (err) {
-      // console.error(dataset.name + ': Error Uploading Project Spots.', err);
+      console.error(dataset.name + ': Error Uploading Project Spots.', err);
       // dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`${dataset.name}: Error Uploading Spots.\n\n ${err}\n`));
       // Added this below to handle spots that were getting added to 2 datasets, which the server will not accept
@@ -210,11 +221,11 @@ const useUpload = () => {
   };
 
   return {
-    initializeUpload: initializeUpload,
-    uploadDatasets: uploadDatasets,
-    uploadFromWeb: uploadFromWeb,
-    uploadProfile: uploadProfile,
-    uploadProject: uploadProject,
+    initializeUpload,
+    uploadDatasets,
+    uploadFromWeb,
+    uploadProfile,
+    uploadProject,
   };
 };
 

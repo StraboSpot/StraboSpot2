@@ -19,18 +19,20 @@ import {
   setIsErrorMessagesModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import {BackupModal, UploadModal} from '../project/modals/index';
+import {BackupModal, UploadModal, UploadProgressModal} from '../project/modals/index';
 
 const UploadBackAndExport = () => {
+  console.log('UploadBackAndExport Render');
+
   const dispatch = useDispatch();
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
   const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
 
-  const [isBackupModalVisible, setIsBackupModalVisible] =  useState(false);
-  const [isUploadModalVisible, setIsUploadModalVisible] =  useState(false);
+  const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
+  const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
+  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const useDevice = useDeviceHook();
-  const useUploadImages = useUploadImagesHook();
 
   const checkForActiveDatasets = () => {
     if (activeDatasets.length > 0) {
@@ -48,16 +50,6 @@ const UploadBackAndExport = () => {
     const url = 'https://strabospot.org/files/helpFiles/Moving_Project_Backups_Out_of%20StraboSpot2.pdf';
     const canOpen = await Linking.canOpenURL(url);
     canOpen ? await Linking.openURL(url) : alert('Need to be online');
-  };
-
-  const uploadImagesOnly = async () => {
-    try {
-      dispatch(setIsProgressModalVisible(true));
-      await useUploadImages.initializeImageUpload();
-    }
-    catch (err) {
-      console.error('Error uploading some images', err);
-    }
   };
 
   const renderUploadAndBackupButtons = () => {
@@ -86,25 +78,6 @@ const UploadBackAndExport = () => {
           titleStyle={commonStyles.standardButtonText}
           onPress={() => checkForActiveDatasets()}
         />
-        {__DEV__
-          && <View>
-            <Button
-              title={'Upload Images Only'}
-              buttonStyle={commonStyles.standardButton}
-              titleStyle={commonStyles.standardButtonText}
-              onPress={uploadImagesOnly}
-            />
-            {/*<Button*/}
-            {/*  title={'Ready Images Dir'}*/}
-            {/*  buttonStyle={commonStyles.standardButton}*/}
-            {/*  titleStyle={commonStyles.standardButtonText}*/}
-            {/*  onPress={async () => {*/}
-            {/*    console.log(await useDevice.readDirectory(APP_DIRECTORIES.IMAGES));*/}
-            {/*  }}*/}
-            {/*/>*/}
-          </View>
-
-        }
         {Platform.OS === 'ios'
           && (
             <View style={{padding: 10}}>
@@ -161,6 +134,9 @@ const UploadBackAndExport = () => {
       <UploadModal
         visible={isUploadModalVisible}
         closeModal={() => setIsUploadModalVisible(false)}
+      />
+      <UploadProgressModal
+        isProgressModalVisible={isProgressModalVisible}
       />
       {/*<Divider sectionText={'export'}/>*/}
       {/*{renderExportButtons()}*/}

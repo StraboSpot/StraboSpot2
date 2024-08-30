@@ -15,11 +15,11 @@ import LottieAnimation from '../../../utils/animations/LottieAnimations.web';
 import {addedStatusMessage, setIsProgressModalVisible} from '../../home/home.slice';
 import {setIsImageTransferring, setSelectedProject} from '../projects.slice';
 
-const UploadProgressModal = ({}) => {
+const UploadProgressModal = ({isProgressModalVisible}) => {
 
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
-  const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
+  // const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
   const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
@@ -32,10 +32,6 @@ const UploadProgressModal = ({}) => {
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
   const useUpload = useUploadHook();
-
-  useEffect(() => {
-    // if (isProgressModalVisible) renderUploadProgressModal().catch(err => console.error('Error in UploadProgressModal', err));
-  }, [isProgressModalVisible]);
 
   const handleCompletePress = async () => {
     try {

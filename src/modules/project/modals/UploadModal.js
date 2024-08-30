@@ -1,52 +1,179 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
+import {Button} from 'react-native-elements';
+import KeepAwake from 'react-native-keep-awake';
+import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/urls.constants';
-import useUploadHook from '../../../services/useUpload';
+import useUpload from '../../../services/useUpload';
+import useUploadImages from '../../../services/useUploadImages';
 import {isEmpty} from '../../../shared/Helpers';
+import alert from '../../../shared/ui/alert';
 import Spacer from '../../../shared/ui/Spacer';
-import {setIsProgressModalVisible, setIsUploadModalVisible} from '../../home/home.slice';
+import LottieAnimations from '../../../utils/animations/LottieAnimations.web';
+import {
+  setIsProgressModalVisible,
+} from '../../home/home.slice';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import MenuModal from '../MenuModal';
-import {Button} from 'react-native-elements';
-import LottieAnimations from '../../../utils/animations/LottieAnimations.web';
+import {setIsImageTransferring} from '../projects.slice';
+
 
 const UploadModal = ({closeModal, visible}) => {
-  console.log('UE UploadModal');
 
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.connections.databaseEndpoint);
+  const isImageTransferring = useSelector(state => state.project.isImageTransferring);
   const statusMessages = useSelector(state => state.home.statusMessages);
+  const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
 
+  const [datasetUploadStatus, setDatasetUploadStatus] = useState('');
+  const [errorMessage, setErrorMesssage] = useState('');
+  const [imageUploadStatus, setImageUploadStatus] = useState({});
   const [modalTitle, setModalTitle] = useState('Overwrite Warning!');
-  const [uploadUpStatus, setUploadUpStatus] = useState('');
+  const [projectUploadStatus, setProjectUploadStatus] = useState('');
+  const [uploadState, setUploadState] = useState('Not started');
 
-  const useUpload = useUploadHook();
+  const {uploadProject, uploadDatasets} = useUpload();
+  const {initializeImageUpload} = useUploadImages();
 
-  useEffect(() => {
-    setUploadUpStatus('');
-  }, []);
+  useEffect(() => console.log('uploadState', uploadState), [uploadState]);
+
+  const handleClosePress = () => {
+    setModalTitle('Overwrite Warning!');
+    setUploadState('Not started');
+    setProjectUploadStatus('');
+    setDatasetUploadStatus('');
+    closeModal();
+  };
 
   const initiateUpload = async () => {
-    setModalTitle('Uploading');
-    setUploadUpStatus('uploading');
-    await useUpload.initializeUpload();
-    setUploadUpStatus('complete');
-    setModalTitle('All Uploaded!');
+    try {
+      Platform.OS !== 'web' && KeepAwake.activate();
+      setModalTitle('Uploading');
+      setUploadState('uploading');
+      const projectStatus = await uploadProject();
+      setProjectUploadStatus(projectStatus);
+      const datasetStatus = await uploadDatasets();
+      setDatasetUploadStatus(datasetStatus);
+      const imageStatus = await initializeImageUpload();
+      dispatch(setIsProgressModalVisible(false));
+      dispatch(setIsImageTransferring(false));
+      setImageUploadStatus(imageStatus);
+      setUploadState('complete');
+      setModalTitle('All Uploaded!');
+    }
+    catch (err) {
+      console.error('Error uploading', err);
+      setErrorMesssage(err.toString());
+      setUploadState('error');
+    }
   };
+
+  const uploadImagesOnly = async () => {
+    try {
+      Platform.OS !== 'web' && KeepAwake.activate();
+      setModalTitle('Uploading');
+      setUploadState('uploading');
+      const imageStatus = await initializeImageUpload();
+      setImageUploadStatus(imageStatus);
+      setUploadState('complete');
+      setModalTitle('All Uploaded!');
+    }
+    catch (err) {
+      console.error('Error uploading', err);
+      alert('Upload Failed!', err.toString());
+      closeModal();
+    }
+  };
+
+  const renderErrorView = () => {
+    return (
+      <View>
+        <Text>Hello this is an Error</Text>
+      </View>
+    );
+  };
+
+  const renderInitialUploadView = () => (
+    <View>
+      <View>
+        <Text style={overlayStyles.importantText}>Uploading to:</Text>
+        <Text style={overlayStyles.importantText}>
+          {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
+        </Text>
+      </View>
+      <Spacer/>
+      <Text>
+        <Text style={overlayStyles.importantText}>{!isEmpty(
+          currentProject) && currentProject.description?.project_name} </Text>
+        project properties and datasets will be uploaded and will
+        <Text style={overlayStyles.importantText}> OVERWRITE</Text> any data already on the server
+        for this project:
+      </Text>
+      <View style={overlayStyles.buttonContainer}>
+        <Button
+          title={'UPLOAD FULL'}
+          type={'clear'}
+          titleStyle={overlayStyles.buttonText}
+          onPress={() => initiateUpload()}
+        />
+        <Button
+          title={'CANCEL'}
+          type={'clear'}
+          titleStyle={overlayStyles.buttonText}
+          onPress={handleClosePress}
+        />
+      </View>
+      <Button
+        title={'IMAGES ONLY'}
+        type={'clear'}
+        titleStyle={overlayStyles.buttonText}
+        onPress={uploadImagesOnly}
+      />
+    </View>
+  );
+
+  const renderImageUploadStatusText = () => (
+    <View>
+      <Text>Images Success: {imageUploadStatus.success || 0}</Text>
+      <Text>Images Failed: {imageUploadStatus.failed || 0}</Text>
+    </View>
+  );
 
   const renderUploadProgress = () => {
     return (
       <View>
         <LottieAnimations
-          type={uploadUpStatus === 'uploading' ? 'loadingFile' : 'complete'}
-          show={uploadUpStatus === 'uploading'}
-          doesLoop={uploadUpStatus === 'uploading'}
+          type={uploadState === 'uploading' ? 'loadingFile' : 'complete'}
+          show={uploadState === 'uploading'}
+          doesLoop={uploadState === 'uploading'}
         />
-        <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
+        <View>
+          <View style={{padding: 10}}>
+            <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+          </View>
+          {isImageTransferring && <View style={{paddingTop: 10}}>
+            <Text style={{textAlign: 'center', paddingBottom: 5}}>Uploading images</Text>
+            <ProgressBar
+              progress={projectTransferProgress}
+              width={250}
+              height={15}
+              borderRadius={20}
+            />
+            <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
+          </View>}
+          {/*{uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}*/}
+          <View style={overlayStyles.overlayContent}>
+            <Text>Project: {projectUploadStatus === 'success' ? 'Success!' : 'Uploading...'}</Text>
+            <Text>Datasets: {datasetUploadStatus === 'success' ? 'Success!' : 'Uploading...'}</Text>
+            {uploadState === 'complete' && imageUploadStatus.success > 0 || imageUploadStatus.failed > 0 && renderImageUploadStatusText()}
+          </View>
+
+        </View>
       </View>
     );
   };
@@ -55,43 +182,25 @@ const UploadModal = ({closeModal, visible}) => {
     <MenuModal
       modalTitle={modalTitle}
       visible={visible}
-      cancel={() => dispatch(setIsUploadModalVisible(false))}
-      buttonText={'Upload'}
-      onPress={closeModal}
     >
-      {uploadUpStatus === '' ? (
-        <View>
-          <View>
-            <Text style={overlayStyles.importantText}>Uploading to:</Text>
-            <Text style={overlayStyles.importantText}>
-              {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
-            </Text>
-          </View>
-          <Spacer/>
-          <Text>
-            <Text style={overlayStyles.importantText}>{!isEmpty(
-              currentProject) && currentProject.description?.project_name} </Text>
-            project properties and datasets will be uploaded and will
-            <Text style={overlayStyles.importantText}> OVERWRITE</Text> any data already on the server
-            for this project:
-          </Text>
-          <View style={overlayStyles.buttonContainer}>
+      {uploadState === 'Not started'
+        ? renderInitialUploadView()
+        : uploadState !== 'error'
+          ? renderUploadProgress()
+          : renderErrorView()}
+      <View style={overlayStyles.buttonContainer}>
+        {(uploadState === 'complete' || uploadState === 'error')
+          && (
             <Button
-              title={'UPLOAD'}
+              title={'OK'}
               type={'clear'}
               titleStyle={overlayStyles.buttonText}
-              onPress={initiateUpload}
+              // disabled={uploadState !== 'complete'}
+              onPress={handleClosePress}
             />
-            <Button
-              title={'CANCEL'}
-              type={'clear'}
-              titleStyle={overlayStyles.buttonText}
-              onPress={closeModal}
-            />
-          </View>
-        </View>
-      ) : renderUploadProgress()
-      }
+          )
+        }
+      </View>
     </MenuModal>
   );
 };
