@@ -7,7 +7,6 @@ import {
   addedDataset,
   addedProjectDescription,
   deletedDataset,
-  deletedSpotIdFromDatasets,
   setActiveDatasets,
   setSelectedDataset,
   setSelectedProject,
@@ -30,7 +29,7 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {deletedSpot} from '../spots/spots.slice';
+import {deletedSpots} from '../spots/spots.slice';
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -113,16 +112,9 @@ const useProject = () => {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Deleting Dataset...'));
       if (datasets && datasets[id] && datasets[id].spotIds) {
-        let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
-        await Promise.all(datasets[id].spotIds.map((spotId) => {
-            dispatch(deletedSpotIdFromDatasets(spotId));
-            dispatch(deletedSpot(spotId));
-            spotsDeletedCount++;
-            console.log('Deleted', spotsDeletedCount, 'Spot(s)');
-            console.log('Spot Ids in Dataset:', datasets[id].spotIds);
-          }),
-        );
+        dispatch(deletedSpots(datasets[id].spotIds));
+        // ToDo Need to delete images for deleted Spots
       }
       dispatch(deletedDataset(id));
       dispatch(removedLastStatusMessage());

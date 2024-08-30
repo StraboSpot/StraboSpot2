@@ -31,7 +31,7 @@ const spotSlice = createSlice({
     },
     createdSpots(state, action) {
       let spotsObj = {};
-      action.payload.forEach((s) => {spotsObj = {...spotsObj, [s.properties.id]: s};});
+      action.payload.forEach(s => spotsObj = {...spotsObj, [s.properties.id]: s});
       state.spots = {...state.spots, ...spotsObj};
     },
     deletedSpot(state, action) {
@@ -41,6 +41,16 @@ const spotSlice = createSlice({
       state.selectedSpot = {};
       state.spots = remainingSpots;
       state.recentViews = state.recentViews.filter(id => id !== action.payload);
+    },
+    deletedSpots(state, action) {
+      const spotIds = action.payload;     // ids of spots to delete
+      const spotIdsStrings = spotIds.map(spotId => spotId.toString());
+      const remainingSpotsObj = Object.entries(state.spots).reduce((acc, [key, val]) => {
+        return spotIdsStrings.includes(key) ? acc : {...acc, [key]: val};
+      }, {});
+      state.selectedSpot = {};
+      state.spots = remainingSpotsObj;
+      state.recentViews = state.recentViews.filter(id => !spotIds.includes(id));
     },
     editedOrCreatedSpot(state, action) {
       const modifiedSpot = {
@@ -135,6 +145,7 @@ export const {
   clearedSpots,
   createdSpots,
   deletedSpot,
+  deletedSpots,
   editedOrCreatedSpot,
   editedSpotImage,
   editedSpotImages,
