@@ -207,7 +207,7 @@ const useProject = () => {
       }
       else {
         alert('No Selected Dataset. Creating a new Default Dataset.');
-        selectedDataset = useProject.createDataset();
+        selectedDataset = createDataset();
         dispatch(addedDataset(selectedDataset));
         dispatch(setActiveDatasets({bool: true, dataset: selectedDataset.id}));
         dispatch(setSelectedDataset(selectedDataset.id));
