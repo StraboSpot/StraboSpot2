@@ -40,9 +40,9 @@ const AddManualMeasurements = (props) => {
   }, [sliderValue]);
 
   return (
-    <React.Fragment>
+    <>
       <Form {...{...props.formProps, formName: planarFormName, surveyFragment: [labelField]}}/>
-      <React.Fragment>
+      <>
         {(props.measurementType === MEASUREMENT_KEYS.PLANAR || props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR)
           && <Form {...{...props.formProps, formName: planarFormName, surveyFragment: planarKeysFields}}/>
         }
@@ -66,8 +66,8 @@ const AddManualMeasurements = (props) => {
             labels={['Low', '', '', '', 'High', 'N/R']}
           />
         </View>
-      </React.Fragment>
-    </React.Fragment>
+      </>
+    </>
   );
 };
 

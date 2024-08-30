@@ -7,20 +7,18 @@ import {useSelector} from 'react-redux';
 import useSpotsHook from './useSpots';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import useNestingHook from '../nesting/useNesting';
 import usePageHook from '../page/usePage';
 import {useTagsHook} from '../tags';
 
 const SpotsListItem = ({
-                         doShowSubspots,
                          doShowTags,
                          isCheckedList,
+                         numSubspots,
                          onPress,
                          spot,
                        }) => {
   // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
-  const useNesting = useNestingHook();
   const useSpots = useSpotsHook();
   const useTags = useTagsHook();
   const usePage = usePageHook();
@@ -56,8 +54,6 @@ const SpotsListItem = ({
   );
 
   const renderSubspots = () => {
-    const children = useNesting.getChildrenGenerationsSpots(spot, 10);
-    const numSubspots = children.flat().length;
     return <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>;
   };
 
@@ -81,13 +77,13 @@ const SpotsListItem = ({
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>
         {doShowTags && spot && renderTags()}
-        {doShowSubspots && spot && renderSubspots()}
+        {!isEmpty(numSubspots) && spot && renderSubspots()}
       </ListItem.Content>
       {isCheckedList ? renderCheckboxes() : (
-        <React.Fragment>
+        <>
           {spot && renderSpotDataIcons()}
           {spot && <ListItem.Chevron/>}
-        </React.Fragment>
+        </>
       )}
     </ListItem>
   );

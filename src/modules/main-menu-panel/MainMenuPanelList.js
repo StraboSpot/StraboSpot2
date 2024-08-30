@@ -2,8 +2,10 @@ import React from 'react';
 import {FlatList, Platform} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
+import {useDispatch} from 'react-redux';
 
 import {MAIN_MENU_ITEMS} from './mainMenu.constants';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import commonStyles from '../../shared/common.styles';
 import {toTitleCase} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -11,8 +13,8 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 
 const MainMenuPanelList = ({
                              activeProject,
-                             onPress,
                            }) => {
+  const dispatch = useDispatch();
 
   const renderMenuListItem = (name) => {
     if (name !== MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT && name !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS
@@ -21,7 +23,7 @@ const MainMenuPanelList = ({
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => onPress(name)}
+          onPress={() => setVisibleMenu(name)}
         >
           <ListItem.Content>
             {<ListItem.Title style={commonStyles.listItemTitle}>
@@ -38,7 +40,7 @@ const MainMenuPanelList = ({
 
   const renderMenuSection = ([menuItem, submenuItems]) => {
     return (
-      <React.Fragment>
+      <>
         <SectionDivider dividerText={toTitleCase(menuItem)}/>
         <FlatList
           keyExtractor={item => item.toString()}
@@ -46,8 +48,12 @@ const MainMenuPanelList = ({
           renderItem={({item}) => renderMenuListItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
         />
-      </React.Fragment>
+      </>
     );
+  };
+
+  const setVisibleMenu = (name) => {
+    dispatch(setMenuSelectionPage({name: name}));
   };
 
   return (

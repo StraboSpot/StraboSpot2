@@ -66,26 +66,24 @@ const AddReactionTextureModal = ({onPress}) => {
         buttonTitleRight={choicesViewKey && 'Done'}
         onPress={onPress}
       >
-        <React.Fragment>
-          <FlatList
-            bounces={false}
-            ListHeaderComponent={
-              <View style={{flex: 1}}>
-                <Formik
-                  innerRef={formRef}
-                  initialValues={{id: getNewId()}}
-                  onSubmit={values => console.log('Submitting form...', values)}
-                >
-                  {formProps => (
-                    <View style={{flex: 1}}>
-                      {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                    </View>
-                  )}
-                </Formik>
-              </View>
-            }
-          />
-        </React.Fragment>
+        <FlatList
+          bounces={false}
+          ListHeaderComponent={
+            <View style={{flex: 1}}>
+              <Formik
+                innerRef={formRef}
+                initialValues={{id: getNewId()}}
+                onSubmit={values => console.log('Submitting form...', values)}
+              >
+                {formProps => (
+                  <View style={{flex: 1}}>
+                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                  </View>
+                )}
+              </Formik>
+            </View>
+          }
+        />
         {!choicesViewKey && <SaveButton title={'Save Reaction Texture'} onPress={saveReactionTexture}/>}
       </Modal>
     );
@@ -93,7 +91,7 @@ const AddReactionTextureModal = ({onPress}) => {
 
   const renderForm = (formProps) => {
     return (
-      <React.Fragment>
+      <>
         <Form {...{formName: formName, surveyFragment: firstKeysFields, ...formProps}}/>
         <Text style={{paddingLeft: 10, paddingRight: 10, textAlign: 'center'}}>{
           survey.find(f => f.name === 'reactions').hint}
@@ -110,14 +108,14 @@ const AddReactionTextureModal = ({onPress}) => {
           onPress={choice => onMultiChoiceSelected(basedOnKey, choice)}
         />
         {!isEmpty(formRef.current?.values[basedOnKey]) && formRef.current?.values[basedOnKey].includes('other') && (
-          <React.Fragment>
+          <>
             <LittleSpacer/>
             <Form {...{formName: formName, surveyFragment: [basedOnOtherField], ...formProps}}/>
-          </React.Fragment>
+          </>
         )}
         <LittleSpacer/>
         <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
-      </React.Fragment>
+      </>
     );
   };
 

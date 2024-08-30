@@ -7,7 +7,6 @@ import {
   addedDataset,
   addedProjectDescription,
   deletedDataset,
-  deletedSpotIdFromDatasets,
   setActiveDatasets,
   setSelectedDataset,
   setSelectedProject,
@@ -19,6 +18,7 @@ import useImportHook from '../../services/useImport';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -29,7 +29,7 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {deletedSpot} from '../spots/spots.slice';
+import {deletedSpots} from '../spots/spots.slice';
 
 const useProject = () => {
   const dispatch = useDispatch();
@@ -112,16 +112,9 @@ const useProject = () => {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Deleting Dataset...'));
       if (datasets && datasets[id] && datasets[id].spotIds) {
-        let spotsDeletedCount = 0;
         console.log(datasets[id].spotIds.length, 'Spot(s) in Dataset to Delete.');
-        await Promise.all(datasets[id].spotIds.map((spotId) => {
-            dispatch(deletedSpotIdFromDatasets(spotId));
-            dispatch(deletedSpot(spotId));
-            spotsDeletedCount++;
-            console.log('Deleted', spotsDeletedCount, 'Spot(s)');
-            console.log('Spot Ids in Dataset:', datasets[id].spotIds);
-          }),
-        );
+        dispatch(deletedSpots(datasets[id].spotIds));
+        // ToDo Need to delete images for deleted Spots
       }
       dispatch(deletedDataset(id));
       dispatch(removedLastStatusMessage());
@@ -203,8 +196,25 @@ const useProject = () => {
     return datasetIdFound;
   };
 
+  // Get selected dataset, if none selected make one
   const getSelectedDatasetFromId = () => {
-    return selectedDatasetId ? datasets[selectedDatasetId] : 'Unknown';
+    let selectedDataset = datasets[selectedDatasetId];
+    if (isEmpty(selectedDataset)) {
+      const datasetToSelect = Object.values(datasets)?.[0];
+      if (!isEmpty(datasetToSelect) && datasetToSelect.id) {
+        dispatch(setActiveDatasets({bool: true, dataset: datasetToSelect.id}));
+        dispatch(setSelectedDataset(datasetToSelect.id));
+      }
+      else {
+        alert('No Selected Dataset. Creating a new Default Dataset.');
+        selectedDataset = createDataset();
+        dispatch(addedDataset(selectedDataset));
+        dispatch(setActiveDatasets({bool: true, dataset: selectedDataset.id}));
+        dispatch(setSelectedDataset(selectedDataset.id));
+      }
+    }
+    console.log('Selected Dataset', selectedDataset);
+    return selectedDataset;
   };
 
   const initializeNewProject = async (descriptionData) => {
@@ -256,11 +266,11 @@ const useProject = () => {
       else if (action === ProjectActions.BACKUP_TO_DEVICE) dispatch(setIsBackupModalVisible(true));
       else if (action === ProjectActions.OVERWRITE) {
         if (selectedProject.source === 'device') {
+          dispatch(setSelectedProject({project: '', source: ''}));
           dispatch(clearedStatusMessages());
-          dispatch(setLoadingStatus({view: 'home', bool: true}));
+          dispatch(setIsStatusMessagesModalVisible(true));
           const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
           dispatch(setLoadingStatus({view: 'home', bool: false}));
-          toast.show('Project was loaded successfully!', {duration: 4000, type: 'success'});
           console.log('Done loading project', res);
         }
         else if (selectedProject.source === 'server') {

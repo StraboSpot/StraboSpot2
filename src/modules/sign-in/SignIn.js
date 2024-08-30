@@ -119,7 +119,6 @@ const SignIn = ({navigation, route}) => {
           <CustomEndpoint
             containerStyles={signInStyles.customEndpointContainer}
             textStyles={signInStyles.customEndpointText}
-            iconText={signInStyles.verifyEndpointIconText}
           />
         </View>
         {renderErrorModal()}

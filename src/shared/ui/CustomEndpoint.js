@@ -6,10 +6,9 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import uiStyles from './ui.styles';
 import signInStyles from '../../modules/sign-in/signIn.styles';
-import {setDatabaseIsSelected, setDatabaseUrl, setDatabaseVerify} from '../../services/connections.slice';
+import {setDatabaseIsSelected, setCustomDatabaseUrl, setDatabaseVerify} from '../../services/connections.slice';
 import useServerRequestsHook from '../../services/useServerRequests';
 import {isEmpty} from '../Helpers';
-import * as themes from '../styles.constants';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 
 const CustomEndpoint = ({
@@ -18,12 +17,10 @@ const CustomEndpoint = ({
                         }) => {
     const dispatch = useDispatch();
     const isOnline = useSelector(state => state.connections.isOnline);
-    const {domain, isSelected, path, protocol} = useSelector(state => state.connections.databaseEndpoint);
+    const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-    const [domainLocal, setDomainLocal] = useState(domain);
+    const [customEndpointURLLocal, setCustomEndpointURLLocal] = useState(url);
     const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
-    const [pathLocal, setPathLocal] = useState(path);
-    const [protocolLocal, setProtocolLocal] = useState(protocol);
     const [isVerified, setIsVerified] = useState(null);
     const [verifiedButtonTitle, setVerifiedButtonTitle] = useState('Test Endpoint');
 
@@ -31,22 +28,19 @@ const CustomEndpoint = ({
 
     const handleEndpointSwitchValue = (value) => {
       dispatch(setDatabaseIsSelected(value));
-
     };
 
-    const handleEndpointTextValues = (value, input) => {
+    const handleEndpointTextValues = (endpointURLLocal) => {
       dispatch(setDatabaseVerify(false));
-      if (input === 'domain') setDomainLocal(value);
-      if (input === 'protocol') setProtocolLocal(value);
-      if (input === 'path') setPathLocal(value);
+      setCustomEndpointURLLocal(endpointURLLocal);
     };
 
     const verifyEndpoint = async () => {
       setIsLoadingEndpoint(true);
-      const isVerifiedLocal = await useServerRequests.verifyEndpoint(protocolLocal, domainLocal, pathLocal);
+      const isVerifiedLocal = await useServerRequests.verifyEndpoint(customEndpointURLLocal);
       if (isVerifiedLocal) {
         dispatch(setDatabaseVerify(true));
-        dispatch(setDatabaseUrl({protocol: protocolLocal, domain: domainLocal, path: pathLocal}));
+        dispatch(setCustomDatabaseUrl(customEndpointURLLocal));
         setVerifiedButtonTitle('Verified');
         setTimeout(() => {
           setVerifiedButtonTitle('Test Endpoint');
@@ -66,7 +60,7 @@ const CustomEndpoint = ({
     return (
       <View style={[uiStyles.customEndpointContainer, containerStyles]}>
         <View style={uiStyles.customEndpointSwitchContainer}>
-          <Text style={[uiStyles.customEndpointText, textStyles]}>Use Custom Endpoint?</Text>
+          <Text style={[uiStyles.customEndpointText, textStyles]}>Use Custom Database Endpoint?</Text>
           <Switch
             value={isSelected}
             onValueChange={handleEndpointSwitchValue}
@@ -78,45 +72,24 @@ const CustomEndpoint = ({
           <>
             <View style={uiStyles.customEndpointVerifyInputContainer}>
               <Input
-                containerStyle={signInStyles.verifyProtocolInputContainer}
+                containerStyle={signInStyles.customEndpointInputContainer}
                 inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'protocol')}
-                label={'Protocol'}
+                inputStyle={signInStyles.customEndpointInput}
+                onChangeText={value => handleEndpointTextValues(value)}
+                label={'Enter full endpoint address'}
+                placeholder={'http://192.168.xxx/db/'}
                 labelStyle={{fontSize: 10}}
-                defaultValue={protocolLocal}
+                defaultValue={customEndpointURLLocal}
                 autoCapitalize={'none'}
-              />
-              <Input
-                containerStyle={signInStyles.verifySchemeInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'domain')}
-                value={domainLocal}
-                label={'Host'}
-                placeholder={'192.168.x.xxx'}
-                placeholderTextColor={themes.MEDIUMGREY}
-                labelStyle={{fontSize: 10}}
-                errorStyle={{fontSize: 12, fontWeight: 'bold', textAlign: 'center'}}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-              />
-              <Input
-                containerStyle={signInStyles.verifySubdirectoryInputContainer}
-                inputContainerStyle={{borderBottomWidth: 0}}
-                inputStyle={signInStyles.verifyInput}
-                onChangeText={value => handleEndpointTextValues(value, 'path')}
-                label={'Path'}
-                labelStyle={{fontSize: 10}}
-                value={pathLocal}
-                autoCapitalize={'none'}
+                returnKeyType={'send'}
+                onSubmitEditing={verifyEndpoint}
               />
             </View>
             <View style={uiStyles.customEndpointVerifyButtonContainer}>
               {<Button
                 title={isVerified === false ? 'Not Reachable\nCheck Again?' : verifiedButtonTitle}
                 type={'clear'}
-                disabled={!isOnline.isConnected || isEmpty(domainLocal)}
+                disabled={!isOnline.isConnected || isEmpty(customEndpointURLLocal)}
                 buttonStyle={uiStyles.verifyButtonStyle}
                 iconRight
                 icon={isVerified && (

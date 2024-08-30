@@ -160,6 +160,7 @@ const useImport = () => {
       await copyImages(selectedProject);
       await checkForMaps(dataFile, selectedProject, isExternal);
       dispatch(setSelectedProject({project: '', source: ''}));
+      dispatch(addedStatusMessage('Complete!'));
       return Promise.resolve({project: dataFile.projectDb.project});
     }
   };

@@ -15,7 +15,7 @@ const IntervalOverview = ({page}) => {
   const useSed = useSedHook();
 
   return (
-    <React.Fragment>
+    <>
       <ListItem
         containerStyle={commonStyles.listItem}
         onPress={() => dispatch(setNotebookPageVisible(page.key))}
@@ -26,7 +26,7 @@ const IntervalOverview = ({page}) => {
           </ListItem.Title>
         </ListItem.Content>
       </ListItem>
-    </React.Fragment>
+    </>
   );
 };
 

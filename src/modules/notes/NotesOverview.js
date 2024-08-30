@@ -14,7 +14,7 @@ const SpotNotesOverview = ({page}) => {
   const savedNote = useSelector(state => state.spot.selectedSpot.properties.notes);
 
   return (
-    <React.Fragment>
+    <>
       {savedNote ? (
           <ListItem
             containerStyle={commonStyles.listItem}
@@ -26,7 +26,7 @@ const SpotNotesOverview = ({page}) => {
           </ListItem>
         )
         : <ListEmptyText text={'No Notes'}/>}
-    </React.Fragment>
+    </>
   );
 };
 

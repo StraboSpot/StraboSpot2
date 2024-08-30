@@ -102,7 +102,7 @@ const ProjectOptionsDialogBox = ({
     catch (err) {
       console.error('Error exporting project!', err);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      toast.show('EXPORT FAILED!! \nProject has to have a unique name!');
+      toast.show('EXPORT FAILED!\n' + err);
     }
   };
 

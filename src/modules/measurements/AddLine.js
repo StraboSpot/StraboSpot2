@@ -29,7 +29,7 @@ const AddLine = (props) => {
   }
 
   return (
-    <React.Fragment>
+    <>
       {!props.isManualMeasurement && !props.isPlanarLinear && (
         <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...updatedProps.formProps}}/>
       )}
@@ -45,7 +45,7 @@ const AddLine = (props) => {
         subkey: props.isPlanarLinear && 'associated_orientation',
         ...updatedProps.formProps,
       }}/>
-    </React.Fragment>
+    </>
   );
 };
 

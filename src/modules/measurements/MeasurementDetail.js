@@ -264,7 +264,7 @@ const MeasurementDetail = ({
       <View>
         {/* Primary measurement */}
         {selectedMeasurement && selectedAttitude && selectedAttitude.associated_orientation && (
-          <React.Fragment>
+          <>
             <MeasurementItem
               item={selectedAttitude}
               selectedIds={[selectedMeasurement.id]}
@@ -272,7 +272,7 @@ const MeasurementDetail = ({
               onPress={() => onSwitchSelectedMeasurement(selectedAttitude)}
             />
             <FlatListItemSeparator/>
-          </React.Fragment>
+          </>
         )}
 
         {/* Associated measurements */}
@@ -512,7 +512,7 @@ const MeasurementDetail = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       {selectedMeasurement && (
         <View style={styles.measurementsContentContainer}>
           {renderCancelSaveButtons()}
@@ -539,7 +539,7 @@ const MeasurementDetail = ({
           />
         </View>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

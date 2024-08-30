@@ -17,7 +17,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice'
 import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
-import notebookStyles from '../notebookPanel.styles';
+import notebookStyles from '../notebook.styles';
 
 const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) => {
   const dispatch = useDispatch();
@@ -162,7 +162,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
   };
 
   return (
-    <React.Fragment>
+    <>
       <Image
         source={useSpots.getSpotGeometryIconSource(spot)}
         style={headerStyles.headerImage}
@@ -189,7 +189,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
         overlayStyle={notebookStyles.dialogBoxPosition}
         zoomToSpots={zoomToSpots}
       />
-    </React.Fragment>
+    </>
   );
 };
 

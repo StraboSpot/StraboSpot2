@@ -14,17 +14,15 @@ const ButtonRounded = ({
                          titleStyle,
                        }) => {
   return (
-    <React.Fragment>
-      <Button
-        icon={icon}
-        title={title}
-        containerStyle={[uiStyles.saveAndDeleteButtonContainer, containerStyle]}
-        buttonStyle={[uiStyles.saveAndDeleteButtonStyles, buttonStyle]}
-        titleStyle={titleStyle}
-        onPress={onPress}
-        disabled={disabled}
-      />
-    </React.Fragment>
+    <Button
+      icon={icon}
+      title={title}
+      containerStyle={[uiStyles.saveAndDeleteButtonContainer, containerStyle]}
+      buttonStyle={[uiStyles.saveAndDeleteButtonStyles, buttonStyle]}
+      titleStyle={titleStyle}
+      onPress={onPress}
+      disabled={disabled}
+    />
   );
 };
 

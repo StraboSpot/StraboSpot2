@@ -16,7 +16,7 @@ import {setSelectedProject} from '../../project/projects.slice';
 import {setIsStatusMessagesModalVisible} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
-const StatusModal = ({exportProject, openMainMenuPanel, openUrl}) => {
+const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
   const dispatch = useDispatch();
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
@@ -50,7 +50,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl}) => {
   return (
     <StatusDialogBox
       title={'Status'}
-      isVisible={isStatusMessagesModalVisible}
+      isVisible={visible || isStatusMessagesModalVisible}
       closeModal={() => dispatch(setIsStatusMessagesModalVisible(false))}
       showConfirmButton={!isModalLoading && selectedProject.source === ''}
       onConfirmPress={() => dispatch(setIsStatusMessagesModalVisible(false))}
@@ -65,7 +65,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl}) => {
         )}
         <Text style={overlayStyles.statusMessageText}>{statusMessages.join('\n')}</Text>
         {!isModalLoading && <View style={{alignItems: 'center'}}>
-          {(selectedProject.source === 'Device' || selectedProject.source === 'server') && (
+          {(selectedProject.source === 'device' || selectedProject.source === 'server') && (
             <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Press Continue to load project</Text>
           )}
           <View style={{flexDirection: 'row'}}>
@@ -85,7 +85,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl}) => {
             )}
 
           </View>
-          {statusMessages.includes('Project Backup Complete!') && (
+          {statusMessages.includes('Complete!') && (
             <Button
               title={'Export Project?'}
               containerStyle={{padding: 10}}

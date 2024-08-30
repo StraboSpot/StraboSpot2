@@ -1,24 +1,19 @@
 import {Platform} from 'react-native';
 
-import ImageResizer from 'react-native-image-resizer';
 import KeepAwake from 'react-native-keep-awake';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequestsHook from './useServerRequests';
 import useUploadImagesHook from './useUploadImages';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
-import useImagesHook from '../modules/images/useImages';
 import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';
-import useDeviceHook from '../services/useDevice';
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
 
 const useUpload = () => {
   const datasetsNotUploaded = [];
-  const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const dispatch = useDispatch();
   const projectDatasets = useSelector(state => state.project.datasets);
@@ -26,8 +21,6 @@ const useUpload = () => {
   const spots = useSelector(state => state.spot.spots);
   const user = useSelector(state => state.user);
 
-  const useDevice = useDeviceHook();
-  const useImages = useImagesHook();
   const useProject = useProjectHook();
   const useServerRequests = useServerRequestsHook();
   const useSpots = useSpotsHook();
@@ -47,17 +40,6 @@ const useUpload = () => {
       dispatch(addedStatusMessage(`\nUpload Failed!\n\n ${err}`));
       console.error('Upload Failed!', err);
       throw Error(err);
-    }
-  };
-
-  const resizeProfileImageForUpload = async (imageProps) => {
-    const {uri, width, height} = imageProps;
-    if (width && height) {
-      await useDevice.doesDeviceDirectoryExist(tempImagesDownsizedDirectory);
-      const resizedProfileImage = await ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 100, 0,
-        tempImagesDownsizedDirectory);
-      useImages.getImageSize(imageProps, resizedProfileImage);
-      return resizedProfileImage;
     }
   };
 
@@ -118,7 +100,7 @@ const useUpload = () => {
         // console.log(msgText);
         // dispatch(removedLastStatusMessage());
         // dispatch(addedStatusMessage(msgText));
-        dispatch(clearedStatusMessages());
+        dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Uploading ${datasets.length} datasets...\n`));
         await makeNextDatasetRequest();
         dispatch(removedLastStatusMessage());
@@ -155,12 +137,7 @@ const useUpload = () => {
 
   const uploadProfile = async (userValues) => {
     try {
-      const profileData = {name: userValues.name, password: userValues.password, mapboxToken: userValues.mapboxToken};
-      if (userValues.image) {
-        const formData = new FormData();
-        formData.append('image_file', {uri: userValues.image, name: 'image.jpg', type: 'image/jpeg'});
-        await useServerRequests.uploadProfileImage(formData, user.encoded_login);
-      }
+      const profileData = {name: userValues.name, mapboxToken: userValues.mapboxToken};
       await useServerRequests.updateProfile(profileData);
     }
     catch (err) {
@@ -176,9 +153,8 @@ const useUpload = () => {
       console.log('Uploading Project Properties...');
       dispatch(addedStatusMessage('Uploading Project Properties...'));
       await useServerRequests.updateProject(project, user.encoded_login);
-      console.log('Finished Uploading Project Properties...');
-      // dispatch(removedLastStatusMessage());
-      // dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
+      dispatch(removedLastStatusMessage());
+      dispatch(addedStatusMessage('Finished Uploading Project Properties.'));
     }
     catch (err) {
       console.error('Error Uploading Project Properties.', err);
@@ -236,7 +212,6 @@ const useUpload = () => {
 
   return {
     initializeUpload: initializeUpload,
-    resizeProfileImageForUpload: resizeProfileImageForUpload,
     uploadDatasets: uploadDatasets,
     uploadFromWeb: uploadFromWeb,
     uploadProfile: uploadProfile,

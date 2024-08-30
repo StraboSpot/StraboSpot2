@@ -39,7 +39,7 @@ const TernaryPage = () => {
   const ternary = gatherTernaryValues();
 
   return (
-    <React.Fragment>
+    <>
       <ReturnToOverviewButton/>
       <SectionDivider dividerText={'Ternary'}/>
       {!((ternary.q > 0 && ternary.a > 0 && ternary.p > 0)
@@ -165,7 +165,7 @@ const TernaryPage = () => {
           </ListItem.Content>
         </ListItem>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

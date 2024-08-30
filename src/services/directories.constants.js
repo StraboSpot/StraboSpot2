@@ -23,6 +23,7 @@ export const APP_DIRECTORIES = {
   EXPORT_FILES_IOS: appDirectoryForDistributedBackups,
   SHARED_DOCUMENTS_PATH_IOS: sharedDocumentsPathIOS,
   IMAGES: imagesDirectory,
+  PROFILE_IMAGE: imagesDirectory + 'profileImage.jpg',
   TILE_CACHE: tileCacheDirectory,
   TILES_DIRECTORY: tilesDirectory,
   TILE_TEMP: tileTempDirectory,

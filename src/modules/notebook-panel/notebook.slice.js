@@ -28,7 +28,7 @@ const notebookSlice = createSlice({
     setNotebookPageVisibleToPrev(state) {
       state.visibleNotebookPagesStack = state.visibleNotebookPagesStack.slice(0, -1);
     },
-    setNotebookPanelVisible(state, action) {
+    setIsNotebookPanelVisible(state, action) {
       state.isNotebookPanelVisible = action.payload;
     },
     addedNotebookPageOn(state, action) {
@@ -46,7 +46,7 @@ const notebookSlice = createSlice({
 export const {
   setNotebookPageVisible,
   setNotebookPageVisibleToPrev,
-  setNotebookPanelVisible,
+  setIsNotebookPanelVisible,
   addedNotebookPageOn,
   removedNotebookPageOn,
   resetNotebookState,

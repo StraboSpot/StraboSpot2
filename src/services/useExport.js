@@ -10,14 +10,14 @@ import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
-  setIsBackupModalVisible,
-  setIsStatusMessagesModalVisible,
-  setLoadingStatus,
+  setIsWarningMessagesModalVisible,
+  // setLoadingStatus,
 } from '../modules/home/home.slice';
 import {setBackupFileName} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useExport = () => {
+  console.log('useExport Render')
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
   const mapNamesDb = useSelector(state => state.offlineMap.offlineMaps);
@@ -36,9 +36,9 @@ const useExport = () => {
   let imageBackupFailures = 0;
   let imageSuccess = 0;
 
-  useEffect(() => {
-    console.log(backupFileName);
-  }, [backupFileName]);
+  // useEffect(() => {
+  //   console.log(backupFileName);
+  // }, [backupFileName]);
 
   let dataForExport = {
     mapNamesDb: mapNamesDb,
@@ -48,15 +48,15 @@ const useExport = () => {
     spotsDb: spotsDb,
   };
 
-  const backupProjectToDevice = async (exportedFileName) => {
-    await gatherDataForBackup(exportedFileName);
-    console.log('Finished Exporting Project Data');
-    await gatherOtherMapsForDistribution(exportedFileName);
-    console.log('Other Maps Exported');
-    await gatherMapsForDistribution(dataForExport, exportedFileName);
-    console.log('Maps tiles have been exported.');
-    await gatherImagesForDistribution(dataForExport, exportedFileName);
-    console.log('Images Resolve Message:');
+  const backupProjectToDevice = async (fileName) => {
+    await gatherDataForBackup(fileName);
+    console.log('Added Project Data to backup.');
+    await gatherOtherMapsForDistribution(fileName);
+    console.log('Added Other Maps to backup.');
+    await gatherMapsForDistribution(dataForExport, fileName);
+    console.log('Added Maps tiles to backup.');
+    await gatherImagesForDistribution(dataForExport, fileName);
+    console.log('Added Images to backup.');
   };
 
   const exportData = async (directory, data, filename) => {
@@ -64,15 +64,12 @@ const useExport = () => {
     await useDevice.writeFileToDevice(directory, filename, data);
   };
 
-  // For Android only.
-
   const gatherDataForBackup = async (filename) => {
     try {
+      dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Project Data...'));
       console.log(dataForExport);
-
-      await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport,
-        'data.json');
+      await exportData(APP_DIRECTORIES.BACKUP_DIR + filename, dataForExport, 'data.json');
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Finished Exporting Project Data'));
     }
@@ -87,29 +84,29 @@ const useExport = () => {
     try {
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
-      await useDevice.doesDeviceDirectoryExist(
-        deviceDir + fileName + '/images');
-      dispatch(addedStatusMessage('Exporting Images...'));
+      await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/images');
+      dispatch(addedStatusMessage((isBeingExported ? 'Exporting' : 'Backing up') + ' Images...'));
       if (data.spotsDb) {
-        console.log('Spots Exist!');
+        console.groupCollapsed('Found Spots. Gathering Images...');
         await Promise.all(
           Object.values(data.spotsDb).map(async (spot) => {
             if (spot.properties.images) {
-              console.log('Spot with images', spot.properties.name, 'Images:', spot.properties.images);
-              await Promise.all(
-                spot.properties.images.map(async (image) => {
+              console.log('Spot', spot.properties.name, '(' + spot.properties.id + ') has',
+                spot.properties.images.length, 'images [' + spot.properties.images.map(i => i.id).join(', ') + ']',
+                spot.properties.images);
+              await Promise.all(spot.properties.images.map(async (image) => {
                   await moveDistributedImage(image.id, fileName, deviceDir);
-                  console.log('Moved file:', image.id);
                 }),
               );
             }
           }),
         );
-        console.log('Image Promises Finished ');
+        console.log('Finished Gathering Images');
+        console.groupEnd();
         dispatch(removedLastStatusMessage());
         if (imageBackupFailures > 0) {
           dispatch(addedStatusMessage(
-            `Images backed up: ${imageSuccess}.\nImages NOT backed up: ${imageBackupFailures}.`,
+            `Images backed up: ${imageSuccess}\nImages missing: ${imageBackupFailures}`,
           ));
         }
         else dispatch(addedStatusMessage(`${imageSuccess} Images backed up.`));
@@ -122,19 +119,19 @@ const useExport = () => {
     }
   };
 
-
   const gatherMapsForDistribution = async (data, fileName, isBeingExported) => {
     try {
       const maps = data.mapNamesDb;
       const mapCount = Object.values(maps).length;
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
+      dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
         await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
         await zip(APP_DIRECTORIES.TILE_CACHE, deviceDir + fileName + '/maps/OfflineTiles.zip');
         dispatch(removedLastStatusMessage());
-        dispatch(addedStatusMessage(`Finished Exporting ${mapCount} Offline Map${mapCount > 1 ? 's' : ''}.`));
+        dispatch(addedStatusMessage(`Offline Map${mapCount > 1 ? 's' : ''} backed up: ${mapCount}`));
       }
       else {
         dispatch(removedLastStatusMessage());
@@ -152,6 +149,7 @@ const useExport = () => {
     try {
       console.log(configDb);
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
+      dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
         await exportData(deviceDir + exportedFileName, configDb.other_maps,
@@ -174,11 +172,9 @@ const useExport = () => {
   const initializeBackup = async (fileName) => {
     try {
       dispatch(setBackupFileName(fileName));
-      dispatch(setIsBackupModalVisible(false));
+      // dispatch(setIsBackupModalVisible(false));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Backing up Project to Device...'));
-      dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      dispatch(setIsStatusMessagesModalVisible(true));
 
       const hasBackupDir = await useDevice.doesDeviceBackupDirExist();
       console.log('Has Backup Dir?: ', hasBackupDir);
@@ -187,9 +183,6 @@ const useExport = () => {
         await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
         await backupProjectToDevice(fileName);
       }
-      dispatch(addedStatusMessage('---------------'));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
-      dispatch(addedStatusMessage('Project Backup Complete!'));
     }
     catch (err) {
       console.error('Error Backing Up Project!: ', err);
@@ -203,11 +196,13 @@ const useExport = () => {
         await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
           directory + fileName + '/images/' + image_id + '.jpg');
         imageSuccess++;
+        console.log(imageSuccess, 'Copied image to backup:', image_id);
       }
+      else throw Error('Image not found.');
     }
     catch (err) {
       imageBackupFailures++;
-      console.log('ERROR', err.toString());
+      console.log(imageBackupFailures, 'ERROR Copying Image', err.toString(), image_id);
     }
   };
 
@@ -233,40 +228,48 @@ const useExport = () => {
   };
 
   const zipAndExportProjectFolder = async (isBeingExported) => {
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    await useDevice.makeDirectory(appExportDirectory + backupFileName);
+    try {
+      // dispatch(setLoadingStatus({view: 'modal', bool: true}));
+      await useDevice.makeDirectory(appExportDirectory + backupFileName);
 
-    // Make temp directory for the export files to be zipped up.
-    console.log('Directory made:', appExportDirectory);
+      // Make temp directory for the export files to be zipped up.
+      console.log('Directory made:', appExportDirectory);
 
-    // const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
-    const source = APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json';
-    const destination = appExportDirectory + backupFileName;
-    Platform.OS === 'android' && await requestWriteDirectoryPermission();
-    console.log(backupFileName);
+      // const dateAndTime = moment(new Date()).format('YYYY-MM-DD_hmma');
+      const source = APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json';
+      const destination = appExportDirectory + backupFileName;
+      Platform.OS === 'android' && await requestWriteDirectoryPermission();
+      console.log(backupFileName);
 
-    const dataFile = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
-    const exportedJSON = JSON.parse(dataFile);
-    await useDevice.copyFiles(source, `${destination}/data.json`);
-    console.log('Files Copied', exportedJSON);
-    dispatch(removedLastStatusMessage());
-    await gatherImagesForDistribution(exportedJSON, backupFileName, isBeingExported);
-    console.log('Images copied to:', destination);
-    await gatherMapsForDistribution(exportedJSON, backupFileName, isBeingExported);
-    console.log('Map tiles copied to:', destination);
-    await gatherOtherMapsForDistribution(backupFileName, isBeingExported);
-    const zipPath = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID;
-    const path = await zip(appExportDirectory + backupFileName,
-      zipPath + backupFileName + '.zip');
+      const dataFile = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
+      const exportedJSON = JSON.parse(dataFile);
+      await useDevice.copyFiles(source, `${destination}/data.json`);
+      console.log('Files Copied', exportedJSON);
+      dispatch(removedLastStatusMessage());
+      await gatherImagesForDistribution(exportedJSON, backupFileName, isBeingExported);
+      console.log('Images copied to:', destination);
+      await gatherMapsForDistribution(exportedJSON, backupFileName, isBeingExported);
+      console.log('Map tiles copied to:', destination);
+      await gatherOtherMapsForDistribution(backupFileName, isBeingExported);
+      const zipPath = Platform.OS === 'ios' ? APP_DIRECTORIES.EXPORT_FILES_IOS : APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID;
+      const path = await zip(appExportDirectory + backupFileName,
+        zipPath + backupFileName + '.zip');
 
-    const deleteTempFolder = useDevice.deleteFromDevice(appExportDirectory, backupFileName);
-    console.log('Folder', deleteTempFolder);
-    console.log(`zip completed at ${path}`);
-    console.log('All Done Exporting');
+      const deleteTempFolder = useDevice.deleteFromDevice(appExportDirectory, backupFileName);
+      console.log('Folder', deleteTempFolder);
+      console.log(`zip completed at ${path}`);
+      console.log('All Done Exporting');
+    }
+    catch (e) {
+      const warningMessage = 'Error Exporting\n' + e;
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage(warningMessage));
+      dispatch(setIsWarningMessagesModalVisible(true));
+      throw Error;
+    }
   };
 
   return {
-    backupProjectToDevice: backupProjectToDevice,
     initializeBackup: initializeBackup,
     zipAndExportProjectFolder: zipAndExportProjectFolder,
   };

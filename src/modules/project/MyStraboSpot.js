@@ -21,12 +21,13 @@ import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
 
 const MyStraboSpot = ({logout, openMainMenuPanel}) => {
-  const [showSection, setShowSection] = useState('none');
-  const [importedProject, setImportedProject] = useState({});
   const [importComplete] = useState(false);
+  const [importedProject, setImportedProject] = useState({});
+  const [showSection, setShowSection] = useState('none');
+
   const dispatch = useDispatch();
-  const useDevice = useDeviceHook();
   const toast = useToast();
+  const useDevice = useDeviceHook();
 
   useEffect(() => {
     console.log('UE MyStraboSpot []');
@@ -38,7 +39,7 @@ const MyStraboSpot = ({logout, openMainMenuPanel}) => {
       const exists = await useDevice.doesDeviceBackupDirExist();
       console.log('Backup Directory Exists: ', exists);
       if (Platform.OS === 'android') await checkAndroidDownloadDir();
-      console.log('ALL DONE');
+      console.log('Done Checking Backup Directory');
     }
     catch (err) {
       console.error('Error Checking If Backup Dir Exists', err);
@@ -150,7 +151,7 @@ const MyStraboSpot = ({logout, openMainMenuPanel}) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <View style={{alignItems: 'flex-start'}}>
         {showSection !== 'none' && (
           <Button
@@ -168,7 +169,7 @@ const MyStraboSpot = ({logout, openMainMenuPanel}) => {
         )}
       </View>
       {renderSectionView()}
-    </React.Fragment>
+    </>
   );
 };
 

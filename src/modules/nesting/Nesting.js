@@ -15,6 +15,8 @@ import {SpotsListItem} from '../spots';
 import useSpotsHook from '../spots/useSpots';
 
 const Nesting = () => {
+  console.log('Rendering Nesting');
+
   const useImages = useImagesHook();
   const useNesting = useNestingHook();
   const useSpots = useSpotsHook();
@@ -24,8 +26,8 @@ const Nesting = () => {
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
-  const [childrenGenerations, setChildrenGenerations] = useState();
-  const [parentGenerations, setParentGenerations] = useState();
+  const [childrenGenerations, setChildrenGenerations] = useState(null);
+  const [parentGenerations, setParentGenerations] = useState(null);
 
   const notebookPageVisible = !isEmpty(pagesStack) && pagesStack.slice(-1)[0];
 
@@ -65,11 +67,12 @@ const Nesting = () => {
   };
 
   const renderName = (spot) => {
+    const numSubspots = isEmpty(childrenGenerations) ? null : childrenGenerations.flat().length;
     return (
       <SpotsListItem
-        doShowSubspots={true}
-        spot={spot}
+        numSubspots={numSubspots}
         onPress={() => useSpots.handleSpotSelected(spot)}
+        spot={spot}
       />
     );
   };

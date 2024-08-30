@@ -143,7 +143,7 @@ const AddRockMetamorphicModal = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <MainButtons
         mainKeys={firstKeys}
         formName={props.formName}
@@ -170,7 +170,7 @@ const AddRockMetamorphicModal = (props) => {
       />
       <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
       {isFaciesModalVisible && renderFaciesModal()}
-    </React.Fragment>
+    </>
   );
 };
 

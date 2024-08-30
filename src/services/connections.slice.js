@@ -3,9 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialConnectionsState = {
   isOnline: {},
   databaseEndpoint: {
-    protocol: 'http://',
-    domain: '',
-    path: '/db',
+    url: '',
     isSelected: false,
     isVerified: false,
   },
@@ -24,11 +22,8 @@ const connectionsSlice = createSlice({
     setDatabaseIsSelected(state, action) {
       state.databaseEndpoint.isSelected = action.payload;
     },
-    setDatabaseUrl(state, action) {
-      const {protocol, domain, path} = action.payload;
-      state.databaseEndpoint.protocol = protocol;
-      state.databaseEndpoint.domain = domain;
-      state.databaseEndpoint.path = path;
+    setCustomDatabaseUrl(state, action) {
+      state.databaseEndpoint.url = action.payload;
     },
     updatedProjectTransferProgress(state, action) {
       state.projectTransferProgress = action.payload;
@@ -39,7 +34,7 @@ const connectionsSlice = createSlice({
 export const {
   setDatabaseIsSelected,
   setDatabaseVerify,
-  setDatabaseUrl,
+  setCustomDatabaseUrl,
   setOnlineStatus,
   updatedProjectTransferProgress,
 } = connectionsSlice.actions;

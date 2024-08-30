@@ -6,7 +6,6 @@ const initialUserState = {
   name: null,
   email: null,
   mapboxToken: null,
-  password: null,
   image: null,
 };
 
@@ -16,11 +15,10 @@ const userProfileSlice = createSlice({
   initialState: initialUserState,
   reducers: {
     setUserData(state, action) {
-      const {name, email, mapboxToken, password, encoded_login, image} = action.payload;
+      const {name, email, mapboxToken, encoded_login, image} = action.payload;
       state.name = name;
       state.email = email;
       state.mapboxToken = mapboxToken;
-      state.password = password;
       state.encoded_login = encoded_login;
       state.image = image;
     },

@@ -24,12 +24,12 @@ const DrawInfo = ({distance, endMeasurement, mapMode, onEndDrawPressed}) => {
             <Text style={{textAlign: 'center'}}>Total Distance: {distance.toFixed(3)}km</Text>
           )
           : (
-            <React.Fragment>
+            <>
               <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
               <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
                 {truncateText(useProject.getSelectedDatasetFromId().name, 20)}
               </Text>
-            </React.Fragment>
+            </>
           )}
         <View>
           {mapMode === MAP_MODES.DRAW.POINT ? (

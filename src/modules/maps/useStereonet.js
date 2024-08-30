@@ -1,17 +1,11 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment/moment';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setIsErrorMessagesModalVisible,
-  setIsStatusMessagesModalVisible,
-} from '../home/home.slice';
+import alert from '../../shared/ui/alert';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from '../measurements/measurements.constants';
 
 const useStereonet = () => {
-  const dispatch = useDispatch();
   const userName = useSelector(state => state.user?.name);
 
   const getStereonet = async (spots) => {
@@ -154,14 +148,10 @@ const useStereonet = () => {
 
     if (hasData) {
       Clipboard.setString(out);
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Success!\n\nData has been copied to clipboard.'));
-      dispatch(setIsStatusMessagesModalVisible(true));
+      alert('Success!\n\nData has been copied to clipboard.');
     }
     else {
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error!\n\nYour selected spots contained no valid stereonet data.'));
-      dispatch(setIsErrorMessagesModalVisible(true));
+      alert('Error!\n\nYour selected spots contained no valid stereonet data.');
     }
   };
 

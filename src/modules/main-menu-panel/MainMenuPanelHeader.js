@@ -2,12 +2,15 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {MAIN_MENU_TITLE} from './mainMenu.constants';
+import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import mainMenuPanelStyles from './mainMenuPanel.styles';
 
 const MainMenuPanelHeader = ({onPress}) => {
+  const dispatch = useDispatch();
+
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
   const isSideMenuVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
 
@@ -20,7 +23,7 @@ const MainMenuPanelHeader = ({onPress}) => {
             type={'ionicon'}
             color={'black'}
             iconStyle={mainMenuPanelStyles.buttons}
-            onPress={onPress}
+            onPress={() => dispatch(setMenuSelectionPage({name: null}))}
             size={30}
           />
         )}

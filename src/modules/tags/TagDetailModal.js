@@ -81,15 +81,17 @@ const TagDetailModal = ({
         {renderCancelSaveButtons()}
         <FlatList
           ListHeaderComponent={
-            <React.Fragment>
+            <>
               {useTags.renderTagForm(type)}
-              {!isEmpty(selectedTag) && <Button
-                titleStyle={{color: themes.RED}}
-                title={'Delete Tag'}
-                type={'clear'}
-                onPress={() => confirmDeleteTag()}
-              />}
-            </React.Fragment>
+              {!isEmpty(selectedTag) && (
+                <Button
+                  titleStyle={{color: themes.RED}}
+                  title={'Delete Tag'}
+                  type={'clear'}
+                  onPress={() => confirmDeleteTag()}
+                />
+              )}
+            </>
           }
         />
       </>

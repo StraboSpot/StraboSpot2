@@ -16,7 +16,7 @@ import uiStyles from '../../shared/ui/ui.styles';
 import {Form, useFormHook} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
-import notebookStyles from '../notebook-panel/notebookPanel.styles';
+import notebookStyles from '../notebook-panel/notebook.styles';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
 

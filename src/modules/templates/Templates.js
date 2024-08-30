@@ -206,7 +206,7 @@ const Templates = (props) => {
     }
 
     return (
-      <React.Fragment>
+      <>
         <FlatList
           listKey={JSON.stringify(relevantTemplates)}
           data={relevantTemplates}
@@ -235,13 +235,13 @@ const Templates = (props) => {
           type={'clear'}
           onPress={createNewTemplate}
         />
-      </React.Fragment>
+      </>
     );
   };
 
   const renderTemplateNameInput = () => {
     return (
-      <React.Fragment>
+      <>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Button
             titleStyle={commonStyles.standardButtonText}
@@ -268,7 +268,7 @@ const Templates = (props) => {
             autoFocus={isEmpty(name)}
           />
         </View>
-      </React.Fragment>
+      </>
     );
   };
 
@@ -276,19 +276,19 @@ const Templates = (props) => {
     if (templateKey === measurementKey) {
       if (!props.typeKey || (props.typeKey && props.typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)) {
         return (
-          <React.Fragment>
+          <>
             {renderTemplateSelection('planar_orientation')}
             {renderTemplateSelection('linear_orientation')}
-          </React.Fragment>
+          </>
         );
       }
       else return renderTemplateSelection(props.typeKey);
     }
     else {
       return (
-        <React.Fragment>
+        <>
           {renderTemplateSelection(templateKey)}
-        </React.Fragment>
+        </>
       );
     }
   };
@@ -421,12 +421,12 @@ const Templates = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {props.isShowTemplates && isShowNameInput ? renderTemplateNameInput()
         : props.isShowTemplates && isShowForm ? renderFormFields()
           : props.isShowTemplates ? renderTemplatesList()
             : renderTemplateToggle()}
-    </React.Fragment>
+    </>
   );
 };
 

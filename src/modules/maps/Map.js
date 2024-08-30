@@ -35,7 +35,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
   clearedSelectedSpots,
   editedOrCreatedSpot,
-  editedSpots,
+  editedOrCreatedSpots,
   setIntersectedSpotsForTagging,
   setSelectedSpot,
 } from '../spots/spots.slice';
@@ -902,7 +902,7 @@ const Map = ({
     if (!isEmpty(spotsEdited)) {
       const spotIds = spotsEdited.map(s => s.properties.id);
       dispatch(updatedModifiedTimestampsBySpotsIds(spotIds));
-      dispatch(editedSpots(spotsEdited));
+      dispatch(editedOrCreatedSpots(spotsEdited));
     }
     clearEditing();
   };

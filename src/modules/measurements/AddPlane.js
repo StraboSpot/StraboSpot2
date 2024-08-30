@@ -25,13 +25,13 @@ const AddPlane = (props) => {
   const featureType = props.formProps?.values?.feature_type;
 
   return (
-    <React.Fragment>
+    <>
       {!props.isManualMeasurement && (
         <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
       )}
       <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
       {featureType && (
-        <React.Fragment>
+        <>
           {featureType === 'bedding' && <MainButtons {...{mainKeys: beddingButtonsKeys, ...props}}/>}
           {featureType === 'contact' && <MainButtons {...{mainKeys: contactButtonsKeys, ...props}}/>}
           {featureType === 'foliation' && <MainButtons {...{mainKeys: foliationButtonsKeys, ...props}}/>}
@@ -39,11 +39,11 @@ const AddPlane = (props) => {
           {featureType === 'vein' && <MainButtons {...{mainKeys: veinButtonsKeys, ...props}}/>}
           {featureType === 'fault' || featureType === 'shear_zone_bou' || featureType === 'shear_zone'
             && <MainButtons {...{mainKeys: faultButtonsKeys, ...props}}/>}
-        </React.Fragment>
+        </>
       )}
       <LittleSpacer/>
       <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
-    </React.Fragment>
+    </>
   );
 };
 

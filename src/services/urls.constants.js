@@ -3,6 +3,7 @@ const straboSpotAPI = 'https://strabospot.org';
 const tilehost = 'https://tiles.strabospot.org';
 const straboDB = straboSpotAPI + '/db';
 const straboImage = straboSpotAPI + '/db/image/';
+const straboProfileImage = straboSpotAPI + '/profileimage/';
 const straboPublicImage = straboSpotAPI + '/pi/';
 const straboPublicImageThumbnail = straboSpotAPI + '/pi_thumbnail/';
 const straboPublicImageResized = straboSpotAPI + '/pi_basemap/';
@@ -19,6 +20,7 @@ export const STRABO_APIS = {
   PUBLIC_IMAGE: straboPublicImage,
   PUBLIC_IMAGE_THUMBNAIL: straboPublicImageThumbnail,
   PUBLIC_IMAGE_RESIZED: straboPublicImageResized,
+  PROFILE_IMAGE: straboProfileImage,
   TILE_HOST: tilehost,
   DB: straboDB,
   MY_MAPS_BBOX: myMapsBbox,

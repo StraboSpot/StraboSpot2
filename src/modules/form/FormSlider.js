@@ -54,7 +54,7 @@ const FormSlider = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <ListItem containerStyle={commonStyles.listItemFormField}>
         <ListItem.Content>
           <ListItem.Title
@@ -86,7 +86,7 @@ const FormSlider = ({
           </View>
         )}
       </View>
-    </React.Fragment>
+    </>
   );
 };
 

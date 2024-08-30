@@ -7,10 +7,9 @@ import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
-  const {protocol, domain, path, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const endpointURL = protocol + domain + path;
-  const baseUrl = endpointURL && isSelected ? endpointURL : STRABO_APIS.DB;
+  const baseUrl = url && isSelected ? url : STRABO_APIS.DB;
   const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
 
@@ -113,8 +112,8 @@ const useServerRequests = () => {
 
   const getMyMapsBbox = async (mapId) => {
     if (isSelected) {
-      console.log(endpointURL.replace('/db', '/geotiff/bbox/' + mapId));
-      const bboxEndpoint = endpointURL.replace('/db', '/geotiff/bbox/' + mapId);
+      console.log(url.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = url.replace('/db', '/geotiff/bbox/' + mapId);
       const response = await fetch(bboxEndpoint);
       return handleResponse(response);
     }
@@ -151,18 +150,16 @@ const useServerRequests = () => {
           Authorization: 'Basic ' + encodedLogin,
         },
       });
-      if (imageResponse.status === 200) {
-        imageBlob = imageResponse.blob();
-        return imageBlob;
-      }
-      else {
-        imageBlob = null;
-        return imageBlob;
-      }
+      if (imageResponse.status === 200) imageBlob = imageResponse.blob();
+      return imageBlob;
     }
     catch (error) {
       console.error(error);
     }
+  };
+
+  const getProfileImageURL = () => {
+    return baseUrl + '/profileimage';
   };
 
   const getProject = async (projectId, encodedLogin) => {
@@ -282,9 +279,9 @@ const useServerRequests = () => {
     }
   };
 
-  const testEndpoint = async (endpointURL) => {
+  const testEndpoint = async (customEndpointURL) => {
     try {
-      const res = await timeoutPromise(15000, fetch(endpointURL));
+      const res = await timeoutPromise(15000, fetch(customEndpointURL));
       console.log('Endpoint Test Response:', res);
       return res.ok;
     }
@@ -331,7 +328,7 @@ const useServerRequests = () => {
     return post('/project', encodedLogin, project);
   };
 
-  const uploadImage = async (formdata, encodedLogin) => {
+  const uploadImage = async (formdata, encodedLogin, isProfileImage) => {
     const xhr = new XMLHttpRequest();
     return new Promise((resolve, reject) => {
       xhr.upload.addEventListener('progress', uploadProgress);
@@ -340,28 +337,17 @@ const useServerRequests = () => {
         if (xhr.status === 404) reject(false);
         else resolve(xhr.response);
       });
-      xhr.addEventListener('error', () => {
-        console.error('REJECTED UPDATE');
+      xhr.addEventListener('error', (e) => {
+        console.error('REJECTED UPDATE', e);
         reject(false);
       });
 
-      xhr.open('POST', baseUrl + '/image');
+      if (isProfileImage) xhr.open('POST', baseUrl + '/profileImage');
+      else xhr.open('POST', baseUrl + '/image');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
       xhr.send(formdata);
     });
-  };
-
-  const uploadProfileImage = async (formdata, encodedLogin) => {
-    const response = await fetch(`${baseUrl}/profileImage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Basic ' + encodedLogin,
-      },
-      body: formdata,
-    });
-    return handleResponse(response);
   };
 
   const uploadWebImage = async (formData, encodedLogin) => {
@@ -378,8 +364,8 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
-  const verifyEndpoint = async (protocolValue, domainValue, pathValue) => {
-    return await testEndpoint(protocolValue + domainValue + pathValue);
+  const verifyEndpoint = async (customEndpointURL) => {
+    return await testEndpoint(customEndpointURL);
   };
 
   const verifyImageExistence = (imageId, encodedLogin) => {
@@ -388,7 +374,7 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const myMapsEndpoint = isSelected ? endpointURL.replace('/db', '/strabotiles') : tilehost;
+      const myMapsEndpoint = isSelected ? url.replace('/db', '/strabotiles') : tilehost;
       const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);
@@ -418,6 +404,7 @@ const useServerRequests = () => {
     getMyProjects: getMyProjects,
     getProfile: getProfile,
     getProfileImage: getProfileImage,
+    getProfileImageURL: getProfileImageURL,
     getProject: getProject,
     getTilehostUrl: getTilehostUrl,
     registerUser: registerUser,
@@ -429,7 +416,6 @@ const useServerRequests = () => {
     updateProfile: updateProfile,
     updateProject: updateProject,
     uploadImage: uploadImage,
-    uploadProfileImage: uploadProfileImage,
     uploadWebImage: uploadWebImage,
     verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,

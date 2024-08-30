@@ -19,7 +19,7 @@ const AddRockSedimentaryModal = (props) => {
   const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
 
   return (
-    <React.Fragment>
+    <>
       <MainButtons
         mainKeys={firstKeys}
         formName={props.formName}
@@ -90,7 +90,7 @@ const AddRockSedimentaryModal = (props) => {
         setChoicesViewKey={props.setChoicesViewKey}
       />
       <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
-    </React.Fragment>
+    </>
   );
 };
 

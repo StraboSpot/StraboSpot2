@@ -66,7 +66,7 @@ const AddFabricModal = ({onPress}) => {
 
   const renderForm = (formProps) => {
     return (
-      <React.Fragment>
+      <>
         <ButtonGroup
           selectedIndex={selectedTypeIndex}
           onPress={onFabricTypePress}
@@ -103,7 +103,7 @@ const AddFabricModal = ({onPress}) => {
             formProps={formProps}
           />
         )}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -115,7 +115,7 @@ const AddFabricModal = ({onPress}) => {
         buttonTitleRight={choicesViewKey && 'Done'}
         onPress={onPress}
       >
-        <React.Fragment>
+        <>
           <FlatList
             bounces={false}
             ListHeaderComponent={
@@ -136,7 +136,7 @@ const AddFabricModal = ({onPress}) => {
               </View>
             }
           />
-        </React.Fragment>
+        </>
         {!choicesViewKey && <SaveButton title={'Save Fabric'} onPress={saveFabric}/>}
       </Modal>
     );

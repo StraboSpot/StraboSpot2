@@ -21,12 +21,14 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
   const spots = useSelector(state => state.spot.spots);
   const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
+  let sortedSpots = useSpots.getSpotsSortedReverseChronologically();
+
   const renderNoSpotsText = () => {
     return <ListEmptyText text={'No Spots in Active Datasets'}/>;
   };
 
   const renderSpotsList = () => {
-    let sortedSpots = useSpots.getSpotsSortedReverseChronologically();
+    console.log('Rendering Spots List...');
     let noSpotsText = 'No Spots';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
       sortedSpots = spotsInMapExtent;
@@ -67,7 +69,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
 
   return (
     <>
-      {isEmpty(useSpots.getActiveSpotsObj()) ? renderNoSpotsText() : renderSpotsList()}
+      {isEmpty(sortedSpots) ? renderNoSpotsText() : renderSpotsList()}
     </>
   );
 };

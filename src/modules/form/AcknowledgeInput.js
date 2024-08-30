@@ -15,27 +15,25 @@ const AcknowledgeInput = ({
                             value,
                           }) => {
   return (
-    <React.Fragment>
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
-        <View>
-          <Switch
-            value={value}
-            onValueChange={bool => setFieldValue(name, bool)}
-          />
-        </View>
-        <View style={[formStyles.fieldLabelContainer, {flex: 1, paddingLeft: 5}]}>
-          <Text style={formStyles.fieldLabel}>{label}</Text>
-          {placeholder && (
-            <Icon
-              name={'information-circle-outline'}
-              type={'ionicon'}
-              color={themes.PRIMARY_ACCENT_COLOR}
-              onPress={() => onShowFieldInfo(label, placeholder)}
-            />
-          )}
-        </View>
+    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
+      <View>
+        <Switch
+          value={value}
+          onValueChange={bool => setFieldValue(name, bool)}
+        />
       </View>
-    </React.Fragment>
+      <View style={[formStyles.fieldLabelContainer, {flex: 1, paddingLeft: 5}]}>
+        <Text style={formStyles.fieldLabel}>{label}</Text>
+        {placeholder && (
+          <Icon
+            name={'information-circle-outline'}
+            type={'ionicon'}
+            color={themes.PRIMARY_ACCENT_COLOR}
+            onPress={() => onShowFieldInfo(label, placeholder)}
+          />
+        )}
+      </View>
+    </View>
   );
 };
 

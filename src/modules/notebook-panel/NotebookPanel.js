@@ -1,162 +1,26 @@
-import React, {useEffect} from 'react';
-import {FlatList, View} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 
-import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
-import NotebookFooter from './notebook-footer/NotebookFooter';
-import NotebookHeader from './notebook-header/NotebookHeader';
-import {setNotebookPageVisible} from './notebook.slice';
-import notebookStyles from './notebookPanel.styles';
-import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import notebookStyles from './notebook.styles';
+import NotebookContent from './NotebookContent';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
-import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
-import ListEmptyText from '../../shared/ui/ListEmptyText';
-import SectionDivider from '../../shared/ui/SectionDivider';
-import {setModalVisible} from '../home/home.slice';
-import Overview from '../page/Overview';
-import {NOTEBOOK_PAGES, PAGE_KEYS, SUBPAGES} from '../page/page.constants';
-import usePageHook from '../page/usePage';
-import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
-import {SpotsListItem, useSpotsHook} from '../spots';
 
 const NotebookPanel = ({closeNotebookPanel, createDefaultGeom, openMainMenuPanel, zoomToSpots}) => {
   console.log('Rendering NotebookPanel...');
 
-  const dispatch = useDispatch();
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isNotebookPanelVisible = useSelector(state => state.notebook.isNotebookPanelVisible);
-  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
-  const recentlyViewedSpotIds = useSelector(state => state.spot.recentViews);
-  const spot = useSelector(state => state.spot.selectedSpot);
-  const spots = useSelector(state => state.spot.spots);
-
-  const useSpots = useSpotsHook();
-  const usePage = usePageHook();
-
-  const pageVisible = pagesStack.slice(-1)[0];
-
-  useEffect(() => {
-    console.log('UE NotebookPanel [pageVisible, spot]', pageVisible, spot);
-    dispatch(setMultipleFeaturesTaggingEnabled(false));
-  }, [pageVisible, spot]);
-
-  const openPage = (key) => {
-    dispatch(setNotebookPageVisible(key));
-    const page = NOTEBOOK_PAGES.find(p => p.key === key);
-    if (SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
-    else if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
-    else if (page.modal_component) {
-      const populatedPagesKeys = usePage.getPopulatedPagesKeys(spot);
-      if (populatedPagesKeys.includes(page.key)) dispatch(setModalVisible({modal: null}));
-      else dispatch(setModalVisible({modal: page.key}));
-    }
-    else dispatch(setModalVisible({modal: null}));
-  };
-
-  const renderNotebookContent = () => {
-    const isRelevantPage = pageVisible === PAGE_KEYS.OVERVIEW
-      || usePage.getRelevantGeneralPages().map(p => p.key).includes(pageVisible)
-      || usePage.getRelevantPetPages().map(p => p.key).includes(pageVisible)
-      || usePage.getRelevantSedPages().map(p => p.key).includes(pageVisible)
-      || SUBPAGES.map(p => p.key).includes(pageVisible);
-    if (!isRelevantPage) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
-
-    let pageKey = isRelevantPage ? pageVisible : PAGE_KEYS.OVERVIEW;
-    const page = NOTEBOOK_PAGES.find(p => p.key === pageKey);
-    const Page = page?.page_component || Overview;
-    let pageProps = {openMainMenuPanel: openMainMenuPanel, page: page};
-    if (page.key === PAGE_KEYS.IMAGES) pageProps = {...pageProps};
-    return (
-      <>
-        <View style={notebookStyles.headerContainer}>
-          <NotebookHeader
-            closeNotebookPanel={closeNotebookPanel}
-            createDefaultGeom={createDefaultGeom}
-            zoomToSpots={zoomToSpots}
-          />
-        </View>
-        <View style={{...notebookStyles.centerContainer}}>
-          <Page {...pageProps}/>
-        </View>
-        <View style={notebookStyles.footerContainer}>
-          <NotebookFooter openPage={openPage}/>
-        </View>
-      </>
-    );
-  };
-
-  const renderNotebookContentNoSpot = () => {
-    return (
-      <View style={notebookStyles.centerContainer}>
-        {renderRecentSpotsList()}
-      </View>
-    );
-  };
-
-  const renderParentSpot = () => {
-    const parentSpot = useSpots.getRootSpot(currentImageBasemap.id);
-    return (
-      <View style={{justifyContent: 'flex-start'}}>
-        <SectionDivider dividerText={'Parent Spot'}/>
-        <FlatList
-          keyExtractor={item => item?.properties?.id?.toString()}
-          data={[parentSpot]}
-          renderItem={({item}) => (
-            <SpotsListItem
-              doShowTags={true}
-              spot={item}
-              onPress={() => useSpots.handleSpotSelected(item)}
-            />
-          )}
-          ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText text={'No Parent Spot Found'}/>}
-        />
-      </View>
-    );
-  };
-
-  const renderRecentSpotsList = () => {
-    let spotsList = recentlyViewedSpotIds.reduce((obj, key) => {
-      if (spots?.[key]) obj.push(spots[key]);
-      return obj;
-    }, []);
-    if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();
-
-    return (
-      <View style={notebookStyles.centerContainer}>
-        {currentImageBasemap && renderParentSpot()}
-        <SectionDivider dividerText={'Recent Spots'}/>
-        <FlatList
-          keyExtractor={item => item.properties.id.toString()}
-          data={spotsList}
-          renderItem={({item}) => (
-            <SpotsListItem
-              doShowTags={true}
-              spot={item}
-              onPress={() => useSpots.handleSpotSelected(item)}
-            />
-          )}
-          ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText text={'No Spots in Active Datasets'}/>}
-        />
-        {!SMALL_SCREEN && (
-          <Button
-            title={'Close Notebook'}
-            type={'clear'}
-            titleStyle={commonStyles.standardButtonText}
-            onPress={closeNotebookPanel}
-          />
-        )}
-      </View>
-    );
-  };
 
   if (SMALL_SCREEN || isNotebookPanelVisible) {
     return (
       <View style={notebookStyles.notebookPanel}>
-        {isEmpty(spot) ? renderNotebookContentNoSpot() : renderNotebookContent()}
+        <NotebookContent
+          closeNotebookPanel={closeNotebookPanel}
+          createDefaultGeom={createDefaultGeom}
+          openMainMenuPanel={openMainMenuPanel}
+          zoomToSpots={zoomToSpots}
+        />
       </View>
     );
   }

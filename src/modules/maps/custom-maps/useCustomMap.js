@@ -2,12 +2,13 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/urls.constants';
 import useServerRequestsHook from '../../../services/useServerRequests';
+import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, clearedStatusMessages, setIsWarningMessagesModalVisible} from '../../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../../project/projects.slice';
 import {MAP_PROVIDERS} from '../maps.constants';
-import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap} from '../maps.slice';
+import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, updateCustomMap} from '../maps.slice';
 import useMapHook from '../useMap';
 import useMapCoordsHook from '../useMapCoords';
 import useMapURLHook from '../useMapURL';
@@ -75,10 +76,12 @@ const useCustomMap = () => {
     const tileUrl = useMapURL.buildTileURL(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
-      const customEndpointTest = customDatabaseEndpoint?.url?.replace('/db', '/strabo_mymaps_check/');
-      testTileUrl = customDatabaseEndpoint.isSelected
-        ? customEndpointTest + map.id
-        : STRABO_APIS.MY_MAPS_CHECK + map.id;
+      if (!isEmpty(customDatabaseEndpoint.url) && customDatabaseEndpoint.isSelected) {
+        const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
+        testTileUrl = customEndpointTest + map.id;
+      }
+      else testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
+
     }
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
@@ -101,7 +104,7 @@ const useCustomMap = () => {
       dispatch(addedCustomMap(bbox ? {...customMap, bbox: bbox} : customMap));
       return customMap;
     }
-    else throw (customMap.id);
+    else throw (`${customMap.id} is not a valid ID for this map.  Please check the id and try again.`);
   };
 
   const setCustomMapSwitchValue = (value, map) => {
@@ -110,6 +113,14 @@ const useCustomMap = () => {
       dispatch(addedCustomMap({...customMaps[map.id], isViewable: value}));
       if (!customMaps[map.id].overlay) viewCustomMap(map);
     }
+  };
+
+  const updateMap = (map) => {
+    const customMapsCopy = {...customMaps};
+    customMapsCopy[map.id] = map;
+    console.log(customMapsCopy);
+    dispatch(updateCustomMap(map));
+    dispatch(addedProject({...project, other_maps: Object.values(customMapsCopy)}));
   };
 
   const viewCustomMap = (map) => {
@@ -122,6 +133,7 @@ const useCustomMap = () => {
     getCustomMapDetails: getCustomMapDetails,
     saveCustomMap: saveCustomMap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
+    updateMap: updateMap,
   };
 };
 

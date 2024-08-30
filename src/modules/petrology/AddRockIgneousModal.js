@@ -26,7 +26,7 @@ const AddRockIgneousModal = (props) => {
     const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k)).filter(k => !isEmpty(k));
 
     return (
-      <React.Fragment>
+      <>
         <MainButtons
           mainKeys={firstKeys}
           formName={props.formName}
@@ -40,14 +40,14 @@ const AddRockIgneousModal = (props) => {
           setChoicesViewKey={props.setChoicesViewKey}
         />
         {!isEmpty(lastKeysFields) && <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>}
-      </React.Fragment>
+      </>
     );
   };
 
   return (
-    <React.Fragment>
+    <>
       {!isEmpty(props.survey) && renderSpecificIgneousRock()}
-    </React.Fragment>
+    </>
   );
 };
 

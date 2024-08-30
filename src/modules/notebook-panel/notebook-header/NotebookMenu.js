@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -15,7 +15,7 @@ import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
 import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
-import notebookStyles from '../notebookPanel.styles';
+import notebookStyles from '../notebook.styles';
 
 const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) => {
   const dispatch = useDispatch();
@@ -34,10 +34,6 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) =
     {key: 'delete', title: 'Delete this Spot'},
     {key: 'nesting', title: 'Show Nesting'},
   ];
-
-  useEffect(() => {
-    console.log(isDeleteSpotModalVisible);
-  }, [isDeleteSpotModalVisible]);
 
   const continueDeleteSelectedSpot = () => {
     if (useSpots.isStratInterval(spot)) useStratSection.deleteInterval(spot);

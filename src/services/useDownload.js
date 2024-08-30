@@ -1,5 +1,6 @@
 import {Platform} from 'react-native';
 
+import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
@@ -29,6 +30,7 @@ import {
   setSelectedDataset,
 } from '../modules/project/projects.slice';
 import {addedSpotsFromServer} from '../modules/spots/spots.slice';
+import {setUserData} from '../modules/user/userProfile.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useDownload = () => {
@@ -117,6 +119,29 @@ const useDownload = () => {
     }
   };
 
+  const downloadUserProfile = async (encodedLoginScoped = encodedLogin) => {
+    try {
+      let userProfileRes = await useServerRequests.getProfile(encodedLoginScoped);
+
+      if (Platform.OS === 'web') {
+        const userProfileImageBlob = await useServerRequests.getProfileImage(encodedLoginScoped);
+        const image = URL.createObjectURL(userProfileImageBlob);
+        dispatch(setUserData({...userProfileRes, image: image, encoded_login: encodedLoginScoped}));
+      }
+      else {
+        await useDevice.downloadAndSaveProfileImage(encodedLoginScoped);
+        dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
+      }
+
+      Sentry.configureScope((scope) => {
+        scope.setUser({'username': userProfileRes.name, 'email': userProfileRes.email});
+      });
+    }
+    catch (err) {
+      throw Error(err);
+    }
+  };
+
   const gatherNeededImages = async (spotsDownloaded, dataset) => {
     try {
       // console.log(dataset.name, ':', 'Gathering Needed Images...');
@@ -163,7 +188,7 @@ const useDownload = () => {
       dispatch(addedSpotsFromServer(spotsToSave));
       dispatch(addedDatasets(datasetsObjToSave));
       dispatch(addedCustomMapsFromBackup(customMapsToSave));
-      dispatch(addedStatusMessage('Project Loaded!'));
+      dispatch(addedStatusMessage('Complete!'));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
@@ -254,6 +279,7 @@ const useDownload = () => {
   };
 
   return {
+    downloadUserProfile: downloadUserProfile,
     initializeDownload: initializeDownload,
     initializeDownloadImages: initializeDownloadImages,
   };

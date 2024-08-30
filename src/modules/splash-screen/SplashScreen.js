@@ -31,7 +31,7 @@ const SplashScreen = ({children}) => {
         <View style={splashScreenStyles.contentContainer}>
           <View style={splashScreenStyles.titleContainer}>
             <Text style={titleStyles}>StraboSpot 2</Text>
-            <Text style={splashScreenStyles.versionNumber}>
+            <Text style={splashScreenStyles.versionNumberText}>
               v{VERSION_NUMBER}
             </Text>
           </View>

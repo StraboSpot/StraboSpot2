@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Avatar, Button, ListItem} from 'react-native-elements';
+import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
+import UserProfileAvatar from './UserProfileAvatar';
 import useUserProfileHook from './useUserProfile';
 import useResetStateHook from '../../services/useResetState';
 import commonStyles from '../../shared/common.styles';
@@ -16,8 +17,6 @@ import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.con
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
 const UserProfile = ({logout}) => {
-  const defaultAvatar = require('../../assets/images/splash.png');
-
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
 
@@ -25,13 +24,6 @@ const UserProfile = ({logout}) => {
 
   const useResetState = useResetStateHook();
   const useUserProfile = useUserProfileHook();
-
-  const getAvatarSource = () => {
-    if (!isEmpty(userData.image) && typeof userData.image.valueOf() === 'string') return {uri: userData.image};
-    else if (isEmpty(userData.image) || (userData.image && typeof userData.image.valueOf() !== 'string')) {
-      if ((!userData.name || userData.name === '')) return defaultAvatar;
-    }
-  };
 
   const openUploadAndBackupPage = () => {
     setIsLogoutModalVisible(false);
@@ -55,19 +47,6 @@ const UserProfile = ({logout}) => {
     }
   };
 
-  const renderAvatarImage = () => {
-    return (
-      <Avatar
-        title={userData.name && userData.name !== '' && useUserProfile.getInitials()}
-        containerStyle={{backgroundColor: 'darkgrey'}}
-        titleStyle={userStyles.avatarPlaceholderTitleStyle}
-        source={getAvatarSource()}
-        size={70}
-        rounded={true}
-      />
-    );
-  };
-
   const renderProfile = () => {
     return (
       <View>
@@ -75,7 +54,7 @@ const UserProfile = ({logout}) => {
           onPress={() => dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.USER_PROFILE, bool: true}))}
           disabled={isEmpty(userData.name)}
         >
-          {renderAvatarImage()}
+          <UserProfileAvatar size={70}/>
           <ListItem.Content>
             <ListItem.Title style={userStyles.avatarLabelName}>{useUserProfile.getName()}</ListItem.Title>
             <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{useUserProfile.getEmail()}</ListItem.Subtitle>
@@ -96,16 +75,15 @@ const UserProfile = ({logout}) => {
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
-        {isEmpty(userData.name)
-          && (
-            <Button
-              onPress={() => doLogOut('clear')}
-              title={isEmpty(userData.name) && 'Clear and Return to Sign In'}
-              containerStyle={commonStyles.standardButtonContainer}
-              buttonStyle={commonStyles.standardButton}
-              titleStyle={commonStyles.standardButtonText}
-            />
-          )}
+        {isEmpty(userData.name) && (
+          <Button
+            onPress={() => doLogOut('clear')}
+            title={isEmpty(userData.name) && 'Clear and Return to Sign In'}
+            containerStyle={commonStyles.standardButtonContainer}
+            buttonStyle={commonStyles.standardButton}
+            titleStyle={commonStyles.standardButtonText}
+          />
+        )}
       </View>
     );
   };
@@ -142,17 +120,15 @@ const UserProfile = ({logout}) => {
   };
 
   return (
-    <React.Fragment>
-      <View>
-        {renderProfile()}
-        {Platform.OS !== 'web' && (
-          <>
-            {renderLogOutButton()}
-            {renderLogoutModal()}
-          </>
-        )}
-      </View>
-    </React.Fragment>
+    <View>
+      {renderProfile()}
+      {Platform.OS !== 'web' && (
+        <>
+          {renderLogOutButton()}
+          {renderLogoutModal()}
+        </>
+      )}
+    </View>
   );
 };
 
