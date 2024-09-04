@@ -64,7 +64,7 @@ const useUploadImages = () => {
   // };
 
   const initializeImageUpload = async () => {
-    let imagesStatus = {};
+    let imagesStatus = {success: 0, failed: 0};
     console.log('Looking for Images to Upload in Spots...', spots);
     dispatch(removedLastStatusMessage());
     dispatch(addedStatusMessage('Looking for images to upload in spots...'));
@@ -75,24 +75,30 @@ const useUploadImages = () => {
     const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
     dispatch(removedLastStatusMessage());
     dispatch(addedStatusMessage(`Checking to see if ${neededImages.length} image files are on device...`));
-    // console.log('Done getting spot images', spotImages);
+    console.log('Needed Images from server', neededImages);
     const {imagesToUpload, imagesNotFoundOnDevice} = await verifyImageExistsOnDevice(neededImages, images);
     console.log('Done verifying images on device', imagesToUpload);
     //
     if (!isEmpty(imagesToUpload)) {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Uploading needed images to server...'));
-      imagesStatus = await uploadImages(imagesToUpload, imagesNotFoundOnDevice);
+      imagesStatus = await uploadImages(imagesToUpload);
       console.log('DONE UPLOADING IMAGES');
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage(`Uploaded ${imagesToUpload.length} to server.`));
-      return imagesStatus;
     }
+    if (!isEmpty(imagesNotFoundOnDevice)) {
+      imagesStatus = {...imagesStatus, imagesNotFound: imagesNotFoundOnDevice.length};
+    }
+    // if (isEmpty(imagesToUpload) && !isEmpty(imagesNotFoundOnDevice)) {
+    //   dispatch(removedLastStatusMessage());
+    //   imagesStatus = {...imagesStatus, imagesNotFound: imagesNotFoundOnDevice.length};
+    // }
     else {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('All images for this project are already on server.'));
-      return imagesStatus;
     }
+    return imagesStatus;
   };
 
   // Downsize image for upload
@@ -181,7 +187,7 @@ const useUploadImages = () => {
     }
   };
 
-  const uploadImages = async (imagesToUpload, imagesNotFoundOnDevice, datasetName) => {
+  const uploadImages = async (imagesToUpload) => {
     let imagesUploadedCount = 0;
     let imagesUploadFailedCount = 0;
 
@@ -199,7 +205,6 @@ const useUploadImages = () => {
       }
       let msgText = `Uploading Image ${imageProps.id}...`;
       console.log(`Success: ${imagesUploadedCount}/${imagesToUpload.length} uploaded.`);
-      console.log(`Not on device: ${imagesNotFoundOnDevice.length}/${imagesToUpload.length} uploaded.`);
       console.log(`Fail: ${imagesUploadFailedCount}/${imagesToUpload.length} uploaded.`);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage(

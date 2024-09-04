@@ -12,8 +12,9 @@ import useUploadImages from '../../../services/useUploadImages';
 import {isEmpty} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import Spacer from '../../../shared/ui/Spacer';
-import LottieAnimations from '../../../utils/animations/LottieAnimations.web';
+import LottieAnimations from '../../../utils/animations/LottieAnimations';
 import {
+  clearedStatusMessages,
   setIsProgressModalVisible,
 } from '../../home/home.slice';
 import overlayStyles from '../../home/overlays/overlay.styles';
@@ -35,7 +36,7 @@ const UploadModal = ({closeModal, visible}) => {
   const [imageUploadStatus, setImageUploadStatus] = useState({});
   const [modalTitle, setModalTitle] = useState('Overwrite Warning!');
   const [projectUploadStatus, setProjectUploadStatus] = useState('');
-  const [uploadState, setUploadState] = useState('Not started');
+  const [uploadState, setUploadState] = useState('not started');
 
   const {uploadProject, uploadDatasets} = useUpload();
   const {initializeImageUpload} = useUploadImages();
@@ -44,7 +45,7 @@ const UploadModal = ({closeModal, visible}) => {
 
   const handleClosePress = () => {
     setModalTitle('Overwrite Warning!');
-    setUploadState('Not started');
+    setUploadState('not started');
     setProjectUploadStatus('');
     setDatasetUploadStatus('');
     closeModal();
@@ -52,6 +53,7 @@ const UploadModal = ({closeModal, visible}) => {
 
   const initiateUpload = async () => {
     try {
+      dispatch(clearedStatusMessages());
       Platform.OS !== 'web' && KeepAwake.activate();
       setModalTitle('Uploading');
       setUploadState('uploading');
@@ -63,8 +65,15 @@ const UploadModal = ({closeModal, visible}) => {
       dispatch(setIsProgressModalVisible(false));
       dispatch(setIsImageTransferring(false));
       setImageUploadStatus(imageStatus);
-      setUploadState('complete');
-      setModalTitle('All Uploaded!');
+      if (imageStatus.imagesNotFound) {
+        setUploadState('error');
+        setModalTitle('Uploaded With Errors!');
+        setErrorMesssage(`There are ${imageStatus.imagesNotFound} images needed that were not found on this device.`);
+      }
+      else {
+        setUploadState('complete');
+        setModalTitle('All Uploaded!');
+      }
     }
     catch (err) {
       console.error('Error uploading', err);
@@ -75,13 +84,22 @@ const UploadModal = ({closeModal, visible}) => {
 
   const uploadImagesOnly = async () => {
     try {
+      dispatch(clearedStatusMessages());
       Platform.OS !== 'web' && KeepAwake.activate();
       setModalTitle('Uploading');
       setUploadState('uploading');
       const imageStatus = await initializeImageUpload();
       setImageUploadStatus(imageStatus);
-      setUploadState('complete');
-      setModalTitle('All Uploaded!');
+      if (imageStatus.imagesNotFound) {
+        setUploadState('error');
+        setModalTitle('Uploaded With Errors!');
+        setErrorMesssage(
+          `There are ${imageStatus.imagesNotFound} images needed that were not found on this device.`);
+      }
+      else {
+        setUploadState('complete');
+        setModalTitle('All Uploaded!');
+      }
     }
     catch (err) {
       console.error('Error uploading', err);
@@ -92,8 +110,13 @@ const UploadModal = ({closeModal, visible}) => {
 
   const renderErrorView = () => {
     return (
-      <View>
-        <Text>Hello this is an Error</Text>
+      <View style={{padding: 10}}>
+        <LottieAnimations
+          type={'error'}
+          show={uploadState === 'error'}
+          doesLoop={false}
+        />
+        <Text style={{textAlign: 'center'}}>{errorMessage}</Text>
       </View>
     );
   };
@@ -137,12 +160,23 @@ const UploadModal = ({closeModal, visible}) => {
     </View>
   );
 
-  const renderImageUploadStatusText = () => (
-    <View>
-      <Text>Images Success: {imageUploadStatus.success || 0}</Text>
-      <Text>Images Failed: {imageUploadStatus.failed || 0}</Text>
-    </View>
-  );
+  const renderImageUploadStatusText = () => {
+    if (uploadState === 'complete') {
+      return (
+        <View>
+          <Text>Images uploaded successfully: {imageUploadStatus.success || 0}</Text>
+        </View>
+      );
+    }
+    else if (uploadState === 'error') {
+      return (
+        <View>
+          <Text>Images uploaded successfully: {imageUploadStatus.success || 0}</Text>
+          <Text>Images Failed: {imageUploadStatus.failed || 0}</Text>
+        </View>
+      );
+    }
+  };
 
   const renderUploadProgress = () => {
     return (
@@ -170,7 +204,7 @@ const UploadModal = ({closeModal, visible}) => {
           <View style={overlayStyles.overlayContent}>
             <Text>Project: {projectUploadStatus === 'success' ? 'Success!' : 'Uploading...'}</Text>
             <Text>Datasets: {datasetUploadStatus === 'success' ? 'Success!' : 'Uploading...'}</Text>
-            {uploadState === 'complete' && imageUploadStatus.success > 0 || imageUploadStatus.failed > 0 && renderImageUploadStatusText()}
+            {renderImageUploadStatusText()}
           </View>
 
         </View>
@@ -183,7 +217,7 @@ const UploadModal = ({closeModal, visible}) => {
       modalTitle={modalTitle}
       visible={visible}
     >
-      {uploadState === 'Not started'
+      {uploadState === 'not started'
         ? renderInitialUploadView()
         : uploadState !== 'error'
           ? renderUploadProgress()
