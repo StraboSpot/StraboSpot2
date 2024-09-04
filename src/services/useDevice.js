@@ -232,6 +232,17 @@ const useDevice = () => {
     }
   };
 
+  const getDeviceStorageSpaceInfo = async () => {
+    let imageSizeText;
+    const {freeSpace, totalSpace} = await RNFS.getFSInfo();
+    console.log(`Device storage is ${freeSpace}/${totalSpace}`)
+    if (freeSpace < 1024) imageSizeText = freeSpace + ' bytes';
+    else if (freeSpace < 1048576) imageSizeText = (freeSpace / 1024).toFixed(3) + ' kB';
+    else if (freeSpace < 1073741824) imageSizeText = (freeSpace / 1048576).toFixed(2) + ' MB';
+    else imageSizeText = (freeSpace / 1073741824).toFixed(3) + ' GB';
+    console.log('The available space is:', imageSizeText);
+  }
+
   const getExternalProjectData = async () => {
     const options = {
       type: [DocumentPicker.types.zip],
@@ -442,6 +453,7 @@ const useDevice = () => {
     downloadAndSaveImage: downloadAndSaveImage,
     downloadAndSaveProfileImage: downloadAndSaveProfileImage,
     downloadAndSaveMap: downloadAndSaveMap,
+    getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
     getExternalProjectData: getExternalProjectData,
     isPickDocumentCanceled: isPickDocumentCanceled,
     makeDirectory: makeDirectory,
