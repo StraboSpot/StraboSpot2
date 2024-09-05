@@ -37,10 +37,12 @@ const UserProfilePage = () => {
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
+  const userEncodedLogin = useSelector(state => state.user.encoded_login);
 
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
+  const [isDeletingProfileImage, setIsDeletingProfileImage] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
@@ -148,6 +150,23 @@ const UserProfilePage = () => {
     }
   };
 
+  const removeProfileImage = async () => {
+    try {
+      setIsDeletingProfileImage(true);
+      await useServerRequest.deleteProfileImage(userEncodedLogin);
+      if (Platform.OS !== 'web') await useDevice.deleteFromDevice('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      setShouldUpdateImage(true);
+      setIsDeletingProfileImage(false);
+      closeProfileImageModal();
+      toast.show('Profile Image Removed', {type: 'success'});
+    }
+    catch (err) {
+      console.error('Error deleting profile image', err);
+      setIsDeletingProfileImage(false);
+      closeProfileImageModal();
+    }
+  };
+
   const saveForm = async () => {
     try {
       const formCurrent = formRef.current;
@@ -235,6 +254,14 @@ const UserProfilePage = () => {
           title={'Camera'}
           type={'outline'}
           onPress={() => pickImageSource('camera')}
+        />
+        <Button
+          containerStyle={commonStyles.buttonContainer}
+          buttonStyle={{borderRadius: 10}}
+          title={'Remove Profile Image'}
+          type={'outline'}
+          onPress={removeProfileImage}
+          loading={isDeletingProfileImage}
         />
         <Button
           containerStyle={commonStyles.buttonContainer}
