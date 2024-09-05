@@ -27,15 +27,17 @@ const useSpots = () => {
   const useTags = useTagsHook();
 
   const dispatch = useDispatch();
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project?.preferences) || {};
-  const tags = useSelector(state => state.project.project?.tags) || [];
-  const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const stratSection = useSelector(state => state.map.stratSection);
+  const recentViews = useSelector(state => state.spot.recentViews);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const stratSection = useSelector(state => state.map.stratSection);
+  const tags = useSelector(state => state.project.project?.tags) || [];
+  const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
   const toast = useToast();
 
@@ -371,6 +373,11 @@ const useSpots = () => {
     return {spotName: newSpotName, spotNumber: spotNumber};
   };
 
+  const getRecentSpots = () => {
+    const activeSpotIds = Object.keys(getActiveSpotsObj());
+    return recentViews.reduce((acc, spotId) => activeSpotIds.includes(spotId) ? [...acc, spots[spotId]] : acc, []);
+  };
+
   // Find the rootSpot for a given image id.
   const getRootSpot = (imageId) => {
     let rootSpot, imageFound = false;
@@ -442,6 +449,8 @@ const useSpots = () => {
     });
     return foundSpots;
   };
+
+  const getSpotsInMapExtent = () => spotsInMapExtent;
 
   // Get all the Spots mapped on a specific image basemap
   const getSpotsMappedOnGivenImageBasemap = (basemapId) => {
@@ -540,6 +549,7 @@ const useSpots = () => {
     checkSampleName: checkSampleName,
     checkSpotName: checkSpotName,
     copySpot: copySpot,
+    createRandomSpots: createRandomSpots,
     createSpot: createSpot,
     deleteSpot: deleteSpot,
     getActiveSpotsObj: getActiveSpotsObj,
@@ -548,8 +558,9 @@ const useSpots = () => {
     getImageBasemapBySpot: getImageBasemapBySpot,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
-    getNewSpotName: getNewSpotName,
     getMappableSpots: getMappableSpots,
+    getNewSpotName: getNewSpotName,
+    getRecentSpots: getRecentSpots,
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
     getSpotByImageId: getSpotByImageId,
@@ -557,6 +568,7 @@ const useSpots = () => {
     getSpotWithThisImageBasemap: getSpotWithThisImageBasemap,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
+    getSpotsInMapExtent: getSpotsInMapExtent,
     getSpotsMappedOnGivenImageBasemap: getSpotsMappedOnGivenImageBasemap,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
@@ -571,7 +583,6 @@ const useSpots = () => {
     isOnImageBasemap: isOnImageBasemap,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
-    createRandomSpots: createRandomSpots,
   };
 };
 
