@@ -251,6 +251,7 @@ const useDownload = () => {
           addedStatusMessage('Finished downloading images: ' + imagesDownloadedCount + '/' + neededImagesIds.length));
         dispatch(setLoadingStatus({view: 'modal', bool: false}));
       }
+      dispatch(addedStatusMessage('Complete!'));
       dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
