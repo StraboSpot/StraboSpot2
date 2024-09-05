@@ -45,6 +45,7 @@ const UserProfilePage = () => {
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false);
   const [shouldUpdateImage, setShouldUpdateImage] = useState(false);
   const [tempUserProfileImage, setTempUserProfileImage] = useState(null);
 
@@ -158,11 +159,11 @@ const UserProfilePage = () => {
       if (isOnline.isInternetReachable) {
         await useUpload.uploadProfile(newValues);
         toast.show('Profile uploaded successfully!', {type: 'success'});
-        setIsUploading(false);
         dispatch(setSidePanelVisible({bool: false}));
       }
       else toast.show('Not connected to internet to upload profile changes', {type: 'warning'});
       setIsSaveButtonDisabled(true);
+      setIsUploading(false);
     }
     catch (err) {
       console.error('Error uploading profile', err);
@@ -173,6 +174,7 @@ const UserProfilePage = () => {
 
   const saveImage = async () => {
     try {
+      setIsUploadingProfileImage(true);
       console.log('Need to upload', tempUserProfileImage.uri);
       const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
         tempUserProfileImage.uri);
@@ -181,6 +183,7 @@ const UserProfilePage = () => {
       await useUploadImages.uploadProfileImage('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
       setShouldUpdateImage(true);
       closeProfileImageModal();
+      setIsUploadingProfileImage(false);
       toast.show('Profile image uploaded successfully!', {type: 'success'});
     }
     catch (err) {
@@ -189,6 +192,7 @@ const UserProfilePage = () => {
       dispatch(addedStatusMessage('Error uploading profile image: ' + err));
       dispatch(setIsErrorMessagesModalVisible(true));
       closeProfileImageModal();
+      setIsUploadingProfileImage(false);
     }
   };
 
@@ -238,6 +242,7 @@ const UserProfilePage = () => {
           buttonStyle={{borderRadius: 10}}
           title={'Upload New Profile Image'}
           onPress={saveImage}
+          loading={isUploadingProfileImage}
         />
       </Overlay>
     );
