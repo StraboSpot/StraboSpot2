@@ -220,7 +220,7 @@ const useDownload = () => {
       if (!isEmpty(neededImagesIds)) {
         // Check path first and if it doesn't exist, then create
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
-        await Promise.all(
+        // await Promise.all(
           neededImagesIds.map(async (imageId) => {
             const statusCode = await useDevice.downloadAndSaveImage(imageId);
             if (statusCode === 200) {
@@ -239,7 +239,7 @@ const useDownload = () => {
             dispatch(addedStatusMessage('New/Modified Images Saved: ' + imagesDownloadedCount + ' / '
               + neededImagesIds.length + '\n Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length));
           }),
-        );
+        // );
 
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
