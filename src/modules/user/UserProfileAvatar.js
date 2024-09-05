@@ -6,7 +6,6 @@ import {useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
 import useUserProfileHook from './useUserProfile';
-import defaultAvatar from '../../assets/images/splash.png';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDeviceHook from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
@@ -18,7 +17,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
   const useUserProfile = useUserProfileHook();
   const useDevice = useDeviceHook();
 
-  const [source, setSource] = useState(defaultAvatar);
+  const [source, setSource] = useState(undefined);
 
   useEffect(() => {
     getAvatarSource();
@@ -28,7 +27,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
     console.log('tempUserProfileImageURI', tempUserProfileImageURI);
     if (Platform.OS === 'web') {
       if (!isEmpty(imageURI)) setSource({uri: imageURI});
-      else setSource(defaultAvatar);
+      else setSource(undefined);
     }
     else if (!isEditable && !isEmpty(tempUserProfileImageURI)) setSource({uri: tempUserProfileImageURI});
     else {
@@ -36,7 +35,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
       console.log('doesProfileImageExist', doesProfileImageExist);
       if (doesProfileImageExist) setSource({uri: 'file://' + APP_DIRECTORIES.PROFILE_IMAGE + '?' + new Date()}); // Avoid caching with date
       else if (!isEmpty(imageURI) && typeof imageURI.valueOf() === 'string') setSource({uri: imageURI});
-      else setSource(defaultAvatar);
+      else setSource(undefined);
     }
   };
 
