@@ -100,6 +100,18 @@ const useServerRequests = () => {
     return baseUrl;
   };
 
+  const getImage = async (imageId) => {
+    const imageUrl = getImageUrl();
+    return await fetch(imageUrl + imageId + '.jpg', {
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login,
+        'Accept': 'application/json',
+      },
+    });
+  };
+
   const getImageUrl = () => {
     if (isSelected) return baseUrl.replace('/db', '/pi/');
     return `${STRABO_APIS.STRABO}/pi/`;
@@ -411,6 +423,7 @@ const useServerRequests = () => {
     getDatasetSpots: getDatasetSpots,
     getDatasets: getDatasets,
     getDbUrl: getDbUrl,
+    getImage: getImage,
     getImageUrl: getImageUrl,
     getMapTilesFromHost: getMapTilesFromHost,
     getMyMapsBbox: getMyMapsBbox,
