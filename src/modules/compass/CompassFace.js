@@ -55,7 +55,9 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
         <Animated.Image
           key={image}
           source={image}
-          style={strikeAndDipStyles}/>
+          style={strikeAndDipStyles}
+          resizeMode={'contain'}
+        />
       );
     }
   };
@@ -87,6 +89,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
           key={image}
           source={image}
           style={trendAndPlungeStyles}
+          resizeMode={'contain'}
         />
       );
     }
