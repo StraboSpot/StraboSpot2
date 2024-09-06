@@ -121,7 +121,7 @@ const useServerRequests = () => {
 
   const getImage = async (imageId) => {
     const imageUrl = getImageUrl();
-    return await fetch(imageUrl + imageId + '.jpg', {
+    return await fetch(imageUrl + imageId, {
       method: 'GET',
       responseType: 'blob',
       headers: {
