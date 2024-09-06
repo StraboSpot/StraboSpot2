@@ -4,20 +4,18 @@ import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {deletedSpot, editedOrCreatedSpot, setSelectedSpot} from './spots.slice';
-import {getNewId, isEmpty, isEqual, sleep} from '../../shared/Helpers';
+import {deletedSpot, editedOrCreatedSpot, editedOrCreatedSpots, setSelectedSpot} from './spots.slice';
+import {getNewCopyId, getNewId, isEmpty, isEqual, sleep} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import {clearedStratSection, setCurrentImageBasemap, setStratSection} from '../maps/maps.slice';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {
-  addedDataset,
+  addedNewSpotIdsToDataset,
   addedNewSpotIdToDataset,
   deletedSpotIdFromDatasets,
   deletedSpotIdFromTags,
-  setActiveDatasets,
-  setSelectedDataset,
   updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } from '../project/projects.slice';
@@ -29,16 +27,17 @@ const useSpots = () => {
   const useTags = useTagsHook();
 
   const dispatch = useDispatch();
-  const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project?.preferences) || {};
-  const tags = useSelector(state => state.project.project?.tags) || [];
-  const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const stratSection = useSelector(state => state.map.stratSection);
+  const recentViews = useSelector(state => state.spot.recentViews);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
+  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const stratSection = useSelector(state => state.map.stratSection);
+  const tags = useSelector(state => state.project.project?.tags) || [];
+  const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
   const toast = useToast();
 
@@ -121,6 +120,39 @@ const useSpots = () => {
     console.log('Spot Copied. New Spot', newSpot);
   };
 
+  // Given geojson for a point with coordinates and a number of spots, create that many spots randomly around given point
+  const createRandomSpots = (feature, numRandomSpots) => {
+    let newSpots = [];
+    Array.from({length: numRandomSpots}, (_, n) => {
+      const randomLongOffset = Math.random() * 0.01 * (Math.round(Math.random()) ? 1 : -1);
+      const randomLatOffset = Math.random() * 0.01 * (Math.round(Math.random()) ? 1 : -1);
+      let d = new Date(Date.now());
+      d.setMilliseconds(0);
+      const newSpot = {
+        ...feature,
+        geometry: {
+          ...feature.geometry,
+          coordinates: [feature.geometry.coordinates[0] + randomLongOffset, feature.geometry.coordinates[1] + randomLatOffset],
+        },
+        properties: {
+          id: getNewCopyId(),
+          date: d.toISOString(),
+          time: d.toISOString(),
+          modified_timestamp: Date.now(),
+          viewed_timestamp: Date.now(),
+          name: n.toString(),
+        },
+      };
+      newSpots.push(newSpot);
+    });
+    console.log('Creating', numRandomSpots, 'new random Spots near current location.');
+    dispatch(updatedModifiedTimestampsBySpotsIds([newSpots[0].properties.id]));
+    const selectedDataset = useProject.getSelectedDatasetFromId();
+    dispatch(addedNewSpotIdsToDataset({datasetId: selectedDataset.id, spotIds: newSpots.map(s => s.properties.id)}));
+    dispatch(editedOrCreatedSpots(newSpots));
+    console.log('Finished creating new random Spot. All Spots: ', spots);
+  };
+
   // Create a new Spot
   const createSpot = async (feature) => {
     let newSpot = feature;
@@ -165,16 +197,8 @@ const useSpots = () => {
     }
     console.log('Creating new Spot:', newSpot);
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
-    let currentDataset = datasets[selectedDatasetId];
-    if (isEmpty(currentDataset)) {
-      alert('No Active Dataset Selected. Created a new Default Dataset for new Spot.');
-      currentDataset = useProject.createDataset();
-      dispatch(addedDataset(currentDataset));
-      dispatch(setActiveDatasets({bool: true, dataset: currentDataset.id}));
-      dispatch(setSelectedDataset(currentDataset.id));
-    }
-    console.log('Active Dataset', currentDataset);
-    dispatch(addedNewSpotIdToDataset({datasetId: currentDataset.id, spotId: newSpot.properties.id}));
+    const selectedDataset = useProject.getSelectedDatasetFromId();
+    dispatch(addedNewSpotIdToDataset({datasetId: selectedDataset.id, spotId: newSpot.properties.id}));
     dispatch(editedOrCreatedSpot(newSpot));
     console.log('Finished creating new Spot. All Spots: ', spots);
     return newSpot;
@@ -349,6 +373,11 @@ const useSpots = () => {
     return {spotName: newSpotName, spotNumber: spotNumber};
   };
 
+  const getRecentSpots = () => {
+    const activeSpotIds = Object.keys(getActiveSpotsObj());
+    return recentViews.reduce((acc, spotId) => activeSpotIds.includes(spotId) ? [...acc, spots[spotId]] : acc, []);
+  };
+
   // Find the rootSpot for a given image id.
   const getRootSpot = (imageId) => {
     let rootSpot, imageFound = false;
@@ -420,6 +449,8 @@ const useSpots = () => {
     });
     return foundSpots;
   };
+
+  const getSpotsInMapExtent = () => spotsInMapExtent;
 
   // Get all the Spots mapped on a specific image basemap
   const getSpotsMappedOnGivenImageBasemap = (basemapId) => {
@@ -518,6 +549,7 @@ const useSpots = () => {
     checkSampleName: checkSampleName,
     checkSpotName: checkSpotName,
     copySpot: copySpot,
+    createRandomSpots: createRandomSpots,
     createSpot: createSpot,
     deleteSpot: deleteSpot,
     getActiveSpotsObj: getActiveSpotsObj,
@@ -526,8 +558,9 @@ const useSpots = () => {
     getImageBasemapBySpot: getImageBasemapBySpot,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,
-    getNewSpotName: getNewSpotName,
     getMappableSpots: getMappableSpots,
+    getNewSpotName: getNewSpotName,
+    getRecentSpots: getRecentSpots,
     getRootSpot: getRootSpot,
     getSpotById: getSpotById,
     getSpotByImageId: getSpotByImageId,
@@ -535,6 +568,7 @@ const useSpots = () => {
     getSpotWithThisImageBasemap: getSpotWithThisImageBasemap,
     getSpotWithThisStratSection: getSpotWithThisStratSection,
     getSpotsByIds: getSpotsByIds,
+    getSpotsInMapExtent: getSpotsInMapExtent,
     getSpotsMappedOnGivenImageBasemap: getSpotsMappedOnGivenImageBasemap,
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,

@@ -81,6 +81,7 @@ const useCustomMap = () => {
         testTileUrl = customEndpointTest + map.id;
       }
       else testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;
+
     }
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 

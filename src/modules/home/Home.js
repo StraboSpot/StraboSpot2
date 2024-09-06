@@ -57,8 +57,6 @@ const Home = ({navigation, route}) => {
   const useMapLocation = useMapLocationHook();
   const useVersionCheck = VersionCheckHook();
 
-  const selectedDataset = useProject.getSelectedDatasetFromId();
-
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -169,6 +167,7 @@ const Home = ({navigation, route}) => {
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
+        const selectedDataset = useProject.getSelectedDatasetFromId();
         if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await setPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');

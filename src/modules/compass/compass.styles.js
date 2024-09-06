@@ -3,14 +3,6 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../shared/styles.constants';
 
 const styles = StyleSheet.create({
-  azimuthPointer: {
-    height: 75,
-    position: 'absolute',
-    resizeMode: 'contain',
-    // top: 40,
-    width: 75,
-    zIndex: 10,
-  },
   buttonContainer: {
     paddingBottom: 10,
   },
@@ -71,13 +63,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: 'center',
   },
-  matrixDataButtonContainer: {
+  // matrixDataButtonContainer: {
     // backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     // bottom: 10,
     // position: 'absolute',
     // right: 10,
     // width: 75,
-  },
+  // },
   rawMeasurementDataContainer: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
@@ -100,13 +92,11 @@ const styles = StyleSheet.create({
   strikeAndDipLine: {
     alignSelf: 'center',
     height: '65%',
-    resizeMode: 'contain',
     width: '100%',
   },
   trendLine: {
     alignSelf: 'center',
     height: '65%',
-    resizeMode: 'contain',
     width: '100%',
   },
 });

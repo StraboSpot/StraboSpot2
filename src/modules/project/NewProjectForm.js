@@ -73,8 +73,8 @@ const NewProjectForm = ({
       await formRef.current.submitForm();
       const formValues = useForm.showErrors(formRef.current);
       console.log('Saving form...');
-      const newProject = await useProject.initializeNewProject(formValues);
-      console.log('New Project created', newProject);
+      await useProject.initializeNewProject(formValues);
+      console.log('New Project created', formValues.project_name);
       if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
       openMainMenuPanel();

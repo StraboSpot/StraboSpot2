@@ -2,26 +2,32 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Switch, Text} from 'react-native';
 
 import {Formik} from 'formik';
-import {Input, ListItem} from 'react-native-elements';
+import {Button, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
+import alert from '../../shared/ui/alert';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
+import {setLoadingStatus} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
+import useMapLocationHook from '../maps/useMapLocation';
 import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
   const dispatch = useDispatch();
-  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const isTestingMode = useSelector(state => state.project.isTestingMode);
+  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
   const [isTestingModalVisible, setIsTestingModalVisible] = useState(false);
+  const [numRandomSpots, setNumRandomSpots] = useState(100);
   const [password, setPassword] = useState('');
+
+  const useMapLocation = useMapLocationHook();
 
   const formRef = useRef('null');
 
@@ -35,18 +41,51 @@ const Miscellaneous = () => {
   }, [password]);
 
   const closeModal = () => {
-    dispatch(setTestingMode(false));
     setIsTestingModalVisible(false);
     setIsErrorMessage(false);
   };
 
   const onTestingSwitchChange = (value) => {
-    dispatch(setTestingMode(value));
     if (value) setIsTestingModalVisible(true);
+    else dispatch(setTestingMode(false));
   };
 
   const userEntry = (value) => {
     setPassword(value);
+  };
+
+  const generateRandomSpots = async () => {
+    const numRandomSpotsInt = parseInt(numRandomSpots, 10);
+    if (numRandomSpotsInt) {
+      setNumRandomSpots(numRandomSpotsInt);
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
+      await useMapLocation.generateRandomsSpotsAroundCurrentLocation(numRandomSpotsInt);
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+    }
+    else alert('Error Generating Random Spots', 'The number of Spots must be an integer.');
+  };
+
+  const renderGenerateRandomSpotsSection = () => {
+    return (
+      <>
+        <SectionDivider dividerText={'Generate Random Spots'}/>
+        <Input
+          containerStyle={{paddingTop: 10}}
+          defaultValue={numRandomSpots}
+          inputContainerStyle={{padding: 0}}
+          label={'Number of Spots'}
+          labelStyle={{color: themes.PRIMARY_TEXT_COLOR}}
+          onChangeText={value => setNumRandomSpots(value || 100)}
+          placeholder={JSON.stringify(numRandomSpots)}
+          placeholderTextColor={themes.MEDIUMGREY}
+        />
+        <Button
+          containerStyle={{paddingHorizontal: 10}}
+          onPress={generateRandomSpots}
+          title={'Generate'}
+        />
+      </>
+    );
   };
 
   const renderPrompt = () => (
@@ -63,7 +102,6 @@ const Miscellaneous = () => {
       <Input
         placeholder={'Password'}
         placeholderTextColor={themes.MEDIUMGREY}
-        secureTextEntry={true}
         defaultValue={''}
         onChangeText={userEntry}
         errorMessage={isErrorMessage && errorMessage}
@@ -80,8 +118,9 @@ const Miscellaneous = () => {
       </Text>
       <CustomEndpoint/>
       {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
-        *Currently StraboSpot <Text style={{fontWeight: themes.TEXT_WEIGHT}}>ONLY</Text> supports endpoints with the format StraboSpot Offline uses
-        (see placeholder in box for example). If you need to use an endpoint not associated with StraboSpot Offline, the URL must contain a trailing &lsquo;/db&lsquo;.
+        *Currently StraboSpot <Text style={{fontWeight: themes.TEXT_WEIGHT}}>ONLY</Text> supports endpoints with the
+        format StraboSpot Offline uses (see placeholder in box for example). If you need to use an endpoint not
+        associated with StraboSpot Offline, the URL must contain a trailing &lsquo;/db&lsquo;.
       </Text>}
     </>
   );
@@ -119,6 +158,7 @@ const Miscellaneous = () => {
       <>
         {renderEndpointFieldContent()}
         {renderTestingModeField()}
+        {isTestingMode && renderGenerateRandomSpotsSection()}
         {renderPrompt()}
       </>
     </Formik>

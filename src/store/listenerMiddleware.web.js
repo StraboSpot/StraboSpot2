@@ -17,10 +17,10 @@ import {
 import {
   deletedSpot,
   editedOrCreatedSpot,
+  editedOrCreatedSpots,
   editedSpotImage,
   editedSpotImages,
   editedSpotProperties,
-  editedSpots,
 } from '../modules/spots/spots.slice';
 import {
   deleteDataset,
@@ -172,7 +172,7 @@ const updatedProjectDatasetsSpotsListener = async (action, listenerApi) => {
   let objectToSend;
 
   // Spots Updated
-  if (action.type.includes('spot/editedSpots')) {
+  if (action.type.includes('spot/editedOrCreatedSpots')) {
     const spotIds = action.payload.map(s => s.properties.id);
     const spotIdsGroupedByDatasetId = spotIds.reduce((acc, spotId) => {
       const dataset = datasets.find(d => d.spotIds?.find(id => id === spotId));
@@ -223,11 +223,13 @@ const updatedProjectDatasetsSpotsListener = async (action, listenerApi) => {
 const listenerMiddleware = createListenerMiddleware();
 
 // Spot, Dataset and Project Updates to Send to Server
+// We do not need a listener for deletedSpots as that is only run when deleting
+// a dataset and deleteDatasetListener takes care of deleting spots from server
 listenerMiddleware.startListening({actionCreator: deletedDataset, effect: deleteDatasetListener});
 listenerMiddleware.startListening({actionCreator: deletedSpot, effect: uploadProjectDatasetDeleteSpotListener});
 listenerMiddleware.startListening({
-  matcher: isAnyOf(editedSpots, editedSpotImage, editedSpotImages, editedOrCreatedSpot, editedSpotProperties,
-    addedDataset, updatedDatasetProperties), effect: updatedProjectDatasetsSpotsListener,
+  matcher: isAnyOf(addedDataset, editedOrCreatedSpot, editedOrCreatedSpots, editedSpotImage, editedSpotImages,
+    editedSpotProperties, updatedDatasetProperties), effect: updatedProjectDatasetsSpotsListener,
 });
 
 // Don't need to do addedSpotsFromDevice until can add from device on web

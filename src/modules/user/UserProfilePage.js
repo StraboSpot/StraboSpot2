@@ -37,14 +37,17 @@ const UserProfilePage = () => {
   const dispatch = useDispatch();
   const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
+  const userEncodedLogin = useSelector(state => state.user.encoded_login);
 
   const [deleteProfileInputValue, setDeleteProfileInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDeleteProfileModalVisible, setDeleteProfileModalVisible] = useState(false);
+  const [isDeletingProfileImage, setIsDeletingProfileImage] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isImageDialogVisible, setImageDialogVisible] = useState(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false);
   const [shouldUpdateImage, setShouldUpdateImage] = useState(false);
   const [tempUserProfileImage, setTempUserProfileImage] = useState(null);
 
@@ -147,6 +150,23 @@ const UserProfilePage = () => {
     }
   };
 
+  const removeProfileImage = async () => {
+    try {
+      setIsDeletingProfileImage(true);
+      await useServerRequest.deleteProfileImage(userEncodedLogin);
+      if (Platform.OS !== 'web') await useDevice.deleteFromDevice('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      setShouldUpdateImage(true);
+      setIsDeletingProfileImage(false);
+      closeProfileImageModal();
+      toast.show('Profile Image Removed', {type: 'success'});
+    }
+    catch (err) {
+      console.error('Error deleting profile image', err);
+      setIsDeletingProfileImage(false);
+      closeProfileImageModal();
+    }
+  };
+
   const saveForm = async () => {
     try {
       const formCurrent = formRef.current;
@@ -158,11 +178,11 @@ const UserProfilePage = () => {
       if (isOnline.isInternetReachable) {
         await useUpload.uploadProfile(newValues);
         toast.show('Profile uploaded successfully!', {type: 'success'});
-        setIsUploading(false);
         dispatch(setSidePanelVisible({bool: false}));
       }
       else toast.show('Not connected to internet to upload profile changes', {type: 'warning'});
       setIsSaveButtonDisabled(true);
+      setIsUploading(false);
     }
     catch (err) {
       console.error('Error uploading profile', err);
@@ -173,6 +193,7 @@ const UserProfilePage = () => {
 
   const saveImage = async () => {
     try {
+      setIsUploadingProfileImage(true);
       console.log('Need to upload', tempUserProfileImage.uri);
       const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
         tempUserProfileImage.uri);
@@ -181,6 +202,7 @@ const UserProfilePage = () => {
       await useUploadImages.uploadProfileImage('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
       setShouldUpdateImage(true);
       closeProfileImageModal();
+      setIsUploadingProfileImage(false);
       toast.show('Profile image uploaded successfully!', {type: 'success'});
     }
     catch (err) {
@@ -189,6 +211,7 @@ const UserProfilePage = () => {
       dispatch(addedStatusMessage('Error uploading profile image: ' + err));
       dispatch(setIsErrorMessagesModalVisible(true));
       closeProfileImageModal();
+      setIsUploadingProfileImage(false);
     }
   };
 
@@ -234,10 +257,19 @@ const UserProfilePage = () => {
         />
         <Button
           containerStyle={commonStyles.buttonContainer}
+          buttonStyle={{borderRadius: 10}}
+          title={'Remove Profile Image'}
+          type={'outline'}
+          onPress={removeProfileImage}
+          loading={isDeletingProfileImage}
+        />
+        <Button
+          containerStyle={commonStyles.buttonContainer}
           disabled={isEmpty(tempUserProfileImage)}
           buttonStyle={{borderRadius: 10}}
           title={'Upload New Profile Image'}
           onPress={saveImage}
+          loading={isUploadingProfileImage}
         />
       </Overlay>
     );

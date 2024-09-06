@@ -5,7 +5,6 @@ import * as themes from '../../../shared/styles.constants';
 const notebookHeaderStyles = StyleSheet.create({
   headerImage: {
     height: 50,
-    resizeMode: 'contain',
     width: 50,
   },
   headerSpotName: {

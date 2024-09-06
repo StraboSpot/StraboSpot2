@@ -11,6 +11,12 @@ const useMapLocation = () => {
   const useSpots = useSpotsHook();
   const dispatch = useDispatch();
 
+  const generateRandomsSpotsAroundCurrentLocation = async (numRandomSpots) => {
+    const currentLocation = await getCurrentLocation();
+    let feature = turf.point([currentLocation.longitude, currentLocation.latitude]);
+    useSpots.createRandomSpots(feature, numRandomSpots);
+  };
+
   // Get the current location from the device and set it in the state
   const getCurrentLocation = async () => {
     if (Platform.OS !== 'web') {
@@ -20,20 +26,20 @@ const useMapLocation = () => {
       });
     }
 
-      const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
-      return (
-        new Promise((resolve, reject) => {
-          Geolocation.getCurrentPosition(
-            (position) => {
-              // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
-              console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
-              resolve(position.coords);
-            },
-            error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
-            geolocationOptions,
-          );
-        })
-      );
+    const geolocationOptions = {timeout: 15000, maximumAge: 10000, enableHighAccuracy: true};
+    return (
+      new Promise((resolve, reject) => {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            // setUserLocationCoords([position.coords.longitude, position.coords.latitude]);
+            console.log('Got Current Location: [', position.coords.longitude, ', ', position.coords.latitude, ']');
+            resolve(position.coords);
+          },
+          error => reject('Error getting current location: ' + (error.message ? error.message : 'Unknown Error')),
+          geolocationOptions,
+        );
+      })
+    );
   };
 
   // Create a point feature at the current location
@@ -49,6 +55,7 @@ const useMapLocation = () => {
   };
 
   return {
+    generateRandomsSpotsAroundCurrentLocation: generateRandomsSpotsAroundCurrentLocation,
     getCurrentLocation: getCurrentLocation,
     setPointAtCurrentLocation: setPointAtCurrentLocation,
   };

@@ -125,8 +125,11 @@ const useDownload = () => {
 
       if (Platform.OS === 'web') {
         const userProfileImageBlob = await useServerRequests.getProfileImage(encodedLoginScoped);
-        const image = URL.createObjectURL(userProfileImageBlob);
-        dispatch(setUserData({...userProfileRes, image: image, encoded_login: encodedLoginScoped}));
+        if (userProfileImageBlob) {
+          const image = URL.createObjectURL(userProfileImageBlob);
+          dispatch(setUserData({...userProfileRes, image: image, encoded_login: encodedLoginScoped}));
+        }
+        else dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
       else {
         await useDevice.downloadAndSaveProfileImage(encodedLoginScoped);

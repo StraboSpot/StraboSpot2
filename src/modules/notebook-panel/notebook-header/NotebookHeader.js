@@ -5,7 +5,7 @@ import * as turf from '@turf/turf';
 import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import headerStyles from './notebookHeader.styles';
+import notebookHeaderStyles from './notebookHeader.styles';
 import NotebookMenu from './NotebookMenu';
 import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import {PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../../shared/styles.constants';
@@ -165,14 +165,15 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
     <>
       <Image
         source={useSpots.getSpotGeometryIconSource(spot)}
-        style={headerStyles.headerImage}
+        style={notebookHeaderStyles.headerImage}
         onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.METADATA))}
+        resizeMode={'contain'}
       />
-      <View style={headerStyles.headerSpotNameAndCoordsContainer}>
+      <View style={notebookHeaderStyles.headerSpotNameAndCoordsContainer}>
         <TextInput
           value={spot.properties.name || ''}
           onChangeText={text => onSpotEdit('name', text)}
-          style={headerStyles.headerSpotName}
+          style={notebookHeaderStyles.headerSpotName}
         />
         {getSpotCoordText() ? renderCoordsText() : renderSetCoordsText()}
       </View>
@@ -180,7 +181,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
         <IconButton
           onPress={() => setIsNotebookMenuVisible(prevState => !prevState)}
           source={require('../../../assets/icons/MapActions.png')}
-          style={headerStyles.threeDotMenu}
+          style={notebookHeaderStyles.threeDotMenu}
         />
       </View>
       <NotebookMenu

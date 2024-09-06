@@ -47,7 +47,9 @@ const DatasetList = () => {
   const initializeDeleteDataset = () => {
     setIsDeleteConfirmModalVisible(false);
     if (selectedDatasetToEdit && selectedDatasetToEdit.id) {
-      useProject.destroyDataset(selectedDatasetToEdit.id).catch(console.log);
+      useProject.destroyDataset(selectedDatasetToEdit.id)
+        // .then(() => setTimeout(() => dispatch(setIsStatusMessagesModalVisible(false))), 3000)
+        .catch(err => console.log('Error deleting dataset', err));
     }
     else console.error('Selected dataset or id is undefined!');
   };
