@@ -1,3 +1,5 @@
+import {useState} from 'react';
+
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -27,6 +29,16 @@ const useUploadImages = () => {
   const user = useSelector(state => state.user);
   const spots = useSelector(state => state.spot.spots);
 
+  const [currentImage, setCurrentImage] = useState('');
+  const [currentImageStatus, setCurrentImageStatus] = useState({success: 0, failed: 0});
+  const [totalImages, setTotalImages] = useState(0);
+  const [statusMessages, setStatusMessages] = useState('');
+
+
+  const resetState = () => {
+    console.log('resetting State', statusMessages);
+    setStatusMessages('');
+  };
   // const [imagesToUpload, setImagesToUpload] = useState([]);
   //
   // useEffect(() => {
@@ -36,9 +48,7 @@ const useUploadImages = () => {
   // Gather all the images in spots and returns the ids.
   const getImageIds = (images) => {
     const imageIds = [];
-    // Object.values(spots).forEach(spot => spot?.properties?.images?.map(image => imagesFound.push(image)));
-    // console.log('SPOT IMAGES', imagesFound);
-    images.forEach((image) => imageIds.push(image.id));
+    images.forEach(image => imageIds.push(image.id));
     console.log(imageIds);
     return imageIds;
   };
@@ -65,38 +75,27 @@ const useUploadImages = () => {
 
   const initializeImageUpload = async () => {
     let imagesStatus = {success: 0, failed: 0};
+    setStatusMessages('');
     console.log('Looking for Images to Upload in Spots...', spots);
-    dispatch(removedLastStatusMessage());
-    dispatch(addedStatusMessage('Looking for images to upload in spots...'));
+    setStatusMessages('Looking for images to upload in spots...');
     const images = useImages.getAllImages();
     const imageIds = getImageIds(images);
-    dispatch(removedLastStatusMessage());
-    dispatch(addedStatusMessage('Checking to see if image files are on server...'));
+    setStatusMessages('Checking to see if image files are on server...');
     const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
-    dispatch(removedLastStatusMessage());
-    dispatch(addedStatusMessage(`Checking to see if ${neededImages.length} image files are on device...`));
+    setStatusMessages(`Checking to see if ${neededImages.length} image files are on device...`);
     console.log('Needed Images from server', neededImages);
     const {imagesToUpload, imagesNotFoundOnDevice} = await verifyImageExistsOnDevice(neededImages, images);
     console.log('Done verifying images on device', imagesToUpload);
-    //
     if (!isEmpty(imagesToUpload)) {
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Uploading needed images to server...'));
+      setStatusMessages('Uploading needed images to server...');
+      dispatch(setIsImageTransferring(true));
       imagesStatus = await uploadImages(imagesToUpload);
       console.log('DONE UPLOADING IMAGES');
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage(`Uploaded ${imagesToUpload.length} to server.`));
+      setStatusMessages(`Uploaded ${imagesToUpload.length} to server.`);
     }
+    else setStatusMessages('All images for this project are already on server.');
     if (!isEmpty(imagesNotFoundOnDevice)) {
       imagesStatus = {...imagesStatus, imagesNotFound: imagesNotFoundOnDevice.length};
-    }
-    // if (isEmpty(imagesToUpload) && !isEmpty(imagesNotFoundOnDevice)) {
-    //   dispatch(removedLastStatusMessage());
-    //   imagesStatus = {...imagesStatus, imagesNotFound: imagesNotFoundOnDevice.length};
-    // }
-    else {
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('All images for this project are already on server.'));
     }
     return imagesStatus;
   };
@@ -165,8 +164,9 @@ const useUploadImages = () => {
   // Upload the image to server
   const uploadImage = async (imageId, imageUri) => {
     try {
+      setCurrentImage(imageId);
+
       console.log(': Uploading Image', imageId, '...');
-      dispatch(setIsImageTransferring(true));
 
       let formdata = new FormData();
       formdata.append('image_file', {uri: imageUri, name: 'image.jpg', type: 'image/jpeg'});
@@ -176,13 +176,10 @@ const useUploadImages = () => {
       console.log('Image Upload Res', res);
       console.log(': Finished Uploading Image', imageId);
       dispatch(updatedProjectTransferProgress(0));
-      dispatch(clearedStatusMessages());
       await useDevice.deleteFromDevice(imageUri);
-      // dispatch(setIsImageTransferring(false));
     }
     catch (err) {
       console.log(': Error Uploading Image', imageId, err);
-      // dispatch(setIsImageTransferring(false));
       throw Error(err);
     }
   };
@@ -203,43 +200,28 @@ const useUploadImages = () => {
         console.error(`Failed to upload image ${imageProps.id} because ${err.Error}`);
         imagesUploadFailedCount++;
       }
-      let msgText = `Uploading Image ${imageProps.id}...`;
-      console.log(`Success: ${imagesUploadedCount}/${imagesToUpload.length} uploaded.`);
-      console.log(`Fail: ${imagesUploadFailedCount}/${imagesToUpload.length} uploaded.`);
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(
-        `\n${msgText} 
-         \nSuccess: ${imagesUploadedCount}/${imagesToUpload.length} uploaded. 
-         \nFailed: ${imagesUploadFailedCount || 0}/${imagesToUpload.length}`),
-      );
-      // if (imagesUploadFailedCount > 0) {
-      //   failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
-      //   dispatch(removedLastStatusMessage());
-      //   dispatch(addedStatusMessage(`\n ${failedCountMsgText}`));
-      // }
+
+      setCurrentImageStatus({success: imagesUploadedCount, failed: imagesUploadFailedCount});
 
       if (imagesUploadedCount + imagesUploadFailedCount < imagesToUpload.length) {
         await startUploadingImage(imagesToUpload[imagesUploadedCount + imagesUploadFailedCount]);
       }
       else {
-        dispatch(clearedStatusMessages());
         if (imagesUploadFailedCount > 0) {
-          dispatch(addedStatusMessage('Finished uploading images with Errors.\n'));
-          dispatch(addedStatusMessage(`\n${imagesUploadFailedCount} Images failed to upload\n`));
+          setStatusMessages(
+            `Finished uploading images with Errors.\n ${imagesUploadFailedCount} Images failed to upload\n`);
         }
-        else dispatch(addedStatusMessage(`Finished uploading ${imagesUploadedCount} images to server.`));
+        else setStatusMessages(`Finished uploading ${imagesUploadedCount} images to server.`);
       }
     };
 
     if (imagesToUpload.length > 0) {
-      dispatch(removedLastStatusMessage());
-      dispatch(
-        addedStatusMessage(`Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}.`),
-      );
+      setStatusMessages(`Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}...`);
+      setTotalImages(imagesToUpload.length);
       await startUploadingImage(imagesToUpload[0]);
       return ({success: imagesUploadedCount, failed: imagesUploadFailedCount});
     }
-    else dispatch(addedStatusMessage('\nNo images to upload'));
+    else setStatusMessages('\nNo images to upload');
     await useDevice.deleteTempImagesFolder();
     dispatch(setIsProgressModalVisible(false));
   };
@@ -265,6 +247,11 @@ const useUploadImages = () => {
     verifyImageExistsOnDevice: verifyImageExistsOnDevice,
     uploadImages: uploadImages,
     uploadProfileImage: uploadProfileImage,
+    currentImage,
+    currentImageStatus,
+    resetState,
+    totalImages,
+    statusMessages,
   };
 };
 
