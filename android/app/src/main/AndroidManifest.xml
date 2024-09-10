@@ -1,19 +1,21 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
   <uses-feature
       android:name="android.hardware.camera"
       android:required="false" />
+
   <supports-screens android:smallScreens="true"
                     android:normalScreens="true"
                     android:largeScreens="true"
-                    android:xlargeScreens="true"/>
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.CAMERA"/>
+                    android:xlargeScreens="true" />
+
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
   <queries>
     <intent>
@@ -21,6 +23,7 @@
       <data android:scheme="https"/>
     </intent>
   </queries>
+
   <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -28,15 +31,20 @@
       android:roundIcon="@mipmap/ic_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
-      android:requestLegacyExternalStorage="true">
+      android:requestLegacyExternalStorage="true"
+      android:supportsRtl="true"
+      tools:replace="android:appComponentFactory"
+      android:appComponentFactory="whateverString">
     <activity
         android:name=".MainActivity"
+        android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
         android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
         android:exported="true">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
   </application>
