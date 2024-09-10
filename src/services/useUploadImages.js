@@ -10,7 +10,6 @@ import useServerRequestsHook from './useServerRequests';
 import {
   addedStatusMessage,
   clearedStatusMessages,
-  removedLastStatusMessage,
   setIsProgressModalVisible,
 } from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
@@ -32,18 +31,15 @@ const useUploadImages = () => {
   const [currentImage, setCurrentImage] = useState('');
   const [currentImageStatus, setCurrentImageStatus] = useState({success: 0, failed: 0});
   const [totalImages, setTotalImages] = useState(0);
-  const [statusMessages, setStatusMessages] = useState('');
+  const [imageUploadStatusMessage, setImageUploadStatusMessage] = useState('');
 
 
   const resetState = () => {
-    console.log('resetting State', statusMessages);
-    setStatusMessages('');
+    console.log('resetting State', imageUploadStatusMessage);
+    setImageUploadStatusMessage('');
+    setCurrentImage('');
+    setCurrentImageStatus({success: 0, failed: 0});
   };
-  // const [imagesToUpload, setImagesToUpload] = useState([]);
-  //
-  // useEffect(() => {
-  //   console.log('Images to Upload', imagesToUpload)
-  // }, [imagesToUpload])
 
   // Gather all the images in spots and returns the ids.
   const getImageIds = (images) => {
@@ -53,47 +49,26 @@ const useUploadImages = () => {
     return imageIds;
   };
 
-  // // Get the URI of the image file if it exists on local device
-  // const getImageFile = async (imageId) => {
-  //   const imageURI = useImages.getLocalImageURI(imageId);
-  //   // const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
-  //   // if (isValidImageURI) {
-  //   //   console.log(`Image ${imageId} EXISTS`);
-  //   //   return imagesFound.find((image) => {
-  //   //     if (image.id.toString() === imageId) {
-  //   //       // imagesToUpload.push(imageWithPath);
-  //   //       // setImagesToUpload(prevState => ([...prevState, imageWithPath]));
-  //   //       return {...image, uri: imageURI};
-  //   //     }
-  //   //   });
-  //   // }
-  //   // else {
-  //   //   console.log('Local file not found for image:' + imageId);
-  //   //   imagesNotFoundOnDevice.push(imageId);
-  //   // }
-  // };
-
   const initializeImageUpload = async () => {
-    let imagesStatus = {success: 0, failed: 0};
-    setStatusMessages('');
+    let imagesStatus = {};
+    setImageUploadStatusMessage('');
     console.log('Looking for Images to Upload in Spots...', spots);
-    setStatusMessages('Looking for images to upload in spots...');
+    setImageUploadStatusMessage('Looking for images to upload in spots...');
     const images = useImages.getAllImages();
     const imageIds = getImageIds(images);
-    setStatusMessages('Checking to see if image files are on server...');
+    setImageUploadStatusMessage('Checking to see if image files are on server...');
     const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
-    setStatusMessages(`Checking to see if ${neededImages.length} image files are on device...`);
+    setImageUploadStatusMessage(`Checking to see if ${neededImages.length} image files are on device...`);
     console.log('Needed Images from server', neededImages);
     const {imagesToUpload, imagesNotFoundOnDevice} = await verifyImageExistsOnDevice(neededImages, images);
     console.log('Done verifying images on device', imagesToUpload);
     if (!isEmpty(imagesToUpload)) {
-      setStatusMessages('Uploading needed images to server...');
+      setImageUploadStatusMessage('Uploading needed images to server...');
       dispatch(setIsImageTransferring(true));
       imagesStatus = await uploadImages(imagesToUpload);
       console.log('DONE UPLOADING IMAGES');
-      setStatusMessages(`Uploaded ${imagesToUpload.length} to server.`);
     }
-    else setStatusMessages('All images for this project are already on server.');
+    else setImageUploadStatusMessage('All images for this project are already on server.');
     if (!isEmpty(imagesNotFoundOnDevice)) {
       imagesStatus = {...imagesStatus, imagesNotFound: imagesNotFoundOnDevice.length};
     }
@@ -208,20 +183,20 @@ const useUploadImages = () => {
       }
       else {
         if (imagesUploadFailedCount > 0) {
-          setStatusMessages(
+          setImageUploadStatusMessage(
             `Finished uploading images with Errors.\n ${imagesUploadFailedCount} Images failed to upload\n`);
         }
-        else setStatusMessages(`Finished uploading ${imagesUploadedCount} images to server.`);
+        else setImageUploadStatusMessage(`Finished uploading ${imagesUploadedCount} images to server.`);
       }
     };
 
     if (imagesToUpload.length > 0) {
-      setStatusMessages(`Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}...`);
+      setImageUploadStatusMessage(`Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}...`);
       setTotalImages(imagesToUpload.length);
       await startUploadingImage(imagesToUpload[0]);
       return ({success: imagesUploadedCount, failed: imagesUploadFailedCount});
     }
-    else setStatusMessages('\nNo images to upload');
+    else setImageUploadStatusMessage('\nNo images to upload');
     await useDevice.deleteTempImagesFolder();
     dispatch(setIsProgressModalVisible(false));
   };
@@ -251,7 +226,7 @@ const useUploadImages = () => {
     currentImageStatus,
     resetState,
     totalImages,
-    statusMessages,
+    imageUploadStatusMessage,
   };
 };
 
