@@ -5,6 +5,7 @@ import moment from 'moment';
 import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptionsModal';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
@@ -17,7 +18,6 @@ import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
-import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {
   setIsProjectLoadSelectionModalVisible,

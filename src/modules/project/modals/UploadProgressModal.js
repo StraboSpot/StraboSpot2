@@ -66,22 +66,22 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
     );
   };
 
-  const renderUploadProgressModal = async () => {
-    try {
-      isImageTransferring && dispatch(setIsImageTransferring(false));
-      setUploadComplete('uploading');
-      const uploadStatusObj = await useUpload.initializeUpload();
-      const {status, datasets} = uploadStatusObj;
-      setUploadComplete(status);
-      setDatasetsNotUploaded(datasets);
-      dispatch(addedStatusMessage('\nUpload Complete!'));
-    }
-    catch (err) {
-      console.error('Error in renderUploadProgressModal', err);
-      setUploadComplete('');
-      setError(true);
-    }
-  };
+  // const renderUploadProgressModal = async () => {
+  //   try {
+  //     isImageTransferring && dispatch(setIsImageTransferring(false));
+  //     setUploadComplete('uploading');
+  //     const uploadStatusObj = await useUpload.initializeUpload();
+  //     const {status, datasets} = uploadStatusObj;
+  //     setUploadComplete(status);
+  //     setDatasetsNotUploaded(datasets);
+  //     dispatch(addedStatusMessage('\nUpload Complete!'));
+  //   }
+  //   catch (err) {
+  //     console.error('Error in renderUploadProgressModal', err);
+  //     setUploadComplete('');
+  //     setError(true);
+  //   }
+  // };
 
   const renderDatasetsNotUploaded = () => {
     return (
