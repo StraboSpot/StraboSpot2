@@ -6,6 +6,7 @@ import KeepAwake from 'react-native-keep-awake';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
+import projectModalsStyles from './projectModals.styles';
 import {updatedProjectTransferProgress} from '../../../services/connections.slice';
 import {STRABO_APIS} from '../../../services/urls.constants';
 import useUpload from '../../../services/useUpload';
@@ -31,15 +32,23 @@ const UploadModal = ({closeModal, visible}) => {
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
   const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
 
-  const [datasetUploadStatus, setDatasetUploadStatus] = useState('');
+  const [datasetUploadSuccess, setDatasetUploadStatus] = useState(false);
   const [errorMessage, setErrorMesssage] = useState('');
   const [imageUploadStatus, setImageUploadStatus] = useState({});
   const [modalTitle, setModalTitle] = useState('Overwrite Warning!');
-  const [projectUploadStatus, setProjectUploadStatus] = useState('');
+  const [projectUploadSuccess, setProjectUploadStatus] = useState(false);
   const [uploadState, setUploadState] = useState('not started');
+  const [uploadImageSuccess, setUploadImageSuccess] = useState(false);
 
-  const {uploadProject, uploadDatasets} = useUpload();
-  const {currentImage, currentImageStatus, statusMessages, totalImages, initializeImageUpload, resetState} = useUploadImages();
+  const {uploadProject, uploadDatasets, uploadStatusMessage} = useUpload();
+  const {
+    currentImage,
+    currentImageStatus,
+    imageUploadStatusMessage,
+    totalImages,
+    initializeImageUpload,
+    resetState,
+  } = useUploadImages();
 
   useEffect(() => {
     console.log('uploadState', uploadState);
@@ -50,8 +59,9 @@ const UploadModal = ({closeModal, visible}) => {
   const handleClosePress = () => {
     setModalTitle('Overwrite Warning!');
     setUploadState('not started');
-    setProjectUploadStatus('');
-    setDatasetUploadStatus('');
+    setProjectUploadStatus(false);
+    setDatasetUploadStatus(false);
+    setUploadImageSuccess(false);
     resetState();
     closeModal();
   };
@@ -64,11 +74,10 @@ const UploadModal = ({closeModal, visible}) => {
       Platform.OS !== 'web' && KeepAwake.activate();
       setModalTitle('Uploading');
       setUploadState('uploading');
-      const projectStatus = await uploadProject();
-      setProjectUploadStatus(projectStatus);
-      const datasetStatus = await uploadDatasets();
-      setDatasetUploadStatus(datasetStatus);
+      setProjectUploadStatus(await uploadProject());
+      setDatasetUploadStatus(await uploadDatasets());
       const imageStatus = await initializeImageUpload();
+      setUploadImageSuccess(true);
       dispatch(setIsProgressModalVisible(false));
       dispatch(setIsImageTransferring(false));
       setImageUploadStatus(imageStatus);
@@ -128,6 +137,26 @@ const UploadModal = ({closeModal, visible}) => {
     );
   };
 
+  const renderUploadAnimation = () => {
+    return (
+      <LottieAnimations
+        type={'uploadingCloud'}
+        doesLoop={true}
+        animationStyle={{height: 50, width: 50}}
+      />
+    );
+  };
+
+  const renderUploadCompleteAnimation = () => {
+    return (
+      <LottieAnimations
+        type={'complete'}
+        doesLoop={false}
+        animationStyle={{height: 50, width: 50}}
+      />
+    );
+  };
+
   const renderInitialUploadView = () => (
     <View>
       <View>
@@ -167,17 +196,37 @@ const UploadModal = ({closeModal, visible}) => {
     </View>
   );
 
+  const renderImageUploadingProgress = () => {
+    return (
+      <View>
+        <View style={{padding: 10}}>
+          {currentImage !== '' && <Text style={{fontWeight: 'bold'}}>Uploading image {currentImage}</Text>}
+          <Text style={{textAlign: 'center', margin: 5}}>Success: {currentImageStatus.success} / {totalImages}</Text>
+          <Text style={{textAlign: 'center'}}>Failed {currentImageStatus.failed} / {totalImages}</Text>
+        </View>
+        <Text style={{textAlign: 'center', paddingBottom: 5}}>Uploading images</Text>
+        <ProgressBar
+          progress={projectTransferProgress}
+          width={250}
+          height={15}
+          borderRadius={20}
+        />
+        <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
+      </View>
+    );
+  };
+
   const renderImageUploadStatusText = () => {
     if (uploadState === 'complete') {
       return (
-        <View>
+        <View style={projectModalsStyles.imageTotalUploadContainer}>
           <Text>Images uploaded successfully: {imageUploadStatus.success || 0}</Text>
         </View>
       );
     }
     else if (uploadState === 'error') {
       return (
-        <View>
+        <View style={projectModalsStyles.imageTotalUploadContainer}>
           <Text>Images uploaded successfully: {imageUploadStatus.success || 0}</Text>
           <Text>Images Failed: {imageUploadStatus.failed || 0}</Text>
         </View>
@@ -187,42 +236,30 @@ const UploadModal = ({closeModal, visible}) => {
 
   const renderUploadProgress = () => {
     return (
-      <View style={{}}>
-        <LottieAnimations
-          type={uploadState === 'uploading' ? 'loadingFile' : 'complete'}
-          show={uploadState === 'uploading'}
-          doesLoop={uploadState === 'uploading'}
-        />
-        <View>
-          <View style={{padding: 10}}>
-            <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+      <View style={{minHeight: 150}}>
+        <View style={projectModalsStyles.messageContainer}>
+          <Text style={projectModalsStyles.messageText}>{imageUploadStatusMessage || uploadStatusMessage}</Text>
+        </View>
+        <View style={[projectModalsStyles.statusContainer]}>
+          <View style={projectModalsStyles.gridItem}>
+            <View style={{flex: 1}}>
+              <Text>Project: </Text>
+            </View>
+            {projectUploadSuccess ? renderUploadCompleteAnimation() : renderUploadAnimation()}
           </View>
-          {isImageTransferring
-            && (
-              <View style={{paddingTop: 10}}>
-                <View style={{padding: 10, height: 100, width: '100%'}}>
-                  {currentImage !== '' && <Text style={{fontWeight: 'bold'}}>Uploading image {currentImage}</Text>}
-                  <Text style={{textAlign: 'center', margin: 5}}>Success: {currentImageStatus.success} / {totalImages}</Text>
-                  {currentImageStatus.failed > 0 && <Text style={{textAlign: 'center'}}>Failed {currentImageStatus.failed} \ {totalImages}</Text>}
-                </View>
-                <Text style={{textAlign: 'center', paddingBottom: 5}}>Uploading images</Text>
-                <ProgressBar
-                  progress={projectTransferProgress}
-                  width={250}
-                  height={15}
-                  borderRadius={20}
-                />
-                <Text style={{textAlign: 'center'}}>{`${(projectTransferProgress * 100).toFixed(0)}%`}</Text>
-              </View>
-            )
-          }
-          {/*{uploadComplete && datasetsNotUploaded?.length > 0 && renderDatasetsNotUploaded()}*/}
-          <View style={overlayStyles.overlayContent}>
-            <Text>Project: {projectUploadStatus === 'success' ? 'Success!' : 'Uploading...'}</Text>
-            <Text>Datasets: {datasetUploadStatus === 'success' ? 'Success!' : 'Uploading...'}</Text>
-            {/*{renderImageUploadStatusText()}*/}
+          <View style={projectModalsStyles.gridItem}>
+            <View style={{flex: 1}}>
+              <Text>Datasets: </Text>
+            </View>
+            {projectUploadSuccess ? datasetUploadSuccess ? renderUploadCompleteAnimation() : renderUploadAnimation() : null}
           </View>
-
+          <View style={projectModalsStyles.gridItem}>
+            <View style={{flex: 1}}>
+              <Text>Images:</Text>
+            </View>
+            {datasetUploadSuccess ? uploadImageSuccess ? renderUploadCompleteAnimation() : renderUploadAnimation() : null}
+          </View>
+          {isImageTransferring ? renderImageUploadingProgress() : renderImageUploadStatusText()}
         </View>
       </View>
     );

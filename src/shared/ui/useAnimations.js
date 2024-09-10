@@ -6,6 +6,8 @@ const useAnimations = () => {
     switch (type) {
       case 'uploading':
         return Assets.lottieFiles.uploading;
+      case 'uploadingCloud':
+        return Assets.lottieFiles.uploadingCloud;
       case 'complete':
         return Assets.lottieFiles.uploadingComplete;
       case 'deleteProject' :
