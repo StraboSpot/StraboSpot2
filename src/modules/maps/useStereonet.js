@@ -1,4 +1,4 @@
-// import Clipboard from '@react-native-clipboard/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment/moment';
 import {useSelector} from 'react-redux';
 
@@ -147,7 +147,7 @@ const useStereonet = () => {
     }
 
     if (hasData) {
-      // Clipboard.setString(out);
+      Clipboard.setString(out);
       alert('Success!\n\nData has been copied to clipboard.');
     }
     else {
