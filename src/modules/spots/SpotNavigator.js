@@ -1,8 +1,6 @@
 import React, {useRef, useState} from 'react';
-import {Pressable, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
-import {Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import {SpotsList, SpotsListItem} from './index';
@@ -39,26 +37,16 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
       <SectionDivider dividerText={'Current Spot'}/>
       {isEmpty(selectedSpot) ? <ListEmptyText text={'No Selected Spot'}/>
         : <SpotsListItem onPress={openSpotInNotebook} spot={selectedSpot}/>}
-      <Pressable
-        onPress={() => pickerRef.current.focus()}
-        style={{paddingLeft: 10, paddingTop: 8, paddingBottom: 2}}
+      <Picker
+        onValueChange={setPickerKey}
+        ref={pickerRef}
+        selectedValue={pickerKey}
+        style={styles.sectionDividerText}
       >
-        <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-          <Text style={styles.sectionDividerText}>{pickerLabels[pickerKey]}</Text>
-          <Icon name={'caret-down-outline'} type={'ionicon'} size={20}
-          />
-        </View>
-        <Picker
-          onValueChange={setPickerKey}
-          ref={pickerRef}
-          selectedValue={pickerKey}
-          style={{display: 'none', opacity: 0, height: 0, width: 0}}
-        >
-          <Picker.Item label={pickerLabels[pickerKeys.SPOTS]} value={pickerKeys.SPOTS}/>
-          <Picker.Item label={pickerLabels[pickerKeys.IMAGES]} value={pickerKeys.IMAGES}/>
-          <Picker.Item label={pickerLabels[pickerKeys.SAMPLES]} value={pickerKeys.SAMPLES}/>
-        </Picker>
-      </Pressable>
+        <Picker.Item label={pickerLabels[pickerKeys.SPOTS]} value={pickerKeys.SPOTS}/>
+        <Picker.Item label={pickerLabels[pickerKeys.IMAGES]} value={pickerKeys.IMAGES}/>
+        <Picker.Item label={pickerLabels[pickerKeys.SAMPLES]} value={pickerKeys.SAMPLES}/>
+      </Picker>
       {pickerKey === pickerKeys.SPOTS && <SpotsList onPress={openSpotInNotebook}/>}
       {pickerKey === pickerKeys.IMAGES && <ImageGallery openSpotInNotebook={openSpotInNotebook}/>}
       {pickerKey === pickerKeys.SAMPLES && (
