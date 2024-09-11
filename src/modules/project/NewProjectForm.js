@@ -5,10 +5,10 @@ import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptionsModal';
 import {setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 import {isEmpty} from '../../shared/Helpers';
-import ProjectOptionsDialogBox from '../../shared/ui/modal/project-options-modal/ProjectOptionsModal';
 import {Form, useFormHook} from '../form';
 import {setIsProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';

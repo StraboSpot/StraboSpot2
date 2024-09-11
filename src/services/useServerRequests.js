@@ -119,6 +119,18 @@ const useServerRequests = () => {
     return baseUrl;
   };
 
+  const getImage = async (imageId) => {
+    const imageUrl = getImageUrl();
+    return await fetch(imageUrl + imageId, {
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login,
+        'Accept': 'application/json',
+      },
+    });
+  };
+
   const getImageUrl = () => {
     if (isSelected) return baseUrl.replace('/db', '/pi/');
     return `${STRABO_APIS.STRABO}/pi/`;
@@ -391,6 +403,19 @@ const useServerRequests = () => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
 
+  const verifyImagesExistence = async (imageIdsArray) => {
+    // return request('POST', '/verifyImages/', user.encoded_login, imageIdArray);
+    const response = await timeoutPromise(60000, fetch(baseUrl + '/verifyImages/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login + '/',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(imageIdsArray),
+    }));
+    return handleResponse(response);
+  };
+
   const zipURLStatus = async (zipId) => {
     try {
       const myMapsEndpoint = isSelected ? url.replace('/db', '/strabotiles') : tilehost;
@@ -418,6 +443,7 @@ const useServerRequests = () => {
     getDatasetSpots: getDatasetSpots,
     getDatasets: getDatasets,
     getDbUrl: getDbUrl,
+    getImage: getImage,
     getImageUrl: getImageUrl,
     getMapTilesFromHost: getMapTilesFromHost,
     getMyMapsBbox: getMyMapsBbox,
@@ -439,6 +465,7 @@ const useServerRequests = () => {
     uploadWebImage: uploadWebImage,
     verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,
+    verifyImagesExistence: verifyImagesExistence,
     zipURLStatus: zipURLStatus,
   };
 };
