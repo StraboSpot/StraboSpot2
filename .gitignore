@@ -20,7 +20,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-**/.xcode.env.local
+ios/.xcode.env
 
 # Android/IntelliJ
 #
@@ -74,6 +74,12 @@ yarn-error.log
 !.yarn/versions
 
 # Added by Developers
+*.jks
+main.jsbundle.map
+index.android.bundle
+index.android.bundle.map
+fastlane/readme.md
+fastlane/.env.secret
 dev-test-logins.js
 CHANGELOG.md
 env.json
