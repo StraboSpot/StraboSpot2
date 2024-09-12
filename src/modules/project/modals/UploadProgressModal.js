@@ -6,12 +6,12 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownloadHook from '../../../services/useDownload';
-import useImportHook from '../../../services/useImport.web';
+import useImportHook from '../../../services/useImport';
 import useUploadHook from '../../../services/useUpload';
 import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 // import useAnimationsHook from '../../../shared/ui/useAnimations';
-import LottieAnimation from '../../../utils/animations/LottieAnimations.web';
+import LottieAnimation from '../../../utils/animations/LottieAnimations';
 import {addedStatusMessage, setIsProgressModalVisible} from '../../home/home.slice';
 import {setIsImageTransferring, setSelectedProject} from '../projects.slice';
 

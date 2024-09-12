@@ -7,17 +7,17 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import projectOptionsModalStyle from './projectOptionsModal.style';
-import {APP_DIRECTORIES} from '../../../../services/directories.constants.web';
+import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
-import useDeviceHook from '../../../../services/useDevice.web';
-import useExportHook from '../../../../services/useExport.web';
+import useDeviceHook from '../../../../services/useDevice';
+import useExportHook from '../../../../services/useExport';
 import commonStyles from '../../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../../shared/Helpers';
 import modalStyle from '../../../../shared/ui/modal/modal.style';
 import ModalHeader from '../../../../shared/ui/modal/ModalHeader';
 import Spacer from '../../../../shared/ui/Spacer';
 import uiStyles from '../../../../shared/ui/ui.styles';
-import LottieAnimations from '../../../../utils/animations/LottieAnimations.web';
+import LottieAnimations from '../../../../utils/animations/LottieAnimations';
 import {
   setLoadingStatus,
   setIsProgressModalVisible,
