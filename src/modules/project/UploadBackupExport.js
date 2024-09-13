@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {setSelectedProject} from './projects.slice';
 import useDeviceHook from '../../services/useDevice';
+import useUploadImagesHook from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -18,16 +19,19 @@ import {
   setIsErrorMessagesModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import {BackupModal, UploadModal} from '../project/modals/index';
+import {BackupModal, UploadModal, UploadProgressModal} from '../project/modals/index';
 
 const UploadBackAndExport = () => {
+  console.log('UploadBackAndExport Render');
+
   const dispatch = useDispatch();
   const activeDatasets = useSelector(state => state.project.activeDatasetsIds);
   const isOnline = useSelector(state => state.connections.isOnline);
   const user = useSelector(state => state.user);
 
-  const [isBackupModalVisible, setIsBackupModalVisible] =  useState(false);
-  const [isUploadModalVisible, setIsUploadModalVisible] =  useState(false);
+  const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
+  const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
+  const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const useDevice = useDeviceHook();
 
   const checkForActiveDatasets = () => {
@@ -130,6 +134,9 @@ const UploadBackAndExport = () => {
       <UploadModal
         visible={isUploadModalVisible}
         closeModal={() => setIsUploadModalVisible(false)}
+      />
+      <UploadProgressModal
+        isProgressModalVisible={isProgressModalVisible}
       />
       {/*<Divider sectionText={'export'}/>*/}
       {/*{renderExportButtons()}*/}

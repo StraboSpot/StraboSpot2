@@ -1,3 +1,5 @@
+import {useState} from 'react';
+
 import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -5,11 +7,13 @@ import {updatedProjectTransferProgress} from './connections.slice';
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
-import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsProgressModalVisible} from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {setIsImageTransferring} from '../modules/project/projects.slice';
+import {isEmpty} from '../shared/Helpers';
 
 const useUploadImages = () => {
+  // const imagesToUpload = [];
   const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const useDevice = useDeviceHook();
@@ -18,17 +22,65 @@ const useUploadImages = () => {
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const spots = useSelector(state => state.spot.spots);
+
+  const [currentImage, setCurrentImage] = useState('');
+  const [currentImageStatus, setCurrentImageStatus] = useState({success: 0, failed: 0});
+  const [totalImages, setTotalImages] = useState(0);
+  const [imageUploadStatusMessage, setImageUploadStatusMessage] = useState('');
+
+
+  const resetState = () => {
+    console.log('resetting State', imageUploadStatusMessage);
+    setImageUploadStatusMessage('');
+    setCurrentImage('');
+    setCurrentImageStatus({success: 0, failed: 0});
+  };
+
+  // Gather all the images in spots and returns the ids.
+  const getImageIds = (images) => {
+    const imageIds = [];
+    images.forEach(image => imageIds.push(image.id));
+    console.log(imageIds);
+    return imageIds;
+  };
+
+  const initializeImageUpload = async () => {
+    let imagesStatus = {};
+    setImageUploadStatusMessage('');
+    console.log('Looking for Images to Upload in Spots...', spots);
+    setImageUploadStatusMessage('Looking for images to upload in spots...');
+    const images = useImages.getAllImages();
+    const imageIds = getImageIds(images);
+    setImageUploadStatusMessage('Checking to see if image files are on server...');
+    const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
+    setImageUploadStatusMessage(`Checking to see if ${neededImages.length} image files are on device...`);
+    console.log('Needed Images from server', neededImages);
+    const {imagesToUpload, imagesNotFoundOnDevice} = await verifyImageExistsOnDevice(neededImages, images);
+    console.log('Done verifying images on device', imagesToUpload);
+    if (!isEmpty(imagesToUpload)) {
+      setImageUploadStatusMessage('Uploading needed images to server...');
+      dispatch(setIsImageTransferring(true));
+      imagesStatus = await uploadImages(imagesToUpload);
+      console.log('DONE UPLOADING IMAGES');
+    }
+    else setImageUploadStatusMessage('All images for this project are already on server.');
+    if (!isEmpty(imagesNotFoundOnDevice)) {
+      imagesStatus = {...imagesStatus, imagesNotFound: imagesNotFoundOnDevice.length};
+    }
+    return imagesStatus;
+  };
 
   // Downsize image for upload
-  const resizeImageForUpload = async (imageProps, imageURI) => {
+  const resizeImageForUpload = async (imageProps) => {
     try {
       console.log('Resizing Image', imageProps?.id, '...');
       let height = imageProps?.height;
       let width = imageProps?.width;
 
-      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageURI));
+      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageProps.uri));
 
-      if (width && height) {
+      if (width > 2000 || height > 2000) {
         const max_size = 2000;
         if (width > height && width > max_size) {
           height = max_size * height / width;
@@ -40,11 +92,12 @@ const useUploadImages = () => {
         }
 
         await useDevice.makeDirectory(tempImagesDownsizedDirectory);
-        const createResizedImageProps = [imageURI, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
+        const createResizedImageProps = [imageProps.uri, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
         useImages.getImageSize(imageProps, resizedImage);
         return resizedImage;
       }
+      else return imageProps;
     }
     catch (err) {
       console.error('Error Resizing Image.', err);
@@ -52,155 +105,101 @@ const useUploadImages = () => {
     }
   };
 
-  // Upload the image to server
-  const uploadImage = async (imageId, imageURI, datasetName) => {
-    try {
-      if (datasetName) console.log(datasetName + ': Uploading Image', imageId, '...');
-      else console.log('Uploading Profile Image', imageURI);
+  const verifyImageExistsOnDevice = async (neededImageIds, imagesFound) => {
+    const imagesToUpload = [];
+    const imagesNotFoundOnDevice = [];
+    await Promise.all((
+      neededImageIds.map(async (imageId) => {
+          const imageURI = useImages.getLocalImageURI(imageId);
+          const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
+          if (isValidImageURI) {
+            console.log(`Image ${imageId} EXISTS`);
+            return imagesFound.find((image) => {
+              if (image.id.toString() === imageId) {
+                imagesToUpload.push({...image, uri: imageURI});
+                // setImagesToUpload(prevState => ([...prevState, imageWithPath]));
+                // return {...image, uri: imageURI};
+              }
+            });
+          }
+          else {
+            console.log('Local file not found for image:' + imageId);
+            imagesNotFoundOnDevice.push(imageId);
+          }
+        },
+      )
+    ));
+    return {imagesToUpload: imagesToUpload, imagesNotFoundOnDevice: imagesNotFoundOnDevice};
+  };
 
-      dispatch(setIsImageTransferring(true));
+  // Upload the image to server
+  const uploadImage = async (imageId, imageUri, isProfileImage) => {
+    try {
+      setCurrentImage(imageId);
+
+      console.log(': Uploading Image', imageId, '...');
 
       let formdata = new FormData();
-      formdata.append('image_file', {uri: imageURI + '?' + new Date(), name: 'image.jpg', type: 'image/jpeg'});
+      formdata.append('image_file', {uri: imageUri, name: 'image.jpg', type: 'image/jpeg'});
       formdata.append('id', imageId);
       formdata.append('modified_timestamp', Date.now());
-
-      const res = await useServerRequests.uploadImage(formdata, user.encoded_login, !datasetName);
+      const res = await useServerRequests.uploadImage(formdata, user.encoded_login, isProfileImage);
       console.log('Image Upload Res', res);
-      if (datasetName) console.log(datasetName + ': Finished Uploading Image', imageId);
-      else console.log('Finished Uploading Profile Image');
-
+      console.log(': Finished Uploading Image', imageId);
       dispatch(updatedProjectTransferProgress(0));
-      dispatch(clearedStatusMessages());
-      // dispatch(setIsImageTransferring(false));
     }
     catch (err) {
-      if (datasetName) console.log(datasetName + ': Error Uploading Image', imageId, err);
-      else console.log('Error Uploading Profile Image', err);
-      // dispatch(setIsImageTransferring(false));
+      console.log(': Error Uploading Image', imageId, err);
       throw Error(err);
     }
   };
 
-  const uploadImages = async (spots, datasetName) => {
-    let imagesFound = [];
-    let imagesOnServer = [];
-    let imagesToUpload = [];
-    let imagesOnServerCount = 0;
+  const uploadImages = async (imagesToUpload) => {
     let imagesUploadedCount = 0;
     let imagesUploadFailedCount = 0;
-
-    console.log('Looking for Images to Upload in Spots...', spots);
-    dispatch(addedStatusMessage('Looking for images to upload in spots...'));
-
-    // Check if image is already on server and push image into either array imagesOnServer or imagesToUpload
-    const shouldUploadImage = async (imageProps) => {
-      try {
-        const response = await useServerRequests.verifyImageExistence(imageProps.id, user.encoded_login);
-        if (response
-          && ((response.modified_timestamp && imageProps.modified_timestamp
-              && imageProps.modified_timestamp > response.modified_timestamp)
-            || (!response.modified_timestamp && imageProps.modified_timestamp))) {
-          imagesToUpload.push(imageProps);
-        }
-        else {
-          dispatch(removedLastStatusMessage());
-          dispatch(addedStatusMessage(`Images already on server: ${imagesOnServerCount++}`));
-        }
-      }
-      catch (err) {
-        console.error('Error at shouldUploadImage()', err);
-        imagesToUpload.push(imageProps);
-      }
-    };
 
     // Start uploading image by getting the image file, downsizing the image and then uploading
     const startUploadingImage = async (imageProps) => {
       try {
-        const imageURI = await getImageFile(imageProps);
-        const resizedImage = await resizeImageForUpload(imageProps, imageURI);
-        await uploadImage(imageProps.id, resizedImage, datasetName);
+        // const imageURI = await getImageFile(imageProps.id);
+        const resizedImage = await resizeImageForUpload(imageProps);
+        await uploadImage(imageProps.id, resizedImage.uri);
         imagesUploadedCount++;
       }
       catch (err) {
         console.error(`Failed to upload image ${imageProps.id} because ${err.Error}`);
         imagesUploadFailedCount++;
       }
-      let msgText = `Uploading Image ${imageProps.id}...`;
-      console.log(`${msgText} \n Success: ${imagesUploadedCount}/${imagesToUpload.length} uploaded.`);
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(
-        `\n${msgText} 
-         \nSuccess: ${imagesUploadedCount}/${imagesToUpload.length} uploaded. 
-         \nFailed: ${imagesUploadFailedCount || 0}/${imagesToUpload.length}`),
-      );
-      // if (imagesUploadFailedCount > 0) {
-      //   failedCountMsgText = ' (' + imagesUploadFailedCount + ' Failed)';
-      //   dispatch(removedLastStatusMessage());
-      //   dispatch(addedStatusMessage(`\n ${failedCountMsgText}`));
-      // }
+
+      setCurrentImageStatus({success: imagesUploadedCount, failed: imagesUploadFailedCount});
 
       if (imagesUploadedCount + imagesUploadFailedCount < imagesToUpload.length) {
         await startUploadingImage(imagesToUpload[imagesUploadedCount + imagesUploadFailedCount]);
       }
       else {
-        dispatch(clearedStatusMessages());
         if (imagesUploadFailedCount > 0) {
-          dispatch(addedStatusMessage('Finished uploading images with Errors.\n'));
-          dispatch(addedStatusMessage(`\n${imagesUploadFailedCount} Images failed to upload\n`));
+          setImageUploadStatusMessage(
+            `Finished uploading images with Errors.\n ${imagesUploadFailedCount} Images failed to upload\n`);
         }
-        else dispatch(addedStatusMessage(`Finished uploading ${imagesUploadedCount} images to server.`));
+        else setImageUploadStatusMessage(`Finished uploading ${imagesUploadedCount} images to server.`);
       }
     };
 
-    // Get the URI of the image file if it exists on local device
-    const getImageFile = async (imageProps) => {
-      try {
-        const imageURI = useImages.getLocalImageURI(imageProps.id);
-        const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
-        if (isValidImageURI) return imageURI;
-        throw Error;  // Webstorm giving warning here, but we want this caught locally so that we get the log
-      }
-      catch (err) {
-        console.log('Local file not found for image:' + imageProps.id);
-        throw Error(err);
-      }
-    };
-
-    // Delete the folder used for downsized images
-    const deleteTempImagesFolder = async () => {
-      try {
-        let dirExists = await useDevice.doesDeviceDirExist(tempImagesDownsizedDirectory);
-        if (dirExists) await useDevice.deleteFromDevice(tempImagesDownsizedDirectory);
-      }
-      catch {
-        console.error(datasetName + ': Error Deleting Temp Images Folder.');
-      }
-    };
-    // Gather all the images in spots.
-    spots.forEach(spot => spot?.properties?.images?.forEach(image => imagesFound.push(image)));
-    console.log('SPOT IMAGES', imagesFound);
-
-    await Promise.all(
-      imagesFound.map(async (image) => {
-        console.log('SHOULD UPLOAD IMAGE', image);
-        await shouldUploadImage(image);
-      }),
-    );
     if (imagesToUpload.length > 0) {
-      dispatch(removedLastStatusMessage());
-      dispatch(
-        addedStatusMessage(`Found ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'} to upload.`),
-      );
+      setImageUploadStatusMessage(
+        `Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}...`);
+      setTotalImages(imagesToUpload.length);
       await startUploadingImage(imagesToUpload[0]);
+      return ({success: imagesUploadedCount, failed: imagesUploadFailedCount});
     }
-    else dispatch(addedStatusMessage('\nNo images to upload'));
-    await deleteTempImagesFolder();
+    else setImageUploadStatusMessage('\nNo images to upload');
+    await useDevice.deleteTempImagesFolder();
+    dispatch(setIsProgressModalVisible(false));
   };
 
-  const uploadProfileImage = async (imageURI) => {
+  const uploadProfileImage = async () => {
     try {
-      await uploadImage('profileImage', imageURI);
+      await uploadImage('profileImage', 'file://' + APP_DIRECTORIES.PROFILE_IMAGE, true);
       console.log('Profile Image Uploaded');
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Profile Image Uploaded'));
@@ -214,9 +213,16 @@ const useUploadImages = () => {
   };
 
   return {
+    initializeImageUpload: initializeImageUpload,
     resizeImageForUpload: resizeImageForUpload,
+    verifyImageExistsOnDevice: verifyImageExistsOnDevice,
     uploadImages: uploadImages,
     uploadProfileImage: uploadProfileImage,
+    currentImage,
+    currentImageStatus,
+    resetState,
+    totalImages,
+    imageUploadStatusMessage,
   };
 };
 

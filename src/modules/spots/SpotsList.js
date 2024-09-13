@@ -7,6 +7,7 @@ import {SpotsListItem, useSpotsHook} from './index';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
 import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import SortingButtons from '../main-menu-panel/SortingButtons';
@@ -16,10 +17,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
 
   const useSpots = useSpotsHook();
 
-  const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
-  const spots = useSelector(state => state.spot.spots);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   let sortedSpots = useSpots.getSpotsSortedReverseChronologically();
 
@@ -31,12 +29,12 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
     console.log('Rendering Spots List...');
     let noSpotsText = 'No Spots';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpots = spotsInMapExtent;
-      if (isEmpty(sortedSpots)) noSpotsText = 'No Spots in current map extent';
+      sortedSpots = useSpots.getSpotsInMapExtent();
+      if (isEmpty(sortedSpots)) noSpotsText = 'No active Spots in current map extent';
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      sortedSpots = recentViews.map(spotId => spots[spotId]);
-      if (isEmpty(sortedSpots)) noSpotsText = 'No recently viewed Spots';
+      sortedSpots = useSpots.getRecentSpots();
+      if (isEmpty(sortedSpots)) noSpotsText = 'No recently viewed active Spots';
     }
     return (
       <View style={{flex: 1}}>
@@ -47,6 +45,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
             updateSpotsInMapExtent={updateSpotsInMapExtent}
           />
         )}
+        <SectionDivider dividerText={sortedSpots.length + ' Active ' + (sortedSpots.length === 1 ? 'Spot' : 'Spots')}/>
         <View style={{flex: 1}}>
           <FlatList
             keyExtractor={spot => spot.properties.id.toString()}

@@ -10,6 +10,7 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
@@ -27,10 +28,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   const useSpots = useSpotsHook();
 
   const dispatch = useDispatch();
-  const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
-  const spots = useSelector(state => state.spot.spots);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [isError, setIsError] = useState(false);
@@ -123,18 +121,23 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   const renderSpotsWithImages = () => {
     sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
-    let noImagesText = 'No Spots with images';
+    let noImagesText = 'No active Spots with images';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpotsWithImages = spotsInMapExtent.filter(spot => spot.properties.images);
-      if (isEmpty(sortedSpotsWithImages)) noImagesText = 'No Spots with images in current map extent';
+      const spotsInMapExtent = useSpots.getSpotsInMapExtent();
+      sortedSpotsWithImages = spotsInMapExtent.filter(spot => !isEmpty(spot.properties.images));
+      if (isEmpty(sortedSpotsWithImages)) noImagesText = 'No active Spots with images in current map extent';
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      const recentlyViewedSpots = recentViews.map(spotId => spots[spotId]);
-      sortedSpotsWithImages = recentlyViewedSpots.filter(spot => spot.properties.images);
-      if (!isEmpty(sortedSpotsWithImages)) noImagesText = 'No recently viewed Spots with images';
+      const recentlyViewedSpots = useSpots.getRecentSpots();
+      sortedSpotsWithImages = recentlyViewedSpots.filter(spot => !isEmpty(spot.properties.images));
+      if (!isEmpty(sortedSpotsWithImages)) noImagesText = 'No recently viewed active Spots with images';
     }
-    const spotsAsSections = sortedSpotsWithImages.reduce(
-      (acc, spot) => [...acc, {spot: spot, data: [spot.properties.images]}], []);
+    let count = 0;
+    const spotsAsSections = sortedSpotsWithImages.reduce((acc, spot) => {
+      count += spot.properties.images.length;
+      return [...acc, {spot: spot, data: [spot.properties.images]}];
+    }, []);
+
     return (
       <>
         <SortingButtons/>
@@ -145,6 +148,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
           />
         )}
         <View style={imageStyles.galleryImageContainer}>
+          <SectionDivider dividerText={count + (count === 1 ? ' Image' : ' Images') + ' in active Spots'}/>
           <SectionList
             keyExtractor={(item, index) => item + index}
             sections={spotsAsSections}

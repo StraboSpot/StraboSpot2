@@ -29,14 +29,18 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {deletedSpots} from '../spots/spots.slice';
+import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
+import {clearedSelectedSpots, deletedSpots} from '../spots/spots.slice';
 
 const useProject = () => {
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets) || {};
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const stratSection = useSelector(state => state.map.stratSection);
   const user = useSelector(state => state.user);
 
   const toast = useToast();
@@ -245,13 +249,15 @@ const useProject = () => {
     dispatch(setSelectedDataset(datasetId));
   };
 
-  const setSwitchValue = async (val, dataset) => { //TODO look at setSwitchValue to see if condition is needed.
+  const setSwitchValue = async (val, dataset) => {
     try {
-      if (!isEmpty(user.name) && val) {
-        dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
-        return 'SWITCHED';
+      dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+      if (!val && !isEmpty(selectedSpot) && dataset.spotIds?.includes(selectedSpot.properties.id)) {
+        if (currentImageBasemap) dispatch(setCurrentImageBasemap(undefined));
+        if (stratSection) dispatch(clearedStratSection());
+        dispatch(clearedSelectedSpots());
       }
-      else dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+      if (!isEmpty(user.name) && val) return 'SWITCHED';  //TODO do we really need this return
     }
     catch (err) {
       console.log('Error setting switch value.');

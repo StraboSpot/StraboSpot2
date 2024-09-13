@@ -7,25 +7,25 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import projectOptionsModalStyle from './projectOptionsModal.style';
-import {
-  setLoadingStatus,
-  setIsProgressModalVisible,
-} from '../../../../modules/home/home.slice';
-import overlayStyles from '../../../../modules/home/overlays/overlay.styles';
-import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../../../modules/project/project.constants';
-import {setSelectedProject} from '../../../../modules/project/projects.slice';
-import useProjectHook from '../../../../modules/project/useProject';
 import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
 import useDeviceHook from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
+import commonStyles from '../../../../shared/common.styles';
+import {isEmpty, truncateText} from '../../../../shared/Helpers';
+import modalStyle from '../../../../shared/ui/modal/modal.style';
+import ModalHeader from '../../../../shared/ui/modal/ModalHeader';
+import Spacer from '../../../../shared/ui/Spacer';
+import uiStyles from '../../../../shared/ui/ui.styles';
 import LottieAnimations from '../../../../utils/animations/LottieAnimations';
-import commonStyles from '../../../common.styles';
-import {isEmpty, truncateText} from '../../../Helpers';
-import Spacer from '../../Spacer';
-import uiStyles from '../../ui.styles';
-import modalStyle from '../modal.style';
-import ModalHeader from '../ModalHeader';
+import {
+  setLoadingStatus,
+  setIsProgressModalVisible,
+} from '../../../home/home.slice';
+import overlayStyles from '../../../home/overlays/overlay.styles';
+import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../project.constants';
+import {setSelectedProject} from '../../projects.slice';
+import useProjectHook from '../../useProject';
 
 const ProjectOptionsDialogBox = ({
                                    closeModal,

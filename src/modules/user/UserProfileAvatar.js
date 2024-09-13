@@ -28,6 +28,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
     console.log('tempUserProfileImageURI', tempUserProfileImageURI);
     if (Platform.OS === 'web') {
       if (!isEmpty(imageURI)) setSource({uri: imageURI});
+      else if (useUserProfile.getInitials()) setSource(undefined);
       else setSource(defaultAvatar);
     }
     else if (!isEditable && !isEmpty(tempUserProfileImageURI)) setSource({uri: tempUserProfileImageURI});
@@ -36,6 +37,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
       console.log('doesProfileImageExist', doesProfileImageExist);
       if (doesProfileImageExist) setSource({uri: 'file://' + APP_DIRECTORIES.PROFILE_IMAGE + '?' + new Date()}); // Avoid caching with date
       else if (!isEmpty(imageURI) && typeof imageURI.valueOf() === 'string') setSource({uri: imageURI});
+      else if (useUserProfile.getInitials()) setSource(undefined);
       else setSource(defaultAvatar);
     }
   };

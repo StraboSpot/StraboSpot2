@@ -60,6 +60,25 @@ const useServerRequests = () => {
     }
   };
 
+  const deleteProfileImage = async (login) => {
+    try {
+      const response = await fetch(
+        baseUrl + '/profileimage',
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Basic ' + login,
+            'Content-Type': 'application/json',
+          },
+        });
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Posting', err);
+      alert('Error', `${err.toString()}`);
+    }
+  };
+
   const deleteProject = async (project) => {
     try {
       const response = await fetch(
@@ -98,6 +117,18 @@ const useServerRequests = () => {
 
   const getDbUrl = () => {
     return baseUrl;
+  };
+
+  const getImage = async (imageId) => {
+    const imageUrl = getImageUrl();
+    return await fetch(imageUrl + imageId, {
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login,
+        'Accept': 'application/json',
+      },
+    });
   };
 
   const getImageUrl = () => {
@@ -372,6 +403,19 @@ const useServerRequests = () => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
 
+  const verifyImagesExistence = async (imageIdsArray) => {
+    // return request('POST', '/verifyImages/', user.encoded_login, imageIdArray);
+    const response = await timeoutPromise(60000, fetch(baseUrl + '/verifyImages/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + user.encoded_login + '/',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(imageIdsArray),
+    }));
+    return handleResponse(response);
+  };
+
   const zipURLStatus = async (zipId) => {
     try {
       const myMapsEndpoint = isSelected ? url.replace('/db', '/strabotiles') : tilehost;
@@ -392,12 +436,14 @@ const useServerRequests = () => {
     authenticateUser: authenticateUser,
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     deleteProfile: deleteProfile,
+    deleteProfileImage: deleteProfileImage,
     deleteProject: deleteProject,
     downloadImage: downloadImage,
     getDataset: getDataset,
     getDatasetSpots: getDatasetSpots,
     getDatasets: getDatasets,
     getDbUrl: getDbUrl,
+    getImage: getImage,
     getImageUrl: getImageUrl,
     getMapTilesFromHost: getMapTilesFromHost,
     getMyMapsBbox: getMyMapsBbox,
@@ -419,6 +465,7 @@ const useServerRequests = () => {
     uploadWebImage: uploadWebImage,
     verifyEndpoint: verifyEndpoint,
     verifyImageExistence: verifyImageExistence,
+    verifyImagesExistence: verifyImagesExistence,
     zipURLStatus: zipURLStatus,
   };
 };

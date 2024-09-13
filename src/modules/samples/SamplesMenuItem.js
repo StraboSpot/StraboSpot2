@@ -8,6 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
+import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
@@ -19,10 +20,7 @@ import useSpotsHook from '../spots/useSpots';
 const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   const useSpots = useSpotsHook();
 
-  const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
-  const spots = useSelector(state => state.spot.spots);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
 
   const renderNoSamplesText = () => {
     return <ListEmptyText text={'No Samples in Active Datasets'}/>;
@@ -45,18 +43,22 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   const renderSamplesList = () => {
     let sortedSpotsWithSamples = useSpots.getSpotsWithSamplesSortedReverseChronologically();
-    let noSamplesText = 'No Spots with Samples';
+    let noSamplesText = 'No active Spots with samples';
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpotsWithSamples = spotsInMapExtent.filter(spot => spot.properties.samples);
-      if (isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No Spots with samples in current map extent';
+      const spotsInMapExtent = useSpots.getSpotsInMapExtent();
+      sortedSpotsWithSamples = spotsInMapExtent.filter(spot => !isEmpty(spot.properties.samples));
+      if (isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No active Spots with samples in current map extent';
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      const recentlyViewedSpots = recentViews.map(spotId => spots[spotId]);
-      sortedSpotsWithSamples = recentlyViewedSpots.filter(spot => spot.properties.samples);
-      if (!isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No recently viewed Spots with samples';
+      const recentlyViewedSpots = useSpots.getRecentSpots();
+      sortedSpotsWithSamples = recentlyViewedSpots.filter(spot => !isEmpty(spot.properties.samples));
+      if (!isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No recently viewed active Spots with samples';
     }
-    const dataSectioned = sortedSpotsWithSamples.map(
-      s => ({title: s.properties.name, data: s.properties.samples, spot: s}));
+    let count = 0;
+    const dataSectioned = sortedSpotsWithSamples.map((s) => {
+      count += s.properties.samples.length;
+      return {title: s.properties.name, data: s.properties.samples, spot: s};
+    });
 
     return (
       <View style={{flex: 1}}>
@@ -68,6 +70,7 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
           />
         )}
         <View style={{flex: 1}}>
+          <SectionDivider dividerText={count + (count === 1 ? ' Sample' : ' Samples') + ' in active Spots'}/>
           <SectionList
             keyExtractor={(item, index) => item + index}
             sections={dataSectioned}

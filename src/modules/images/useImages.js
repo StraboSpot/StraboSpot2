@@ -129,6 +129,12 @@ const useImages = () => {
     return imageIds;
   };
 
+  const getAllImages = () => {
+    const images = [];
+    Object.values(spots).forEach(spot => spot?.properties?.images?.map(image => images.push(image)));
+    return images;
+  };
+
   const getImageBasemap = (image) => {
     dispatch(clearedSelectedSpots());
     dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -446,6 +452,8 @@ const useImages = () => {
     doesImageExistOnDevice: doesImageExistOnDevice,
     editImage: editImage,
     gatherNeededImages: gatherNeededImages,
+    getAllImages: getAllImages,
+    getAllImagesIds: getAllImagesIds,
     getImageBasemap: getImageBasemap,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,

@@ -21,7 +21,7 @@ import UserProfileAvatar from '../../user/UserProfileAvatar';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
 
-const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible}) => {
+const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   console.log('Rendering InitialProjectLoadModal...');
 
   const dispatch = useDispatch();
@@ -245,16 +245,10 @@ const InitialProjectLoadModal = ({closeModal, logout, openMainMenuPanel, visible
           <Text style={userStyles.initialProjectLoadProfileHeaderText}>Hello, {displayName}!</Text>
           {user.email && <Text>Signed in as {truncateText(user.email, 15)}</Text>}
           <Button
-            title={user.name ? `Not ${user.name}?` : 'Sign in?'}
+            title={user.name ? `Not ${user.name}?` : 'Log in?'}
             type={'clear'}
             titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
-            onPress={() => {
-              if (user.name) useResetState.clearUser();
-              // dispatch(setSignedInStatus(false));
-              closeModal();
-              setVisibleInitialSection('none');
-              logout();
-            }}
+            onPress={() => useResetState.clearUser()}
           />
         </View>
       </View>

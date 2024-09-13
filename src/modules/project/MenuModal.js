@@ -1,19 +1,15 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, Overlay} from 'react-native-elements';
+import {Overlay} from 'react-native-elements';
 
 import overlayStyles from '../home/overlays/overlay.styles';
 
 
 const MenuModal = ({
-                     buttonText,
                      children,
                      modalTitle,
-                     disabled,
-                     onPress,
                      overlayStyle,
-                     showOK,
                      visible,
                    }) => {
 
@@ -29,17 +25,6 @@ const MenuModal = ({
       </View>
       <View style={overlayStyles.overlayContent}>
         {children}
-      </View>
-      <View style={overlayStyles.buttonContainer}>
-        {showOK && (
-          <Button
-            title={buttonText || 'OK'}
-            type={'clear'}
-            titleStyle={disabled ? overlayStyles.disabledButtonText : overlayStyles.buttonText}
-            disabled={disabled}
-            onPress={onPress}
-          />
-        )}
       </View>
     </Overlay>
   );

@@ -74,7 +74,7 @@ const useSignIn = () => {
       }
     }
     catch (err) {
-      console.error('Sign In Error:', err);
+      console.error('Log In Error:', err);
       Sentry.captureException(err);
       if (Platform.OS !== 'web') {
         dispatch(setLoadingStatus({view: 'home', bool: false}));

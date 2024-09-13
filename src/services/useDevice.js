@@ -3,10 +3,10 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
-import useServerRequestsHook from './useServerRequests';
+import useServerRequests from './useServerRequests';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import usePermissionsHook from '../services/usePermissions';
@@ -17,9 +17,8 @@ const useDevice = () => {
   const usePermissions = usePermissionsHook();
 
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
 
-  const useServerRequests = useServerRequestsHook();
+  const {getImage, getProfileImageURL} = useServerRequests();
 
   const copyFiles = async (source, target) => {
     try {
@@ -32,19 +31,20 @@ const useDevice = () => {
 
   // INTERNAL
   const createAppDirectory = async (directory) => {
+    console.log('Creating directory...', directory);
     return RNFS.mkdir(directory)
       .then(() => {
-        console.log('Directory:', directory, 'CREATED!');
+        console.log('Finished creating directory:', directory);
         return true;
       })
       .catch((err) => {
-        console.error('Unable to create directory', directory, 'ERROR:', err);
+        console.error('Error creating directory', directory, 'ERROR:', err);
         throw Error(err);
       });
   };
 
   const createProjectDirectories = async () => {
-    // console.log('STOP!!');
+    console.log('Creating Project Directories...');
     if (Platform.OS === 'android') {
       const permissionsGranted = await usePermissions.checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       if (permissionsGranted === RESULTS.GRANTED) {
@@ -102,6 +102,28 @@ const useDevice = () => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
+  const deleteProfileImageFile = async () => {
+    try {
+      let fileExists = await doesFileExist(APP_DIRECTORIES.PROFILE_IMAGE);
+      if (fileExists) await deleteFromDevice(APP_DIRECTORIES.PROFILE_IMAGE);
+    }
+    catch (err) {
+      console.error('Error Deleting Profile Image File.', err);
+    }
+  };
+
+  // Delete the folder used for downsized images
+  const deleteTempImagesFolder = async () => {
+    try {
+      const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
+      let dirExists = await doesDeviceDirExist(tempImagesDownsizedDirectory);
+      if (dirExists) await deleteFromDevice(tempImagesDownsizedDirectory);
+    }
+    catch (err) {
+      console.error('Error Deleting Temp Images Folder.', err);
+    }
+  };
+
   const doesBackupFileExist = (filename) => {
     return RNFS.exists(APP_DIRECTORIES.BACKUP_DIR + filename + '/data.json');
   };
@@ -133,6 +155,7 @@ const useDevice = () => {
     }
   };
 
+  // TODO: Check to consolidate with doesDeviceDirectoryExist();
   const doesDeviceDirExist = async (dir) => {
     return await RNFS.exists(dir);
   };
@@ -140,10 +163,10 @@ const useDevice = () => {
   // TODO: Check to consolidate with doesDeviceDirExist();
   const doesDeviceDirectoryExist = async (directory) => {
     try {
+      console.log('Checking if directory exists...', directory);
       let checkDirSuccess = await RNFS.exists(directory);
-      // Create Images directory if it does not exist
       if (!checkDirSuccess) checkDirSuccess = await createAppDirectory(directory);
-      if (checkDirSuccess) console.log('Images directory exists:', directory);
+      if (checkDirSuccess) console.log('Directory exists:', directory);
       else throw Error;
       return checkDirSuccess;
     }
@@ -157,34 +180,36 @@ const useDevice = () => {
     return await RNFS.exists(path + file);
   };
 
-  const downloadAndSaveImage = async (imageId) => {
-    const imageURI = useServerRequests.getImageUrl();
-    return await RNFS.downloadFile({
-      fromUrl: imageURI + imageId,
-      toFile: APP_DIRECTORIES.IMAGES + imageId + '.jpg',
-      begin: res => console.log('Starting to download Image', imageId, res),
-      headers: {
-        'Authorization': 'Basic ' + user.encoded_login,
-        'Accept': 'application/json',
-      },
-    }).promise.then(async (res) => {
-        console.log('Image', imageId, 'RNFS downloadFile response:', res);
-        if (res.statusCode === 200) {
-          console.log(`Image ${imageId} downloaded and saved to: ${APP_DIRECTORIES.IMAGES}`, res);
-          return res.statusCode;
-        }
-        else if (res.statusCode === 404) throw Error('Image ' + imageId + ' not found on Server');
-        else throw Error('Image ' + imageId + ' unknown error');
-      },
-    )
-      .catch((err) => {
-        console.log('RNFS Download Error', err);
-        console.warn(`Current URL ${imageURI + imageId}`);
-      });
+  const downloadImageAndSave = async (url, imageId) => {
+    try {
+      const path = APP_DIRECTORIES.IMAGES + imageId + '.jpg';
+
+      const response = await getImage(imageId);
+      console.log('Image ID', imageId);
+      console.log('Image Response', response);
+
+      if (response.status === 200) {
+        const imageBlob = await response.blob();
+
+        const reader = new FileReader();
+
+        const base64Data = await new Promise((resolve, reject) => {
+          reader.onloadend = () => resolve(reader.result.split(',')[1]); // Extract base64 string from result
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(imageBlob); // Read the blob as base64
+        });
+        await RNFS.writeFile(path, base64Data, 'base64');
+        console.log('Image saved to:', path);
+        return response.ok;
+      }
+    }
+    catch (err) {
+      console.error('Error downloading or saving file:', err);
+    }
   };
 
   const downloadAndSaveProfileImage = async (encodedLogin) => {
-    const profileImageURL = useServerRequests.getProfileImageURL();
+    const profileImageURL = getProfileImageURL();
     return await RNFS.downloadFile({
       fromUrl: profileImageURL,
       toFile: APP_DIRECTORIES.PROFILE_IMAGE,
@@ -218,6 +243,17 @@ const useDevice = () => {
     catch (err) {
       console.error('An error occurred:', err);
     }
+  };
+
+  const getDeviceStorageSpaceInfo = async () => {
+    let imageSizeText;
+    const {freeSpace, totalSpace} = await RNFS.getFSInfo();
+    console.log(`Device storage is ${freeSpace}/${totalSpace}`);
+    if (freeSpace < 1024) imageSizeText = freeSpace + ' bytes';
+    else if (freeSpace < 1048576) imageSizeText = (freeSpace / 1024).toFixed(3) + ' kB';
+    else if (freeSpace < 1073741824) imageSizeText = (freeSpace / 1048576).toFixed(2) + ' MB';
+    else imageSizeText = (freeSpace / 1073741824).toFixed(3) + ' GB';
+    console.log('The available space is:', imageSizeText);
   };
 
   const getExternalProjectData = async () => {
@@ -406,12 +442,12 @@ const useDevice = () => {
 
   const writeFileToDevice = async (path, filename, data) => {
     try {
+      console.log('Writing file to internal storage ...', path + '/' + filename);
       await RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8');
-      console.log('FILES WRITTEN SUCCESSFULLY TO INTERNAL STORAGE!');
-      console.log(path + '/' + filename);
+      console.log('Finished writing file to internal storage', path + '/' + filename);
     }
     catch (err) {
-      console.error('Write Error!', err.message);
+      console.error('Error Writing File!', err.message);
       throw Error(err);
     }
   };
@@ -421,14 +457,17 @@ const useDevice = () => {
     createProjectDirectories: createProjectDirectories,
     deleteFromDevice: deleteFromDevice,
     deleteOfflineMap: deleteOfflineMap,
+    deleteProfileImageFile: deleteProfileImageFile,
+    deleteTempImagesFolder: deleteTempImagesFolder,
     doesBackupFileExist: doesBackupFileExist,
     doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     doesDeviceDirExist: doesDeviceDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesFileExist: doesFileExist,
-    downloadAndSaveImage: downloadAndSaveImage,
+    downloadImageAndSave: downloadImageAndSave,
     downloadAndSaveProfileImage: downloadAndSaveProfileImage,
     downloadAndSaveMap: downloadAndSaveMap,
+    getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
     getExternalProjectData: getExternalProjectData,
     isPickDocumentCanceled: isPickDocumentCanceled,
     makeDirectory: makeDirectory,

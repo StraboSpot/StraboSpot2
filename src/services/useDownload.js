@@ -220,26 +220,25 @@ const useDownload = () => {
       if (!isEmpty(neededImagesIds)) {
         // Check path first and if it doesn't exist, then create
         await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
-        await Promise.all(
-          neededImagesIds.map(async (imageId) => {
-            const statusCode = await useDevice.downloadAndSaveImage(imageId);
-            if (statusCode === 200) {
-              imagesDownloadedCount++;
-              updatedNeededImagesIds = updatedNeededImagesIds.filter(id => id !== imageId);
-              dispatch(addedNeededImagesToDataset({
-                datasetId: dataset.id,
-                images: {...dataset.images, neededImagesIds: updatedNeededImagesIds},
-                modified_timestamp: dataset.modified_timestamp,
-              }));
-            }
-            else imagesFailedCount++;
-            console.log('New/Modified Images Saved: ' + imagesDownloadedCount + '/'
-              + neededImagesIds.length + ' Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length);
-            dispatch(removedLastStatusMessage());
-            dispatch(addedStatusMessage('New/Modified Images Saved: ' + imagesDownloadedCount + ' / '
-              + neededImagesIds.length + '\n Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length));
-          }),
-        );
+        for (const imageId of updatedNeededImagesIds) {
+          const imageUrl = await useServerRequests.getImageUrl();
+          const success = await useDevice.downloadImageAndSave(imageUrl + imageId, imageId);
+          if (success) {
+            imagesDownloadedCount++;
+            updatedNeededImagesIds = updatedNeededImagesIds.filter(id => id !== imageId);
+            dispatch(addedNeededImagesToDataset({
+              datasetId: dataset.id,
+              images: {...dataset.images, neededImagesIds: updatedNeededImagesIds},
+              modified_timestamp: dataset.modified_timestamp,
+            }));
+          }
+          else imagesFailedCount++;
+          console.log('New/Modified Images Saved: ' + imagesDownloadedCount + '/'
+            + neededImagesIds.length + ' Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length);
+          dispatch(removedLastStatusMessage());
+          dispatch(addedStatusMessage('New/Modified Images Saved: ' + imagesDownloadedCount + ' / '
+            + neededImagesIds.length + '\n Images Failed: ' + imagesFailedCount + '/' + neededImagesIds.length));
+        }
 
         dispatch(removedLastStatusMessage());
         if (imagesFailedCount > 0) {
@@ -252,14 +251,15 @@ const useDownload = () => {
             addedStatusMessage('Finished downloading images: ' + imagesDownloadedCount + '/' + neededImagesIds.length));
           dispatch(setLoadingStatus({view: 'modal', bool: false}));
         }
+        dispatch(addedStatusMessage('Complete!'));
+        dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
+        dispatch(setLoadingStatus({view: 'modal', bool: false}));
       }
-      dispatch(addedStatusMessage('Complete!'));
-      dispatch(addedStatusMessage('\nAll needed images have been downloaded for this dataset'));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Error Downloading Images!'));
+      dispatch(addedStatusMessage('Complete!'));
       console.warn('Error Downloading Images: ' + err);
       dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }

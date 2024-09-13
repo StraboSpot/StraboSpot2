@@ -43,7 +43,6 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useProjectHook from '../project/useProject';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
-import {logout} from '../user/userProfile.slice';
 
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
@@ -384,17 +383,10 @@ const Home = ({navigation, route}) => {
     console.log(dialog, 'is set to', dialogs[dialog]);
   };
 
-  const onLogout = () => {
-    closeMainMenuPanel();
-    closeNotebookPanel();
-    dispatch(logout());
-  };
-
   const MainMenu = (
     <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
       <MainMenuPanel
         closeMainMenuPanel={closeMainMenuPanel}
-        logout={onLogout}
         openMainMenuPanel={openMainMenuPanel}
         openNotebookPanel={openNotebookPanel}
         openSpotInNotebook={openSpotInNotebook}
@@ -466,7 +458,6 @@ const Home = ({navigation, route}) => {
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
           closeModal={closeInitialProjectLoadModal}
-          logout={onLogout}
           openMainMenuPanel={openMainMenuPanel}
           visible={isProjectLoadSelectionModalVisible}
         />

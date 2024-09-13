@@ -32,7 +32,6 @@ import UserProfilePage from '../user/UserProfilePage';
 
 const MainMenuPanel = ({
                          closeMainMenuPanel,
-                         logout,
                          openMainMenuPanel,
                          openNotebookPanel,
                          openSpotInNotebook,
@@ -61,7 +60,7 @@ const MainMenuPanel = ({
   const renderMainMenuList = () => {
     switch (settingsPageVisible) {
       case MAIN_MENU_ITEMS.MANAGE.MY_STRABOSPOT:
-        return <MyStraboSpot logout={logout} openMainMenuPanel={openMainMenuPanel}/>;
+        return <MyStraboSpot openMainMenuPanel={openMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS:
         return (
           <ActiveProject

@@ -8,14 +8,14 @@ apply plugin: "com.facebook.react"
  */
 react {
     /* Folders */
-    //   The root of your project, i.e. where "package.json" lives. Default is '..'
-    // root = file("../")
-    //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
-    // reactNativeDir = file("../node_modules/react-native")
-    //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
-    // codegenDir = file("../node_modules/@react-native/codegen")
-    //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
-    // cliFile = file("../node_modules/react-native/cli.js")
+    //   The root of your project, i.e. where "package.json" lives. Default is '../..'
+    // root = file("../../")
+    //   The folder where the react-native NPM package is. Default is ../../node_modules/react-native
+    // reactNativeDir = file("../../node_modules/react-native")
+    //   The folder where the react-native Codegen package is. Default is ../../node_modules/@react-native/codegen
+    // codegenDir = file("../../node_modules/@react-native/codegen")
+    //   The cli.js file which is the React Native CLI entrypoint. Default is ../../node_modules/react-native/cli.js
+    // cliFile = file("../../node_modules/react-native/cli.js")
 
     /* Variants */
     //   The list of variants to that are debuggable. For those we're going to
@@ -49,6 +49,9 @@ react {
     //
     //   The list of flags to pass to the Hermes compiler. By default is "-O", "-output-source-map"
     // hermesFlags = ["-O", "-output-source-map"]
+
+    /* Autolinking */
+    autolinkLibrariesWithApp()
 }
 
 /**
@@ -70,20 +73,9 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
-
-    packagingOptions {
-       pickFirst 'lib/x86/libc++_shared.so'
-       pickFirst 'lib/x86_64/libjsc.so'
-       pickFirst 'lib/arm64-v8a/libjsc.so'
-       pickFirst 'lib/arm64-v8a/libc++_shared.so'
-       pickFirst 'lib/x86_64/libc++_shared.so'
-       pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-     }
-
     ndkVersion rootProject.ext.ndkVersion
-
     buildToolsVersion rootProject.ext.buildToolsVersion
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.strabospot2"
     defaultConfig {
@@ -100,14 +92,6 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-                    if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-                        storeFile file(MYAPP_UPLOAD_STORE_FILE)
-                        storePassword MYAPP_UPLOAD_STORE_PASSWORD
-                        keyAlias MYAPP_UPLOAD_KEY_ALIAS
-                        keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-                    }
-                }
     }
     buildTypes {
         debug {
@@ -116,7 +100,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -126,7 +110,6 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
@@ -135,6 +118,4 @@ dependencies {
     }
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
