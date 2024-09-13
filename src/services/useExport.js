@@ -152,8 +152,7 @@ const useExport = () => {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
-        await exportData(deviceDir + exportedFileName, configDb.other_maps,
-          '/other_maps.json');
+        await exportData(deviceDir + exportedFileName, configDb.other_maps,'other_maps.json');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage('Finished Exporting Custom Maps.'));
       }
