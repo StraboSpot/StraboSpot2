@@ -169,22 +169,30 @@ const useDevice = () => {
   };
 
   const downloadImageAndSave = async (url, imageId) => {
-    const path = APP_DIRECTORIES.IMAGES + imageId + '.jpg';
+    try {
+      const path = APP_DIRECTORIES.IMAGES + imageId + '.jpg';
 
-    const response = await getImage(imageId);
-    console.log(response);
-    if (response.status === 200) {
-      const imageBlob = await response.blob();
+      const response = await getImage(imageId);
+      console.log('Image ID', imageId);
+      console.log('Image Response', response);
 
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64data = reader.result.split(',')[1]; // Extract base64 string from result
+      if (response.status === 200) {
+        const imageBlob = await response.blob();
 
-        await RNFS.writeFile(path, base64data, 'base64');
+        const reader = new FileReader();
+
+        const base64Data = await new Promise((resolve, reject) => {
+          reader.onloadend = () => resolve(reader.result.split(',')[1]); // Extract base64 string from result
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(imageBlob); // Read the blob as base64
+        });
+        await RNFS.writeFile(path, base64Data, 'base64');
         console.log('Image saved to:', path);
-      };
-      reader.readAsDataURL(imageBlob);
-      return response.ok;
+        return response.ok;
+      }
+    }
+    catch (err) {
+      console.error('Error downloading or saving file:', err);
     }
   };
 
