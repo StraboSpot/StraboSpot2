@@ -5,18 +5,18 @@ import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
+import {logout} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
 import useUserProfileHook from './useUserProfile';
 import useResetStateHook from '../../services/useResetState';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
-import {setIsMainMenuPanelVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 
-const UserProfile = ({logout}) => {
+const UserProfile = () => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
 
@@ -30,21 +30,6 @@ const UserProfile = ({logout}) => {
     setTimeout(() => {          // Added timeOut cause state of modal wasn't changing fast enough
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT}));
     }, 200);
-  };
-
-  const doLogOut = (type) => {
-    if (type === 'signIn') {
-      dispatch(setIsMainMenuPanelVisible(false));
-      logout();
-    }
-    else if (type === 'clear') {
-      setIsLogoutModalVisible(false);
-      setTimeout(() => { // Added timeOut cause state of modal wasn't changing fast enough
-        dispatch(setIsMainMenuPanelVisible(false));
-        useResetState.clearUser();
-        logout();
-      }, 200);
-    }
   };
 
   const renderProfile = () => {
@@ -65,20 +50,20 @@ const UserProfile = ({logout}) => {
     );
   };
 
-  const renderLogOutButton = () => {
+  const renderLogInOrOutButton = () => {
     return (
       <View>
         <Button
-          onPress={() => isEmpty(userData.name) ? doLogOut('signIn') : setIsLogoutModalVisible(true)}
-          title={isEmpty(userData.name) ? 'Sign In' : 'Log out'}
+          onPress={() => isEmpty(userData.name) ? dispatch(logout()) : setIsLogoutModalVisible(true)}
+          title={isEmpty(userData.name) ? 'Log In' : 'Log out'}
           containerStyle={commonStyles.standardButtonContainer}
           buttonStyle={commonStyles.standardButton}
           titleStyle={commonStyles.standardButtonText}
         />
         {isEmpty(userData.name) && (
           <Button
-            onPress={() => doLogOut('clear')}
-            title={isEmpty(userData.name) && 'Clear and Return to Sign In'}
+            onPress={() => useResetState.clearUser()}
+            title={isEmpty(userData.name) && 'Clear and Return to Log In'}
             containerStyle={commonStyles.standardButtonContainer}
             buttonStyle={commonStyles.standardButton}
             titleStyle={commonStyles.standardButtonText}
@@ -107,7 +92,7 @@ const UserProfile = ({logout}) => {
           <Button
             title={'Logout'}
             titleStyle={overlayStyles.importantText}
-            onPress={() => doLogOut('clear')}
+            onPress={() => useResetState.clearUser()}
             type={'clear'}
           />
         </View>
@@ -124,7 +109,7 @@ const UserProfile = ({logout}) => {
       {renderProfile()}
       {Platform.OS !== 'web' && (
         <>
-          {renderLogOutButton()}
+          {renderLogInOrOutButton()}
           {renderLogoutModal()}
         </>
       )}

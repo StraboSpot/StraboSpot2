@@ -31,19 +31,20 @@ const useDevice = () => {
 
   // INTERNAL
   const createAppDirectory = async (directory) => {
+    console.log('Creating directory...', directory);
     return RNFS.mkdir(directory)
       .then(() => {
-        console.log('Directory:', directory, 'CREATED!');
+        console.log('Finished creating directory:', directory);
         return true;
       })
       .catch((err) => {
-        console.error('Unable to create directory', directory, 'ERROR:', err);
+        console.error('Error creating directory', directory, 'ERROR:', err);
         throw Error(err);
       });
   };
 
   const createProjectDirectories = async () => {
-    // console.log('STOP!!');
+    console.log('Creating Project Directories...');
     if (Platform.OS === 'android') {
       const permissionsGranted = await usePermissions.checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       if (permissionsGranted === RESULTS.GRANTED) {
@@ -101,6 +102,16 @@ const useDevice = () => {
     console.log(`Deleted ${map.name} offline map from device.`);
   };
 
+  const deleteProfileImageFile = async () => {
+    try {
+      let fileExists = await doesFileExist(APP_DIRECTORIES.PROFILE_IMAGE);
+      if (fileExists) await deleteFromDevice(APP_DIRECTORIES.PROFILE_IMAGE);
+    }
+    catch (err) {
+      console.error('Error Deleting Profile Image File.', err);
+    }
+  };
+
   // Delete the folder used for downsized images
   const deleteTempImagesFolder = async () => {
     try {
@@ -144,6 +155,7 @@ const useDevice = () => {
     }
   };
 
+  // TODO: Check to consolidate with doesDeviceDirectoryExist();
   const doesDeviceDirExist = async (dir) => {
     return await RNFS.exists(dir);
   };
@@ -151,10 +163,10 @@ const useDevice = () => {
   // TODO: Check to consolidate with doesDeviceDirExist();
   const doesDeviceDirectoryExist = async (directory) => {
     try {
+      console.log('Checking if directory exists...', directory);
       let checkDirSuccess = await RNFS.exists(directory);
-      // Create Images directory if it does not exist
       if (!checkDirSuccess) checkDirSuccess = await createAppDirectory(directory);
-      if (checkDirSuccess) console.log('Images directory exists:', directory);
+      if (checkDirSuccess) console.log('Directory exists:', directory);
       else throw Error;
       return checkDirSuccess;
     }
@@ -196,280 +208,281 @@ const useDevice = () => {
     }
   };
 
-    const downloadAndSaveProfileImage = async (encodedLogin) => {
-      const profileImageURL = getProfileImageURL();
-      return await RNFS.downloadFile({
-        fromUrl: profileImageURL,
-        toFile: APP_DIRECTORIES.PROFILE_IMAGE,
-        begin: res => console.log('Starting to download Image', 'profile', res),
-        headers: {
-          'Authorization': 'Basic ' + encodedLogin,
-          'Accept': 'application/json',
-        },
-      }).promise.then(async (res) => {
-          console.log('RNFS Download Profile Image Response:', res);
-          if (res.statusCode === 200) {
-            console.log(`Profile image downloaded and saved to: ${APP_DIRECTORIES.PROFILE_IMAGE}`);
-            return res.statusCode;
-          }
-          else if (res.statusCode === 404) throw Error('Profile image not found on server');
-          else throw Error('Unknown Error');
-        },
-      )
-        .catch((err) => {
-          console.warn(`Error Downloading Profile Image using URL ${profileImageURL}:`, err);
-        });
-    };
-
-    const downloadAndSaveMap = async (downloadOptions) => {
-      try {
-        const res = await RNFS.downloadFile(downloadOptions).promise;
+  const downloadAndSaveProfileImage = async (encodedLogin) => {
+    const profileImageURL = getProfileImageURL();
+    return await RNFS.downloadFile({
+      fromUrl: profileImageURL,
+      toFile: APP_DIRECTORIES.PROFILE_IMAGE,
+      begin: res => console.log('Starting to download Image', 'profile', res),
+      headers: {
+        'Authorization': 'Basic ' + encodedLogin,
+        'Accept': 'application/json',
+      },
+    }).promise.then(async (res) => {
+        console.log('RNFS Download Profile Image Response:', res);
         if (res.statusCode === 200) {
-          console.log(`Download Complete to ${downloadOptions.toFile}`);
+          console.log(`Profile image downloaded and saved to: ${APP_DIRECTORIES.PROFILE_IMAGE}`);
+          return res.statusCode;
         }
-      }
-      catch (err) {
-        console.error('An error occurred:', err);
-      }
-    };
-
-    const getDeviceStorageSpaceInfo = async () => {
-      let imageSizeText;
-      const {freeSpace, totalSpace} = await RNFS.getFSInfo();
-      console.log(`Device storage is ${freeSpace}/${totalSpace}`);
-      if (freeSpace < 1024) imageSizeText = freeSpace + ' bytes';
-      else if (freeSpace < 1048576) imageSizeText = (freeSpace / 1024).toFixed(3) + ' kB';
-      else if (freeSpace < 1073741824) imageSizeText = (freeSpace / 1048576).toFixed(2) + ' MB';
-      else imageSizeText = (freeSpace / 1073741824).toFixed(3) + ' GB';
-      console.log('The available space is:', imageSizeText);
-    };
-
-    const getExternalProjectData = async () => {
-      const options = {
-        type: [DocumentPicker.types.zip],
-        copyTo: 'cachesDirectory',
-        // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
-        transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
-      };
-      // try {
-      const res = await DocumentPicker.pickSingle(options);
-      console.log('External Document', res);
-      return res;
-    };
-
-    const isPickDocumentCanceled = (err) => {
-      return DocumentPicker.isCancel(err);
-    };
-
-    const makeDirectory = async (directory) => {
-      try {
-        return await RNFS.mkdir(directory);
-      }
-      catch (err) {
-        console.error('Unable to create directory', directory, 'ERROR:', err);
-      }
-    };
-
-    const moveFile = async (source, destination) => {
-      try {
-        await RNFS.moveFile(source, destination);
-      }
-      catch (err) {
-        console.error('Error moving file', err);
-      }
-    };
-
-    const openURL = async (url) => {
-      console.log(url + APP_DIRECTORIES.BACKUP_DIR);
-      try {
-        if (url === 'ProjectBackups') {
-          url = APP_DIRECTORIES.SHARED_DOCUMENTS_PATH_IOS + APP_DIRECTORIES.BACKUP_DIR + url;
-        }
-        const initialUrl = await Linking.canOpenURL(url);
-        console.log(initialUrl);
-        if (initialUrl) Linking.openURL(url).catch(err => console.error('ERROR', err));
-        else console.log('Could not open:', url);
-      }
-      catch (err) {
-        console.error('Error opening url', url, ':', err);
-      }
-    };
-
-    const pickCSV = async () => {
-      return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
-    };
-
-    const readDirectory = async (directory) => {
-      console.log('Reading directory', directory);
-      const exists = await RNFS.exists(directory);
-      if (exists) {
-        const files = await RNFS.readdir(directory);
-        console.log('Directory', directory, ' files:', files);
-        return files;
-      }
-      else console.log('Directory', directory, 'does not exist');
-    };
-
-    const readDirectoryForMapFiles = async () => {
-      const exists = await RNFS.exists(APP_DIRECTORIES.TILES_DIRECTORY);
-      console.log('Offline maps directory exists? ', exists);
-      if (exists) {
-        const files = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE);
-        console.log(files);
-        return files;
-      }
-      else throw Error('Offline maps directory does not exist!');
-    };
-
-    const readDirectoryForMapTiles = async (directory, mapId) => {
-      try {
-        let tiles = [];
-        mapId = mapId.includes('/') ? mapId.split('/')[1] : mapId;
-        const exists = await RNFS.exists(directory + mapId + '/tiles');
-        console.log('Map tiles cache tiles directory:', exists);
-        if (exists) {
-          tiles = await RNFS.readdir(directory + mapId + '/tiles');
-          // console.log('Tiles', tiles);
-        }
-        return tiles;
-      }
-      catch (err) {
-        console.error('Error reading map tile directory', err);
-      }
-    };
-
-    const readFile = async (source) => {
-      try {
-        return await RNFS.readFile(source);
-      }
-      catch (e) {
-        console.error('Error reading file as utf8', e);
-        try {
-          return await RNFS.readFile(source, 'ascii');
-        }
-        catch (e2) {
-          console.error('Error reading file as ascii:', e2);
-          const errorMessage = e2.message || 'Unable to read data file.';
-          throw Error(errorMessage);
-        }
-      }
-    };
-
-    const readDeviceJSONFile = async (fileName) => {
-      try {
-        // const granted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-        // if (granted) {
-        const dataFile = '/data.json';
-        console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-        const response = await readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
-        console.log(JSON.parse(response));
-        return JSON.parse(response);
-        // }
-        // else {
-        //  const permissionStatus = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-        //  console.log('Permission Status', permissionStatus);
-        // }
-      }
-      catch (err) {
-        console.error('Error reading JSON file', err);
-      }
-    };
-
-    const requestReadDirectoryPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          {
-            title: 'Need permission to read Downloads Folder',
-            message:
-              'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can read the folder');
-        }
-        else {
-          console.log('Folder read permission denied');
-        }
-      }
-      catch (err) {
-        console.warn(err);
-      }
-    };
-
-    const unZipAndCopyImportedData = async (zipFile) => {
-      try {
-        let fileName = '';
-        if (Platform.OS === 'android') {
-          if (await RNFS.exists(APP_DIRECTORIES.EXPORT_FILES_ANDROID)) {
-            await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
-            console.log('Files copied to Android export folder!');
-          }
-          else {
-            await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
-            await unZipAndCopyImportedData(zipFile);
-          }
-        }
-        fileName = zipFile.name.replace('.zip', '');
-        const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
-        const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR + fileName : APP_DIRECTORIES.BACKUP_DIR + fileName;
-
-        console.log('SOURCE', source);
-        console.log('DEST', dest);
-
-        await unzip(source, dest);
-      }
-      catch (err) {
-        console.error('Error unzipping imported file', err);
-        throw Error(err);
-      }
-    };
-
-    const writeFileToDevice = async (path, filename, data) => {
-      try {
-        await RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8');
-        console.log('FILES WRITTEN SUCCESSFULLY TO INTERNAL STORAGE!');
-        console.log(path + '/' + filename);
-      }
-      catch (err) {
-        console.error('Write Error!', err.message);
-        throw Error(err);
-      }
-    };
-
-    return {
-      copyFiles: copyFiles,
-      createProjectDirectories: createProjectDirectories,
-      deleteFromDevice: deleteFromDevice,
-      deleteOfflineMap: deleteOfflineMap,
-      deleteTempImagesFolder: deleteTempImagesFolder,
-      doesBackupFileExist: doesBackupFileExist,
-      doesDeviceBackupDirExist: doesDeviceBackupDirExist,
-      doesDeviceDirExist: doesDeviceDirExist,
-      doesDeviceDirectoryExist: doesDeviceDirectoryExist,
-      doesFileExist: doesFileExist,
-      downloadImageAndSave: downloadImageAndSave,
-      downloadAndSaveProfileImage: downloadAndSaveProfileImage,
-      downloadAndSaveMap: downloadAndSaveMap,
-      getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
-      getExternalProjectData: getExternalProjectData,
-      isPickDocumentCanceled: isPickDocumentCanceled,
-      makeDirectory: makeDirectory,
-      moveFile: moveFile,
-      openURL: openURL,
-      pickCSV: pickCSV,
-      readDirectory: readDirectory,
-      readDirectoryForMapFiles: readDirectoryForMapFiles,
-      readDirectoryForMapTiles: readDirectoryForMapTiles,
-      readFile: readFile,
-      readDeviceJSONFile: readDeviceJSONFile,
-      requestReadDirectoryPermission: requestReadDirectoryPermission,
-      unZipAndCopyImportedData: unZipAndCopyImportedData,
-      writeFileToDevice: writeFileToDevice,
-    };
+        else if (res.statusCode === 404) throw Error('Profile image not found on server');
+        else throw Error('Unknown Error');
+      },
+    )
+      .catch((err) => {
+        console.warn(`Error Downloading Profile Image using URL ${profileImageURL}:`, err);
+      });
   };
 
-  export default useDevice;
+  const downloadAndSaveMap = async (downloadOptions) => {
+    try {
+      const res = await RNFS.downloadFile(downloadOptions).promise;
+      if (res.statusCode === 200) {
+        console.log(`Download Complete to ${downloadOptions.toFile}`);
+      }
+    }
+    catch (err) {
+      console.error('An error occurred:', err);
+    }
+  };
+
+  const getDeviceStorageSpaceInfo = async () => {
+    let imageSizeText;
+    const {freeSpace, totalSpace} = await RNFS.getFSInfo();
+    console.log(`Device storage is ${freeSpace}/${totalSpace}`);
+    if (freeSpace < 1024) imageSizeText = freeSpace + ' bytes';
+    else if (freeSpace < 1048576) imageSizeText = (freeSpace / 1024).toFixed(3) + ' kB';
+    else if (freeSpace < 1073741824) imageSizeText = (freeSpace / 1048576).toFixed(2) + ' MB';
+    else imageSizeText = (freeSpace / 1073741824).toFixed(3) + ' GB';
+    console.log('The available space is:', imageSizeText);
+  };
+
+  const getExternalProjectData = async () => {
+    const options = {
+      type: [DocumentPicker.types.zip],
+      copyTo: 'cachesDirectory',
+      // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
+      transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
+    };
+    // try {
+    const res = await DocumentPicker.pickSingle(options);
+    console.log('External Document', res);
+    return res;
+  };
+
+  const isPickDocumentCanceled = (err) => {
+    return DocumentPicker.isCancel(err);
+  };
+
+  const makeDirectory = async (directory) => {
+    try {
+      return await RNFS.mkdir(directory);
+    }
+    catch (err) {
+      console.error('Unable to create directory', directory, 'ERROR:', err);
+    }
+  };
+
+  const moveFile = async (source, destination) => {
+    try {
+      await RNFS.moveFile(source, destination);
+    }
+    catch (err) {
+      console.error('Error moving file', err);
+    }
+  };
+
+  const openURL = async (url) => {
+    console.log(url + APP_DIRECTORIES.BACKUP_DIR);
+    try {
+      if (url === 'ProjectBackups') {
+        url = APP_DIRECTORIES.SHARED_DOCUMENTS_PATH_IOS + APP_DIRECTORIES.BACKUP_DIR + url;
+      }
+      const initialUrl = await Linking.canOpenURL(url);
+      console.log(initialUrl);
+      if (initialUrl) Linking.openURL(url).catch(err => console.error('ERROR', err));
+      else console.log('Could not open:', url);
+    }
+    catch (err) {
+      console.error('Error opening url', url, ':', err);
+    }
+  };
+
+  const pickCSV = async () => {
+    return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
+  };
+
+  const readDirectory = async (directory) => {
+    console.log('Reading directory', directory);
+    const exists = await RNFS.exists(directory);
+    if (exists) {
+      const files = await RNFS.readdir(directory);
+      console.log('Directory', directory, ' files:', files);
+      return files;
+    }
+    else console.log('Directory', directory, 'does not exist');
+  };
+
+  const readDirectoryForMapFiles = async () => {
+    const exists = await RNFS.exists(APP_DIRECTORIES.TILES_DIRECTORY);
+    console.log('Offline maps directory exists? ', exists);
+    if (exists) {
+      const files = await RNFS.readdir(APP_DIRECTORIES.TILE_CACHE);
+      console.log(files);
+      return files;
+    }
+    else throw Error('Offline maps directory does not exist!');
+  };
+
+  const readDirectoryForMapTiles = async (directory, mapId) => {
+    try {
+      let tiles = [];
+      mapId = mapId.includes('/') ? mapId.split('/')[1] : mapId;
+      const exists = await RNFS.exists(directory + mapId + '/tiles');
+      console.log('Map tiles cache tiles directory:', exists);
+      if (exists) {
+        tiles = await RNFS.readdir(directory + mapId + '/tiles');
+        // console.log('Tiles', tiles);
+      }
+      return tiles;
+    }
+    catch (err) {
+      console.error('Error reading map tile directory', err);
+    }
+  };
+
+  const readFile = async (source) => {
+    try {
+      return await RNFS.readFile(source);
+    }
+    catch (e) {
+      console.error('Error reading file as utf8', e);
+      try {
+        return await RNFS.readFile(source, 'ascii');
+      }
+      catch (e2) {
+        console.error('Error reading file as ascii:', e2);
+        const errorMessage = e2.message || 'Unable to read data file.';
+        throw Error(errorMessage);
+      }
+    }
+  };
+
+  const readDeviceJSONFile = async (fileName) => {
+    try {
+      // const granted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+      // if (granted) {
+      const dataFile = '/data.json';
+      console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+      const response = await readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
+      console.log(JSON.parse(response));
+      return JSON.parse(response);
+      // }
+      // else {
+      //  const permissionStatus = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+      //  console.log('Permission Status', permissionStatus);
+      // }
+    }
+    catch (err) {
+      console.error('Error reading JSON file', err);
+    }
+  };
+
+  const requestReadDirectoryPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: 'Need permission to read Downloads Folder',
+          message:
+            'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can read the folder');
+      }
+      else {
+        console.log('Folder read permission denied');
+      }
+    }
+    catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const unZipAndCopyImportedData = async (zipFile) => {
+    try {
+      let fileName = '';
+      if (Platform.OS === 'android') {
+        if (await RNFS.exists(APP_DIRECTORIES.EXPORT_FILES_ANDROID)) {
+          await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
+          console.log('Files copied to Android export folder!');
+        }
+        else {
+          await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
+          await unZipAndCopyImportedData(zipFile);
+        }
+      }
+      fileName = zipFile.name.replace('.zip', '');
+      const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+      const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR + fileName : APP_DIRECTORIES.BACKUP_DIR + fileName;
+
+      console.log('SOURCE', source);
+      console.log('DEST', dest);
+
+      await unzip(source, dest);
+    }
+    catch (err) {
+      console.error('Error unzipping imported file', err);
+      throw Error(err);
+    }
+  };
+
+  const writeFileToDevice = async (path, filename, data) => {
+    try {
+      console.log('Writing file to internal storage ...', path + '/' + filename);
+      await RNFS.writeFile(path + '/' + filename, JSON.stringify(data), 'utf8');
+      console.log('Finished writing file to internal storage', path + '/' + filename);
+    }
+    catch (err) {
+      console.error('Error Writing File!', err.message);
+      throw Error(err);
+    }
+  };
+
+  return {
+    copyFiles: copyFiles,
+    createProjectDirectories: createProjectDirectories,
+    deleteFromDevice: deleteFromDevice,
+    deleteOfflineMap: deleteOfflineMap,
+    deleteProfileImageFile: deleteProfileImageFile,
+    deleteTempImagesFolder: deleteTempImagesFolder,
+    doesBackupFileExist: doesBackupFileExist,
+    doesDeviceBackupDirExist: doesDeviceBackupDirExist,
+    doesDeviceDirExist: doesDeviceDirExist,
+    doesDeviceDirectoryExist: doesDeviceDirectoryExist,
+    doesFileExist: doesFileExist,
+    downloadImageAndSave: downloadImageAndSave,
+    downloadAndSaveProfileImage: downloadAndSaveProfileImage,
+    downloadAndSaveMap: downloadAndSaveMap,
+    getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
+    getExternalProjectData: getExternalProjectData,
+    isPickDocumentCanceled: isPickDocumentCanceled,
+    makeDirectory: makeDirectory,
+    moveFile: moveFile,
+    openURL: openURL,
+    pickCSV: pickCSV,
+    readDirectory: readDirectory,
+    readDirectoryForMapFiles: readDirectoryForMapFiles,
+    readDirectoryForMapTiles: readDirectoryForMapTiles,
+    readFile: readFile,
+    readDeviceJSONFile: readDeviceJSONFile,
+    requestReadDirectoryPermission: requestReadDirectoryPermission,
+    unZipAndCopyImportedData: unZipAndCopyImportedData,
+    writeFileToDevice: writeFileToDevice,
+  };
+};
+
+export default useDevice;

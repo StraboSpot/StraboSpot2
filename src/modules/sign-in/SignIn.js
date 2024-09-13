@@ -38,7 +38,7 @@ const SignIn = ({navigation, route}) => {
       setLoading(false);
     }
     catch (err) {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -56,7 +56,7 @@ const SignIn = ({navigation, route}) => {
           onPress={() => handleSignIn()}
           buttonStyle={signInStyles.buttonStyle}
           disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
-          title={'Sign In'}
+          title={'Log In'}
           loading={loading}
         />
         <Button
@@ -64,7 +64,7 @@ const SignIn = ({navigation, route}) => {
           containerStyle={signInStyles.buttonContainer}
           onPress={() => navigation.navigate('SignUp')}
           buttonStyle={signInStyles.buttonStyle}
-          title={'Sign Up'}
+          title={'Register'}
         />
         <Button
           type={'solid'}

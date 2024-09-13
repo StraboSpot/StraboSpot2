@@ -7,11 +7,7 @@ import {updatedProjectTransferProgress} from './connections.slice';
 import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setIsProgressModalVisible,
-} from '../modules/home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsProgressModalVisible} from '../modules/home/home.slice';
 import useImagesHook from '../modules/images/useImages';
 import {setIsImageTransferring} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
@@ -137,7 +133,7 @@ const useUploadImages = () => {
   };
 
   // Upload the image to server
-  const uploadImage = async (imageId, imageUri) => {
+  const uploadImage = async (imageId, imageUri, isProfileImage) => {
     try {
       setCurrentImage(imageId);
 
@@ -147,11 +143,10 @@ const useUploadImages = () => {
       formdata.append('image_file', {uri: imageUri, name: 'image.jpg', type: 'image/jpeg'});
       formdata.append('id', imageId);
       formdata.append('modified_timestamp', Date.now());
-      const res = await useServerRequests.uploadImage(formdata, user.encoded_login);
+      const res = await useServerRequests.uploadImage(formdata, user.encoded_login, isProfileImage);
       console.log('Image Upload Res', res);
       console.log(': Finished Uploading Image', imageId);
       dispatch(updatedProjectTransferProgress(0));
-      await useDevice.deleteFromDevice(imageUri);
     }
     catch (err) {
       console.log(': Error Uploading Image', imageId, err);
@@ -191,7 +186,8 @@ const useUploadImages = () => {
     };
 
     if (imagesToUpload.length > 0) {
-      setImageUploadStatusMessage(`Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}...`);
+      setImageUploadStatusMessage(
+        `Uploading ${imagesToUpload.length} image${imagesToUpload.length <= 1 ? '' : 's'}...`);
       setTotalImages(imagesToUpload.length);
       await startUploadingImage(imagesToUpload[0]);
       return ({success: imagesUploadedCount, failed: imagesUploadFailedCount});
@@ -201,9 +197,9 @@ const useUploadImages = () => {
     dispatch(setIsProgressModalVisible(false));
   };
 
-  const uploadProfileImage = async (imageURI) => {
+  const uploadProfileImage = async () => {
     try {
-      await uploadImage('profileImage', imageURI);
+      await uploadImage('profileImage', 'file://' + APP_DIRECTORIES.PROFILE_IMAGE, true);
       console.log('Profile Image Uploaded');
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Profile Image Uploaded'));

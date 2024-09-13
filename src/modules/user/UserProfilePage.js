@@ -154,7 +154,7 @@ const UserProfilePage = () => {
     try {
       setIsDeletingProfileImage(true);
       await useServerRequest.deleteProfileImage(userEncodedLogin);
-      if (Platform.OS !== 'web') await useDevice.deleteFromDevice('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      if (Platform.OS !== 'web') await useDevice.deleteProfileImageFile();
       setShouldUpdateImage(true);
       setIsDeletingProfileImage(false);
       closeProfileImageModal();
@@ -197,9 +197,9 @@ const UserProfilePage = () => {
       console.log('Need to upload', tempUserProfileImage.uri);
       const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
         tempUserProfileImage.uri);
-      await useDevice.copyFiles(resizedProfileImage.uri, 'file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      await useDevice.copyFiles(resizedProfileImage.uri, APP_DIRECTORIES.PROFILE_IMAGE);
       await useDevice.deleteFromDevice(resizedProfileImage.uri);
-      await useUploadImages.uploadProfileImage('file://' + APP_DIRECTORIES.PROFILE_IMAGE);
+      await useUploadImages.uploadProfileImage();
       setShouldUpdateImage(true);
       closeProfileImageModal();
       setIsUploadingProfileImage(false);

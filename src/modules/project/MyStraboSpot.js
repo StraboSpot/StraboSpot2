@@ -20,7 +20,7 @@ import Spacer from '../../shared/ui/Spacer';
 import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
 
-const MyStraboSpot = ({logout, openMainMenuPanel}) => {
+const MyStraboSpot = ({openMainMenuPanel}) => {
   const [importComplete] = useState(false);
   const [importedProject, setImportedProject] = useState({});
   const [showSection, setShowSection] = useState('none');
@@ -87,7 +87,7 @@ const MyStraboSpot = ({logout, openMainMenuPanel}) => {
       case 'none':
         return (
           <View style={{padding: 10}}>
-            <UserProfile logout={logout}/>
+            <UserProfile/>
             {Platform.OS !== 'web' && (
               <>
                 <Spacer/>
