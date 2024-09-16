@@ -375,7 +375,9 @@ const useSpots = () => {
 
   const getRecentSpots = () => {
     const activeSpotIds = Object.keys(getActiveSpotsObj());
-    return recentViews.reduce((acc, spotId) => activeSpotIds.includes(spotId) ? [...acc, spots[spotId]] : acc, []);
+    return recentViews.reduce((acc, spotId) => {
+      return activeSpotIds.includes(spotId.toString()) ? [...acc, spots[spotId.toString()]] : acc;
+    }, []);
   };
 
   // Find the rootSpot for a given image id.
