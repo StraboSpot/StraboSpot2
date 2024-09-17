@@ -187,12 +187,12 @@ const UploadModal = ({closeModal, visible}) => {
           onPress={handleClosePress}
         />
       </View>
-      <Button
+      {__DEV__ && <Button
         title={'IMAGES ONLY'}
         type={'clear'}
         titleStyle={overlayStyles.buttonText}
         onPress={uploadImagesOnly}
-      />
+      />}
     </View>
   );
 

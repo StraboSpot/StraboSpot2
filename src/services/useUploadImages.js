@@ -1,6 +1,5 @@
 import {useState} from 'react';
 
-import ImageResizer from 'react-native-image-resizer';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
@@ -8,13 +7,12 @@ import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 import {addedStatusMessage, clearedStatusMessages, setIsProgressModalVisible} from '../modules/home/home.slice';
+import {getSize} from '../modules/images/imageHelpers';
 import useImagesHook from '../modules/images/useImages';
 import {setIsImageTransferring} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useUploadImages = () => {
-  // const imagesToUpload = [];
-  const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const useDevice = useDeviceHook();
   const useImages = useImagesHook();
@@ -54,12 +52,13 @@ const useUploadImages = () => {
     const imageIds = getImageIds(images);
     setImageUploadStatusMessage('Checking to see if image files are on server...');
     const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
-    setImageUploadStatusMessage(`Checking to see if ${neededImages.length} image files are on device...`);
+    setImageUploadStatusMessage(
+      `There are ${neededImages.length} needed...\nChecking to see if the image files are on device...`);
     console.log('Needed Images from server', neededImages);
     const {imagesToUpload, imagesNotFoundOnDevice} = await verifyImageExistsOnDevice(neededImages, images);
     console.log('Done verifying images on device', imagesToUpload);
     if (!isEmpty(imagesToUpload)) {
-      setImageUploadStatusMessage('Uploading needed images to server...');
+      setImageUploadStatusMessage(`Uploading ${imagesToUpload.length} images to server...`);
       dispatch(setIsImageTransferring(true));
       imagesStatus = await uploadImages(imagesToUpload);
       console.log('DONE UPLOADING IMAGES');
@@ -80,7 +79,12 @@ const useUploadImages = () => {
 
       if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageProps.uri));
 
-      if (width > 2000 || height > 2000) {
+      const imageStats = await useDevice.getFileStatistics(imageProps.uri);
+      console.log('Image Stats', imageStats);
+      const originalImageSize = getSize(imageStats);
+      console.log('Image size', originalImageSize);
+
+      if ((width > 2000 || height > 2000) && imageStats.size > 5242880) {
         const max_size = 2000;
         if (width > height && width > max_size) {
           height = max_size * height / width;
@@ -91,17 +95,15 @@ const useUploadImages = () => {
           height = max_size;
         }
 
-        await useDevice.makeDirectory(tempImagesDownsizedDirectory);
-        const createResizedImageProps = [imageProps.uri, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
-        const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        useImages.getImageSize(imageProps, resizedImage);
-        return resizedImage;
+        return await useDevice.resizeAndRenameImage(imageProps, width, height, originalImageSize);
       }
-      else return imageProps;
+      else {
+        console.log(`Image is sized correctly: ${originalImageSize}`);
+        return imageProps.uri;
+      }
     }
     catch (err) {
       console.error('Error Resizing Image.', err);
-      // throw Error;
     }
   };
 
@@ -117,8 +119,6 @@ const useUploadImages = () => {
             return imagesFound.find((image) => {
               if (image.id.toString() === imageId) {
                 imagesToUpload.push({...image, uri: imageURI});
-                // setImagesToUpload(prevState => ([...prevState, imageWithPath]));
-                // return {...image, uri: imageURI};
               }
             });
           }
@@ -162,8 +162,8 @@ const useUploadImages = () => {
     const startUploadingImage = async (imageProps) => {
       try {
         // const imageURI = await getImageFile(imageProps.id);
-        const resizedImage = await resizeImageForUpload(imageProps);
-        await uploadImage(imageProps.id, resizedImage.uri);
+        const resizedImagePath = await resizeImageForUpload(imageProps);
+        await uploadImage(imageProps.id, resizedImagePath);
         imagesUploadedCount++;
       }
       catch (err) {

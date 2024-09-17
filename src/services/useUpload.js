@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from './useServerRequests';
 import useUploadImagesHook from './useUploadImages';
-import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
+import {addedStatusMessage} from '../modules/home/home.slice';
 import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
 import useSpotsHook from '../modules/spots/useSpots';

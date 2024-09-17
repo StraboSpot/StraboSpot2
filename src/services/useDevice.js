@@ -2,11 +2,13 @@ import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import ImageResizer from 'react-native-image-resizer';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequests from './useServerRequests';
+import {getSize} from '../modules/images/imageHelpers';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import usePermissionsHook from '../services/usePermissions';
@@ -269,6 +271,10 @@ const useDevice = () => {
     return res;
   };
 
+  const getFileStatistics = async (filePath) => {
+    return RNFS.stat(filePath);
+  };
+
   const isPickDocumentCanceled = (err) => {
     return DocumentPicker.isCancel(err);
   };
@@ -412,6 +418,41 @@ const useDevice = () => {
     }
   };
 
+  const resizeAndRenameImage = async (imageProps, width, height, originalImageSize) => {
+    try {
+      const newImagePath = `${APP_DIRECTORIES.IMAGES + imageProps.id}.jpg`;
+      const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
+
+      if (!await RNFS.exists(tempImagesDownsizedDirectory)) await useDevice.makeDirectory(tempImagesDownsizedDirectory);
+
+      const resizedImage = await ImageResizer.createResizedImage(
+        imageProps.uri,
+        width,
+        height,
+        'JPEG',
+        100,
+        0,
+        tempImagesDownsizedDirectory);
+
+      console.log('Resized Image:', resizedImage);
+
+      const resizedImageSize = getSize(resizedImage);
+
+      console.log(`Finished Resizing Image ${imageProps?.id}`);
+      console.log(`OLD Size, ${originalImageSize}\n'NEW Size', ${resizedImageSize}`);
+
+      if (Platform.OS === 'ios') await deleteFromDevice(imageProps.uri);
+      await RNFS.moveFile(resizedImage.uri, newImagePath);
+
+      console.log('Image renamed to:', newImagePath);
+
+      return newImagePath;
+    }
+    catch (err) {
+      console.error('Error resizing or renaming image:', err);
+    }
+  };
+
   const unZipAndCopyImportedData = async (zipFile) => {
     try {
       let fileName = '';
@@ -469,6 +510,7 @@ const useDevice = () => {
     downloadAndSaveMap: downloadAndSaveMap,
     getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
     getExternalProjectData: getExternalProjectData,
+    getFileStatistics: getFileStatistics,
     isPickDocumentCanceled: isPickDocumentCanceled,
     makeDirectory: makeDirectory,
     moveFile: moveFile,
@@ -480,6 +522,7 @@ const useDevice = () => {
     readFile: readFile,
     readDeviceJSONFile: readDeviceJSONFile,
     requestReadDirectoryPermission: requestReadDirectoryPermission,
+    resizeAndRenameImage: resizeAndRenameImage,
     unZipAndCopyImportedData: unZipAndCopyImportedData,
     writeFileToDevice: writeFileToDevice,
   };
