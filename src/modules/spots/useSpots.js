@@ -546,6 +546,27 @@ const useSpots = () => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
   };
 
+  const sortSpotsAlphabetically = (spotsToSort) => {
+    spotsToSort.sort(
+      ((a, b) => (a.properties?.name?.toLowerCase() || '').localeCompare(b.properties?.name?.toLowerCase() || '')));
+    return spotsToSort;
+  };
+
+  const sortSpotsByDateCreated = (spotsToSort) => {
+    spotsToSort.sort(((a, b) => new Date(b.properties.date) - new Date(a.properties.date)));
+    return spotsToSort;
+  };
+
+  const sortSpotsByDateLastModified = (spotsToSort) => {
+    spotsToSort.sort(((a, b) => new Date(b.properties.modified_timestamp) - new Date(a.properties.modified_timestamp)));
+    return spotsToSort;
+  };
+
+  const sortSpotsByDateLastViewed = (spotsToSort) => {
+    spotsToSort.sort(((a, b) => new Date(b.properties.viewed_timestamp) - new Date(a.properties.viewed_timestamp)));
+    return spotsToSort;
+  };
+
   return {
     checkIsSafeDelete: checkIsSafeDelete,
     checkSampleName: checkSampleName,
@@ -585,6 +606,10 @@ const useSpots = () => {
     isOnImageBasemap: isOnImageBasemap,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
+    sortSpotsAlphabetically: sortSpotsAlphabetically,
+    sortSpotsByDateCreated: sortSpotsByDateCreated,
+    sortSpotsByDateLastModified: sortSpotsByDateLastModified,
+    sortSpotsByDateLastViewed: sortSpotsByDateLastViewed,
   };
 };
 
