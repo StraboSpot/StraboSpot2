@@ -85,14 +85,14 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
             )}
 
           </View>
-          {statusMessages.includes('Complete!') && (
-            <Button
-              title={'Export Project?'}
-              containerStyle={{padding: 10}}
-              type={'clear'}
-              onPress={exportProject}
-            />
-          )}
+          {/*{statusMessages.includes('Complete!') && (*/}
+          {/*  <Button*/}
+          {/*    title={'Export Project?'}*/}
+          {/*    containerStyle={{padding: 10}}*/}
+          {/*    type={'clear'}*/}
+          {/*    onPress={exportProject}*/}
+          {/*  />*/}
+          {/*)}*/}
           <Button
             titleStyle={overlayStyles.urlText}
             icon={{
