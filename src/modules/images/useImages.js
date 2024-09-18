@@ -6,6 +6,7 @@ import ImageResizer from 'react-native-image-resizer';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {getSize} from './imageHelpers';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useDeviceHook from '../../services/useDevice';
@@ -320,16 +321,44 @@ const useImages = () => {
     }
   };
 
-  const resizeImageIfNecessary = async (imageData) => {
-    let imgHeight = imageData.height;
-    let imgWidth = imageData.width;
-    const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
-    if (!imgHeight || !imgWidth) ({imgHeight, imgWidth} = await getImageHeightAndWidth(tempImageURI));
-    let resizedImage, createResizedImageProps;
-    createResizedImageProps = (imgHeight > 4096 || imgWidth > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
-      : [tempImageURI, imgWidth, imgHeight, 'JPEG', 100, 0];
-    resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-    return resizedImage;
+  // const resizeImageIfNecessary = async (imageData) => {
+  //   let imgHeight = imageData.height;
+  //   let imgWidth = imageData.width;
+  //
+  //   const tempImageURI = Platform.OS === 'ios' ? imageData.uri || imageData.path : imageData.uri || 'file://' + imageData.path;
+  //   if (!imgHeight || !imgWidth) ({imgHeight, imgWidth} = await getImageHeightAndWidth(tempImageURI));
+  //   let resizedImage, createResizedImageProps;
+  //   createResizedImageProps = (imgHeight > 4096 || imgWidth > 4096) ? [tempImageURI, 4096, 4096, 'JPEG', 100, 0]
+  //     : [tempImageURI, imgWidth, imgHeight, 'JPEG', 100, 0];
+  //   resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+  //   return resizedImage;
+  // };
+
+
+  const resizeImage = async (imageProps) => {
+
+    let height = imageProps?.height;
+    let width = imageProps?.width;
+
+    if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageProps.uri));
+
+    if ((width > 2000 || height > 2000) && imageProps.size > 5242880) {
+      const max_size = 2000;
+      if (width > height && width > max_size) {
+        height = max_size * height / width;
+        width = max_size;
+      }
+      else if (height > max_size) {
+        width = max_size * width / height;
+        height = max_size;
+      }
+
+      const createResizedImageProps = [imageProps.uri, height, width, 'JPEG', 100, 0];
+      const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+      console.log('ORIGINAL image size', getSize(imageProps));
+      console.log('NEW image size', getSize(resizedImage));
+      return resizedImage;
+    }
   };
 
   const saveFile = async (imageData) => {
@@ -410,6 +439,7 @@ const useImages = () => {
   // Called from Notebook Panel Footer and opens camera only
   const takePicture = async () => {
     let permissionGranted;
+    let image;
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
     if (Platform.OS === 'android') {
       permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
@@ -422,11 +452,11 @@ const useImages = () => {
             if (response.didCancel) resolve('cancelled');
             else if (response.error) reject();
             else {
-              const imageAsset = response.assets[0];
-              const createResizedImageProps = [imageAsset.uri, imageAsset.height, imageAsset.width, 'JPEG', 100, 0];
-              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-              console.log('Resized Image:', resizedImage);
-              resolve(saveFile(resizedImage));
+              image = response.assets[0];
+              if (image.fileSize > 5242880) {
+                image = await resizeImage(image);
+              }
+              resolve(saveFile(image));
             }
           });
         }
