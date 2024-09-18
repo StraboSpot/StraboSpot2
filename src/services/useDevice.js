@@ -423,7 +423,7 @@ const useDevice = () => {
       const newImagePath = `${APP_DIRECTORIES.IMAGES + imageProps.id}.jpg`;
       const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
-      if (!await RNFS.exists(tempImagesDownsizedDirectory)) await useDevice.makeDirectory(tempImagesDownsizedDirectory);
+      if (!await RNFS.exists(tempImagesDownsizedDirectory)) await makeDirectory(tempImagesDownsizedDirectory);
 
       const resizedImage = await ImageResizer.createResizedImage(
         imageProps.uri,
