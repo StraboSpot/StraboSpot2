@@ -478,24 +478,12 @@ const useSpots = () => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.images));
   };
 
-  const getSpotsWithImagesSortedReverseChronologically = () => {
-    return getSpotsWithImages().sort(((a, b) => {
-      return new Date(b.properties.date) - new Date(a.properties.date);
-    }));
-  };
-
   const getSpotsWithKey = (key) => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties[key]));
   };
 
   const getSpotsWithSamples = () => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.samples));
-  };
-
-  const getSpotsWithSamplesSortedReverseChronologically = () => {
-    return getSpotsWithSamples().sort(((a, b) => {
-      return new Date(b.properties.date) - new Date(a.properties.date);
-    }));
   };
 
   // Get all active Spots that contain a strat section
@@ -595,10 +583,8 @@ const useSpots = () => {
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
-    getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
     getSpotsWithKey: getSpotsWithKey,
     getSpotsWithSamples: getSpotsWithSamples,
-    getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
     handleSpotSelected: handleSpotSelected,
     isOnGeoMap: isOnGeoMap,

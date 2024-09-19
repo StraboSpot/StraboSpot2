@@ -69,7 +69,7 @@ const MainMenuPanel = ({
         );
       case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
         return <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>;
-      case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
+      case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS:
         return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
         return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;

@@ -3,9 +3,9 @@ import React from 'react';
 import {ButtonGroup} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {SORTED_VIEWS} from './mainMenu.constants';
-import {setSelectedButtonIndex, setSortedView} from './mainMenuPanel.slice';
-import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import {SORTED_VIEWS} from './spots.constants';
+import {PRIMARY_ACCENT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
+import {setSelectedButtonIndex, setSortedView} from '../main-menu-panel/mainMenuPanel.slice';
 
 const SortingButtons = ({spots}) => {
   const dispatch = useDispatch();
@@ -32,11 +32,11 @@ const SortingButtons = ({spots}) => {
   return (
     <ButtonGroup
       selectedIndex={selectedButtonIndex}
-      buttons={['Reverse\nChronological', 'Map Extent', 'Recent\n Views']}
+      buttons={['In Active\nDatasets', 'In Map\nExtent', 'In Recent\nViews']}
       containerStyle={{height: 50}}
       buttonStyle={{padding: 5}}
       selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-      textStyle={{fontSize: 12}}
+      textStyle={{fontSize: SMALL_TEXT_SIZE, textAlign: 'center'}}
       onPress={selected => updateIndex(selected)}
     />
   );

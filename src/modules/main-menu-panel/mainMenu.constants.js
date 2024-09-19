@@ -8,7 +8,7 @@ export const MAIN_MENU_ITEMS = {
     // DATABASE_DETAILS: 'Database Details',
   },
   ATTRIBUTES: {
-    SPOTS_LIST: 'Spots List',
+    SPOTS: 'Spots',
     IMAGE_GALLERY: 'Image Gallery',
     SAMPLES: 'Samples',
     GEOLOGIC_UNITS: 'Geologic Units',
@@ -31,19 +31,6 @@ export const MAIN_MENU_ITEMS = {
     ABOUT: 'About Strabo',
     DOCUMENTATION: 'Documentation',
   },
-};
-
-export const SORTED_VIEWS = {
-  CHRONOLOGICAL: 'CHRONOLOGICAL',
-  MAP_EXTENT: 'MAP_EXTENT',
-  RECENT_VIEWS: 'RECENT_VIEWS',
-};
-
-export const SORT_ORDER = {
-  ALPHABETICAL: 'Alphabetical',
-  DATE_CREATED: 'Date Created',
-  DATE_LAST_MODIFIED: 'Date Last Modified',
-  DATE_LAST_VIEWED: 'Date Last Viewed',
 };
 
 export const SIDE_PANEL_VIEWS = {
