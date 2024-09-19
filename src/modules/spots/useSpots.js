@@ -160,7 +160,6 @@ const useSpots = () => {
     let d = new Date(Date.now());
     d.setMilliseconds(0);
     newSpot.properties.date = newSpot.properties.time = d.toISOString();
-    // Sets modified and viewed timestamps in milliseconds
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
 
