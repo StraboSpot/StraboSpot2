@@ -1,55 +1,47 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList, View} from 'react-native';
 
-import {useSelector} from 'react-redux';
-
 import {SpotsListItem, useSpotsHook} from './index';
+import SpotFilters from './SpotFilters';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
-import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
-import SortingButtons from '../main-menu-panel/SortingButtons';
 
 const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
-  console.log('Rendering SpotsList...');
+  // console.log('Rendering SpotsList...');
 
   const useSpots = useSpotsHook();
 
-  const sortedView = useSelector(state => state.mainMenu.sortedView);
+  const activeSpotsObj = useSpots.getActiveSpotsObj();
+  const activeSpots = Object.values(activeSpotsObj);
 
-  let sortedSpots = useSpots.getSpotsSortedReverseChronologically();
+  const [spotsSearched, setSpotsSearched] = useState(activeSpots);
+  const [spotsSorted, setSpotsSorted] = useState(activeSpots);
+  const [isReverseSort, setIsReverseSort] = useState(false);
+  const [textNoSpots, setTextNoSpots] = useState('No Spots in Active Datasets');
 
-  const renderNoSpotsText = () => {
-    return <ListEmptyText text={'No Spots in Active Datasets'}/>;
-  };
+  const renderNoSpotsText = () => <ListEmptyText text={textNoSpots}/>;
 
   const renderSpotsList = () => {
-    console.log('Rendering Spots List...');
-    let noSpotsText = 'No Spots';
-    if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      sortedSpots = useSpots.getSpotsInMapExtent();
-      if (isEmpty(sortedSpots)) noSpotsText = 'No active Spots in current map extent';
-    }
-    else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      sortedSpots = useSpots.getRecentSpots();
-      if (isEmpty(sortedSpots)) noSpotsText = 'No recently viewed active Spots';
-    }
     return (
       <View style={{flex: 1}}>
-        <SortingButtons/>
-        {sortedView === SORTED_VIEWS.MAP_EXTENT && (
-          <UpdateSpotsInMapExtentButton
-            title={'Update Spots in Map Extent'}
-            updateSpotsInMapExtent={updateSpotsInMapExtent}
-          />
-        )}
-        <SectionDivider dividerText={sortedSpots.length + ' Active ' + (sortedSpots.length === 1 ? 'Spot' : 'Spots')}/>
+        <SpotFilters
+          activeSpots={activeSpots}
+          setIsReverseSort={setIsReverseSort}
+          setSpotsSearched={setSpotsSearched}
+          setSpotsSorted={setSpotsSorted}
+          setTextNoSpots={setTextNoSpots}
+          spotsSearched={spotsSearched}
+          updateSpotsInMapExtent={updateSpotsInMapExtent}
+        />
+        <SectionDivider
+          dividerText={spotsSearched.length + ' Active ' + (spotsSearched.length === 1 ? 'Spot' : 'Spots')}
+        />
         <View style={{flex: 1}}>
           <FlatList
             keyExtractor={spot => spot.properties.id.toString()}
-            data={sortedSpots}
+            data={isReverseSort ? [...spotsSorted].reverse() : spotsSorted}
             renderItem={({item}) => (
               <SpotsListItem
                 doShowTags={true}
@@ -59,7 +51,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
               />
             )}
             ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={noSpotsText}/>}
+            ListEmptyComponent={<ListEmptyText text={textNoSpots + ' found'}/>}
           />
         </View>
       </View>
@@ -68,7 +60,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
 
   return (
     <>
-      {isEmpty(sortedSpots) ? renderNoSpotsText() : renderSpotsList()}
+      {isEmpty(activeSpots) ? renderNoSpotsText() : renderSpotsList()}
     </>
   );
 };

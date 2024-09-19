@@ -20,7 +20,7 @@ const TagsList = ({type, selectedIndex}) => {
   console.log('Rendering TagsList...');
 
   const dispatch = useDispatch();
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const spotsInMapExtentIds = useSelector(state => state.map.spotsInMapExtentIds);
   const tags = useSelector(state => state.project.project?.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
@@ -79,16 +79,15 @@ const TagsList = ({type, selectedIndex}) => {
 
   const renderTagsListByMapExtent = () => {
     let tagsInMapExtent;
-    const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
     if (type === PAGE_KEYS.GEOLOGIC_UNITS) {
       tagsInMapExtent = tags.filter((tag) => {
         return tag.spots && !isEmpty(
-          tag.spots.find(spotId => spotIds.includes(spotId))) && tag.type === PAGE_KEYS.GEOLOGIC_UNITS;
+          tag.spots.find(spotId => spotsInMapExtentIds?.includes(spotId))) && tag.type === PAGE_KEYS.GEOLOGIC_UNITS;
       });
     }
     else {
       tagsInMapExtent = tags.filter((tag) => {
-        return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
+        return tag.spots && !isEmpty(tag.spots.find(spotId => spotsInMapExtentIds?.includes(spotId)))
           && tag.type !== 'geologic_unit';
       });
     }

@@ -30,7 +30,6 @@ export const getSize = (image) => {
   else if (image.size < 1048576) imageSizeText = (image.size / 1024).toFixed(3) + ' kB';
   else if (image.size < 1073741824) imageSizeText = (image.size / 1048576).toFixed(2) + ' MB';
   else imageSizeText = (image.size / 1073741824).toFixed(3) + ' GB';
-  console.log('Image Size', imageSizeText);
   return imageSizeText;
 };
 

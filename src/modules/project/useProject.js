@@ -29,7 +29,7 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
+import {clearedSpotsInMapExtentIds, clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import {clearedSelectedSpots, deletedSpots} from '../spots/spots.slice';
 
 const useProject = () => {
@@ -252,6 +252,7 @@ const useProject = () => {
   const setSwitchValue = async (val, dataset) => {
     try {
       dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+      dispatch(clearedSpotsInMapExtentIds());
       if (!val && !isEmpty(selectedSpot) && dataset.spotIds?.includes(selectedSpot.properties.id)) {
         if (currentImageBasemap) dispatch(setCurrentImageBasemap(undefined));
         if (stratSection) dispatch(clearedStratSection());

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {forwardRef, useState} from 'react';
 import {Animated, useWindowDimensions, View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -16,31 +16,30 @@ import NotebookPanel from '../notebook-panel/NotebookPanel';
 import {MODAL_KEYS} from '../page/page.constants';
 import SpotNavigator from '../spots/SpotNavigator';
 
-const HomeViewSmallScreen = ({
-                               animateLeftSide,
-                               areEditButtonsVisible,
-                               clickHandler,
-                               closeMainMenuPanel,
-                               closeNotebookPanel,
-                               dialogClickHandler,
-                               dialogs,
-                               distance,
-                               drawButtonsVisible,
-                               endMeasurement,
-                               isSelectingForStereonet,
-                               isSelectingForTagging,
-                               mapComponentRef,
-                               mapMode,
-                               onEndDrawPressed,
-                               openMainMenuPanel,
-                               openNotebookPanel,
-                               openSpotInNotebook,
-                               renderVersionCheckLabel,
-                               setDistance,
-                               showUpdateLabel,
-                               startEdit,
-                               toggleDialog,
-                             }) => {
+const HomeViewSmallScreen = forwardRef(({
+                                          animateLeftSide,
+                                          areEditButtonsVisible,
+                                          clickHandler,
+                                          closeMainMenuPanel,
+                                          closeNotebookPanel,
+                                          dialogClickHandler,
+                                          dialogs,
+                                          distance,
+                                          drawButtonsVisible,
+                                          endMeasurement,
+                                          isSelectingForStereonet,
+                                          isSelectingForTagging,
+                                          mapMode,
+                                          onEndDrawPressed,
+                                          openMainMenuPanel,
+                                          openNotebookPanel,
+                                          openSpotInNotebook,
+                                          renderVersionCheckLabel,
+                                          setDistance,
+                                          showUpdateLabel,
+                                          startEdit,
+                                          toggleDialog,
+                                        }, mapComponentRef) => {
   console.log('Rendering HomeViewSmallScreen...');
 
   const dispatch = useDispatch();
@@ -127,9 +126,9 @@ const HomeViewSmallScreen = ({
                 <Map
                   isSelectingForStereonet={isSelectingForStereonet}
                   isSelectingForTagging={isSelectingForTagging}
-                  mapComponentRef={mapComponentRef}
                   mapMode={mapMode}
                   onEndDrawPressed={onEndDrawPressed}
+                  ref={mapComponentRef}
                   setDistance={setDistance}
                   startEdit={startEdit}
                 />
@@ -207,6 +206,6 @@ const HomeViewSmallScreen = ({
       )}
     </Animated.View>
   );
-};
+});
 
 export default HomeViewSmallScreen;
