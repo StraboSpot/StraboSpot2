@@ -18,12 +18,7 @@ import {
 import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
-import {
-  ErrorModal,
-  InitialProjectLoadModal,
-  StatusModal,
-  WarningModal,
-} from './modals';
+import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
 import useDeviceHook from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
@@ -414,12 +409,12 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
           openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
+          ref={mapComponentRef}
           renderVersionCheckLabel={renderVersionCheckLabel()}
           setDistance={setDistance}
           showUpdateLabel={showUpdateLabel}
@@ -442,11 +437,11 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
           openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
+          ref={mapComponentRef}
           setDistance={setDistance}
           startEdit={startEdit}
           toggleDialog={toggleDialog}

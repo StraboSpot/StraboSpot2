@@ -1,4 +1,4 @@
-import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {PixelRatio, Platform, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
@@ -41,16 +41,15 @@ import {
 } from '../spots/spots.slice';
 import useSpotsHook from '../spots/useSpots';
 
-const Map = ({
-               isSelectingForStereonet,
-               isSelectingForTagging,
-               mapComponentRef,
-               mapMode,
-               onEndDrawPressed,
-               setDistance,
-               startEdit,
-             }) => {
-  // console.log('Rendering Map...');
+const Map = forwardRef(({
+                          isSelectingForStereonet,
+                          isSelectingForTagging,
+                          mapMode,
+                          onEndDrawPressed,
+                          setDistance,
+                          startEdit,
+                        }, mapComponentRef) => {
+  console.log('Rendering Map...');
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -105,7 +104,6 @@ const Map = ({
   useEffect(() => {
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
   }, [spotsSelected, spotsNotSelected]);
-
 
   useEffect(() => {
     // console.log('UE Map [currentImageBasemap]', currentImageBasemap);
@@ -1177,6 +1175,6 @@ const Map = ({
       {renderSetInCurrentViewModal()}
     </View>
   );
-};
+});
 
 export default Map;
