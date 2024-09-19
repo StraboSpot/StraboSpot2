@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
 import {Button, Icon, Input, ListItem, Overlay} from 'react-native-elements';
+import {Table, Col, Row, Rows, TableWrapper} from 'react-native-reanimated-table';
 import {useDispatch, useSelector} from 'react-redux';
 
 import customMapStyles from './customMaps.styles';
@@ -9,7 +10,7 @@ import useCustomMapHook from './useCustomMap';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
-import {BLUE, DARKGREY, WARNING_COLOR} from '../../../shared/styles.constants';
+import {BLUE, DARKGREY, LIGHTGREY, MEDIUMGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../../shared/ui/SectionDivider';
@@ -37,6 +38,8 @@ const CustomMapDetails = () => {
   const [message, setMessage] = useState('Starting...');
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
+  const [bboxTableHead, setBboxTableHead] = useState(['', 'Longitude', 'Latitude']);
+  const [bboxTableTitle, setBboxTableTitle] = useState(['SW', 'NE']);
 
   useEffect(() => {
     // console.log('UE CustomMapDetails [customMapToEdit]', customMapToEdit);
@@ -184,19 +187,28 @@ const CustomMapDetails = () => {
     </View>
   );
 
+  const getBboxData = () => {
+    const bboxArr = editableCustomMapData.bbox.split(',');
+    return [[bboxArr[0], bboxArr[1]], [bboxArr[2], bboxArr[3]]];
+  };
+
   const bboxCoordsLayout = () => {
-    const bboxArr = customMapToEdit.bbox.split(',');
-    return (
-      <FlatList
-        data={bboxArr}
-        renderItem={
-          ({item}) => (
-            <View>
-              <Text style={customMapStyles.mapOverviewBboxText}>{item},</Text>
-            </View>
-          )}
-      />
-    );
+    if (editableCustomMapData.bbox) {
+      return (
+        <View style={{flex: 1,padding: 10}}>
+          <Table>
+          <Row data={bboxTableHead} flexArr={[1, 2, 2]} style={{height: 20, backgroundColor: MEDIUMGREY}}
+                 textStyle={{flex: 1, textAlign: 'center', backgroundColor: '#f6f8fa'}}/>
+            <TableWrapper style={{flexDirection: 'row'}}>
+              <Col data={bboxTableTitle} style={{flex: 1, backgroundColor: LIGHTGREY}} heightArr={[20, 20]}
+                   textStyle={{flex: 1, textAlign: 'center', backgroundColor: '#f6f8fa'}}/>
+              <Rows data={getBboxData()} flexArr={[2, 2]} style={{height: 20}}
+                    textStyle={{flex: 1, textAlign: 'center', backgroundColor: '#f6f8fa'}}/>
+            </TableWrapper>
+          </Table>
+        </View>
+      );
+    }
   };
 
   const renderMapTypeOverview = () => {
