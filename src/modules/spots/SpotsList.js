@@ -28,7 +28,8 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
 
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const spots = useSelector(state => state.spot.spots);
+  const spotsInMapExtentIds = useSelector(state => state.map.spotsInMapExtentIds);
 
   const activeSpotsObj = useSpots.getActiveSpotsObj();
   const activeSpots = Object.values(activeSpotsObj);
@@ -46,7 +47,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
     let gotSpotsFiltered = activeSpots;
     if (isEmpty(activeSpots)) setTextNoSpots('No Spots in Active Datasets');
     else if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      gotSpotsFiltered = [...spotsInMapExtent];
+      gotSpotsFiltered = useSpots.getSpotsInMapExtent();
       if (isEmpty(gotSpotsFiltered)) setTextNoSpots('No active Spots in current map extent');
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
@@ -55,7 +56,7 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
     }
     setSpotsFiltered(gotSpotsFiltered);
     updateSearch(undefined, gotSpotsFiltered);
-  }, [recentViews, sortedView, spotsInMapExtent]);
+  }, [recentViews, sortedView, spots, spotsInMapExtentIds]);
 
   const openPicker = () => {
     setIsPickerVisible(true);
@@ -188,8 +189,9 @@ const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
     let gotSpotsSorted = [...spotsToSort];
     if (sort === SORT_ORDER.ALPHABETICAL) gotSpotsSorted = useSpots.sortSpotsAlphabetically(gotSpotsSorted);
     else if (sort === SORT_ORDER.DATE_CREATED) gotSpotsSorted = useSpots.sortSpotsByDateCreated(gotSpotsSorted);
-    else if (sort === SORT_ORDER.DATE_LAST_MODIFIED) gotSpotsSorted = useSpots.sortSpotsByDateLastModified(
-      gotSpotsSorted);
+    else if (sort === SORT_ORDER.DATE_LAST_MODIFIED) {
+      gotSpotsSorted = useSpots.sortSpotsByDateLastModified(gotSpotsSorted);
+    }
     else if (sort === SORT_ORDER.DATE_LAST_VIEWED) gotSpotsSorted = useSpots.sortSpotsByDateLastViewed(gotSpotsSorted);
     setSpotsSorted(gotSpotsSorted);
     closePicker();

@@ -34,7 +34,7 @@ const useSpots = () => {
   const recentViews = useSelector(state => state.spot.recentViews);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const spotsInMapExtentIds = useSelector(state => state.map.spotsInMapExtentIds);
   const stratSection = useSelector(state => state.map.stratSection);
   const tags = useSelector(state => state.project.project?.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
@@ -452,7 +452,7 @@ const useSpots = () => {
     return foundSpots;
   };
 
-  const getSpotsInMapExtent = () => spotsInMapExtent;
+  const getSpotsInMapExtent = () => spotsInMapExtentIds.map(id => spots[id]);
 
   // Get all the Spots mapped on a specific image basemap
   const getSpotsMappedOnGivenImageBasemap = (basemapId) => {

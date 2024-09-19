@@ -83,7 +83,7 @@ const MainMenuPanel = ({
       case MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS:
         return <Tags type={'geologic_unit'}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
-        return <Tags/>;
+        return <Tags updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.MAPS.CUSTOM:
         return <ManageCustomMaps zoomToCustomMap={zoomToCustomMap}/>;
       case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :

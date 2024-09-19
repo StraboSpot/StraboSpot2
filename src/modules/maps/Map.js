@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Basemap from './Basemap';
 import useCustomMapHook from './custom-maps/useCustomMap';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.constants';
-import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtent, setVertexStartCoords} from './maps.slice';
+import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtentIds, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMapHook from './useMap';
@@ -54,6 +54,7 @@ const Map = ({
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
+  const spotsRef = useRef(null);
 
   const useCustomMap = useCustomMapHook();
   const useImages = useImagesHook();
@@ -100,6 +101,11 @@ const Map = ({
   const [spotsSelected, setSpotsSelected] = useState([]);
   const [vertexIndex, setVertexIndex] = useState([]);
   const [vertexToEdit, setVertexToEdit] = useState([]);
+
+  useEffect(() => {
+    spotsRef.current = [...spotsSelected, ...spotsNotSelected];
+  }, [spotsSelected, spotsNotSelected]);
+
 
   useEffect(() => {
     // console.log('UE Map [currentImageBasemap]', currentImageBasemap);
@@ -1068,9 +1074,9 @@ const Map = ({
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots([...spotsSelected, ...spotsNotSelected],
-        bboxPoly);
-      dispatch(setSpotsInMapExtent(gotSpotsInMapExtent));
+      const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots(spotsRef.current, bboxPoly);
+      const gotSpotsInMapExtentIds = gotSpotsInMapExtent.map(spot => spot.properties.id);
+      dispatch(setSpotsInMapExtentIds(gotSpotsInMapExtentIds));
     }
   };
 
