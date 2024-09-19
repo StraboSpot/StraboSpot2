@@ -3,6 +3,12 @@ import {StyleSheet} from 'react-native';
 import * as themes from '../../../shared/styles.constants';
 
 const styles = StyleSheet.create({
+  bboxButton: {
+    padding: 30,
+  },
+  bboxCoordsContainers: {
+    alignItems: 'center', padding: 5
+  },
   itemContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -48,7 +54,7 @@ const styles = StyleSheet.create({
   },
   mapOverviewText: {
     fontSize: themes.MEDIUM_TEXT_SIZE,
-    padding: 10,
+    padding: 5,
   },
   mapTypeInfoContainer: {
     alignItems: 'center',

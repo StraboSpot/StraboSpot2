@@ -51,6 +51,17 @@ const useCustomMap = () => {
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
+  const getMyMapsBBox = async (mapId) => {
+    if (customDatabaseEndpoint.isSelected) {
+      console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
+      const response = await useServerRequests.getMyMapsBbox(bboxEndpoint);
+      console.log(response)
+    }
+    const response = await useServerRequests.getMyMapsBbox(STRABO_APIS.MY_MAPS_BBOX + mapId);
+    console.log(response)
+  }
+
   const getProviderInfo = (source) => {
     let providerInfo = {...MAP_PROVIDERS[source]};
     if (customDatabaseEndpoint.isSelected) {
@@ -131,6 +142,7 @@ const useCustomMap = () => {
   return {
     deleteMap: deleteMap,
     getCustomMapDetails: getCustomMapDetails,
+    getMyMapsBBox: getMyMapsBBox,
     saveCustomMap: saveCustomMap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     updateMap: updateMap,
