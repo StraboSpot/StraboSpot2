@@ -5,14 +5,14 @@ import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 import alert from '../../../shared/ui/alert';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
 import useSedValidationHook from '../../sed/useSedValidation';
+import {useSpots} from '../../spots';
 import {editedOrCreatedSpot, editedOrCreatedSpots} from '../../spots/spots.slice';
-import useSpotsHook from '../../spots/useSpots';
 
 const useStratSectionCalculations = () => {
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useSpots = useSpotsHook();
+  const {getIntervalSpotsThisStratSection, getSpotsMappedOnGivenStratSection} = useSpots();
   const useSedValidation = useSedValidationHook();
 
   const xInterval = 10;  // Horizontal spacing between grain sizes/weathering tick marks
@@ -155,7 +155,7 @@ const useStratSectionCalculations = () => {
 
   // Get the height (y) of the whole section
   const getSectionHeight = () => {
-    const intervals = useSpots.getIntervalSpotsThisStratSection(stratSection.strat_section_id);
+    const intervals = getIntervalSpotsThisStratSection(stratSection.strat_section_id);
     return intervals.reduce((acc, i) => {
       const coords = i.geometry.coordinates || i.geometry.geometries.map(g => g.coordinates).flat();
       const ys = coords.flat().map(c => c[1]);
@@ -247,7 +247,7 @@ const useStratSectionCalculations = () => {
   // Move all Spots (except excluded Spot, if given) in a specified Strat Section
   // up after cutoff (if pixels is positive) or down after cutoff (if pixels is negative)
   const moveSpotsUpOrDownByPixels = (stratSectionId, cutoff, pixels, excludedSpotId) => {
-    const spots = useSpots.getSpotsMappedOnGivenStratSection(stratSectionId);
+    const spots = getSpotsMappedOnGivenStratSection(stratSectionId);
     let spotsFiltered = spots.filter(spot => excludedSpotId && spot.properties.id !== excludedSpotId);
     let movedSpots = [];
     spotsFiltered.map((spot, h) => {

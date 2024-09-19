@@ -15,7 +15,7 @@ import {setStratSection} from '../maps/maps.slice';
 import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const useSed = () => {
@@ -23,7 +23,7 @@ const useSed = () => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {getSpotWithThisStratSection, getSpotsMappedOnGivenStratSection, isStratInterval} = useSpots();
   const useSedValidation = useSedValidationHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
 
@@ -51,7 +51,7 @@ const useSed = () => {
             let thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
             thickness = roundToDecimalPlaces(thickness, 2);
             spot.properties.sed.interval.interval_thickness = thickness;
-            const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(spot.properties.strat_section_id);
+            const spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
             if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed
               && spotWithThisStratSection.properties.sed.strat_section) {
               spot.properties.sed.interval.thickness_units
@@ -303,7 +303,7 @@ const useSed = () => {
       useSedValidation.validateSedData(editedSpot, pageKey);
 
       // Update geometry if Interval
-      if (useSpots.isStratInterval(spot)) {
+      if (isStratInterval(spot)) {
         const updatedSpot = checkForIntervalUpdates(pageKey, editedSpot, spot);
         // console.log('Saving', pageKey, 'data to Spot ...');
         dispatch(updatedModifiedTimestampsBySpotsIds([updatedSpot.properties.id]));
@@ -340,7 +340,7 @@ const useSed = () => {
   const toggleStratSection = (spot) => {
     if (!spot.properties?.sed?.strat_section) createNewStratSection(spot);
     else {
-      const spotsMappedOnThisStratSection = useSpots.getSpotsMappedOnGivenStratSection(
+      const spotsMappedOnThisStratSection = getSpotsMappedOnGivenStratSection(
         spot.properties.sed.strat_section.strat_section_id);
       if (spotsMappedOnThisStratSection.length > 0) {
         alert('Strat Section In Use', 'There are ' + spotsMappedOnThisStratSection.length

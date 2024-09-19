@@ -11,16 +11,16 @@ import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import {setLoadingStatus} from '../../home/home.slice';
+import {useSpots} from '../../spots';
 import {setSelectedSpot} from '../../spots/spots.slice';
-import useSpotsHook from '../../spots/useSpots';
 import {setStratSection} from '../maps.slice';
 
 const StratSectionsList = ({closeManMenuPanel}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const useSpots = useSpotsHook();
+  const {getSpotsWithStratSection} = useSpots();
 
-  const spotsWithStratSection = useSpots.getSpotsWithStratSection();
+  const spotsWithStratSection = getSpotsWithStratSection();
   console.log('Spots with Strat Section:', spotsWithStratSection);
 
   const handleStratSectionPressed = (spot) => {

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, View} from 'react-native';
 
-import {SpotsListItem, useSpotsHook} from './index';
+import {SpotsListItem, useSpots} from '.';
 import SpotFilters from './SpotFilters';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -11,9 +11,9 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 const SpotsList = ({isCheckedList, onPress, updateSpotsInMapExtent}) => {
   // console.log('Rendering SpotsList...');
 
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj} = useSpots();
 
-  const activeSpotsObj = useSpots.getActiveSpotsObj();
+  const activeSpotsObj = getActiveSpotsObj();
   const activeSpots = Object.values(activeSpotsObj);
 
   const [spotsSearched, setSpotsSearched] = useState(activeSpots);

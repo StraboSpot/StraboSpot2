@@ -13,7 +13,7 @@ import {WarningModal} from '../../home/modals';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import useStratSectionHook from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
-import useSpotsHook from '../../spots/useSpots';
+import {useSpots} from '../../spots';
 import {setNotebookPageVisible} from '../notebook.slice';
 import notebookStyles from '../notebook.styles';
 
@@ -24,7 +24,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) =
   const [isDeleteSpotModalVisible, setIsDeleteSpotModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const useSpots = useSpotsHook();
+  const {checkIsSafeDelete, copySpot, deleteSpot, isStratInterval} = useSpots();
   const navigation = useNavigation();
   const useStratSection = useStratSectionHook();
 
@@ -36,18 +36,18 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) =
   ];
 
   const continueDeleteSelectedSpot = () => {
-    if (useSpots.isStratInterval(spot)) useStratSection.deleteInterval(spot);
-    else useSpots.deleteSpot(spot.properties.id);
+    if (isStratInterval(spot)) useStratSection.deleteInterval(spot);
+    else deleteSpot(spot.properties.id);
   };
 
   const deleteSelectedSpot = () => {
-    setErrorMessage(useSpots.checkIsSafeDelete(spot));
+    setErrorMessage(checkIsSafeDelete(spot));
     setIsDeleteSpotModalVisible(true);
   };
 
   const onPress = (key) => {
     if (key === 'copy') {
-      useSpots.copySpot().catch(err => console.log('Error copying Spot!', err));
+      copySpot().catch(err => console.log('Error copying Spot!', err));
       dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
     }
     else if (key === 'zoom') {

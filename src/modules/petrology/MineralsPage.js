@@ -17,8 +17,8 @@ import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const MineralsPage = ({page}) => {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const MineralsPage = ({page}) => {
 
   const preFormRef = useRef(null);
 
-  const useSpots = useSpotsHook();
+  const {getSpotById, getSpotsWithKey} = useSpots();
   const usePetrology = usePetrologyHook();
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const MineralsPage = ({page}) => {
   };
 
   const copyMineralData = (spotId) => {
-    const spotToCopy = useSpots.getSpotById(spotId);
+    const spotToCopy = getSpotById(spotId);
     if (!isEmpty(spotToCopy)) {
       const mineralsToCopy = JSON.parse(JSON.stringify(spotToCopy.properties.pet[page.key]));
       mineralsToCopy.forEach((mineral, i) => {
@@ -78,7 +78,7 @@ const MineralsPage = ({page}) => {
   };
 
   const getSpotsWithMinerals = () => {
-    const allSpotsWithPet = useSpots.getSpotsWithKey('pet');
+    const allSpotsWithPet = getSpotsWithKey('pet');
     setSpotsWithMinerals(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
       && s.properties.pet && s.properties.pet[page.key]));
   };

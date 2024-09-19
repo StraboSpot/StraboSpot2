@@ -19,7 +19,7 @@ import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS, SUBPAGES} from '../page/page.constants';
 import usePageHook from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
-import {SpotsListItem, useSpotsHook} from '../spots';
+import {SpotsListItem, useSpots} from '../spots';
 
 const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPanel, zoomToSpots}) => {
   console.log('Rendering NotebookContent...');
@@ -33,7 +33,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
   const spots = useSelector(state => state.spot.spots);
 
   const usePage = usePageHook();
-  const useSpots = useSpotsHook();
+  const {getRootSpot, getSpotsSortedReverseChronologically, handleSpotSelected} = useSpots();
 
   const pageVisible = pagesStack.slice(-1)[0];
 
@@ -96,7 +96,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
   };
 
   const renderParentSpot = () => {
-    const parentSpot = useSpots.getRootSpot(currentImageBasemap.id);
+    const parentSpot = getRootSpot(currentImageBasemap.id);
     return (
       <View style={{justifyContent: 'flex-start'}}>
         <SectionDivider dividerText={'Parent Spot'}/>
@@ -107,7 +107,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
             <SpotsListItem
               doShowTags={true}
               spot={item}
-              onPress={() => useSpots.handleSpotSelected(item)}
+              onPress={() => handleSpotSelected(item)}
             />
           )}
           ItemSeparatorComponent={FlatListItemSeparator}
@@ -122,7 +122,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
       if (spots?.[key]) obj.push(spots[key]);
       return obj;
     }, []);
-    if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();
+    if (isEmpty(spotsList)) spotsList = getSpotsSortedReverseChronologically();
 
     return (
       <View style={notebookStyles.centerContainer}>
@@ -135,7 +135,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
             <SpotsListItem
               doShowTags={true}
               spot={item}
-              onPress={() => useSpots.handleSpotSelected(item)}
+              onPress={() => handleSpotSelected(item)}
             />
           )}
           ItemSeparatorComponent={FlatListItemSeparator}

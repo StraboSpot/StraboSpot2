@@ -6,10 +6,10 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequestsHook from './useServerRequests';
 import useUploadImagesHook from './useUploadImages';
-import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
+import {addedStatusMessage} from '../modules/home/home.slice';
 import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
 import useProjectHook from '../modules/project/useProject';
-import useSpotsHook from '../modules/spots/useSpots';
+import {useSpots} from '../modules/spots';
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
 
@@ -26,7 +26,7 @@ const useUpload = () => {
 
   const useProject = useProjectHook();
   const useServerRequests = useServerRequestsHook();
-  const useSpots = useSpotsHook();
+  const {getSpotsByIds} = useSpots();
   const useUploadImages = useUploadImagesHook();
 
   const initializeUpload = async () => {
@@ -149,7 +149,7 @@ const useUpload = () => {
   const uploadSpots = async (dataset) => {
     let datasetSpots;
     if (dataset.spotIds) {
-      datasetSpots = useSpots.getSpotsByIds(dataset.spotIds);
+      datasetSpots = getSpotsByIds(dataset.spotIds);
       datasetSpots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
     }
     try {

@@ -3,12 +3,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {setMapSymbols} from './maps.slice';
 import {isEmpty} from '../../shared/Helpers';
-import useSpotsHook from '../spots/useSpots';
+import {useSpots} from '../spots';
 
 const useMapFeatures = () => {
   const dispatch = useDispatch();
 
-  const useSpots = useSpotsHook();
+  const {getMappableSpots} = useSpots();
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
@@ -17,7 +17,7 @@ const useMapFeatures = () => {
 
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
-    const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
+    const spotsWithGeometry = getMappableSpots();      // Spots with geometry
     let mappedSpots;
     if (currentImageBasemap) {
       mappedSpots = spotsWithGeometry.filter(

@@ -14,8 +14,8 @@ import {LABEL_DICTIONARY} from '../../form';
 import useMapLocationHook from '../../maps/useMapLocation';
 import {PAGE_KEYS} from '../../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
+import {useSpots} from '../../spots';
 import {editedOrCreatedSpot, editedSpotProperties, setSelectedSpot} from '../../spots/spots.slice';
-import useSpotsHook from '../../spots/useSpots';
 import {setNotebookPageVisible} from '../notebook.slice';
 import notebookStyles from '../notebook.styles';
 
@@ -25,7 +25,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
 
   const [isNotebookMenuVisible, setIsNotebookMenuVisible] = useState(false);
 
-  const useSpots = useSpotsHook();
+  const {checkSpotName, getRootSpot, getSpotGeometryIconSource, getSpotWithThisStratSection} = useSpots();
   const useMapLocation = useMapLocationHook();
 
   const getSpotCoordText = () => {
@@ -37,8 +37,8 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
         if (spot.properties.image_basemap || spot.properties.strat_section_id) {
           let pixelDetails = toFixedIfNecessary(lng, 6) + ' X, ' + toFixedIfNecessary(lat, 6) + ' Y';
           if (isEmpty(spot.properties.lat) || isEmpty(spot.properties.lng)) {
-            const rootSpot = spot.properties.image_basemap ? useSpots.getRootSpot(spot.properties.image_basemap)
-              : useSpots.getSpotWithThisStratSection(spot.properties.strat_section_id);
+            const rootSpot = spot.properties.image_basemap ? getRootSpot(spot.properties.image_basemap)
+              : getSpotWithThisStratSection(spot.properties.strat_section_id);
             if (rootSpot && rootSpot.geometry && rootSpot.geometry.type === 'Point') {
               lng = rootSpot.geometry.coordinates[0];
               lat = rootSpot.geometry.coordinates[1];
@@ -105,7 +105,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
   const onSpotEdit = async (field, value) => {
     dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
     dispatch(editedSpotProperties({field: field, value: value}));
-    await useSpots.checkSpotName(value);
+    await checkSpotName(value);
   };
 
   const renderCoordsText = () => {
@@ -164,7 +164,7 @@ const NotebookHeader = ({closeNotebookPanel, createDefaultGeom, zoomToSpots}) =>
   return (
     <>
       <Image
-        source={useSpots.getSpotGeometryIconSource(spot)}
+        source={getSpotGeometryIconSource(spot)}
         style={notebookHeaderStyles.headerImage}
         onPress={() => dispatch(setNotebookPageVisible(PAGE_KEYS.METADATA))}
         resizeMode={'contain'}

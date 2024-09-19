@@ -36,15 +36,15 @@ import useMapLocationHook from '../maps/useMapLocation';
 import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import useProjectHook from '../project/useProject';
+import {useSpots} from '../spots';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
 
   const useHome = useHomeHook();
   const useProject = useProjectHook();
-  const useSpots = useSpotsHook();
+  const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
@@ -177,12 +177,12 @@ const Home = ({navigation, route}) => {
         mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
-        const spotWithThisImageBasemap = useSpots.getRootSpot(currentImageBasemap.id);
-        useSpots.handleSpotSelected(spotWithThisImageBasemap);
+        const spotWithThisImageBasemap = getRootSpot(currentImageBasemap.id);
+        handleSpotSelected(spotWithThisImageBasemap);
         break;
       case 'closeStratSection':
-        const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
-        useSpots.handleSpotSelected(spotWithThisStratSection);
+        const spotWithThisStratSection = getSpotWithThisStratSection(stratSection.strat_section_id);
+        handleSpotSelected(spotWithThisStratSection);
         break;
       // Map Actions
       case 'zoom':
@@ -210,8 +210,8 @@ const Home = ({navigation, route}) => {
         setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
         break;
       case 'stratSection':
-        const selectedSpotWithThisStratSection = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
-        useSpots.handleSpotSelected(selectedSpotWithThisStratSection);
+        const selectedSpotWithThisStratSection = getSpotWithThisStratSection(stratSection.strat_section_id);
+        handleSpotSelected(selectedSpotWithThisStratSection);
         openNotebookPanel(PAGE_KEYS.STRAT_SECTION);
         break;
     }
@@ -306,7 +306,7 @@ const Home = ({navigation, route}) => {
   };
 
   const openSpotInNotebook = (spot, notebookPage, attributes) => {
-    useSpots.handleSpotSelected(spot);
+    handleSpotSelected(spot);
     if (attributes) dispatch(setSelectedAttributes(attributes));
     if (notebookPage) openNotebookPanel(notebookPage);
     else openNotebookPanel(PAGE_KEYS.OVERVIEW);

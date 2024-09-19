@@ -4,7 +4,7 @@ import {FlatList, View} from 'react-native';
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useSpotsHook from './useSpots';
+import {useSpots} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import usePageHook from '../page/usePage';
@@ -19,7 +19,7 @@ const SpotsListItem = ({
                        }) => {
   // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
-  const useSpots = useSpotsHook();
+  const {getSpotGeometryIconSource} = useSpots();
   const useTags = useTagsHook();
   const usePage = usePageHook();
 
@@ -72,7 +72,7 @@ const SpotsListItem = ({
       <Avatar
         placeholderStyle={{backgroundColor: 'transparent'}}
         size={20}
-        source={useSpots.getSpotGeometryIconSource(spot)}
+        source={getSpotGeometryIconSource(spot)}
       />
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>

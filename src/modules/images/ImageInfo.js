@@ -11,8 +11,8 @@ import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
 import {WarningModal} from '../home/modals';
 import overlayStyles from '../home/overlays/overlay.styles';
+import {useSpots} from '../spots';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const ImageInfo = ({route}) => {
   console.log('Rendering ImageInfo...');
@@ -23,7 +23,7 @@ const ImageInfo = ({route}) => {
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageData, setImageData] = useState({});
   const useImages = useImagesHook();
-  const useSpots = useSpotsHook();
+  const {getSpotByImageId} = useSpots();
   const navigation = useNavigation();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -54,7 +54,7 @@ const ImageInfo = ({route}) => {
 
   const deleteImage = async () => {
     setIsImageDeleteModalVisible(false);
-    const isImageDeleted = await useImages.deleteImage(imageData.id, useSpots.getSpotByImageId(imageData.id));
+    const isImageDeleted = await useImages.deleteImage(imageData.id, getSpotByImageId(imageData.id));
     if (isImageDeleted) navigation.goBack();
   };
 

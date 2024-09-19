@@ -11,13 +11,13 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {PAGE_KEYS} from '../page/page.constants';
+import {useSpots} from '../spots';
 import SpotFilters from '../spots/SpotFilters';
-import useSpotsHook from '../spots/useSpots';
 
 const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj, getSpotsWithSamples} = useSpots();
 
-  const activeSpotsObj = useSpots.getActiveSpotsObj();
+  const activeSpotsObj = getActiveSpotsObj();
   const activeSpots = Object.values(activeSpotsObj);
 
   const [isReverseSort, setIsReverseSort] = useState(false);
@@ -94,7 +94,7 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   return (
     <>
-      {isEmpty(useSpots.getSpotsWithSamples()) ? renderNoSamplesText() : renderSamplesList()}
+      {isEmpty(getSpotsWithSamples()) ? renderNoSamplesText() : renderSamplesList()}
     </>
   );
 };

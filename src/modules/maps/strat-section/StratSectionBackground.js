@@ -6,7 +6,7 @@ import StratSectionImageOverlay from './StratSectionImageOverlay';
 import XAxes from './XAxes';
 import YAxis from './YAxis';
 import useImagesHook from '../../images/useImages';
-import useSpotsHook from '../../spots/useSpots';
+import {useSpots} from '../../spots';
 import useMapCoordsHook from '../useMapCoords';
 
 const StratSectionBackground = ({spotsDisplayed}) => {
@@ -16,10 +16,10 @@ const StratSectionBackground = ({spotsDisplayed}) => {
 
   const useImages = useImagesHook();
   const useMapCoords = useMapCoordsHook();
-  const useSpots = useSpotsHook();
+  const {getSpotWithThisStratSection} = useSpots();
 
   const renderImageOverlays = () => {
-    const stratSectionSpot = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
+    const stratSectionSpot = getSpotWithThisStratSection(stratSection.strat_section_id);
     const stratSectionImagesSorted = JSON.parse(JSON.stringify(stratSection.images || [])).sort(
       (a, b) => a.z_index - b.z_index);
 

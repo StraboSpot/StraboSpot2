@@ -16,7 +16,7 @@ import {setLoadingStatus} from '../home/home.slice';
 import useMapLocationHook from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const SampleModal = (props) => {
@@ -26,7 +26,7 @@ const SampleModal = (props) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
   const useMapLocation = useMapLocationHook();
 
   const initialNamePrefix = preferences.sample_prefix || '';
@@ -62,7 +62,7 @@ const SampleModal = (props) => {
     console.log('UE SampleModal [spot]', spot);
 
     if (preferences.prepend_spot_name_sample_name) {
-      const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? useSpots.getNewSpotName()
+      const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? getNewSpotName()
         : spot?.properties?.name;
       setNamePrefix(spotName + initialNamePrefix);
     }
@@ -114,7 +114,7 @@ const SampleModal = (props) => {
   };
 
   const getAllSamplesCount = async () => {
-    const count = await useSpots.getAllSpotSamplesCount();
+    const count = await getAllSpotSamplesCount();
     console.log('SAMPLE COUNT', count);
     setStartingNumber(count);
   };
@@ -207,7 +207,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
 
-      if (newSample.sample_id_name) await useSpots.checkSampleName(newSample.sample_id_name, toastRef);
+      if (newSample.sample_id_name) await checkSampleName(newSample.sample_id_name, toastRef);
     }
     catch (err) {
       console.error('Error saving Sample', err);

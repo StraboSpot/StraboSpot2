@@ -11,15 +11,14 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {imageStyles, useImagesHook} from '../images';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {SpotsListItem} from '../spots';
-import useSpotsHook from '../spots/useSpots';
+import {SpotsListItem, useSpots} from '../spots';
 
 const Nesting = () => {
   console.log('Rendering Nesting');
 
   const useImages = useImagesHook();
   const useNesting = useNestingHook();
-  const useSpots = useSpotsHook();
+  const {handleSpotSelected} = useSpots();
 
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
@@ -71,7 +70,7 @@ const Nesting = () => {
     return (
       <SpotsListItem
         numSubspots={numSubspots}
-        onPress={() => useSpots.handleSpotSelected(spot)}
+        onPress={() => handleSpotSelected(spot)}
         spot={spot}
       />
     );

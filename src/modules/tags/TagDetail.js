@@ -11,7 +11,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {PAGE_KEYS} from '../page/page.constants';
 import usePageHook from '../page/usePage';
-import {SpotsListItem, useSpotsHook} from '../spots';
+import {SpotsListItem, useSpots} from '../spots';
 import {useTagsHook} from '../tags';
 
 const TagDetail = ({
@@ -22,14 +22,14 @@ const TagDetail = ({
                      setIsDetailModalVisible,
                    }) => {
   const usePage = usePageHook();
-  const useSpots = useSpotsHook();
+  const {getSpotById} = useSpots();
   const useTags = useTagsHook();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);
   const [refresh, setRefresh] = useState(false);
 
-  // selectedTag.spots.map((x, index) => console.log(index, x, useSpots.getSpotById(x)));
+  // selectedTag.spots.map((x, index) => console.log(index, x, getSpotById(x)));
 
   useEffect(() => {
     console.log('UE TagDetail [selectedTag]', selectedTag);
@@ -38,7 +38,7 @@ const TagDetail = ({
   }, [selectedTag]);
 
   const renderSpotFeatureItem = (feature) => {
-    const spot = useSpots.getSpotById(feature.parentSpotId);
+    const spot = getSpotById(feature.parentSpotId);
     const featureType = deepFindFeatureTypeById(spot.properties, feature.id);
     if (!isEmpty(spot)) {
       return (
@@ -65,7 +65,7 @@ const TagDetail = ({
   };
 
   const renderSpotItem = (id) => {
-    const spot = useSpots.getSpotById(id);
+    const spot = getSpotById(id);
     return (
       <SpotsListItem
         doShowTags={true}

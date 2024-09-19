@@ -2,11 +2,11 @@ import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {useFormHook} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 
 const useSedValidation = () => {
   const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {getSpotWithThisStratSection, isStratInterval} = useSpots();
 
   const getBasicLithologyIndex = (lithology) => {
     if (lithology.primary_lithology === 'organic_coal') return 1;
@@ -20,7 +20,7 @@ const useSedValidation = () => {
   // Get the default units which is the same as the units for the section that this Spot is in
   const getDefaultUnits = (spot) => {
     if (spot.properties && spot.properties.strat_section_id) {
-      const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(spot.properties.strat_section_id);
+      const spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
       if (spotWithThisStratSection && spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed
         && spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units) {
         return spotWithThisStratSection.properties.sed.strat_section.column_y_axis_units;
@@ -49,7 +49,7 @@ const useSedValidation = () => {
 
   const validateSedData = (spot, pageKey) => {
     let errorMessages = [];
-    const isMappedInterval = useSpots.isStratInterval(spot);
+    const isMappedInterval = isStratInterval(spot);
     const sed = spot.properties.sed;
 
     // Validation checks for Bedding page

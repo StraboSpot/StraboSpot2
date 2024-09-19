@@ -3,11 +3,11 @@ import * as turf from '@turf/turf';
 import useStratSectionCalculationsHook from './useStratSectionCalculations';
 import {isEmpty} from '../../../shared/Helpers';
 import {useFormHook} from '../../form';
-import {useSpotsHook} from '../../spots';
+import {useSpots} from '../../spots';
 
 const useStratSection = () => {
   const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {deleteSpot, getSpotWithThisStratSection} = useSpots();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
 
   // Create a new strat section interval, separating the fields to their respective objects
@@ -91,11 +91,11 @@ const useStratSection = () => {
     const targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
     useStratSectionCalculations.moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id,
       targetIntervalExtent[3], -targetIntervalHeight, targetInterval.properties.id);
-    useSpots.deleteSpot(targetInterval.properties.id);
+    deleteSpot(targetInterval.properties.id);
   };
 
   const getStratSectionSettings = (stratSectionId) => {
-    const spot = useSpots.getSpotWithThisStratSection(stratSectionId);
+    const spot = getSpotWithThisStratSection(stratSectionId);
     return spot && spot.properties && spot.properties.sed
     && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
   };

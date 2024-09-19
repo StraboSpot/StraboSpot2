@@ -21,8 +21,8 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {useSpots} from '../spots';
 import {editedSpotProperties} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const RockPage = ({page}) => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const RockPage = ({page}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {getSpotById, getSpotsWithKey} = useSpots();
 
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedRock, setSelectedRock] = useState({});
@@ -103,7 +103,7 @@ const RockPage = ({page}) => {
   };
 
   const copyPetData = (spotId) => {
-    const spotToCopy = useSpots.getSpotById(spotId);
+    const spotToCopy = getSpotById(spotId);
 
     const copyPetDataContinued = () => {
       let updatedPetData = JSON.parse(JSON.stringify(rockData));
@@ -157,7 +157,7 @@ const RockPage = ({page}) => {
   };
 
   const getSpotsWithRockType = () => {
-    const allActiveSpotsWithGroupKey = useSpots.getSpotsWithKey(groupKey);
+    const allActiveSpotsWithGroupKey = getSpotsWithKey(groupKey);
     setSpotsWithRockType(allActiveSpotsWithGroupKey.filter(s => s.properties.id !== spot.properties.id
       && (s.properties[groupKey]
         && (s.properties[groupKey].rock_type?.includes(pageKey) || s.properties[groupKey][pageKey]))));

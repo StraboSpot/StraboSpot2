@@ -8,19 +8,19 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {imageStyles, useImagesHook} from '../images';
-import useSpotsHook from '../spots/useSpots';
+import {useSpots} from '../spots';
 
 const ImageBasemapsList = ({closeManMenuPanel}) => {
   console.log('Rendering ImageBasemaps...');
 
-  const useSpots = useSpotsHook();
+  const {getImageBasemaps} = useSpots();
   const useImages = useImagesHook();
 
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
 
   const imageBasemaps = useMemo(() => {
     console.log('UM ImageBasemaps []');
-    const gotImageBasemaps = useSpots.getImageBasemaps();
+    const gotImageBasemaps = getImageBasemaps();
     console.log('Image Basemaps:', gotImageBasemaps);
     return gotImageBasemaps;
   }, []);

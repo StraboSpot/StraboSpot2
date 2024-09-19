@@ -15,19 +15,19 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import uiStyles from '../../shared/ui/ui.styles';
 import {setLoadingStatus} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
+import {useSpots} from '../spots';
 import SpotFilters from '../spots/SpotFilters';
-import useSpotsHook from '../spots/useSpots';
 
 const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   // console.log('Rendering ImageGallery...');
 
   const navigate = useNavigation();
   const useImages = useImagesHook();
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj, getSpotsWithImages} = useSpots();
 
   const dispatch = useDispatch();
 
-  const activeSpotsObj = useSpots.getActiveSpotsObj();
+  const activeSpotsObj = getActiveSpotsObj();
   const activeSpots = Object.values(activeSpotsObj);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
@@ -47,7 +47,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   const getImageThumbnailURIs = async () => {
     try {
-      const spotsWithImages = useSpots.getSpotsWithImages();
+      const spotsWithImages = getSpotsWithImages();
       // console.log('Getting Image URI Thumbnails!');
       const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
       setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
@@ -160,7 +160,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   return (
     <>
-      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
+      {isEmpty(getSpotsWithImages()) ? renderNoImagesText()
         : !isError ? renderSpotsWithImages()
           : renderError()}
     </>

@@ -32,6 +32,7 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import useImagesHook from '../images/useImages';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {useSpots} from '../spots';
 import {
   clearedSelectedSpots,
   editedOrCreatedSpot,
@@ -39,7 +40,6 @@ import {
   setIntersectedSpotsForTagging,
   setSelectedSpot,
 } from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const Map = forwardRef(({
                           isSelectingForStereonet,
@@ -65,7 +65,7 @@ const Map = forwardRef(({
   const useMapSymbology = useMapSymbologyHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
-  const useSpots = useSpotsHook();
+  const {createSpot, getSpotWithThisStratSection} = useSpots();
   const useStereonet = useStereonetHook();
 
   const dispatch = useDispatch();
@@ -449,7 +449,7 @@ const Map = forwardRef(({
         else if (isSelectingForTagging) await selectSpotsForTagging(feature);
         else {
           feature.properties.symbology = useMapSymbology.getSymbology(feature);
-          newOrEditedSpot = await useSpots.createSpot(feature);
+          newOrEditedSpot = await createSpot(feature);
           dispatch(setSelectedSpot(newOrEditedSpot));
           dispatch(setFreehandFeatureCoords(undefined));  // reset the freeHandCoordinates
         }
@@ -473,7 +473,7 @@ const Map = forwardRef(({
       if (isSelectingForStereonet) await getStereonetForFeature(newFeature);
       if (isSelectingForTagging) await selectSpotsForTagging(newFeature);
       else {
-        newOrEditedSpot = await useSpots.createSpot(newFeature);
+        newOrEditedSpot = await createSpot(newFeature);
         dispatch(setSelectedSpot(newOrEditedSpot));
       }
       setDrawFeatures([]);
@@ -721,7 +721,7 @@ const Map = forwardRef(({
         const spotFound = await useMapFeaturesCalculated.getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
-          dispatch(setSelectedSpot(useSpots.getSpotWithThisStratSection(stratSection.strat_section_id)));
+          dispatch(setSelectedSpot(getSpotWithThisStratSection(stratSection.strat_section_id)));
         }
         else clearSelectedSpots();
       }

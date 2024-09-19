@@ -12,12 +12,12 @@ import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import usePageHook from '../page/usePage';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 import {useTagsHook} from '../tags';
 
 const AddRemoveTagFeatures = () => {
   const usePage = usePageHook();
-  const useSpots = useSpotsHook();
+  const {getAllFeaturesFromSpot} = useSpots();
   const useTags = useTagsHook();
 
   const dispatch = useDispatch();
@@ -67,7 +67,7 @@ const AddRemoveTagFeatures = () => {
       />
       <View style={{...commonStyles.buttonContainer, flex: 1}}>
         <FlatList
-          data={useSpots.getAllFeaturesFromSpot()}
+          data={getAllFeaturesFromSpot()}
           renderItem={({item}) => renderSpotFeatureItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Features in Active Datasets'}/>}

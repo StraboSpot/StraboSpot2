@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { FlatList} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -14,8 +14,8 @@ import Modal from '../../../shared/ui/modal/Modal';
 import {Form, SelectInputField, TextInputField, useFormHook} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
 import {updatedProject} from '../../project/projects.slice';
+import {useSpots} from '../../spots';
 import {setSelectedSpot} from '../../spots/spots.slice';
-import useSpotsHook from '../../spots/useSpots';
 
 const AddIntervalModal = () => {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const AddIntervalModal = () => {
   const [intervalToCopy, setIntervalToCopy] = useState(null);
 
   const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {createSpot, getIntervalSpotsThisStratSection} = useSpots();
   const useStratSection = useStratSectionHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
 
@@ -35,7 +35,7 @@ const AddIntervalModal = () => {
 
   const formName = ['sed', 'add_interval'];
 
-  const intervals = useSpots.getIntervalSpotsThisStratSection(stratSection.strat_section_id);
+  const intervals = getIntervalSpotsThisStratSection(stratSection.strat_section_id);
 
   useEffect(() => {
     const initialValues = {};
@@ -246,7 +246,7 @@ const AddIntervalModal = () => {
         newInterval.properties.name = preFormRef.current.values.intervalName;
       }
       if (intervalToCopy) newInterval = copyRestOfInterval(newInterval);
-      const newSpot = await useSpots.createSpot({type: 'Feature', ...newInterval});
+      const newSpot = await createSpot({type: 'Feature', ...newInterval});
       if (preFormRef.current?.values?.intervalToInsertAfter) {
         const intervalToInsertAfterObj = intervals.find(
           i => i.properties.id === preFormRef.current.values.intervalToInsertAfter);

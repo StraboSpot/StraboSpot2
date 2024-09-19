@@ -4,7 +4,7 @@ import {FlatList, View} from 'react-native';
 import {Button, CheckBox, Icon, Overlay, SearchBar} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import {useSpotsHook} from './index';
+import {useSpots} from '.';
 import SortingButtons from './SortingButtons';
 import {SORT_ORDER, SORTED_VIEWS} from './spots.constants';
 import {isEmpty} from '../../shared/Helpers';
@@ -29,7 +29,14 @@ const SpotFilters = ({
                        spotsSearched,
                        updateSpotsInMapExtent,
                      }) => {
-  const useSpots = useSpotsHook();
+  const {
+    getRecentSpots,
+    getSpotsInMapExtent,
+    sortSpotsAlphabetically,
+    sortSpotsByDateCreated,
+    sortSpotsByDateLastModified,
+    sortSpotsByDateLastViewed,
+  } = useSpots();
 
   const recentViews = useSelector(state => state.spot.recentViews);
   const sortedView = useSelector(state => state.mainMenu.sortedView);
@@ -45,11 +52,11 @@ const SpotFilters = ({
     let gotSpotsFiltered = activeSpots;
     setTextNoSpots('No Spots in Active Datasets');
     if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      gotSpotsFiltered = useSpots.getSpotsInMapExtent();
+      gotSpotsFiltered = getSpotsInMapExtent();
       setTextNoSpots('No active Spots in current map extent');
     }
     else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      gotSpotsFiltered = useSpots.getRecentSpots();
+      gotSpotsFiltered = getRecentSpots();
       setTextNoSpots('No recently viewed active Spots');
     }
     setSpotsFiltered(gotSpotsFiltered);
@@ -83,12 +90,10 @@ const SpotFilters = ({
   const updateSort = (sort = sortOrder, spotsToSort = spotsSearched) => {
     setSortOrder(sort);
     let gotSpotsSorted = [...spotsToSort];
-    if (sort === SORT_ORDER.ALPHABETICAL) gotSpotsSorted = useSpots.sortSpotsAlphabetically(gotSpotsSorted);
-    else if (sort === SORT_ORDER.DATE_CREATED) gotSpotsSorted = useSpots.sortSpotsByDateCreated(gotSpotsSorted);
-    else if (sort === SORT_ORDER.DATE_LAST_MODIFIED) {
-      gotSpotsSorted = useSpots.sortSpotsByDateLastModified(gotSpotsSorted);
-    }
-    else if (sort === SORT_ORDER.DATE_LAST_VIEWED) gotSpotsSorted = useSpots.sortSpotsByDateLastViewed(gotSpotsSorted);
+    if (sort === SORT_ORDER.ALPHABETICAL) gotSpotsSorted = sortSpotsAlphabetically(gotSpotsSorted);
+    else if (sort === SORT_ORDER.DATE_CREATED) gotSpotsSorted = sortSpotsByDateCreated(gotSpotsSorted);
+    else if (sort === SORT_ORDER.DATE_LAST_MODIFIED) gotSpotsSorted = sortSpotsByDateLastModified(gotSpotsSorted);
+    else if (sort === SORT_ORDER.DATE_LAST_VIEWED) gotSpotsSorted = sortSpotsByDateLastViewed(gotSpotsSorted);
     setSpotsSorted(gotSpotsSorted);
     closePicker();
   };
