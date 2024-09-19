@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import {Switch} from 'react-native';
+import {Switch, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
@@ -35,7 +34,7 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       {!isEmpty(tags) && (
         <>
           <ButtonGroup
@@ -75,7 +74,7 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
         closeModal={() => setIsDetailModalVisible(false)}
         type={type}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
