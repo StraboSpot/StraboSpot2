@@ -13,14 +13,14 @@ import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import useCustomMap from '../../maps/custom-maps/useCustomMap';
 import {BASEMAPS} from '../../maps/maps.constants';
-import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline';
+import useMapsOffline from '../../maps/offline-maps/useMapsOffline';
 import useMap from '../../maps/useMap';
 
 const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
 
   const {setCustomMapSwitchValue} = useCustomMap();
   const {setBasemap} = useMap();
-  const useMapsOffline = useMapsOfflineHook();
+  const {setOfflineMapTiles} = useMapsOffline();
 
   const [dialogTitle, setDialogTitle] = useState('Map Layers');
 
@@ -179,7 +179,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
   const renderDefaultMapItem = map => (
     <ListItem
       key={map.id + 'DefaultMapItem'}
-      onPress={() => isInternetReachable ? setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
+      onPress={() => isInternetReachable ? setBasemap(map.id) : setOfflineMapTiles(map)}
     >
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
@@ -213,12 +213,12 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
   const onSetBasemap = async (customMap) => {
     let baseMap = {};
     if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
-      if (!customMap.url) baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
+      if (!customMap.url) baseMap = await setOfflineMapTiles(customMap);
       else baseMap = await setBasemap(customMap.id);
       baseMap.bbox && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {
-      await useMapsOffline.setOfflineMapTiles(customMap);
+      await setOfflineMapTiles(customMap);
       offlineMaps[customMap.id].bbox
       && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
     }

@@ -10,7 +10,7 @@ import Basemap from './Basemap';
 import useCustomMap from './custom-maps/useCustomMap';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.constants';
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtentIds, setVertexStartCoords} from './maps.slice';
-import useOfflineMapsHook from './offline-maps/useMapsOffline';
+import useMapsOffline from './offline-maps/useMapsOffline';
 import useMapSymbology from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
@@ -70,7 +70,7 @@ const Map = forwardRef(({
   const {getCurrentLocation} = useMapLocation();
   const {getSymbology} = useMapSymbology();
   const {setMapView, zoomToSpots} = useMapView();
-  const useOfflineMaps = useOfflineMapsHook();
+  const {getMapCenterTile, switchToOfflineMap} = useMapsOffline();
   const {createSpot, getSpotWithThisStratSection} = useSpots();
   const useStereonet = useStereonetHook();
 
@@ -143,7 +143,7 @@ const Map = forwardRef(({
       Object.values(customBasemap).map((map) => {
         if (offlineMaps[map.id]?.id !== map.id) setCustomMapSwitchValue(false, map);
       });
-      useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
+      switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }
     clearVertexes();
   }, [userEmail, isOnline]);
@@ -1053,7 +1053,7 @@ const Map = forwardRef(({
     // console.log('Updating map view from Map.js');
     if (isEmpty(currentBasemap)) await setBasemap();
     else if (isZoomToCenterOffline) {
-      const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
+      const newCenter = await getMapCenterTile(currentBasemap.id);
       const newZoom = 12;
       setMapView(newCenter, newZoom);
       setIsZoomToCenterOffline(false);

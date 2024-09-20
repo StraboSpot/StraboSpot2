@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
-import useMapsOfflineHook from './useMapsOffline';
+import useMapsOffline from './useMapsOffline';
 import useDevice from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
@@ -38,7 +38,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
 
   const {deleteOfflineMap} = useDevice();
   const {setBasemap} = useMap();
-  const useMapsOffline = useMapsOfflineHook();
+  const {getSavedMapsFromDevice, switchToOfflineMap} = useMapsOffline();
 
   useEffect(() => {
     Animated.sequence([
@@ -225,7 +225,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     }
     else {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: true}));
-      const res = await useMapsOffline.switchToOfflineMap(item.id);
+      const res = await switchToOfflineMap(item.id);
       if (!isEmpty(res)) {
         setSelectedMap(res);
         setIsWarningModalVisible(true);
@@ -236,7 +236,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
 
   const updateMapsFromDevice = async () => {
     setLoading(true);
-    await useMapsOffline.getSavedMapsFromDevice();
+    await getSavedMapsFromDevice();
     console.log(`Got maps from device`);
     setLoading(false);
   };
