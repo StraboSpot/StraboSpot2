@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {BASEMAPS, MAP_MODES} from './maps.constants';
 import {setCurrentBasemap} from './maps.slice';
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import useMapURLHook from './useMapURL';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useServerRequestsHook from '../../services/useServerRequests';
@@ -18,7 +18,7 @@ const useMap = () => {
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const customMaps = useSelector(state => state.map.customMaps);
 
-  const useMapCoords = useMapCoordsHook();
+  const {getMyMapsBboxCoords} = useMapCoords();
   const useMapURL = useMapURLHook();
   const useServerRequests = useServerRequestsHook();
 
@@ -52,7 +52,7 @@ const useMap = () => {
         if (newBasemap) {
           newBasemap = useMapURL.buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
-          bbox = await useMapCoords.getMyMapsBboxCoords(newBasemap);
+          bbox = await getMyMapsBboxCoords(newBasemap);
           if (bbox) newBasemap = {...newBasemap, bbox: bbox};
         }
         else {

@@ -1,14 +1,14 @@
 import geomagnetism from 'geomagnetism';
 import {useSelector} from 'react-redux';
 
-import useMapCoordsHook from '../modules/maps/useMapCoords';
+import useMapCoords from '../modules/maps/useMapCoords';
 import useMapLocation from '../modules/maps/useMapLocation';
 import {isEmpty} from '../shared/Helpers';
 
 const useCompass = () => {
 
   const {getCurrentLocation} = useMapLocation();
-  const useMapCoords = useMapCoordsHook();
+  const {getCentroidOfSelectedSpot} = useMapCoords();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const cartesianToSpherical = async (mValue1, mValue2, mValue3) => {
@@ -50,7 +50,7 @@ const useCompass = () => {
 
   const getUserDeclination = async () => {
     let longitude, latitude;
-    if (!isEmpty(selectedSpot)) [longitude, latitude] = useMapCoords.getCentroidOfSelectedSpot();
+    if (!isEmpty(selectedSpot)) [longitude, latitude] = getCentroidOfSelectedSpot();
     else {
       const locationData = await getCurrentLocation();
       longitude = locationData.longitude;

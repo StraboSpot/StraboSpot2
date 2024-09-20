@@ -14,7 +14,7 @@ import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMap from './useMap';
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapURLHook from './useMapURL';
 import useMapViewHook from './useMapView';
@@ -46,7 +46,7 @@ const Basemap = ({
   const useDimensions = useWindowDimensions();
   const {getImageScreenSizedURI, getLocalImageURI} = useImages();
   const {isDrawMode} = useMap();
-  const useMapCoords = useMapCoordsHook();
+  const {getCoordQuad} = useMapCoords();
   const useMapFeatures = useMapFeaturesHook();
   const useMapSymbology = useMapSymbologyHook();
   const useMapURL = useMapURLHook();
@@ -67,7 +67,7 @@ const Basemap = ({
     'lineLayerSelectedDashed', 'lineLayerSelectedDotDashed', 'lineLabelLayerSelected', 'pointLayerSelectedHalo'];
   const symbols = {...MAP_SYMBOLS, ...STRAT_PATTERNS};
 
-  const coordQuad = useMapCoords.getCoordQuad(currentImageBasemap);
+  const coordQuad = getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(

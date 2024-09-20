@@ -13,7 +13,7 @@ import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtentIds, setVe
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMap from './useMap';
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapFeaturesCalculatedHook from './useMapFeaturesCalculated';
 import useMapLocation from './useMapLocation';
@@ -58,7 +58,7 @@ const Map = forwardRef(({
   const {setCustomMapSwitchValue} = useCustomMap();
   const {setImageHeightAndWidth} = useImages();
   const {isDrawMode, getExtentAndZoomCall, setBasemap} = useMap();
-  const useMapCoords = useMapCoordsHook();
+  const {convertFeatureGeometryToImagePixels, convertImagePixelsToLatLong} = useMapCoords();
   const useMapFeatures = useMapFeaturesHook();
   const useMapFeaturesCalculated = useMapFeaturesCalculatedHook(mapRef);
   const {getCurrentLocation} = useMapLocation();
@@ -231,9 +231,7 @@ const Map = forwardRef(({
         }
       }
       // copy spot for image basemaps needs conversion of coordinates.
-      if (currentImageBasemap || stratSection) {
-        defaultFeature = useMapCoords.convertFeatureGeometryToImagePixels(defaultFeature);
-      }
+      if (currentImageBasemap || stratSection) defaultFeature = convertFeatureGeometryToImagePixels(defaultFeature);
       const selectedSpotCopy = {
         ...selectedSpot,
         geometry: defaultFeature.geometry,
@@ -397,7 +395,7 @@ const Map = forwardRef(({
         });
         if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
           if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
-            explodedFeatures = explodedFeatures.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
+            explodedFeatures = explodedFeatures.map(spot => convertImagePixelsToLatLong(spot));
           }
         }
         setDrawFeatures(explodedFeatures);
@@ -438,11 +436,11 @@ const Map = forwardRef(({
         }
         else feature = turf.lineString(featureCoordinates);
         if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
-          feature = useMapCoords.convertFeatureGeometryToImagePixels(feature);
+          feature = convertFeatureGeometryToImagePixels(feature);
           feature.properties.image_basemap = currentImageBasemap.id;
         }
         else if (stratSection) { //create new spot for strat section - needs lat long to pixel conversion
-          feature = useMapCoords.convertFeatureGeometryToImagePixels(feature);
+          feature = convertFeatureGeometryToImagePixels(feature);
           feature.properties.strat_section_id = stratSection.strat_section_id;
         }
         if (isSelectingForStereonet) await getStereonetForFeature(feature);
@@ -463,11 +461,11 @@ const Map = forwardRef(({
       if (drawFeatures.length > 1) newFeature = drawFeatures.splice(1, 1)[0];
       newFeature.properties.symbology = useMapSymbology.getSymbology(newFeature);
       if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
-        newFeature = useMapCoords.convertFeatureGeometryToImagePixels(newFeature);
+        newFeature = convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;
       }
       else if (stratSection) { //create new spot for imagebasemap - needs lat long to pixel conversion
-        newFeature = useMapCoords.convertFeatureGeometryToImagePixels(newFeature);
+        newFeature = convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.strat_section_id = stratSection.strat_section_id;
       }
       if (isSelectingForStereonet) await getStereonetForFeature(newFeature);
@@ -604,8 +602,8 @@ const Map = forwardRef(({
                 if (currentImageBasemap || stratSection) {
                   spotEditingCopy = useMapCoords.convertImagePixelsToLatLong(spotEditingCopy);
                   [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, newVertex);
-                  spotEditingCopy = useMapCoords.convertFeatureGeometryToImagePixels(spotEditingCopy);
-                  setSelectedSpotToEdit(useMapCoords.convertFeatureGeometryToImagePixels(vertexAdded));
+                  spotEditingCopy = convertFeatureGeometryToImagePixels(spotEditingCopy);
+                  setSelectedSpotToEdit(convertFeatureGeometryToImagePixels(vertexAdded));
                 }
                 else {
                   [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, newVertex);
@@ -615,10 +613,10 @@ const Map = forwardRef(({
               }
               else if (turf.getType(spotEditingCopy) === 'Polygon' && !isEmpty(spotToEdit)) {
                 if (currentImageBasemap || stratSection) {
-                  spotEditingCopy = useMapCoords.convertImagePixelsToLatLong(spotEditingCopy);
+                  spotEditingCopy = convertImagePixelsToLatLong(spotEditingCopy);
                   [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, newVertex);
-                  spotEditingCopy = useMapCoords.convertFeatureGeometryToImagePixels(spotEditingCopy);
-                  setSelectedSpotToEdit(useMapCoords.convertFeatureGeometryToImagePixels(vertexAdded));
+                  spotEditingCopy = convertFeatureGeometryToImagePixels(spotEditingCopy);
+                  setSelectedSpotToEdit(convertFeatureGeometryToImagePixels(vertexAdded));
                 }
                 else {
                   [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, newVertex);
@@ -676,7 +674,7 @@ const Map = forwardRef(({
             });
             if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
               if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
-                explodedFeatures = explodedFeatures.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
+                explodedFeatures = explodedFeatures.map(spot => convertImagePixelsToLatLong(spot));
               }
             }
             setDrawFeatures(explodedFeatures);
@@ -932,9 +930,8 @@ const Map = forwardRef(({
       // convert the image pixels to lat, lng before we display them
       let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(selectedDisplayedSpots));
       let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(notSelectedDisplayedSpots));
-      selectedMappableSpotsCopy = selectedMappableSpotsCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
-      notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.map(
-        spot => useMapCoords.convertImagePixelsToLatLong(spot));
+      selectedMappableSpotsCopy = selectedMappableSpotsCopy.map(spot => convertImagePixelsToLatLong(spot));
+      notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.map(spot => convertImagePixelsToLatLong(spot));
       setSpotsSelected([...selectedMappableSpotsCopy]);
       setSpotsNotSelected([...notSelectedMappableSpotsCopy]);
     }
@@ -958,9 +955,9 @@ const Map = forwardRef(({
       let spotsEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsEditedTmp) ? [] : spotsEditedTmp));
       let spotsNotEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsNotEditedTmp) ? [] : spotsNotEditedTmp));
       let spotEditingCopy = JSON.parse(JSON.stringify(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]));
-      spotsEditedCopy = spotsEditedCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
-      spotsNotEditedCopy = spotsNotEditedCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
-      spotEditingCopy = spotEditingCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
+      spotsEditedCopy = spotsEditedCopy.map(spot => convertImagePixelsToLatLong(spot));
+      spotsNotEditedCopy = spotsNotEditedCopy.map(spot => convertImagePixelsToLatLong(spot));
+      spotEditingCopy = spotEditingCopy.map(spot => convertImagePixelsToLatLong(spot));
       setSpotsSelected(isEmpty(spotEditingCopy) ? [] : spotEditingCopy);
       setSpotsNotSelected([...spotsEditedCopy, ...spotsNotEditedCopy]);
     }
@@ -982,7 +979,7 @@ const Map = forwardRef(({
     });
     if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
       if (turf.getType(spotToEdit) === 'Polygon' || turf.getType(spotToEdit) === 'LineString') {
-        explodedFeatures = explodedFeatures.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
+        explodedFeatures = explodedFeatures.map(spot => convertImagePixelsToLatLong(spot));
       }
     }
     setDrawFeatures(explodedFeatures);
@@ -1003,7 +1000,7 @@ const Map = forwardRef(({
     if ((currentImageBasemap || stratSection)
       && ((isEmpty(spotEditing) || ((!isEmpty(spotEditing) && spotEditing.geometry.type === 'Point'))
         || (!isEmpty(spotEditing) && spotEditing.properties.name !== vertex.properties.name)))) {
-      vertexToEditWithGeoCoords = useMapCoords.convertImagePixelsToLatLong(vertexToEditWithGeoCoords);
+      vertexToEditWithGeoCoords = convertImagePixelsToLatLong(vertexToEditWithGeoCoords);
     }
     clearVertexes();
     setVertexToEdit(vertexToEditWithGeoCoords);

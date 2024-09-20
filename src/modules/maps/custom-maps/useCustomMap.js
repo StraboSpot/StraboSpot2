@@ -16,7 +16,7 @@ import {
   updateCustomMap,
 } from '../maps.slice';
 import useMap from '../useMap';
-import useMapCoordsHook from '../useMapCoords';
+import useMapCoords from '../useMapCoords';
 import useMapURLHook from '../useMapURL';
 
 const useCustomMap = () => {
@@ -27,7 +27,7 @@ const useCustomMap = () => {
   const project = useSelector(state => state.project.project);
 
   const {setBasemap} = useMap();
-  const useMapCoords = useMapCoordsHook();
+  const {getMyMapsBboxCoords} = useMapCoords();
   const useMapURL = useMapURLHook();
   const useServerRequests = useServerRequestsHook();
 
@@ -94,7 +94,7 @@ const useCustomMap = () => {
     const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
     console.log('RES', testUrlResponse);
     if (testUrlResponse) {
-      bbox = await useMapCoords.getMyMapsBboxCoords(map);
+      bbox = await getMyMapsBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
         await setBasemap(null);

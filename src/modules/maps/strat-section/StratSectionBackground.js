@@ -7,7 +7,7 @@ import XAxes from './XAxes';
 import YAxis from './YAxis';
 import {useImages} from '../../images';
 import {useSpots} from '../../spots';
-import useMapCoordsHook from '../useMapCoords';
+import useMapCoords from '../useMapCoords';
 
 const StratSectionBackground = ({spotsDisplayed}) => {
   console.log('Rendering StratSectionBackground...');
@@ -15,7 +15,7 @@ const StratSectionBackground = ({spotsDisplayed}) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {getLocalImageURI} = useImages();
-  const useMapCoords = useMapCoordsHook();
+  const {getCoordQuad} = useMapCoords();
   const {getSpotWithThisStratSection} = useSpots();
 
   const renderImageOverlays = () => {
@@ -29,7 +29,7 @@ const StratSectionBackground = ({spotsDisplayed}) => {
       if (oI.image_height) imageCopy.height = oI.image_height;
       if (oI.image_width) imageCopy.width = oI.image_width;
       // coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
-      const coordQuad = useMapCoords.getCoordQuad(imageCopy, {x: oI.image_origin_x, y: oI.image_origin_y});
+      const coordQuad = getCoordQuad(imageCopy, {x: oI.image_origin_x, y: oI.image_origin_y});
       console.log('Image Overlay coordQuad', coordQuad);
       const url = getLocalImageURI(image.id);
       return (

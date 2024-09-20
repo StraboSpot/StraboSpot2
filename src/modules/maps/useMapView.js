@@ -15,7 +15,7 @@ import {
   ZOOM_STRAT_SECTION,
 } from './maps.constants';
 import {setCenter, setZoom} from './maps.slice';
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import {isEmpty, isEqual} from '../../shared/Helpers';
 
 const useMapView = () => {
@@ -27,7 +27,7 @@ const useMapView = () => {
   const zoom = useSelector(state => state.map.zoom);
 
   const toast = useToast();
-  const useMapCoords = useMapCoordsHook();
+  const {convertImagePixelsToLatLong, getBoundsPadded} = useMapCoords();
 
   // Evaluate and return appropriate center coordinates
   const getCenterCoordinates = () => {
@@ -95,7 +95,7 @@ const useMapView = () => {
           console.log('spotsToZoomTo[0]', spotsToZoomTo[0]);
           if (isOnImageBasemap(spotsToZoomTo[0]) || isOnStratSection(spotsToZoomTo[0])) {
             const spotsCopy = JSON.parse(JSON.stringify(spotsToZoomTo));
-            spotsToZoomTo = spotsCopy.map(spot => useMapCoords.convertImagePixelsToLatLong(spot));
+            spotsToZoomTo = spotsCopy.map(spot => convertImagePixelsToLatLong(spot));
             console.log('spotsToZoomToNew', spotsToZoomTo);
           }
           if (spotsToZoomTo.length === 1) {
@@ -104,7 +104,7 @@ const useMapView = () => {
               map.flyTo({center: centroidCoords, zoom: isOnStratSection(spotsToZoomTo[0]) ? ZOOM_STRAT_SECTION : ZOOM});
             }
             else {
-              const [maxY, maxX, minY, minX] = useMapCoords.getBoundsPadded(centroidCoords);
+              const [maxY, maxX, minY, minX] = getBoundsPadded(centroidCoords);
               camera.fitBounds([maxX, minY], [minX, maxY], 100, 2500);
             }
           }

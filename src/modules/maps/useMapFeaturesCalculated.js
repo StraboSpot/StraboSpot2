@@ -3,7 +3,7 @@ import {PixelRatio, Platform} from 'react-native';
 import * as turf from '@turf/turf';
 import {useSelector} from 'react-redux';
 
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import {isEmpty} from '../../shared/Helpers';
 import useNestingHook from '../nesting/useNesting';
 import {useSpots} from '../spots';
@@ -12,7 +12,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useMapCoords = useMapCoordsHook();
+  const {convertImagePixelsToLatLong, getBBoxPaddedInPixels} = useMapCoords();
   const useNesting = useNestingHook();
   const {getSpotById, getSpotsByIds} = useSpots();
 
@@ -171,7 +171,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
   const getNearestFeatureInBBox = async ([x, y], layers) => {
     // First get all the features in the bounding box
-    const bbox = useMapCoords.getBBoxPaddedInPixels([x, y]);
+    const bbox = getBBoxPaddedInPixels([x, y]);
     const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
       : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
     let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
@@ -198,7 +198,7 @@ const useMapFeaturesCalculated = (mapRef) => {
     let editedSpot = spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
     spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
-    if (currentImageBasemap || stratSection) spotFoundCopy = useMapCoords.convertImagePixelsToLatLong(spotFoundCopy);
+    if (currentImageBasemap || stratSection) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);
     const explodedFeatures = turf.explode(spotFoundCopy).features;
     const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
     const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);

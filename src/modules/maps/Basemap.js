@@ -12,7 +12,7 @@ import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapURLHook from './useMapURL';
 import useMapViewHook from './useMapView';
@@ -52,7 +52,7 @@ const Basemap = ({
   const {mapRef, cameraRef} = forwardedRef;
 
   const {doesImageExistOnDevice, getLocalImageURI} = useImages();
-  const useMapCoords = useMapCoordsHook();
+  const {getCoordQuad} = useMapCoords();
   const useMapFeatures = useMapFeaturesHook();
   const useMapSymbology = useMapSymbologyHook();
   const useMapURL = useMapURLHook();
@@ -67,7 +67,7 @@ const Basemap = ({
 
   const cameraChangedTimestampRef = useRef(0);
 
-  const coordQuad = useMapCoords.getCoordQuad(currentImageBasemap);
+  const coordQuad = getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
