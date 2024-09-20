@@ -26,7 +26,7 @@ import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
-import useHomeHook from '../home/useHome';
+import useHome from '../home/useHome';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
@@ -42,7 +42,7 @@ import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice'
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
 
-  const useHome = useHomeHook();
+  const {lockOrientation, unlockOrientation} = useHome();
   const useProject = useProjectHook();
   const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
@@ -148,7 +148,7 @@ const Home = ({navigation, route}) => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
-    useHome.unlockOrientation();
+    unlockOrientation();
   };
 
   const clickHandler = async (name, value) => {
@@ -337,7 +337,7 @@ const Home = ({navigation, route}) => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
-    useHome.unlockOrientation();
+    unlockOrientation();
   };
 
   const setPointAtCurrentLocation = async () => {
@@ -360,7 +360,7 @@ const Home = ({navigation, route}) => {
   };
 
   const startEdit = () => {
-    useHome.lockOrientation();
+    lockOrientation();
     setMapMode(MAP_MODES.EDIT);
     setButtons({
       editButtonsVisible: true,
