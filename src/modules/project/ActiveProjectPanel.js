@@ -46,8 +46,8 @@ const ActiveProjectPanel = () => {
   }, [datasets]);
 
   const onAddDataset = async () => {
-    const addDataset = await addDataset(datasetName);
-    console.log(addDataset);
+    const addedDataset = await addDataset(datasetName);
+    console.log(addedDataset);
     setIsAddDatasetModalVisible(false);
   };
 
