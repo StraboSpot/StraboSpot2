@@ -4,14 +4,14 @@ import {Text} from 'react-native';
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from './measurements.constants';
 import useMeasurementsHook from './useMeasurements';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
-import useFormHook from '../form/useForm';
+import {useForm} from '../form';
 
 const MeasurementLabel = ({
                             isDetail,
                             item,
                           }) => {
   const useMeasurements = useMeasurementsHook();
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
 
   const getMeasurementText = (item) => {
     let measurementText = '';
@@ -30,11 +30,12 @@ const MeasurementLabel = ({
     let firstOrderClass = FIRST_ORDER_CLASS_FIELDS.find(firstOrderClassField => item[firstOrderClassField]);
     let secondOrderClass = SECOND_ORDER_CLASS_FIELDS.find(secondOrderClassField => item[secondOrderClassField]);
     let firstOrderClassLabel = firstOrderClass
-      ? toTitleCase(useForm.getLabel(item[firstOrderClass], ['measurement']))
+      ? toTitleCase(getLabel(item[firstOrderClass], ['measurement']))
       : 'Unknown';
     firstOrderClassLabel = firstOrderClassLabel.replace('Orientation', 'Feature');
     if (firstOrderClassLabel === 'Tabular Feature') firstOrderClassLabel = 'Planar Feature (TZ)';
-    const secondOrderClassLabel = secondOrderClass && useMeasurements.getLabel(item[secondOrderClass]).toUpperCase();
+    const secondOrderClassLabel = secondOrderClass
+      && useMeasurements.getMeasurementLabel(item[secondOrderClass]).toUpperCase();
     return firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
   };
 

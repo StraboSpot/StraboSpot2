@@ -12,7 +12,7 @@ import {WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
-import {formStyles, SelectInputField, TextInputField, useFormHook} from '../form';
+import {formStyles, SelectInputField, TextInputField, useForm} from '../form';
 import {DEFAULT_GEOLOGIC_TYPES} from '../project/project.constants';
 import {addedCustomFeatureTypes, updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -24,7 +24,7 @@ const OtherFeatureDetail = ({
                               selectedFeature,
                             }) => {
   const dispatch = useDispatch();
-  const useForm = useFormHook();
+  const {showErrors} = useForm();
   const useTags = useTagsHook();
   const spot = useSelector(state => state.spot.selectedSpot);
   const projectFeatures = useSelector(state => state.project.project?.other_features);
@@ -203,7 +203,7 @@ const OtherFeatureDetail = ({
   const saveForm = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+      let formValues = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       let featureToEdit;
       let otherFeatures = spot.properties.other_features;
       if (otherFeatures && otherFeatures.length > 0) {

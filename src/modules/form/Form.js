@@ -10,7 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {DateInputField, NumberInputField, SelectInputField, TextInputField, useFormHook} from '../form';
+import {DateInputField, NumberInputField, SelectInputField, TextInputField, useForm} from '../form';
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
 const Form = ({
@@ -22,9 +22,9 @@ const Form = ({
                 surveyFragment,
                 values,
               }) => {
-  const useForm = useFormHook();
+  const {getChoices, getSurvey, isRelevant} = useForm();
 
-  const survey = surveyFragment || useForm.getSurvey(formName);
+  const survey = surveyFragment || getSurvey(formName);
 
   const renderAcknowledgeInput = (field) => {
     return (
@@ -88,7 +88,7 @@ const Form = ({
 
   const renderSelectInput = (field, isExpanded) => {
     const [fieldType, choicesListName] = field.type.split(' ');
-    const fieldChoices = useForm.getChoices(formName).filter(choice => choice.list_name === choicesListName);
+    const fieldChoices = getChoices(formName).filter(choice => choice.list_name === choicesListName);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
@@ -161,7 +161,7 @@ const Form = ({
     <FlatList
       listKey={JSON.stringify(survey)}
       keyExtractor={(item, index) => index.toString()}
-      data={Object.values(survey.filter(item => useForm.isRelevant(item, values)))}
+      data={Object.values(survey.filter(item => isRelevant(item, values)))}
       renderItem={({item}) => renderField(item)}
       ItemSeparatorComponent={FlatListItemSeparator}
     />

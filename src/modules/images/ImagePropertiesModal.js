@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {imageStyles} from '.';
 import Modal from '../../shared/ui/modal/Modal';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 
@@ -20,7 +20,7 @@ const ImagePropertiesModal = ({
 
   const [annotated, setAnnotated] = useState(selectedImage.annotated);
 
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
 
   const formRef = useRef(null);
 
@@ -31,7 +31,7 @@ const ImagePropertiesModal = ({
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={values => useForm.validateForm({formName: formName, values: values})}
+        validate={values => validateForm({formName: formName, values: values})}
         component={formProps => Form({formName: formName, ...formProps})}
         initialValues={selectedImage}
         initialStatus={{formName: formName}}
@@ -42,7 +42,7 @@ const ImagePropertiesModal = ({
   const saveFormAndGo = async () => {
     try {
       await formRef.current.submitForm();
-      const formValues = useForm.showErrors(formRef.current);
+      const formValues = showErrors(formRef.current);
       const images = JSON.parse(JSON.stringify(spot.properties.images));
       console.log('Saving form data to Spot ...', formValues);
       let i = images.findIndex(img => img.id === formValues.id);

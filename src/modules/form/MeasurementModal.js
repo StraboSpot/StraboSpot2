@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 import {useSelector} from 'react-redux';
 
-import {formStyles, useFormHook} from '.';
+import {formStyles, useForm} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN, WARNING_COLOR} from '../../shared/styles.constants';
@@ -24,7 +24,7 @@ const MeasurementModal = (props) => {
   const [isManualMeasurement, setIsManualMeasurement] = useState(Platform.OS !== 'ios');
   const [sliderValue, setSliderValue] = useState(6);
 
-  const useForm = useFormHook();
+  const {getChoices, getChoicesByKey, getSurvey} = useForm();
 
   const addAttributeMeasurement = (data) => {
     const sliderQuality = sliderValue ? {quality: sliderValue.toString()} : undefined;
@@ -47,9 +47,9 @@ const MeasurementModal = (props) => {
         if (!isEmpty(compassData[compassFieldKey])) {
           // Convert quality to choice names for fold group, assumes qualities listed highest to lowest
           if (compassFieldKey === 'quality') {
-            const survey = useForm.getSurvey(props.formName);
-            const choices = useForm.getChoices(props.formName);
-            const qualityChoices = useForm.getChoicesByKey(survey, choices, foldFieldKey);
+            const survey = getSurvey(props.formName);
+            const choices = getChoices(props.formName);
+            const qualityChoices = getChoicesByKey(survey, choices, foldFieldKey);
             const choiceNum = Math.round(parseInt(compassData[compassFieldKey], 10) / 5 * qualityChoices.length);
             renamedCompassData[foldFieldKey] = qualityChoices.reverse()[choiceNum - 1]?.name;
           }

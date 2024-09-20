@@ -123,7 +123,7 @@ const TagsModal = ({
                       key={'searchText'}
                       label={'Tag Type'}
                       choices={TAG_TYPES.filter(t => t !== PAGE_KEYS.GEOLOGIC_UNITS).map(
-                        tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
+                        tagType => ({label: useTags.getTagLabel(tagType), value: tagType}))}
                       single={true}
                     />
                   </ListItem.Content>
@@ -165,7 +165,7 @@ const TagsModal = ({
           <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getTagLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
         {(!isFeatureLevelTagging) && (
           <ListItem.CheckBox

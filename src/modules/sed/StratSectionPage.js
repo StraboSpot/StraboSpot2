@@ -16,7 +16,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
 import {setStratSection} from '../maps/maps.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
@@ -33,7 +33,7 @@ const StratSectionPage = ({page}) => {
 
   const stratSectionRef = useRef(null);
 
-  const useForm = useFormHook();
+  const {validateForm} = useForm();
   const navigation = useNavigation();
   const useSed = useSedHook();
 
@@ -97,7 +97,7 @@ const StratSectionPage = ({page}) => {
                   innerRef={stratSectionRef}
                   onSubmit={() => console.log('Submitting form...')}
                   onReset={() => console.log('Resetting form...')}
-                  validate={values => useForm.validateForm({formName: formName, values: values})}
+                  validate={values => validateForm({formName: formName, values: values})}
                   initialValues={stratSection}
                   validateOnChange={false}
                   enableReinitialize={true}

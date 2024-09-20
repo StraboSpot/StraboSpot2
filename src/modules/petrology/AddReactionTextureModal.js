@@ -9,7 +9,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {ChoiceButtons, Form, formStyles, useFormHook} from '../form';
+import {ChoiceButtons, Form, formStyles, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 
@@ -21,7 +21,7 @@ const AddReactionTextureModal = ({onPress}) => {
 
   const formRef = useRef(null);
 
-  const useForm = useFormHook();
+  const {getChoices, getSurvey, getRelevantFields} = useForm();
   const usePetrology = usePetrologyHook();
 
   // Relevant keys for quick-entry modal
@@ -33,8 +33,8 @@ const AddReactionTextureModal = ({onPress}) => {
   // Relevant fields for quick-entry modal
   const petKey = PAGE_KEYS.REACTIONS;
   const formName = ['pet', petKey];
-  const survey = useForm.getSurvey(formName);
-  const choices = useForm.getChoices(formName);
+  const survey = getSurvey(formName);
+  const choices = getChoices(formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const basedOnOtherField = survey.find(f => f.name === baseOnOtherKey);
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
@@ -53,7 +53,7 @@ const AddReactionTextureModal = ({onPress}) => {
     else formRef.current?.setFieldValue(fieldKey, [...fieldValues, choiceName]);
 
     // Remove relevant values
-    const relevantFields = useForm.getRelevantFields(survey, fieldKey);
+    const relevantFields = getRelevantFields(survey, fieldKey);
     relevantFields.map((f) => {
       if (f.name !== fieldKey && formRef.current?.values[f.name]) formRef.current?.setFieldValue(f.name, undefined);
     });
@@ -120,7 +120,7 @@ const AddReactionTextureModal = ({onPress}) => {
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
     return <Form {...{formName: formName, surveyFragment: relevantFields, ...formProps}}/>;
   };
 

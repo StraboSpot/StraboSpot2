@@ -11,7 +11,7 @@ import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Form, formStyles, NumberInputField, TextInputField, useFormHook} from '../form';
+import {Form, formStyles, NumberInputField, TextInputField, useForm} from '../form';
 import useMapLocationHook from '../maps/useMapLocation';
 import useMapViewHook from '../maps/useMapView';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
@@ -19,7 +19,7 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Geography = () => {
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
   const useMapLocation = useMapLocationHook();
   const useMapView = useMapViewHook();
 
@@ -64,7 +64,7 @@ const Geography = () => {
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
+          validate={values => validateForm({formName: formName, values: values})}
           component={formProps => Form({formName: formName, ...formProps})}
           initialValues={spot.properties}
           initialStatus={{formName: formName}}
@@ -309,9 +309,9 @@ const Geography = () => {
   const saveForm = async () => {
     try {
       await geomFormRef.current.submitForm();
-      const editedGeomFormData = useForm.showErrors(geomFormRef.current);
+      const editedGeomFormData = showErrors(geomFormRef.current);
       await formRef.current.submitForm();
-      let geographyProperties = useForm.showErrors(formRef.current);
+      let geographyProperties = showErrors(formRef.current);
       console.log('Saving form data to Spot ...');
       let geometry = spot.geometry;
       if (useMapView.isOnGeoMap(spot)) {

@@ -17,7 +17,7 @@ import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
 import {setCompassMeasurements, setCompassMeasurementTypes} from '../compass/compass.slice';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -34,7 +34,7 @@ const MeasurementDetail = ({
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
   const useMeasurements = useMeasurementsHook();
 
   const formRef = useRef(null);
@@ -323,7 +323,7 @@ const MeasurementDetail = ({
             innerRef={formRef}
             onSubmit={values => console.log('Submitting form...', values)}
             onReset={() => console.log('Resetting form...')}
-            validate={values => useForm.validateForm({formName: formName, values: values})}
+            validate={values => validateForm({formName: formName, values: values})}
             initialValues={selectedMeasurement}
             enableReinitialize={true}
             initialStatus={{formName: formName}}
@@ -414,7 +414,7 @@ const MeasurementDetail = ({
   const saveForm = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      let formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+      let formValues = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       console.log('Saving form data to Spot ...');
       let orientationDataCopy = JSON.parse(JSON.stringify(spot.properties.orientation_data));
       let editedSelectedMeasurements = [];
@@ -494,7 +494,7 @@ const MeasurementDetail = ({
 
   const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
-    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+    const formValues = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
     await saveTemplate(formValues);
   };
 

@@ -2,14 +2,14 @@ import React from 'react';
 import {Text} from 'react-native';
 
 import {toTitleCase} from '../../shared/Helpers';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 
 const ThreeDStructureLabel = ({item}) => {
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
 
   const getTitle = (threeDStructure) => {
     const firstClassTitle = toTitleCase(threeDStructure.type || '3D Structure');
-    const secondClassTitle = useForm.getLabel(threeDStructure.feature_type || threeDStructure.fault_or_sz_type,
+    const secondClassTitle = getLabel(threeDStructure.feature_type || threeDStructure.fault_or_sz_type,
       ['_3d_structures', threeDStructure.type]).toUpperCase();
     return firstClassTitle + ' - ' + secondClassTitle;
   };

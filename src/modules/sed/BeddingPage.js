@@ -11,7 +11,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import BasicListItem from '../page/BasicListItem';
@@ -30,7 +30,7 @@ const BeddingPage = ({page}) => {
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedAttribute, setSelectedAttribute] = useState({});
 
-  const useForm = useFormHook();
+  const {validateForm} = useForm();
   const useSed = useSedHook();
 
   const beddingSharedRef = useRef(null);
@@ -161,7 +161,7 @@ const BeddingPage = ({page}) => {
           innerRef={beddingSharedRef}
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
+          validate={values => validateForm({formName: formName, values: values})}
           initialValues={bedding}
           validateOnChange={false}
           enableReinitialize={true}

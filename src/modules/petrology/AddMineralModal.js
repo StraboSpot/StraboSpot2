@@ -13,7 +13,7 @@ import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../s
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {ChoiceButtons, Form, MainButtons, useFormHook} from '../form';
+import {ChoiceButtons, Form, MainButtons, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import Templates from '../templates/Templates';
@@ -28,7 +28,7 @@ const AddMineralModal = ({onPress}) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
   const [isShowTemplates, setIsShowTemplates] = useState(false);
 
-  const useForm = useFormHook();
+  const {getChoices, getRelevantFields, getSurvey} = useForm();
   const usePetrology = usePetrologyHook();
 
   const formRef = useRef(null);
@@ -43,8 +43,8 @@ const AddMineralModal = ({onPress}) => {
   // Relevant fields for quick-entry modal
   const petKey = PAGE_KEYS.MINERALS;
   const formName = ['pet', petKey];
-  const survey = useForm.getSurvey(formName);
-  const choices = useForm.getChoices(formName);
+  const survey = getSurvey(formName);
+  const choices = getChoices(formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
@@ -84,7 +84,7 @@ const AddMineralModal = ({onPress}) => {
     else formRef.current?.setFieldValue(igOrMetKey, choiceName);
 
     // Remove relevant values
-    const relevantIgMetFields = useForm.getRelevantFields(survey, igOrMetKey);
+    const relevantIgMetFields = getRelevantFields(survey, igOrMetKey);
     relevantIgMetFields.map((f) => {
       if (f.name !== igOrMetKey && formRef.current?.values[f.name]) formRef.current?.setFieldValue(f.name, undefined);
     });
@@ -206,7 +206,7 @@ const AddMineralModal = ({onPress}) => {
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
     return <Form {...{formName: formName, surveyFragment: relevantFields, ...formProps}}/>;
   };
 

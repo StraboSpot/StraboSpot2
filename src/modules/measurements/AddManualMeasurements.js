@@ -5,10 +5,10 @@ import {MEASUREMENT_KEYS} from './measurements.constants';
 import commonStyles from '../../shared/common.styles';
 import SliderBar from '../../shared/ui/SliderBar';
 import compassStyles from '../compass/compass.styles';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 
 const AddManualMeasurements = (props) => {
-  const useForm = useFormHook();
+  const {getSurvey} = useFormk();
 
   const [sliderValue, setSliderValue] = useState(6);
 
@@ -22,10 +22,10 @@ const AddManualMeasurements = (props) => {
 
   // Relevant fields for quick-entry modal
   const planarFormName = [groupKey, MEASUREMENT_KEYS.PLANAR];
-  const planarSurvey = useForm.getSurvey(planarFormName);
+  const planarSurvey = getSurvey(planarFormName);
   const planarKeysFields = planarKeys.map(k => planarSurvey.find(f => f.name === k));
   const linearFormName = [groupKey, MEASUREMENT_KEYS.LINEAR];
-  const linearSurvey = useForm.getSurvey(linearFormName);
+  const linearSurvey = getSurvey(linearFormName);
   const linearKeysFields = linearKeys.map(k => linearSurvey.find(f => f.name === k));
 
   const labelField = planarSurvey.find(f => f.name === labelKey);

@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -19,7 +19,7 @@ const useMeasurements = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
 
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
   const useTags = useTagsHook();
 
   const createNewMeasurement = () => {
@@ -113,8 +113,8 @@ const useMeasurements = () => {
     dispatch(setSelectedAttributes([]));
   };
 
-  const getLabel = (key) => {
-    return useForm.getLabel(key, ['measurement']);
+  const getMeasurementLabel = (key) => {
+    return getLabel(key, ['measurement']);
   };
 
   const removeMeasurementFromObj = (currentOrientationData, measurementToDelete) => {
@@ -147,7 +147,7 @@ const useMeasurements = () => {
   return {
     createNewMeasurement: createNewMeasurement,
     deleteMeasurements: deleteMeasurements,
-    getLabel: getLabel,
+    getMeasurementLabel: getMeasurementLabel,
   };
 };
 

@@ -5,7 +5,7 @@ import {Icon, ListItem} from 'react-native-elements';
 import {PAGE_KEYS} from './page.constants';
 import commonStyles from '../../shared/common.styles';
 import {MEDIUMGREY} from '../../shared/styles.constants';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
 import useSedHook from '../sed/useSed';
 
@@ -19,7 +19,7 @@ const BasicListItem = ({
                        }) => {
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
 
   const getTitle = () => {
     switch (page.key) {
@@ -46,9 +46,9 @@ const BasicListItem = ({
       case PAGE_KEYS.INTERPRETATIONS:
         return 'Lithology ' + (index + 1);
       case PAGE_KEYS.TEPHRA:
-        return (index + 1) + '. ' + useForm.getLabel(item?.layer_type, [PAGE_KEYS.TEPHRA, 'interval_description']);
+        return (index + 1) + '. ' + getLabel(item?.layer_type, [PAGE_KEYS.TEPHRA, 'interval_description']);
       case PAGE_KEYS.EARTHQUAKES:
-        return useForm.getLabel(item?.earthquake_feature, ['general', PAGE_KEYS.EARTHQUAKES]);
+        return getLabel(item?.earthquake_feature, ['general', PAGE_KEYS.EARTHQUAKES]);
       default:
         return 'Unknown';
     }

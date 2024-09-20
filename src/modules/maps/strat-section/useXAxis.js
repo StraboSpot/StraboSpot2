@@ -2,13 +2,13 @@ import * as turf from '@turf/turf';
 import {useSelector} from 'react-redux';
 
 import {BASIC_LITHOLOGIES_LABELS, CARBONATE_KEYS, GRAIN_SIZE_KEYS, LITHOLOGIES_KEYS} from './stratSection.constants';
-import {useFormHook} from '../../form';
+import {useForm} from '../../form';
 import useMapCoordsHook from '../useMapCoords';
 
 const useXAxis = (n) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useForm = useFormHook();
+  const {getChoices, getChoicesByKey, getSurvey} = useForm();
   const useMapCoords = useMapCoordsHook();
 
   const xCl = 10;  // Horizontal spacing between clastic tick marks
@@ -29,8 +29,8 @@ const useXAxis = (n) => {
   };
 
   const getXAxisTickMarks = () => {
-    const survey = useForm.getSurvey(['sed', 'add_interval']);
-    const choices = useForm.getChoices(['sed', 'add_interval']);
+    const survey = getSurvey(['sed', 'add_interval']);
+    const choices = getChoices(['sed', 'add_interval']);
     let fieldKeys = [];
     let x = xCl;
     if (stratSection.column_profile === 'clastic') fieldKeys = GRAIN_SIZE_KEYS;
@@ -51,7 +51,7 @@ const useXAxis = (n) => {
     }
 
     const fields = survey.reduce((acc, key) => {
-      return fieldKeys.includes(key.name) ? [...acc, ...useForm.getChoicesByKey(survey, choices, key.name)] : acc;
+      return fieldKeys.includes(key.name) ? [...acc, ...getChoicesByKey(survey, choices, key.name)] : acc;
     }, []);
     const labels = stratSection.column_profile === 'basic_lithologies' ? BASIC_LITHOLOGIES_LABELS
       : fields.map(f => f.label);

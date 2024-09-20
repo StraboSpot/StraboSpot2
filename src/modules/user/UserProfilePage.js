@@ -24,8 +24,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import TextInputModal from '../../shared/ui/TextInputModal';
-import {Form} from '../form';
-import useFormHook from '../form/useForm';
+import {Form, useForm} from '../form';
 import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -55,7 +54,7 @@ const UserProfilePage = () => {
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useDownload = useDownloadHook();
-  const useForm = useFormHook();
+  const {hasErrors, validateForm} = useForm();
   const usePermissions = usePermissionsHook();
   const useResetState = useResetStateHook();
   const useServerRequest = useServerRequestsHook();
@@ -173,7 +172,7 @@ const UserProfilePage = () => {
       setIsUploading(true);
       await formRef.current.submitForm();
       let newValues = JSON.parse(JSON.stringify(formCurrent.values));
-      if (useForm.hasErrors(formCurrent)) throw Error('Error in form.');
+      if (hasErrors(formCurrent)) throw Error('Error in form.');
       dispatch(setUserData(newValues));
       if (isOnline.isInternetReachable) {
         await useUpload.uploadProfile(newValues);
@@ -275,8 +274,8 @@ const UserProfilePage = () => {
     );
   };
 
-  const validateForm = (values) => {
-    useForm.validateForm({formName: formName, values: values});
+  const validate = (values) => {
+    validateForm({formName: formName, values: values});
     setIsSaveButtonDisabled(false);
   };
 
@@ -315,7 +314,7 @@ const UserProfilePage = () => {
               <Formik
                 innerRef={formRef}
                 onSubmit={values => console.log('Submitting form...', values)}
-                validate={values => validateForm(values)}
+                validate={values => validate(values)}
                 component={formProps => Form({formName: formName, ...formProps})}
                 initialValues={userData}
                 validateOnChange={true}

@@ -15,7 +15,7 @@ import {
 } from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveAndCloseModalButtons from '../../shared/ui/SaveAndCloseModalButtons';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -29,7 +29,7 @@ const AddTephraModal = ({onPress}) => {
   const [tabIndex, setTabIndex] = React.useState(0);
 
   const formRef = useRef(null);
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
 
   const pageKey = PAGE_KEYS.TEPHRA;
 
@@ -71,7 +71,7 @@ const AddTephraModal = ({onPress}) => {
                 innerRef={formRef}
                 initialValues={{}}
                 onSubmit={values => console.log('Submitting form...', values)}
-                validate={values => useForm.validateForm({formName: formName, values: values})}
+                validate={values => validateForm({formName: formName, values: values})}
                 validateOnChange={false}
               >
                 {formProps => (
@@ -91,7 +91,7 @@ const AddTephraModal = ({onPress}) => {
   const saveTephra = async () => {
     try {
       await formRef.current.submitForm();
-      const editedTephraLayerData = useForm.showErrors(formRef.current);
+      const editedTephraLayerData = showErrors(formRef.current);
       console.log('Saving tephra data to Spot ...');
       let editedTephraLayersData = spot.properties.tephra ? JSON.parse(
         JSON.stringify(spot.properties.tephra)) : [];

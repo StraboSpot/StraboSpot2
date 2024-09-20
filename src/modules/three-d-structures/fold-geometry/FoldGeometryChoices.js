@@ -3,14 +3,14 @@ import {Text, View} from 'react-native';
 
 import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 import IconButton from '../../../shared/ui/IconButton';
-import {formStyles, useFormHook} from '../../form';
+import {formStyles, useForm} from '../../form';
 
 const FoldGeometryChoices = ({
                                choices,
                                formProps,
                                survey,
                              }) => {
-  const useForm = useFormHook();
+  const {getChoicesByKey, getRelevantFields} = useForm();
 
   const onGeometryChoiceButtonPress = (key, value) => {
     let updatedFormData = JSON.parse(JSON.stringify(formProps.values));
@@ -20,8 +20,8 @@ const FoldGeometryChoices = ({
   };
 
   return FOLD_GEOMETRY_KEYS.map((key) => {
-    const foldGeometryField = useForm.getRelevantFields(survey, key)[0];
-    const foldGeometryChoices = useForm.getChoicesByKey(survey, choices, key);
+    const foldGeometryField = getRelevantFields(survey, key)[0];
+    const foldGeometryChoices = getChoicesByKey(survey, choices, key);
     return (
       <View style={{padding: 10}} key={key}>
         {foldGeometryField.label && (

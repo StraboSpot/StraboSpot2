@@ -10,7 +10,7 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import NoteForm from '../notes/NoteForm';
 import usePetrologyHook from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -31,7 +31,7 @@ const BasicPageDetail = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
   const {checkSampleName} = useSpots();
@@ -139,7 +139,7 @@ const BasicPageDetail = ({
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
+          validate={values => validateForm({formName: formName, values: values})}
           initialValues={selectedFeature}
           initialStatus={{formName: formName}}
           enableReinitialize={true}
@@ -186,7 +186,7 @@ const BasicPageDetail = ({
   const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      const editedFeatureData = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+      const editedFeatureData = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       console.log('Saving', page.label, 'data', editedFeatureData, 'to Spot', pageData);
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
@@ -226,7 +226,7 @@ const BasicPageDetail = ({
 
   const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
-    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+    const formValues = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
     saveTemplate(formValues);
   };
 

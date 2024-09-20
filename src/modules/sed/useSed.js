@@ -10,7 +10,7 @@ import {
 import useSedValidationHook from './useSedValidation';
 import {getNewId, getNewUUID, isEmpty, roundToDecimalPlaces, toTitleCase} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {setStratSection} from '../maps/maps.slice';
 import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';
 import {PAGE_KEYS} from '../page/page.constants';
@@ -22,7 +22,7 @@ const useSed = () => {
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useForm = useFormHook();
+  const {getLabel, getLabels, showErrors} = useForm();
   const {getSpotWithThisStratSection, getSpotsMappedOnGivenStratSection, isStratInterval} = useSpots();
   const useSedValidation = useSedValidationHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
@@ -208,26 +208,24 @@ const useSed = () => {
   const getBeddingTitle = (bedding) => {
     const formName = ['sed', 'bedding'];
     const fieldName = 'package_geometry';
-    const choiceLabels = useForm.getLabels(bedding[fieldName], formName);
+    const choiceLabels = getLabels(bedding[fieldName], formName);
     if (isEmpty(choiceLabels)) return 'Unknown Bed';
     else return choiceLabels;
   };
 
   const getIntervalTitle = (character, interval) => {
     const formName = ['sed', 'interval'];
-    return (interval.interval_thickness ? useForm.getLabel(interval.interval_thickness, formName)
-        : 'Unknown Thickness')
-      + (interval.thickness_units ? useForm.getLabel(interval.thickness_units, formName)
-        : ' Unknown Units')
-      + (character ? ' ' + useForm.getLabel(character, formName) : ' Unknown Character');
+    return (interval.interval_thickness ? getLabel(interval.interval_thickness, formName) : 'Unknown Thickness')
+      + (interval.thickness_units ? getLabel(interval.thickness_units, formName) : ' Unknown Units')
+      + (character ? ' ' + getLabel(character, formName) : ' Unknown Character');
   };
 
   const getRockTitle = (rock) => {
     const formName = ['sed', 'lithologies'];
-    const mainLabel = useForm.getLabel(rock.primary_lithology, formName);
+    const mainLabel = getLabel(rock.primary_lithology, formName);
     const labelsArr = ROCK_SECOND_ORDER_TYPE_FIELDS.reduce((acc, fieldName) => {
       if (rock[fieldName]) {
-        const choiceLabel = useForm.getLabels(rock[fieldName], formName);
+        const choiceLabel = getLabels(rock[fieldName], formName);
         return [...acc, choiceLabel.toUpperCase()];
       }
       else return acc;
@@ -238,10 +236,10 @@ const useSed = () => {
 
   const getStratSectionTitle = (inStratSection) => {
     const formName = ['sed', PAGE_KEYS.STRAT_SECTION];
-    const columnProfile = inStratSection.column_profile ? useForm.getLabel(inStratSection.column_profile, formName)
+    const columnProfile = inStratSection.column_profile ? getLabel(inStratSection.column_profile, formName)
       : 'Unknown Profile';
     const columnYUnits = inStratSection.column_y_axis_units
-      ? useForm.getLabel(inStratSection.column_y_axis_units, formName) : 'Unknown Units';
+      ? getLabel(inStratSection.column_y_axis_units, formName) : 'Unknown Units';
     return (inStratSection.section_well_name || 'Unknown Section/Well Name') + ' - ' + columnProfile
       + ' (' + columnYUnits + ')';
   };
@@ -269,7 +267,7 @@ const useSed = () => {
 
     try {
       await formCurrent.submitForm();
-      let editedFeatureData = useForm.showErrors(formCurrent, isLeavingPage);
+      let editedFeatureData = showErrors(formCurrent, isLeavingPage);
       let editedSpot = JSON.parse(JSON.stringify(spot));
       let editedSedData = editedSpot.properties.sed ? editedSpot.properties.sed : {};
       if (subKey) {

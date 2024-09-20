@@ -9,7 +9,7 @@ import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptio
 import {setSelectedProject} from './projects.slice';
 import useProjectHook from './useProject';
 import {isEmpty} from '../../shared/Helpers';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setIsProjectLoadSelectionModalVisible} from '../home/home.slice';
 import {MAIN_MENU_ITEMS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../main-menu-panel/mainMenuPanel.slice';
@@ -24,7 +24,7 @@ const NewProjectForm = ({
 
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
 
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
   const useProject = useProjectHook();
 
   const formRef = useRef(null);
@@ -48,7 +48,7 @@ const NewProjectForm = ({
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={values => useForm.validateForm({formName: formName, values: values})}
+        validate={values => validateForm({formName: formName, values: values})}
         component={formProps => Form({formName: formName, ...formProps})}
         initialValues={initialValues}
         initialStatus={{formName: formName}}
@@ -71,7 +71,7 @@ const NewProjectForm = ({
   const saveForm = async () => {
     try {
       await formRef.current.submitForm();
-      const formValues = useForm.showErrors(formRef.current);
+      const formValues = showErrors(formRef.current);
       console.log('Saving form...');
       await useProject.initializeNewProject(formValues);
       console.log('New Project created', formValues.project_name);

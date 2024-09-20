@@ -1,11 +1,11 @@
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
 import {useSpots} from '../spots';
 
 const useSedValidation = () => {
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
   const {getSpotWithThisStratSection, isStratInterval} = useSpots();
 
   const getBasicLithologyIndex = (lithology) => {
@@ -71,29 +71,26 @@ const useSedValidation = () => {
       if (isMappedInterval && (sed.character === 'interbedded' || sed.character === 'bed_mixed_lit')) {
         if (sed.bedding && sed.bedding.beds) {
           if (!sed.bedding.interbed_proportion) {
-            errorMessages.push('- ' + useForm.getLabel('interbed_proportion', ['sed', 'bedding'])
-              + ' must be specified.');
+            errorMessages.push('- ' + getLabel('interbed_proportion', ['sed', 'bedding']) + ' must be specified.');
           }
           if (!sed.bedding.interbed_proportion_change) {
-            errorMessages.push('- ' + useForm.getLabel('interbed_proportion_change', ['sed', 'bedding'])
+            errorMessages.push('- ' + getLabel('interbed_proportion_change', ['sed', 'bedding'])
               + ' must be specified.');
           }
           if (sed.bedding.interbed_proportion_change === 'increase'
             || sed.bedding.interbed_proportion_change === 'decrease' && sed.bedding.beds.length > 0) {
             sed.bedding.beds.forEach((bed, n) => {
               if (!(sed.bedding.beds[n].max_thickness && sed.bedding.beds[n].min_thickness)) {
-                errorMessages.push('- Both '
-                  + useForm.getLabel('max_thickness', ['sed', 'bedding'])
-                  + ' and ' + useForm.getLabel('min_thickness', ['sed', 'bedding'])
-                  + ' must be specified for bed ' + (n + 1) + '.');
+                errorMessages.push('- Both ' + getLabel('max_thickness', ['sed', 'bedding']) + ' and '
+                  + getLabel('min_thickness', ['sed', 'bedding']) + ' must be specified for bed ' + (n + 1) + '.');
               }
             });
           }
           else if (sed.bedding.interbed_proportion_change === 'no_change' && sed.bedding.beds.length > 0) {
             sed.bedding.beds.forEach((bed, n) => {
               if (!sed.bedding.beds[n].avg_thickness) {
-                errorMessages.push('- ' + useForm.getLabel('avg_thickness', ['sed', 'bedding'])
-                  + ' must be specified for bed ' + (n + 1) + '.');
+                errorMessages.push('- ' + getLabel('avg_thickness', ['sed', 'bedding']) + ' must be specified for bed '
+                  + (n + 1) + '.');
               }
             });
           }
@@ -134,8 +131,8 @@ const useSedValidation = () => {
           });
         }
         else {
-          errorMessages.push('Lithologies: Required for '
-            + useForm.getLabel(sed.character, ['sed', 'interval']) + ' interval.');
+          errorMessages.push('Lithologies: Required for ' + getLabel(sed.character, ['sed', 'interval'])
+            + ' interval.');
         }
       }
     };

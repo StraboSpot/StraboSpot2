@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import {Button} from 'react-native-elements';
 
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
-import {formStyles, useFormHook} from '../form';
+import {formStyles, useForm} from '../form';
 
 const ChoiceButtons = ({
                          choiceFieldKey,
@@ -14,7 +14,7 @@ const ChoiceButtons = ({
                          size,
                          survey,
                        }) => {
-  const useForm = useFormHook();
+  const {getChoicesByKey} = useForm();
 
   const buttonStyle = size === 'small' ? formStyles.formButtonSmall
     : size === 'large' ? formStyles.formButtonLarge
@@ -22,7 +22,7 @@ const ChoiceButtons = ({
 
   return (
     <View style={formStyles.halfWidthButtonsContainer}>
-      {useForm.getChoicesByKey(survey, choices, choiceFieldKey).map((choice) => {
+      {getChoicesByKey(survey, choices, choiceFieldKey).map((choice) => {
         return (
           <Button
             key={choice.name}

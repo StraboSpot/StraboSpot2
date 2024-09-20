@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 
 import {FAULT_MEASUREMENTS_KEYS} from './threeDStructures.constants';
-import {Form, MainButtons, useFormHook} from '../form';
+import {Form, MainButtons, useForm} from '../form';
 import MeasurementButtons from '../form/MeasurementButtons';
 import MeasurementModal from '../form/MeasurementModal';
 
 const AddFault = (props) => {
-  const useForm = useFormHook();
+  const {getSurvey} = useForm();
 
   const [isFaultMeasurementsModalVisible, setIsFaultMeasurementsModalVisible] = useState(false);
   const [faultMeasurementsGroupField, setFaultMeasurementsGroupField] = useState({});
@@ -18,7 +18,7 @@ const AddFault = (props) => {
   const lastKeys = ['movement_amount_m', 'amplitude_m', 'folded_layer_thickness_m', 'fault_notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(props.formName);
+  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 

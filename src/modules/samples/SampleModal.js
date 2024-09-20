@@ -11,7 +11,7 @@ import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shar
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, FormSlider, useFormHook} from '../form';
+import {Form, FormSlider, useForm} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
 import useMapLocationHook from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
@@ -25,7 +25,7 @@ const SampleModal = (props) => {
   const preferences = useSelector(state => state.project.project?.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
+  const {getChoices, getSurvey} = useForm();
   const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
   const useMapLocation = useMapLocationHook();
 
@@ -46,8 +46,8 @@ const SampleModal = (props) => {
   const lastKeys = ['sample_notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(formName);
-  const choices = useForm.getChoices(formName);
+  const survey = getSurvey(formName);
+  const choices = getChoices(formName);
   const firstKeysFields = firstKeys.map(k =>
     survey.find(f => f.name === k),
   );

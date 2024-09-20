@@ -7,7 +7,7 @@ import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import ModalHeader from '../../shared/ui/modal/ModalHeader';
-import {Form, formStyles, MainButtons, useFormHook} from '../form';
+import {Form, formStyles, MainButtons, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';
 
 const AddRockMetamorphicModal = (props) => {
@@ -15,7 +15,7 @@ const AddRockMetamorphicModal = (props) => {
 
   const [isFaciesModalVisible, setIsFaciesModalVisible] = useState(false);
 
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['metamorphic_rock_type'];
@@ -44,7 +44,7 @@ const AddRockMetamorphicModal = (props) => {
         <Text
           style={props.formProps?.values?.facies?.includes(key) ? formStyles.formButtonSelectedTitle
             : formStyles.formButtonTitle}>
-          {useForm.getLabel(key, props.formName)}
+          {getLabel(key, props.formName)}
         </Text>
       </View>
     );
@@ -70,7 +70,10 @@ const AddRockMetamorphicModal = (props) => {
     const faciesModalWidth = width > 520 ? 500 : '90%';
     return (
       <Overlay
-        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : [overlayStyles.overlayContainer, overlayStyles.overlayPosition, {width: faciesModalWidth, left: 20}]}
+        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : [overlayStyles.overlayContainer, overlayStyles.overlayPosition, {
+          width: faciesModalWidth,
+          left: 20,
+        }]}
         isVisible={true}
       >
         <ModalHeader

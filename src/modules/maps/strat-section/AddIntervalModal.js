@@ -11,7 +11,7 @@ import commonStyles from '../../../shared/common.styles';
 import {deepObjectExtend} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import Modal from '../../../shared/ui/modal/Modal';
-import {Form, SelectInputField, TextInputField, useFormHook} from '../../form';
+import {Form, SelectInputField, TextInputField, useForm} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
 import {updatedProject} from '../../project/projects.slice';
 import {useSpots} from '../../spots';
@@ -25,7 +25,7 @@ const AddIntervalModal = () => {
   const [initialFormValues, setInitialFormValues] = useState({});
   const [intervalToCopy, setIntervalToCopy] = useState(null);
 
-  const useForm = useFormHook();
+  const {getLabel, getSurvey, showErrors, validateForm} = useForm();
   const {createSpot, getIntervalSpotsThisStratSection} = useSpots();
   const useStratSection = useStratSectionHook();
   const useStratSectionCalculations = useStratSectionCalculationsHook();
@@ -109,8 +109,8 @@ const AddIntervalModal = () => {
           'Units Mismatch',
           'The units for the Y Axis are ' + stratSection.column_y_axis_units + ' but '
           + data[mismatchUnitsField] + ' have been designated for '
-          + useForm.getLabel(mismatchUnitsField, formName) + '. Please fix the units for '
-          + useForm.getLabel(mismatchUnitsField, formName) + '. Unit conversions may be added to a'
+          + getLabel(mismatchUnitsField, formName) + '. Please fix the units for '
+          + getLabel(mismatchUnitsField, formName) + '. Unit conversions may be added to a'
           + ' future version of the app.',
         );
         return false;
@@ -121,7 +121,7 @@ const AddIntervalModal = () => {
 
   // Extract the data from the Spot object in the format needed for the Add Interval modal
   const extractAddIntervalData = (sedData) => {
-    const addIntervalSurvey = useForm.getSurvey(formName);
+    const addIntervalSurvey = getSurvey(formName);
     const addIntervalFieldNames = addIntervalSurvey.map(f => f.name);
     let data = addIntervalFieldNames.reduce((obj, key) => {
       // Interval
@@ -210,7 +210,7 @@ const AddIntervalModal = () => {
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={values => useForm.validateForm({formName: formName, values: values})}
+        validate={values => validateForm({formName: formName, values: values})}
         initialValues={initialFormValues}
         initialStatus={{formName: formName}}
         enableReinitialize={true}
@@ -239,7 +239,7 @@ const AddIntervalModal = () => {
 
   const saveInterval = async () => {
     await formRef.current.submitForm();
-    const intervalData = useForm.showErrors(formRef.current);
+    const intervalData = showErrors(formRef.current);
     if (doUnitsFieldsMatch(intervalData)) {
       let newInterval = useStratSection.createInterval(stratSection.strat_section_id, intervalData);
       if (preFormRef.current?.values?.intervalName) {

@@ -10,7 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
-import {NumberInputField, SelectInputField, useFormHook} from '../form';
+import {NumberInputField, SelectInputField, useForm} from '../form';
 import {setStratSection} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -23,7 +23,7 @@ const AddImageOverlayModal = ({
   const spot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useForm = useFormHook();
+  const {showErrors} = useForm();
 
   const overlayFormRef = useRef(null);
 
@@ -217,7 +217,7 @@ const AddImageOverlayModal = ({
 
   const saveImageOverlay = async () => {
     await overlayFormRef.current.submitForm();
-    const editedImageOverlayData = useForm.showErrors(overlayFormRef.current);
+    const editedImageOverlayData = showErrors(overlayFormRef.current);
     // console.log('Image Overlay Data', editedImageOverlayData);
     if (!isEmpty(editedImageOverlayData) && editedImageOverlayData.id) {
       let editedSedData = spot.properties.sed ? JSON.parse(JSON.stringify(spot.properties.sed)) : {};

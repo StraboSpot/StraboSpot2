@@ -14,7 +14,7 @@ import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -29,7 +29,7 @@ const AddThreeDStructureModal = ({onPress}) => {
   const [choices, setChoices] = useState({});
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(null);
 
-  const useForm = useFormHook();
+  const {getChoices, getRelevantFields, getSurvey, showErrors, validateForm} = useForm();
 
   const formRef = useRef(null);
 
@@ -48,8 +48,8 @@ const AddThreeDStructureModal = ({onPress}) => {
     setSelectedTypeIndex(types.indexOf(initialValues.type));
     const formName = [groupKey, initialValues.type];
     formRef.current?.setStatus({formName: formName});
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    setSurvey(getSurvey(formName));
+    setChoices(getChoices(formName));
   }, [modalValues]);
 
   const on3DStructureTypePress = (i) => {
@@ -60,8 +60,8 @@ const AddThreeDStructureModal = ({onPress}) => {
       formRef.current?.setFieldValue('type', type);
       const formName = [groupKey, type];
       formRef.current?.setStatus({formName: formName});
-      setSurvey(useForm.getSurvey(formName));
-      setChoices(useForm.getChoices(formName));
+      setSurvey(getSurvey(formName));
+      setChoices(getChoices(formName));
     }
   };
 
@@ -135,7 +135,7 @@ const AddThreeDStructureModal = ({onPress}) => {
                 innerRef={formRef}
                 initialValues={{}}
                 onSubmit={values => console.log('Submitting form...', values)}
-                validate={values => useForm.validateForm({formName: formName, values: values})}
+                validate={values => validateForm({formName: formName, values: values})}
                 validateOnChange={false}
               >
                 {formProps => (
@@ -157,7 +157,7 @@ const AddThreeDStructureModal = ({onPress}) => {
       return <FoldGeometryChoices formProps={formProps} survey={survey} choices={choices}/>;
     }
     else {
-      let relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+      let relevantFields = getRelevantFields(survey, choicesViewKey);
       if (formProps.values.type === 'other' && choicesViewKey === 'feature_type') {
         relevantFields = [survey.find(f => f.name === choicesViewKey)];
       }
@@ -170,7 +170,7 @@ const AddThreeDStructureModal = ({onPress}) => {
   const save3DStructure = async () => {
     try {
       await formRef.current.submitForm();
-      const edited3DStructureData = useForm.showErrors(formRef.current);
+      const edited3DStructureData = showErrors(formRef.current);
       console.log('Saving 3D Structure data to Spot ...');
       let edited3DStructuresData = spot.properties[groupKey] ? JSON.parse(JSON.stringify(spot.properties[groupKey]))
         : [];

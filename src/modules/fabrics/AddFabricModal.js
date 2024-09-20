@@ -13,7 +13,7 @@ import {getNewId, isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -28,7 +28,7 @@ const AddFabricModal = ({onPress}) => {
   const [survey, setSurvey] = useState({});
   const [choices, setChoices] = useState({});
 
-  const useForm = useFormHook();
+  const {getChoices, getRelevantFields, getSurvey, showErrors, validateForm} = useForm();
 
   const formRef = useRef(null);
 
@@ -47,8 +47,8 @@ const AddFabricModal = ({onPress}) => {
     setSelectedTypeIndex(types.indexOf(initialValues.type));
     const formName = [groupKey, initialValues.type];
     formRef.current?.setStatus({formName: formName});
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    setSurvey(getSurvey(formName));
+    setChoices(getChoices(formName));
   }, [modalValues]);
 
   const onFabricTypePress = (i) => {
@@ -59,8 +59,8 @@ const AddFabricModal = ({onPress}) => {
       formRef.current?.setFieldValue('type', type);
       const formName = [groupKey, type];
       formRef.current?.setStatus({formName: formName});
-      setSurvey(useForm.getSurvey(formName));
-      setChoices(useForm.getChoices(formName));
+      setSurvey(getSurvey(formName));
+      setChoices(getChoices(formName));
     }
   };
 
@@ -124,7 +124,7 @@ const AddFabricModal = ({onPress}) => {
                   innerRef={formRef}
                   initialValues={{}}
                   onSubmit={values => console.log('Submitting form...', values)}
-                  validate={values => useForm.validateForm({formName: formName, values: values})}
+                  validate={values => validateForm({formName: formName, values: values})}
                   validateOnChange={false}
                 >
                   {formProps => (
@@ -143,7 +143,7 @@ const AddFabricModal = ({onPress}) => {
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
     return (
       <Form {...{formName: [groupKey, formRef.current?.values?.type], surveyFragment: relevantFields, ...formProps}}/>
     );
@@ -152,7 +152,7 @@ const AddFabricModal = ({onPress}) => {
   const saveFabric = async () => {
     try {
       await formRef.current.submitForm();
-      const editedFabricData = useForm.showErrors(formRef.current);
+      const editedFabricData = showErrors(formRef.current);
       console.log('Saving fabric data to Spot ...');
       let editedFabricsData = spot.properties.fabrics ? JSON.parse(JSON.stringify(spot.properties.fabrics)) : [];
       editedFabricsData.push({...editedFabricData, id: getNewId()});

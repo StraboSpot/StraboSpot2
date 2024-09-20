@@ -33,7 +33,7 @@ const MapSymbolsOverlay = ({
   const useMeasurements = useMeasurementsHook();
 
   const getSymbolTitle = (symbol) => {
-    return toTitleCase(useMeasurements.getLabel(symbol));
+    return toTitleCase(useMeasurements.getMeasurementLabel(symbol));
   };
 
   const renderSymbolsList = ({item, index}) => {

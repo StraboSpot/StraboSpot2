@@ -14,7 +14,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {SelectInputField, useFormHook} from '../form';
+import {SelectInputField, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
@@ -29,7 +29,7 @@ const RockPage = ({page}) => {
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
+  const {getSurvey} = useForm();
   const {getSpotById, getSpotsWithKey} = useSpots();
 
   const [isDetailView, setIsDetailView] = useState(false);
@@ -108,7 +108,7 @@ const RockPage = ({page}) => {
     const copyPetDataContinued = () => {
       let updatedPetData = JSON.parse(JSON.stringify(rockData));
       if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type) {
-        const survey = useForm.getSurvey(['pet_deprecated', pageKey]);
+        const survey = getSurvey(['pet_deprecated', pageKey]);
         const fieldNames = survey.reduce((acc, field) => field.name ? [...acc, field.name] : acc, []);
         const petDataToCopyFiltered = Object.entries(spotToCopy.properties.pet).reduce((acc, [key, value]) => {
           return fieldNames.includes(key) ? {...acc, [key]: value} : acc;

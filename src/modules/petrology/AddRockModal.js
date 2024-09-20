@@ -16,7 +16,7 @@ import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import useSedHook from '../sed/useSed';
@@ -40,7 +40,7 @@ const AddRockModal = ({
   const [rockKey, setRockKey] = useState(null);
   const formRef = useRef(null);
 
-  const useForm = useFormHook();
+  const {getChoices, getRelevantFields, getSurvey} = useForm();
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
 
@@ -71,8 +71,8 @@ const AddRockModal = ({
       setInitialValues(initialValuesTemp);
     }
     const formName = [groupKey, rockKeyUpdated];
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    setSurvey(getSurvey(formName));
+    setChoices(getChoices(formName));
     setChoicesViewKey(null);
   }, [modalValues, pageKey, templates]);
 
@@ -93,8 +93,8 @@ const AddRockModal = ({
       const type = types[i];
       dispatch(setModalValues({id: getNewId(), igneous_rock_class: type}));
       const formNameSwitched = ['pet', type];
-      setSurvey(useForm.getSurvey(formNameSwitched));
-      setChoices(useForm.getChoices(formNameSwitched));
+      setSurvey(getSurvey(formNameSwitched));
+      setChoices(getChoices(formNameSwitched));
     }
   };
 
@@ -214,7 +214,7 @@ const AddRockModal = ({
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
     return (
       <Form {...{formName: [groupKey, rockKey], surveyFragment: relevantFields, ...formProps}}/>
     );

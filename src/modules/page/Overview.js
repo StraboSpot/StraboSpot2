@@ -13,7 +13,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebook.styles';
@@ -29,7 +29,7 @@ const Overview = ({openMainMenuPanel}) => {
 
   const formRef = useRef(null);
 
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
   const usePage = usePageHook();
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const Overview = ({openMainMenuPanel}) => {
               <Formik
                 innerRef={formRef}
                 onSubmit={onSubmitForm}
-                validate={values => useForm.validateForm({formName: formName, values: values})}
+                validate={values => validateForm({formName: formName, values: values})}
                 component={formProps => Form({formName: formName, ...formProps})}
                 initialValues={initialValues}
                 initialStatus={{formName: formName}}
@@ -140,7 +140,7 @@ const Overview = ({openMainMenuPanel}) => {
   const saveForm = async () => {
     try {
       await formRef.current.submitForm();
-      const formValues = useForm.showErrors(formRef.current);
+      const formValues = showErrors(formRef.current);
       console.log('Saving form data to Spot ...');
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
         const traceValues = {...formValues, 'trace_feature': true};

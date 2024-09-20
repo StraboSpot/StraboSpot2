@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, PermissionsAndroid, Platform, Text, View} from 'react-native';
+import {FlatList, Platform, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ButtonGroup, Switch} from 'react-native-elements';
@@ -10,7 +10,6 @@ import AddLine from './AddLine';
 import AddManualMeasurements from './AddManualMeasurements';
 import AddPlane from './AddPlane';
 import {MEASUREMENT_KEYS, MEASUREMENT_TYPES} from './measurements.constants';
-import usePermissionsHook from '../../services/usePermissions';
 import commonStyles from '../../shared/common.styles';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
@@ -20,7 +19,7 @@ import SliderBar from '../../shared/ui/SliderBar';
 import Compass from '../compass/Compass';
 import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import compassStyles from '../compass/compass.styles';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import useMapLocationHook from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
@@ -47,11 +46,9 @@ const AddMeasurementModal = ({onPress}) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [survey, setSurvey] = useState({});
   const [sliderValue, setSliderValue] = useState(6);
-  const [locationPermission, setLocationPermission] = useState('');
 
-  const useForm = useFormHook();
+  const {getChoices, getRelevantFields, getSurvey, showErrors, validateForm} = useForm();
   const useMapLocation = useMapLocationHook();
-  const usePermissions = usePermissionsHook();
   const toast = useToast();
 
   const formRef = useRef(null);
@@ -62,7 +59,6 @@ const AddMeasurementModal = ({onPress}) => {
 
   useEffect(() => {
     console.log('UE AddMeasurementModal []');
-    // if (Platform.OS === 'android') checkAndRequestLocPermission(); TODO Check once Android Auto Compass is complete;
     return () => dispatch(setModalValues({}));
   }, []);
 
@@ -109,15 +105,10 @@ const AddMeasurementModal = ({onPress}) => {
     setMeasurementTypeForForm(initialValuesTemp.type);
     const formName = [groupKey, initialValuesTemp.type];
     formRef.current?.setStatus({formName: formName});
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    setSurvey(getSurvey(formName));
+    setChoices(getChoices(formName));
 
   }, [compassMeasurementTypes, templates]);
-
-  const checkAndRequestLocPermission = async () => {
-    const response = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-    setLocationPermission(response);
-  };
 
   const equalsIgnoreOrder = (a, b) => {
     if (a.length !== b.length) return false;
@@ -153,8 +144,8 @@ const AddMeasurementModal = ({onPress}) => {
       setMeasurementTypeForForm(typeObj.form_keys[0]);
       const formType = typeObj.form_keys[0];
       const formName = [groupKey, formType];
-      setSurvey(useForm.getSurvey(formName));
-      setChoices(useForm.getChoices(formName));
+      setSurvey(getSurvey(formName));
+      setChoices(getChoices(formName));
       dispatch(setCompassMeasurementTypes(typeObj.compass_toggles));
     }
   };
@@ -171,8 +162,8 @@ const AddMeasurementModal = ({onPress}) => {
 
   const renderForm = (formProps) => {
     const assocFormName = [groupKey, 'linear_orientation'];
-    const assocSurvey = useForm.getSurvey(assocFormName);
-    const assocChoices = useForm.getChoices(assocFormName);
+    const assocSurvey = getSurvey(assocFormName);
+    const assocChoices = getChoices(assocFormName);
     let assocFormProps = JSON.parse(JSON.stringify(formProps));
     assocFormProps.values = {};
     const typeKey = MEASUREMENT_TYPES[selectedTypeIndex]
@@ -291,7 +282,7 @@ const AddMeasurementModal = ({onPress}) => {
                   initialValues={initialValues}
                   initialStatus={{formName: formName}}
                   onSubmit={values => console.log('Submitting form...', values)}
-                  validate={values => useForm.validateForm({formName: formName, values: values})}
+                  validate={values => validateForm({formName: formName, values: values})}
                   validateOnChange={false}
                   enableReinitialize={true}
                 >
@@ -310,7 +301,7 @@ const AddMeasurementModal = ({onPress}) => {
   };
 
   const renderSubform = (formProps) => {
-    let relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    let relevantFields = getRelevantFields(survey, choicesViewKey);
     if (choicesViewKey === 'feature_type') {
       relevantFields = survey.filter(f => f.name === choicesViewKey || f.name === 'other_feature');
     }
@@ -322,8 +313,8 @@ const AddMeasurementModal = ({onPress}) => {
     assocFormProps.values = {};
     const assocFormName = [groupKey, 'linear_orientation'];
     assocFormProps.status = {formName: assocFormName};
-    const assocSurvey = useForm.getSurvey(assocFormName);
-    let relevantFields = useForm.getRelevantFields(assocSurvey, assocChoicesViewKey);
+    const assocSurvey = getSurvey(assocFormName);
+    let relevantFields = getRelevantFields(assocSurvey, assocChoicesViewKey);
     if (assocChoicesViewKey === 'feature_type') {
       relevantFields = assocSurvey.filter(f => f.name === assocChoicesViewKey || f.name === 'other_feature');
     }
@@ -350,10 +341,10 @@ const AddMeasurementModal = ({onPress}) => {
     }
     try {
       await formRef.current.submitForm();
-      let editedMeasurementData = useForm.showErrors(formRef.current);
+      let editedMeasurementData = showErrors(formRef.current);
       // If plane with associated line validate associated line data
       if (typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR && editedMeasurementData.associated_orientation) {
-        useForm.validateForm({
+        validateForm({
           formName: [groupKey, MEASUREMENT_KEYS.LINEAR],
           values: editedMeasurementData.associated_orientation[0],
         });
