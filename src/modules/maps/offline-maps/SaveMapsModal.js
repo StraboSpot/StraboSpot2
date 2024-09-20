@@ -10,7 +10,7 @@ import offlineMapsStyles from './offlineMaps.styles';
 import useMapsOffline from './useMapsOffline';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import useDevice from '../../../services/useDevice';
-import useServerRequestHook from '../../../services/useServerRequests';
+import useServerRequests from '../../../services/useServerRequests';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {
@@ -19,7 +19,6 @@ import {
   removedLastStatusMessage,
   setIsOfflineMapsModalVisible,
 } from '../../home/home.slice';
-// import ProgressBar from '../../../shared/ui/ProgressBar';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
 
@@ -36,7 +35,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     moveTile,
     updateMapTileCountWhenSaving,
   } = useMapsOffline();
-  const useServerRequests = useServerRequestHook();
+  const {getTilehostUrl} = useServerRequests();
 
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -111,8 +110,6 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     }
   };
 
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
   const unzip = async () => {
     try {
       setIsLoadingWave(true);
@@ -126,7 +123,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const downloadZip = async (zipUID) => {
     try {
-      const tilehost = useServerRequests.getTilehostUrl();
+      const tilehost = getTilehostUrl();
       const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,

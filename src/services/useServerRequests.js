@@ -79,25 +79,25 @@ const useServerRequests = () => {
     }
   };
 
-  const deleteProject = async (project) => {
-    try {
-      const response = await fetch(
-        baseUrl + '/project/' + project.id,
-        {
-          method: 'DELETE',
-          headers: {
-            'Authorization': 'Basic ' + user.encoded_login,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      return handleResponse(response);
-    }
-    catch (err) {
-      console.error('Error deleting project in useServerRequests', err);
-    }
-  };
+  // const deleteProject = async (project) => {
+  //   try {
+  //     const response = await fetch(
+  //       baseUrl + '/project/' + project.id,
+  //       {
+  //         method: 'DELETE',
+  //         headers: {
+  //           'Authorization': 'Basic ' + user.encoded_login,
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //     );
+  //
+  //     return handleResponse(response);
+  //   }
+  //   catch (err) {
+  //     console.error('Error deleting project in useServerRequests', err);
+  //   }
+  // };
 
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
@@ -437,7 +437,7 @@ const useServerRequests = () => {
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     deleteProfile: deleteProfile,
     deleteProfileImage: deleteProfileImage,
-    deleteProject: deleteProject,
+    // deleteProject: deleteProject,
     downloadImage: downloadImage,
     getDataset: getDataset,
     getDatasetSpots: getDatasetSpots,

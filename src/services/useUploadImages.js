@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {updatedProjectTransferProgress} from './connections.slice';
 import {APP_DIRECTORIES} from './directories.constants';
 import useDevice from './useDevice';
-import useServerRequestsHook from './useServerRequests';
+import useServerRequests from './useServerRequests';
 import {addedStatusMessage, clearedStatusMessages, setIsProgressModalVisible} from '../modules/home/home.slice';
 import {useImages} from '../modules/images';
 import {setIsImageTransferring} from '../modules/project/projects.slice';
@@ -18,7 +18,7 @@ const useUploadImages = () => {
 
   const {deleteTempImagesFolder, doesDeviceDirExist, makeDirectory} = useDevice();
   const {getAllImages, getImageHeightAndWidth, getImageSize, getLocalImageURI} = useImages();
-  const useServerRequests = useServerRequestsHook();
+  const {uploadImage, verifyImagesExistence} = useServerRequests();
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
@@ -52,7 +52,7 @@ const useUploadImages = () => {
     const images = getAllImages();
     const imageIds = getImageIds(images);
     setImageUploadStatusMessage('Checking to see if image files are on server...');
-    const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
+    const neededImages = await verifyImagesExistence(imageIds, user.encoded_login);
     setImageUploadStatusMessage(`Checking to see if ${neededImages.length} image files are on device...`);
     console.log('Needed Images from server', neededImages);
     const {imagesToUpload, imagesNotFoundOnDevice} = await verifyImageExistsOnDevice(neededImages, images);
@@ -132,7 +132,7 @@ const useUploadImages = () => {
   };
 
   // Upload the image to server
-  const uploadImage = async (imageId, imageUri, isProfileImage) => {
+  const doUploadImage = async (imageId, imageUri, isProfileImage) => {
     try {
       setCurrentImage(imageId);
 
@@ -142,7 +142,7 @@ const useUploadImages = () => {
       formdata.append('image_file', {uri: imageUri, name: 'image.jpg', type: 'image/jpeg'});
       formdata.append('id', imageId);
       formdata.append('modified_timestamp', Date.now());
-      const res = await useServerRequests.uploadImage(formdata, user.encoded_login, isProfileImage);
+      const res = await uploadImage(formdata, user.encoded_login, isProfileImage);
       console.log('Image Upload Res', res);
       console.log(': Finished Uploading Image', imageId);
       dispatch(updatedProjectTransferProgress(0));
@@ -162,7 +162,7 @@ const useUploadImages = () => {
       try {
         // const imageURI = await getImageFile(imageProps.id);
         const resizedImage = await resizeImageForUpload(imageProps);
-        await uploadImage(imageProps.id, resizedImage.uri);
+        await doUploadImage(imageProps.id, resizedImage.uri);
         imagesUploadedCount++;
       }
       catch (err) {
@@ -198,7 +198,7 @@ const useUploadImages = () => {
 
   const uploadProfileImage = async () => {
     try {
-      await uploadImage('profileImage', 'file://' + APP_DIRECTORIES.PROFILE_IMAGE, true);
+      await doUploadImage('profileImage', 'file://' + APP_DIRECTORIES.PROFILE_IMAGE, true);
       console.log('Profile Image Uploaded');
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Profile Image Uploaded'));

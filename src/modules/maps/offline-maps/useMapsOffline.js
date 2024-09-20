@@ -5,7 +5,7 @@ import {addMapFromDevice, clearedMapsFromRedux, setOfflineMap} from './offlineMa
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import {STRABO_APIS} from '../../../services/urls.constants';
 import useDevice from '../../../services/useDevice';
-import useServerRequestsHook from '../../../services/useServerRequests';
+import useServerRequests from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import config from '../../../utils/config';
@@ -39,7 +39,7 @@ const useMapsOffline = () => {
     readDirectoryForMapTiles,
   } = useDevice();
   const useMapURL = useMapURLHook();
-  const useServerRequests = useServerRequestsHook();
+  const {getMapTilesFromHost, getTilehostUrl, zipURLStatus} = useServerRequests();
 
   //INTERNAL
   const adjustTileCount = async (files) => {
@@ -98,7 +98,7 @@ const useMapsOffline = () => {
   const checkZipStatus = async (zipId) => {
     return new Promise((resolve, reject) => {
       const interval = setInterval(async () => {
-        const status = await useServerRequests.zipURLStatus(zipId);
+        const status = await zipURLStatus(zipId);
         if (checkIfZipStatusReady(status)) {
           clearInterval(interval);
           resolve(status.status);
@@ -230,7 +230,7 @@ const useMapsOffline = () => {
       let mapKey = currentBasemap.id;
       const layerSource = currentBasemap.source;
       const tilehost = STRABO_APIS.TILE_HOST;
-      const endpointTilehost = customDatabaseEndpoint.isSelected ? useServerRequests.getTilehostUrl() : tilehost;
+      const endpointTilehost = customDatabaseEndpoint.isSelected ? getTilehostUrl() : tilehost;
 
       if (layerSource === 'map_warper' || layerSource === 'mapbox_styles' || layerSource === 'strabospot_mymaps') {
         //configure advanced URL for custom map types here.
@@ -352,7 +352,7 @@ const useMapsOffline = () => {
 
   const saveZipMap = async (startZipURL) => {
     try {
-      const tileJson = await useServerRequests.getMapTilesFromHost(startZipURL);
+      const tileJson = await getMapTilesFromHost(startZipURL);
       zipUID = tileJson.id;
       // if (zipUID) return;
     }

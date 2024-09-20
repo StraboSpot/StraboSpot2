@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/urls.constants';
-import useServerRequestsHook from '../../../services/useServerRequests';
+import useServerRequests from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, clearedStatusMessages, setIsWarningMessagesModalVisible} from '../../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../../main-menu-panel/mainMenu.constants';
@@ -29,7 +29,7 @@ const useCustomMap = () => {
   const {setBasemap} = useMap();
   const {getMyMapsBboxCoords} = useMapCoords();
   const useMapURL = useMapURLHook();
-  const useServerRequests = useServerRequestsHook();
+  const {testCustomMapUrl} = useServerRequests();
 
   const deleteMap = async (mapId) => {
     console.log('Deleting Map Here');
@@ -91,7 +91,7 @@ const useCustomMap = () => {
     }
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
-    const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+    const testUrlResponse = await testCustomMapUrl(testTileUrl);
     console.log('RES', testUrlResponse);
     if (testUrlResponse) {
       bbox = await getMyMapsBboxCoords(map);

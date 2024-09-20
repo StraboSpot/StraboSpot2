@@ -17,7 +17,7 @@ import useDevice from '../../services/useDevice';
 import useDownload from '../../services/useDownload';
 import usePermissionsHook from '../../services/usePermissions';
 import useResetStateHook from '../../services/useResetState';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
 import useUploadImagesHook from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
@@ -57,20 +57,20 @@ const UserProfilePage = () => {
   const {hasErrors, validateForm} = useForm();
   const usePermissions = usePermissionsHook();
   const useResetState = useResetStateHook();
-  const useServerRequest = useServerRequestsHook();
+  const {authenticateUser, deleteProfile, deleteProfileImage} = useServerRequests();
   const useUpload = useUploadHook();
   const useUploadImages = useUploadImagesHook();
 
   const formName = ['general', 'user_profile'];
 
-  const deleteProfile = async () => {
+  const onDeleteProfile = async () => {
     console.log(deleteProfileInputValue);
     if (!isEmpty(deleteProfileInputValue)) {
-      const isAuthenticated = await useServerRequest.authenticateUser(userData.email, deleteProfileInputValue);
+      const isAuthenticated = await authenticateUser(userData.email, deleteProfileInputValue);
       if (isAuthenticated.valid === 'true') {
         const encodedLogin = Base64.encode(`${userData.email}:${deleteProfileInputValue}`);
         console.log(encodedLogin);
-        const res = await useServerRequest.deleteProfile(encodedLogin);
+        const res = await deleteProfile(encodedLogin);
         console.log('PROFILE DELETED!', res);
         setDeleteProfileModalVisible(false);
         useResetState.clearUser();
@@ -108,12 +108,12 @@ const UserProfilePage = () => {
         buttonText={'DELETE'}
         overlayButtonText={overlayStyles.importantText}
         visible={isDeleteProfileModalVisible}
-        onPress={deleteProfile}
+        onPress={onDeleteProfile}
         closeModal={() => setDeleteProfileModalVisible(false)}
         textAboveInput={isOnline.isInternetReachable ? deleteModalText : offlineText}
         onChangeText={text => handleOnChange(text)}
         errorMessage={errorMessage}
-        onSubmitEditing={deleteProfile}
+        onSubmitEditing={onDeleteProfile}
       />
     );
   };
@@ -152,7 +152,7 @@ const UserProfilePage = () => {
   const removeProfileImage = async () => {
     try {
       setIsDeletingProfileImage(true);
-      await useServerRequest.deleteProfileImage(userEncodedLogin);
+      await deleteProfileImage(userEncodedLogin);
       if (Platform.OS !== 'web') await deleteProfileImageFile();
       setShouldUpdateImage(true);
       setIsDeletingProfileImage(false);

@@ -5,7 +5,7 @@ import {setCurrentBasemap} from './maps.slice';
 import useMapCoords from './useMapCoords';
 import useMapURLHook from './useMapURL';
 import {STRABO_APIS} from '../../services/urls.constants';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -20,10 +20,10 @@ const useMap = () => {
 
   const {getMyMapsBboxCoords} = useMapCoords();
   const useMapURL = useMapURLHook();
-  const useServerRequests = useServerRequestsHook();
+  const {getTilehostUrl} = useServerRequests();
 
   const getExtentAndZoomCall = (extentString, zoomLevel) => {
-    let url = useServerRequests.getTilehostUrl();
+    let url = getTilehostUrl();
     url = customDatabaseEndpoint.isSelected ? url + '/zipcount' : STRABO_APIS.TILE_COUNT;
     console.log(url + '?extent=' + extentString + '&zoom=' + zoomLevel);
     return url + '?extent=' + extentString + '&zoom=' + zoomLevel;

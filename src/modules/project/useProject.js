@@ -15,7 +15,7 @@ import useDevice from '../../services/useDevice';
 import useDownload from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useResetStateHook from '../../services/useResetState';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {
@@ -47,7 +47,7 @@ const useProject = () => {
   const {initializeDownload} = useDownload();
   const useImport = useImportHook();
   const useResetState = useResetStateHook();
-  const useServerRequests = useServerRequestsHook();
+  const {getMyProjects} = useServerRequests();
 
   const addDataset = async (name) => {
     const datasetObj = createDataset(name);
@@ -102,10 +102,6 @@ const useProject = () => {
     dispatch(addedProjectDescription(currentProject));
     const defaultDataset = createDataset();
     dispatch(addedDataset(defaultDataset));
-  };
-
-  const deleteProject = async (project) => {
-    await useServerRequests.deleteProject(project);
   };
 
   const destroyDataset = async (id) => {
@@ -167,32 +163,28 @@ const useProject = () => {
     else console.log('Does not exist');
   };
 
-  const getAllExternalStorageProjects = () => {
-
-  };
-
   const getAllServerProjects = async () => {
     try {
-      return await useServerRequests.getMyProjects(user.encoded_login);
+      return await getMyProjects(user.encoded_login);
     }
     catch (err) {
       return err.ok;
     }
   };
 
-  const getDatasetFromSpotId = (spotId) => {
-    let datasetIdFound;
-    for (const dataset of Object.values(datasets)) {
-      const spotIdFound = dataset.spotIds.find(id => id === spotId);
-      if (spotIdFound) {
-        datasetIdFound = dataset.id;
-        break;
-      }
-    }
-    console.log('HERE IS THE DATASET', datasetIdFound);
-    if (!datasetIdFound) console.error('Dataset not found');
-    return datasetIdFound;
-  };
+  // const getDatasetFromSpotId = (spotId) => {
+  //   let datasetIdFound;
+  //   for (const dataset of Object.values(datasets)) {
+  //     const spotIdFound = dataset.spotIds.find(id => id === spotId);
+  //     if (spotIdFound) {
+  //       datasetIdFound = dataset.id;
+  //       break;
+  //     }
+  //   }
+  //   console.log('HERE IS THE DATASET', datasetIdFound);
+  //   if (!datasetIdFound) console.error('Dataset not found');
+  //   return datasetIdFound;
+  // };
 
   // Get selected dataset, if none selected make one
   const getSelectedDatasetFromId = () => {
@@ -294,15 +286,10 @@ const useProject = () => {
   return {
     addDataset: addDataset,
     checkValidDateTime: checkValidDateTime,
-    createDataset: createDataset,
-    createProject: createProject,
-    deleteProject: deleteProject,
     destroyDataset: destroyDataset,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
-    getAllExternalStorageProjects: getAllExternalStorageProjects,
     getAllServerProjects: getAllServerProjects,
-    getDatasetFromSpotId: getDatasetFromSpotId,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     initializeNewProject: initializeNewProject,
     loadProjectWeb: loadProjectWeb,

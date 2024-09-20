@@ -4,7 +4,7 @@ import {Platform} from 'react-native';
 import KeepAwake from 'react-native-keep-awake';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useServerRequestsHook from './useServerRequests';
+import useServerRequests from './useServerRequests';
 import useUploadImagesHook from './useUploadImages';
 import {addedStatusMessage} from '../modules/home/home.slice';
 import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
@@ -25,7 +25,15 @@ const useUpload = () => {
   const [uploadStatusMessage, setUploadStatusMessage] = useState('');
 
   const {checkValidDateTime} = useProject();
-  const useServerRequests = useServerRequestsHook();
+  const {
+    addDatasetToProject,
+    deleteAllSpotsInDataset,
+    updateDataset,
+    updateDatasetSpots,
+    updateProfile,
+    updateProject,
+    uploadWebImage,
+  } = useServerRequests();
   const {getSpotsByIds} = useSpots();
   const useUploadImages = useUploadImagesHook();
 
@@ -55,12 +63,12 @@ const useUpload = () => {
       let datasetCopy = JSON.parse(JSON.stringify(dataset));
       delete datasetCopy.spotIds;
       datasetCopy.images && delete datasetCopy.images;
-      const resJSON = await useServerRequests.updateDataset(datasetCopy, user.encoded_login);
+      const resJSON = await updateDataset(datasetCopy, user.encoded_login);
       if (resJSON.modified_on_server) {
         console.log('Dataset that was uploaded:', resJSON);
         // console.log(dataset.name + ': Uploading Dataset Properties...');
         // dispatch(addedStatusMessage('Uploading properties...'));
-        await useServerRequests.addDatasetToProject(project.id, dataset.id, user.encoded_login);
+        await addDatasetToProject(project.id, dataset.id, user.encoded_login);
         setUploadStatusMessage(`Finished uploading dataset ${dataset.name}...`);
         // dispatch(removedLastStatusMessage());
         await uploadSpots(dataset);
@@ -114,7 +122,7 @@ const useUpload = () => {
       formData.append('id', imageId);
       formData.append('modified_timestamp', Date.now());
 
-      const res = await useServerRequests.uploadWebImage(formData, user.encoded_login);
+      const res = await uploadWebImage(formData, user.encoded_login);
       console.log('Image Upload Res', res);
       return res;
     }
@@ -128,7 +136,7 @@ const useUpload = () => {
   const uploadProfile = async (userValues) => {
     try {
       const profileData = {name: userValues.name, mapboxToken: userValues.mapboxToken};
-      await useServerRequests.updateProfile(profileData);
+      await updateProfile(profileData);
     }
     catch (err) {
       console.error('Error uploading profile image', err);
@@ -140,7 +148,7 @@ const useUpload = () => {
   const uploadProject = async () => {
     console.log(`Uploading ${project.description.project_name} Properties...`);
     setUploadStatusMessage(`Uploading ${project.description.project_name} Properties...`);
-    await useServerRequests.updateProject(project, user.encoded_login);
+    await updateProject(project, user.encoded_login);
     setUploadStatusMessage(`Finished uploading ${project.description.project_name} Properties.`);
     return true;
   };
@@ -155,7 +163,7 @@ const useUpload = () => {
     try {
       if (isEmpty(datasetSpots)) {
         setUploadStatusMessage('There are no spots to upload.');
-        await useServerRequests.deleteAllSpotsInDataset(dataset.id, user.encoded_login);
+        await deleteAllSpotsInDataset(dataset.id, user.encoded_login);
       }
       else {
         const spotCollection = {
@@ -164,7 +172,7 @@ const useUpload = () => {
         };
         console.log(dataset.name + ': Uploading Spots...', spotCollection);
         setUploadStatusMessage(`Uploading ${dataset.name} spots...`);
-        await useServerRequests.updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
+        await updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
         setUploadStatusMessage(`Finished uploading ${dataset.name} spots.`);
         // dispatch(removedLastStatusMessage());
         // dispatch(addedStatusMessage('\nFinished uploading spots.\n'));

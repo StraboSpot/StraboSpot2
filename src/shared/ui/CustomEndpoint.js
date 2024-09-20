@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import uiStyles from './ui.styles';
 import signInStyles from '../../modules/sign-in/signIn.styles';
 import {setDatabaseIsSelected, setCustomDatabaseUrl, setDatabaseVerify} from '../../services/connections.slice';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 
@@ -24,7 +24,7 @@ const CustomEndpoint = ({
     const [isVerified, setIsVerified] = useState(null);
     const [verifiedButtonTitle, setVerifiedButtonTitle] = useState('Test Endpoint');
 
-    const useServerRequests = useServerRequestsHook();
+    const {verifyEndpoint} = useServerRequests();
 
     const handleEndpointSwitchValue = (value) => {
       dispatch(setDatabaseIsSelected(value));
@@ -35,9 +35,9 @@ const CustomEndpoint = ({
       setCustomEndpointURLLocal(endpointURLLocal);
     };
 
-    const verifyEndpoint = async () => {
+    const onVerifyEndpoint = async () => {
       setIsLoadingEndpoint(true);
-      const isVerifiedLocal = await useServerRequests.verifyEndpoint(customEndpointURLLocal);
+      const isVerifiedLocal = await verifyEndpoint(customEndpointURLLocal);
       if (isVerifiedLocal) {
         dispatch(setDatabaseVerify(true));
         dispatch(setCustomDatabaseUrl(customEndpointURLLocal));
@@ -82,7 +82,7 @@ const CustomEndpoint = ({
                 defaultValue={customEndpointURLLocal}
                 autoCapitalize={'none'}
                 returnKeyType={'send'}
-                onSubmitEditing={verifyEndpoint}
+                onSubmitEditing={onVerifyEndpoint}
               />
             </View>
             <View style={uiStyles.customEndpointVerifyButtonContainer}>
@@ -102,7 +102,7 @@ const CustomEndpoint = ({
                   />
                 )}
                 containerStyle={uiStyles.customEndpointVerifyButtonContainer}
-                onPress={verifyEndpoint}
+                onPress={onVerifyEndpoint}
                 loading={isLoadingEndpoint}
                 loadingStyle={{width: 60}}
               />}
