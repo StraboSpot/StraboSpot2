@@ -13,7 +13,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
 import {Form, FormSlider, useForm} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpots} from '../spots';
@@ -27,7 +27,7 @@ const SampleModal = (props) => {
 
   const {getChoices, getSurvey} = useForm();
   const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
-  const useMapLocation = useMapLocationHook();
+  const {setPointAtCurrentLocation} = useMapLocation();
 
   const initialNamePrefix = preferences.sample_prefix || '';
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
@@ -179,7 +179,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        let pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {

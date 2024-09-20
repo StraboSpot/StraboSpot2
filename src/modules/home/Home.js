@@ -32,7 +32,7 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import {MAP_MODES} from '../maps/maps.constants';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import useProject from '../project/useProject';
@@ -48,7 +48,7 @@ const Home = ({navigation, route}) => {
   const toast = useToast();
   const {createProjectDirectories, openURL} = useDevice();
   const {zipAndExportProjectFolder} = useExport();
-  const useMapLocation = useMapLocationHook();
+  const {setPointAtCurrentLocation} = useMapLocation();
   const useVersionCheck = VersionCheckHook();
 
   const dispatch = useDispatch();
@@ -162,7 +162,7 @@ const Home = ({navigation, route}) => {
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
         const selectedDataset = getSelectedDatasetFromId();
-        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await setPointAtCurrentLocation();
+        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await createPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');
         break;
@@ -236,6 +236,21 @@ const Home = ({navigation, route}) => {
     animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
     setTimeout(() => dispatch(setIsNotebookPanelVisible(false)), 1000);
+  };
+
+  const createPointAtCurrentLocation = async () => {
+    try {
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
+      await setPointAtCurrentLocation();
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      toast.show(`Point Spot Added at Current\n Location to Dataset ${getSelectedDatasetFromId().name.toUpperCase()}`,
+        {type: 'success'});
+      openNotebookPanel();
+    }
+    catch (err) {
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      console.error('Error setting point to current location', err);
+    }
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -338,21 +353,6 @@ const Home = ({navigation, route}) => {
       'drawButtonsVisible': true,
     });
     unlockOrientation();
-  };
-
-  const setPointAtCurrentLocation = async () => {
-    try {
-      dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useMapLocation.setPointAtCurrentLocation();
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      toast.show(`Point Spot Added at Current\n Location to Dataset ${getSelectedDatasetFromId().name.toUpperCase()}`,
-        {type: 'success'});
-      openNotebookPanel();
-    }
-    catch (err) {
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      console.error('Error setting point to current location', err);
-    }
   };
 
   const startEdit = () => {

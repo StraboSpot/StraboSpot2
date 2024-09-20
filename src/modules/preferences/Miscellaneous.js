@@ -14,7 +14,7 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import StandardModal from '../../shared/ui/StandardModal';
 import {setLoadingStatus} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {setTestingMode} from '../project/projects.slice';
 
 const Miscellaneous = () => {
@@ -27,7 +27,7 @@ const Miscellaneous = () => {
   const [numRandomSpots, setNumRandomSpots] = useState(100);
   const [password, setPassword] = useState('');
 
-  const useMapLocation = useMapLocationHook();
+  const {generateRandomsSpotsAroundCurrentLocation} = useMapLocation();
 
   const formRef = useRef('null');
 
@@ -59,7 +59,7 @@ const Miscellaneous = () => {
     if (numRandomSpotsInt) {
       setNumRandomSpots(numRandomSpotsInt);
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useMapLocation.generateRandomsSpotsAroundCurrentLocation(numRandomSpotsInt);
+      await generateRandomsSpotsAroundCurrentLocation(numRandomSpotsInt);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     else alert('Error Generating Random Spots', 'The number of Spots must be an integer.');

@@ -21,7 +21,7 @@ import {setCompassMeasurementTypes} from '../compass/compass.slice';
 import compassStyles from '../compass/compass.styles';
 import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
@@ -48,7 +48,7 @@ const AddMeasurementModal = ({onPress}) => {
   const [sliderValue, setSliderValue] = useState(6);
 
   const {getChoices, getRelevantFields, getSurvey, showErrors, validateForm} = useForm();
-  const useMapLocation = useMapLocationHook();
+  const {setPointAtCurrentLocation} = useMapLocation();
   const toast = useToast();
 
   const formRef = useRef(null);
@@ -349,7 +349,7 @@ const AddMeasurementModal = ({onPress}) => {
           values: editedMeasurementData.associated_orientation[0],
         });
       }
-      const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await useMapLocation.setPointAtCurrentLocation()
+      const spotToUpdate = modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? await setPointAtCurrentLocation()
         : spot;
       let editedMeasurementsData = spotToUpdate.properties.orientation_data
         ? JSON.parse(JSON.stringify(spotToUpdate.properties.orientation_data)) : [];

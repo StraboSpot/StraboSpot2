@@ -12,7 +12,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useForm} from '../form';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import useMapViewHook from '../maps/useMapView';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -20,7 +20,7 @@ import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Geography = () => {
   const {showErrors, validateForm} = useForm();
-  const useMapLocation = useMapLocationHook();
+  const {getCurrentLocation} = useMapLocation();
   const useMapView = useMapViewHook();
 
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const Geography = () => {
 
   // Fill in current location
   const fillWithCurrentLocation = async () => {
-    const currentLocation = await useMapLocation.getCurrentLocation();
+    const currentLocation = await getCurrentLocation();
     if (currentLocation.latitude) geomFormRef.current.setFieldValue('latitude', currentLocation.latitude);
     if (currentLocation.longitude) geomFormRef.current.setFieldValue('longitude', currentLocation.longitude);
     if (currentLocation.altitude) formRef.current.setFieldValue('altitude', currentLocation.altitude);

@@ -16,7 +16,7 @@ import useMapHook from './useMap';
 import useMapCoordsHook from './useMapCoords';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapFeaturesCalculatedHook from './useMapFeaturesCalculated';
-import useMapLocationHook from './useMapLocation';
+import useMapLocation from './useMapLocation';
 import useMapViewHook from './useMapView';
 import useStereonetHook from './useStereonet';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
@@ -61,7 +61,7 @@ const Map = forwardRef(({
   const useMapCoords = useMapCoordsHook();
   const useMapFeatures = useMapFeaturesHook();
   const useMapFeaturesCalculated = useMapFeaturesCalculatedHook(mapRef);
-  const useMapLocation = useMapLocationHook();
+  const {getCurrentLocation} = useMapLocation();
   const useMapSymbology = useMapSymbologyHook();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
@@ -1086,7 +1086,7 @@ const Map = forwardRef(({
   const zoomToCurrentLocation = async () => {
     if (cameraRef.current || Platform.OS === 'web') {
       console.log('%cFlying to location', 'color: red');
-      const currentLocation = await useMapLocation.getCurrentLocation();
+      const currentLocation = await getCurrentLocation();
       if (Platform.OS === 'web') {
         mapRef.current.flyTo(
           {center: [currentLocation.longitude, currentLocation.latitude], zoom: ZOOM, maxDuration: 2500});

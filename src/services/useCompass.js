@@ -2,12 +2,12 @@ import geomagnetism from 'geomagnetism';
 import {useSelector} from 'react-redux';
 
 import useMapCoordsHook from '../modules/maps/useMapCoords';
-import useMapLocationHook from '../modules/maps/useMapLocation';
+import useMapLocation from '../modules/maps/useMapLocation';
 import {isEmpty} from '../shared/Helpers';
 
 const useCompass = () => {
 
-  const useMapLocation = useMapLocationHook();
+  const {getCurrentLocation} = useMapLocation();
   const useMapCoords = useMapCoordsHook();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
@@ -52,13 +52,13 @@ const useCompass = () => {
     let longitude, latitude;
     if (!isEmpty(selectedSpot)) [longitude, latitude] = useMapCoords.getCentroidOfSelectedSpot();
     else {
-      const locationData = await useMapLocation.getCurrentLocation();
+      const locationData = await getCurrentLocation();
       longitude = locationData.longitude;
       latitude = locationData.latitude;
     }
-      const magneticDeclination = geomagnetism.model().point([latitude, longitude]);
-      console.log('MagDeclination', magneticDeclination);
-      return magneticDeclination.decl;
+    const magneticDeclination = geomagnetism.model().point([latitude, longitude]);
+    console.log('MagDeclination', magneticDeclination);
+    return magneticDeclination.decl;
   };
 
   const strikeAndDip = async (ENU) => {

@@ -15,7 +15,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
 import {setLoadingStatus, setModalVisible} from '../home/home.slice';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice';
@@ -27,7 +27,7 @@ const TagsModal = ({
                    }) => {
   const toast = useToast();
   const {addRemoveTag, addSpotsToTags, filterTagsByTagType, getTagLabel, saveTag} = useTags();
-  const useMapLocation = useMapLocationHook();
+  const {setPointAtCurrentLocation} = useMapLocation();
 
   const dispatch = useDispatch();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
@@ -78,7 +78,7 @@ const TagsModal = ({
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       let tagsToUpdate = [];
       if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
-        useMapLocation.setPointAtCurrentLocation().then((spot) => {
+        setPointAtCurrentLocation().then((spot) => {
           checkedTagsTemp.map((tag) => {
             if (isEmpty(tag.spots)) tag.spots = [];
             tag.spots.push(spot.properties.id);

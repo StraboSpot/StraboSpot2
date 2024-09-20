@@ -10,7 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import SaveButton from '../../shared/ui/SaveButton';
 import uiStyles from '../../shared/ui/ui.styles';
 import {setLoadingStatus} from '../home/home.slice';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {MODAL_KEYS, PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
@@ -29,7 +29,7 @@ const Notes = ({zoomToCurrentLocation}) => {
   const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const toast = useToast();
-  const useMapLocation = useMapLocationHook();
+  const {setPointAtCurrentLocation} = useMapLocation();
 
   const formRef = useRef(null);
   const page = PRIMARY_PAGES.find(p => p.key === PAGE_KEYS.NOTES);
@@ -57,7 +57,7 @@ const Notes = ({zoomToCurrentLocation}) => {
     try {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       if (modalVisible === MODAL_KEYS.SHORTCUTS.NOTE) {
-        let pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {
