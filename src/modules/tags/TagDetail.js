@@ -12,7 +12,7 @@ import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRig
 import {PAGE_KEYS} from '../page/page.constants';
 import usePageHook from '../page/usePage';
 import {SpotsListItem, useSpots} from '../spots';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const TagDetail = ({
                      addRemoveFeatures,
@@ -23,7 +23,7 @@ const TagDetail = ({
                    }) => {
   const usePage = usePageHook();
   const {getSpotById} = useSpots();
-  const useTags = useTagsHook();
+  const {getAllTaggedFeatures, getFeatureDisplayComponent, renderTagInfo} = useTags();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);
@@ -54,7 +54,7 @@ const TagDetail = ({
           />
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
-              {useTags.getFeatureDisplayComponent(featureType, feature)}
+              {getFeatureDisplayComponent(featureType, feature)}
             </ListItem.Title>
             <ListItem.Subtitle>{spot.properties.name}</ListItem.Subtitle>
           </ListItem.Content>
@@ -80,7 +80,7 @@ const TagDetail = ({
       <FlatList
         listKey={2}
         keyExtractor={item => item.toString()}
-        data={useTags.getAllTaggedFeatures(selectedTag)}
+        data={getAllTaggedFeatures(selectedTag)}
         renderItem={({item}) => renderSpotFeatureItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
@@ -97,7 +97,7 @@ const TagDetail = ({
             buttonTitle={'View/Edit'}
             onPress={setIsDetailModalVisible}
           />
-          {selectedTag && useTags.renderTagInfo()}
+          {selectedTag && renderTagInfo()}
           <SectionDividerWithRightButton
             dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
             buttonTitle={'Add/Remove'}

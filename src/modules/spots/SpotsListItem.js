@@ -8,7 +8,7 @@ import {useSpots} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import usePageHook from '../page/usePage';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const SpotsListItem = ({
                          doShowTags,
@@ -20,7 +20,7 @@ const SpotsListItem = ({
   // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
   const {getSpotGeometryIconSource} = useSpots();
-  const useTags = useTagsHook();
+  const {addRemoveSpotFromTag, getTagsAtSpot} = useTags();
   const usePage = usePageHook();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
@@ -29,7 +29,7 @@ const SpotsListItem = ({
     return (
       <ListItem.CheckBox
         checked={selectedTag.spots && selectedTag.spots.includes(spot.properties.id)}
-        onPress={() => useTags.addRemoveSpotFromTag(spot.properties.id, selectedTag)}
+        onPress={() => addRemoveSpotFromTag(spot.properties.id, selectedTag)}
       />
     );
   };
@@ -58,7 +58,7 @@ const SpotsListItem = ({
   };
 
   const renderTags = () => {
-    const tags = useTags.getTagsAtSpot(spot.properties.id);
+    const tags = getTagsAtSpot(spot.properties.id);
     const tagsString = tags.map(tag => tag.name).sort().join(', ');
     return !isEmpty(tagsString) && <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>;
   };

@@ -13,12 +13,12 @@ import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import usePageHook from '../page/usePage';
 import {useSpots} from '../spots';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const AddRemoveTagFeatures = () => {
   const usePage = usePageHook();
   const {getAllFeaturesFromSpot} = useSpots();
-  const useTags = useTagsHook();
+  const {addRemoveSpotFeatureFromTag, getFeatureDisplayComponent} = useTags();
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
@@ -34,7 +34,7 @@ const AddRemoveTagFeatures = () => {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => useTags.addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
+          onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
         >
           <Avatar
             source={usePage.getSpotDataIconSource(featureType)}
@@ -43,7 +43,7 @@ const AddRemoveTagFeatures = () => {
           />
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
-              {useTags.getFeatureDisplayComponent(featureType, feature)}
+              {getFeatureDisplayComponent(featureType, feature)}
             </ListItem.Title>
             <ListItem.Subtitle>{spot.properties.name || spotId}</ListItem.Subtitle>
           </ListItem.Content>
@@ -51,7 +51,7 @@ const AddRemoveTagFeatures = () => {
             checked={!isEmpty(selectedTag) && !isEmpty(selectedTag.features)
               && !isEmpty(selectedTag.features[spotId])
               && selectedTag.features[spotId].includes(feature.id)}
-            onPress={() => useTags.addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
+            onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
           />
         </ListItem>
       );

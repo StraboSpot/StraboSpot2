@@ -14,4 +14,4 @@ export {default as TagsNotebookModal} from './TagsNotebookModal';
 export {default as TagsShortcutModal} from './TagsShortcutModal';
 export {default as Tags} from './Tags';
 export {default as tagsStyles} from './tags.styles';
-export {default as useTagsHook} from './useTags';
+export {default as useTags} from './useTags';

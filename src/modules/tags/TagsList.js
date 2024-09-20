@@ -4,7 +4,7 @@ import {FlatList, SectionList, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {useTagsHook} from './index';
+import {useTags} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -24,7 +24,7 @@ const TagsList = ({type, selectedIndex}) => {
   const tags = useSelector(state => state.project.project?.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
-  const useTags = useTagsHook();
+  const {getTagFeaturesCount, getTagSpotsCount, toggleContinuousTagging} = useTags();
 
   const SECTIONS = type === PAGE_KEYS.GEOLOGIC_UNITS ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
     {title: 'Concepts', key: 'concept'},
@@ -48,8 +48,8 @@ const TagsList = ({type, selectedIndex}) => {
   };
 
   const renderTag = (tag) => {
-    const tagSpotCount = useTags.getTagSpotsCount(tag);
-    const tagFeatureCount = useTags.getTagFeaturesCount(tag);
+    const tagSpotCount = getTagSpotsCount(tag);
+    const tagFeatureCount = getTagFeaturesCount(tag);
     const title = type === PAGE_KEYS.GEOLOGIC_UNITS ? tagSpotCount
       : '(' + tagSpotCount + ') (' + tagFeatureCount + ')';
     return (
@@ -63,7 +63,7 @@ const TagsList = ({type, selectedIndex}) => {
         {useContinuousTagging && (
           <ListItem.CheckBox
             checked={tag.continuousTagging}
-            onPress={() => useTags.toggleContinuousTagging(tag)}
+            onPress={() => toggleContinuousTagging(tag)}
           />
         )}
         <ListItem.Content>

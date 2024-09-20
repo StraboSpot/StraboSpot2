@@ -1,11 +1,11 @@
 import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
-import {useTagsHook} from '../../tags';
+import {useTags} from '../../tags';
 import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
 
 const useMapSymbology = () => {
-  const useTags = useTagsHook();
+  const {getTagsAtSpot} = useTags();
   const useStratSymbology = useStratSymbologyHook();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
@@ -378,7 +378,7 @@ const useMapSymbology = () => {
   // and that tag has a color assigned to then apply that color first
   const getTagColor = (feature) => {
     let color;
-    let tagsAtSpot = useTags.getTagsAtSpot(feature.properties.id);
+    let tagsAtSpot = getTagsAtSpot(feature.properties.id);
     const tagsForColor = tagsAtSpot.filter(tag => tag.type === tagTypeForColor);
     if (!isEmpty(tagsForColor) && tagsForColor[0].color) {
       const rgbColor = hexToRgb(tagsForColor[0].color);

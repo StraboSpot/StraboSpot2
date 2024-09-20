@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import {Avatar, ListItem} from 'react-native-elements';
 
 import usePageHook from '../../modules/page/usePage';
-import {useTagsHook} from '../../modules/tags';
+import {useTags} from '../../modules/tags';
 import {isEmpty} from '../Helpers';
 
 function FeatureTagsList({
@@ -12,9 +12,9 @@ function FeatureTagsList({
                            spotId,
                          }) {
   const usePage = usePageHook();
-  const useTags = useTagsHook();
+  const {getTagsAtFeature} = useTags();
 
-  const tags = useTags.getTagsAtFeature(spotId, featureId);
+  const tags = getTagsAtFeature(spotId, featureId);
   const tagsString = tags.map(tag => tag.name).sort().join(', ');
 
   return (

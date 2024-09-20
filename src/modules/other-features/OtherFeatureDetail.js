@@ -16,7 +16,7 @@ import {formStyles, SelectInputField, TextInputField, useForm} from '../form';
 import {DEFAULT_GEOLOGIC_TYPES} from '../project/project.constants';
 import {addedCustomFeatureTypes, updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const OtherFeatureDetail = ({
                               featureTypes,
@@ -25,7 +25,7 @@ const OtherFeatureDetail = ({
                             }) => {
   const dispatch = useDispatch();
   const {showErrors} = useForm();
-  const useTags = useTagsHook();
+  const {deleteFeatureTags} = useTags();
   const spot = useSelector(state => state.spot.selectedSpot);
   const projectFeatures = useSelector(state => state.project.project?.other_features);
 
@@ -68,7 +68,7 @@ const OtherFeatureDetail = ({
     let existingFeature = otherFeatures.filter(feature => feature.id === selectedFeature.id);
     if (!isEmpty(existingFeature)) {
       delete existingFeature[0];
-      useTags.deleteFeatureTags([selectedFeature]);
+      deleteFeatureTags([selectedFeature]);
       otherFeatures = otherFeatures.filter(feature => feature.id !== selectedFeature.id);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: 'other_features', value: otherFeatures}));

@@ -7,11 +7,11 @@ import OtherFeatureLabel from './OtherFeatureLabel';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const OtherFeatureItem = ({editFeature, feature}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
-  const useTags = useTagsHook();
+  const {setFeaturesSelectedForMultiTagging} = useTags();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);
 
@@ -21,9 +21,7 @@ const OtherFeatureItem = ({editFeature, feature}) => {
   }, [isMultipleFeaturesTaggingEnabled]);
 
   const editFeatureItem = (featureItem) => {
-    if (isMultipleFeaturesTaggingEnabled) {
-      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(featureItem));
-    }
+    if (isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(setFeaturesSelectedForMultiTagging(featureItem));
     else editFeature(featureItem);
   };
 

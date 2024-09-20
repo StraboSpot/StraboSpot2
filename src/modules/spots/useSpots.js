@@ -20,11 +20,11 @@ import {
   updatedProject,
 } from '../project/projects.slice';
 import useProjectHook from '../project/useProject';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const useSpots = () => {
   const useProject = useProjectHook();
-  const useTags = useTagsHook();
+  const {addSpotsToTags} = useTags();
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -192,7 +192,7 @@ const useSpots = () => {
     // Continuous tagging
     if (useContinuousTagging) {
       let continuousTaggingList = tags.filter(tag => tag.continuousTagging);
-      useTags.addSpotsToTags(continuousTaggingList, [newSpot]);
+      addSpotsToTags(continuousTaggingList, [newSpot]);
     }
     console.log('Creating new Spot:', newSpot);
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
@@ -215,7 +215,7 @@ const useSpots = () => {
   const getActiveSpotsObj = () => {
     let activeSpots = {};
     const activeDatasets = useProject.getActiveDatasets();
-    // console.groupCollapsed('Getting Spots in Active Datasets...');
+    console.groupCollapsed('Getting Spots in Active Datasets...');
     Object.values(activeDatasets).forEach((dataset) => {
       let missingSpotsCount = 0;
       let missingSpotsIds = [];
@@ -226,7 +226,7 @@ const useSpots = () => {
           missingSpotsIds.push(spotId);
         }
       });
-      // console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
+      console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
     });
     console.groupEnd();
     return activeSpots;

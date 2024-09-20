@@ -2,13 +2,13 @@ import {useSelector} from 'react-redux';
 
 import {NOTEBOOK_PAGES, PAGE_KEYS, PET_PAGES, PRIMARY_PAGES, SECONDARY_PAGES, SED_PAGES} from './page.constants';
 import {isEmpty} from '../../shared/Helpers';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const usePage = () => {
   const isTestingMode = useSelector(state => state.project.isTestingMode);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useTags = useTagsHook();
+  const {getTagsAtSpot} = useTags();
 
   // Return the keys for the Spot pages that are populated with data
   const getPopulatedPagesKeys = (spot) => {
@@ -16,12 +16,12 @@ const usePage = () => {
       let isPopulated = false;
       switch (page.key) {
         case PAGE_KEYS.TAGS: {
-          const tagsAtSpot = useTags.getTagsAtSpot(spot.properties.id);
+          const tagsAtSpot = getTagsAtSpot(spot.properties.id);
           if (!isEmpty(tagsAtSpot.filter(t => t.type !== PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;
           break;
         }
         case PAGE_KEYS.GEOLOGIC_UNITS: {
-          const tagsAtSpot = useTags.getTagsAtSpot(spot.properties.id);
+          const tagsAtSpot = getTagsAtSpot(spot.properties.id);
           if (!isEmpty(tagsAtSpot.filter(t => t.type === PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;
           break;
         }

@@ -9,7 +9,7 @@ import Modal from '../../shared/ui/modal/Modal';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
-import {TagDetailModal, TagsModal, useTagsHook} from '../tags';
+import {TagDetailModal, TagsModal, useTags} from '../tags';
 
 const TagsNotebookModal = ({
                              closeModal,
@@ -23,12 +23,12 @@ const TagsNotebookModal = ({
 
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
-  const useTags = useTagsHook();
+  const {addTag} = useTags();
 
   const pageVisible = pagesStack.slice(-1)[0];
 
-  const addTag = async () => {
-    useTags.addTag();
+  const onAddTag = async () => {
+    addTag();
     setIsDetailModalVisible(true);
   };
 
@@ -46,7 +46,7 @@ const TagsNotebookModal = ({
         <View style={[modalStyle.textContainer]}>
           <AddButton
             title={'Create New Tag'}
-            onPress={() => addTag()}
+            onPress={onAddTag}
             type={'outline'}
           />
         </View>

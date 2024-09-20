@@ -7,10 +7,10 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {PAGE_KEYS} from '../page/page.constants';
 import {useSpots} from '../spots';
-import {TagsListItem, useTagsHook} from '../tags';
+import {TagsListItem, useTags} from '../tags';
 
 const FeatureTagsAtSpotList = ({openMainMenuPanel, page}) => {
-  const useTags = useTagsHook();
+  const {getGeologicUnitFeatureTagsAtSpot, getNonGeologicUnitFeatureTagsAtSpot} = useTags();
   const {getAllFeaturesFromSpot} = useSpots();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
@@ -18,8 +18,8 @@ const FeatureTagsAtSpotList = ({openMainMenuPanel, page}) => {
 
   const getFeatureTagsAtSpot = () => {
     let featuresAtSpot = getAllFeaturesFromSpot(selectedSpot);
-    return page.key === PAGE_KEYS.GEOLOGIC_UNITS ? useTags.getGeologicUnitFeatureTagsAtSpot(featuresAtSpot)
-      : useTags.getNonGeologicUnitFeatureTagsAtSpot(featuresAtSpot);
+    return page.key === PAGE_KEYS.GEOLOGIC_UNITS ? getGeologicUnitFeatureTagsAtSpot(featuresAtSpot)
+      : getNonGeologicUnitFeatureTagsAtSpot(featuresAtSpot);
   };
 
   const renderTag = (tag) => {

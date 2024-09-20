@@ -18,7 +18,7 @@ import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSedHook from '../sed/useSed';
 import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const BasicPageDetail = ({
                            closeDetailView,
@@ -35,7 +35,7 @@ const BasicPageDetail = ({
   const usePetrology = usePetrologyHook();
   const useSed = useSedHook();
   const {checkSampleName} = useSpots();
-  const useTags = useTagsHook();
+  const {deleteFeatureTags} = useTags();
 
   const formRef = useRef(null);
 
@@ -91,7 +91,7 @@ const BasicPageDetail = ({
   };
 
   const deleteFeature = () => {
-    useTags.deleteFeatureTags([selectedFeature]);
+    deleteFeatureTags([selectedFeature]);
     if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, selectedFeature);
     else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, selectedFeature);
     else {

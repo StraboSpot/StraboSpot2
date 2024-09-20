@@ -11,7 +11,7 @@ import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const TagDetailModal = ({
                           closeModal,
@@ -22,7 +22,7 @@ const TagDetailModal = ({
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const useTags = useTagsHook();
+  const {deleteTag, renderTagForm, saveForm} = useTags();
 
   const confirmDeleteTag = () => {
     alert(
@@ -36,17 +36,17 @@ const TagDetailModal = ({
         },
         {
           text: 'OK',
-          onPress: () => deleteTag(),
+          onPress: () => doDeleteTag(),
         },
       ],
       {cancelable: false},
     );
   };
 
-  const deleteTag = () => {
+  const doDeleteTag = () => {
     closeModal();
     dispatch(setSidePanelVisible({bool: false}));
-    useTags.deleteTag(selectedTag);
+    deleteTag(selectedTag);
   };
 
   const renderCancelSaveButtons = () => {
@@ -61,7 +61,7 @@ const TagDetailModal = ({
   };
 
   const saveFormAndClose = () => {
-    useTags.saveForm().then(() => {
+    saveForm().then(() => {
       console.log('Finished saving tag data');
       closeModal();
     }, () => {
@@ -82,7 +82,7 @@ const TagDetailModal = ({
         <FlatList
           ListHeaderComponent={
             <>
-              {useTags.renderTagForm(type)}
+              {renderTagForm(type)}
               {!isEmpty(selectedTag) && (
                 <Button
                   titleStyle={{color: themes.RED}}
