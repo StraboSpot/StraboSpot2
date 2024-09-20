@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useDevice from '../../services/useDevice';
-import usePermissionsHook from '../../services/usePermissions';
+import usePermissions from '../../services/usePermissions';
 import {getNewId} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -34,7 +34,7 @@ const useImages = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const {copyFiles, deleteFromDevice, doesDeviceDirExist, makeDirectory, moveFile, readDirectory} = useDevice();
-  const usePermissions = usePermissionsHook();
+  const {checkPermission, requestPermission} = usePermissions();
   const {width, height} = useWindowDimensions();
 
   const dispatch = useDispatch();
@@ -258,7 +258,7 @@ const useImages = () => {
   const launchCameraFromNotebook = async (newSpotId) => {
     try {
       const permissionResult = Platform.OS === 'ios' ? true
-        : await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+        : await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
       if (permissionResult) {
         const savedPhoto = await takePicture();
         dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -285,7 +285,7 @@ const useImages = () => {
         }
       }
       else {
-        const permissionRequestResult = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+        const permissionRequestResult = await requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
         if (permissionRequestResult === 'granted' || permissionRequestResult === 'never_ask_again') await launchCameraFromNotebook();
         else toast.show('StraboSpot can not access your camera due to permission denial.');
       }
@@ -411,9 +411,7 @@ const useImages = () => {
   const takePicture = async () => {
     let permissionGranted;
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (Platform.OS === 'android') {
-      permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-    }
+    if (Platform.OS === 'android') permissionGranted = await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
     if (permissionGranted === 'granted' || Platform.OS === 'ios') {
       return new Promise((resolve, reject) => {
         try {

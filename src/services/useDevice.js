@@ -9,12 +9,12 @@ import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequests from './useServerRequests';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
-import usePermissionsHook from '../services/usePermissions';
+import usePermissions from '../services/usePermissions';
 
 const {PERMISSIONS, RESULTS} = PermissionsAndroid;
 
 const useDevice = () => {
-  const usePermissions = usePermissionsHook();
+  const {checkPermission} = usePermissions();
 
   const dispatch = useDispatch();
 
@@ -46,7 +46,7 @@ const useDevice = () => {
   const createProjectDirectories = async () => {
     console.log('Creating Project Directories...');
     if (Platform.OS === 'android') {
-      const permissionsGranted = await usePermissions.checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+      const permissionsGranted = await checkPermission(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       if (permissionsGranted === RESULTS.GRANTED) {
         await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
         console.log('Android Downloads/StraboSpot/Backups directory created');
@@ -369,18 +369,11 @@ const useDevice = () => {
 
   const readDeviceJSONFile = async (fileName) => {
     try {
-      // const granted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-      // if (granted) {
       const dataFile = '/data.json';
       console.log(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
       const response = await readFile(APP_DIRECTORIES.BACKUP_DIR + fileName + dataFile);
       console.log(JSON.parse(response));
       return JSON.parse(response);
-      // }
-      // else {
-      //  const permissionStatus = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-      //  console.log('Permission Status', permissionStatus);
-      // }
     }
     catch (err) {
       console.error('Error reading JSON file', err);

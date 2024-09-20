@@ -15,7 +15,7 @@ import UserProfileAvatar from './UserProfileAvatar';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDevice from '../../services/useDevice';
 import useDownload from '../../services/useDownload';
-import usePermissionsHook from '../../services/usePermissions';
+import usePermissions from '../../services/usePermissions';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequests from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
@@ -55,7 +55,7 @@ const UserProfilePage = () => {
   const {copyFiles, deleteFromDevice, deleteProfileImageFile} = useDevice();
   const {downloadUserProfile} = useDownload();
   const {hasErrors, validateForm} = useForm();
-  const usePermissions = usePermissionsHook();
+  const {checkPermission} = usePermissions();
   const useResetState = useResetStateHook();
   const {authenticateUser, deleteProfile, deleteProfileImage} = useServerRequests();
   const useUpload = useUploadHook();
@@ -135,9 +135,7 @@ const UserProfilePage = () => {
     else {
       let permissionGranted;
       console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-      if (Platform.OS === 'android') {
-        permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-      }
+      if (Platform.OS === 'android') permissionGranted = await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
       if (permissionGranted === 'granted' || Platform.OS === 'ios') {
         await launchCamera({}, (response) => {
           console.log('Launch Camera Response', response);
