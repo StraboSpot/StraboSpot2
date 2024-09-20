@@ -3,18 +3,18 @@ import {Animated, Linking, Platform, Pressable, Text, View} from 'react-native';
 
 import styles from './versionCheck.styles';
 import alert from '../../shared/ui/alert';
-import VersionCheckHook from '../versionCheck/useVersionCheck';
+import useVersionCheck from '../versionCheck/useVersionCheck';
 
 const VersionCheckLabel = () => {
   const [versionObj, setVersionObj] = useState({});
   const [animatedPulse] = useState(new Animated.Value(0));
 
-  const useVersionCheck = VersionCheckHook();
+  const {animateLabel, checkAppStoreVersion} = useVersionCheck();
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
-      useVersionCheck.checkAppStoreVersion().then((res) => {
-        if (res.needsUpdate) useVersionCheck.animateLabel(animatedPulse);
+      checkAppStoreVersion().then((res) => {
+        if (res.needsUpdate) animateLabel(animatedPulse);
         setVersionObj(res);
       });
     }
@@ -37,7 +37,7 @@ const VersionCheckLabel = () => {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        ]);
+      ]);
   };
 
   return (

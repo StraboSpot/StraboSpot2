@@ -21,7 +21,7 @@ import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
 import useDevice from '../../services/useDevice';
 import useExport from '../../services/useExport';
-import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
+import useVersionCheck from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
@@ -49,7 +49,7 @@ const Home = ({navigation, route}) => {
   const {createProjectDirectories, openURL} = useDevice();
   const {zipAndExportProjectFolder} = useExport();
   const {setPointAtCurrentLocation} = useMapLocation();
-  const useVersionCheck = VersionCheckHook();
+  const {checkAppStoreVersion} = useVersionCheck();
 
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
@@ -87,14 +87,14 @@ const Home = ({navigation, route}) => {
   const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
 
   useEffect(() => {
-    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+    Platform.OS !== 'web' && createProjectDirectories().catch(
       err => console.error('Error creating app directories', err));
   }, []);
 
   useEffect(() => {
     let updateTimer;
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
-      useVersionCheck.checkAppStoreVersion().then((res) => {
+      checkAppStoreVersion().then((res) => {
         if (res.needsUpdate) {
           setShowUpdateLabel(true);
           updateTimer = setTimeout(() => setShowUpdateLabel(false), 5000);
