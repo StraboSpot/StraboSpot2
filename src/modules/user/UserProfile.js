@@ -8,7 +8,7 @@ import userStyles from './user.styles';
 import {logout} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
 import useUserProfileHook from './useUserProfile';
-import useResetStateHook from '../../services/useResetState';
+import useResetState from '../../services/useResetState';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import StandardModal from '../../shared/ui/StandardModal';
@@ -22,7 +22,7 @@ const UserProfile = () => {
 
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
-  const useResetState = useResetStateHook();
+  const {clearUser} = useResetState();
   const useUserProfile = useUserProfileHook();
 
   const openUploadAndBackupPage = () => {
@@ -62,7 +62,7 @@ const UserProfile = () => {
         />
         {isEmpty(userData.name) && (
           <Button
-            onPress={() => useResetState.clearUser()}
+            onPress={clearUser}
             title={isEmpty(userData.name) && 'Clear and Return to Log In'}
             containerStyle={commonStyles.standardButtonContainer}
             buttonStyle={commonStyles.standardButton}
@@ -92,7 +92,7 @@ const UserProfile = () => {
           <Button
             title={'Logout'}
             titleStyle={overlayStyles.importantText}
-            onPress={() => useResetState.clearUser()}
+            onPress={clearUser}
             type={'clear'}
           />
         </View>

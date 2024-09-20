@@ -14,7 +14,7 @@ import {
 import useDevice from '../../services/useDevice';
 import useDownload from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
-import useResetStateHook from '../../services/useResetState';
+import useResetState from '../../services/useResetState';
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -46,7 +46,7 @@ const useProject = () => {
   const {doesDeviceBackupDirExist, readDirectory} = useDevice();
   const {initializeDownload} = useDownload();
   const useImport = useImportHook();
-  const useResetState = useResetStateHook();
+  const {clearProject} = useResetState();
   const {getMyProjects} = useServerRequests();
 
   const addDataset = async (name) => {
@@ -208,7 +208,7 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    useResetState.clearProject();
+    clearProject();
     await createProject(descriptionData);
     return Promise.resolve();
   };

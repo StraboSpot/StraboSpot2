@@ -16,7 +16,7 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDevice from '../../services/useDevice';
 import useDownload from '../../services/useDownload';
 import usePermissions from '../../services/usePermissions';
-import useResetStateHook from '../../services/useResetState';
+import useResetState from '../../services/useResetState';
 import useServerRequests from '../../services/useServerRequests';
 import useUploadHook from '../../services/useUpload';
 import useUploadImagesHook from '../../services/useUploadImages';
@@ -56,7 +56,7 @@ const UserProfilePage = () => {
   const {downloadUserProfile} = useDownload();
   const {hasErrors, validateForm} = useForm();
   const {checkPermission} = usePermissions();
-  const useResetState = useResetStateHook();
+  const {clearUser} = useResetState();
   const {authenticateUser, deleteProfile, deleteProfileImage} = useServerRequests();
   const useUpload = useUploadHook();
   const useUploadImages = useUploadImagesHook();
@@ -73,7 +73,7 @@ const UserProfilePage = () => {
         const res = await deleteProfile(encodedLogin);
         console.log('PROFILE DELETED!', res);
         setDeleteProfileModalVisible(false);
-        useResetState.clearUser();
+        clearUser();
         toast.show('Profile Successfully Deleted!', {type: 'success', duration: 2000});
         setTimeout(() => navigation.navigate('SignIn'), 200);
       }

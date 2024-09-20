@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useDevice from './useDevice';
-import useResetStateHook from './useResetState';
+import useResetState from './useResetState';
 import useServerRequests from './useServerRequests';
 import {
   addedStatusMessage,
@@ -47,7 +47,7 @@ const useDownload = () => {
 
   const {doesDeviceDirectoryExist, downloadAndSaveProfileImage, downloadImageAndSave} = useDevice();
   const {gatherNeededImages} = useImages();
-  const useResetState = useResetStateHook();
+  const {clearProject} = useResetState();
   const {getDatasets, getDatasetSpots, getImageUrl, getProfile, getProfileImage, getProject} = useServerRequests();
 
   const downloadDatasets = async (selectedProject) => {
@@ -78,7 +78,7 @@ const useDownload = () => {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
       const projectResponse = await getProject(selectedProject.id, encodedLogin);
-      if (!isEmpty(project)) useResetState.clearProject();
+      if (!isEmpty(project)) clearProject();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);

@@ -6,7 +6,7 @@ import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownload from '../../services/useDownload';
-import useResetStateHook from '../../services/useResetState';
+import useResetState from '../../services/useResetState';
 import {isEmpty} from '../../shared/Helpers';
 import {setIsProjectLoadSelectionModalVisible, setLoadingStatus} from '../home/home.slice';
 import {setSelectedProject} from '../project/projects.slice';
@@ -17,7 +17,7 @@ const useSignIn = () => {
   const currentProject = useSelector(state => state.project.project);
   const userEmail = useSelector(state => state.user.email);
 
-  const useResetState = useResetStateHook();
+  const {clearUser} = useResetState();
   const {downloadUserProfile} = useDownload();
 
   const project = useRef(null);
@@ -52,7 +52,7 @@ const useSignIn = () => {
     Sentry.configureScope((scope) => {
       scope.setUser({'id': 'GUEST'});
     });
-    if (!isEmpty(userEmail)) useResetState.clearUser();
+    if (!isEmpty(userEmail)) clearUser();
     console.log('Loading user: GUEST');
     setTimeout(() => isEmpty(currentProject) && dispatch(setIsProjectLoadSelectionModalVisible(true)), 500);
   };
