@@ -5,7 +5,7 @@ import KeepAwake from 'react-native-keep-awake';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from './useServerRequests';
-import useUploadImagesHook from './useUploadImages';
+import useUploadImages from './useUploadImages';
 import {addedStatusMessage} from '../modules/home/home.slice';
 import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
 import useProject from '../modules/project/useProject';
@@ -35,14 +35,14 @@ const useUpload = () => {
     uploadWebImage,
   } = useServerRequests();
   const {getSpotsByIds} = useSpots();
-  const useUploadImages = useUploadImagesHook();
+  const {initializeImageUpload} = useUploadImages();
 
   const initializeUpload = async () => {
     Platform.OS !== 'web' && KeepAwake.activate();
     try {
       await uploadProject();
       await uploadDatasets();
-      const imageStatus = await useUploadImages.initializeImageUpload();
+      const imageStatus = await initializeImageUpload();
       projectUploadStatus = {...projectUploadStatus, images: imageStatus};
       // projectUploadStatus = {...projectUploadStatus, images: imageStatus};
       dispatch(setIsImageTransferring(false));

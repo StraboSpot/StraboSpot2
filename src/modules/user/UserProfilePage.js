@@ -19,7 +19,7 @@ import usePermissions from '../../services/usePermissions';
 import useResetState from '../../services/useResetState';
 import useServerRequests from '../../services/useServerRequests';
 import useUpload from '../../services/useUpload';
-import useUploadImagesHook from '../../services/useUploadImages';
+import useUploadImages from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
@@ -59,7 +59,7 @@ const UserProfilePage = () => {
   const {clearUser} = useResetState();
   const {authenticateUser, deleteProfile, deleteProfileImage} = useServerRequests();
   const {uploadProfile} = useUpload();
-  const useUploadImages = useUploadImagesHook();
+  const {resizeImageForUpload, uploadProfileImage} = useUploadImages();
 
   const formName = ['general', 'user_profile'];
 
@@ -192,11 +192,11 @@ const UserProfilePage = () => {
     try {
       setIsUploadingProfileImage(true);
       console.log('Need to upload', tempUserProfileImage.uri);
-      const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
+      const resizedProfileImage = await resizeImageForUpload(tempUserProfileImage,
         tempUserProfileImage.uri);
       await copyFiles(resizedProfileImage.uri, APP_DIRECTORIES.PROFILE_IMAGE);
       await deleteFromDevice(resizedProfileImage.uri);
-      await useUploadImages.uploadProfileImage();
+      await uploadProfileImage();
       setShouldUpdateImage(true);
       closeProfileImageModal();
       setIsUploadingProfileImage(false);
