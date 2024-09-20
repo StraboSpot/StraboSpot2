@@ -4,7 +4,7 @@ import {Text, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDownloadHook from '../../../services/useDownload';
+import useDownload from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
 import {isEmpty} from '../../../shared/Helpers';
 import {BLUE} from '../../../shared/styles.constants';
@@ -24,7 +24,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const useImport = useImportHook();
-  const useDownload = useDownloadHook();
+  const {initializeDownload} = useDownload();
 
   const getProjectFromSource = async () => {
     if (selectedProject.source === 'device') {
@@ -38,7 +38,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
       console.log('FROM SERVER', selectedProject.project);
       dispatch(setSelectedProject({source: '', project: ''}));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      await useDownload.initializeDownload(selectedProject.project);
+      await initializeDownload(selectedProject.project);
     }
     else {
       dispatch(setIsStatusMessagesModalVisible(false));

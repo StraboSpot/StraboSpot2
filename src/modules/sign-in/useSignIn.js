@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDownloadHook from '../../services/useDownload';
+import useDownload from '../../services/useDownload';
 import useResetStateHook from '../../services/useResetState';
 import {isEmpty} from '../../shared/Helpers';
 import {setIsProjectLoadSelectionModalVisible, setLoadingStatus} from '../home/home.slice';
@@ -18,7 +18,7 @@ const useSignIn = () => {
   const userEmail = useSelector(state => state.user.email);
 
   const useResetState = useResetStateHook();
-  const useDownload = useDownloadHook();
+  const {downloadUserProfile} = useDownload();
 
   const project = useRef(null);
 
@@ -61,7 +61,7 @@ const useSignIn = () => {
     console.log(`Authenticating ${email} and getting user profile...`);
     try {
       const newEncodedLogin = Base64.encode(email + ':' + password);
-      await useDownload.downloadUserProfile(newEncodedLogin);
+      await downloadUserProfile(newEncodedLogin);
 
       console.log(`${email} is successfully logged in!`);
       dispatch(login());

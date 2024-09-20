@@ -14,7 +14,7 @@ import {setUserData} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDevice from '../../services/useDevice';
-import useDownloadHook from '../../services/useDownload';
+import useDownload from '../../services/useDownload';
 import usePermissionsHook from '../../services/usePermissions';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
@@ -53,7 +53,7 @@ const UserProfilePage = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const {copyFiles, deleteFromDevice, deleteProfileImageFile} = useDevice();
-  const useDownload = useDownloadHook();
+  const {downloadUserProfile} = useDownload();
   const {hasErrors, validateForm} = useForm();
   const usePermissions = usePermissionsHook();
   const useResetState = useResetStateHook();
@@ -82,9 +82,9 @@ const UserProfilePage = () => {
     else setErrorMessage('Need to enter your password');
   };
 
-  const downloadUserProfile = async () => {
+  const onDownloadUserProfile = async () => {
     setIsDownloading(true);
-    await useDownload.downloadUserProfile();
+    await downloadUserProfile();
     setIsDownloading(false);
   };
 
@@ -333,7 +333,7 @@ const UserProfilePage = () => {
                   />
                   {Platform.OS !== 'web' && (
                     <Button
-                      onPress={downloadUserProfile}
+                      onPress={onDownloadUserProfile}
                       type={'clear'}
                       title={'Download Profile'}
                       loading={isDownloading}

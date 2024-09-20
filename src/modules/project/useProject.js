@@ -12,7 +12,7 @@ import {
   setSelectedProject,
 } from './projects.slice';
 import useDevice from '../../services/useDevice';
-import useDownloadHook from '../../services/useDownload';
+import useDownload from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useResetStateHook from '../../services/useResetState';
 import useServerRequestsHook from '../../services/useServerRequests';
@@ -44,7 +44,7 @@ const useProject = () => {
 
   const toast = useToast();
   const {doesDeviceBackupDirExist, readDirectory} = useDevice();
-  const useDownload = useDownloadHook();
+  const {initializeDownload} = useDownload();
   const useImport = useImportHook();
   const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
@@ -223,7 +223,7 @@ const useProject = () => {
 
   const loadProjectWeb = async (projectId) => {
     try {
-      await useDownload.initializeDownload({id: projectId});
+      await initializeDownload({id: projectId});
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -276,7 +276,7 @@ const useProject = () => {
         }
         else if (selectedProject.source === 'server') {
           dispatch(setSelectedProject({project: '', source: ''}));
-          await useDownload.initializeDownload(selectedProject.project);
+          await initializeDownload(selectedProject.project);
         }
       }
     }

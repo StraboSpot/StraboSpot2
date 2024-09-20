@@ -5,7 +5,7 @@ import {Icon} from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDownloadHook from '../../../services/useDownload';
+import useDownload from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
 import useUploadHook from '../../../services/useUpload';
 import {isEmpty} from '../../../shared/Helpers';
@@ -29,7 +29,7 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
   // const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [uploadComplete, setUploadComplete] = useState('');
 
-  const useDownload = useDownloadHook();
+  const {initializeDownload} = useDownload();
   const useImport = useImportHook();
   const useUpload = useUploadHook();
 
@@ -40,7 +40,7 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
       dispatch(setIsProgressModalVisible(false));
       if (selectedProject.source === 'server' && !isEmpty(project)) {
         console.log('Downloading Project');
-        await useDownload.initializeDownload(project);
+        await initializeDownload(project);
         console.log('Download Complete!');
 
       }

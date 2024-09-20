@@ -5,7 +5,7 @@ import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedDatasetProperties} from './projects.slice';
-import useDownloadHook from '../../services/useDownload';
+import useDownload from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
@@ -20,7 +20,7 @@ const DatasetList = () => {
   console.log('Rendering DatasetList...');
 
   const {destroyDataset, makeDatasetCurrent, setSwitchValue} = useProject();
-  const useDownload = useDownloadHook();
+  const {initializeDownloadImages} = useDownload();
 
   const [selectedDataset, setSelectedDataset] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
@@ -35,7 +35,7 @@ const DatasetList = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   const downloadImages = async (dataset) => {
-    const imageRes = await useDownload.initializeDownloadImages(dataset);
+    const imageRes = await initializeDownloadImages(dataset);
     console.log('Image Res', imageRes);
   };
 

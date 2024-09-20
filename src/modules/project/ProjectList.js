@@ -9,7 +9,7 @@ import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptio
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProject from './useProject';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDownloadHook from '../../services/useDownload';
+import useDownload from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -40,7 +40,7 @@ const ProjectList = ({source}) => {
   const [loading, setLoading] = useState(false);
   const [projectsArr, setProjectsArr] = useState([]);
 
-  const useDownload = useDownloadHook();
+  const {initializeDownload} = useDownload();
   const useImport = useImportHook();
   const {getAllDeviceProjects, getAllServerProjects} = useProject();
 
@@ -135,7 +135,7 @@ const ProjectList = ({source}) => {
           dispatch(setStatusMessageModalTitle(res.project.description.project_name));
           console.log('Done loading project', res);
         }
-        else await useDownload.initializeDownload(project);
+        else await initializeDownload(project);
       }
     }
     catch (err) {
