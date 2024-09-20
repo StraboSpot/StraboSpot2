@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
@@ -7,31 +7,26 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import useDownload from '../../../services/useDownload';
 import useImportHook from '../../../services/useImport';
-import useUploadHook from '../../../services/useUpload';
 import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
-// import useAnimationsHook from '../../../shared/ui/useAnimations';
 import LottieAnimation from '../../../utils/animations/LottieAnimations';
-import {addedStatusMessage, setIsProgressModalVisible} from '../../home/home.slice';
-import {setIsImageTransferring, setSelectedProject} from '../projects.slice';
+import {setIsProgressModalVisible} from '../../home/home.slice';
+import {setSelectedProject} from '../projects.slice';
 
 const UploadProgressModal = ({isProgressModalVisible}) => {
 
   const dispatch = useDispatch();
   const isImageTransferring = useSelector(state => state.project.isImageTransferring);
-  // const isProgressModalVisible = useSelector(state => state.home.isProgressModalVisible);
   const projectTransferProgress = useSelector(state => state.connections.projectTransferProgress);
   const selectedProject = useSelector(state => state.project.selectedProject);
   const statusMessages = useSelector(state => state.home.statusMessages);
 
   const [datasetsNotUploaded, setDatasetsNotUploaded] = useState([]);
   const [error, setError] = useState(false);
-  // const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
   const [uploadComplete, setUploadComplete] = useState('');
 
   const {initializeDownload} = useDownload();
   const useImport = useImportHook();
-  const useUpload = useUploadHook();
 
   const handleCompletePress = async () => {
     try {
@@ -65,23 +60,6 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
       <Text style={{textAlign: 'left'}}>{dataset.name}</Text>
     );
   };
-
-  // const renderUploadProgressModal = async () => {
-  //   try {
-  //     isImageTransferring && dispatch(setIsImageTransferring(false));
-  //     setUploadComplete('uploading');
-  //     const uploadStatusObj = await useUpload.initializeUpload();
-  //     const {status, datasets} = uploadStatusObj;
-  //     setUploadComplete(status);
-  //     setDatasetsNotUploaded(datasets);
-  //     dispatch(addedStatusMessage('\nUpload Complete!'));
-  //   }
-  //   catch (err) {
-  //     console.error('Error in renderUploadProgressModal', err);
-  //     setUploadComplete('');
-  //     setError(true);
-  //   }
-  // };
 
   const renderDatasetsNotUploaded = () => {
     return (
@@ -142,8 +120,8 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
           </View>
         )
         : <View>
-            <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
-          </View>
+          <Text style={{textAlign: 'center'}}>{statusMessages}</Text>
+        </View>
       }
     </ProgressModal>
   );
