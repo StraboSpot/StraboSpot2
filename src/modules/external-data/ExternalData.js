@@ -5,7 +5,7 @@ import {Button, ButtonGroup, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import DataWrapper from './DataWrapper';
-import useExternalDataHook from './useExternalData';
+import useExternalData from './useExternalData';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -19,11 +19,11 @@ const ExternalData = () => {
   const [error, setError] = useState(false);
   const [protocol, setProtocol] = useState('http://');
   const [url, setUrl] = useState('');
-  const useExternalData = useExternalDataHook();
+  const {readCSV, saveURL} = useExternalData();
 
   const importCSVFile = () => {
     try {
-      if (Platform.OS !== 'web') useExternalData.readCSV().catch(console.error);
+      if (Platform.OS !== 'web') readCSV().catch(console.error);
       else {
         console.log('WEB');
         inputRef.current.click();
@@ -37,13 +37,13 @@ const ExternalData = () => {
   const handleFileChange = async (e) => {
     console.log('CSV File', e.target.files[0]);
     const file = e.target.files[0];
-    await useExternalData.readCSV(file);
+    await readCSV(file);
     console.log('CSV From Web Saved');
   };
 
   const saveUrl = async () => {
     try {
-      useExternalData.saveURL(protocol, url);
+      saveURL(protocol, url);
       setUrl('');
       setError(false);
     }
