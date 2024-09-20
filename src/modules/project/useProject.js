@@ -11,8 +11,7 @@ import {
   setSelectedDataset,
   setSelectedProject,
 } from './projects.slice';
-import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
 import useResetStateHook from '../../services/useResetState';
@@ -44,7 +43,7 @@ const useProject = () => {
   const user = useSelector(state => state.user);
 
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {doesDeviceBackupDirExist, readDirectory} = useDevice();
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
   const useResetState = useResetStateHook();
@@ -132,21 +131,16 @@ const useProject = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
-  const doesDeviceBackupDirExist = async (subDirectory) => {
-    if (subDirectory !== undefined) return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
-    else return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
-  };
-
   const getActiveDatasets = () => {
     const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
     return activeDatasets.filter(activeDataset => !isEmpty(activeDataset));
   };
 
   const getAllDeviceProjects = async (directory) => {
-    // const deviceProject = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
+    // const deviceProject = await doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
     //   console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
     //   if (res) {
-    //     return useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
+    //     return readDirectory(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
     //       console.log('Files on device', files);
     //       let id = 0;
     //       if (!isEmpty(files)) {
@@ -162,9 +156,9 @@ const useProject = () => {
     // });
     // return Promise.resolve(deviceProject);
     let id = 0;
-    const exists = await useDevice.doesDeviceBackupDirExist(undefined);
+    const exists = await doesDeviceBackupDirExist(undefined);
     if (exists) {
-      const res = await useDevice.readDirectory(directory);
+      const res = await readDirectory(directory);
       const deviceFiles = res.map((file) => {
         return {id: id++, fileName: file};
       });
@@ -304,7 +298,6 @@ const useProject = () => {
     createProject: createProject,
     deleteProject: deleteProject,
     destroyDataset: destroyDataset,
-    doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
     getAllExternalStorageProjects: getAllExternalStorageProjects,

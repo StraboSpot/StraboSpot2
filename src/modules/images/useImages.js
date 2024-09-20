@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import usePermissionsHook from '../../services/usePermissions';
 import {getNewId} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -33,7 +33,7 @@ import {
 const useImages = () => {
   const navigation = useNavigation();
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {copyFiles, deleteFromDevice, doesDeviceDirExist, makeDirectory, moveFile, readDirectory} = useDevice();
   const usePermissions = usePermissionsHook();
   const {width, height} = useWindowDimensions();
 
@@ -62,8 +62,8 @@ const useImages = () => {
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
       const localImageFile = getLocalImageURI(imageId);
       if (Platform.OS !== 'web') {
-        const fileExists = await useDevice.doesDeviceDirExist(localImageFile);
-        if (fileExists) await useDevice.deleteFromDevice(localImageFile);
+        const fileExists = await doesDeviceDirExist(localImageFile);
+        if (fileExists) await deleteFromDevice(localImageFile);
       }
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
@@ -81,7 +81,7 @@ const useImages = () => {
       const imageURI = getLocalImageURI(imageId);
       console.log('Looking on device for image at URI:', imageURI, '...');
       // console.log(`Image ${imageURI} Exists exists: ${exists}!!`);
-      return await useDevice.doesDeviceDirExist(imageURI);
+      return await doesDeviceDirExist(imageURI);
     }
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
@@ -197,7 +197,7 @@ const useImages = () => {
           }
           else {
             const imageUri = getLocalImageURI(image.id);
-            const exists = await useDevice.doesDeviceDirExist(imageUri);
+            const exists = await doesDeviceDirExist(imageUri);
             if (exists) {
               const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
               const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
@@ -345,9 +345,9 @@ const useImages = () => {
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
-      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
-      if (!exists) await useDevice.makeDirectory(APP_DIRECTORIES.IMAGES);
-      await useDevice.copyFiles(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
+      const exists = await doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
+      if (!exists) await makeDirectory(APP_DIRECTORIES.IMAGES);
+      await copyFiles(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
       console.log(imageCount, 'File saved to:', imageURI);
       // imageCount++;
       return {
@@ -365,13 +365,13 @@ const useImages = () => {
   };
 
   const saveImageFromDownloadsDir = async (image) => {
-    const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
+    const exists = await doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
     console.log('EXISTS', exists);
     const source = image.fileCopyUri;
     const dest = APP_DIRECTORIES.IMAGES + image.name;
     console.log('source:', source, 'dest', dest);
-    await useDevice.moveFile(source, dest);
-    const imagesInDir = await useDevice.readDirectory(APP_DIRECTORIES.IMAGES);
+    await moveFile(source, dest);
+    const imagesInDir = await readDirectory(APP_DIRECTORIES.IMAGES);
     console.log('images in app directory', imagesInDir);
     // return imageRes;
   };
@@ -393,7 +393,7 @@ const useImages = () => {
   const setImageHeightAndWidth = async (image) => {
     const imageURI = getLocalImageURI(image.id);
     if (imageURI) {
-      const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
+      const isValidImageURI = await doesDeviceDirExist(imageURI);
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
         const updatedImage = {...image, ...imageSize};

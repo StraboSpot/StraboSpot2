@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
+import useDevice from './useDevice';
 import useResetStateHook from './useResetState';
 import useServerRequestsHook from './useServerRequests';
 import {
@@ -45,7 +45,7 @@ const useDownload = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const project = useSelector(state => state.project.project);
 
-  const useDevice = useDeviceHook();
+  const {doesDeviceDirectoryExist, downloadAndSaveProfileImage, downloadImageAndSave} = useDevice();
   const {gatherNeededImages} = useImages();
   const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
@@ -132,7 +132,7 @@ const useDownload = () => {
         else dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
       else {
-        await useDevice.downloadAndSaveProfileImage(encodedLoginScoped);
+        await downloadAndSaveProfileImage(encodedLoginScoped);
         dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
 
@@ -219,10 +219,10 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImagesIds)) {
         // Check path first and if it doesn't exist, then create
-        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
+        await doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         for (const imageId of updatedNeededImagesIds) {
           const imageUrl = await useServerRequests.getImageUrl();
-          const success = await useDevice.downloadImageAndSave(imageUrl + imageId, imageId);
+          const success = await downloadImageAndSave(imageUrl + imageId, imageId);
           if (success) {
             imagesDownloadedCount++;
             updatedNeededImagesIds = updatedNeededImagesIds.filter(id => id !== imageId);

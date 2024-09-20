@@ -11,7 +11,7 @@ import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
 import ProjectTypesButtons from './ProjectTypesButtons';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
@@ -27,7 +27,7 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
 
   const dispatch = useDispatch();
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {doesDeviceBackupDirExist, getExternalProjectData, openURL, makeDirectory} = useDevice();
 
   useEffect(() => {
     console.log('UE MyStraboSpot []');
@@ -36,7 +36,7 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
 
   const checkBackupDir = async () => {
     try {
-      const exists = await useDevice.doesDeviceBackupDirExist();
+      const exists = await doesDeviceBackupDirExist();
       console.log('Backup Directory Exists: ', exists);
       if (Platform.OS === 'android') await checkAndroidDownloadDir();
       console.log('Done Checking Backup Directory');
@@ -47,14 +47,14 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
   };
 
   const checkAndroidDownloadDir = async () => {
-    const exists = await useDevice.doesDeviceBackupDirExist(undefined, true);
-    if (!exists) await useDevice.makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
+    const exists = await doesDeviceBackupDirExist(undefined, true);
+    if (!exists) await makeDirectory(APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
   };
 
   const getExportedProject = async () => {
     try {
       dispatch(setLoadingStatus({bool: true, view: 'home'}));
-      const res = await useDevice.getExternalProjectData();
+      const res = await getExternalProjectData();
       console.log('EXTERNAL PROJECT', res);
       if (!isEmpty(res)) {
         // dispatch(setStatusMessageModalTitle('Import Project'));
@@ -120,7 +120,7 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
                 containerStyle={commonStyles.buttonPadding}
                 buttonStyle={commonStyles.standardButton}
                 titleStyle={commonStyles.standardButtonText}
-                onPress={() => useDevice.openURL('ProjectBackups')}
+                onPress={() => openURL('ProjectBackups')}
                 iconContainerStyle={{paddingRight: 10}}
                 icon={{
                   name: 'file-tray-full-outline',
@@ -138,7 +138,8 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
             visibleSection={section => setShowSection(section)}
             setImportComplete={handleImportComplete}
             importComplete={importComplete}
-            setLoading={value => dispatch(setLoadingStatus({bool: value, view: 'home'}))} //TODO: Check to see if this can be removed or used else where
+            setLoading={value => dispatch(setLoadingStatus(
+              {bool: value, view: 'home'}))} //TODO: Check to see if this can be removed or used else where
           />
         );
       case 'new':

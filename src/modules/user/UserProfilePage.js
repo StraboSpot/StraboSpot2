@@ -13,7 +13,7 @@ import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import useDownloadHook from '../../services/useDownload';
 import usePermissionsHook from '../../services/usePermissions';
 import useResetStateHook from '../../services/useResetState';
@@ -52,7 +52,7 @@ const UserProfilePage = () => {
 
   const navigation = useNavigation();
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {copyFiles, deleteFromDevice, deleteProfileImageFile} = useDevice();
   const useDownload = useDownloadHook();
   const {hasErrors, validateForm} = useForm();
   const usePermissions = usePermissionsHook();
@@ -153,7 +153,7 @@ const UserProfilePage = () => {
     try {
       setIsDeletingProfileImage(true);
       await useServerRequest.deleteProfileImage(userEncodedLogin);
-      if (Platform.OS !== 'web') await useDevice.deleteProfileImageFile();
+      if (Platform.OS !== 'web') await deleteProfileImageFile();
       setShouldUpdateImage(true);
       setIsDeletingProfileImage(false);
       closeProfileImageModal();
@@ -196,8 +196,8 @@ const UserProfilePage = () => {
       console.log('Need to upload', tempUserProfileImage.uri);
       const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
         tempUserProfileImage.uri);
-      await useDevice.copyFiles(resizedProfileImage.uri, APP_DIRECTORIES.PROFILE_IMAGE);
-      await useDevice.deleteFromDevice(resizedProfileImage.uri);
+      await copyFiles(resizedProfileImage.uri, APP_DIRECTORIES.PROFILE_IMAGE);
+      await deleteFromDevice(resizedProfileImage.uri);
       await useUploadImages.uploadProfileImage();
       setShouldUpdateImage(true);
       closeProfileImageModal();

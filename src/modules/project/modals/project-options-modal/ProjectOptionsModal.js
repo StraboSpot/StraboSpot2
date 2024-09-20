@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import projectOptionsModalStyle from './projectOptionsModal.style';
 import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
-import useDeviceHook from '../../../../services/useDevice';
+import useDevice from '../../../../services/useDevice';
 import useExportHook from '../../../../services/useExport';
 import commonStyles from '../../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../../shared/Helpers';
@@ -48,7 +48,7 @@ const ProjectOptionsDialogBox = ({
 
   const {switchProject} = useProject();
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {deleteFromDevice} = useDevice();
   const useExport = useExportHook();
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const ProjectOptionsDialogBox = ({
       setTimeout(async () => {
         setChecked(1);
         setProjectToDeleteName(selectedProject?.project?.fileName || '');
-        await useDevice.deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
+        await deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
         setDeletingProjectStatus('complete');
         projectDeleted(true);
       }, 1000);

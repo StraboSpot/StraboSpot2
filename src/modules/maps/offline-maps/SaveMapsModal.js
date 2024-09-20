@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import offlineMapsStyles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
-import useDeviceHook from '../../../services/useDevice';
+import useDevice from '../../../services/useDevice';
 import useServerRequestHook from '../../../services/useServerRequests';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
@@ -26,7 +26,7 @@ import {MAP_PROVIDERS} from '../maps.constants';
 const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
   // console.log('Rendering SaveMapsModal...');
 
-  const useDevice = useDeviceHook();
+  const {doesDeviceDirectoryExist, downloadAndSaveMap} = useDevice();
   const useMapsOffline = useMapsOfflineHook();
   const useServerRequests = useServerRequestHook();
 
@@ -139,10 +139,10 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       };
 
       //first try to delete from temp directories
-      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
+      await doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
+      await doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       await useMapsOffline.checkTileZipFileExistence();
-      await useDevice.downloadAndSaveMap(downloadOptions);
+      await downloadAndSaveMap(downloadOptions);
       await doUnzip(zipUID);
     }
     catch (err) {

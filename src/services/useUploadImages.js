@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
 import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
+import useDevice from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 import {addedStatusMessage, clearedStatusMessages, setIsProgressModalVisible} from '../modules/home/home.slice';
 import {useImages} from '../modules/images';
@@ -16,7 +16,7 @@ const useUploadImages = () => {
   // const imagesToUpload = [];
   const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
-  const useDevice = useDeviceHook();
+  const {deleteTempImagesFolder, doesDeviceDirExist, makeDirectory} = useDevice();
   const {getAllImages, getImageHeightAndWidth, getImageSize, getLocalImageURI} = useImages();
   const useServerRequests = useServerRequestsHook();
 
@@ -90,7 +90,7 @@ const useUploadImages = () => {
           height = max_size;
         }
 
-        await useDevice.makeDirectory(tempImagesDownsizedDirectory);
+        await makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageProps.uri, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
         getImageSize(imageProps, resizedImage);
@@ -110,7 +110,7 @@ const useUploadImages = () => {
     await Promise.all((
       neededImageIds.map(async (imageId) => {
           const imageURI = getLocalImageURI(imageId);
-          const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
+          const isValidImageURI = await doesDeviceDirExist(imageURI);
           if (isValidImageURI) {
             console.log(`Image ${imageId} EXISTS`);
             return imagesFound.find((image) => {
@@ -192,7 +192,7 @@ const useUploadImages = () => {
       return ({success: imagesUploadedCount, failed: imagesUploadFailedCount});
     }
     else setImageUploadStatusMessage('\nNo images to upload');
-    await useDevice.deleteTempImagesFolder();
+    await deleteTempImagesFolder();
     dispatch(setIsProgressModalVisible(false));
   };
 

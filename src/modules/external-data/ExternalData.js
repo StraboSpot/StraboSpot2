@@ -23,7 +23,7 @@ const ExternalData = () => {
 
   const importCSVFile = () => {
     try {
-      if (Platform.OS !== 'web') useExternalData.pickCSV().catch(console.error);
+      if (Platform.OS !== 'web') useExternalData.readCSV().catch(console.error);
       else {
         console.log('WEB');
         inputRef.current.click();
@@ -37,7 +37,7 @@ const ExternalData = () => {
   const handleFileChange = async (e) => {
     console.log('CSV File', e.target.files[0]);
     const file = e.target.files[0];
-    await useExternalData.pickCSV(file);
+    await useExternalData.readCSV(file);
     console.log('CSV From Web Saved');
   };
 

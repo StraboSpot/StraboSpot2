@@ -19,7 +19,7 @@ function DataWrapper({
   const deleteSelection = () => {
     itemToDelete.type === 'url'
       ? useExternalData.deleteURL(itemToDelete.item)
-      : useExternalData.deleteCVS(itemToDelete.item);
+      : useExternalData.deleteCSV(itemToDelete.item);
     setIsDeleteConfirmModalVisible(false);
   };
 

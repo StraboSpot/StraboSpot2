@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
 import useMapsOfflineHook from './useMapsOffline';
-import useDeviceHook from '../../../services/useDevice';
+import useDevice from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
@@ -36,7 +36,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   const [loading, setLoading] = useState(false);
   const [selectedMap, setSelectedMap] = useState({});
 
-  const useDevice = useDeviceHook();
+  const {deleteOfflineMap} = useDevice();
   const useMap = useMapHook();
   const useMapsOffline = useMapsOfflineHook();
 
@@ -76,7 +76,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
           text: 'OK',
           onPress: () => {
             Object.values(availableMaps).filter(mapId => mapId.id !== selectedMap.id);
-            useDevice.deleteOfflineMap(selectedMap);
+            deleteOfflineMap(selectedMap);
             setIsNameModalVisible(false);
           },
         },

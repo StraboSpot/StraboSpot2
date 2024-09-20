@@ -5,7 +5,7 @@ import {Button, Icon, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../../services/useDevice';
+import useDevice from '../../../services/useDevice';
 import useResetStateHook from '../../../services/useResetState';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
@@ -36,7 +36,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {getExternalProjectData} = useDevice();
   const useResetState = useResetStateHook();
 
   const displayFirstName = () => {
@@ -80,7 +80,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   const getExportedAndroidProject = async () => {
     try {
       dispatch(setLoadingStatus({bool: true, view: 'modal'}));
-      const res = await useDevice.getExternalProjectData();
+      const res = await getExternalProjectData();
       console.log('EXTERNAL PROJECT', res);
       dispatch(setLoadingStatus({bool: false, view: 'modal'}));
       if (!isEmpty(res)) {

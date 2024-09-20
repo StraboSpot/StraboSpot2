@@ -2,7 +2,7 @@ import {unzip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
+import useDevice from './useDevice';
 import {addedStatusMessage, clearedStatusMessages, removedLastStatusMessage} from '../modules/home/home.slice';
 import {addedCustomMapsFromBackup} from '../modules/maps/maps.slice';
 import {addedMapsFromDevice} from '../modules/maps/offline-maps/offlineMaps.slice';
@@ -27,24 +27,33 @@ const useImport = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
 
-  const useDevice = useDeviceHook();
+  const {
+    copyFiles,
+    deleteFromDevice,
+    doesDeviceBackupDirExist,
+    doesDeviceDirectoryExist,
+    doesDeviceDirExist,
+    moveFile,
+    readDeviceJSONFile,
+    readDirectory,
+  } = useDevice();
 
   const copyImages = async (fileName) => {
     try {
-      const existsWithLowercase = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+      const existsWithLowercase = await doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
         + fileName + '/images');
-      const existsWithCapital = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
+      const existsWithCapital = await doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR
         + fileName + '/Images');
       const imagesFolderName = existsWithLowercase ? '/images' : '/Images';
       if (existsWithCapital || existsWithLowercase) {
-        const imageFiles = await useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR
+        const imageFiles = await readDirectory(APP_DIRECTORIES.BACKUP_DIR
           + fileName + imagesFolderName);
         console.log(imageFiles);
-        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
+        await doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         if (!isEmpty(imageFiles)) {
           imageFiles.map(async (image) => {
-            await useDevice.copyFiles(APP_DIRECTORIES.BACKUP_DIR
-              + fileName + imagesFolderName + '/' + image, APP_DIRECTORIES.IMAGES + image);
+            await copyFiles(APP_DIRECTORIES.BACKUP_DIR + fileName + imagesFolderName + '/' + image,
+              APP_DIRECTORIES.IMAGES + image);
           });
           dispatch(removedLastStatusMessage());
           dispatch(addedStatusMessage('Finished importing image files.'));
@@ -67,12 +76,12 @@ const useImport = () => {
   const copyZipMapsToProject = async (fileName, isExternal) => {
     try {
       const sourceDir = isExternal ? APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID : APP_DIRECTORIES.BACKUP_DIR;
-      const checkDirSuccess = await useDevice.doesDeviceBackupDirExist(fileName + '/maps');
+      const checkDirSuccess = await doesDeviceBackupDirExist(fileName + '/maps');
       console.log('Found map zips folder', checkDirSuccess);
       if (checkDirSuccess) {
-        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
-        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-        let zipFiles = await useDevice.readDirectory(sourceDir + fileName + '/maps');
+        await doesDeviceDirectoryExist(APP_DIRECTORIES.APP_DIR);
+        await doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
+        let zipFiles = await readDirectory(sourceDir + fileName + '/maps');
         if (zipFiles.length <= 2 && zipFiles.includes('OfflineTiles.zip')) {
           isOldBackup = false;
           dispatch(addedStatusMessage('Importing maps...'));
@@ -141,9 +150,9 @@ const useImport = () => {
       await unzipBackupFile(selectedProject);
       selectedProject = selectedProject.replace('.zip', '');
     }
-    const dirExists = await useDevice.doesDeviceBackupDirExist(selectedProject);
+    const dirExists = await doesDeviceBackupDirExist(selectedProject);
     if (dirExists) {
-      const dataFile = await useDevice.readDeviceJSONFile(selectedProject);
+      const dataFile = await readDeviceJSONFile(selectedProject);
       if (!isEmpty(project) && dataFile) await persistor.purge();
       const {projectDb, spotsDb} = dataFile;
       console.log('DataFile', dataFile);
@@ -171,15 +180,15 @@ const useImport = () => {
       console.log(dataFile.mapNamesDb);
       await Promise.all(
         Object.values(dataFile.mapNamesDb).map(async (map) => {
-          const checkSuccess = await useDevice.doesDeviceDirectoryExist(
+          const checkSuccess = await doesDeviceDirectoryExist(
             APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/');
           if (checkSuccess) {
             console.log('dir exists');
-            const files = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP);
+            const files = await readDirectory(APP_DIRECTORIES.TILE_TEMP);
             const mapId = files.find(id => id === map.id);
             const zipID = files.find(zipId => zipId === map.mapId);
             const id = isOldBackup ? zipID : mapId;
-            if (id) fileEntries = await useDevice.readDirectory(APP_DIRECTORIES.TILE_TEMP + id + '/tiles');
+            if (id) fileEntries = await readDirectory(APP_DIRECTORIES.TILE_TEMP + id + '/tiles');
             else {
               mapFailures++;
               console.log('Map file not found', mapFailures);
@@ -200,9 +209,9 @@ const useImport = () => {
     await Promise.all(
       tileArray.map(async (tile) => {
         fileCount++;
-        const fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
+        const fileExists = await doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
         if (!fileExists) {
-          await useDevice.moveFile(
+          await moveFile(
             APP_DIRECTORIES.TILE_TEMP + id + '/tiles/' + tile,
             APP_DIRECTORIES.TILE_CACHE + map.id + '/tiles/' + tile);
           neededTiles++;
@@ -217,7 +226,7 @@ const useImport = () => {
 
   const unzipFile = async (filePath) => {
     try {
-      const checkDirSuccess = await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
+      const checkDirSuccess = await doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
       console.log(checkDirSuccess);
       if (checkDirSuccess) {
         if (isOldBackup) {
@@ -251,7 +260,7 @@ const useImport = () => {
 
       await unzip(source, target);
       console.log('backup file unzipped successfully!');
-      await useDevice.deleteFromDevice(source);
+      await deleteFromDevice(source);
       console.log('.zip file removed successfully!');
     }
     catch (err) {

@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addMapFromDevice, clearedMapsFromRedux, setOfflineMap} from './offlineMaps.slice';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
 import {STRABO_APIS} from '../../../services/urls.constants';
-import useDeviceHook from '../../../services/useDevice';
+import useDevice from '../../../services/useDevice';
 import useServerRequestsHook from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
@@ -30,7 +30,14 @@ const useMapsOffline = () => {
   const source = currentBasemap && currentBasemap.source;
   const url = 'file://' + APP_DIRECTORIES.TILE_CACHE;
 
-  const useDevice = useDeviceHook();
+  const {
+    deleteFromDevice,
+    doesDeviceDirExist,
+    makeDirectory,
+    moveFile,
+    readDirectoryForMapFiles,
+    readDirectoryForMapTiles,
+  } = useDevice();
   const useMapURL = useMapURLHook();
   const useServerRequests = useServerRequestsHook();
 
@@ -39,7 +46,7 @@ const useMapsOffline = () => {
     console.log(`Adjusting Tile Count... ${files}`);
     for (const file of files) {
       if (offlineMaps[file]) {
-        const tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, file);
+        const tileCount = await readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, file);
         if (offlineMaps[file].count !== tileCount.length) {
           const newOfflineMapCount = {...offlineMaps[file], count: tileCount.length};
           dispatch(setOfflineMap(newOfflineMapCount));
@@ -57,13 +64,13 @@ const useMapsOffline = () => {
 
   const checkIfTileZipFolderExists = async () => {
     try {
-      let folderExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP);
+      let folderExists = await doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP);
       console.log('Folder Exists:', folderExists ? 'YES' : 'NO');
       if (folderExists) {
         //delete
-        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID);
+        await deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID);
       }
-      else await useDevice.makeDirectory(APP_DIRECTORIES.TILE_ZIP);
+      else await makeDirectory(APP_DIRECTORIES.TILE_ZIP);
     }
     catch (err) {
       console.error('Error checking if zip Tile Temp Directory exists', err);
@@ -72,11 +79,11 @@ const useMapsOffline = () => {
 
   const checkTileZipFileExistence = async () => {
     try {
-      let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
+      let fileExists = await doesDeviceDirExist(APP_DIRECTORIES.TILE_ZIP + zipUID + '.zip');
       console.log('file Exists:', fileExists ? 'YES' : 'NO');
       if (fileExists) {
         //delete
-        await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+        await deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
       }
     }
     catch (err) {
@@ -109,7 +116,7 @@ const useMapsOffline = () => {
   };
 
   const createOfflineMapObject = async (mapId, customMap) => {
-    let tileCount = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapId);
+    let tileCount = await readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapId);
     tileCount = tileCount.length;
 
     let map = {
@@ -149,7 +156,7 @@ const useMapsOffline = () => {
       await unzip(sourcePath, APP_DIRECTORIES.TILE_TEMP);
       console.log('unzip completed');
       console.log('move done.');
-      await useDevice.deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
+      await deleteFromDevice(APP_DIRECTORIES.TILE_ZIP, zipUID + '.zip');
       console.log('Zip', zipUID, 'has been deleted.');
     }
     catch (err) {
@@ -159,7 +166,7 @@ const useMapsOffline = () => {
 
   const getMapCenterTile = async (mapid) => {
     if (APP_DIRECTORIES.ROOT_PATH) {
-      const entries = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapid);
+      const entries = await readDirectoryForMapTiles(APP_DIRECTORIES.TILE_CACHE, mapid);
       // loop over tiles to get center tiles
       let maxZoom = 0;
       let xvals = [];
@@ -282,7 +289,7 @@ const useMapsOffline = () => {
   const getSavedMapsFromDevice = async () => {
     try {
       console.count('getSavedMapsFromDevice');
-      const files = await useDevice.readDirectoryForMapFiles();
+      const files = await readDirectoryForMapFiles();
       if (!isEmpty(files)) {
         await adjustTileCount(files);
         console.log('Done adjusting Tiles');
@@ -311,13 +318,13 @@ const useMapsOffline = () => {
       let result;
       let mapID = currentBasemap.id;
       if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
-      let folderExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + mapID);
+      let folderExists = await doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + mapID);
       if (!folderExists) {
         console.log('FOLDER DOESN\'T EXIST! ', APP_DIRECTORIES.TILE_CACHE + mapID);
-        await useDevice.makeDirectory(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
+        await makeDirectory(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles');
       }
       //now move files to correct location
-      result = await useDevice.readDirectoryForMapTiles(APP_DIRECTORIES.TILE_TEMP, zipUId);
+      result = await readDirectoryForMapTiles(APP_DIRECTORIES.TILE_TEMP, zipUId);
       return result;
     }
     catch (err) {
@@ -331,11 +338,11 @@ const useMapsOffline = () => {
     if (currentBasemap.source === 'mapbox_styles') mapID = currentBasemap.id.split('/')[1];
     let zipId = zipUID ?? zipID;
     fileCount++;
-    let fileExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile);
+    let fileExists = await doesDeviceDirExist(APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile);
     // console.log('foo exists: ', tile.name + ' ' + fileExists);
     if (!fileExists) {
       neededTiles++;
-      await useDevice.moveFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile,
+      await moveFile(APP_DIRECTORIES.TILE_TEMP + zipId + '/tiles/' + tile,
         APP_DIRECTORIES.TILE_CACHE + mapID + '/tiles/' + tile);
       console.log('Tile moved');
     }

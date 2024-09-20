@@ -19,7 +19,7 @@ import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import useExportHook from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
@@ -46,7 +46,7 @@ const Home = ({navigation, route}) => {
   const {getSelectedDatasetFromId} = useProject();
   const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
-  const useDevice = useDeviceHook();
+  const {createProjectDirectories, openURL} = useDevice();
   const useExport = useExportHook();
   const useMapLocation = useMapLocationHook();
   const useVersionCheck = VersionCheckHook();
@@ -312,7 +312,7 @@ const Home = ({navigation, route}) => {
     else openNotebookPanel(PAGE_KEYS.OVERVIEW);
   };
 
-  const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
+  const openStraboSpotURL = () => openURL('https://www.strabospot.org/login');
 
   const renderVersionCheckLabel = () => (
     <View style={homeStyles.versionPositionHome}>
