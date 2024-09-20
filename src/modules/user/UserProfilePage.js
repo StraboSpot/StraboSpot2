@@ -18,7 +18,7 @@ import useDownload from '../../services/useDownload';
 import usePermissions from '../../services/usePermissions';
 import useResetState from '../../services/useResetState';
 import useServerRequests from '../../services/useServerRequests';
-import useUploadHook from '../../services/useUpload';
+import useUpload from '../../services/useUpload';
 import useUploadImagesHook from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -58,7 +58,7 @@ const UserProfilePage = () => {
   const {checkPermission} = usePermissions();
   const {clearUser} = useResetState();
   const {authenticateUser, deleteProfile, deleteProfileImage} = useServerRequests();
-  const useUpload = useUploadHook();
+  const {uploadProfile} = useUpload();
   const useUploadImages = useUploadImagesHook();
 
   const formName = ['general', 'user_profile'];
@@ -173,7 +173,7 @@ const UserProfilePage = () => {
       if (hasErrors(formCurrent)) throw Error('Error in form.');
       dispatch(setUserData(newValues));
       if (isOnline.isInternetReachable) {
-        await useUpload.uploadProfile(newValues);
+        await uploadProfile(newValues);
         toast.show('Profile uploaded successfully!', {type: 'success'});
         dispatch(setSidePanelVisible({bool: false}));
       }

@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {imageStyles, useImages} from '.';
 import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 import placeholderImage from '../../assets/images/noimage.jpg';
-import useUploadHook from '../../services/useUpload';
+import useUpload from '../../services/useUpload';
 import commonStyles from '../../shared/common.styles';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
@@ -34,7 +34,7 @@ const ImagesViewPage = () => {
   } = useImages();
   const navigation = useNavigation();
   const toast = useToast();
-  const useUpload = useUploadHook();
+  const {uploadFromWeb} = useUpload();
 
   const dispatch = useDispatch();
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
@@ -110,7 +110,7 @@ const ImagesViewPage = () => {
         height: metaData.height,
         width: metaData.width,
       };
-      const res = await useUpload.uploadFromWeb(imageId, imageToUpload);
+      const res = await uploadFromWeb(imageId, imageToUpload);
       console.log(res);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotImages([imageObj]));
