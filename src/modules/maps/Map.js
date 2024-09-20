@@ -18,7 +18,7 @@ import useMapFeatures from './useMapFeatures';
 import useMapFeaturesCalculated from './useMapFeaturesCalculated';
 import useMapLocation from './useMapLocation';
 import useMapView from './useMapView';
-import useStereonetHook from './useStereonet';
+import useStereonet from './useStereonet';
 import {getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import IconButton from '../../shared/ui/IconButton';
@@ -72,7 +72,7 @@ const Map = forwardRef(({
   const {setMapView, zoomToSpots} = useMapView();
   const {getMapCenterTile, switchToOfflineMap} = useMapsOffline();
   const {createSpot, getSpotWithThisStratSection} = useSpots();
-  const useStereonet = useStereonetHook();
+  const {getStereonet} = useStereonet();
 
   const dispatch = useDispatch();
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
@@ -515,7 +515,7 @@ const Map = forwardRef(({
   const getStereonetForFeature = async (feature) => {
     const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
     console.log('Selected Spots', selectedSpots);
-    await useStereonet.getStereonet(selectedSpots);
+    await getStereonet(selectedSpots);
   };
 
   const getTileCount = async (zoomLevel) => {
