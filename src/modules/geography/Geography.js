@@ -13,7 +13,7 @@ import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useForm} from '../form';
 import useMapLocation from '../maps/useMapLocation';
-import useMapViewHook from '../maps/useMapView';
+import useMapView from '../maps/useMapView';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
@@ -21,7 +21,7 @@ import {editedOrCreatedSpot} from '../spots/spots.slice';
 const Geography = () => {
   const {showErrors, validateForm} = useForm();
   const {getCurrentLocation} = useMapLocation();
-  const useMapView = useMapViewHook();
+  const {isOnGeoMap} = useMapView();
 
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -112,7 +112,7 @@ const Geography = () => {
       coordsString: getCoordArray(),
     };
 
-    if (useMapView.isOnGeoMap(spot)) {
+    if (isOnGeoMap(spot)) {
       if (turf.getType(spot) === 'Point') {
         initialGeomValues.longitude = turf.getCoord(spot)[0];
         initialGeomValues.latitude = turf.getCoord(spot)[1];
@@ -148,7 +148,7 @@ const Geography = () => {
               </ListItem.Content>
             </ListItem>
             <FlatListItemSeparator/>
-            {useMapView.isOnGeoMap(spot) ? renderGeoCoords(initialGeomValues) : renderPixelCoords(initialGeomValues)}
+            {isOnGeoMap(spot) ? renderGeoCoords(initialGeomValues) : renderPixelCoords(initialGeomValues)}
           </View>
         )}
       </Formik>
@@ -314,13 +314,13 @@ const Geography = () => {
       let geographyProperties = showErrors(formRef.current);
       console.log('Saving form data to Spot ...');
       let geometry = spot.geometry;
-      if (useMapView.isOnGeoMap(spot)) {
+      if (isOnGeoMap(spot)) {
         if (!isEmpty(editedGeomFormData.longitude) && !isEmpty(editedGeomFormData.latitude)) {
           const point = turf.point([editedGeomFormData.longitude, editedGeomFormData.latitude]);
           geometry = point.geometry;
         }
       }
-      else if (!useMapView.isOnGeoMap(spot)) {
+      else if (!isOnGeoMap(spot)) {
         if (!isEmpty(editedGeomFormData.x_pixels) && !isEmpty(editedGeomFormData.y_pixels)) {
           const point = turf.point([editedGeomFormData.x_pixels, editedGeomFormData.y_pixels]);
           geometry = point.geometry;

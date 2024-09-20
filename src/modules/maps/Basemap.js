@@ -15,7 +15,7 @@ import useMapSymbology from './symbology/useMapSymbology';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
 import useMapURLHook from './useMapURL';
-import useMapViewHook from './useMapView';
+import useMapView from './useMapView';
 import VertexDrag from './VertexDrag';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -56,7 +56,7 @@ const Basemap = ({
   const {getSpotsAsFeatures} = useMapFeatures();
   const {addSymbology, getLinesFilteredByPattern, getMapSymbology} = useMapSymbology();
   const useMapURL = useMapURLHook();
-  const useMapView = useMapViewHook();
+  const {getInitialViewState, setMapView} = useMapView();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [initialCenter, setInitialCenter] = useState();
@@ -84,7 +84,7 @@ const Basemap = ({
   useEffect(() => {
       // console.log('UE Basemap');
       if (!isMapMoved) dispatch(setIsMapMoved(true));
-      const {longitude, latitude, zoom} = useMapView.getInitialViewState();
+      const {longitude, latitude, zoom} = getInitialViewState();
       console.log('Got initial center [' + longitude + ', ' + latitude + '] and zoom', zoom);
       setInitialCenter([longitude, latitude]);
       setInitialZoom(zoom);
@@ -111,7 +111,7 @@ const Basemap = ({
         const newCenter = await mapRef.current.getCenter();
         const newZoom = await mapRef.current.getZoom();
         setZoomText(newZoom);   // Update scale bar and zoom text
-        useMapView.setMapView(newCenter, newZoom);
+        setMapView(newCenter, newZoom);
       }
     }
   };

@@ -17,7 +17,7 @@ import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
 import useMapURLHook from './useMapURL';
-import useMapViewHook from './useMapView';
+import useMapView from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
 import {useImages} from '../images';
 
@@ -50,7 +50,7 @@ const Basemap = ({
   const {getSpotsAsFeatures} = useMapFeatures();
   const {addSymbology, getLayoutSymbology, getLinesFilteredByPattern, getPaintSymbology} = useMapSymbology();
   const useMapURL = useMapURLHook();
-  const useMapView = useMapViewHook();
+  const {getInitialViewState, setMapView} = useMapView();
 
   const [cursor, setCursor] = useState('');
   const [prevMapMode, setPrevMapMode] = useState(mapMode);
@@ -85,7 +85,7 @@ const Basemap = ({
       // console.log('UE Basemap', viewState);
       // console.log('Dimensions', useDimensions);
       if (!isMapMoved) dispatch(setIsMapMoved(true));
-      setViewState(useMapView.getInitialViewState());
+      setViewState(getInitialViewState());
     }, [currentImageBasemap, stratSection],
   );
 
@@ -127,7 +127,7 @@ const Basemap = ({
       setViewState(e.viewState);
       const newCenter = [e.viewState.longitude, e.viewState.latitude];
       const newZoom = e.viewState.zoom;
-      useMapView.setMapView(newCenter, newZoom);
+      setMapView(newCenter, newZoom);
     }
   };
 
