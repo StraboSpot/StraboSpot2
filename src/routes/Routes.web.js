@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 import AppStack from './AppStack';
 import useProject from '../modules/project/useProject';
 import useAuthenticationHook from '../modules/sign-in/useAuthentication.web';
-import useSignInHook from '../modules/sign-in/useSignIn';
+import useSignIn from '../modules/sign-in/useSignIn';
 import AuthenticationErrorSplashScreen from '../modules/splash-screen/AuthenticationErrorSplashScreen';
 import LoadingSplashScreen from '../modules/splash-screen/LoadingSplashScreen.web';
 
@@ -13,7 +13,7 @@ const Routes = () => {
   console.count('Rendering Routes...');
 
   const {loadProjectWeb} = useProject();
-  const useSignIn = useSignInHook();
+  const {autoLogin} = useSignIn();
   useAuthenticationHook();
 
   const encodedLogin = useSelector(state => state.user.encoded_login);
@@ -26,7 +26,7 @@ const Routes = () => {
     console.log('UE Routes');
     (async () => {
       try {
-        await useSignIn.autoLogin();
+        await autoLogin();
         console.log('Should be signed in');
       }
       catch (e) {
