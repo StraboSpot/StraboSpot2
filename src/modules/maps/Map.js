@@ -15,7 +15,7 @@ import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
-import useMapFeaturesCalculatedHook from './useMapFeaturesCalculated';
+import useMapFeaturesCalculated from './useMapFeaturesCalculated';
 import useMapLocation from './useMapLocation';
 import useMapViewHook from './useMapView';
 import useStereonetHook from './useStereonet';
@@ -60,7 +60,13 @@ const Map = forwardRef(({
   const {isDrawMode, getExtentAndZoomCall, setBasemap} = useMap();
   const {convertFeatureGeometryToImagePixels, convertImagePixelsToLatLong} = useMapCoords();
   const {getAllMappedSpots, getDisplayedSpots} = useMapFeatures();
-  const useMapFeaturesCalculated = useMapFeaturesCalculatedHook(mapRef);
+  const {
+    getDrawFeatureAtPress,
+    getLassoedSpots,
+    getMeasureFeatures,
+    getSpotAtPress,
+    identifyClosestVertexOnSpotPress,
+  } = useMapFeaturesCalculated(mapRef);
   const {getCurrentLocation} = useMapLocation();
   const useMapSymbology = useMapSymbologyHook();
   const useMapView = useMapViewHook();
@@ -119,7 +125,7 @@ const Map = forwardRef(({
 
   useEffect(() => {
     // console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
-    if (isOnline && !currentBasemap) useMap.setBasemap().catch(console.error);
+    if (isOnline && !currentBasemap) setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
       // console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
       setBasemap(currentBasemap.id).catch((error) => {
@@ -507,7 +513,7 @@ const Map = forwardRef(({
   };
 
   const getStereonetForFeature = async (feature) => {
-    const selectedSpots = useMapFeaturesCalculated.getLassoedSpots(spotsNotSelected, feature);
+    const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
     console.log('Selected Spots', selectedSpots);
     await useStereonet.getStereonet(selectedSpots);
   };
@@ -571,15 +577,14 @@ const Map = forwardRef(({
     const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
       : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
         : [e.properties.screenPointX, e.properties.screenPointY];
-    const spotToEdit = await useMapFeaturesCalculated.getSpotAtPress(screenPointX, screenPointY);
+    const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
     const mappedSpots = getAllMappedSpots();
     if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots) && !isEmpty(spotToEdit)) {
       let closestVertexDetails = {};
-      let closestVertexToSelect = await useMapFeaturesCalculated.getDrawFeatureAtPress(screenPointX, screenPointY);
+      let closestVertexToSelect = await getDrawFeatureAtPress(screenPointX, screenPointY);
       if (isEmpty(closestVertexToSelect)) {
         // draw features did not return anything - generally a scenario of selecting a vertex on a spot long press.
-        closestVertexDetails = await useMapFeaturesCalculated.identifyClosestVertexOnSpotPress(spotToEdit, screenPointX,
-          screenPointY,
+        closestVertexDetails = await identifyClosestVertexOnSpotPress(spotToEdit, screenPointX, screenPointY,
           spotsEdited);
         closestVertexToSelect = closestVertexDetails[0];
         startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1]);
@@ -590,7 +595,7 @@ const Map = forwardRef(({
       else if (!isEmpty(spotEditing)) {
         let spotEditingCopy = JSON.parse(JSON.stringify(spotEditing));
         if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
-          const vertexSelected = await useMapFeaturesCalculated.getDrawFeatureAtPress(screenPointX, screenPointY);
+          const vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
           if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
             let vertexAdded = {};
             if (isEmpty(vertexSelected)) {
@@ -705,8 +710,7 @@ const Map = forwardRef(({
     console.log('Map press detected:', e);
     console.log('Map mode:', mapMode);
     if (mapMode === MAP_MODES.DRAW.MEASURE) {
-      const updatedMeasureFeatures = await useMapFeaturesCalculated.getMeasureFeatures(e, [...measureFeatures],
-        setDistance);
+      const updatedMeasureFeatures = await getMeasureFeatures(e, [...measureFeatures], setDistance);
       setMeasureFeatures(updatedMeasureFeatures);
     }
     else if (mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
@@ -716,7 +720,7 @@ const Map = forwardRef(({
         const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
             : [e.properties.screenPointX, e.properties.screenPointY];
-        const spotFound = await useMapFeaturesCalculated.getSpotAtPress(screenPointX, screenPointY);
+        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
           dispatch(setSelectedSpot(getSpotWithThisStratSection(stratSection.strat_section_id)));
@@ -786,7 +790,7 @@ const Map = forwardRef(({
         // If so, check to see if point pressed was at another vertex of the selected feature
         //     If not edit vertex coords to those of pressed point
         //     If so switch selected vertex to vertex at pressed point
-        const spotFound = await useMapFeaturesCalculated.getSpotAtPress(screenPointX, screenPointY);
+        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
         // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         if (isEmpty(spotEditing)) {
@@ -798,7 +802,7 @@ const Map = forwardRef(({
           let isVertexIdentifiedAtSpotPress = false;
           if (isEmpty(spotFound)) clearSelectedFeatureToEdit();
           else {
-            let vertexSelected = await useMapFeaturesCalculated.getDrawFeatureAtPress(screenPointX, screenPointY);
+            let vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
             if (!isEmpty(vertexSelected)) {
               // When draw features identifies a vertex that is not on the spot found, mark it undefined so that,
               // we can calculate a vertex on the spot found that is closest to the press.
@@ -806,9 +810,8 @@ const Map = forwardRef(({
             }
             if (isEmpty(vertexSelected)) {
               // draw features did not return anything - generally a scenario of selecting a vertex on a spot press.
-              closestVertexDetails = await useMapFeaturesCalculated.identifyClosestVertexOnSpotPress(spotFound,
-                screenPointX,
-                screenPointY, spotsEdited);
+              closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY,
+                spotsEdited);
               vertexSelected = closestVertexDetails[0];
               isVertexIdentifiedAtSpotPress = true;
             }
@@ -910,7 +913,7 @@ const Map = forwardRef(({
   };
 
   const selectSpotsForTagging = async (feature) => {
-    const selectedSpots = useMapFeaturesCalculated.getLassoedSpots(spotsNotSelected, feature);
+    const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
     if (selectedSpots.length > 0) {
       dispatch(setIntersectedSpotsForTagging(selectedSpots));
       dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS}));
@@ -925,7 +928,7 @@ const Map = forwardRef(({
 
   // Set selected and not selected Spots to display when not editing
   const setDisplayedSpots = (selectedSpots) => {
-    let [selectedDisplayedSpots, notSelectedDisplayedSpots] = useMapFeatures.getDisplayedSpots(selectedSpots);
+    let [selectedDisplayedSpots, notSelectedDisplayedSpots] = getDisplayedSpots(selectedSpots);
     if (currentImageBasemap || stratSection) {
       // convert the image pixels to lat, lng before we display them
       let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(selectedDisplayedSpots));
@@ -1069,7 +1072,7 @@ const Map = forwardRef(({
       let bottom = mapBounds[1][1];
       let bbox = [left, bottom, right, top];
       const bboxPoly = turf.bboxPolygon(bbox);
-      const gotSpotsInMapExtent = useMapFeaturesCalculated.getLassoedSpots(spotsRef.current, bboxPoly);
+      const gotSpotsInMapExtent = getLassoedSpots(spotsRef.current, bboxPoly);
       const gotSpotsInMapExtentIds = gotSpotsInMapExtent.map(spot => spot.properties.id);
       dispatch(setSpotsInMapExtentIds(gotSpotsInMapExtentIds));
     }
