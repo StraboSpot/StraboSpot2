@@ -15,7 +15,7 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
-import useMapFeaturesHook from './useMapFeatures';
+import useMapFeatures from './useMapFeatures';
 import useMapURLHook from './useMapURL';
 import useMapViewHook from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
@@ -47,7 +47,7 @@ const Basemap = ({
   const {getImageScreenSizedURI, getLocalImageURI} = useImages();
   const {isDrawMode} = useMap();
   const {getCoordQuad} = useMapCoords();
-  const useMapFeatures = useMapFeaturesHook();
+  const {getSpotsAsFeatures} = useMapFeatures();
   const useMapSymbology = useMapSymbologyHook();
   const useMapURL = useMapURLHook();
   const useMapView = useMapViewHook();
@@ -71,9 +71,9 @@ const Basemap = ({
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
   const featuresNotSelected = turf.featureCollection(
-    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
+    getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
   const featuresSelected = turf.featureCollection(
-    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
+    getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
 
   // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
   const featuresNotSelectedUniq = turf.featureCollection(

@@ -14,7 +14,7 @@ import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapSymbologyHook from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
-import useMapFeaturesHook from './useMapFeatures';
+import useMapFeatures from './useMapFeatures';
 import useMapFeaturesCalculatedHook from './useMapFeaturesCalculated';
 import useMapLocation from './useMapLocation';
 import useMapViewHook from './useMapView';
@@ -59,7 +59,7 @@ const Map = forwardRef(({
   const {setImageHeightAndWidth} = useImages();
   const {isDrawMode, getExtentAndZoomCall, setBasemap} = useMap();
   const {convertFeatureGeometryToImagePixels, convertImagePixelsToLatLong} = useMapCoords();
-  const useMapFeatures = useMapFeaturesHook();
+  const {getAllMappedSpots, getDisplayedSpots} = useMapFeatures();
   const useMapFeaturesCalculated = useMapFeaturesCalculatedHook(mapRef);
   const {getCurrentLocation} = useMapLocation();
   const useMapSymbology = useMapSymbologyHook();
@@ -572,7 +572,7 @@ const Map = forwardRef(({
       : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
         : [e.properties.screenPointX, e.properties.screenPointY];
     const spotToEdit = await useMapFeaturesCalculated.getSpotAtPress(screenPointX, screenPointY);
-    const mappedSpots = useMapFeatures.getAllMappedSpots();
+    const mappedSpots = getAllMappedSpots();
     if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots) && !isEmpty(spotToEdit)) {
       let closestVertexDetails = {};
       let closestVertexToSelect = await useMapFeaturesCalculated.getDrawFeatureAtPress(screenPointX, screenPointY);
@@ -1021,7 +1021,7 @@ const Map = forwardRef(({
   const startEditing = (spotToEdit, vertexToEditTemp, index) => {
     startEdit();
     clearEditing();
-    const mappedSpots = useMapFeatures.getAllMappedSpots();
+    const mappedSpots = getAllMappedSpots();
     setSpotEditing(spotToEdit ? spotToEdit : {});
     setSpotsEdited([]);
     setSpotsNotEdited(mappedSpots);
