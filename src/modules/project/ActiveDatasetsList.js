@@ -4,14 +4,14 @@ import {FlatList} from 'react-native';
 import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useProjectHook from './useProject';
+import useProject from './useProject';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 
 const ActiveDatasetsList = () => {
-  const useProject = useProjectHook();
+  const {makeDatasetCurrent} = useProject();
 
   const [refresh] = useState();
 
@@ -27,7 +27,7 @@ const ActiveDatasetsList = () => {
         <ListItem
           key={datasetObj.id.toString()}
           containerStyle={commonStyles.listItem}
-          onPress={() => useProject.makeDatasetCurrent(datasetId)}
+          onPress={() => makeDatasetCurrent(datasetId)}
         >
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>{datasetObj.name}</ListItem.Title>

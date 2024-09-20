@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptionsModal';
 import {setSelectedProject} from './projects.slice';
-import useProjectHook from './useProject';
+import useProject from './useProject';
 import {isEmpty} from '../../shared/Helpers';
 import {Form, useForm} from '../form';
 import {setIsProjectLoadSelectionModalVisible} from '../home/home.slice';
@@ -25,7 +25,7 @@ const NewProjectForm = ({
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
-  const useProject = useProjectHook();
+  const {initializeNewProject} = useProject();
 
   const formRef = useRef(null);
 
@@ -64,7 +64,7 @@ const NewProjectForm = ({
         visible={isProjectOptionsModalVisible}
         closeModal={() => setIsProjectOptionsModalVisible(false)}
         open={() => setIsProjectOptionsModalVisible(true)}
-       />
+      />
     );
   };
 
@@ -73,7 +73,7 @@ const NewProjectForm = ({
       await formRef.current.submitForm();
       const formValues = showErrors(formRef.current);
       console.log('Saving form...');
-      await useProject.initializeNewProject(formValues);
+      await initializeNewProject(formValues);
       console.log('New Project created', formValues.project_name);
       if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));

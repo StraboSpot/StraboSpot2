@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
 import AppStack from './AppStack';
-import useProjectHook from '../modules/project/useProject';
+import useProject from '../modules/project/useProject';
 import useAuthenticationHook from '../modules/sign-in/useAuthentication.web';
 import useSignInHook from '../modules/sign-in/useSignIn';
 import AuthenticationErrorSplashScreen from '../modules/splash-screen/AuthenticationErrorSplashScreen';
@@ -12,7 +12,7 @@ import LoadingSplashScreen from '../modules/splash-screen/LoadingSplashScreen.we
 const Routes = () => {
   console.count('Rendering Routes...');
 
-  const useProject = useProjectHook();
+  const {loadProjectWeb} = useProject();
   const useSignIn = useSignInHook();
   useAuthenticationHook();
 
@@ -41,7 +41,7 @@ const Routes = () => {
     if (isAuthenticated && encodedLogin && selectedProjectId) {
       (async () => {
         try {
-          await useProject.loadProjectWeb(selectedProjectId);
+          await loadProjectWeb(selectedProjectId);
           console.log('Project should be loaded');
           setIsLoading(false);
         }

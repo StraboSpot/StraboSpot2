@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptionsModal';
 import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
-import useProjectHook from './useProject';
+import useProject from './useProject';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDownloadHook from '../../services/useDownload';
 import useImportHook from '../../services/useImport';
@@ -42,7 +42,7 @@ const ProjectList = ({source}) => {
 
   const useDownload = useDownloadHook();
   const useImport = useImportHook();
-  const useProject = useProjectHook();
+  const {getAllDeviceProjects, getAllServerProjects} = useProject();
 
   useEffect(() => {
     console.log('UE ProjectList []');
@@ -74,21 +74,12 @@ const ProjectList = ({source}) => {
     let projectsResponse;
     setLoading(true);
     if (source === 'server') {
-      projectsResponse = await useProject.getAllServerProjects();
+      projectsResponse = await getAllServerProjects();
     }
     else if (source === 'device') {
-      projectsResponse = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
+      projectsResponse = await getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
       console.log('Device Files', projectsResponse);
     }
-    // if (Platform.OS === 'android' && source === 'exports') {
-    //   // const exists = await useProject.doesDeviceBackupDirExist(undefined, true);
-    //   // console.log(exists);
-    //   // const externalStorageProjectsResponse = await useProject.getAllDeviceProjects(
-    //   //   APP_DIRECTORIES.DOWNLOAD_DIR_ANDROID);
-    //   const externalStorageProjectsResponse = await useDevice.getExternalProject();
-    //   // setProjectsArr(externalStorageProjectsResponse);
-    //   console.log('Exported Projects', externalStorageProjectsResponse);
-    // }
     if (!projectsResponse) {
       if (source === 'device') {
         dispatch(doesBackupDirectoryExist(false));
@@ -108,9 +99,9 @@ const ProjectList = ({source}) => {
 
   const reloadingList = async (isDeleted) => {
     if (isDeleted) {
-      if (source === 'server') setProjectsArr(await useProject.getAllServerProjects());
+      if (source === 'server') setProjectsArr(await getAllServerProjects());
       else if (source === 'device') {
-        const newArr = await useProject.getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
+        const newArr = await getAllDeviceProjects(APP_DIRECTORIES.BACKUP_DIR);
         setProjectsArr(newArr);
       }
     }
@@ -231,38 +222,11 @@ const ProjectList = ({source}) => {
     }
   };
 
-  // const renderProjectListAndroidsDownloads = () => {
-  //   return (
-  //     <View style={{flex: 2}}>
-  //       <SectionDivider dividerText={'Download Folder Projects'}/>
-  //       <FlatList
-  //         data={externalStorageProjects}
-  //         renderItem={({item}) => renderExternalProjectsItem(item)}
-  //       />
-  //     </View>
-  //   );
-  // };
-  //
-  // const renderImportOverlay = () => {
-  //   return (
-  //     <Overlay
-  //       isVisible={isImportOverlayVisible}
-  //       onBackdropPress={() => setIsImportOverlayVisible(false)}
-  //     >
-  //       <View style={{width: 300, height: 300}}>
-  //
-  //       </View>
-  //     </Overlay>
-  //   );
-  // };
-
   return (
     <View style={{flex: 1}}>
       <Loading isLoading={loading} style={{backgroundColor: themes.PRIMARY_BACKGROUND_COLOR}}/>
       {renderProjectsList()}
-      {/*{Platform.OS === 'android' && source === 'device' && renderProjectListAndroidsDownloads()}*/}
       {renderProjectOptionsModal()}
-      {/*{renderImportOverlay()}*/}
     </View>
   );
 };

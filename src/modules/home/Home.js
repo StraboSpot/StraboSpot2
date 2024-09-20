@@ -35,7 +35,7 @@ import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 import useMapLocationHook from '../maps/useMapLocation';
 import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import useProjectHook from '../project/useProject';
+import useProject from '../project/useProject';
 import {useSpots} from '../spots';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
 
@@ -43,7 +43,7 @@ const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
 
   const {lockOrientation, unlockOrientation} = useHome();
-  const useProject = useProjectHook();
+  const {getSelectedDatasetFromId} = useProject();
   const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
   const useDevice = useDeviceHook();
@@ -161,7 +161,7 @@ const Home = ({navigation, route}) => {
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
-        const selectedDataset = useProject.getSelectedDatasetFromId();
+        const selectedDataset = getSelectedDatasetFromId();
         if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await setPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');
@@ -345,12 +345,8 @@ const Home = ({navigation, route}) => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       await useMapLocation.setPointAtCurrentLocation();
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      toast.show(
-        `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,
-        {
-          type: 'success',
-        },
-      );
+      toast.show(`Point Spot Added at Current\n Location to Dataset ${getSelectedDatasetFromId().name.toUpperCase()}`,
+        {type: 'success'});
       openNotebookPanel();
     }
     catch (err) {
@@ -448,8 +444,6 @@ const Home = ({navigation, route}) => {
         />
       )}
       {/*Modals for Home Page*/}
-      {/*<BackupModal/>*/}
-      {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
           closeModal={closeInitialProjectLoadModal}

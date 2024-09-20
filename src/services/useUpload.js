@@ -8,7 +8,7 @@ import useServerRequestsHook from './useServerRequests';
 import useUploadImagesHook from './useUploadImages';
 import {addedStatusMessage} from '../modules/home/home.slice';
 import {deletedSpotIdFromDataset, setIsImageTransferring} from '../modules/project/projects.slice';
-import useProjectHook from '../modules/project/useProject';
+import useProject from '../modules/project/useProject';
 import {useSpots} from '../modules/spots';
 import {isEmpty} from '../shared/Helpers';
 import alert from '../shared/ui/alert';
@@ -24,7 +24,7 @@ const useUpload = () => {
 
   const [uploadStatusMessage, setUploadStatusMessage] = useState('');
 
-  const useProject = useProjectHook();
+  const {checkValidDateTime} = useProject();
   const useServerRequests = useServerRequestsHook();
   const {getSpotsByIds} = useSpots();
   const useUploadImages = useUploadImagesHook();
@@ -150,7 +150,7 @@ const useUpload = () => {
     let datasetSpots;
     if (dataset.spotIds) {
       datasetSpots = getSpotsByIds(dataset.spotIds);
-      datasetSpots.forEach(spotValue => useProject.checkValidDateTime(spotValue));
+      datasetSpots.forEach(spotValue => checkValidDateTime(spotValue));
     }
     try {
       if (isEmpty(datasetSpots)) {

@@ -19,11 +19,11 @@ import {
   updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } from '../project/projects.slice';
-import useProjectHook from '../project/useProject';
+import useProject from '../project/useProject';
 import {useTags} from '../tags';
 
 const useSpots = () => {
-  const useProject = useProjectHook();
+  const {getActiveDatasets, getSelectedDatasetFromId} = useProject();
   const {addSpotsToTags} = useTags();
 
   const dispatch = useDispatch();
@@ -147,7 +147,7 @@ const useSpots = () => {
     });
     console.log('Creating', numRandomSpots, 'new random Spots near current location.');
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpots[0].properties.id]));
-    const selectedDataset = useProject.getSelectedDatasetFromId();
+    const selectedDataset = getSelectedDatasetFromId();
     dispatch(addedNewSpotIdsToDataset({datasetId: selectedDataset.id, spotIds: newSpots.map(s => s.properties.id)}));
     dispatch(editedOrCreatedSpots(newSpots));
     console.log('Finished creating new random Spot. All Spots: ', spots);
@@ -196,7 +196,7 @@ const useSpots = () => {
     }
     console.log('Creating new Spot:', newSpot);
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
-    const selectedDataset = useProject.getSelectedDatasetFromId();
+    const selectedDataset = getSelectedDatasetFromId();
     dispatch(addedNewSpotIdToDataset({datasetId: selectedDataset.id, spotId: newSpot.properties.id}));
     dispatch(editedOrCreatedSpot(newSpot));
     console.log('Finished creating new Spot. All Spots: ', spots);
@@ -214,7 +214,7 @@ const useSpots = () => {
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
     let activeSpots = {};
-    const activeDatasets = useProject.getActiveDatasets();
+    const activeDatasets = getActiveDatasets();
     console.groupCollapsed('Getting Spots in Active Datasets...');
     Object.values(activeDatasets).forEach((dataset) => {
       let missingSpotsCount = 0;
@@ -226,7 +226,8 @@ const useSpots = () => {
           missingSpotsIds.push(spotId);
         }
       });
-      console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
+      console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots',
+        missingSpotsIds);
     });
     console.groupEnd();
     return activeSpots;

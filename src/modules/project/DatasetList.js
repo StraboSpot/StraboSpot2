@@ -14,12 +14,12 @@ import StandardModal from '../../shared/ui/StandardModal';
 import TextInputModal from '../../shared/ui/TextInputModal';
 import {setIsProjectLoadComplete} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import useProjectHook from '../project/useProject';
+import useProject from '../project/useProject';
 
 const DatasetList = () => {
   console.log('Rendering DatasetList...');
 
-  const useProject = useProjectHook();
+  const {destroyDataset, makeDatasetCurrent, setSwitchValue} = useProject();
   const useDownload = useDownloadHook();
 
   const [selectedDataset, setSelectedDataset] = useState({});
@@ -47,7 +47,7 @@ const DatasetList = () => {
   const initializeDeleteDataset = () => {
     setIsDeleteConfirmModalVisible(false);
     if (selectedDatasetToEdit && selectedDatasetToEdit.id) {
-      useProject.destroyDataset(selectedDatasetToEdit.id)
+      destroyDataset(selectedDatasetToEdit.id)
         // .then(() => setTimeout(() => dispatch(setIsStatusMessagesModalVisible(false))), 3000)
         .catch(err => console.log('Error deleting dataset', err));
     }
@@ -93,7 +93,7 @@ const DatasetList = () => {
           </ListItem.Subtitle>
         </ListItem.Content>
         <Switch
-          onValueChange={value => setSwitchValue(value, dataset)}
+          onValueChange={value => onSwitch(value, dataset)}
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
@@ -193,7 +193,7 @@ const DatasetList = () => {
         rightButtonText={'Yes'}
         leftButtonText={'No'}
         onPress={() => {
-          useProject.makeDatasetCurrent(selectedDataset.id);
+          makeDatasetCurrent(selectedDataset.id);
           setMakeIsDatasetCurrentModalVisible(false);
         }}
         closeModal={() => setMakeIsDatasetCurrentModalVisible(false)}
@@ -212,9 +212,9 @@ const DatasetList = () => {
     setIsDatasetNameModalVisible(false);
   };
 
-  const setSwitchValue = async (val, dataset) => {
+  const onSwitch = async (val, dataset) => {
     setSelectedDataset(dataset);
-    const value = await useProject.setSwitchValue(val, dataset);
+    const value = await setSwitchValue(val, dataset);
     console.log('Value has been switched', value);
     val && setMakeIsDatasetCurrentModalVisible(true);
     dispatch(setIsProjectLoadComplete(true));

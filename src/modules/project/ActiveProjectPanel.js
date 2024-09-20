@@ -9,7 +9,7 @@ import ActiveProjectList from './ActiveProjectList';
 import CustomFeatureTypes from './CustomFeatureTypes';
 import DatasetList from './DatasetList';
 import {setActiveDatasets, setSelectedDataset} from './projects.slice';
-import useProjectHook from './useProject';
+import useProject from './useProject';
 import useDownloadHook from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -21,7 +21,7 @@ import {WarningModal} from '../home/modals';
 
 const ActiveProjectPanel = () => {
   const useDownload = useDownloadHook();
-  const useProject = useProjectHook();
+  const {addDataset} = useProject();
 
   const [datasetName, setDatasetName] = useState(null);
   const [isAddDatasetModalVisible, setIsAddDatasetModalVisible] = useState(false);
@@ -46,7 +46,7 @@ const ActiveProjectPanel = () => {
   }, [datasets]);
 
   const onAddDataset = async () => {
-    const addDataset = await useProject.addDataset(datasetName);
+    const addDataset = await addDataset(datasetName);
     console.log(addDataset);
     setIsAddDatasetModalVisible(false);
   };

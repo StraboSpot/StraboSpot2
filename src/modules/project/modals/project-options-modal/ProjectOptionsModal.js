@@ -18,14 +18,11 @@ import ModalHeader from '../../../../shared/ui/modal/ModalHeader';
 import Spacer from '../../../../shared/ui/Spacer';
 import uiStyles from '../../../../shared/ui/ui.styles';
 import LottieAnimations from '../../../../utils/animations/LottieAnimations';
-import {
-  setLoadingStatus,
-  setIsProgressModalVisible,
-} from '../../../home/home.slice';
+import {setIsProgressModalVisible, setLoadingStatus} from '../../../home/home.slice';
 import overlayStyles from '../../../home/overlays/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../project.constants';
 import {setSelectedProject} from '../../projects.slice';
-import useProjectHook from '../../useProject';
+import useProject from '../../useProject';
 
 const ProjectOptionsDialogBox = ({
                                    closeModal,
@@ -49,7 +46,7 @@ const ProjectOptionsDialogBox = ({
   const [isProgressModalVisibleLocal, setIsProgressModalVisibleLocal] = useState(false);
   const [projectToDeleteName, setProjectToDeleteName] = useState('');
 
-  const useProject = useProjectHook();
+  const {switchProject} = useProject();
   const toast = useToast();
   const useDevice = useDeviceHook();
   const useExport = useExportHook();
@@ -113,7 +110,7 @@ const ProjectOptionsDialogBox = ({
     }
     else if (userAction === OVERWRITE) {
       closeModal();
-      await useProject.switchProject(OVERWRITE);
+      await switchProject(OVERWRITE);
       console.log('Project overwritten!');
     }
     else {
