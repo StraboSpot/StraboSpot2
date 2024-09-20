@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 import StratSectionImageOverlay from './StratSectionImageOverlay';
 import XAxes from './XAxes';
 import YAxis from './YAxis';
-import useImagesHook from '../../images/useImages';
+import {useImages} from '../../images';
 import {useSpots} from '../../spots';
 import useMapCoordsHook from '../useMapCoords';
 
@@ -14,7 +14,7 @@ const StratSectionBackground = ({spotsDisplayed}) => {
 
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useImages = useImagesHook();
+  const {getLocalImageURI} = useImages();
   const useMapCoords = useMapCoordsHook();
   const {getSpotWithThisStratSection} = useSpots();
 
@@ -31,7 +31,7 @@ const StratSectionBackground = ({spotsDisplayed}) => {
       // coordQuad = [topLeft, topRight, bottomRight, bottomLeft];
       const coordQuad = useMapCoords.getCoordQuad(imageCopy, {x: oI.image_origin_x, y: oI.image_origin_y});
       console.log('Image Overlay coordQuad', coordQuad);
-      const url = useImages.getLocalImageURI(image.id);
+      const url = getLocalImageURI(image.id);
       return (
         <StratSectionImageOverlay
           key={'imageOverlay' + oI.id}

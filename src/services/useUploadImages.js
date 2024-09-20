@@ -8,7 +8,7 @@ import {APP_DIRECTORIES} from './directories.constants';
 import useDeviceHook from './useDevice';
 import useServerRequestsHook from './useServerRequests';
 import {addedStatusMessage, clearedStatusMessages, setIsProgressModalVisible} from '../modules/home/home.slice';
-import useImagesHook from '../modules/images/useImages';
+import {useImages} from '../modules/images';
 import {setIsImageTransferring} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
 
@@ -17,7 +17,7 @@ const useUploadImages = () => {
   const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const useDevice = useDeviceHook();
-  const useImages = useImagesHook();
+  const {getAllImages, getImageHeightAndWidth, getImageSize, getLocalImageURI} = useImages();
   const useServerRequests = useServerRequestsHook();
 
   const dispatch = useDispatch();
@@ -28,7 +28,6 @@ const useUploadImages = () => {
   const [currentImageStatus, setCurrentImageStatus] = useState({success: 0, failed: 0});
   const [totalImages, setTotalImages] = useState(0);
   const [imageUploadStatusMessage, setImageUploadStatusMessage] = useState('');
-
 
   const resetState = () => {
     console.log('resetting State', imageUploadStatusMessage);
@@ -50,7 +49,7 @@ const useUploadImages = () => {
     setImageUploadStatusMessage('');
     console.log('Looking for Images to Upload in Spots...', spots);
     setImageUploadStatusMessage('Looking for images to upload in spots...');
-    const images = useImages.getAllImages();
+    const images = getAllImages();
     const imageIds = getImageIds(images);
     setImageUploadStatusMessage('Checking to see if image files are on server...');
     const neededImages = await useServerRequests.verifyImagesExistence(imageIds, user.encoded_login);
@@ -78,7 +77,7 @@ const useUploadImages = () => {
       let height = imageProps?.height;
       let width = imageProps?.width;
 
-      if (!width || !height) ({width, height} = await useImages.getImageHeightAndWidth(imageProps.uri));
+      if (!width || !height) ({width, height} = await getImageHeightAndWidth(imageProps.uri));
 
       if (width > 2000 || height > 2000) {
         const max_size = 2000;
@@ -94,7 +93,7 @@ const useUploadImages = () => {
         await useDevice.makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageProps.uri, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
         const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        useImages.getImageSize(imageProps, resizedImage);
+        getImageSize(imageProps, resizedImage);
         return resizedImage;
       }
       else return imageProps;
@@ -110,7 +109,7 @@ const useUploadImages = () => {
     const imagesNotFoundOnDevice = [];
     await Promise.all((
       neededImageIds.map(async (imageId) => {
-          const imageURI = useImages.getLocalImageURI(imageId);
+          const imageURI = getLocalImageURI(imageId);
           const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
           if (isValidImageURI) {
             console.log(`Image ${imageId} EXISTS`);

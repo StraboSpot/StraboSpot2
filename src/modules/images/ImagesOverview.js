@@ -4,7 +4,7 @@ import {ActivityIndicator, FlatList, Switch, Text, View} from 'react-native';
 import {Button, Image} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import {imageStyles, useImagesHook} from '.';
+import {imageStyles, useImages} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
@@ -15,7 +15,7 @@ const placeholderImage = require('../../assets/images/noimage.jpg');
 const ImagesOverview = () => {
   console.log('Rendering ImagesOverview...');
 
-  const useImages = useImagesHook();
+  const {editImage, getImageBasemap, getImageThumbnailURIs, setAnnotation} = useImages();
 
   const images = useSelector(state => state.spot.selectedSpot.properties.images);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -25,19 +25,19 @@ const ImagesOverview = () => {
 
   useEffect(() => {
     console.log('UE ImagesOverview []');
-    getImageThumbnailURIs().catch(err => console.error(err));
+    loadImageThumbnailURIs().catch(err => console.error(err));
   }, [spot]);
 
-  const getImageThumbnailURIs = async () => {
+  const loadImageThumbnailURIs = async () => {
     try {
       if (images) {
-        const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs([spot]);
+        const imageThumbnailURIsTemp = await getImageThumbnailURIs([spot]);
         setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
         if (!isEmpty(imageThumbnailURIsTemp)) setImageThumbnails(imageThumbnailURIsTemp);
       }
     }
     catch (err) {
-      console.error('Error in getImageThumbnailURIs', err);
+      console.error('Error getting image thumbnail URIs', err);
     }
   };
 
@@ -52,7 +52,7 @@ const ImagesOverview = () => {
             PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
               : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
             placeholderStyle={commonStyles.imagePlaceholder}
-            onPress={() => useImages.editImage(image)}
+            onPress={() => editImage(image)}
             onError={() => {
               if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
             }}
@@ -72,7 +72,7 @@ const ImagesOverview = () => {
                 <Button
                   title={'View as Image Basemap'}
                   type={'clear'}
-                  onPress={() => useImages.getImageBasemap(image)}
+                  onPress={() => getImageBasemap(image)}
                 />
               )}
             </View>
@@ -85,7 +85,7 @@ const ImagesOverview = () => {
                 alignItems: 'center',
               }}>
               <Switch
-                onValueChange={annotated => useImages.setAnnotation(image, annotated)}
+                onValueChange={annotated => setAnnotation(image, annotated)}
                 value={image.annotated}
               />
               <Text style={{textAlign: 'left', paddingLeft: 5}}>Use as Image Basemap?</Text>

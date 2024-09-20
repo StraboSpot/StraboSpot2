@@ -19,7 +19,7 @@ import useMapFeaturesHook from './useMapFeatures';
 import useMapURLHook from './useMapURL';
 import useMapViewHook from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
-import useImagesHook from '../images/useImages';
+import {useImages} from '../images';
 
 const Basemap = ({
                    allowMapViewMove,
@@ -44,7 +44,7 @@ const Basemap = ({
   const {mapRef} = forwardedRef;
 
   const useDimensions = useWindowDimensions();
-  const useImages = useImagesHook();
+  const {getImageScreenSizedURI, getLocalImageURI} = useImages();
   const useMap = useMapHook();
   const useMapCoords = useMapCoordsHook();
   const useMapFeatures = useMapFeaturesHook();
@@ -86,8 +86,8 @@ const Basemap = ({
   useEffect(() => {
       // console.log('UE Basemap', viewState);
       // console.log('Dimensions', useDimensions);
-    if (!isMapMoved) dispatch(setIsMapMoved(true));
-    setViewState(useMapView.getInitialViewState());
+      if (!isMapMoved) dispatch(setIsMapMoved(true));
+      setViewState(useMapView.getInitialViewState());
     }, [currentImageBasemap, stratSection],
   );
 
@@ -256,8 +256,8 @@ const Basemap = ({
           id={'currentImageBasemap'}
           type={'image'}
           coordinates={coordQuad}
-          url={Platform.OS === 'web' ? useImages.getImageScreenSizedURI(currentImageBasemap.id)
-            : useImages.getLocalImageURI(currentImageBasemap.id)}
+          url={Platform.OS === 'web' ? getImageScreenSizedURI(currentImageBasemap.id)
+            : getLocalImageURI(currentImageBasemap.id)}
         >
           <Layer
             type={'raster'}

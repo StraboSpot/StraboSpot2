@@ -20,7 +20,7 @@ import VertexDrag from './VertexDrag';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
-import useImagesHook from '../images/useImages';
+import {useImages} from '../images';
 import FreehandSketch from '../sketch/FreehandSketch';
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
@@ -51,7 +51,7 @@ const Basemap = ({
 
   const {mapRef, cameraRef} = forwardedRef;
 
-  const useImages = useImagesHook();
+  const {doesImageExistOnDevice, getLocalImageURI} = useImages();
   const useMapCoords = useMapCoordsHook();
   const useMapFeatures = useMapFeaturesHook();
   const useMapSymbology = useMapSymbologyHook();
@@ -85,8 +85,8 @@ const Basemap = ({
 
   useEffect(() => {
       // console.log('UE Basemap');
-    if (!isMapMoved) dispatch(setIsMapMoved(true));
-    const {longitude, latitude, zoom} = useMapView.getInitialViewState();
+      if (!isMapMoved) dispatch(setIsMapMoved(true));
+      const {longitude, latitude, zoom} = useMapView.getInitialViewState();
       console.log('Got initial center [' + longitude + ', ' + latitude + '] and zoom', zoom);
       setInitialCenter([longitude, latitude]);
       setInitialZoom(zoom);
@@ -99,7 +99,7 @@ const Basemap = ({
   }, [currentImageBasemap]);
 
   const checkImageExistence = async () => {
-    return useImages.doesImageExistOnDevice(currentImageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
+    return doesImageExistOnDevice(currentImageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
   // Update spots in extent and saved view (center and zoom)
@@ -214,7 +214,7 @@ const Basemap = ({
           <MapboxGL.ImageSource
             id={'currentImageBasemap'}
             coordinates={coordQuad}
-            url={useImages.getLocalImageURI(currentImageBasemap.id)}>
+            url={getLocalImageURI(currentImageBasemap.id)}>
             <MapboxGL.RasterLayer
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}

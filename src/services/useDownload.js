@@ -17,7 +17,7 @@ import {
   setLoadingStatus,
   setStatusMessageModalTitle,
 } from '../modules/home/home.slice';
-import useImagesHook from '../modules/images/useImages';
+import {useImages} from '../modules/images';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
@@ -46,7 +46,7 @@ const useDownload = () => {
   const project = useSelector(state => state.project.project);
 
   const useDevice = useDeviceHook();
-  const useImages = useImagesHook();
+  const {gatherNeededImages} = useImages();
   const useResetState = useResetStateHook();
   const useServerRequests = useServerRequestsHook();
 
@@ -104,7 +104,7 @@ const useDownload = () => {
       }
       else {
         const spotsDownloaded = featureCollection.features;
-        const spotImages = await gatherNeededImages(spotsDownloaded, dataset);
+        const spotImages = await findNeededImages(spotsDownloaded, dataset);
         if (spotImages) datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], images: spotImages};
         spotsToSave.push(...spotsDownloaded);
         const spotIds = Object.values(spotsDownloaded).map(spot => spot.properties.id);
@@ -145,10 +145,10 @@ const useDownload = () => {
     }
   };
 
-  const gatherNeededImages = async (spotsDownloaded, dataset) => {
+  const findNeededImages = async (spotsDownloaded, dataset) => {
     try {
       // console.log(dataset.name, ':', 'Gathering Needed Images...');
-      const spotImages = await useImages.gatherNeededImages(spotsDownloaded, dataset);
+      const spotImages = await gatherNeededImages(spotsDownloaded, dataset);
       if (spotImages?.imageIds.length > 0) {
         // console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length);
         return spotImages;

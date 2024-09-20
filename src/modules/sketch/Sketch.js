@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import styles from './sketch.styles';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
-import useImagesHook from '../images/useImages';
+import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotImages} from '../spots/spots.slice';
 
@@ -17,7 +17,7 @@ const Sketch = ({navigation, route}) => {
   const dispatch = useDispatch();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
-  const useImages = useImagesHook();
+  const {saveFile} = useImages();
 
   const [imageId, setImageId] = useState(null);
 
@@ -30,7 +30,7 @@ const Sketch = ({navigation, route}) => {
     try {
       console.log(success, 'Path:', path);
       if (success) {
-        const savedSketch = await useImages.saveFile({...image, 'path': path});
+        const savedSketch = await saveFile({...image, 'path': path});
         dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
         dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
         alert(

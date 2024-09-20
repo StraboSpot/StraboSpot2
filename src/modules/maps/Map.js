@@ -29,7 +29,7 @@ import {
   setModalVisible,
 } from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import useImagesHook from '../images/useImages';
+import {useImages} from '../images';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {useSpots} from '../spots';
@@ -56,7 +56,7 @@ const Map = forwardRef(({
   const spotsRef = useRef(null);
 
   const useCustomMap = useCustomMapHook();
-  const useImages = useImagesHook();
+  const {setImageHeightAndWidth} = useImages();
   const useMap = useMapHook();
   const useMapCoords = useMapCoordsHook();
   const useMapFeatures = useMapFeaturesHook();
@@ -108,7 +108,7 @@ const Map = forwardRef(({
   useEffect(() => {
     // console.log('UE Map [currentImageBasemap]', currentImageBasemap);
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
-      useImages.setImageHeightAndWidth(currentImageBasemap).catch(console.error);
+      setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
   }, [currentImageBasemap]);
 

@@ -6,7 +6,7 @@ import {Button, Card, Icon, Image} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {imageStyles, useImagesHook} from '.';
+import {imageStyles, useImages} from '.';
 import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import useUploadHook from '../../services/useUpload';
@@ -24,7 +24,14 @@ const ImagesViewPage = () => {
 
   const inputRef = useRef(null);
 
-  const useImages = useImagesHook();
+  const {
+    editImage,
+    getImageBasemap,
+    getImagesFromCameraRoll,
+    getImageThumbnailURIs,
+    launchCameraFromNotebook,
+    setAnnotation,
+  } = useImages();
   const navigation = useNavigation();
   const toast = useToast();
   const useUpload = useUploadHook();
@@ -39,14 +46,14 @@ const ImagesViewPage = () => {
 
   useEffect(() => {
     console.log('UE ImagesViewPage [images]', images);
-    getImageThumbnailURIs().catch(err => console.error('Error getting thumbnails', err));
+    loadImageThumbnailURIs().catch(err => console.error('Error getting thumbnails', err));
   }, [images]);
 
   const importImages = async () => {
     let res;
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     if (Platform.OS !== 'web') {
-      res = await useImages.getImagesFromCameraRoll();
+      res = await getImagesFromCameraRoll();
       console.log(res);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show(`${res} image saved!`,
@@ -111,23 +118,23 @@ const ImagesViewPage = () => {
     }
   };
 
-  const getImageThumbnailURIs = async () => {
+  const loadImageThumbnailURIs = async () => {
     try {
       if (images) {
-        const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs([spot]);
+        const imageThumbnailURIsTemp = await getImageThumbnailURIs([spot]);
         setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
         setImageThumbnails(imageThumbnailURIsTemp);
         setIsError(false);
       }
     }
     catch (err) {
-      console.error('Error in getImageThumbnailURIs', err);
+      console.error('Error getting image thumbnail URIs', err);
       setIsError(true);
     }
   };
 
   const takePhoto = async () => {
-    const imagesSavedLength = await useImages.launchCameraFromNotebook();
+    const imagesSavedLength = await launchCameraFromNotebook();
     imagesSavedLength > 0 && toast.show(
       imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved',
       {
@@ -151,7 +158,7 @@ const ImagesViewPage = () => {
         <Card.Image
           resizeMode={'contain'}
           source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
-          onPress={() => useImages.editImage(image)}
+          onPress={() => editImage(image)}
           PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
             : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
           placeholderStyle={commonStyles.imagePlaceholder}
@@ -167,13 +174,13 @@ const ImagesViewPage = () => {
           <Text style={{fontSize: 14, textAlign: 'left'}}>Image as {'\n'}Basemap?</Text>
           <Switch
             style={{height: 20}}
-            onValueChange={isAnnotated => useImages.setAnnotation(image, isAnnotated)}
+            onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
             value={image.annotated}
           />
         </View>
         <Button
           type={'clear'}
-          onPress={() => useImages.getImageBasemap(image)}
+          onPress={() => getImageBasemap(image)}
           title={'View as Image Basemap'}
           disabled={!image.annotated}
           disabledTitleStyle={{color: 'white'}}

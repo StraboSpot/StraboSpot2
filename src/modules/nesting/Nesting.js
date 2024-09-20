@@ -8,7 +8,7 @@ import useNestingHook from './useNesting';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {imageStyles, useImagesHook} from '../images';
+import {imageStyles, useImages} from '../images';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {SpotsListItem, useSpots} from '../spots';
@@ -16,7 +16,7 @@ import {SpotsListItem, useSpots} from '../spots';
 const Nesting = () => {
   console.log('Rendering Nesting');
 
-  const useImages = useImagesHook();
+  const {getLocalImageURI} = useImages();
   const useNesting = useNestingHook();
   const {handleSpotSelected} = useSpots();
 
@@ -39,7 +39,7 @@ const Nesting = () => {
     return (
       <View style={imageStyles.thumbnailContainer}>
         <Image
-          source={{uri: useImages.getLocalImageURI(imageId)}}
+          source={{uri: getLocalImageURI(imageId)}}
           style={imageStyles.thumbnail}
           PlaceholderContent={<ActivityIndicator/>}
         />

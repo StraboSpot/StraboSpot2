@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import {imageStyles, useImagesHook} from '.';
+import {imageStyles, useImages} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -22,7 +22,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   // console.log('Rendering ImageGallery...');
 
   const navigate = useNavigation();
-  const useImages = useImagesHook();
+  const {getImageThumbnailURIs} = useImages();
   const {getActiveSpotsObj, getSpotsWithImages} = useSpots();
 
   const dispatch = useDispatch();
@@ -42,21 +42,21 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   useEffect(() => {
     // console.log('UE ImageGallery []');
-    getImageThumbnailURIs().catch(err => console.error(err));
+    loadImageThumbnailURIs().catch(err => console.error(err));
   }, []);
 
-  const getImageThumbnailURIs = async () => {
+  const loadImageThumbnailURIs = async () => {
     try {
       const spotsWithImages = getSpotsWithImages();
       // console.log('Getting Image URI Thumbnails!');
-      const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
+      const imageThumbnailURIsTemp = await getImageThumbnailURIs(spotsWithImages);
       setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
       // console.log('Image URI Thumbnails are done!');
       setImageThumbnails(imageThumbnailURIsTemp);
       setIsError(false);
     }
     catch (err) {
-      console.error('Error in getImageThumbnailURIs', err);
+      console.error('Error getting image thumbnail URIs', err);
       setIsError(true);
     }
   };

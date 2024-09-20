@@ -7,14 +7,14 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {imageStyles, useImagesHook} from '../images';
+import {imageStyles, useImages} from '../images';
 import {useSpots} from '../spots';
 
 const ImageBasemapsList = ({closeManMenuPanel}) => {
   console.log('Rendering ImageBasemaps...');
 
   const {getImageBasemaps} = useSpots();
-  const useImages = useImagesHook();
+  const {getImageBasemap, getImageThumbnailURI, getLocalImageURI} = useImages();
 
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
 
@@ -32,12 +32,11 @@ const ImageBasemapsList = ({closeManMenuPanel}) => {
 
   const handleImagePressed = (image) => {
     closeManMenuPanel();
-    useImages.getImageBasemap(image);
+    getImageBasemap(image);
   };
 
   const renderImageBasemapThumbnail = (image) => {
-    const uri = Platform.OS === 'web' ? useImages.getImageThumbnailURI(image.id)
-      : useImages.getLocalImageURI(image.id);
+    const uri = Platform.OS === 'web' ? getImageThumbnailURI(image.id) : getLocalImageURI(image.id);
     return (
       <View style={imageStyles.thumbnailContainer}>
         <Text>{image.title}</Text>
