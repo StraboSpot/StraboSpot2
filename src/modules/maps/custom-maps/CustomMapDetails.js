@@ -5,7 +5,7 @@ import {Button, Icon, Input, ListItem, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import customMapStyles from './customMaps.styles';
-import useCustomMapHook from './useCustomMap';
+import useCustomMap from './useCustomMap';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
@@ -26,7 +26,7 @@ const urlKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
 const numericKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
 
 const CustomMapDetails = () => {
-  const useCustomMap = useCustomMapHook();
+  const {deleteMap, saveCustomMap, updateMap} = useCustomMap();
 
   const dispatch = useDispatch();
   const MBAccessToken = useSelector(state => state.user.mapboxToken);
@@ -60,12 +60,12 @@ const CustomMapDetails = () => {
       if (!isEmpty(customMapToEdit)) {
         setTitle('Updating Custom Map');
         setMessage(`Updating Existing Map...\n\n${customMapToEdit.title}`);
-        useCustomMap.updateMap(editableCustomMapData);
+        updateMap(editableCustomMapData);
       }
       else {
         setTitle('Saving Custom Map');
         setMessage(`Saving New Map...\n\n${editableCustomMapData.title}`);
-        const customMap = await useCustomMap.saveCustomMap(editableCustomMapData);
+        const customMap = await saveCustomMap(editableCustomMapData);
         console.log(customMap);
       }
       setMessage('Success!');
@@ -91,7 +91,7 @@ const CustomMapDetails = () => {
         },
         {
           text: 'Delete',
-          onPress: () => useCustomMap.deleteMap(customMapToEdit.id),
+          onPress: () => deleteMap(customMapToEdit.id),
         },
       ],
       {cancelable: false},

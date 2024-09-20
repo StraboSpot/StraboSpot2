@@ -7,7 +7,7 @@ import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Basemap from './Basemap';
-import useCustomMapHook from './custom-maps/useCustomMap';
+import useCustomMap from './custom-maps/useCustomMap';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.constants';
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtentIds, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
@@ -55,7 +55,7 @@ const Map = forwardRef(({
   const mapRef = useRef(null);
   const spotsRef = useRef(null);
 
-  const useCustomMap = useCustomMapHook();
+  const {setCustomMapSwitchValue} = useCustomMap();
   const {setImageHeightAndWidth} = useImages();
   const useMap = useMapHook();
   const useMapCoords = useMapCoordsHook();
@@ -135,7 +135,7 @@ const Map = forwardRef(({
     else if (!isOnline && isOnline !== null && currentBasemap && Platform.OS !== 'web') {
       // console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       Object.values(customBasemap).map((map) => {
-        if (offlineMaps[map.id]?.id !== map.id) useCustomMap.setCustomMapSwitchValue(false, map);
+        if (offlineMaps[map.id]?.id !== map.id) setCustomMapSwitchValue(false, map);
       });
       useOfflineMaps.switchToOfflineMap().catch(error => console.log('Error Setting Offline Basemap', error));
     }

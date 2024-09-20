@@ -4,7 +4,7 @@ import {FlatList} from 'react-native';
 import {Icon, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useCustomMapHook from './useCustomMap';
+import useCustomMap from './useCustomMap';
 import commonStyles from '../../../shared/common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../../../shared/styles.constants';
 import AddButton from '../../../shared/ui/AddButton';
@@ -21,7 +21,7 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const isOnline = useSelector(state => state.connections.isOnline);
 
-  const useCustomMap = useCustomMapHook();
+  const {getCustomMapDetails, updateMap} = useCustomMap();
   const useMap = useMapHook();
 
   const {isInternetReachable, isConnected} = isOnline;
@@ -39,7 +39,7 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={item.id}
-        onPress={() => useCustomMap.getCustomMapDetails(item)}>
+        onPress={() => getCustomMapDetails(item)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
           <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
@@ -62,19 +62,19 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
 
   const viewCustomMap = async (item) => {
     if (item.overlay) {
-      useCustomMap.updateMap({...item, isViewable: true});
+      updateMap({...item, isViewable: true});
       if (DEFAULT_MAPS.every(map => currentBasemap.id !== map.id)) await useMap.setBasemap();
     }
     else {
       await useMap.setBasemap(item.id);
     }
     item?.bbox && setTimeout(() => zoomToCustomMap(item.bbox), 1000);
-  }
+  };
 
   return (
     <>
       <AddButton
-        onPress={() => useCustomMap.getCustomMapDetails({})}
+        onPress={() => getCustomMapDetails({})}
         title={'Add New Custom Map'}
         type={'outline'}
       />
