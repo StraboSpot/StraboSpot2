@@ -12,7 +12,7 @@ import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtentIds, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
 import useMapSymbologyHook from './symbology/useMapSymbology';
-import useMapHook from './useMap';
+import useMap from './useMap';
 import useMapCoordsHook from './useMapCoords';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapFeaturesCalculatedHook from './useMapFeaturesCalculated';
@@ -57,7 +57,7 @@ const Map = forwardRef(({
 
   const {setCustomMapSwitchValue} = useCustomMap();
   const {setImageHeightAndWidth} = useImages();
-  const useMap = useMapHook();
+  const {isDrawMode, getExtentAndZoomCall, setBasemap} = useMap();
   const useMapCoords = useMapCoordsHook();
   const useMapFeatures = useMapFeaturesHook();
   const useMapFeaturesCalculated = useMapFeaturesCalculatedHook(mapRef);
@@ -85,7 +85,7 @@ const Map = forwardRef(({
   const userEmail = useSelector(state => state.user.email);
   const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
 
-  const [allowMapViewMove, setAllowMapViewMove] = useState(!useMap.isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT);
+  const [allowMapViewMove, setAllowMapViewMove] = useState(!isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT);
   const [defaultGeomType, setDefaultGeomType] = useState();
   const [drawFeatures, setDrawFeatures] = useState([]);
   const [editFeatureVertex, setEditFeatureVertex] = useState([]);
@@ -122,13 +122,13 @@ const Map = forwardRef(({
     if (isOnline && !currentBasemap) useMap.setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
       // console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
-      useMap.setBasemap(currentBasemap.id).catch((error) => {
+      setBasemap(currentBasemap.id).catch((error) => {
         console.log('Error Setting Basemap', error);
         // Sentry.captureMessage('Something went wrong', error);
         dispatch(clearedStatusMessages());
         dispatch(addedStatusMessage('Error setting custom basemap.\n Setting basemap Mapbox Topo.' + error));
         dispatch(setIsErrorMessagesModalVisible(true));
-        // useMap.setBasemap();
+        // setBasemap();
         // Sentry.captureException(error);
       });
     }
@@ -520,7 +520,7 @@ const Map = forwardRef(({
       //Assign the promise unresolved first then get the data using the json method.
       console.log('sending this extent to server: ', extentString);
       console.log('sending zoom to server: ', zoomLevel);
-      const tileCountApiCall = await fetch(useMap.getExtentAndZoomCall(extentString, zoomLevel));
+      const tileCountApiCall = await fetch(getExtentAndZoomCall(extentString, zoomLevel));
       const tileCountThisScope = await tileCountApiCall.json();
       console.log('got count from server: ', tileCountThisScope);
       return tileCountThisScope;
@@ -726,7 +726,7 @@ const Map = forwardRef(({
         else clearSelectedSpots();
       }
       // Draw a feature
-      else if (useMap.isDrawMode(mapMode)) {
+      else if (isDrawMode(mapMode)) {
         console.log('Drawing', mapMode, '...');
         let feature = {};
         const newCoord = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
@@ -1051,7 +1051,7 @@ const Map = forwardRef(({
 
   const updateMapView = async () => {
     // console.log('Updating map view from Map.js');
-    if (isEmpty(currentBasemap)) await useMap.setBasemap();
+    if (isEmpty(currentBasemap)) await setBasemap();
     else if (isZoomToCenterOffline) {
       const newCenter = await useOfflineMaps.getMapCenterTile(currentBasemap.id);
       const newZoom = 12;

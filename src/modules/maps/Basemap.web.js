@@ -13,7 +13,7 @@ import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbologyHook from './symbology/useMapSymbology';
-import useMapHook from './useMap';
+import useMap from './useMap';
 import useMapCoordsHook from './useMapCoords';
 import useMapFeaturesHook from './useMapFeatures';
 import useMapURLHook from './useMapURL';
@@ -45,7 +45,7 @@ const Basemap = ({
 
   const useDimensions = useWindowDimensions();
   const {getImageScreenSizedURI, getLocalImageURI} = useImages();
-  const useMap = useMapHook();
+  const {isDrawMode} = useMap();
   const useMapCoords = useMapCoordsHook();
   const useMapFeatures = useMapFeaturesHook();
   const useMapSymbology = useMapSymbologyHook();
@@ -94,7 +94,7 @@ const Basemap = ({
   if (mapMode !== prevMapMode) {
     // console.log('MapMode changed from', prevMapMode, 'to', mapMode);
     setPrevMapMode(mapMode);
-    if (useMap.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
+    if (isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
     else setCursor('');
   }
 
@@ -139,7 +139,7 @@ const Basemap = ({
 
   const onMouseLeave = () => {
     if (mapMode === MAP_MODES.VIEW) setCursor('');
-    else if (useMap.isDrawMode(mapMode)) setCursor('pointer');
+    else if (isDrawMode(mapMode)) setCursor('pointer');
     else if (mapMode === MAP_MODES.EDIT) setCursor('default');
   };
 
@@ -198,7 +198,7 @@ const Basemap = ({
       pitchWithRotate={false}
       touchPitch={false}
       touchZoomRotate={false}
-      doubleClickZoom={!(useMap.isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
+      doubleClickZoom={!(isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
       onClick={onMapPress}
       onDblClick={onMapLongPress}
       onMouseEnter={onMouseEnter}

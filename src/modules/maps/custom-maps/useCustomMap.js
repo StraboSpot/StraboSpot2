@@ -8,8 +8,14 @@ import {SIDE_PANEL_VIEWS} from '../../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../../project/projects.slice';
 import {MAP_PROVIDERS} from '../maps.constants';
-import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, updateCustomMap} from '../maps.slice';
-import useMapHook from '../useMap';
+import {
+  addedCustomMap,
+  deletedCustomMap,
+  selectedCustomMapToEdit,
+  setCurrentBasemap,
+  updateCustomMap,
+} from '../maps.slice';
+import useMap from '../useMap';
 import useMapCoordsHook from '../useMapCoords';
 import useMapURLHook from '../useMapURL';
 
@@ -20,7 +26,7 @@ const useCustomMap = () => {
   const customMaps = useSelector(state => state.map.customMaps);
   const project = useSelector(state => state.project.project);
 
-  const useMap = useMapHook();
+  const {setBasemap} = useMap();
   const useMapCoords = useMapCoordsHook();
   const useMapURL = useMapURLHook();
   const useServerRequests = useServerRequestsHook();
@@ -91,7 +97,7 @@ const useCustomMap = () => {
       bbox = await useMapCoords.getMyMapsBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
-        await useMap.setBasemap(null);
+        await setBasemap(null);
       }
       if (project.other_maps) {
         const otherMapsInProject = project.other_maps;

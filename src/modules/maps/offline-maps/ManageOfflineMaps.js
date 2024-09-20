@@ -18,7 +18,7 @@ import SectionDividerWithRightButton from '../../../shared/ui/SectionDividerWith
 import TextInputModal from '../../../shared/ui/TextInputModal';
 import {setIsOfflineMapsModalVisible} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
-import useMapHook from '../useMap';
+import useMap from '../useMap';
 
 const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   console.log('Rendering ManageOfflineMaps...');
@@ -37,7 +37,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   const [selectedMap, setSelectedMap] = useState({});
 
   const {deleteOfflineMap} = useDevice();
-  const useMap = useMapHook();
+  const {setBasemap} = useMap();
   const useMapsOffline = useMapsOfflineHook();
 
   useEffect(() => {
@@ -221,7 +221,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   const toggleOfflineMap = async (item) => {
     if (item.isOfflineMapVisible) {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: false}));
-      await useMap.setBasemap(item.id);
+      await setBasemap(item.id);
     }
     else {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: true}));

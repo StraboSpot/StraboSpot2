@@ -12,7 +12,7 @@ import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import {DEFAULT_MAPS} from '../maps.constants';
-import useMapHook from '../useMap';
+import useMap from '../useMap';
 
 const ManageCustomMaps = ({zoomToCustomMap}) => {
   // console.log('Rendering ManageCustomMaps...');
@@ -22,7 +22,7 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   const isOnline = useSelector(state => state.connections.isOnline);
 
   const {getCustomMapDetails, updateMap} = useCustomMap();
-  const useMap = useMapHook();
+  const {setBasemap} = useMap();
 
   const {isInternetReachable, isConnected} = isOnline;
 
@@ -63,11 +63,9 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   const viewCustomMap = async (item) => {
     if (item.overlay) {
       updateMap({...item, isViewable: true});
-      if (DEFAULT_MAPS.every(map => currentBasemap.id !== map.id)) await useMap.setBasemap();
+      if (DEFAULT_MAPS.every(map => currentBasemap.id !== map.id)) await setBasemap();
     }
-    else {
-      await useMap.setBasemap(item.id);
-    }
+    else await setBasemap(item.id);
     item?.bbox && setTimeout(() => zoomToCustomMap(item.bbox), 1000);
   };
 
