@@ -11,7 +11,7 @@ import useCustomMap from './custom-maps/useCustomMap';
 import {GEO_LAT_LNG_PROJECTION, MAP_MODES, PIXEL_PROJECTION, ZOOM} from './maps.constants';
 import {clearedVertexes, setFreehandFeatureCoords, setSpotsInMapExtentIds, setVertexStartCoords} from './maps.slice';
 import useOfflineMapsHook from './offline-maps/useMapsOffline';
-import useMapSymbologyHook from './symbology/useMapSymbology';
+import useMapSymbology from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
@@ -68,7 +68,7 @@ const Map = forwardRef(({
     identifyClosestVertexOnSpotPress,
   } = useMapFeaturesCalculated(mapRef);
   const {getCurrentLocation} = useMapLocation();
-  const useMapSymbology = useMapSymbologyHook();
+  const {getSymbology} = useMapSymbology();
   const useMapView = useMapViewHook();
   const useOfflineMaps = useOfflineMapsHook();
   const {createSpot, getSpotWithThisStratSection} = useSpots();
@@ -452,7 +452,7 @@ const Map = forwardRef(({
         if (isSelectingForStereonet) await getStereonetForFeature(feature);
         else if (isSelectingForTagging) await selectSpotsForTagging(feature);
         else {
-          feature.properties.symbology = useMapSymbology.getSymbology(feature);
+          feature.properties.symbology = getSymbology(feature);
           newOrEditedSpot = await createSpot(feature);
           dispatch(setSelectedSpot(newOrEditedSpot));
           dispatch(setFreehandFeatureCoords(undefined));  // reset the freeHandCoordinates
@@ -465,7 +465,7 @@ const Map = forwardRef(({
       // placed, the second is the line or polygon between the vertices, and the third is the last vertex placed
       // Grab the second feature to create the Spot
       if (drawFeatures.length > 1) newFeature = drawFeatures.splice(1, 1)[0];
-      newFeature.properties.symbology = useMapSymbology.getSymbology(newFeature);
+      newFeature.properties.symbology = getSymbology(newFeature);
       if (currentImageBasemap) { //create new spot for imagebasemap - needs lat long to pixel conversion
         newFeature = convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.image_basemap = currentImageBasemap.id;

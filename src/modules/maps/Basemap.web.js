@@ -12,7 +12,7 @@ import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
-import useMapSymbologyHook from './symbology/useMapSymbology';
+import useMapSymbology from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
@@ -48,7 +48,7 @@ const Basemap = ({
   const {isDrawMode} = useMap();
   const {getCoordQuad} = useMapCoords();
   const {getSpotsAsFeatures} = useMapFeatures();
-  const useMapSymbology = useMapSymbologyHook();
+  const {addSymbology, getLayoutSymbology, getLinesFilteredByPattern, getPaintSymbology} = useMapSymbology();
   const useMapURL = useMapURLHook();
   const useMapView = useMapViewHook();
 
@@ -70,10 +70,8 @@ const Basemap = ({
   const coordQuad = getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
-  const featuresNotSelected = turf.featureCollection(
-    getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
-  const featuresSelected = turf.featureCollection(
-    getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
+  const featuresNotSelected = turf.featureCollection(getSpotsAsFeatures(addSymbology(spotsNotSelected)));
+  const featuresSelected = turf.featureCollection(getSpotsAsFeatures(addSymbology(spotsSelected)));
 
   // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
   const featuresNotSelectedUniq = turf.featureCollection(
@@ -278,7 +276,7 @@ const Basemap = ({
           type={'circle'}
           id={'pointLayerSelectedHalo'}
           filter={['==', ['geometry-type'], 'Point']}
-          paint={useMapSymbology.getPaintSymbology().pointSelected}
+          paint={getPaintSymbology().pointSelected}
         />
       </Source>
 
@@ -292,7 +290,7 @@ const Basemap = ({
           type={'circle'}
           id={'pointLayerColorHalo'}
           filter={['==', ['geometry-type'], 'Point']}
-          paint={useMapSymbology.getPaintSymbology().pointColorHalo}
+          paint={getPaintSymbology().pointColorHalo}
         />
       </Source>
 
@@ -307,25 +305,25 @@ const Basemap = ({
           type={'fill'}
           id={'polygonLayerNotSelected'}
           filter={['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]]}
-          paint={useMapSymbology.getPaintSymbology().polygon}
+          paint={getPaintSymbology().polygon}
         />
         <Layer
           type={'fill'}
           id={'polygonLayerWithPatternNotSelected'}
           filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
-          paint={useMapSymbology.getPaintSymbology().polygonWithPattern}
+          paint={getPaintSymbology().polygonWithPattern}
         />
         <Layer
           type={'line'}
           id={'polygonLayerNotSelectedBorder'}
           filter={['==', ['geometry-type'], 'Polygon']}
-          paint={useMapSymbology.getPaintSymbology().line}
+          paint={getPaintSymbology().line}
         />
         <Layer
           type={'symbol'}
           id={'polygonLabelLayerNotSelected'}
           filter={['==', ['geometry-type'], 'Polygon']}
-          layout={useMapSymbology.getLayoutSymbology().polygonLabel}
+          layout={getLayoutSymbology().polygonLabel}
         />
 
         {/* Line Not Selected */}
@@ -334,32 +332,32 @@ const Basemap = ({
         <Layer
           type={'line'}
           id={'lineLayerNotSelected'}
-          filter={useMapSymbology.getLinesFilteredByPattern('solid')}
-          paint={useMapSymbology.getPaintSymbology().line}
+          filter={getLinesFilteredByPattern('solid')}
+          paint={getPaintSymbology().line}
         />
         <Layer
           type={'line'}
           id={'lineLayerNotSelectedDotted'}
-          filter={useMapSymbology.getLinesFilteredByPattern('dotted')}
-          paint={useMapSymbology.getPaintSymbology().lineDotted}
+          filter={getLinesFilteredByPattern('dotted')}
+          paint={getPaintSymbology().lineDotted}
         />
         <Layer
           type={'line'}
           id={'lineLayerNotSelectedDashed'}
-          filter={useMapSymbology.getLinesFilteredByPattern('dashed')}
-          paint={useMapSymbology.getPaintSymbology().lineDashed}
+          filter={getLinesFilteredByPattern('dashed')}
+          paint={getPaintSymbology().lineDashed}
         />
         <Layer
           type={'line'}
           id={'lineLayerNotSelectedDotDashed'}
-          filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
-          paint={useMapSymbology.getPaintSymbology().lineDotDashed}
+          filter={getLinesFilteredByPattern('dotDashed')}
+          paint={getPaintSymbology().lineDotDashed}
         />
         <Layer
           type={'symbol'}
           id={'lineLabelLayerNotSelected'}
           filter={['==', ['geometry-type'], 'LineString']}
-          layout={useMapSymbology.getLayoutSymbology().lineLabel}
+          layout={getLayoutSymbology().lineLabel}
         />
 
         {/* Point Not Selected */}
@@ -367,8 +365,8 @@ const Basemap = ({
           type={'symbol'}
           id={'pointLayerNotSelected'}
           filter={['==', ['geometry-type'], 'Point']}
-          layout={useMapSymbology.getLayoutSymbology().point}
-          paint={useMapSymbology.getPaintSymbology().point}
+          layout={getLayoutSymbology().point}
+          paint={getPaintSymbology().point}
         />
       </Source>
 
@@ -383,25 +381,25 @@ const Basemap = ({
           type={'fill'}
           id={'polygonLayerSelected'}
           filter={['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]]}
-          paint={useMapSymbology.getPaintSymbology().polygonSelected}
+          paint={getPaintSymbology().polygonSelected}
         />
         <Layer
           type={'fill'}
           id={'polygonLayerWithPatternSelected'}
           filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
-          paint={useMapSymbology.getPaintSymbology().polygonWithPatternSelected}
+          paint={getPaintSymbology().polygonWithPatternSelected}
         />
         <Layer
           type={'line'}
           id={'polygonLayerSelectedBorder'}
           filter={['==', ['geometry-type'], 'Polygon']}
-          paint={useMapSymbology.getPaintSymbology().line}
+          paint={getPaintSymbology().line}
         />
         <Layer
           type={'symbol'}
           id={'polygonLabelLayerSelected'}
           filter={['==', ['geometry-type'], 'Polygon']}
-          layout={useMapSymbology.getLayoutSymbology().polygonLabel}
+          layout={getLayoutSymbology().polygonLabel}
         />
 
         {/* Line Selected */}
@@ -410,32 +408,32 @@ const Basemap = ({
         <Layer
           type={'line'}
           id={'lineLayerSelected'}
-          filter={useMapSymbology.getLinesFilteredByPattern('solid')}
-          paint={useMapSymbology.getPaintSymbology().lineSelected}
+          filter={getLinesFilteredByPattern('solid')}
+          paint={getPaintSymbology().lineSelected}
         />
         <Layer
           type={'line'}
           id={'lineLayerSelectedDotted'}
-          filter={useMapSymbology.getLinesFilteredByPattern('dotted')}
-          paint={useMapSymbology.getPaintSymbology().lineSelectedDotted}
+          filter={getLinesFilteredByPattern('dotted')}
+          paint={getPaintSymbology().lineSelectedDotted}
         />
         <Layer
           type={'line'}
           id={'lineLayerSelectedDashed'}
-          filter={useMapSymbology.getLinesFilteredByPattern('dashed')}
-          paint={useMapSymbology.getPaintSymbology().lineSelectedDashed}
+          filter={getLinesFilteredByPattern('dashed')}
+          paint={getPaintSymbology().lineSelectedDashed}
         />
         <Layer
           type={'line'}
           id={'lineLayerSelectedDotDashed'}
-          filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
-          paint={useMapSymbology.getPaintSymbology().lineSelectedDotDashed}
+          filter={getLinesFilteredByPattern('dotDashed')}
+          paint={getPaintSymbology().lineSelectedDotDashed}
         />
         <Layer
           type={'symbol'}
           id={'lineLabelLayerSelected'}
           filter={['==', ['geometry-type'], 'LineString']}
-          layout={useMapSymbology.getLayoutSymbology().lineLabel}
+          layout={getLayoutSymbology().lineLabel}
         />
 
       </Source>
@@ -450,19 +448,19 @@ const Basemap = ({
           type={'circle'}
           id={'pointLayerDraw'}
           filter={['==', ['geometry-type'], 'Point']}
-          paint={useMapSymbology.getPaintSymbology().pointDraw}
+          paint={getPaintSymbology().pointDraw}
         />
         <Layer
           type={'line'}
           id={'lineLayerDraw'}
           filter={['==', ['geometry-type'], 'LineString']}
-          paint={useMapSymbology.getPaintSymbology().lineDraw}
+          paint={getPaintSymbology().lineDraw}
         />
         <Layer
           type={'fill'}
           id={'polygonLayerDraw'}
           filter={['==', ['geometry-type'], 'Polygon']}
-          paint={useMapSymbology.getPaintSymbology().polygonDraw}
+          paint={getPaintSymbology().polygonDraw}
         />
       </Source>
 
@@ -476,7 +474,7 @@ const Basemap = ({
           type={'circle'}
           id={'pointLayerEdit'}
           filter={['==', ['geometry-type'], 'Point']}
-          paint={useMapSymbology.getPaintSymbology().pointEdit}
+          paint={getPaintSymbology().pointEdit}
         />
       </Source>
 
@@ -495,13 +493,13 @@ const Basemap = ({
           type={'circle'}
           id={'measureLayerPoints'}
           filter={['==', ['geometry-type'], 'Point']}
-          paint={useMapSymbology.getPaintSymbology().pointMeasure}
+          paint={getPaintSymbology().pointMeasure}
         />
         <Layer
           type={'line'}
           id={'measureLayerLines'}
           filter={['==', ['geometry-type'], 'LineString']}
-          paint={useMapSymbology.getPaintSymbology().lineMeasure}
+          paint={getPaintSymbology().lineMeasure}
         />
       </Source>
 

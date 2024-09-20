@@ -3,10 +3,10 @@ import React from 'react';
 import MapboxGL from '@rnmapbox/maps';
 
 import useXAxisHook from './useXAxis';
-import useMapSymbologyHook from '../symbology/useMapSymbology';
+import useMapSymbology from '../symbology/useMapSymbology';
 
 const XAxis = ({n = 1}) => {
-  const useMapSymbology = useMapSymbologyHook();
+  const {getMapSymbology} = useMapSymbology();
   const useXAxis = useXAxisHook(n);
 
   return (
@@ -34,7 +34,7 @@ const XAxis = ({n = 1}) => {
         <MapboxGL.SymbolLayer
           id={'xAxisTickMarksLabelLayer' + n}
           minZoomLevel={1}
-          style={useMapSymbology.getMapSymbology().xAxisTickMarkLabels}
+          style={getMapSymbology().xAxisTickMarkLabels}
         />
       </MapboxGL.ShapeSource>
     </>

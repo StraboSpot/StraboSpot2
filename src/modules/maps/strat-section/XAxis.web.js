@@ -3,10 +3,10 @@ import React from 'react';
 import {Layer, Source} from 'react-map-gl';
 
 import useXAxisHook from './useXAxis';
-import useMapSymbologyHook from '../symbology/useMapSymbology';
+import useMapSymbology from '../symbology/useMapSymbology';
 
 const XAxis = ({n = 1}) => {
-  const useMapSymbology = useMapSymbologyHook();
+  const {getLayoutSymbology} = useMapSymbology();
   const useXAxis = useXAxisHook(n);
 
   return (
@@ -39,7 +39,7 @@ const XAxis = ({n = 1}) => {
           type={'symbol'}
           id={'xAxisTickMarksLabelLayer' + n}
           minZoomLevel={1}
-          layout={useMapSymbology.getLayoutSymbology().xAxisTickMarkLabels}
+          layout={getLayoutSymbology().xAxisTickMarkLabels}
         />
       </Source>
     </>
