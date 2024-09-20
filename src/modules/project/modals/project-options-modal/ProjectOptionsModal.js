@@ -10,7 +10,7 @@ import projectOptionsModalStyle from './projectOptionsModal.style';
 import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
 import useDevice from '../../../../services/useDevice';
-import useExportHook from '../../../../services/useExport';
+import useExport from '../../../../services/useExport';
 import commonStyles from '../../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../../shared/Helpers';
 import modalStyle from '../../../../shared/ui/modal/modal.style';
@@ -49,7 +49,7 @@ const ProjectOptionsDialogBox = ({
   const {switchProject} = useProject();
   const toast = useToast();
   const {deleteFromDevice} = useDevice();
-  const useExport = useExportHook();
+  const {initializeBackup, zipAndExportProjectFolder} = useExport();
 
   useEffect(() => {
     console.log('Images Included:', includeImages);
@@ -88,7 +88,7 @@ const ProjectOptionsDialogBox = ({
       console.log('FileName', exportFileName);
       closeModal();
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
+      await zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
       toast.show('Project has been exported!');
@@ -143,7 +143,7 @@ const ProjectOptionsDialogBox = ({
       console.log('Saving Project to Device');
       setErrorMessage('');
       closeModal();
-      await useExport.initializeBackup(backupFileName);
+      await initializeBackup(backupFileName);
     }
   };
 

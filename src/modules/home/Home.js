@@ -20,7 +20,7 @@ import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
 import useDevice from '../../services/useDevice';
-import useExportHook from '../../services/useExport';
+import useExport from '../../services/useExport';
 import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
@@ -47,7 +47,7 @@ const Home = ({navigation, route}) => {
   const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
   const {createProjectDirectories, openURL} = useDevice();
-  const useExport = useExportHook();
+  const {zipAndExportProjectFolder} = useExport();
   const useMapLocation = useMapLocationHook();
   const useVersionCheck = VersionCheckHook();
 
@@ -265,7 +265,7 @@ const Home = ({navigation, route}) => {
     dispatch(clearedStatusMessages());
     // console.log('Exporting Project');
     dispatch(addedStatusMessage(`Exporting ${backupFileName}!`));
-    await useExport.zipAndExportProjectFolder(true);
+    await zipAndExportProjectFolder(true);
     const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${backupFileName}) has been exported!`
       : `\n\nProject (${backupFileName}) has been exported to the Downloads folder!`;
     dispatch(addedStatusMessage(exportCompleteMessage));
