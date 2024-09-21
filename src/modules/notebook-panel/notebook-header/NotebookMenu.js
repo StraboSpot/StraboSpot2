@@ -11,7 +11,7 @@ import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import {setLoadingStatus} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
 import overlayStyles from '../../home/overlays/overlay.styles';
-import useStratSectionHook from '../../maps/strat-section/useStratSection';
+import useStratSection from '../../maps/strat-section/useStratSection';
 import {PAGE_KEYS} from '../../page/page.constants';
 import {useSpots} from '../../spots';
 import {setNotebookPageVisible} from '../notebook.slice';
@@ -26,7 +26,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) =
 
   const {checkIsSafeDelete, copySpot, deleteSpot, isStratInterval} = useSpots();
   const navigation = useNavigation();
-  const useStratSection = useStratSectionHook();
+  const {deleteInterval} = useStratSection();
 
   const actions = [
     {key: 'copy', title: 'Copy this Spot'},
@@ -36,7 +36,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) =
   ];
 
   const continueDeleteSelectedSpot = () => {
-    if (isStratInterval(spot)) useStratSection.deleteInterval(spot);
+    if (isStratInterval(spot)) deleteInterval(spot);
     else deleteSpot(spot.properties.id);
   };
 

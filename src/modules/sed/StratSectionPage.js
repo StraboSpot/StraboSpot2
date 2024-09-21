@@ -7,7 +7,7 @@ import {Avatar, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import AddImageOverlayModal from './AddImageOverlayModal';
-import useSedHook from './useSed';
+import useSed from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -35,7 +35,7 @@ const StratSectionPage = ({page}) => {
 
   const {validateForm} = useForm();
   const navigation = useNavigation();
-  const useSed = useSedHook();
+  const {saveSedFeature, toggleStratSection} = useSed();
 
   const stratSection = spot.properties?.sed?.strat_section || {};
 
@@ -123,7 +123,7 @@ const StratSectionPage = ({page}) => {
           </ListItem.Content>
           <Switch
             value={!isEmpty(stratSection)}
-            onValueChange={() => useSed.toggleStratSection(spot)}
+            onValueChange={() => toggleStratSection(spot)}
           />
         </ListItem>
       </View>
@@ -169,7 +169,7 @@ const StratSectionPage = ({page}) => {
   };
 
   const saveStratSection = async () => {
-    await useSed.saveSedFeature(page.key, spot, stratSectionRef.current);
+    await saveSedFeature(page.key, spot, stratSectionRef.current);
     await stratSectionRef.current.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };

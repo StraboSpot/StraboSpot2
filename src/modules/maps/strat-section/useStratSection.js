@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 
-import useStratSectionCalculationsHook from './useStratSectionCalculations';
+import useStratSectionCalculations from './useStratSectionCalculations';
 import {isEmpty} from '../../../shared/Helpers';
 import {useForm} from '../../form';
 import {useSpots} from '../../spots';
@@ -8,7 +8,7 @@ import {useSpots} from '../../spots';
 const useStratSection = () => {
   const {getSurvey} = useForm();
   const {deleteSpot, getSpotWithThisStratSection} = useSpots();
-  const useStratSectionCalculations = useStratSectionCalculationsHook();
+  const {calculateIntervalGeometry, moveSpotsUpOrDownByPixels} = useStratSectionCalculations();
 
   // Create a new strat section interval, separating the fields to their respective objects
   const createInterval = (stratSectionId, data) => {
@@ -80,8 +80,7 @@ const useStratSection = () => {
     });
     if (!isEmpty(lithologiesFields)) geojsonObj.properties.sed.lithologies = lithologiesFields;
 
-    geojsonObj.geometry = useStratSectionCalculations.calculateIntervalGeometry(stratSectionId,
-      geojsonObj.properties.sed);
+    geojsonObj.geometry = calculateIntervalGeometry(stratSectionId, geojsonObj.properties.sed);
     return geojsonObj;
   };
 
@@ -89,8 +88,8 @@ const useStratSection = () => {
   const deleteInterval = (targetInterval) => {
     const targetIntervalExtent = turf.bbox(targetInterval);
     const targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
-    useStratSectionCalculations.moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id,
-      targetIntervalExtent[3], -targetIntervalHeight, targetInterval.properties.id);
+    moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id, targetIntervalExtent[3],
+      -targetIntervalHeight, targetInterval.properties.id);
     deleteSpot(targetInterval.properties.id);
   };
 

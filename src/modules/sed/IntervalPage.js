@@ -12,7 +12,7 @@ import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 import {editedSpotProperties} from '../spots/spots.slice';
 
 const IntervalPage = ({page}) => {
@@ -21,7 +21,7 @@ const IntervalPage = ({page}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const {validateForm} = useForm();
-  const useSed = useSedHook();
+  const {saveSedFeature} = useSed();
 
   const intervalRef = useRef(null);
 
@@ -61,7 +61,7 @@ const IntervalPage = ({page}) => {
   };
 
   const saveInterval = async (formCurrent) => {
-    await useSed.saveSedFeature(page.key, spot, formCurrent);
+    await saveSedFeature(page.key, spot, formCurrent);
     await formCurrent.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };

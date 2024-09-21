@@ -3,16 +3,16 @@ import React from 'react';
 import * as turf from '@turf/turf';
 import {Layer, Source} from 'react-map-gl';
 
-import useCoveredIntervalXLinesHook from './useCoveredIntevalsXLines';
+import useCoveredIntervalXLines from './useCoveredIntevalsXLines';
 
 const CoveredIntervalsXLines = ({spotsDisplayed}) => {
-  const useCoveredIntervalXLines = useCoveredIntervalXLinesHook(spotsDisplayed);
+  const {getIntervalsWithX} = useCoveredIntervalXLines(spotsDisplayed);
 
   return (
     <Source
       id={'coveredIntervalLines'}
       type={'geojson'}
-      data={turf.featureCollection(useCoveredIntervalXLines.getIntervalsWithX())}
+      data={turf.featureCollection(getIntervalsWithX())}
     >
       <Layer
         type={'line'}

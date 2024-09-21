@@ -19,7 +19,7 @@ import SaveButton from '../../shared/ui/SaveButton';
 import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 import Templates from '../templates/Templates';
 
 const AddRockModal = ({
@@ -42,7 +42,7 @@ const AddRockModal = ({
 
   const {getChoices, getRelevantFields, getSurvey} = useForm();
   const usePetrology = usePetrologyHook();
-  const useSed = useSedHook();
+  const {saveSedFeature, saveSedFeatureValuesFromTemplates} = useSed();
 
   const areMultipleTemplates = templates[rockKey] && templates[rockKey].isInUse && templates[rockKey].active
     && templates[rockKey].active.length > 1;
@@ -225,13 +225,11 @@ const AddRockModal = ({
       if (groupKey === 'pet') {
         usePetrology.savePetFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
       }
-      else if (groupKey === 'sed') {
-        useSed.saveSedFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
-      }
+      else if (groupKey === 'sed') saveSedFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
     }
     else {
       if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formRef.current);
-      else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formRef.current);
+      else if (groupKey === 'sed') await saveSedFeature(pageKey, spot, formRef.current);
       dispatch(setModalValues({...formRef.current.values, id: getNewId()}));
     }
   };

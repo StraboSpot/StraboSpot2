@@ -2,11 +2,11 @@ import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
 import {useTags} from '../../tags';
-import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
+import useStratSectionSymbology from '../strat-section/useStratSectionSymbology';
 
 const useMapSymbology = () => {
   const {getTagsAtSpot} = useTags();
-  const useStratSymbology = useStratSymbologyHook();
+  const {getStratIntervalFill} = useStratSectionSymbology();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
 
@@ -314,7 +314,7 @@ const useMapSymbology = () => {
 
   const getPolygonSymbology = (feature) => {
     if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type === 'strat_interval') {
-      return useStratSymbology.getStratIntervalFill(feature.properties);
+      return getStratIntervalFill(feature.properties);
     }
     else {
       let color = 'rgba(0, 0, 255, 0.4)';     // default fill color

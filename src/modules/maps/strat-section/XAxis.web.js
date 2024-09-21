@@ -2,12 +2,12 @@ import React from 'react';
 
 import {Layer, Source} from 'react-map-gl';
 
-import useXAxisHook from './useXAxis';
+import useXAxis from './useXAxis';
 import useMapSymbology from '../symbology/useMapSymbology';
 
 const XAxis = ({n = 1}) => {
   const {getLayoutSymbology} = useMapSymbology();
-  const useXAxis = useXAxisHook(n);
+  const {getXAxis, getXAxisTickMarks} = useXAxis(n);
 
   return (
     <>
@@ -15,7 +15,7 @@ const XAxis = ({n = 1}) => {
       <Source
         id={'xAxisSource' + n}
         type={'geojson'}
-        data={useXAxis.getXAxis()}
+        data={getXAxis()}
       >
         <Layer
           type={'line'}
@@ -28,7 +28,7 @@ const XAxis = ({n = 1}) => {
       <Source
         id={'xAxisTickMarksSource' + n}
         type={'geojson'}
-        data={useXAxis.getXAxisTickMarks()}
+        data={getXAxisTickMarks()}
       >
         <Layer
           type={'line'}

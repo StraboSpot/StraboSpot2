@@ -7,12 +7,12 @@ import {
   ROCK_SECOND_ORDER_TYPE_FIELDS,
   STRUCTURE_SUBPAGES,
 } from './sed.constants';
-import useSedValidationHook from './useSedValidation';
+import useSedValidation from './useSedValidation';
 import {getNewId, getNewUUID, isEmpty, roundToDecimalPlaces, toTitleCase} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {useForm} from '../form';
 import {setStratSection} from '../maps/maps.slice';
-import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';
+import useStratSectionCalculations from '../maps/strat-section/useStratSectionCalculations';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {useSpots} from '../spots';
@@ -24,8 +24,8 @@ const useSed = () => {
 
   const {getLabel, getLabels, showErrors} = useForm();
   const {getSpotWithThisStratSection, getSpotsMappedOnGivenStratSection, isStratInterval} = useSpots();
-  const useSedValidation = useSedValidationHook();
-  const useStratSectionCalculations = useStratSectionCalculationsHook();
+  const {validateSedData} = useSedValidation();
+  const {moveSpotsUpOrDownByPixels, recalculateIntervalGeometry} = useStratSectionCalculations();
 
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
@@ -137,7 +137,7 @@ const useSed = () => {
         });
       }
       if (needToRecalculateIntervalGeometry) {
-        spot = useStratSectionCalculations.recalculateIntervalGeometry(spot);
+        spot = recalculateIntervalGeometry(spot);
         // Move above intervals up or down if interval thickness changed
         if (sedData.interval && sedData.interval.interval_thickness && sedDataSaved.interval
           && sedDataSaved.interval.interval_thickness) {
@@ -146,13 +146,13 @@ const useSed = () => {
           const diff = targetIntervalExtent[3] - savedSpotIntervalExtent[3];
           // Move above spots up
           if (sedData.interval.interval_thickness > sedDataSaved.interval.interval_thickness) {
-            useStratSectionCalculations.moveSpotsUpOrDownByPixels(spot.properties.strat_section_id,
-              savedSpotIntervalExtent[3], diff, spot.properties.id);
+            moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, savedSpotIntervalExtent[3], diff,
+              spot.properties.id);
           }
           // Move above spots down
           else if (sedData.interval.interval_thickness < sedDataSaved.interval.interval_thickness) {
-            useStratSectionCalculations.moveSpotsUpOrDownByPixels(spot.properties.strat_section_id,
-              targetIntervalExtent[3], diff, spot.properties.id);
+            moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, targetIntervalExtent[3], diff,
+              spot.properties.id);
           }
         }
       }
@@ -298,7 +298,7 @@ const useSed = () => {
       }
 
       // Validate more conditions for Sed
-      useSedValidation.validateSedData(editedSpot, pageKey);
+      validateSedData(editedSpot, pageKey);
 
       // Update geometry if Interval
       if (isStratInterval(spot)) {

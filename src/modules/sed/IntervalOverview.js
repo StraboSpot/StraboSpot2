@@ -3,7 +3,7 @@ import React from 'react';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useSedHook from './useSed';
+import useSed from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 
@@ -12,7 +12,7 @@ const IntervalOverview = ({page}) => {
   const character = useSelector(state => state.spot.selectedSpot.properties.sed?.character) || '';
   const interval = useSelector(state => state.spot.selectedSpot.properties.sed?.interval) || {};
 
-  const useSed = useSedHook();
+  const {getIntervalTitle} = useSed();
 
   return (
     <>
@@ -22,7 +22,7 @@ const IntervalOverview = ({page}) => {
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
-            {useSed.getIntervalTitle(character, interval)}
+            {getIntervalTitle(character, interval)}
           </ListItem.Title>
         </ListItem.Content>
       </ListItem>

@@ -15,7 +15,7 @@ import NoteForm from '../notes/NoteForm';
 import usePetrologyHook from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTags} from '../tags';
@@ -33,7 +33,7 @@ const BasicPageDetail = ({
 
   const {showErrors, validateForm} = useForm();
   const usePetrology = usePetrologyHook();
-  const useSed = useSedHook();
+  const {deleteSedFeature, onSedFormChange, saveSedBedFeature, saveSedFeature} = useSed();
   const {checkSampleName} = useSpots();
   const {deleteFeatureTags} = useTags();
 
@@ -93,7 +93,7 @@ const BasicPageDetail = ({
   const deleteFeature = () => {
     deleteFeatureTags([selectedFeature]);
     if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, selectedFeature);
-    else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, selectedFeature);
+    else if (groupKey === 'sed') deleteSedFeature(pageKey, spot, selectedFeature);
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== selectedFeature.id);
@@ -151,7 +151,7 @@ const BasicPageDetail = ({
               onMyChange: page.key === PAGE_KEYS.MINERALS
                 ? ((name, value) => usePetrology.onMineralChange(formRef.current, name, value))
                 : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
-                  ? ((name, value) => useSed.onSedFormChange(formRef.current, name, value))
+                  ? ((name, value) => onSedFormChange(formRef.current, name, value))
                   : undefined,
             }}/>
           )}
@@ -210,10 +210,10 @@ const BasicPageDetail = ({
         await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else if (groupKey === 'sed' && pageKey === 'bedding') {
-        await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else if (groupKey === 'sed') {
-        await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else await saveFeature(formCurrent);
       await formCurrent.resetForm();

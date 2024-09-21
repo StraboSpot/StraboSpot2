@@ -7,7 +7,7 @@ import commonStyles from '../../shared/common.styles';
 import {MEDIUMGREY} from '../../shared/styles.constants';
 import {useForm} from '../form';
 import usePetrologyHook from '../petrology/usePetrology';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 
 const BasicListItem = ({
                          drag,
@@ -18,7 +18,7 @@ const BasicListItem = ({
                          page,
                        }) => {
   const usePetrology = usePetrologyHook();
-  const useSed = useSedHook();
+  const {getBeddingTitle, getRockTitle, getStratSectionTitle} = useSed();
   const {getLabel} = useForm();
 
   const getTitle = () => {
@@ -33,13 +33,13 @@ const BasicListItem = ({
       case PAGE_KEYS.ROCK_TYPE_FAULT:
         return usePetrology.getRockTitle(item, page.key);
       case PAGE_KEYS.ROCK_TYPE_SEDIMENTARY:
-        return useSed.getRockTitle(item);
+        return getRockTitle(item);
       case PAGE_KEYS.LITHOLOGIES:
-        return 'Lithology ' + (index + 1) + ': ' + useSed.getRockTitle(item);
+        return 'Lithology ' + (index + 1) + ': ' + getRockTitle(item);
       case PAGE_KEYS.STRAT_SECTION:
-        return useSed.getStratSectionTitle(item);
+        return getStratSectionTitle(item);
       case PAGE_KEYS.BEDDING:
-        return 'Lithology ' + (index + 1) + ': ' + useSed.getBeddingTitle(item);
+        return 'Lithology ' + (index + 1) + ': ' + getBeddingTitle(item);
       case PAGE_KEYS.STRUCTURES:
       case PAGE_KEYS.DIAGENESIS:
       case PAGE_KEYS.FOSSILS:

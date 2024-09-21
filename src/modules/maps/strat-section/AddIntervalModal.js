@@ -5,8 +5,8 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useStratSectionHook from './useStratSection';
-import useStratSectionCalculationsHook from './useStratSectionCalculations';
+import useStratSection from './useStratSection';
+import useStratSectionCalculations from './useStratSectionCalculations';
 import commonStyles from '../../../shared/common.styles';
 import {deepObjectExtend} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
@@ -27,8 +27,8 @@ const AddIntervalModal = () => {
 
   const {getLabel, getSurvey, showErrors, validateForm} = useForm();
   const {createSpot, getIntervalSpotsThisStratSection} = useSpots();
-  const useStratSection = useStratSectionHook();
-  const useStratSectionCalculations = useStratSectionCalculationsHook();
+  const {createInterval, orderStratSectionIntervals} = useStratSection();
+  const {moveIntervalToAfter} = useStratSectionCalculations();
 
   const formRef = useRef(null);
   const preFormRef = useRef(null);
@@ -148,7 +148,7 @@ const AddIntervalModal = () => {
     const initialIntervalName = {
       intervalName: (preferences.spot_prefix || '') + (preferences.starting_number_for_spot || ''),
     };
-    const orderedIntervals = useStratSection.orderStratSectionIntervals(intervals);
+    const orderedIntervals = orderStratSectionIntervals(intervals);
     const intervalsForInsert = [...orderedIntervals, {properties: {name: '-- Bottom --', id: 1}}];
     return (
       <Formik
@@ -241,7 +241,7 @@ const AddIntervalModal = () => {
     await formRef.current.submitForm();
     const intervalData = showErrors(formRef.current);
     if (doUnitsFieldsMatch(intervalData)) {
-      let newInterval = useStratSection.createInterval(stratSection.strat_section_id, intervalData);
+      let newInterval = createInterval(stratSection.strat_section_id, intervalData);
       if (preFormRef.current?.values?.intervalName) {
         newInterval.properties.name = preFormRef.current.values.intervalName;
       }
@@ -251,7 +251,7 @@ const AddIntervalModal = () => {
         const intervalToInsertAfterObj = intervals.find(
           i => i.properties.id === preFormRef.current.values.intervalToInsertAfter);
         console.log('Insert after', preFormRef.current.values.intervalToInsertAfter, intervalToInsertAfterObj);
-        useStratSectionCalculations.moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
+        moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
       }
       dispatch(setSelectedSpot(newSpot));
       dispatch(setModalValues({}));

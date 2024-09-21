@@ -2,19 +2,19 @@ import React from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
 
-import useXAxisHook from './useXAxis';
+import useXAxis from './useXAxis';
 import useMapSymbology from '../symbology/useMapSymbology';
 
 const XAxis = ({n = 1}) => {
   const {getMapSymbology} = useMapSymbology();
-  const useXAxis = useXAxisHook(n);
+  const {getXAxis, getXAxisTickMarks} = useXAxis(n);
 
   return (
     <>
       {/* X Axis Line*/}
       <MapboxGL.ShapeSource
         id={'xAxisSource' + n}
-        shape={useXAxis.getXAxis()}
+        shape={getXAxis()}
       >
         <MapboxGL.LineLayer
           id={'xAxisLayer' + n}
@@ -25,7 +25,7 @@ const XAxis = ({n = 1}) => {
       {/* X Axis Tick Marks */}
       <MapboxGL.ShapeSource
         id={'xAxisTickMarksSource' + n}
-        shape={useXAxis.getXAxisTickMarks()}
+        shape={getXAxisTickMarks()}
       >
         <MapboxGL.LineLayer
           id={'xAxisTickMarksLayer' + n}

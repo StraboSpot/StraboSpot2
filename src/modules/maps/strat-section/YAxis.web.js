@@ -2,12 +2,12 @@ import React from 'react';
 
 import {Layer, Source} from 'react-map-gl';
 
-import useYAxisHook from './useYAxis';
+import useYAxis from './useYAxis';
 import useMapSymbology from '../symbology/useMapSymbology';
 
 const YAxis = ({spotsDisplayed}) => {
   const {getLayoutSymbology} = useMapSymbology();
-  const useYAxis = useYAxisHook(spotsDisplayed);
+  const {getYAxis, getYAxisTickMarks} = useYAxis(spotsDisplayed);
 
   return (
     <>
@@ -15,7 +15,7 @@ const YAxis = ({spotsDisplayed}) => {
       <Source
         id={'yAxisSource'}
         type={'geojson'}
-        data={useYAxis.getYAxis()}
+        data={getYAxis()}
       >
         <Layer
           type={'line'}
@@ -28,7 +28,7 @@ const YAxis = ({spotsDisplayed}) => {
       <Source
         id={'yAxisTickMarksSource'}
         type={'geojson'}
-        data={useYAxis.getYAxisTickMarks()}
+        data={getYAxisTickMarks()}
       >
         <Layer
           type={'line'}

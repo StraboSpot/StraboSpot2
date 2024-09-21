@@ -19,7 +19,7 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 import {editedSpotProperties} from '../spots/spots.slice';
 
 const BeddingPage = ({page}) => {
@@ -31,7 +31,7 @@ const BeddingPage = ({page}) => {
   const [selectedAttribute, setSelectedAttribute] = useState({});
 
   const {validateForm} = useForm();
-  const useSed = useSedHook();
+  const {saveSedFeature} = useSed();
 
   const beddingSharedRef = useRef(null);
 
@@ -73,7 +73,7 @@ const BeddingPage = ({page}) => {
           {text: 'No', style: 'cancel'},
           {
             text: 'Yes', onPress: async () => {
-              await useSed.saveSedFeature(page.key, spot, beddingSharedRef.current);
+              await saveSedFeature(page.key, spot, beddingSharedRef.current);
               setIsDetailView(true);
               setSelectedAttribute({id: getNewUUID()});
               dispatch(setModalVisible({modal: null}));
@@ -173,7 +173,7 @@ const BeddingPage = ({page}) => {
   };
 
   const saveBeddingShared = async (formCurrent) => {
-    await useSed.saveSedFeature(page.key, spot, formCurrent);
+    await saveSedFeature(page.key, spot, formCurrent);
     await formCurrent.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };

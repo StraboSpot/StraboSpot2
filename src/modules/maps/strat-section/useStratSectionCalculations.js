@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {SED_LABEL_DICTIONARY} from './stratSection.constants';
 import alert from '../../../shared/ui/alert';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
-import useSedValidationHook from '../../sed/useSedValidation';
+import useSedValidation from '../../sed/useSedValidation';
 import {useSpots} from '../../spots';
 import {editedOrCreatedSpot, editedOrCreatedSpots} from '../../spots/spots.slice';
 
@@ -13,7 +13,7 @@ const useStratSectionCalculations = () => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {getIntervalSpotsThisStratSection, getSpotsMappedOnGivenStratSection} = useSpots();
-  const useSedValidation = useSedValidationHook();
+  const {getBasicLithologyIndex, getSiliciclasticGrainSize} = useSedValidation();
 
   const xInterval = 10;  // Horizontal spacing between grain sizes/weathering tick marks
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
@@ -121,13 +121,12 @@ const useStratSectionCalculations = () => {
       }
       // Basic Lithologies Column Profile
       else if (stratSection.column_profile === 'basic_lithologies') {
-        i = useSedValidation.getBasicLithologyIndex(lithologies[n]);
+        i = getBasicLithologyIndex(lithologies[n]);
         intervalWidth = i === -1 ? defaultWidth : (i + 2) * xInterval;
       }
       // Primary Lithology = siliciclastic
-      else if (lithologies[n].primary_lithology === 'siliciclastic'
-        && useSedValidation.getSiliciclasticGrainSize(lithologies[n])) {
-        const grainSizeName = useSedValidation.getSiliciclasticGrainSize(lithologies[n]);
+      else if (lithologies[n].primary_lithology === 'siliciclastic' && getSiliciclasticGrainSize(lithologies[n])) {
+        const grainSizeName = getSiliciclasticGrainSize(lithologies[n]);
         i = SED_LABEL_DICTIONARY.clastic.findIndex(grainSizeOption => grainSizeOption.name === grainSizeName);
         intervalWidth = i === -1 ? defaultWidth : (i + 1) * xInterval;
       }
