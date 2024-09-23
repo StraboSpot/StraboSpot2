@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import userStyles from './user.styles';
 import {logout} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
-import useUserProfileHook from './useUserProfile';
+import useUserProfile from './useUserProfile';
 import useResetState from '../../services/useResetState';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -23,7 +23,7 @@ const UserProfile = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
 
   const {clearUser} = useResetState();
-  const useUserProfile = useUserProfileHook();
+  const {getEmail, getName} = useUserProfile();
 
   const openUploadAndBackupPage = () => {
     setIsLogoutModalVisible(false);
@@ -41,8 +41,8 @@ const UserProfile = () => {
         >
           <UserProfileAvatar size={70}/>
           <ListItem.Content>
-            <ListItem.Title style={userStyles.avatarLabelName}>{useUserProfile.getName()}</ListItem.Title>
-            <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{useUserProfile.getEmail()}</ListItem.Subtitle>
+            <ListItem.Title style={userStyles.avatarLabelName}>{getName()}</ListItem.Title>
+            <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{getEmail()}</ListItem.Subtitle>
           </ListItem.Content>
           {!isEmpty(userData.name) && <ListItem.Chevron/>}
         </ListItem>
