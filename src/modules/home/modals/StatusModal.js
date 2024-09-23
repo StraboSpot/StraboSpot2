@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownload from '../../../services/useDownload';
-import useImportHook from '../../../services/useImport';
+import useImport from '../../../services/useImport';
 import {isEmpty} from '../../../shared/Helpers';
 import {BLUE} from '../../../shared/styles.constants';
 import StatusDialogBox from '../../../shared/ui/StatusDialogBox';
@@ -23,7 +23,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
   const statusMessages = useSelector(state => state.home.statusMessages);
 
-  const useImport = useImportHook();
+  const {loadProjectFromDevice} = useImport();
   const {initializeDownload} = useDownload();
 
   const getProjectFromSource = async () => {
@@ -31,7 +31,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
       console.log('FROM DEVICE', selectedProject.project);
       dispatch(setSelectedProject({source: '', project: ''}));
       dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
+      const res = await loadProjectFromDevice(selectedProject.project.fileName);
       console.log('Done loading project', res);
     }
     else if (selectedProject.source === 'server') {

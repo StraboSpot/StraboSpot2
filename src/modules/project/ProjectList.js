@@ -10,7 +10,7 @@ import {doesBackupDirectoryExist, setSelectedProject} from './projects.slice';
 import useProject from './useProject';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDownload from '../../services/useDownload';
-import useImportHook from '../../services/useImport';
+import useImport from '../../services/useImport';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
@@ -41,7 +41,7 @@ const ProjectList = ({source}) => {
   const [projectsArr, setProjectsArr] = useState([]);
 
   const {initializeDownload} = useDownload();
-  const useImport = useImportHook();
+  const {loadProjectFromDevice} = useImport();
   const {getAllDeviceProjects, getAllServerProjects} = useProject();
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const ProjectList = ({source}) => {
         if (source === 'device') {
           dispatch(setIsProjectLoadSelectionModalVisible(false));
           dispatch(setIsStatusMessagesModalVisible(true));
-          const res = await useImport.loadProjectFromDevice(project.fileName);
+          const res = await loadProjectFromDevice(project.fileName);
           dispatch(setIsStatusMessagesModalVisible(false));
           setLoading(false);
           dispatch(setStatusMessageModalTitle(res.project.description.project_name));

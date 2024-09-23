@@ -13,7 +13,7 @@ import {
 } from './projects.slice';
 import useDevice from '../../services/useDevice';
 import useDownload from '../../services/useDownload';
-import useImportHook from '../../services/useImport';
+import useImport from '../../services/useImport';
 import useResetState from '../../services/useResetState';
 import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
@@ -45,7 +45,7 @@ const useProject = () => {
   const toast = useToast();
   const {doesDeviceBackupDirExist, readDirectory} = useDevice();
   const {initializeDownload} = useDownload();
-  const useImport = useImportHook();
+  const {loadProjectFromDevice} = useImport();
   const {clearProject} = useResetState();
   const {getMyProjects} = useServerRequests();
 
@@ -262,7 +262,7 @@ const useProject = () => {
           dispatch(setSelectedProject({project: '', source: ''}));
           dispatch(clearedStatusMessages());
           dispatch(setIsStatusMessagesModalVisible(true));
-          const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
+          const res = await loadProjectFromDevice(selectedProject.project.fileName);
           dispatch(setLoadingStatus({view: 'home', bool: false}));
           console.log('Done loading project', res);
         }

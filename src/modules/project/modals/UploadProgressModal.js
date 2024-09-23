@@ -6,7 +6,7 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDownload from '../../../services/useDownload';
-import useImportHook from '../../../services/useImport';
+import useImport from '../../../services/useImport';
 import {isEmpty} from '../../../shared/Helpers';
 import ProgressModal from '../../../shared/ui/modal/ProgressModal';
 import LottieAnimation from '../../../utils/animations/LottieAnimations';
@@ -26,7 +26,7 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
   const [uploadComplete, setUploadComplete] = useState('');
 
   const {initializeDownload} = useDownload();
-  const useImport = useImportHook();
+  const {loadProjectFromDevice} = useImport();
 
   const handleCompletePress = async () => {
     try {
@@ -41,7 +41,7 @@ const UploadProgressModal = ({isProgressModalVisible}) => {
       }
       else if (selectedProject.source === 'device' && !isEmpty(project)) {
         console.log(`Loading ${project.fileName} project from device.`);
-        await useImport.loadProjectFromDevice(project, false);
+        await loadProjectFromDevice(project, false);
         console.log(`${project.fileName} has been imported.`);
       }
       setUploadComplete('');
