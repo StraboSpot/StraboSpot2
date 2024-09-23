@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 
 import useMapCoords from './useMapCoords';
 import {isEmpty} from '../../shared/Helpers';
-import useNestingHook from '../nesting/useNesting';
+import useNesting from '../nesting/useNesting';
 import {useSpots} from '../spots';
 
 const useMapFeaturesCalculated = (mapRef) => {
@@ -13,7 +13,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {convertImagePixelsToLatLong, getBBoxPaddedInPixels} = useMapCoords();
-  const useNesting = useNestingHook();
+  const {getChildrenGenerationsSpots} = useNesting();
   const {getSpotById, getSpotsByIds} = useSpots();
 
   const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
@@ -96,7 +96,7 @@ const useMapFeaturesCalculated = (mapRef) => {
 
       // Get Nested children and add to selected Ids
       selectedSpots.forEach((spot) => {
-        const children = useNesting.getChildrenGenerationsSpots(spot, 10).flat();
+        const children = getChildrenGenerationsSpots(spot, 10).flat();
         const childrenIds = children.map(child => child.properties.id);
         selectedSpotsIds.push(...childrenIds);
         console.log('selectedFeaturesIds', selectedFeaturesIds);

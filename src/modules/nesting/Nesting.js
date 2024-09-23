@@ -4,7 +4,7 @@ import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useNestingHook from './useNesting';
+import useNesting from './useNesting';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
@@ -17,7 +17,7 @@ const Nesting = () => {
   console.log('Rendering Nesting');
 
   const {getLocalImageURI} = useImages();
-  const useNesting = useNestingHook();
+  const {getChildrenGenerationsSpots, getParentGenerationsSpots} = useNesting();
   const {handleSpotSelected} = useSpots();
 
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
@@ -160,8 +160,8 @@ const Nesting = () => {
     if (!isEmpty(selectedSpot)) {
       console.log('Updating Nest for Selected Spot ...');
       console.log('Selected Spot:', selectedSpot);
-      setParentGenerations(useNesting.getParentGenerationsSpots(selectedSpot, 10));
-      setChildrenGenerations(useNesting.getChildrenGenerationsSpots(selectedSpot, 10));
+      setParentGenerations(getParentGenerationsSpots(selectedSpot, 10));
+      setChildrenGenerations(getChildrenGenerationsSpots(selectedSpot, 10));
     }
   };
 
