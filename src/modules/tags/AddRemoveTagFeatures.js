@@ -11,12 +11,12 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import usePageHook from '../page/usePage';
+import usePage from '../page/usePage';
 import {useSpots} from '../spots';
 import {useTags} from '../tags';
 
 const AddRemoveTagFeatures = () => {
-  const usePage = usePageHook();
+  const {getSpotDataIconSource} = usePage();
   const {getAllFeaturesFromSpot} = useSpots();
   const {addRemoveSpotFeatureFromTag, getFeatureDisplayComponent} = useTags();
 
@@ -37,7 +37,7 @@ const AddRemoveTagFeatures = () => {
           onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
         >
           <Avatar
-            source={usePage.getSpotDataIconSource(featureType)}
+            source={getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />

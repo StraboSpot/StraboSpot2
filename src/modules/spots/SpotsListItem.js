@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import {useSpots} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import usePageHook from '../page/usePage';
+import usePage from '../page/usePage';
 import {useTags} from '../tags';
 
 const SpotsListItem = ({
@@ -21,7 +21,7 @@ const SpotsListItem = ({
 
   const {getSpotGeometryIconSource} = useSpots();
   const {addRemoveSpotFromTag, getTagsAtSpot} = useTags();
-  const usePage = usePageHook();
+  const {getPopulatedPagesKeys, getSpotDataIconSource} = usePage();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
 
@@ -37,14 +37,14 @@ const SpotsListItem = ({
   const renderSpotDataIcons = () => (
     <View>
       <FlatList
-        data={usePage.getPopulatedPagesKeys(spot)}
+        data={getPopulatedPagesKeys(spot)}
         horizontal={false}
         keyExtractor={(item, index) => index.toString()}
         listKey={new Date().toISOString()}
         numColumns={5}
         renderItem={({item}) => (
           <Avatar
-            source={usePage.getSpotDataIconSource(item)}
+            source={getSpotDataIconSource(item)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />

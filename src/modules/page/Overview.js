@@ -6,7 +6,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
-import usePageHook from './usePage';
+import usePage from './usePage';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -30,14 +30,14 @@ const Overview = ({openMainMenuPanel}) => {
   const formRef = useRef(null);
 
   const {showErrors, validateForm} = useForm();
-  const usePage = usePageHook();
+  const {getPopulatedPagesKeys} = usePage();
 
   useEffect(() => {
     console.log('UE Overview []');
     dispatch(setModalVisible({modal: null}));
   }, []);
 
-  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...usePage.getPopulatedPagesKeys(spot)])];
+  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...getPopulatedPagesKeys(spot)])];
   const sections = visiblePagesKeys.reduce((acc, key) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (page.overview_component) {

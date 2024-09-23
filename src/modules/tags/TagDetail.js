@@ -10,7 +10,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {PAGE_KEYS} from '../page/page.constants';
-import usePageHook from '../page/usePage';
+import usePage from '../page/usePage';
 import {SpotsListItem, useSpots} from '../spots';
 import {useTags} from '../tags';
 
@@ -21,7 +21,7 @@ const TagDetail = ({
                      openSpot,
                      setIsDetailModalVisible,
                    }) => {
-  const usePage = usePageHook();
+  const {getSpotDataIconSource} = usePage();
   const {getSpotById} = useSpots();
   const {getAllTaggedFeatures, getFeatureDisplayComponent, renderTagInfo} = useTags();
 
@@ -48,7 +48,7 @@ const TagDetail = ({
           onPress={() => openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
-            source={usePage.getSpotDataIconSource(featureType)}
+            source={getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />
