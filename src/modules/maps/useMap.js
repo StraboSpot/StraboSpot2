@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {BASEMAPS, MAP_MODES} from './maps.constants';
 import {setCurrentBasemap} from './maps.slice';
 import useMapCoords from './useMapCoords';
-import useMapURLHook from './useMapURL';
+import useMapURL from './useMapURL';
 import {STRABO_APIS} from '../../services/urls.constants';
 import useServerRequests from '../../services/useServerRequests';
 import {
@@ -19,7 +19,7 @@ const useMap = () => {
   const customMaps = useSelector(state => state.map.customMaps);
 
   const {getMyMapsBboxCoords} = useMapCoords();
-  const useMapURL = useMapURLHook();
+  const {buildStyleURL} = useMapURL();
   const {getTilehostUrl} = useServerRequests();
 
   const getExtentAndZoomCall = (extentString, zoomLevel) => {
@@ -50,7 +50,7 @@ const useMap = () => {
           return basemap.id === mapId;
         });
         if (newBasemap) {
-          newBasemap = useMapURL.buildStyleURL(newBasemap);
+          newBasemap = buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
           bbox = await getMyMapsBboxCoords(newBasemap);
           if (bbox) newBasemap = {...newBasemap, bbox: bbox};

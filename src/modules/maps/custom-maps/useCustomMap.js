@@ -17,7 +17,7 @@ import {
 } from '../maps.slice';
 import useMap from '../useMap';
 import useMapCoords from '../useMapCoords';
-import useMapURLHook from '../useMapURL';
+import useMapURL from '../useMapURL';
 
 const useCustomMap = () => {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ const useCustomMap = () => {
 
   const {setBasemap} = useMap();
   const {getMyMapsBboxCoords} = useMapCoords();
-  const useMapURL = useMapURLHook();
+  const {buildTileURL} = useMapURL();
   const {testCustomMapUrl} = useServerRequests();
 
   const deleteMap = async (mapId) => {
@@ -79,7 +79,7 @@ const useCustomMap = () => {
       mapId = map.id.split('/').slice(3).join('/');
     }
     customMap = {...map, ...providerInfo, id: mapId, source: map.source};
-    const tileUrl = useMapURL.buildTileURL(customMap);
+    const tileUrl = buildTileURL(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
       if (!isEmpty(customDatabaseEndpoint.url) && customDatabaseEndpoint.isSelected) {

@@ -16,7 +16,7 @@ import useMapSymbology from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
-import useMapURLHook from './useMapURL';
+import useMapURL from './useMapURL';
 import useMapView from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
 import {useImages} from '../images';
@@ -49,7 +49,7 @@ const Basemap = ({
   const {getCoordQuad} = useMapCoords();
   const {getSpotsAsFeatures} = useMapFeatures();
   const {addSymbology, getLayoutSymbology, getLinesFilteredByPattern, getPaintSymbology} = useMapSymbology();
-  const useMapURL = useMapURLHook();
+  const {buildTileURL} = useMapURL();
   const {getInitialViewState, setMapView} = useMapView();
 
   const [cursor, setCursor] = useState('');
@@ -226,7 +226,7 @@ const Basemap = ({
               key={customMap.id}
               id={customMap.id}
               type={'raster'}
-              tiles={[useMapURL.buildTileURL(customMap)]}
+              tiles={[buildTileURL(customMap)]}
             >
               <Layer
                 // beforeId={'pointLayerSelectedHalo'}

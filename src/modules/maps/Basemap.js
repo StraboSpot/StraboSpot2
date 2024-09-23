@@ -14,7 +14,7 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbology from './symbology/useMapSymbology';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
-import useMapURLHook from './useMapURL';
+import useMapURL from './useMapURL';
 import useMapView from './useMapView';
 import VertexDrag from './VertexDrag';
 import {isEmpty} from '../../shared/Helpers';
@@ -55,7 +55,7 @@ const Basemap = ({
   const {getCoordQuad} = useMapCoords();
   const {getSpotsAsFeatures} = useMapFeatures();
   const {addSymbology, getLinesFilteredByPattern, getMapSymbology} = useMapSymbology();
-  const useMapURL = useMapURLHook();
+  const {buildTileURL} = useMapURL();
   const {getInitialViewState, setMapView} = useMapView();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
@@ -184,7 +184,7 @@ const Basemap = ({
               <MapboxGL.RasterSource
                 key={customMap.id}
                 id={customMap.id}
-                tileUrlTemplates={[useMapURL.buildTileURL(customMap)]}
+                tileUrlTemplates={[buildTileURL(customMap)]}
               >
                 <MapboxGL.RasterLayer
                   aboveLayerID={basemap.id}
