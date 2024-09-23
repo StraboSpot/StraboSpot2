@@ -5,7 +5,7 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import commonStyles from '../../shared/common.styles';
 import {getNewCopyId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -32,7 +32,7 @@ const MineralsPage = ({page}) => {
   const preFormRef = useRef(null);
 
   const {getSpotById, getSpotsWithKey} = useSpots();
-  const usePetrology = usePetrologyHook();
+  const {getMineralTitle} = usePetrology();
 
   useEffect(() => {
     console.log('UE MineralsPage []');
@@ -112,8 +112,7 @@ const MineralsPage = ({page}) => {
   const renderMineralsList = () => {
     let mineralData = spot.properties.pet && spot.properties.pet[page.key] || [];
     if (!Array.isArray(mineralData)) mineralData = [];
-    const mineralDataSorted = mineralData.slice().sort(
-      (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)));
+    const mineralDataSorted = mineralData.slice().sort((a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)));
     return (
       <>
         <SectionDividerWithRightButton

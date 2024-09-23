@@ -11,7 +11,7 @@ import AddRockIgneousModal from './AddRockIgneousModal';
 import AddRockMetamorphicModal from './AddRockMetamorphicModal';
 import AddRockSedimentaryModal from './AddRockSedimentaryModal';
 import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
@@ -41,7 +41,7 @@ const AddRockModal = ({
   const formRef = useRef(null);
 
   const {getChoices, getRelevantFields, getSurvey} = useForm();
-  const usePetrology = usePetrologyHook();
+  const {savePetFeature, savePetFeatureValuesFromTemplates} = usePetrology();
   const {saveSedFeature, saveSedFeatureValuesFromTemplates} = useSed();
 
   const areMultipleTemplates = templates[rockKey] && templates[rockKey].isInUse && templates[rockKey].active
@@ -222,13 +222,11 @@ const AddRockModal = ({
 
   const saveRock = async () => {
     if (areMultipleTemplates) {
-      if (groupKey === 'pet') {
-        usePetrology.savePetFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
-      }
+      if (groupKey === 'pet') savePetFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
       else if (groupKey === 'sed') saveSedFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
     }
     else {
-      if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formRef.current);
+      if (groupKey === 'pet') await savePetFeature(pageKey, spot, formRef.current);
       else if (groupKey === 'sed') await saveSedFeature(pageKey, spot, formRef.current);
       dispatch(setModalValues({...formRef.current.values, id: getNewId()}));
     }

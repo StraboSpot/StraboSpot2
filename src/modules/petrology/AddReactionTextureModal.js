@@ -4,7 +4,7 @@ import {FlatList, Text, View} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
@@ -22,7 +22,7 @@ const AddReactionTextureModal = ({onPress}) => {
   const formRef = useRef(null);
 
   const {getChoices, getSurvey, getRelevantFields} = useForm();
-  const usePetrology = usePetrologyHook();
+  const {savePetFeature} = usePetrology();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['reactions'];
@@ -125,7 +125,7 @@ const AddReactionTextureModal = ({onPress}) => {
   };
 
   const saveReactionTexture = () => {
-    usePetrology.savePetFeature(petKey, spot, formRef.current);
+    savePetFeature(petKey, spot, formRef.current);
     formRef.current?.setFieldValue('id', getNewId());
   };
 

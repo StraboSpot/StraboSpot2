@@ -55,7 +55,7 @@ const usePetrology = () => {
       + (item.based_on && (' - ' + getLabels(item.based_on, formName).toUpperCase()));
   };
 
-  const getRockTitle = (rock, type) => {
+  const getPetRockTitle = (rock, type) => {
     const formName = type === 'igneous' ? ['pet', rock.igneous_rock_class] : ['pet', type];
     const labelsArr = ROCK_FIRST_ORDER_CLASS_FIELDS[type].reduce((acc, fieldName) => {
       if (rock[fieldName]) {
@@ -128,7 +128,7 @@ const usePetrology = () => {
     deletePetFeature: deletePetFeature,
     getMineralTitle: getMineralTitle,
     getReactionTextureTitle: getReactionTextureTitle,
-    getRockTitle: getRockTitle,
+    getPetRockTitle: getPetRockTitle,
     onMineralChange: onMineralChange,
     savePetFeature: savePetFeature,
     savePetFeatureValuesFromTemplates: savePetFeatureValuesFromTemplates,

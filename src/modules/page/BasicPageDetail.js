@@ -12,7 +12,7 @@ import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import {Form, useForm} from '../form';
 import NoteForm from '../notes/NoteForm';
-import usePetrologyHook from '../petrology/usePetrology';
+import usePetrology from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSed from '../sed/useSed';
@@ -32,7 +32,7 @@ const BasicPageDetail = ({
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const {showErrors, validateForm} = useForm();
-  const usePetrology = usePetrologyHook();
+  const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
   const {deleteSedFeature, onSedFormChange, saveSedBedFeature, saveSedFeature} = useSed();
   const {checkSampleName} = useSpots();
   const {deleteFeatureTags} = useTags();
@@ -92,7 +92,7 @@ const BasicPageDetail = ({
 
   const deleteFeature = () => {
     deleteFeatureTags([selectedFeature]);
-    if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, selectedFeature);
+    if (groupKey === 'pet') deletePetFeature(pageKey, spot, selectedFeature);
     else if (groupKey === 'sed') deleteSedFeature(pageKey, spot, selectedFeature);
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
@@ -149,7 +149,7 @@ const BasicPageDetail = ({
               ...formProps,
               formName: formName,
               onMyChange: page.key === PAGE_KEYS.MINERALS
-                ? ((name, value) => usePetrology.onMineralChange(formRef.current, name, value))
+                ? ((name, value) => onMineralChange(formRef.current, name, value))
                 : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
                   ? ((name, value) => onSedFormChange(formRef.current, name, value))
                   : undefined,
@@ -207,7 +207,7 @@ const BasicPageDetail = ({
   const saveForm = async (formCurrent) => {
     try {
       if (groupKey === 'pet') {
-        await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        await savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else if (groupKey === 'sed' && pageKey === 'bedding') {
         await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));

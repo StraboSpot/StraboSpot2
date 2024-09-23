@@ -220,7 +220,7 @@ const useSed = () => {
       + (character ? ' ' + getLabel(character, formName) : ' Unknown Character');
   };
 
-  const getRockTitle = (rock) => {
+  const getSedRockTitle = (rock) => {
     const formName = ['sed', 'lithologies'];
     const mainLabel = getLabel(rock.primary_lithology, formName);
     const labelsArr = ROCK_SECOND_ORDER_TYPE_FIELDS.reduce((acc, fieldName) => {
@@ -366,7 +366,7 @@ const useSed = () => {
     deleteSedFeature: deleteSedFeature,
     getBeddingTitle: getBeddingTitle,
     getIntervalTitle: getIntervalTitle,
-    getRockTitle: getRockTitle,
+    getSedRockTitle: getSedRockTitle,
     getStratSectionTitle: getStratSectionTitle,
     onSedFormChange: onSedFormChange,
     saveSedBedFeature: saveSedBedFeature,

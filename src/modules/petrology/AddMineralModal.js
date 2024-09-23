@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import MineralsByRockClass from './MineralsByRockClass';
 import MineralsGlossary from './MineralsGlossary';
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_TEXT_SIZE} from '../../shared/styles.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
@@ -29,7 +29,7 @@ const AddMineralModal = ({onPress}) => {
   const [isShowTemplates, setIsShowTemplates] = useState(false);
 
   const {getChoices, getRelevantFields, getSurvey} = useForm();
-  const usePetrology = usePetrologyHook();
+  const {onMineralChange, savePetFeature, savePetFeatureValuesFromTemplates} = usePetrology();
 
   const formRef = useRef(null);
 
@@ -140,7 +140,7 @@ const AddMineralModal = ({onPress}) => {
       <>
         <Form {...{
           formName: formName,
-          onMyChange: (name, value) => usePetrology.onMineralChange(formProps, name, value),
+          onMyChange: (name, value) => onMineralChange(formProps, name, value),
           surveyFragment: firstKeysFields,
           ...formProps,
         }}/>
@@ -211,8 +211,8 @@ const AddMineralModal = ({onPress}) => {
   };
 
   const saveMineral = () => {
-    if (areMultipleTemplates) usePetrology.savePetFeatureValuesFromTemplates(petKey, spot, templates[petKey].active);
-    else usePetrology.savePetFeature(petKey, spot, formRef.current);
+    if (areMultipleTemplates) savePetFeatureValuesFromTemplates(petKey, spot, templates[petKey].active);
+    else savePetFeature(petKey, spot, formRef.current);
     formRef.current?.setFieldValue('id', getNewId());
   };
 
