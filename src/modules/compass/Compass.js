@@ -8,7 +8,7 @@ import {setCompassMeasurements} from './compass.slice';
 import compassStyles from './compass.styles';
 import CompassFace from './CompassFace';
 import CompassModule from '../../services/CompassModule';
-import useCompassHook from '../../services/useCompass';
+import useCompass from '../../services/useCompass';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
 import DeviceSound from '../../utils/sounds/sound';
 import {setModalVisible} from '../home/home.slice';
@@ -32,7 +32,7 @@ const Compass = ({
   const compassMeasurements = useSelector(state => state.compass.measurements);
   const modalVisible = useSelector(state => state.home.modalVisible);
 
-  const useCompass = useCompassHook();
+  const {cartesianToSpherical, getStrikeAndDip, getTrendAndPlunge, getUserDeclination} = useCompass();
 
   const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
@@ -95,7 +95,7 @@ const Compass = ({
   const groupButtons = [{element: trueNorthButton}, {element: magNorthButton}];
 
   const getDeclination = async () => {
-    const declination = await useCompass.getUserDeclination();
+    const declination = await getUserDeclination();
     console.log('Declination is:', declination);
     magneticDeclination.current = declination;
     subscribeToSensors();
@@ -143,19 +143,15 @@ const Compass = ({
     const heading = matrixRotationData.heading;
     const adjustedHeadingWithMagDecl = heading > 0 ? heading + magneticDeclination.current : heading - magneticDeclination.current;
     if (Platform.OS === 'ios') {
-      ENU_Pole = await useCompass.cartesianToSpherical(-matrixRotationData.M32, matrixRotationData.M31,
-        matrixRotationData.M33);
-      ENU_TP = await useCompass.cartesianToSpherical(-matrixRotationData.M22, matrixRotationData.M21,
-        matrixRotationData.M23);
+      ENU_Pole = await cartesianToSpherical(-matrixRotationData.M32, matrixRotationData.M31, matrixRotationData.M33);
+      ENU_TP = await cartesianToSpherical(-matrixRotationData.M22, matrixRotationData.M21, matrixRotationData.M23);
     }
     else {
-      ENU_Pole = await useCompass.cartesianToSpherical(matrixRotationData.M31, matrixRotationData.M32,
-        matrixRotationData.M33);
-      ENU_TP = await useCompass.cartesianToSpherical(matrixRotationData.M21, matrixRotationData.M22,
-        matrixRotationData.M23);
+      ENU_Pole = await cartesianToSpherical(matrixRotationData.M31, matrixRotationData.M32, matrixRotationData.M33);
+      ENU_TP = await cartesianToSpherical(matrixRotationData.M21, matrixRotationData.M22, matrixRotationData.M23);
     }
-    const strikeAndDip = await useCompass.strikeAndDip(ENU_Pole);
-    const trendAndPlunge = await useCompass.trendAndPlunge(ENU_TP);
+    const strikeAndDip = await getStrikeAndDip(ENU_Pole);
+    const trendAndPlunge = await getTrendAndPlunge(ENU_TP);
     const adjustedStrike = heading < 0 ? strikeAndDip.strike + magneticDeclination.current : strikeAndDip.strike - magneticDeclination.current;
     const adjustedTrend = heading < 0 ? trendAndPlunge.trend + magneticDeclination.current : trendAndPlunge.trend - magneticDeclination.current;
     // const declinationRadians = magneticDeclination * Math.PI / 180;

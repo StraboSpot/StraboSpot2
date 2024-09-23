@@ -48,20 +48,7 @@ const useCompass = () => {
     return azimuthDegrees;
   };
 
-  const getUserDeclination = async () => {
-    let longitude, latitude;
-    if (!isEmpty(selectedSpot)) [longitude, latitude] = getCentroidOfSelectedSpot();
-    else {
-      const locationData = await getCurrentLocation();
-      longitude = locationData.longitude;
-      latitude = locationData.latitude;
-    }
-    const magneticDeclination = geomagnetism.model().point([latitude, longitude]);
-    console.log('MagDeclination', magneticDeclination);
-    return magneticDeclination.decl;
-  };
-
-  const strikeAndDip = async (ENU) => {
+  const getStrikeAndDip = async (ENU) => {
     let phi = ENU.phi;
     let theta = ENU.theta;
     let strikeDeg = 0;
@@ -80,7 +67,7 @@ const useCompass = () => {
     return {strike: strikeDeg, dip: dipDeg};
   };
 
-  const trendAndPlunge = async (ENU_TP) => {
+  const getTrendAndPlunge = async (ENU_TP) => {
     let phi = ENU_TP.phi;
     let theta = ENU_TP.theta;
     let trendDeg = mod(90 - theta * (180 / Math.PI), 360);
@@ -93,17 +80,29 @@ const useCompass = () => {
     return {trend: trendDeg, plunge: plungeDeg};
   };
 
+  const getUserDeclination = async () => {
+    let longitude, latitude;
+    if (!isEmpty(selectedSpot)) [longitude, latitude] = getCentroidOfSelectedSpot();
+    else {
+      const locationData = await getCurrentLocation();
+      longitude = locationData.longitude;
+      latitude = locationData.latitude;
+    }
+    const magneticDeclination = geomagnetism.model().point([latitude, longitude]);
+    console.log('MagDeclination', magneticDeclination);
+    return magneticDeclination.decl;
+  };
+
   const mod = (value, degree) => {
     return ((value % degree) + degree) % degree;
   };
 
-
   return {
     cartesianToSpherical: cartesianToSpherical,
     getHeading: getHeading,
+    getStrikeAndDip: getStrikeAndDip,
+    getTrendAndPlunge: getTrendAndPlunge,
     getUserDeclination: getUserDeclination,
-    strikeAndDip: strikeAndDip,
-    trendAndPlunge: trendAndPlunge,
   };
 };
 
