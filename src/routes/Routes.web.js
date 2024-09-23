@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 
 import AppStack from './AppStack';
 import useProject from '../modules/project/useProject';
-import useAuthenticationHook from '../modules/sign-in/useAuthentication.web';
+import useAuthentication from '../modules/sign-in/useAuthentication.web';
 import useSignIn from '../modules/sign-in/useSignIn';
 import AuthenticationErrorSplashScreen from '../modules/splash-screen/AuthenticationErrorSplashScreen';
 import LoadingSplashScreen from '../modules/splash-screen/LoadingSplashScreen.web';
@@ -14,7 +14,7 @@ const Routes = () => {
 
   const {loadProjectWeb} = useProject();
   const {autoLogin} = useSignIn();
-  useAuthenticationHook();
+  useAuthentication();
 
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
