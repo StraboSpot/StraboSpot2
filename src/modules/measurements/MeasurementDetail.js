@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
-import useMeasurementsHook from './useMeasurements';
+import useMeasurements from './useMeasurements';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, roundToDecimalPlaces, toDegrees, toRadians} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
@@ -35,7 +35,7 @@ const MeasurementDetail = ({
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const {showErrors, validateForm} = useForm();
-  const useMeasurements = useMeasurementsHook();
+  const {deleteMeasurements} = useMeasurements();
 
   const formRef = useRef(null);
 
@@ -121,7 +121,7 @@ const MeasurementDetail = ({
     formRef.current?.resetForm();
     if (isEmptyMeasurement(selectedAttitude)) {
       const aOs = selectedAttitude.associated_orientation || [];
-      useMeasurements.deleteMeasurements([...aOs, selectedAttitude]);
+      deleteMeasurements([...aOs, selectedAttitude]);
     }
     closeDetailView();
   };
@@ -166,7 +166,7 @@ const MeasurementDetail = ({
   // Delete a single measurement
   const deleteMeasurement = () => {
     try {
-      useMeasurements.deleteMeasurements([selectedMeasurement]);
+      deleteMeasurements([selectedMeasurement]);
       closeDetailView();
     }
     catch (e) {

@@ -12,7 +12,7 @@ import useCompass from '../../services/useCompass';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
 import DeviceSound from '../../utils/sounds/sound';
 import {setModalVisible} from '../home/home.slice';
-import useMeasurementsHook from '../measurements/useMeasurements';
+import useMeasurements from '../measurements/useMeasurements';
 import {MODAL_KEYS} from '../page/page.constants';
 
 const Compass = ({
@@ -52,7 +52,7 @@ const Compass = ({
   // const [matrixRotation, setMatrixRotation] = useState({});
   const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
   // const [userDeclination, setUserDeclination] = useState('');
-  const useMeasurements = useMeasurementsHook();
+  const {createNewMeasurement} = useMeasurements();
 
   useEffect(() => {
     console.log('UE Compass []');
@@ -79,7 +79,7 @@ const Compass = ({
     console.log('UE Compass [compassMeasurements]', compassMeasurements);
     if (!isEmpty(compassMeasurements) && modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
-      useMeasurements.createNewMeasurement();
+      createNewMeasurement();
       dispatch(setCompassMeasurements({}));
     }
   }, [compassMeasurements]);

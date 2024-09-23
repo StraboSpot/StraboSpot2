@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native';
 
 import {FIRST_ORDER_CLASS_FIELDS, SECOND_ORDER_CLASS_FIELDS} from './measurements.constants';
-import useMeasurementsHook from './useMeasurements';
+import useMeasurements from './useMeasurements';
 import {isEmpty, padWithLeadingZeros, toTitleCase} from '../../shared/Helpers';
 import {useForm} from '../form';
 
@@ -10,10 +10,10 @@ const MeasurementLabel = ({
                             isDetail,
                             item,
                           }) => {
-  const useMeasurements = useMeasurementsHook();
+  const {getMeasurementLabel} = useMeasurements();
   const {getLabel} = useForm();
 
-  const getMeasurementText = (item) => {
+  const getMeasurementText = () => {
     let measurementText = '';
     if (item.type === 'planar_orientation' || item.type === 'tabular_orientation') {
       measurementText += (isEmpty(item.strike) ? '?' : padWithLeadingZeros(item.strike, 3)) + '/'
@@ -26,7 +26,7 @@ const MeasurementLabel = ({
     return measurementText === '' ? '?' : measurementText;
   };
 
-  const getTypeText = (item) => {
+  const getTypeText = () => {
     let firstOrderClass = FIRST_ORDER_CLASS_FIELDS.find(firstOrderClassField => item[firstOrderClassField]);
     let secondOrderClass = SECOND_ORDER_CLASS_FIELDS.find(secondOrderClassField => item[secondOrderClassField]);
     let firstOrderClassLabel = firstOrderClass
@@ -34,18 +34,16 @@ const MeasurementLabel = ({
       : 'Unknown';
     firstOrderClassLabel = firstOrderClassLabel.replace('Orientation', 'Feature');
     if (firstOrderClassLabel === 'Tabular Feature') firstOrderClassLabel = 'Planar Feature (TZ)';
-    const secondOrderClassLabel = secondOrderClass
-      && useMeasurements.getMeasurementLabel(item[secondOrderClass]).toUpperCase();
+    const secondOrderClassLabel = secondOrderClass && getMeasurementLabel(item[secondOrderClass]).toUpperCase();
     return firstOrderClassLabel + (secondOrderClass ? ' - ' + secondOrderClassLabel : '');
   };
 
   return (
     <>
       <Text>{getMeasurementText(item)} {getTypeText(item)}</Text>
-      {!isDetail && item.associated_orientation
-        && item.associated_orientation.map((ao) => {
-          return <Text key={JSON.stringify(ao)}>{'\n'}{getMeasurementText(ao)} {getTypeText(ao)}</Text>;
-        })
+      {!isDetail && item.associated_orientation && item.associated_orientation.map((ao) => {
+        return <Text key={JSON.stringify(ao)}>{'\n'}{getMeasurementText(ao)} {getTypeText(ao)}</Text>;
+      })
       }
     </>
   );

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { SectionList, View} from 'react-native';
+import {SectionList, View} from 'react-native';
 
 import {Button, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import MeasurementDetail from './MeasurementDetail';
 import MeasurementItem from './MeasurementItem';
 import styles from './measurements.styles';
-import useMeasurementsHook from './useMeasurements';
+import useMeasurements from './useMeasurements';
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -33,7 +33,7 @@ const MeasurementsPage = ({page}) => {
   const [multiSelectMode, setMultiSelectMode] = useState();
   const [selectedFeaturesTemp, setSelectedFeaturesTemp] = useState([]);
 
-  const useMeasurements = useMeasurementsHook();
+  const {createNewMeasurement, deleteMeasurements} = useMeasurements();
 
   const SECTIONS = {
     PLANAR: {
@@ -69,7 +69,7 @@ const MeasurementsPage = ({page}) => {
     if (!isEmpty(compassMeasurements) && !isDetailView) {
       console.log('New compass measurement recorded in Measurements.', compassMeasurements);
       if (compassMeasurements.manual) dispatch(setModalVisible({modal: false}));
-      useMeasurements.createNewMeasurement();
+      createNewMeasurement();
       dispatch(setCompassMeasurements({}));
     }
   }, [compassMeasurements]);
@@ -77,11 +77,6 @@ const MeasurementsPage = ({page}) => {
   const addMeasurement = (type) => {
     dispatch(setCompassMeasurementTypes(SECTIONS[type].compass_toggles));
     dispatch(setModalVisible({modal: page.key}));
-  };
-
-  const deleteMeasurements = (measurementsToDelete) => {
-    useMeasurements.deleteMeasurements(measurementsToDelete);
-    onSelectingCancel();
   };
 
   const deleteMeasurementsConfirm = (measurementsToDelete) => {
@@ -96,16 +91,21 @@ const MeasurementsPage = ({page}) => {
         style: 'cancel',
       }, {
         text: 'OK',
-        onPress: () => deleteMeasurements(measurementsToDelete),
+        onPress: () => deleteMeasurementsCont(measurementsToDelete),
       }],
       {cancelable: false},
     );
   };
 
+  const deleteMeasurementsCont = (measurementsToDelete) => {
+    deleteMeasurements(measurementsToDelete);
+    onSelectingCancel();
+  };
+
   const editMeasurement = (measurements) => {
-      setIsDetailView(true);
-      dispatch(setSelectedAttributes(measurements));
-      if (measurements.length > 1) dispatch(setModalVisible({modal: null}));
+    setIsDetailView(true);
+    dispatch(setSelectedAttributes(measurements));
+    if (measurements.length > 1) dispatch(setModalVisible({modal: null}));
   };
 
   const getIdsOfSelected = () => {
@@ -198,7 +198,8 @@ const MeasurementsPage = ({page}) => {
               </>
               {!modalVisible && (
                 <Button
-                  icon={<Icon name={'add'} size={30} style={{paddingRight: 10, paddingLeft: 10}} color={PRIMARY_ACCENT_COLOR}/>}
+                  icon={<Icon name={'add'} size={30} style={{paddingRight: 10, paddingLeft: 10}}
+                              color={PRIMARY_ACCENT_COLOR}/>}
                   type={'clear'}
                   onPress={() => addMeasurement(sectionType)}
                   disabled={isMultipleFeaturesTaggingEnabled}

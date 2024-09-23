@@ -16,7 +16,7 @@ import {
   setTagTypeForColor,
 } from '../../maps/maps.slice';
 import styles from '../../measurements/measurements.styles';
-import useMeasurementsHook from '../../measurements/useMeasurements';
+import useMeasurements from '../../measurements/useMeasurements';
 
 const MapSymbolsOverlay = ({
                              onTouchOutside,
@@ -30,10 +30,10 @@ const MapSymbolsOverlay = ({
   const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
-  const useMeasurements = useMeasurementsHook();
+  const {getMeasurementLabel} = useMeasurements();
 
   const getSymbolTitle = (symbol) => {
-    return toTitleCase(useMeasurements.getMeasurementLabel(symbol));
+    return toTitleCase(getMeasurementLabel(symbol));
   };
 
   const renderSymbolsList = ({item, index}) => {
