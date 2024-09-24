@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useRef, useState} from 'react';
-import {Platform, useWindowDimensions, View} from 'react-native';
+import {Platform, useWindowDimensions} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -20,6 +20,7 @@ import useMapURL from './useMapURL';
 import useMapView from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
 import {useImages} from '../images';
+import mapStyles from './maps.styles';
 
 const Basemap = ({
                    allowMapViewMove,
@@ -209,13 +210,11 @@ const Basemap = ({
     >
 
       {!stratSection && !currentImageBasemap && (
-        <View>
-          <ScaleControl
-            maxWidth={useDimensions.width * 0.25}
-            unit={'imperial'}
-            style={{position: 'absolute', left: 50, bottom: 20, background: 'transparent', fontWeight: 'bold'}}
-          />
-        </View>
+        <ScaleControl
+          maxWidth={useDimensions.width * 0.25}
+          unit={'imperial'}
+          style={mapStyles.scaleWeb}
+        />
       )}
 
       {/* Custom Overlay Layer */}

@@ -10,6 +10,13 @@ const mapStyles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  scaleWeb: {
+    background: 'transparent',
+    bottom: 20,
+    fontWeight: 'bold',
+    left: 50,
+    position: 'absolute',
+  },
   // --- MapPoint Style ---
   vertexEditPoint: {
     borderColor: 'white',
