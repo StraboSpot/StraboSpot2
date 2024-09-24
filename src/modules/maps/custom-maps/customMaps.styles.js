@@ -1,8 +1,39 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../../shared/styles.constants';
+import {MEDIUMGREY} from '../../../shared/styles.constants';
 
 const styles = StyleSheet.create({
+  bboxButton: {
+    padding: 15,
+  },
+  bboxColumnContainer: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  bboxCoordsContainers: {
+    marginHorizontal: 10,
+  },
+  bboxMessageText: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bboxRowContainer: {
+    backgroundColor: 'white',
+    height: 25,
+  },
+  bboxTableHead: {
+    backgroundColor: MEDIUMGREY,
+    height: 20,
+  },
+  bboxText: {
+    textAlign: 'center',
+  },
+  bottomButtonsContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 20,
+  },
   itemContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -48,8 +79,10 @@ const styles = StyleSheet.create({
   },
   mapOverviewText: {
     fontSize: themes.MEDIUM_TEXT_SIZE,
-    padding: 10,
+    fontWeight: themes.TEXT_WEIGHT,
+    padding: 5,
   },
+  // mapOverview
   mapTypeInfoContainer: {
     alignItems: 'center',
     padding: 10,

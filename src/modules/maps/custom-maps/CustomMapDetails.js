@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Platform, Switch, Text, View} from 'react-native';
+import {
+  FlatList,
+  Platform,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 
 import {Button, Icon, Input, ListItem, Overlay} from 'react-native-elements';
 import {Table, Col, Row, Rows, TableWrapper} from 'react-native-reanimated-table';
@@ -9,10 +15,10 @@ import customMapStyles from './customMaps.styles';
 import useCustomMapHook from './useCustomMap';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty} from '../../../shared/Helpers';
-import * as themes from '../../../shared/styles.constants';
-import {BLUE, DARKGREY, LIGHTGREY, MEDIUMGREY, WARNING_COLOR} from '../../../shared/styles.constants';
+import {BLUE, DARKGREY, MEDIUMGREY, WARNING_COLOR} from '../../../shared/styles.constants';
 import alert from '../../../shared/ui/alert';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
+import Loading from '../../../shared/ui/Loading';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import SliderBar from '../../../shared/ui/SliderBar';
 import {formStyles} from '../../form';
@@ -22,24 +28,28 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/m
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {selectedCustomMapToEdit} from '../maps.slice';
+import useMapCoordsHook from '../useMapCoords';
+
 
 const urlKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
 const numericKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
+// const {State: TextInputState} = TextInput;
 
 const CustomMapDetails = () => {
   const useCustomMap = useCustomMapHook();
+  const useMapCoords = useMapCoordsHook();
 
   const dispatch = useDispatch();
   const MBAccessToken = useSelector(state => state.user.mapboxToken);
   const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
+  const isOnline = useSelector(state => state.connections.isOnline);
 
   const [editableCustomMapData, setEditableCustomMapData] = useState({});
   const [isLoadingModalVisible, setIsLoadingModalVisible] = useState(false);
   const [message, setMessage] = useState('Starting...');
+  const [bboxMessage, setBboxMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
-  const [bboxTableHead, setBboxTableHead] = useState(['', 'Longitude', 'Latitude']);
-  const [bboxTableTitle, setBboxTableTitle] = useState(['SW', 'NE']);
 
   useEffect(() => {
     // console.log('UE CustomMapDetails [customMapToEdit]', customMapToEdit);
@@ -101,6 +111,14 @@ const CustomMapDetails = () => {
     );
   };
 
+  const getBoundingBox = async () => {
+    setIsLoading(true);
+    const bbox = await useMapCoords.getMyMapsBboxCoords(customMapToEdit);
+    setEditableCustomMapData(prevState => ({...prevState, bbox: bbox}));
+    setIsLoading(false);
+    setBboxMessage('Be sure to UPDATE map to save bounding box.');
+  };
+
   const handlePress = () => {
     setIsLoadingModalVisible(false);
     dispatch(setSidePanelVisible({view: null, bool: false}));
@@ -140,7 +158,7 @@ const CustomMapDetails = () => {
               keyboardType={urlKeyboardType}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Style URL'}
-              placeholderTextColor={themes.MEDIUMGREY}
+              placeholderTextColor={MEDIUMGREY}
               value={editableCustomMapData.id}
             />
           )}
@@ -154,7 +172,7 @@ const CustomMapDetails = () => {
               keyboardType={numericKeyboardType}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
-              placeholderTextColor={themes.MEDIUMGREY}
+              placeholderTextColor={MEDIUMGREY}
               value={editableCustomMapData.id}
             />
           )}
@@ -195,17 +213,33 @@ const CustomMapDetails = () => {
   const bboxCoordsLayout = () => {
     if (editableCustomMapData.bbox) {
       return (
-        <View style={{flex: 1,padding: 10}}>
-          <Table>
-          <Row data={bboxTableHead} flexArr={[1, 2, 2]} style={{height: 20, backgroundColor: MEDIUMGREY}}
-                 textStyle={{flex: 1, textAlign: 'center', backgroundColor: '#f6f8fa'}}/>
+        <View style={customMapStyles.bboxCoordsContainers}>
+          <Table style={{}}>
+            <Row data={['', 'Longitude', 'Latitude']} flexArr={[1, 2, 2]} style={customMapStyles.bboxTableHead}
+                 textStyle={customMapStyles.bboxText}/>
             <TableWrapper style={{flexDirection: 'row'}}>
-              <Col data={bboxTableTitle} style={{flex: 1, backgroundColor: LIGHTGREY}} heightArr={[20, 20]}
-                   textStyle={{flex: 1, textAlign: 'center', backgroundColor: '#f6f8fa'}}/>
-              <Rows data={getBboxData()} flexArr={[2, 2]} style={{height: 20}}
-                    textStyle={{flex: 1, textAlign: 'center', backgroundColor: '#f6f8fa'}}/>
+              <Col data={['SW', 'NE']} style={customMapStyles.bboxColumnContainer} heightArr={[25, 25]}
+                   textStyle={customMapStyles.bboxText}/>
+              <Rows data={getBboxData()} flexArr={[2, 2]} style={customMapStyles.bboxRowContainer}
+                    textStyle={customMapStyles.bboxText}/>
             </TableWrapper>
+            <View style={customMapStyles.bboxCoordsContainers}>
+              <Text style={customMapStyles.bboxMessageText}>{bboxMessage}</Text>
+            </View>
           </Table>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={customMapStyles.bboxButton}>
+          <Button
+            title={'Get Coords'}
+            type={'clear'}
+            disabled={!isOnline}
+            onPress={getBoundingBox}
+            loading={isLoading}
+          />
         </View>
       );
     }
@@ -215,14 +249,15 @@ const CustomMapDetails = () => {
     const name = CUSTOM_MAP_TYPES.find(map => map.source === customMapToEdit.source);
 
     return (
-      <View style={{paddingTop: 20}}>
+      <View style={{paddingTop: 10}}>
         <SectionDivider dividerText={'Map Details Overview'}/>
-        <View style={{}}>
+        <View style={{padding: 10}}>
           <Text style={customMapStyles.mapOverviewText}>Type: {name.title}</Text>
           <Text style={customMapStyles.mapOverviewText}>Id: {customMapToEdit.id}</Text>
           <Text style={customMapStyles.mapOverviewText}>Bounding Box Coords:</Text>
-          {bboxCoordsLayout()}
+          {!isOnline && <Text>Need to be online to get bounding box</Text>}
         </View>
+        {bboxCoordsLayout()}
       </View>
     );
   };
@@ -244,7 +279,7 @@ const CustomMapDetails = () => {
     );
   };
 
-  const renderOverlay = () => {
+  const renderOverlaySection = () => {
     const opacity = editableCustomMapData?.opacity && typeof (editableCustomMapData.opacity) === 'number'
     && editableCustomMapData.opacity >= 0 && editableCustomMapData.opacity <= 1 ? editableCustomMapData.opacity : 1;
     const sliderValuePercent = Math.round(opacity * 100).toFixed(0);
@@ -303,28 +338,29 @@ const CustomMapDetails = () => {
       <View style={{flex: 1}}>
         {renderSidePanelHeader()}
         {renderTitle()}
-        {renderOverlay()}
+        {renderOverlaySection()}
         {isEmpty(customMapToEdit) ? renderMapTypeList() : renderMapTypeOverview()}
         {isEmpty(
           customMapToEdit) && (editableCustomMapData?.source === 'mapbox_styles' || editableCustomMapData?.source === 'map_warper'
           || editableCustomMapData?.source === 'strabospot_mymaps') && renderMapDetails()}
-      </View>
-      <View style={{paddingBottom: 20}}>
-        <Button
-          title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
-          containerStyle={commonStyles.standardButtonContainer}
-          type={'clear'}
-          disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(editableCustomMapData.id)
-            || editableCustomMapData.source === 'map_warper')}
-          onPress={() => saveMap()}
-        />
-        <Button
-          title={'Delete Map'}
-          titleStyle={{color: WARNING_COLOR}}
-          containerStyle={commonStyles.standardButtonContainer}
-          type={'clear'}
-          onPress={() => confirmDeleteMap()}
-        />
+        <View style={customMapStyles.bottomButtonsContainer}>
+          <Button
+            title={!isEmpty(customMapToEdit) ? 'Update' : 'Save'}
+            containerStyle={commonStyles.standardButtonContainer}
+            type={'clear'}
+            disabled={editableCustomMapData && (isEmpty(editableCustomMapData.title) || isEmpty(
+                editableCustomMapData.id)
+              || editableCustomMapData.source === 'map_warper')}
+            onPress={() => saveMap()}
+          />
+          <Button
+            title={'Delete Map'}
+            titleStyle={{color: WARNING_COLOR}}
+            containerStyle={commonStyles.standardButtonContainer}
+            type={'clear'}
+            onPress={() => confirmDeleteMap()}
+          />
+        </View>
       </View>
       <Overlay
         isVisible={isLoadingModalVisible}
@@ -333,9 +369,9 @@ const CustomMapDetails = () => {
         <View style={{flex: 1}}>
           <View style={[overlayStyles.titleContainer, customMapStyles.loadingMapModalTitleContainer]}>
             <Text style={[overlayStyles.titleText]}>{title}</Text>
-            <Text style={[overlayStyles.titleText]}>{editableCustomMapData.title}</Text>
           </View>
           <View style={[overlayStyles.overlayContent, customMapStyles.loadingMapContentContainer]}>
+            <Text style={[overlayStyles.titleText]}>{editableCustomMapData.title}</Text>
             <Text style={customMapStyles.loadingMapModalContentText}>{message}</Text>
           </View>
           <View style={customMapStyles.loadingMapButtonContainer}>
@@ -345,6 +381,9 @@ const CustomMapDetails = () => {
               onPress={handlePress}
               disabled={isLoading}
             />
+          </View>
+          <View style={{flex: 1}}>
+            <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
           </View>
         </View>
       </Overlay>
