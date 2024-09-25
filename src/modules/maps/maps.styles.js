@@ -11,7 +11,6 @@ const mapStyles = StyleSheet.create({
     flex: 1,
   },
   scaleWeb: {
-    background: 'transparent',
     bottom: 20,
     fontWeight: 'bold',
     left: 50,
