@@ -7,14 +7,14 @@ import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import {MAP_MODES} from '../../maps/maps.constants';
 import homeStyles from '../home.style';
-import useHomeHook from '../useHome';
+import useHome from '../useHome';
 
 const DrawActionButtons = ({clickHandler, mapMode}) => {
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useHome = useHomeHook();
+  const {changeDrawType, getDrawTypes, onLongPress} = useHome();
 
   return (
     <View style={homeStyles.drawToolsContainer}>
@@ -30,31 +30,31 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
         />
       ) : (
         <IconButton
-          source={useHome.changeDrawType(MAP_MODES.DRAW.POINT, mapMode)}
+          source={changeDrawType(MAP_MODES.DRAW.POINT, mapMode)}
           onPress={() => {
-            if (useHome.getDrawTypes().point === MAP_MODES.DRAW.POINT) clickHandler(MAP_MODES.DRAW.POINT);
+            if (getDrawTypes().point === MAP_MODES.DRAW.POINT) clickHandler(MAP_MODES.DRAW.POINT);
             else clickHandler(MAP_MODES.DRAW.POINTLOCATION);
           }}
-          onLongPress={() => useHome.onLongPress('point')}
+          onLongPress={() => onLongPress('point')}
           imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
         />
       )}
       <IconButton
-        source={useHome.changeDrawType(MAP_MODES.DRAW.LINE, mapMode)}
+        source={changeDrawType(MAP_MODES.DRAW.LINE, mapMode)}
         onPress={() => {
-          if (useHome.getDrawTypes().line === MAP_MODES.DRAW.LINE) clickHandler(MAP_MODES.DRAW.LINE);
+          if (getDrawTypes().line === MAP_MODES.DRAW.LINE) clickHandler(MAP_MODES.DRAW.LINE);
           else clickHandler(MAP_MODES.DRAW.FREEHANDLINE);
         }}
-        onLongPress={() => useHome.onLongPress('line')}
+        onLongPress={() => onLongPress('line')}
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
       <IconButton
-        source={useHome.changeDrawType(MAP_MODES.DRAW.POLYGON, mapMode)}
+        source={changeDrawType(MAP_MODES.DRAW.POLYGON, mapMode)}
         onPress={() => {
-          if (useHome.getDrawTypes().polygon === MAP_MODES.DRAW.POLYGON) clickHandler(MAP_MODES.DRAW.POLYGON);
+          if (getDrawTypes().polygon === MAP_MODES.DRAW.POLYGON) clickHandler(MAP_MODES.DRAW.POLYGON);
           else clickHandler(MAP_MODES.DRAW.FREEHANDPOLYGON);
         }}
-        onLongPress={() => useHome.onLongPress('polygon')}
+        onLongPress={() => onLongPress('polygon')}
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
     </View>

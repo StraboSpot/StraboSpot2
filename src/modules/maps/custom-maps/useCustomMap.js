@@ -1,17 +1,23 @@
 import {useDispatch, useSelector} from 'react-redux';
 
 import {STRABO_APIS} from '../../../services/urls.constants';
-import useServerRequestsHook from '../../../services/useServerRequests';
+import useServerRequests from '../../../services/useServerRequests';
 import {isEmpty} from '../../../shared/Helpers';
 import {addedStatusMessage, clearedStatusMessages, setIsWarningMessagesModalVisible} from '../../home/home.slice';
 import {SIDE_PANEL_VIEWS} from '../../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import {addedProject, updatedProject} from '../../project/projects.slice';
 import {MAP_PROVIDERS} from '../maps.constants';
-import {addedCustomMap, deletedCustomMap, selectedCustomMapToEdit, setCurrentBasemap, updateCustomMap} from '../maps.slice';
-import useMapHook from '../useMap';
-import useMapCoordsHook from '../useMapCoords';
-import useMapURLHook from '../useMapURL';
+import {
+  addedCustomMap,
+  deletedCustomMap,
+  selectedCustomMapToEdit,
+  setCurrentBasemap,
+  updateCustomMap,
+} from '../maps.slice';
+import useMap from '../useMap';
+import useMapCoords from '../useMapCoords';
+import useMapURL from '../useMapURL';
 
 const useCustomMap = () => {
   const dispatch = useDispatch();
@@ -20,10 +26,10 @@ const useCustomMap = () => {
   const customMaps = useSelector(state => state.map.customMaps);
   const project = useSelector(state => state.project.project);
 
-  const useMap = useMapHook();
-  const useMapCoords = useMapCoordsHook();
-  const useMapURL = useMapURLHook();
-  const useServerRequests = useServerRequestsHook();
+  const {setBasemap} = useMap();
+  const {getMyMapsBboxCoords} = useMapCoords();
+  const {buildTileURL} = useMapURL();
+  const {testCustomMapUrl} = useServerRequests();
 
   const deleteMap = async (mapId) => {
     console.log('Deleting Map Here');
@@ -73,7 +79,7 @@ const useCustomMap = () => {
       mapId = map.id.split('/').slice(3).join('/');
     }
     customMap = {...map, ...providerInfo, id: mapId, source: map.source};
-    const tileUrl = useMapURL.buildTileURL(customMap);
+    const tileUrl = buildTileURL(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
       if (!isEmpty(customDatabaseEndpoint.url) && customDatabaseEndpoint.isSelected) {
@@ -85,13 +91,13 @@ const useCustomMap = () => {
     }
     console.log('Custom Map:', customMap, 'Test Tile URL:', testTileUrl);
 
-    const testUrlResponse = await useServerRequests.testCustomMapUrl(testTileUrl);
+    const testUrlResponse = await testCustomMapUrl(testTileUrl);
     console.log('RES', testUrlResponse);
     if (testUrlResponse) {
-      bbox = await useMapCoords.getMyMapsBboxCoords(map);
+      bbox = await getMyMapsBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
-        await useMap.setBasemap(null);
+        await setBasemap(null);
       }
       if (project.other_maps) {
         const otherMapsInProject = project.other_maps;

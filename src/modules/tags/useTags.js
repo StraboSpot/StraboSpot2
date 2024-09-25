@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {tagsStyles} from './index';
 import {deepFindFeatureById, getNewId, isEmpty, truncateText} from '../../shared/Helpers';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import MeasurementLabel from '../measurements/MeasurementLabel';
 import OtherFeatureLabel from '../other-features/OtherFeatureLabel';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
@@ -26,7 +26,7 @@ const useTags = () => {
   const spots = useSelector(state => state.spot.spots);
 
   const formRef = useRef(null);
-  const useForm = useFormHook();
+  const {getLabel, showErrors, validateForm} = useForm();
 
   const formName = ['project', 'tags'];
 
@@ -201,11 +201,6 @@ const useTags = () => {
     return tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
   };
 
-  const getLabel = (key) => {
-    if (key) return useForm.getLabel(key, formName);
-    return 'No Type Specified';
-  };
-
   const getNonGeologicUnitFeatureTagsAtSpot = (featuresAtSpot) => {
     const featureTagsAtSpot = getFeatureTagsAtSpot(featuresAtSpot);
     return featureTagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
@@ -241,13 +236,18 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
+  const getTagLabel = (key) => {
+    if (key) return getLabel(key, formName);
+    return 'No Type Specified';
+  };
+
   const renderTagForm = (type) => {
     return (
       <View style={{flex: 1}}>
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
+          validate={values => validateForm({formName: formName, values: values})}
           component={formProps => Form({formName: formName, ...formProps})}
           initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
           initialStatus={{formName: formName}}
@@ -258,11 +258,11 @@ const useTags = () => {
   };
 
   const renderTagInfo = () => {
-    let type = selectedTag.type ? getLabel(selectedTag.type) : 'No type specified';
+    let type = selectedTag.type ? getTagLabel(selectedTag.type) : 'No type specified';
     if (selectedTag.type === 'other' && selectedTag.other_type) type = selectedTag.other_type;
     const subtypeFields = ['other_concept_type', 'other_documentation_type', 'concept_type', 'documentation_type'];
     const subTypeField = subtypeFields.find(subtype => selectedTag[subtype]);
-    const subType = subTypeField ? getLabel(selectedTag[subTypeField]) : undefined;
+    const subType = subTypeField ? getTagLabel(selectedTag[subTypeField]) : undefined;
     const rockUnitFields = ['unit_label_abbreviation', 'map_unit_name', 'member_name', 'rock_type'];
     let rockUnitString = rockUnitFields.reduce((acc, field) => {
       if (selectedTag[field]) return acc + (!isEmpty(acc) ? ' / ' : '') + selectedTag[field];
@@ -281,7 +281,7 @@ const useTags = () => {
   const saveForm = async () => {
     try {
       await formRef.current.submitForm();
-      const formValues = useForm.showErrors(formRef.current);
+      const formValues = showErrors(formRef.current);
       console.log('Saving tag data to Project ...');
       console.log('Form values', formValues);
       let updatedTag = formValues;
@@ -354,10 +354,10 @@ const useTags = () => {
     getFeatureDisplayComponent: getFeatureDisplayComponent,
     getGeologicUnitFeatureTagsAtSpot: getGeologicUnitFeatureTagsAtSpot,
     getGeologicUnitTagsAtSpot: getGeologicUnitTagsAtSpot,
-    getLabel: getLabel,
     getNonGeologicUnitFeatureTagsAtSpot: getNonGeologicUnitFeatureTagsAtSpot,
     getNonGeologicUnitTagsAtSpot: getNonGeologicUnitTagsAtSpot,
     getTagFeaturesCount: getTagFeaturesCount,
+    getTagLabel: getTagLabel,
     getTagSpotsCount: getTagSpotsCount,
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,

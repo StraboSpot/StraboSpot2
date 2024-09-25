@@ -18,43 +18,38 @@ import {
 import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
-import {
-  ErrorModal,
-  InitialProjectLoadModal,
-  StatusModal,
-  WarningModal,
-} from './modals';
-import useDeviceHook from '../../services/useDevice';
-import useExportHook from '../../services/useExport';
-import VersionCheckHook from '../../services/versionCheck/useVersionCheck';
+import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
+import useDevice from '../../services/useDevice';
+import useExport from '../../services/useExport';
+import useVersionCheck from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
-import useHomeHook from '../home/useHome';
+import useHome from '../home/useHome';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
 import {MAP_MODES} from '../maps/maps.constants';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import useProjectHook from '../project/useProject';
+import useProject from '../project/useProject';
+import {useSpots} from '../spots';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
 
-  const useHome = useHomeHook();
-  const useProject = useProjectHook();
-  const useSpots = useSpotsHook();
+  const {lockOrientation, unlockOrientation} = useHome();
+  const {getSelectedDatasetFromId} = useProject();
+  const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
-  const useDevice = useDeviceHook();
-  const useExport = useExportHook();
-  const useMapLocation = useMapLocationHook();
-  const useVersionCheck = VersionCheckHook();
+  const {createProjectDirectories, openURL} = useDevice();
+  const {zipAndExportProjectFolder} = useExport();
+  const {setPointAtCurrentLocation} = useMapLocation();
+  const {checkAppStoreVersion} = useVersionCheck();
 
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
@@ -92,14 +87,14 @@ const Home = ({navigation, route}) => {
   const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
 
   useEffect(() => {
-    Platform.OS !== 'web' && useDevice.createProjectDirectories().catch(
+    Platform.OS !== 'web' && createProjectDirectories().catch(
       err => console.error('Error creating app directories', err));
   }, []);
 
   useEffect(() => {
     let updateTimer;
     if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
-      useVersionCheck.checkAppStoreVersion().then((res) => {
+      checkAppStoreVersion().then((res) => {
         if (res.needsUpdate) {
           setShowUpdateLabel(true);
           updateTimer = setTimeout(() => setShowUpdateLabel(false), 5000);
@@ -153,7 +148,7 @@ const Home = ({navigation, route}) => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
-    useHome.unlockOrientation();
+    unlockOrientation();
   };
 
   const clickHandler = async (name, value) => {
@@ -166,8 +161,8 @@ const Home = ({navigation, route}) => {
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
         dispatch(clearedSelectedSpots());
-        const selectedDataset = useProject.getSelectedDatasetFromId();
-        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await setPointAtCurrentLocation();
+        const selectedDataset = getSelectedDatasetFromId();
+        if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await createPointAtCurrentLocation();
         else if (!isEmpty(selectedDataset)) setDraw(name).catch(console.error);
         else toast.show('No Current Dataset! \n A current dataset needs to be set before drawing Spots.');
         break;
@@ -182,12 +177,12 @@ const Home = ({navigation, route}) => {
         mapComponentRef.current?.toggleUserLocation(value);
         break;
       case 'closeImageBasemap':
-        const spotWithThisImageBasemap = useSpots.getRootSpot(currentImageBasemap.id);
-        useSpots.handleSpotSelected(spotWithThisImageBasemap);
+        const spotWithThisImageBasemap = getRootSpot(currentImageBasemap.id);
+        handleSpotSelected(spotWithThisImageBasemap);
         break;
       case 'closeStratSection':
-        const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
-        useSpots.handleSpotSelected(spotWithThisStratSection);
+        const spotWithThisStratSection = getSpotWithThisStratSection(stratSection.strat_section_id);
+        handleSpotSelected(spotWithThisStratSection);
         break;
       // Map Actions
       case 'zoom':
@@ -215,8 +210,8 @@ const Home = ({navigation, route}) => {
         setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
         break;
       case 'stratSection':
-        const selectedSpotWithThisStratSection = useSpots.getSpotWithThisStratSection(stratSection.strat_section_id);
-        useSpots.handleSpotSelected(selectedSpotWithThisStratSection);
+        const selectedSpotWithThisStratSection = getSpotWithThisStratSection(stratSection.strat_section_id);
+        handleSpotSelected(selectedSpotWithThisStratSection);
         openNotebookPanel(PAGE_KEYS.STRAT_SECTION);
         break;
     }
@@ -241,6 +236,21 @@ const Home = ({navigation, route}) => {
     animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
     setTimeout(() => dispatch(setIsNotebookPanelVisible(false)), 1000);
+  };
+
+  const createPointAtCurrentLocation = async () => {
+    try {
+      dispatch(setLoadingStatus({view: 'home', bool: true}));
+      await setPointAtCurrentLocation();
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      toast.show(`Point Spot Added at Current\n Location to Dataset ${getSelectedDatasetFromId().name.toUpperCase()}`,
+        {type: 'success'});
+      openNotebookPanel();
+    }
+    catch (err) {
+      dispatch(setLoadingStatus({view: 'home', bool: false}));
+      console.error('Error setting point to current location', err);
+    }
   };
 
   const dialogClickHandler = (dialog, name, position) => {
@@ -270,7 +280,7 @@ const Home = ({navigation, route}) => {
     dispatch(clearedStatusMessages());
     // console.log('Exporting Project');
     dispatch(addedStatusMessage(`Exporting ${backupFileName}!`));
-    await useExport.zipAndExportProjectFolder(true);
+    await zipAndExportProjectFolder(true);
     const exportCompleteMessage = Platform.OS === 'ios' ? `\n\nProject (${backupFileName}) has been exported!`
       : `\n\nProject (${backupFileName}) has been exported to the Downloads folder!`;
     dispatch(addedStatusMessage(exportCompleteMessage));
@@ -311,13 +321,13 @@ const Home = ({navigation, route}) => {
   };
 
   const openSpotInNotebook = (spot, notebookPage, attributes) => {
-    useSpots.handleSpotSelected(spot);
+    handleSpotSelected(spot);
     if (attributes) dispatch(setSelectedAttributes(attributes));
     if (notebookPage) openNotebookPanel(notebookPage);
     else openNotebookPanel(PAGE_KEYS.OVERVIEW);
   };
 
-  const openStraboSpotURL = () => useDevice.openURL('https://www.strabospot.org/login');
+  const openStraboSpotURL = () => openURL('https://www.strabospot.org/login');
 
   const renderVersionCheckLabel = () => (
     <View style={homeStyles.versionPositionHome}>
@@ -342,30 +352,11 @@ const Home = ({navigation, route}) => {
       'editButtonsVisible': false,
       'drawButtonsVisible': true,
     });
-    useHome.unlockOrientation();
-  };
-
-  const setPointAtCurrentLocation = async () => {
-    try {
-      dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useMapLocation.setPointAtCurrentLocation();
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      toast.show(
-        `Point Spot Added at Current\n Location to Dataset ${useProject.getSelectedDatasetFromId().name.toUpperCase()}`,
-        {
-          type: 'success',
-        },
-      );
-      openNotebookPanel();
-    }
-    catch (err) {
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      console.error('Error setting point to current location', err);
-    }
+    unlockOrientation();
   };
 
   const startEdit = () => {
-    useHome.lockOrientation();
+    lockOrientation();
     setMapMode(MAP_MODES.EDIT);
     setButtons({
       editButtonsVisible: true,
@@ -414,12 +405,12 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
           openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
+          ref={mapComponentRef}
           renderVersionCheckLabel={renderVersionCheckLabel()}
           setDistance={setDistance}
           showUpdateLabel={showUpdateLabel}
@@ -442,19 +433,17 @@ const Home = ({navigation, route}) => {
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
-          mapComponentRef={mapComponentRef}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
           openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
+          ref={mapComponentRef}
           setDistance={setDistance}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
         />
       )}
       {/*Modals for Home Page*/}
-      {/*<BackupModal/>*/}
-      {/*<BackUpOverwriteModal onPress={action => useProject.switchProject(action)}/>*/}
       {isProjectLoadSelectionModalVisible && Platform.OS !== 'web' && (
         <InitialProjectLoadModal
           closeModal={closeInitialProjectLoadModal}

@@ -1,12 +1,12 @@
 import {useSelector} from 'react-redux';
 
 import {hexToRgb, isEmpty} from '../../../shared/Helpers';
-import {useTagsHook} from '../../tags';
-import useStratSymbologyHook from '../strat-section/useStratSectionSymbology';
+import {useTags} from '../../tags';
+import useStratSectionSymbology from '../strat-section/useStratSectionSymbology';
 
 const useMapSymbology = () => {
-  const useTags = useTagsHook();
-  const useStratSymbology = useStratSymbologyHook();
+  const {getTagsAtSpot} = useTags();
+  const {getStratIntervalFill} = useStratSectionSymbology();
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
 
@@ -314,7 +314,7 @@ const useMapSymbology = () => {
 
   const getPolygonSymbology = (feature) => {
     if (feature.properties.surface_feature && feature.properties.surface_feature.surface_feature_type === 'strat_interval') {
-      return useStratSymbology.getStratIntervalFill(feature.properties);
+      return getStratIntervalFill(feature.properties);
     }
     else {
       let color = 'rgba(0, 0, 255, 0.4)';     // default fill color
@@ -378,7 +378,7 @@ const useMapSymbology = () => {
   // and that tag has a color assigned to then apply that color first
   const getTagColor = (feature) => {
     let color;
-    let tagsAtSpot = useTags.getTagsAtSpot(feature.properties.id);
+    let tagsAtSpot = getTagsAtSpot(feature.properties.id);
     const tagsForColor = tagsAtSpot.filter(tag => tag.type === tagTypeForColor);
     if (!isEmpty(tagsForColor) && tagsForColor[0].color) {
       const rgbColor = hexToRgb(tagsForColor[0].color);

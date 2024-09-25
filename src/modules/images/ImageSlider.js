@@ -4,7 +4,7 @@ import {ActivityIndicator, Platform, useWindowDimensions, View} from 'react-nati
 import {Button, Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {imageStyles, imageSliderStyles, useImagesHook} from '.';
+import {imageSliderStyles, imageStyles, useImages} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -18,7 +18,7 @@ const ImageSlider = ({route, navigation}) => {
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
 
-  const useImages = useImagesHook();
+  const {getImageScreenSizedURI, getLocalImageURI} = useImages();
 
   const [imageIndex, setImageIndex] = useState(undefined);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -73,13 +73,8 @@ const ImageSlider = ({route, navigation}) => {
           />
         </View>
         <Image
-          source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageId)}
-            : {uri: useImages.getLocalImageURI(imageId)}}
-          style={Platform.OS === 'web' ? {
-              width: width,
-              height: height,
-            }
-            : {width: '100%', height: '100%'}}
+          source={Platform.OS === 'web' ? {uri: getImageScreenSizedURI(imageId)} : {uri: getLocalImageURI(imageId)}}
+          style={Platform.OS === 'web' ? {width: width, height: height} : {width: '100%', height: '100%'}}
           resizeMode={'contain'}
           PlaceholderContent={!isImageLoaded ? <ActivityIndicator/>
             : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}

@@ -2,10 +2,10 @@ import React from 'react';
 
 import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, FormSlider, MainButtons, useFormHook} from '../form';
+import {Form, FormSlider, MainButtons, useForm} from '../form';
 
 const FaultRockFabric = (props) => {
-  const useForm = useFormHook();
+  const {getSurvey} = useForm();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -14,7 +14,7 @@ const FaultRockFabric = (props) => {
   const tectoniteTypesKey = 'tectonite_type';
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(props.formName);
+  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 

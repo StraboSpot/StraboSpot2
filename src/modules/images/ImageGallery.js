@@ -3,9 +3,9 @@ import {ActivityIndicator, FlatList, SectionList, Text, View} from 'react-native
 
 import {useNavigation} from '@react-navigation/native';
 import {Icon, Image} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
-import {imageStyles, useImagesHook} from '.';
+import {imageStyles, useImages} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -13,46 +13,50 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
 import {setLoadingStatus} from '../home/home.slice';
-import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
-import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
-import useSpotsHook from '../spots/useSpots';
+import {useSpots} from '../spots';
+import SpotFilters from '../spots/SpotFilters';
 
 const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   // console.log('Rendering ImageGallery...');
 
   const navigate = useNavigation();
-  const useImages = useImagesHook();
-  const useSpots = useSpotsHook();
+  const {getImageThumbnailURIs} = useImages();
+  const {getActiveSpotsObj, getSpotsWithImages} = useSpots();
 
   const dispatch = useDispatch();
-  const sortedView = useSelector(state => state.mainMenu.sortedView);
+
+  const activeSpotsObj = getActiveSpotsObj();
+  const activeSpots = Object.values(activeSpotsObj);
 
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [isError, setIsError] = useState(false);
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
+  const [isReverseSort, setIsReverseSort] = useState(false);
+  const [spotsSearched, setSpotsSearched] = useState(activeSpots);
+  const [spotsSorted, setSpotsSorted] = useState(activeSpots);
+  const [textNoSpots, setTextNoSpots] = useState('No Spots in Active Datasets');
 
   let sortedSpotsWithImages = [];
 
   useEffect(() => {
     // console.log('UE ImageGallery []');
-    getImageThumbnailURIs().catch(err => console.error(err));
+    loadImageThumbnailURIs().catch(err => console.error(err));
   }, []);
 
-  const getImageThumbnailURIs = async () => {
+  const loadImageThumbnailURIs = async () => {
     try {
-      const spotsWithImages = useSpots.getSpotsWithImages();
+      const spotsWithImages = getSpotsWithImages();
       // console.log('Getting Image URI Thumbnails!');
-      const imageThumbnailURIsTemp = await useImages.getImageThumbnailURIs(spotsWithImages);
+      const imageThumbnailURIsTemp = await getImageThumbnailURIs(spotsWithImages);
       setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
       // console.log('Image URI Thumbnails are done!');
       setImageThumbnails(imageThumbnailURIsTemp);
       setIsError(false);
     }
     catch (err) {
-      console.error('Error in getImageThumbnailURIs', err);
+      console.error('Error getting image thumbnail URIs', err);
       setIsError(true);
     }
   };
@@ -120,18 +124,8 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   };
 
   const renderSpotsWithImages = () => {
-    sortedSpotsWithImages = useSpots.getSpotsWithImagesSortedReverseChronologically();
-    let noImagesText = 'No active Spots with images';
-    if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      const spotsInMapExtent = useSpots.getSpotsInMapExtent();
-      sortedSpotsWithImages = spotsInMapExtent.filter(spot => !isEmpty(spot.properties.images));
-      if (isEmpty(sortedSpotsWithImages)) noImagesText = 'No active Spots with images in current map extent';
-    }
-    else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      const recentlyViewedSpots = useSpots.getRecentSpots();
-      sortedSpotsWithImages = recentlyViewedSpots.filter(spot => !isEmpty(spot.properties.images));
-      if (!isEmpty(sortedSpotsWithImages)) noImagesText = 'No recently viewed active Spots with images';
-    }
+    sortedSpotsWithImages = spotsSorted.filter(spot => !isEmpty(spot.properties.images));
+    if (isReverseSort) sortedSpotsWithImages = sortedSpotsWithImages.reverse();
     let count = 0;
     const spotsAsSections = sortedSpotsWithImages.reduce((acc, spot) => {
       count += spot.properties.images.length;
@@ -140,13 +134,15 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
     return (
       <>
-        <SortingButtons/>
-        {sortedView === SORTED_VIEWS.MAP_EXTENT && (
-          <UpdateSpotsInMapExtentButton
-            title={'Update Images in Map Extent'}
-            updateSpotsInMapExtent={updateSpotsInMapExtent}
-          />
-        )}
+        <SpotFilters
+          activeSpots={activeSpots}
+          setIsReverseSort={setIsReverseSort}
+          setSpotsSearched={setSpotsSearched}
+          setSpotsSorted={setSpotsSorted}
+          setTextNoSpots={setTextNoSpots}
+          spotsSearched={spotsSearched}
+          updateSpotsInMapExtent={updateSpotsInMapExtent}
+        />
         <View style={imageStyles.galleryImageContainer}>
           <SectionDivider dividerText={count + (count === 1 ? ' Image' : ' Images') + ' in active Spots'}/>
           <SectionList
@@ -154,7 +150,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
             sections={spotsAsSections}
             renderSectionHeader={({section}) => renderSectionHeader(section)}
             renderItem={({item}) => renderImagesInSpot(item)}
-            ListEmptyComponent={<ListEmptyText text={noImagesText}/>}
+            ListEmptyComponent={<ListEmptyText text={textNoSpots + ' with images found'}/>}
             stickySectionHeadersEnabled={true}
           />
         </View>
@@ -164,7 +160,7 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   return (
     <>
-      {isEmpty(useSpots.getSpotsWithImages()) ? renderNoImagesText()
+      {isEmpty(getSpotsWithImages()) ? renderNoImagesText()
         : !isError ? renderSpotsWithImages()
           : renderError()}
     </>

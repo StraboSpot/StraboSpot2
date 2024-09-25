@@ -4,22 +4,21 @@ import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useNestingHook from './useNesting';
+import useNesting from './useNesting';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {imageStyles, useImagesHook} from '../images';
+import {imageStyles, useImages} from '../images';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
-import {SpotsListItem} from '../spots';
-import useSpotsHook from '../spots/useSpots';
+import {SpotsListItem, useSpots} from '../spots';
 
 const Nesting = () => {
   console.log('Rendering Nesting');
 
-  const useImages = useImagesHook();
-  const useNesting = useNestingHook();
-  const useSpots = useSpotsHook();
+  const {getLocalImageURI} = useImages();
+  const {getChildrenGenerationsSpots, getParentGenerationsSpots} = useNesting();
+  const {handleSpotSelected} = useSpots();
 
   const activeDatasetsIds = useSelector(state => state.project.activeDatasetsIds);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
@@ -40,7 +39,7 @@ const Nesting = () => {
     return (
       <View style={imageStyles.thumbnailContainer}>
         <Image
-          source={{uri: useImages.getLocalImageURI(imageId)}}
+          source={{uri: getLocalImageURI(imageId)}}
           style={imageStyles.thumbnail}
           PlaceholderContent={<ActivityIndicator/>}
         />
@@ -71,7 +70,7 @@ const Nesting = () => {
     return (
       <SpotsListItem
         numSubspots={numSubspots}
-        onPress={() => useSpots.handleSpotSelected(spot)}
+        onPress={() => handleSpotSelected(spot)}
         spot={spot}
       />
     );
@@ -161,8 +160,8 @@ const Nesting = () => {
     if (!isEmpty(selectedSpot)) {
       console.log('Updating Nest for Selected Spot ...');
       console.log('Selected Spot:', selectedSpot);
-      setParentGenerations(useNesting.getParentGenerationsSpots(selectedSpot, 10));
-      setChildrenGenerations(useNesting.getChildrenGenerationsSpots(selectedSpot, 10));
+      setParentGenerations(getParentGenerationsSpots(selectedSpot, 10));
+      setChildrenGenerations(getChildrenGenerationsSpots(selectedSpot, 10));
     }
   };
 

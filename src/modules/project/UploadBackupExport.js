@@ -5,19 +5,14 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {setSelectedProject} from './projects.slice';
-import useDeviceHook from '../../services/useDevice';
-import useUploadImagesHook from '../../services/useUploadImages';
+import useDevice from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {BLUE} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import Spacer from '../../shared/ui/Spacer';
 import uiStyles from '../../shared/ui/ui.styles';
-import {
-  addedStatusMessage,
-  clearedStatusMessages,
-  setIsErrorMessagesModalVisible,
-} from '../home/home.slice';
+import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {BackupModal, UploadModal, UploadProgressModal} from '../project/modals/index';
 
@@ -32,7 +27,7 @@ const UploadBackAndExport = () => {
   const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
   const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
   const [isProgressModalVisible, setIsProgressModalVisible] = useState(false);
-  const useDevice = useDeviceHook();
+  const {openURL} = useDevice();
 
   const checkForActiveDatasets = () => {
     if (activeDatasets.length > 0) {
@@ -46,7 +41,7 @@ const UploadBackAndExport = () => {
     }
   };
 
-  const openURL = async () => {
+  const openMovingProjectBackupsURL = async () => {
     const url = 'https://strabospot.org/files/helpFiles/Moving_Project_Backups_Out_of%20StraboSpot2.pdf';
     const canOpen = await Linking.canOpenURL(url);
     canOpen ? await Linking.openURL(url) : alert('Need to be online');
@@ -85,7 +80,7 @@ const UploadBackAndExport = () => {
                 to further preserve your data please copy your project backups out of the StraboSpot2/ProjectBackups
                 folder to a
                 different folder in the iOS app Files/On My IPad! If online, you can find detailed instructions
-                <Text style={{color: BLUE}} onPress={openURL}> here</Text>.
+                <Text style={{color: BLUE}} onPress={openMovingProjectBackupsURL}> here</Text>.
               </Text>
             </View>
           )
@@ -116,7 +111,7 @@ const UploadBackAndExport = () => {
               containerStyle={commonStyles.buttonPadding}
               buttonStyle={commonStyles.standardButton}
               titleStyle={commonStyles.standardButtonText}
-              onPress={() => useDevice.openURL('ProjectBackups')}
+              onPress={() => openURL('ProjectBackups')}
               iconContainerStyle={{paddingRight: 10}}
               icon={{
                 name: 'file-tray-full-outline',

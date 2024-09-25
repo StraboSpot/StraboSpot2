@@ -5,7 +5,7 @@ import moment from 'moment';
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
-import useExportHook from '../../../services/useExport';
+import useExport from '../../../services/useExport';
 import {isEmpty} from '../../../shared/Helpers';
 import LottieAnimations from '../../../utils/animations/LottieAnimations';
 import overlayStyles from '../../home/overlays/overlay.styles';
@@ -18,7 +18,7 @@ const BackupModal = ({closeModal, visible}) => {
   const [backingUpStatus, setBackingUpStatus] = useState('');
   const [modalTitle, setModalTitle] = useState('Confirm or Change Folder Name');
 
-  const useExport = useExportHook();
+  const {initializeBackup} = useExport();
 
   useEffect(() => {
     console.log('UE BackupModal');
@@ -40,7 +40,7 @@ const BackupModal = ({closeModal, visible}) => {
     try {
       setBackingUpStatus('inProgress');
       setModalTitle('Backing Up');
-      await useExport.initializeBackup(backupFileName);
+      await initializeBackup(backupFileName);
       setBackingUpStatus('complete');
       setModalTitle('All backed up!');
     }

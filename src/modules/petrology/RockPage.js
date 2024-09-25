@@ -14,23 +14,23 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {SelectInputField, useFormHook} from '../form';
+import {SelectInputField, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {useSpots} from '../spots';
 import {editedSpotProperties} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const RockPage = ({page}) => {
   const dispatch = useDispatch();
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
-  const useSpots = useSpotsHook();
+  const {getSurvey} = useForm();
+  const {getSpotById, getSpotsWithKey} = useSpots();
 
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedRock, setSelectedRock] = useState({});
@@ -103,12 +103,12 @@ const RockPage = ({page}) => {
   };
 
   const copyPetData = (spotId) => {
-    const spotToCopy = useSpots.getSpotById(spotId);
+    const spotToCopy = getSpotById(spotId);
 
     const copyPetDataContinued = () => {
       let updatedPetData = JSON.parse(JSON.stringify(rockData));
       if (groupKey === 'pet' && spotToCopy?.properties?.pet?.rock_type) {
-        const survey = useForm.getSurvey(['pet_deprecated', pageKey]);
+        const survey = getSurvey(['pet_deprecated', pageKey]);
         const fieldNames = survey.reduce((acc, field) => field.name ? [...acc, field.name] : acc, []);
         const petDataToCopyFiltered = Object.entries(spotToCopy.properties.pet).reduce((acc, [key, value]) => {
           return fieldNames.includes(key) ? {...acc, [key]: value} : acc;
@@ -157,7 +157,7 @@ const RockPage = ({page}) => {
   };
 
   const getSpotsWithRockType = () => {
-    const allActiveSpotsWithGroupKey = useSpots.getSpotsWithKey(groupKey);
+    const allActiveSpotsWithGroupKey = getSpotsWithKey(groupKey);
     setSpotsWithRockType(allActiveSpotsWithGroupKey.filter(s => s.properties.id !== spot.properties.id
       && (s.properties[groupKey]
         && (s.properties[groupKey].rock_type?.includes(pageKey) || s.properties[groupKey][pageKey]))));

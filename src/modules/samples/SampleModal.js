@@ -11,12 +11,12 @@ import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shar
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, FormSlider, useFormHook} from '../form';
+import {Form, FormSlider, useForm} from '../form';
 import {setLoadingStatus} from '../home/home.slice';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const SampleModal = (props) => {
@@ -25,9 +25,9 @@ const SampleModal = (props) => {
   const preferences = useSelector(state => state.project.project?.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
-  const useSpots = useSpotsHook();
-  const useMapLocation = useMapLocationHook();
+  const {getChoices, getSurvey} = useForm();
+  const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
+  const {setPointAtCurrentLocation} = useMapLocation();
 
   const initialNamePrefix = preferences.sample_prefix || '';
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
@@ -46,8 +46,8 @@ const SampleModal = (props) => {
   const lastKeys = ['sample_notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(formName);
-  const choices = useForm.getChoices(formName);
+  const survey = getSurvey(formName);
+  const choices = getChoices(formName);
   const firstKeysFields = firstKeys.map(k =>
     survey.find(f => f.name === k),
   );
@@ -62,7 +62,7 @@ const SampleModal = (props) => {
     console.log('UE SampleModal [spot]', spot);
 
     if (preferences.prepend_spot_name_sample_name) {
-      const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? useSpots.getNewSpotName()
+      const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? getNewSpotName()
         : spot?.properties?.name;
       setNamePrefix(spotName + initialNamePrefix);
     }
@@ -114,7 +114,7 @@ const SampleModal = (props) => {
   };
 
   const getAllSamplesCount = async () => {
-    const count = await useSpots.getAllSpotSamplesCount();
+    const count = await getAllSpotSamplesCount();
     console.log('SAMPLE COUNT', count);
     setStartingNumber(count);
   };
@@ -179,7 +179,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       newSample.id = getNewId();
       if (modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE) {
-        let pointSetAtCurrentLocation = await useMapLocation.setPointAtCurrentLocation();
+        let pointSetAtCurrentLocation = await setPointAtCurrentLocation();
         pointSetAtCurrentLocation = {
           ...pointSetAtCurrentLocation,
           properties: {
@@ -207,7 +207,7 @@ const SampleModal = (props) => {
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       await currentForm.resetForm();
 
-      if (newSample.sample_id_name) await useSpots.checkSampleName(newSample.sample_id_name, toastRef);
+      if (newSample.sample_id_name) await checkSampleName(newSample.sample_id_name, toastRef);
     }
     catch (err) {
       console.error('Error saving Sample', err);

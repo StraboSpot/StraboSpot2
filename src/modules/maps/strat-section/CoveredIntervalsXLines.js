@@ -3,15 +3,15 @@ import React from 'react';
 import MapboxGL from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 
-import useCoveredIntervalXLinesHook from './useCoveredIntevalsXLines';
+import useCoveredIntervalXLines from './useCoveredIntevalsXLines';
 
 const CoveredIntervalsXLines = ({spotsDisplayed}) => {
-  const useCoveredIntervalXLines = useCoveredIntervalXLinesHook(spotsDisplayed);
+  const {getIntervalsWithX} = useCoveredIntervalXLines(spotsDisplayed);
 
   return (
     <MapboxGL.ShapeSource
       id={'coveredIntervalLines'}
-      shape={turf.featureCollection(useCoveredIntervalXLines.getIntervalsWithX())}
+      shape={turf.featureCollection(getIntervalsWithX())}
     >
       <MapboxGL.LineLayer
         id={'coveredIntervalLinesLayer'}

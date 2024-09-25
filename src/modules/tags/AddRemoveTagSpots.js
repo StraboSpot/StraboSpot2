@@ -9,16 +9,16 @@ import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 import {SpotsList} from '../spots';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const AddRemoveTagSpots = ({updateSpotsInMapExtent}) => {
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
 
-  const useTags = useTagsHook();
+  const {addRemoveSpotFromTag} = useTags();
 
   const handleSpotChecked = (spot) => {
-    useTags.addRemoveSpotFromTag(spot.properties.id, selectedTag);
+    addRemoveSpotFromTag(spot.properties.id, selectedTag);
   };
 
   return (

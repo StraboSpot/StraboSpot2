@@ -12,12 +12,11 @@ import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
-import {useSpotsHook} from '../spots';
-
+import {useSpots} from '../spots';
 
 const CustomFeatureTypes = () => {
   const [refresh] = useState();
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj} = useSpots();
   const dispatch = useDispatch();
   const projectFeatures = useSelector(state => state.project.project?.other_features);
   const customFeatureTypes = projectFeatures
@@ -47,7 +46,7 @@ const CustomFeatureTypes = () => {
   };
 
   const deleteCustomFeatureValidation = (feature) => {
-    let allSpots = Object.values(useSpots.getActiveSpotsObj());
+    let allSpots = Object.values(getActiveSpotsObj());
     let isValidDelete = true;
     let spotsWithOtherFeatures = allSpots.filter(
       spot => spot.properties.other_features && spot.properties.other_features.length > 0);

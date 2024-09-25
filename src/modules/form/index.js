@@ -7,5 +7,5 @@ export {default as MainButtons} from './MainButtons';
 export {default as NumberInputField} from './NumberInputField';
 export {default as SelectInputField} from './SelectInputField';
 export {default as TextInputField} from './TextInputField';
-export {default as useFormHook} from './useForm';
+export {default as useForm} from './useForm';
 export {LABEL_DICTIONARY} from './form.constants';

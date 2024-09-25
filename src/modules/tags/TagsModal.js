@@ -15,19 +15,19 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
 import {setLoadingStatus, setModalVisible} from '../home/home.slice';
-import useMapLocationHook from '../maps/useMapLocation';
+import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice';
-import {TagDetailModal, useTagsHook} from '../tags';
+import {TagDetailModal, useTags} from '../tags';
 
 const TagsModal = ({
                      isFeatureLevelTagging,
                      zoomToCurrentLocation,
                    }) => {
   const toast = useToast();
-  const useTags = useTagsHook();
-  const useMapLocation = useMapLocationHook();
+  const {addRemoveTag, addSpotsToTags, filterTagsByTagType, getTagLabel, saveTag} = useTags();
+  const {setPointAtCurrentLocation} = useMapLocation();
 
   const dispatch = useDispatch();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
@@ -78,17 +78,17 @@ const TagsModal = ({
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       let tagsToUpdate = [];
       if (modalVisible === MODAL_KEYS.SHORTCUTS.TAG || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
-        useMapLocation.setPointAtCurrentLocation().then((spot) => {
+        setPointAtCurrentLocation().then((spot) => {
           checkedTagsTemp.map((tag) => {
             if (isEmpty(tag.spots)) tag.spots = [];
             tag.spots.push(spot.properties.id);
             tagsToUpdate.push(tag);
           });
-          useTags.saveTag(tagsToUpdate);
+          saveTag(tagsToUpdate);
           zoomToCurrentLocation();
         });
       }
-      else useTags.addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
+      else addSpotsToTags(checkedTagsTemp, selectedSpotsForTagging);
       dispatch(setModalVisible({modal: null}));
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       toast.show('Tags Saved!', {type: 'success'});
@@ -123,7 +123,7 @@ const TagsModal = ({
                       key={'searchText'}
                       label={'Tag Type'}
                       choices={TAG_TYPES.filter(t => t !== PAGE_KEYS.GEOLOGIC_UNITS).map(
-                        tagType => ({label: useTags.getLabel(tagType), value: tagType}))}
+                        tagType => ({label: getTagLabel(tagType), value: tagType}))}
                       single={true}
                     />
                   </ListItem.Content>
@@ -157,15 +157,13 @@ const TagsModal = ({
         key={tag.id}
         onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
           && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
-          && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
-          ? useTags.addRemoveTag(tag, selectedSpot)
-          : checkTags(tag)}
+          && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) ? addRemoveTag(tag, selectedSpot) : checkTags(tag)}
       >
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{getTagLabel(tag.type)}</ListItem.Title>
         </ListItem.Content>
         {(!isFeatureLevelTagging) && (
           <ListItem.CheckBox
@@ -176,8 +174,7 @@ const TagsModal = ({
               : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
             onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
               && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
-              && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
-              ? useTags.addRemoveTag(tag, selectedSpot)
+              && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) ? addRemoveTag(tag, selectedSpot)
               : checkTags(tag)}
           />
         )}
@@ -187,9 +184,9 @@ const TagsModal = ({
               ? tag.features && tag.features[selectedSpot.properties.id] && selectedFeature
               && tag.features[selectedSpot.properties.id].includes(selectedFeature.id) : isAlreadyChecked
             }
-            onPress={() => !isMultipleFeaturesTaggingEnabled ? useTags.addRemoveTag(tag, selectedSpot,
-                isFeatureLevelTagging)
-              : useTags.addRemoveTag(tag, selectedSpot, isFeatureLevelTagging, isAlreadyChecked)}
+            onPress={() => !isMultipleFeaturesTaggingEnabled
+              ? addRemoveTag(tag, selectedSpot, isFeatureLevelTagging)
+              : addRemoveTag(tag, selectedSpot, isFeatureLevelTagging, isAlreadyChecked)}
           />
         )}
       </ListItem>
@@ -198,7 +195,7 @@ const TagsModal = ({
 
   const searchTagsByType = (tagType) => {
     const tagsCopy = JSON.parse(JSON.stringify(tags));
-    return useTags.filterTagsByTagType(tagsCopy, tagType);
+    return filterTagsByTagType(tagsCopy, tagType);
   };
 
   return (

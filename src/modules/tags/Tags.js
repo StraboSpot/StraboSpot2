@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
-import {Switch} from 'react-native';
+import {Switch, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import AddButton from '../../shared/ui/AddButton';
+import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
 import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, TagsList} from '../tags';
 
-const Tags = ({type}) => {
+const Tags = ({type, updateSpotsInMapExtent}) => {
   console.log('Rendering Tags...');
 
   const dispatch = useDispatch();
@@ -34,17 +34,25 @@ const Tags = ({type}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       {!isEmpty(tags) && (
-        <ButtonGroup
-          selectedIndex={selectedIndex}
-          onPress={index => setSelectedIndex(index)}
-          buttons={getButtonTitle()}
-          containerStyle={{height: 50}}
-          buttonStyle={{padding: 5}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{fontSize: 12}}
-        />
+        <>
+          <ButtonGroup
+            selectedIndex={selectedIndex}
+            onPress={index => setSelectedIndex(index)}
+            buttons={getButtonTitle()}
+            containerStyle={{height: 50}}
+            buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+            textStyle={{fontSize: 12}}
+          />
+          {selectedIndex === 1 && (
+            <UpdateSpotsInMapExtentButton
+              title={'Update Tags in Map Extent'}
+              updateSpotsInMapExtent={updateSpotsInMapExtent}
+            />
+          )}
+        </>
       )}
       <AddButton
         onPress={addTag}
@@ -66,7 +74,7 @@ const Tags = ({type}) => {
         closeModal={() => setIsDetailModalVisible(false)}
         type={type}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

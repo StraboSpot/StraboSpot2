@@ -1,6 +1,6 @@
 import {useDispatch} from 'react-redux';
 
-import useDeviceHook from './useDevice';
+import useDevice from './useDevice';
 import {resetCompassState} from '../modules/compass/compass.slice';
 import {resetHomeState} from '../modules/home/home.slice';
 import {resetMapState} from '../modules/maps/maps.slice';
@@ -12,7 +12,7 @@ import {resetUserState} from '../modules/user/userProfile.slice';
 
 const useResetState = () => {
   const dispatch = useDispatch();
-  const useDevice = useDeviceHook();
+  const {deleteProfileImageFile} = useDevice();
 
   const clearProject = () => {
     dispatch(resetCompassState());
@@ -28,7 +28,7 @@ const useResetState = () => {
     dispatch(resetOfflineMapsState());
     dispatch(resetUserState());
 
-    useDevice.deleteProfileImageFile();
+    deleteProfileImageFile();
   };
 
   return {

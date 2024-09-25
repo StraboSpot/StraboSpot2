@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from '../../shared/Helpers';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS, SECONDARY_PAGES} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -18,7 +18,7 @@ const SiteSafetyPage = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
+  const {showErrors, validateForm} = useForm();
 
   const formRef = useRef(null);
   const page = SECONDARY_PAGES.find(p => p.key === PAGE_KEYS.SITE_SAFETY);
@@ -26,7 +26,10 @@ const SiteSafetyPage = () => {
 
   let initialValues = spot.properties?.site_safety || {};
   const coord = spot?.geometry?.type === 'Point' ? turf.getCoord(spot) : undefined;
-  if (isEmpty(initialValues) && !isEmpty(coord)) initialValues = {latitude: coord[1].toString(), longitude: coord[0].toString()};
+  if (isEmpty(initialValues) && !isEmpty(coord)) initialValues = {
+    latitude: coord[1].toString(),
+    longitude: coord[0].toString(),
+  };
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
@@ -45,7 +48,7 @@ const SiteSafetyPage = () => {
   const saveForm = async (currentForm) => {
     try {
       await currentForm.submitForm();
-      const editedSiteSafetyFormData = useForm.showErrors(currentForm);
+      const editedSiteSafetyFormData = showErrors(currentForm);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(setSelectedSpotNotesTimestamp());
       dispatch(editedSpotProperties({field: 'site_safety', value: editedSiteSafetyFormData}));
@@ -74,7 +77,7 @@ const SiteSafetyPage = () => {
         innerRef={formRef}
         onSubmit={values => console.log('Submitting form...', values)}
         onReset={() => console.log('Resetting form...')}
-        validate={values => useForm.validateForm({formName: formName, values: values})}
+        validate={values => validateForm({formName: formName, values: values})}
         initialValues={initialValues}
         enableReinitialize={true}
         initialStatus={{formName: formName}}

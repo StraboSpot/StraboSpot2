@@ -10,15 +10,15 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import NoteForm from '../notes/NoteForm';
-import usePetrologyHook from '../petrology/usePetrology';
+import usePetrology from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
-import useSedHook from '../sed/useSed';
-import {useSpotsHook} from '../spots';
+import useSed from '../sed/useSed';
+import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const BasicPageDetail = ({
                            closeDetailView,
@@ -31,11 +31,11 @@ const BasicPageDetail = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
-  const usePetrology = usePetrologyHook();
-  const useSed = useSedHook();
-  const useSpots = useSpotsHook();
-  const useTags = useTagsHook();
+  const {showErrors, validateForm} = useForm();
+  const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
+  const {deleteSedFeature, onSedFormChange, saveSedBedFeature, saveSedFeature} = useSed();
+  const {checkSampleName} = useSpots();
+  const {deleteFeatureTags} = useTags();
 
   const formRef = useRef(null);
 
@@ -91,9 +91,9 @@ const BasicPageDetail = ({
   };
 
   const deleteFeature = () => {
-    useTags.deleteFeatureTags([selectedFeature]);
-    if (groupKey === 'pet') usePetrology.deletePetFeature(pageKey, spot, selectedFeature);
-    else if (groupKey === 'sed') useSed.deleteSedFeature(pageKey, spot, selectedFeature);
+    deleteFeatureTags([selectedFeature]);
+    if (groupKey === 'pet') deletePetFeature(pageKey, spot, selectedFeature);
+    else if (groupKey === 'sed') deleteSedFeature(pageKey, spot, selectedFeature);
     else {
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== selectedFeature.id);
@@ -139,7 +139,7 @@ const BasicPageDetail = ({
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
           onReset={() => console.log('Resetting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
+          validate={values => validateForm({formName: formName, values: values})}
           initialValues={selectedFeature}
           initialStatus={{formName: formName}}
           enableReinitialize={true}
@@ -149,9 +149,9 @@ const BasicPageDetail = ({
               ...formProps,
               formName: formName,
               onMyChange: page.key === PAGE_KEYS.MINERALS
-                ? ((name, value) => usePetrology.onMineralChange(formRef.current, name, value))
+                ? ((name, value) => onMineralChange(formRef.current, name, value))
                 : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
-                  ? ((name, value) => useSed.onSedFormChange(formRef.current, name, value))
+                  ? ((name, value) => onSedFormChange(formRef.current, name, value))
                   : undefined,
             }}/>
           )}
@@ -186,7 +186,7 @@ const BasicPageDetail = ({
   const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
-      const editedFeatureData = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+      const editedFeatureData = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
       console.log('Saving', page.label, 'data', editedFeatureData, 'to Spot', pageData);
       let editedPageData = pageData ? JSON.parse(JSON.stringify(pageData)) : [];
       editedPageData = editedPageData.filter(f => f.id !== editedFeatureData.id);
@@ -195,7 +195,7 @@ const BasicPageDetail = ({
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
 
       if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
-        await useSpots.checkSampleName(editedFeatureData.sample_id_name);
+        await checkSampleName(editedFeatureData.sample_id_name);
       }
     }
     catch (err) {
@@ -207,13 +207,13 @@ const BasicPageDetail = ({
   const saveForm = async (formCurrent) => {
     try {
       if (groupKey === 'pet') {
-        await usePetrology.savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        await savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else if (groupKey === 'sed' && pageKey === 'bedding') {
-        await useSed.saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else if (groupKey === 'sed') {
-        await useSed.saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else await saveFeature(formCurrent);
       await formCurrent.resetForm();
@@ -226,7 +226,7 @@ const BasicPageDetail = ({
 
   const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
-    const formValues = useForm.showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
+    const formValues = showErrors(formRef.current || formCurrent, isEmpty(formRef.current));
     saveTemplate(formValues);
   };
 

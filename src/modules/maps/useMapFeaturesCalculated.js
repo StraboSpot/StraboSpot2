@@ -3,18 +3,18 @@ import {PixelRatio, Platform} from 'react-native';
 import * as turf from '@turf/turf';
 import {useSelector} from 'react-redux';
 
-import useMapCoordsHook from './useMapCoords';
+import useMapCoords from './useMapCoords';
 import {isEmpty} from '../../shared/Helpers';
-import useNestingHook from '../nesting/useNesting';
-import useSpotsHook from '../spots/useSpots';
+import useNesting from '../nesting/useNesting';
+import {useSpots} from '../spots';
 
 const useMapFeaturesCalculated = (mapRef) => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useMapCoords = useMapCoordsHook();
-  const useNesting = useNestingHook();
-  const useSpots = useSpotsHook();
+  const {convertImagePixelsToLatLong, getBBoxPaddedInPixels} = useMapCoords();
+  const {getChildrenGenerationsSpots} = useNesting();
+  const {getSpotById, getSpotsByIds} = useSpots();
 
   const spotLayers = ['pointLayerNotSelected', 'lineLayerNotSelected', 'lineLayerNotSelectedDotted',
     'lineLayerNotSelectedDashed', 'lineLayerNotSelectedDotDashed', 'polygonLayerNotSelected',
@@ -92,17 +92,17 @@ const useMapFeaturesCalculated = (mapRef) => {
         }
       });
       let selectedSpotsIds = [...new Set(selectedFeaturesIds)]; // Remove duplicate ids
-      selectedSpots = useSpots.getSpotsByIds(selectedSpotsIds);
+      selectedSpots = getSpotsByIds(selectedSpotsIds);
 
       // Get Nested children and add to selected Ids
       selectedSpots.forEach((spot) => {
-        const children = useNesting.getChildrenGenerationsSpots(spot, 10).flat();
+        const children = getChildrenGenerationsSpots(spot, 10).flat();
         const childrenIds = children.map(child => child.properties.id);
         selectedSpotsIds.push(...childrenIds);
         console.log('selectedFeaturesIds', selectedFeaturesIds);
       });
       selectedSpotsIds = [...new Set(selectedSpotsIds)]; // Remove duplicate ids
-      selectedSpots = useSpots.getSpotsByIds(selectedSpotsIds);
+      selectedSpots = getSpotsByIds(selectedSpotsIds);
     }
     catch (e) {
       console.log('Error getting Spots within or intersecting the drawn polygon', e);
@@ -171,7 +171,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
   const getNearestFeatureInBBox = async ([x, y], layers) => {
     // First get all the features in the bounding box
-    const bbox =  useMapCoords.getBBoxPaddedInPixels([x, y]);
+    const bbox = getBBoxPaddedInPixels([x, y]);
     const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
       : await mapRef.current.queryRenderedFeaturesInRect(bbox, null, layers);
     let nearFeatures = Platform.OS === 'web' ? nearFeaturesCollection : nearFeaturesCollection.features;
@@ -185,8 +185,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   // Get the Spot where screen was pressed
   const getSpotAtPress = async (screenPointX, screenPointY) => {
     const nearestFeature = await getNearestFeatureInBBox([screenPointX, screenPointY], spotLayers);
-    const nearestSpot = nearestFeature?.properties?.id ? useSpots.getSpotById(nearestFeature.properties.id)
-      : {};
+    const nearestSpot = nearestFeature?.properties?.id ? getSpotById(nearestFeature.properties.id) : {};
     if (isEmpty(nearestSpot)) console.log('No spots near press.');
     else console.log('Got nearest spot:', nearestSpot);
     return Promise.resolve(...[nearestSpot]);
@@ -199,7 +198,7 @@ const useMapFeaturesCalculated = (mapRef) => {
     let editedSpot = spotsEdited.find(spot => spot.properties.id === spotFound.properties.id);
     spotFound = editedSpot ? editedSpot : spotFound;
     let spotFoundCopy = JSON.parse(JSON.stringify(spotFound));
-    if (currentImageBasemap || stratSection) spotFoundCopy = useMapCoords.convertImagePixelsToLatLong(spotFoundCopy);
+    if (currentImageBasemap || stratSection) spotFoundCopy = convertImagePixelsToLatLong(spotFoundCopy);
     const explodedFeatures = turf.explode(spotFoundCopy).features;
     const distances = await getDistancesFromSpot(screenPointX, screenPointY, explodedFeatures);
     const [distance, closestVertexIndex] = getClosestSpotDistanceAndIndex(distances);

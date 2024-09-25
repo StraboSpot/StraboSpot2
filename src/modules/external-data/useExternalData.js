@@ -2,24 +2,23 @@ import {Platform} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import {csvToArray, getNewUUID, urlValidator} from '../../shared/Helpers';
+import alert from '../../shared/ui/alert';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   setIsErrorMessagesModalVisible,
-  setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
-import alert from '../../shared/ui/alert';
 
 const useExternalData = () => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useDevice = useDeviceHook();
+  const {isPickDocumentCanceled, pickCSV, readFile} = useDevice();
 
   let csvObject = {};
   let CSVData = '';
@@ -34,7 +33,7 @@ const useExternalData = () => {
     return csvObject;
   };
 
-  const deleteCVS = (tableToDelete) => {
+  const deleteCSV = (tableToDelete) => {
     const CSVcopy = JSON.parse(JSON.stringify(spot.properties.data.tables));
     console.log(CSVcopy);
     const filteredArr = CSVcopy.filter(table => table.id !== tableToDelete.id);
@@ -52,15 +51,15 @@ const useExternalData = () => {
     dispatch(editedSpotProperties({field: 'data', value: {urls: filteredArr, tables: spot.properties.data.tables}}));
   };
 
-  const pickCSV = async (dataFile) => {
+  const readCSV = async (dataFile) => {
     try {
       let CSVFile = {};
       dispatch(setLoadingStatus({view: 'home', bool: true}));
 
       if (Platform.OS !== 'web') {
-        CSVFile = await useDevice.pickCSV();
+        CSVFile = await pickCSV();
         console.log({uri: CSVFile.uri, type: CSVFile.type, name: CSVFile.name, size: CSVFile.size});
-        CSVData = await useDevice.readFile(CSVFile.uri);
+        CSVData = await readFile(CSVFile.uri);
       }
       else {
         if (dataFile) {
@@ -90,7 +89,7 @@ const useExternalData = () => {
       }
     }
     catch (err) {
-      if (useDevice.isPickDocumentCanceled(err)) {
+      if (isPickDocumentCanceled(err)) {
         console.log('User canceled', err);
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -156,9 +155,9 @@ const useExternalData = () => {
   };
 
   return {
-    deleteCVS: deleteCVS,
+    deleteCSV: deleteCSV,
     deleteURL: deleteURL,
-    pickCSV: pickCSV,
+    readCSV: readCSV,
     saveCSV: saveCSV,
     saveEdits: saveEdits,
     saveURL: saveURL,

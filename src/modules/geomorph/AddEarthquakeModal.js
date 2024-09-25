@@ -8,7 +8,7 @@ import {getNewUUID} from '../../shared/Helpers';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, FormSlider, MainButtons, useFormHook} from '../form';
+import {Form, FormSlider, MainButtons, useForm} from '../form';
 import MeasurementButtons from '../form/MeasurementButtons';
 import MeasurementModal from '../form/MeasurementModal';
 import {setModalValues, setModalVisible} from '../home/home.slice';
@@ -23,7 +23,7 @@ const AddEarthquakeModal = ({onPress}) => {
   const [choicesViewKey, setChoicesViewKey] = useState(null);
 
   const formRef = useRef(null);
-  const useForm = useFormHook();
+  const {getChoices, getRelevantFields, getSurvey, isRelevant, showErrors, validateForm} = useForm();
 
   const [isFaultOrientationModalVisible, setIsFaultOrientationModalVisible] = useState(false);
   const [isVectorMeasurementModalVisible, setIsVectorMeasurementModalVisible] = useState(false);
@@ -63,8 +63,8 @@ const AddEarthquakeModal = ({onPress}) => {
   };
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(formName);
-  const choices = useForm.getChoices(formName);
+  const survey = getSurvey(formName);
+  const choices = getChoices(formName);
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   useEffect(() => {
@@ -75,11 +75,11 @@ const AddEarthquakeModal = ({onPress}) => {
   const renderForm = (formProps) => {
     const mainButtonsKeysRelevant1 = mainButtonsKeys1.filter((k) => {
       const field = survey.find(f => f.name === k);
-      return useForm.isRelevant(field, formProps.values);
+      return isRelevant(field, formProps.values);
     });
     const mainButtonsKeysRelevant2 = mainButtonsKeys2.filter((k) => {
       const field = survey.find(f => f.name === k);
-      return useForm.isRelevant(field, formProps.values);
+      return isRelevant(field, formProps.values);
     });
 
     return (
@@ -162,7 +162,7 @@ const AddEarthquakeModal = ({onPress}) => {
                 innerRef={formRef}
                 initialValues={{}}
                 onSubmit={values => console.log('Submitting form...', values)}
-                validate={values => useForm.validateForm({formName: formName, values: values})}
+                validate={values => validateForm({formName: formName, values: values})}
                 validateOnChange={false}
               >
                 {formProps => (
@@ -180,7 +180,7 @@ const AddEarthquakeModal = ({onPress}) => {
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
     return (
       <Form {...{formName: [groupKey, pageKey], surveyFragment: relevantFields, ...formProps}}/>
     );
@@ -189,7 +189,7 @@ const AddEarthquakeModal = ({onPress}) => {
   const saveEarthquake = async () => {
     try {
       await formRef.current.submitForm();
-      const editedEarthquakeData = useForm.showErrors(formRef.current);
+      const editedEarthquakeData = showErrors(formRef.current);
       console.log('Saving earthquake data to Spot ...');
       let editedEarthquakesData = spot.properties.earthquakes ? JSON.parse(
         JSON.stringify(spot.properties.earthquakes)) : [];

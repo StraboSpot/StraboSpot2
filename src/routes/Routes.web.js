@@ -3,18 +3,18 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
 import AppStack from './AppStack';
-import useProjectHook from '../modules/project/useProject';
-import useAuthenticationHook from '../modules/sign-in/useAuthentication.web';
-import useSignInHook from '../modules/sign-in/useSignIn';
+import useProject from '../modules/project/useProject';
+import useAuthentication from '../modules/sign-in/useAuthentication.web';
+import useSignIn from '../modules/sign-in/useSignIn';
 import AuthenticationErrorSplashScreen from '../modules/splash-screen/AuthenticationErrorSplashScreen';
 import LoadingSplashScreen from '../modules/splash-screen/LoadingSplashScreen.web';
 
 const Routes = () => {
   console.count('Rendering Routes...');
 
-  const useProject = useProjectHook();
-  const useSignIn = useSignInHook();
-  useAuthenticationHook();
+  const {loadProjectWeb} = useProject();
+  const {autoLogin} = useSignIn();
+  useAuthentication();
 
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -26,7 +26,7 @@ const Routes = () => {
     console.log('UE Routes');
     (async () => {
       try {
-        await useSignIn.autoLogin();
+        await autoLogin();
         console.log('Should be signed in');
       }
       catch (e) {
@@ -41,7 +41,7 @@ const Routes = () => {
     if (isAuthenticated && encodedLogin && selectedProjectId) {
       (async () => {
         try {
-          await useProject.loadProjectWeb(selectedProjectId);
+          await loadProjectWeb(selectedProjectId);
           console.log('Project should be loaded');
           setIsLoading(false);
         }

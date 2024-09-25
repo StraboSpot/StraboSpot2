@@ -1,10 +1,10 @@
 import React from 'react';
 
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, MainButtons, useFormHook} from '../form';
+import {Form, MainButtons, useForm} from '../form';
 
 const AddPlane = (props) => {
-  const useForm = useFormHook();
+  const {getSurvey} = useForm();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -18,7 +18,7 @@ const AddPlane = (props) => {
   const lastKeys = ['thickness', 'length', 'notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(props.formName);
+  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 

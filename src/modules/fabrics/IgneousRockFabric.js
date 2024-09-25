@@ -1,10 +1,10 @@
 import React from 'react';
 
 import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
-import {Form, MainButtons, useFormHook} from '../form';
+import {Form, MainButtons, useForm} from '../form';
 
 const IgneousRockFabric = (props) => {
-  const useForm = useFormHook();
+  const {getSurvey} = useForm();
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -12,7 +12,7 @@ const IgneousRockFabric = (props) => {
   const lastKeys = ['mag_interp_note'];
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(props.formName);
+  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 

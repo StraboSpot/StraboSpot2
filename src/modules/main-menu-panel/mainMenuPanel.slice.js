@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-import {SORTED_VIEWS} from './mainMenu.constants';
+import {SORTED_VIEWS} from '../spots/spots.constants';
 
 const initialMainMenuState = {
   sortedView: SORTED_VIEWS.CHRONOLOGICAL,

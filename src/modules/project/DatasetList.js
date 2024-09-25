@@ -5,7 +5,7 @@ import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedDatasetProperties} from './projects.slice';
-import useDownloadHook from '../../services/useDownload';
+import useDownload from '../../services/useDownload';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
@@ -14,13 +14,13 @@ import StandardModal from '../../shared/ui/StandardModal';
 import TextInputModal from '../../shared/ui/TextInputModal';
 import {setIsProjectLoadComplete} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
-import useProjectHook from '../project/useProject';
+import useProject from '../project/useProject';
 
 const DatasetList = () => {
   console.log('Rendering DatasetList...');
 
-  const useProject = useProjectHook();
-  const useDownload = useDownloadHook();
+  const {destroyDataset, makeDatasetCurrent, setSwitchValue} = useProject();
+  const {initializeDownloadImages} = useDownload();
 
   const [selectedDataset, setSelectedDataset] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
@@ -35,7 +35,7 @@ const DatasetList = () => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   const downloadImages = async (dataset) => {
-    const imageRes = await useDownload.initializeDownloadImages(dataset);
+    const imageRes = await initializeDownloadImages(dataset);
     console.log('Image Res', imageRes);
   };
 
@@ -47,7 +47,7 @@ const DatasetList = () => {
   const initializeDeleteDataset = () => {
     setIsDeleteConfirmModalVisible(false);
     if (selectedDatasetToEdit && selectedDatasetToEdit.id) {
-      useProject.destroyDataset(selectedDatasetToEdit.id)
+      destroyDataset(selectedDatasetToEdit.id)
         // .then(() => setTimeout(() => dispatch(setIsStatusMessagesModalVisible(false))), 3000)
         .catch(err => console.log('Error deleting dataset', err));
     }
@@ -93,7 +93,7 @@ const DatasetList = () => {
           </ListItem.Subtitle>
         </ListItem.Content>
         <Switch
-          onValueChange={value => setSwitchValue(value, dataset)}
+          onValueChange={value => onSwitch(value, dataset)}
           value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
           disabled={isDisabled(dataset.id)}
         />
@@ -193,7 +193,7 @@ const DatasetList = () => {
         rightButtonText={'Yes'}
         leftButtonText={'No'}
         onPress={() => {
-          useProject.makeDatasetCurrent(selectedDataset.id);
+          makeDatasetCurrent(selectedDataset.id);
           setMakeIsDatasetCurrentModalVisible(false);
         }}
         closeModal={() => setMakeIsDatasetCurrentModalVisible(false)}
@@ -212,9 +212,9 @@ const DatasetList = () => {
     setIsDatasetNameModalVisible(false);
   };
 
-  const setSwitchValue = async (val, dataset) => {
+  const onSwitch = async (val, dataset) => {
     setSelectedDataset(dataset);
-    const value = await useProject.setSwitchValue(val, dataset);
+    const value = await setSwitchValue(val, dataset);
     console.log('Value has been switched', value);
     val && setMakeIsDatasetCurrentModalVisible(true);
     dispatch(setIsProjectLoadComplete(true));

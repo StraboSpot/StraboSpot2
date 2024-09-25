@@ -5,8 +5,8 @@ import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
 import externalDataStyles from './externalData.styles';
-import useExternalDataHook from './useExternalData';
-import useDeviceHook from '../../services/useDevice';
+import useExternalData from './useExternalData';
+import useDevice from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {truncateText, urlValidator} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
@@ -27,8 +27,8 @@ const UrlData = ({
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [urlToEdit, setUrlToEdit] = useState({});
 
-  const useDevice = useDeviceHook();
-  const useExternalData = useExternalDataHook();
+  const {openURL} = useDevice();
+  const {saveEdits} = useExternalData();
 
   const editUrl = (inURLToEdit, i) => {
     if (editable) {
@@ -45,7 +45,7 @@ const UrlData = ({
         keyboardType={'url'}
         dialogTitle={'Edit Url'}
         visible={isEditModalVisible}
-        onPress={() => saveEdits()}
+        onPress={onSaveEdits}
         closeModal={() => setIsEditModalVisible(false)}
         value={urlToEdit.url}
         onChangeText={text => setUrlToEdit({...urlToEdit, url: text})}
@@ -59,7 +59,7 @@ const UrlData = ({
         <ListItem.Content style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <ListItem.Title
             style={[commonStyles.listItemTitle, {color: BLUE}]}
-            onPress={() => useDevice.openURL(urlItem)}>
+            onPress={() => openURL(urlItem)}>
             {truncateText(urlItem, 33)}
           </ListItem.Title>
 
@@ -100,10 +100,10 @@ const UrlData = ({
     );
   };
 
-  const saveEdits = () => {
+  const onSaveEdits = () => {
     try {
       setIsEditModalVisible(false);
-      if (urlValidator(urlToEdit.url)) useExternalData.saveEdits(urlToEdit);
+      if (urlValidator(urlToEdit.url)) saveEdits(urlToEdit);
       else throw Error('Not valid URL.');
     }
     catch (err) {

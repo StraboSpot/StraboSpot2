@@ -11,7 +11,7 @@ const initialMapsState = {
   vertexStartCoords: undefined,
   vertexEndCoords: undefined,
   freehandFeatureCoords: undefined,
-  spotsInMapExtent: [],
+  spotsInMapExtentIds: [],
   symbolsOn: [],
   isAllSymbolsOn: true,
   isMapMoved: true,
@@ -36,6 +36,9 @@ const mapsSlice = createSlice({
     },
     clearedMaps(state) {
       state.customMaps = {};
+    },
+    clearedSpotsInMapExtentIds(state) {
+      state.spotsInMapExtentIds = [];
     },
     clearedStratSection(state) {
       state.stratSection = undefined;
@@ -83,8 +86,8 @@ const mapsSlice = createSlice({
       // console.log('Set Map Symbols', action.payload);
       state.mapSymbols = action.payload;
     },
-    setSpotsInMapExtent(state, action) {
-      state.spotsInMapExtent = action.payload;
+    setSpotsInMapExtentIds(state, action) {
+      state.spotsInMapExtentIds = action.payload;
     },
     setStratSection(state, action) {
       state.currentImageBasemap = undefined;
@@ -119,6 +122,7 @@ export const {
   addedCustomMap,
   addedCustomMapsFromBackup,
   clearedMaps,
+  clearedSpotsInMapExtentIds,
   clearedStratSection,
   clearedVertexes,
   deletedCustomMap,
@@ -132,7 +136,7 @@ export const {
   setIsMapMoved: setIsMapMoved,
   setIsShowSpotLabelsOn,
   setMapSymbols,
-  setSpotsInMapExtent,
+  setSpotsInMapExtentIds,
   setStratSection,
   setSymbolsDisplayed,
   setTagTypeForColor,

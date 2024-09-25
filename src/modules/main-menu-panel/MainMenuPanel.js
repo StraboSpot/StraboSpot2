@@ -69,7 +69,7 @@ const MainMenuPanel = ({
         );
       case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
         return <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>;
-      case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS_LIST:
+      case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS:
         return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
         return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
@@ -83,7 +83,7 @@ const MainMenuPanel = ({
       case MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS:
         return <Tags type={'geologic_unit'}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
-        return <Tags/>;
+        return <Tags updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.MAPS.CUSTOM:
         return <ManageCustomMaps zoomToCustomMap={zoomToCustomMap}/>;
       case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :

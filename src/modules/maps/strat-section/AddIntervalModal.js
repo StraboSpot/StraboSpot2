@@ -1,21 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { FlatList} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useStratSectionHook from './useStratSection';
-import useStratSectionCalculationsHook from './useStratSectionCalculations';
+import useStratSection from './useStratSection';
+import useStratSectionCalculations from './useStratSectionCalculations';
 import commonStyles from '../../../shared/common.styles';
 import {deepObjectExtend} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
 import Modal from '../../../shared/ui/modal/Modal';
-import {Form, SelectInputField, TextInputField, useFormHook} from '../../form';
+import {Form, SelectInputField, TextInputField, useForm} from '../../form';
 import {setModalValues, setModalVisible} from '../../home/home.slice';
 import {updatedProject} from '../../project/projects.slice';
+import {useSpots} from '../../spots';
 import {setSelectedSpot} from '../../spots/spots.slice';
-import useSpotsHook from '../../spots/useSpots';
 
 const AddIntervalModal = () => {
   const dispatch = useDispatch();
@@ -25,17 +25,17 @@ const AddIntervalModal = () => {
   const [initialFormValues, setInitialFormValues] = useState({});
   const [intervalToCopy, setIntervalToCopy] = useState(null);
 
-  const useForm = useFormHook();
-  const useSpots = useSpotsHook();
-  const useStratSection = useStratSectionHook();
-  const useStratSectionCalculations = useStratSectionCalculationsHook();
+  const {getLabel, getSurvey, showErrors, validateForm} = useForm();
+  const {createSpot, getIntervalSpotsThisStratSection} = useSpots();
+  const {createInterval, orderStratSectionIntervals} = useStratSection();
+  const {moveIntervalToAfter} = useStratSectionCalculations();
 
   const formRef = useRef(null);
   const preFormRef = useRef(null);
 
   const formName = ['sed', 'add_interval'];
 
-  const intervals = useSpots.getIntervalSpotsThisStratSection(stratSection.strat_section_id);
+  const intervals = getIntervalSpotsThisStratSection(stratSection.strat_section_id);
 
   useEffect(() => {
     const initialValues = {};
@@ -109,8 +109,8 @@ const AddIntervalModal = () => {
           'Units Mismatch',
           'The units for the Y Axis are ' + stratSection.column_y_axis_units + ' but '
           + data[mismatchUnitsField] + ' have been designated for '
-          + useForm.getLabel(mismatchUnitsField, formName) + '. Please fix the units for '
-          + useForm.getLabel(mismatchUnitsField, formName) + '. Unit conversions may be added to a'
+          + getLabel(mismatchUnitsField, formName) + '. Please fix the units for '
+          + getLabel(mismatchUnitsField, formName) + '. Unit conversions may be added to a'
           + ' future version of the app.',
         );
         return false;
@@ -121,7 +121,7 @@ const AddIntervalModal = () => {
 
   // Extract the data from the Spot object in the format needed for the Add Interval modal
   const extractAddIntervalData = (sedData) => {
-    const addIntervalSurvey = useForm.getSurvey(formName);
+    const addIntervalSurvey = getSurvey(formName);
     const addIntervalFieldNames = addIntervalSurvey.map(f => f.name);
     let data = addIntervalFieldNames.reduce((obj, key) => {
       // Interval
@@ -148,7 +148,7 @@ const AddIntervalModal = () => {
     const initialIntervalName = {
       intervalName: (preferences.spot_prefix || '') + (preferences.starting_number_for_spot || ''),
     };
-    const orderedIntervals = useStratSection.orderStratSectionIntervals(intervals);
+    const orderedIntervals = orderStratSectionIntervals(intervals);
     const intervalsForInsert = [...orderedIntervals, {properties: {name: '-- Bottom --', id: 1}}];
     return (
       <Formik
@@ -210,7 +210,7 @@ const AddIntervalModal = () => {
       <Formik
         innerRef={formRef}
         onSubmit={() => console.log('Submitting form...')}
-        validate={values => useForm.validateForm({formName: formName, values: values})}
+        validate={values => validateForm({formName: formName, values: values})}
         initialValues={initialFormValues}
         initialStatus={{formName: formName}}
         enableReinitialize={true}
@@ -239,19 +239,19 @@ const AddIntervalModal = () => {
 
   const saveInterval = async () => {
     await formRef.current.submitForm();
-    const intervalData = useForm.showErrors(formRef.current);
+    const intervalData = showErrors(formRef.current);
     if (doUnitsFieldsMatch(intervalData)) {
-      let newInterval = useStratSection.createInterval(stratSection.strat_section_id, intervalData);
+      let newInterval = createInterval(stratSection.strat_section_id, intervalData);
       if (preFormRef.current?.values?.intervalName) {
         newInterval.properties.name = preFormRef.current.values.intervalName;
       }
       if (intervalToCopy) newInterval = copyRestOfInterval(newInterval);
-      const newSpot = await useSpots.createSpot({type: 'Feature', ...newInterval});
+      const newSpot = await createSpot({type: 'Feature', ...newInterval});
       if (preFormRef.current?.values?.intervalToInsertAfter) {
         const intervalToInsertAfterObj = intervals.find(
           i => i.properties.id === preFormRef.current.values.intervalToInsertAfter);
         console.log('Insert after', preFormRef.current.values.intervalToInsertAfter, intervalToInsertAfterObj);
-        useStratSectionCalculations.moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
+        moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
       }
       dispatch(setSelectedSpot(newSpot));
       dispatch(setModalValues({}));

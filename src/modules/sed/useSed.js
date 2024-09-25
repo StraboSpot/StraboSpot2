@@ -7,25 +7,25 @@ import {
   ROCK_SECOND_ORDER_TYPE_FIELDS,
   STRUCTURE_SUBPAGES,
 } from './sed.constants';
-import useSedValidationHook from './useSedValidation';
+import useSedValidation from './useSedValidation';
 import {getNewId, getNewUUID, isEmpty, roundToDecimalPlaces, toTitleCase} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {setStratSection} from '../maps/maps.slice';
-import useStratSectionCalculationsHook from '../maps/strat-section/useStratSectionCalculations';
+import useStratSectionCalculations from '../maps/strat-section/useStratSectionCalculations';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const useSed = () => {
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useForm = useFormHook();
-  const useSpots = useSpotsHook();
-  const useSedValidation = useSedValidationHook();
-  const useStratSectionCalculations = useStratSectionCalculationsHook();
+  const {getLabel, getLabels, showErrors} = useForm();
+  const {getSpotWithThisStratSection, getSpotsMappedOnGivenStratSection, isStratInterval} = useSpots();
+  const {validateSedData} = useSedValidation();
+  const {moveSpotsUpOrDownByPixels, recalculateIntervalGeometry} = useStratSectionCalculations();
 
   const yMultiplier = 20;  // 1 m interval thickness = 20 pixels
 
@@ -51,7 +51,7 @@ const useSed = () => {
             let thickness = (extent[3] - extent[1]) / yMultiplier; // 20 is yMultiplier
             thickness = roundToDecimalPlaces(thickness, 2);
             spot.properties.sed.interval.interval_thickness = thickness;
-            const spotWithThisStratSection = useSpots.getSpotWithThisStratSection(spot.properties.strat_section_id);
+            const spotWithThisStratSection = getSpotWithThisStratSection(spot.properties.strat_section_id);
             if (spotWithThisStratSection.properties && spotWithThisStratSection.properties.sed
               && spotWithThisStratSection.properties.sed.strat_section) {
               spot.properties.sed.interval.thickness_units
@@ -137,7 +137,7 @@ const useSed = () => {
         });
       }
       if (needToRecalculateIntervalGeometry) {
-        spot = useStratSectionCalculations.recalculateIntervalGeometry(spot);
+        spot = recalculateIntervalGeometry(spot);
         // Move above intervals up or down if interval thickness changed
         if (sedData.interval && sedData.interval.interval_thickness && sedDataSaved.interval
           && sedDataSaved.interval.interval_thickness) {
@@ -146,13 +146,13 @@ const useSed = () => {
           const diff = targetIntervalExtent[3] - savedSpotIntervalExtent[3];
           // Move above spots up
           if (sedData.interval.interval_thickness > sedDataSaved.interval.interval_thickness) {
-            useStratSectionCalculations.moveSpotsUpOrDownByPixels(spot.properties.strat_section_id,
-              savedSpotIntervalExtent[3], diff, spot.properties.id);
+            moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, savedSpotIntervalExtent[3], diff,
+              spot.properties.id);
           }
           // Move above spots down
           else if (sedData.interval.interval_thickness < sedDataSaved.interval.interval_thickness) {
-            useStratSectionCalculations.moveSpotsUpOrDownByPixels(spot.properties.strat_section_id,
-              targetIntervalExtent[3], diff, spot.properties.id);
+            moveSpotsUpOrDownByPixels(spot.properties.strat_section_id, targetIntervalExtent[3], diff,
+              spot.properties.id);
           }
         }
       }
@@ -208,26 +208,24 @@ const useSed = () => {
   const getBeddingTitle = (bedding) => {
     const formName = ['sed', 'bedding'];
     const fieldName = 'package_geometry';
-    const choiceLabels = useForm.getLabels(bedding[fieldName], formName);
+    const choiceLabels = getLabels(bedding[fieldName], formName);
     if (isEmpty(choiceLabels)) return 'Unknown Bed';
     else return choiceLabels;
   };
 
   const getIntervalTitle = (character, interval) => {
     const formName = ['sed', 'interval'];
-    return (interval.interval_thickness ? useForm.getLabel(interval.interval_thickness, formName)
-        : 'Unknown Thickness')
-      + (interval.thickness_units ? useForm.getLabel(interval.thickness_units, formName)
-        : ' Unknown Units')
-      + (character ? ' ' + useForm.getLabel(character, formName) : ' Unknown Character');
+    return (interval.interval_thickness ? getLabel(interval.interval_thickness, formName) : 'Unknown Thickness')
+      + (interval.thickness_units ? getLabel(interval.thickness_units, formName) : ' Unknown Units')
+      + (character ? ' ' + getLabel(character, formName) : ' Unknown Character');
   };
 
-  const getRockTitle = (rock) => {
+  const getSedRockTitle = (rock) => {
     const formName = ['sed', 'lithologies'];
-    const mainLabel = useForm.getLabel(rock.primary_lithology, formName);
+    const mainLabel = getLabel(rock.primary_lithology, formName);
     const labelsArr = ROCK_SECOND_ORDER_TYPE_FIELDS.reduce((acc, fieldName) => {
       if (rock[fieldName]) {
-        const choiceLabel = useForm.getLabels(rock[fieldName], formName);
+        const choiceLabel = getLabels(rock[fieldName], formName);
         return [...acc, choiceLabel.toUpperCase()];
       }
       else return acc;
@@ -238,10 +236,10 @@ const useSed = () => {
 
   const getStratSectionTitle = (inStratSection) => {
     const formName = ['sed', PAGE_KEYS.STRAT_SECTION];
-    const columnProfile = inStratSection.column_profile ? useForm.getLabel(inStratSection.column_profile, formName)
+    const columnProfile = inStratSection.column_profile ? getLabel(inStratSection.column_profile, formName)
       : 'Unknown Profile';
     const columnYUnits = inStratSection.column_y_axis_units
-      ? useForm.getLabel(inStratSection.column_y_axis_units, formName) : 'Unknown Units';
+      ? getLabel(inStratSection.column_y_axis_units, formName) : 'Unknown Units';
     return (inStratSection.section_well_name || 'Unknown Section/Well Name') + ' - ' + columnProfile
       + ' (' + columnYUnits + ')';
   };
@@ -269,7 +267,7 @@ const useSed = () => {
 
     try {
       await formCurrent.submitForm();
-      let editedFeatureData = useForm.showErrors(formCurrent, isLeavingPage);
+      let editedFeatureData = showErrors(formCurrent, isLeavingPage);
       let editedSpot = JSON.parse(JSON.stringify(spot));
       let editedSedData = editedSpot.properties.sed ? editedSpot.properties.sed : {};
       if (subKey) {
@@ -300,10 +298,10 @@ const useSed = () => {
       }
 
       // Validate more conditions for Sed
-      useSedValidation.validateSedData(editedSpot, pageKey);
+      validateSedData(editedSpot, pageKey);
 
       // Update geometry if Interval
-      if (useSpots.isStratInterval(spot)) {
+      if (isStratInterval(spot)) {
         const updatedSpot = checkForIntervalUpdates(pageKey, editedSpot, spot);
         // console.log('Saving', pageKey, 'data to Spot ...');
         dispatch(updatedModifiedTimestampsBySpotsIds([updatedSpot.properties.id]));
@@ -340,7 +338,7 @@ const useSed = () => {
   const toggleStratSection = (spot) => {
     if (!spot.properties?.sed?.strat_section) createNewStratSection(spot);
     else {
-      const spotsMappedOnThisStratSection = useSpots.getSpotsMappedOnGivenStratSection(
+      const spotsMappedOnThisStratSection = getSpotsMappedOnGivenStratSection(
         spot.properties.sed.strat_section.strat_section_id);
       if (spotsMappedOnThisStratSection.length > 0) {
         alert('Strat Section In Use', 'There are ' + spotsMappedOnThisStratSection.length
@@ -368,7 +366,7 @@ const useSed = () => {
     deleteSedFeature: deleteSedFeature,
     getBeddingTitle: getBeddingTitle,
     getIntervalTitle: getIntervalTitle,
-    getRockTitle: getRockTitle,
+    getSedRockTitle: getSedRockTitle,
     getStratSectionTitle: getStratSectionTitle,
     onSedFormChange: onSedFormChange,
     saveSedBedFeature: saveSedBedFeature,

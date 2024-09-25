@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 
 import {truncateText} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
-import {formStyles, useFormHook} from '../form';
+import {formStyles, useForm} from '../form';
 
 const MainButtons = ({
                        formName,
@@ -13,17 +13,17 @@ const MainButtons = ({
                        mainKeys,
                        setChoicesViewKey,
                      }) => {
-  const useForm = useFormHook();
+  const {getLabel, getLabels} = useForm();
 
   const mainButtonsText = key => (
     <View style={{flex: 1, alignItems: 'center'}}>
       <Text
         style={formProps?.values[key] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>
-        {useForm.getLabel(key, formName)}
+        {getLabel(key, formName)}
       </Text>
       {formProps?.values[key] && (
         <Text style={[formStyles.formButtonSelectedTitle, {fontWeight: 'bold'}]}>
-          {truncateText(useForm.getLabels(formProps.values[key], formName, key), 23)}
+          {truncateText(getLabels(formProps.values[key], formName, key), 23)}
         </Text>
       )}
     </View>

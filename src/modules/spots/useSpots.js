@@ -19,12 +19,12 @@ import {
   updatedModifiedTimestampsBySpotsIds,
   updatedProject,
 } from '../project/projects.slice';
-import useProjectHook from '../project/useProject';
-import {useTagsHook} from '../tags';
+import useProject from '../project/useProject';
+import {useTags} from '../tags';
 
 const useSpots = () => {
-  const useProject = useProjectHook();
-  const useTags = useTagsHook();
+  const {getActiveDatasets, getSelectedDatasetFromId} = useProject();
+  const {addSpotsToTags} = useTags();
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -34,7 +34,7 @@ const useSpots = () => {
   const recentViews = useSelector(state => state.spot.recentViews);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const spotsInMapExtentIds = useSelector(state => state.map.spotsInMapExtentIds);
   const stratSection = useSelector(state => state.map.stratSection);
   const tags = useSelector(state => state.project.project?.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
@@ -147,7 +147,7 @@ const useSpots = () => {
     });
     console.log('Creating', numRandomSpots, 'new random Spots near current location.');
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpots[0].properties.id]));
-    const selectedDataset = useProject.getSelectedDatasetFromId();
+    const selectedDataset = getSelectedDatasetFromId();
     dispatch(addedNewSpotIdsToDataset({datasetId: selectedDataset.id, spotIds: newSpots.map(s => s.properties.id)}));
     dispatch(editedOrCreatedSpots(newSpots));
     console.log('Finished creating new random Spot. All Spots: ', spots);
@@ -160,7 +160,6 @@ const useSpots = () => {
     let d = new Date(Date.now());
     d.setMilliseconds(0);
     newSpot.properties.date = newSpot.properties.time = d.toISOString();
-    // Sets modified and viewed timestamps in milliseconds
     newSpot.properties.modified_timestamp = Date.now();
     newSpot.properties.viewed_timestamp = Date.now();
 
@@ -193,11 +192,11 @@ const useSpots = () => {
     // Continuous tagging
     if (useContinuousTagging) {
       let continuousTaggingList = tags.filter(tag => tag.continuousTagging);
-      useTags.addSpotsToTags(continuousTaggingList, [newSpot]);
+      addSpotsToTags(continuousTaggingList, [newSpot]);
     }
     console.log('Creating new Spot:', newSpot);
     dispatch(updatedModifiedTimestampsBySpotsIds([newSpot.properties.id]));
-    const selectedDataset = useProject.getSelectedDatasetFromId();
+    const selectedDataset = getSelectedDatasetFromId();
     dispatch(addedNewSpotIdToDataset({datasetId: selectedDataset.id, spotId: newSpot.properties.id}));
     dispatch(editedOrCreatedSpot(newSpot));
     console.log('Finished creating new Spot. All Spots: ', spots);
@@ -215,8 +214,8 @@ const useSpots = () => {
   // Get only the Spots in the active Datasets
   const getActiveSpotsObj = () => {
     let activeSpots = {};
-    const activeDatasets = useProject.getActiveDatasets();
-    // console.groupCollapsed('Getting Spots in Active Datasets...');
+    const activeDatasets = getActiveDatasets();
+    console.groupCollapsed('Getting Spots in Active Datasets...');
     Object.values(activeDatasets).forEach((dataset) => {
       let missingSpotsCount = 0;
       let missingSpotsIds = [];
@@ -227,7 +226,8 @@ const useSpots = () => {
           missingSpotsIds.push(spotId);
         }
       });
-      // console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
+      console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots',
+        missingSpotsIds);
     });
     console.groupEnd();
     return activeSpots;
@@ -452,7 +452,7 @@ const useSpots = () => {
     return foundSpots;
   };
 
-  const getSpotsInMapExtent = () => spotsInMapExtent;
+  const getSpotsInMapExtent = () => spotsInMapExtentIds.map(id => spots[id]);
 
   // Get all the Spots mapped on a specific image basemap
   const getSpotsMappedOnGivenImageBasemap = (basemapId) => {
@@ -479,24 +479,12 @@ const useSpots = () => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.images));
   };
 
-  const getSpotsWithImagesSortedReverseChronologically = () => {
-    return getSpotsWithImages().sort(((a, b) => {
-      return new Date(b.properties.date) - new Date(a.properties.date);
-    }));
-  };
-
   const getSpotsWithKey = (key) => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties[key]));
   };
 
   const getSpotsWithSamples = () => {
     return Object.values(getActiveSpotsObj()).filter(spot => !isEmpty(spot.properties.samples));
-  };
-
-  const getSpotsWithSamplesSortedReverseChronologically = () => {
-    return getSpotsWithSamples().sort(((a, b) => {
-      return new Date(b.properties.date) - new Date(a.properties.date);
-    }));
   };
 
   // Get all active Spots that contain a strat section
@@ -546,6 +534,27 @@ const useSpots = () => {
     return spot?.properties?.strat_section_id && spot?.properties?.surface_feature?.surface_feature_type === 'strat_interval';
   };
 
+  const sortSpotsAlphabetically = (spotsToSort) => {
+    spotsToSort.sort(
+      ((a, b) => (a.properties?.name?.toLowerCase() || '').localeCompare(b.properties?.name?.toLowerCase() || '')));
+    return spotsToSort;
+  };
+
+  const sortSpotsByDateCreated = (spotsToSort) => {
+    spotsToSort.sort(((a, b) => new Date(b.properties.date) - new Date(a.properties.date)));
+    return spotsToSort;
+  };
+
+  const sortSpotsByDateLastModified = (spotsToSort) => {
+    spotsToSort.sort(((a, b) => new Date(b.properties.modified_timestamp) - new Date(a.properties.modified_timestamp)));
+    return spotsToSort;
+  };
+
+  const sortSpotsByDateLastViewed = (spotsToSort) => {
+    spotsToSort.sort(((a, b) => new Date(b.properties.viewed_timestamp) - new Date(a.properties.viewed_timestamp)));
+    return spotsToSort;
+  };
+
   return {
     checkIsSafeDelete: checkIsSafeDelete,
     checkSampleName: checkSampleName,
@@ -575,16 +584,18 @@ const useSpots = () => {
     getSpotsMappedOnGivenStratSection: getSpotsMappedOnGivenStratSection,
     getSpotsSortedReverseChronologically: getSpotsSortedReverseChronologically,
     getSpotsWithImages: getSpotsWithImages,
-    getSpotsWithImagesSortedReverseChronologically: getSpotsWithImagesSortedReverseChronologically,
     getSpotsWithKey: getSpotsWithKey,
     getSpotsWithSamples: getSpotsWithSamples,
-    getSpotsWithSamplesSortedReverseChronologically: getSpotsWithSamplesSortedReverseChronologically,
     getSpotsWithStratSection: getSpotsWithStratSection,
     handleSpotSelected: handleSpotSelected,
     isOnGeoMap: isOnGeoMap,
     isOnImageBasemap: isOnImageBasemap,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
+    sortSpotsAlphabetically: sortSpotsAlphabetically,
+    sortSpotsByDateCreated: sortSpotsByDateCreated,
+    sortSpotsByDateLastModified: sortSpotsByDateLastModified,
+    sortSpotsByDateLastViewed: sortSpotsByDateLastViewed,
   };
 };
 

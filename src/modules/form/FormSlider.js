@@ -7,7 +7,7 @@ import commonStyles from '../../shared/common.styles';
 import {SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import SliderBar from '../../shared/ui/SliderBar';
 import uiStyles from '../../shared/ui/ui.styles';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 
 const FormSlider = ({
                       choices,
@@ -22,10 +22,10 @@ const FormSlider = ({
                     }) => {
   // console.log('Rendering FormSlider...');
 
-  const useForm = useFormHook();
+  const {getChoicesByKey} = useForm();
 
   const field = survey.find(f => f.name === fieldKey);
-  const choicesList = useForm.getChoicesByKey(survey, choices, fieldKey);
+  const choicesList = getChoicesByKey(survey, choices, fieldKey);
 
   const [sliderValue, setSliderValue] = useState(5);
 

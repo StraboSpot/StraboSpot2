@@ -2,10 +2,10 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {BASEMAPS, MAP_MODES} from './maps.constants';
 import {setCurrentBasemap} from './maps.slice';
-import useMapCoordsHook from './useMapCoords';
-import useMapURLHook from './useMapURL';
+import useMapCoords from './useMapCoords';
+import useMapURL from './useMapURL';
 import {STRABO_APIS} from '../../services/urls.constants';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -18,12 +18,12 @@ const useMap = () => {
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const customMaps = useSelector(state => state.map.customMaps);
 
-  const useMapCoords = useMapCoordsHook();
-  const useMapURL = useMapURLHook();
-  const useServerRequests = useServerRequestsHook();
+  const {getMyMapsBboxCoords} = useMapCoords();
+  const {buildStyleURL} = useMapURL();
+  const {getTilehostUrl} = useServerRequests();
 
   const getExtentAndZoomCall = (extentString, zoomLevel) => {
-    let url = useServerRequests.getTilehostUrl();
+    let url = getTilehostUrl();
     url = customDatabaseEndpoint.isSelected ? url + '/zipcount' : STRABO_APIS.TILE_COUNT;
     console.log(url + '?extent=' + extentString + '&zoom=' + zoomLevel);
     return url + '?extent=' + extentString + '&zoom=' + zoomLevel;
@@ -50,9 +50,9 @@ const useMap = () => {
           return basemap.id === mapId;
         });
         if (newBasemap) {
-          newBasemap = useMapURL.buildStyleURL(newBasemap);
+          newBasemap = buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
-          bbox = await useMapCoords.getMyMapsBboxCoords(newBasemap);
+          bbox = await getMyMapsBboxCoords(newBasemap);
           if (bbox) newBasemap = {...newBasemap, bbox: bbox};
         }
         else {

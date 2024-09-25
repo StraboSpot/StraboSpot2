@@ -1,10 +1,10 @@
 import * as turf from '@turf/turf';
 
 import {isEmpty} from '../../shared/Helpers';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 
 const useNesting = () => {
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj, getSpotById} = useSpots();
 
   // Is spot 1 completely within spot 2?
   // Boolean-within returns true if the first geometry is completely within the second geometry.
@@ -76,7 +76,7 @@ const useNesting = () => {
     if (thisSpot.properties.nesting) {
       let nonGeomChildrenSpots = [];
       thisSpot.properties.nesting.forEach((spotId) => {
-        if (useSpots.getSpotById(spotId)) nonGeomChildrenSpots.push(useSpots.getSpotById(spotId));
+        if (getSpotById(spotId)) nonGeomChildrenSpots.push(getSpotById(spotId));
         else {
           thisSpot.properties.nesting = thisSpot.properties.nesting.filter(nestingId => nestingId !== spotId);
           if (isEmpty(thisSpot.properties.nesting)) delete thisSpot.properties.nesting;
@@ -118,7 +118,7 @@ const useNesting = () => {
 
   // Get i generations of active children spots for thisSpot
   function getChildrenGenerationsSpots(thisSpot, i) {
-    const activeSpots = Object.values(useSpots.getActiveSpotsObj());
+    const activeSpots = Object.values(getActiveSpotsObj());
     let childrenGenerations = [];
     let childSpots = [thisSpot];
     Array.from({length: i}, () => {
@@ -134,7 +134,7 @@ const useNesting = () => {
 
   // Get i generations of active parent spots for thisSpot
   const getParentGenerationsSpots = (thisSpot, i) => {
-    const activeSpots = Object.values(useSpots.getActiveSpotsObj());
+    const activeSpots = Object.values(getActiveSpotsObj());
     let parentGenerations = [];
     let parentSpots = [thisSpot];
     Array.from({length: i}, () => {

@@ -11,12 +11,11 @@ import {
   setSelectedDataset,
   setSelectedProject,
 } from './projects.slice';
-import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
-import useDownloadHook from '../../services/useDownload';
-import useImportHook from '../../services/useImport';
-import useResetStateHook from '../../services/useResetState';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useDevice from '../../services/useDevice';
+import useDownload from '../../services/useDownload';
+import useImport from '../../services/useImport';
+import useResetState from '../../services/useResetState';
+import useServerRequests from '../../services/useServerRequests';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {
@@ -29,7 +28,7 @@ import {
   setIsStatusMessagesModalVisible,
   setLoadingStatus,
 } from '../home/home.slice';
-import {clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
+import {clearedSpotsInMapExtentIds, clearedStratSection, setCurrentImageBasemap} from '../maps/maps.slice';
 import {clearedSelectedSpots, deletedSpots} from '../spots/spots.slice';
 
 const useProject = () => {
@@ -44,11 +43,11 @@ const useProject = () => {
   const user = useSelector(state => state.user);
 
   const toast = useToast();
-  const useDevice = useDeviceHook();
-  const useDownload = useDownloadHook();
-  const useImport = useImportHook();
-  const useResetState = useResetStateHook();
-  const useServerRequests = useServerRequestsHook();
+  const {doesDeviceBackupDirExist, readDirectory} = useDevice();
+  const {initializeDownload} = useDownload();
+  const {loadProjectFromDevice} = useImport();
+  const {clearProject} = useResetState();
+  const {getMyProjects} = useServerRequests();
 
   const addDataset = async (name) => {
     const datasetObj = createDataset(name);
@@ -105,10 +104,6 @@ const useProject = () => {
     dispatch(addedDataset(defaultDataset));
   };
 
-  const deleteProject = async (project) => {
-    await useServerRequests.deleteProject(project);
-  };
-
   const destroyDataset = async (id) => {
     try {
       dispatch(setIsStatusMessagesModalVisible(true));
@@ -132,21 +127,16 @@ const useProject = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: false}));
   };
 
-  const doesDeviceBackupDirExist = async (subDirectory) => {
-    if (subDirectory !== undefined) return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR + subDirectory);
-    else return useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR);
-  };
-
   const getActiveDatasets = () => {
     const activeDatasets = activeDatasetsIds.map(datasetId => datasets[datasetId]);
     return activeDatasets.filter(activeDataset => !isEmpty(activeDataset));
   };
 
   const getAllDeviceProjects = async (directory) => {
-    // const deviceProject = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
+    // const deviceProject = await doesDeviceDirExist(APP_DIRECTORIES.BACKUP_DIR).then((res) => {
     //   console.log(`${APP_DIRECTORIES.BACKUP_DIR} exists: ${res}`);
     //   if (res) {
-    //     return useDevice.readDirectory(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
+    //     return readDirectory(APP_DIRECTORIES.BACKUP_DIR).then((files) => {
     //       console.log('Files on device', files);
     //       let id = 0;
     //       if (!isEmpty(files)) {
@@ -162,9 +152,9 @@ const useProject = () => {
     // });
     // return Promise.resolve(deviceProject);
     let id = 0;
-    const exists = await useDevice.doesDeviceBackupDirExist(undefined);
+    const exists = await doesDeviceBackupDirExist(undefined);
     if (exists) {
-      const res = await useDevice.readDirectory(directory);
+      const res = await readDirectory(directory);
       const deviceFiles = res.map((file) => {
         return {id: id++, fileName: file};
       });
@@ -173,32 +163,28 @@ const useProject = () => {
     else console.log('Does not exist');
   };
 
-  const getAllExternalStorageProjects = () => {
-
-  };
-
   const getAllServerProjects = async () => {
     try {
-      return await useServerRequests.getMyProjects(user.encoded_login);
+      return await getMyProjects(user.encoded_login);
     }
     catch (err) {
       return err.ok;
     }
   };
 
-  const getDatasetFromSpotId = (spotId) => {
-    let datasetIdFound;
-    for (const dataset of Object.values(datasets)) {
-      const spotIdFound = dataset.spotIds.find(id => id === spotId);
-      if (spotIdFound) {
-        datasetIdFound = dataset.id;
-        break;
-      }
-    }
-    console.log('HERE IS THE DATASET', datasetIdFound);
-    if (!datasetIdFound) console.error('Dataset not found');
-    return datasetIdFound;
-  };
+  // const getDatasetFromSpotId = (spotId) => {
+  //   let datasetIdFound;
+  //   for (const dataset of Object.values(datasets)) {
+  //     const spotIdFound = dataset.spotIds.find(id => id === spotId);
+  //     if (spotIdFound) {
+  //       datasetIdFound = dataset.id;
+  //       break;
+  //     }
+  //   }
+  //   console.log('HERE IS THE DATASET', datasetIdFound);
+  //   if (!datasetIdFound) console.error('Dataset not found');
+  //   return datasetIdFound;
+  // };
 
   // Get selected dataset, if none selected make one
   const getSelectedDatasetFromId = () => {
@@ -222,14 +208,14 @@ const useProject = () => {
   };
 
   const initializeNewProject = async (descriptionData) => {
-    useResetState.clearProject();
+    clearProject();
     await createProject(descriptionData);
     return Promise.resolve();
   };
 
   const loadProjectWeb = async (projectId) => {
     try {
-      await useDownload.initializeDownload({id: projectId});
+      await initializeDownload({id: projectId});
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -252,6 +238,7 @@ const useProject = () => {
   const setSwitchValue = async (val, dataset) => {
     try {
       dispatch(setActiveDatasets({bool: val, dataset: dataset.id}));
+      dispatch(clearedSpotsInMapExtentIds());
       if (!val && !isEmpty(selectedSpot) && dataset.spotIds?.includes(selectedSpot.properties.id)) {
         if (currentImageBasemap) dispatch(setCurrentImageBasemap(undefined));
         if (stratSection) dispatch(clearedStratSection());
@@ -275,13 +262,13 @@ const useProject = () => {
           dispatch(setSelectedProject({project: '', source: ''}));
           dispatch(clearedStatusMessages());
           dispatch(setIsStatusMessagesModalVisible(true));
-          const res = await useImport.loadProjectFromDevice(selectedProject.project.fileName);
+          const res = await loadProjectFromDevice(selectedProject.project.fileName);
           dispatch(setLoadingStatus({view: 'home', bool: false}));
           console.log('Done loading project', res);
         }
         else if (selectedProject.source === 'server') {
           dispatch(setSelectedProject({project: '', source: ''}));
-          await useDownload.initializeDownload(selectedProject.project);
+          await initializeDownload(selectedProject.project);
         }
       }
     }
@@ -299,16 +286,10 @@ const useProject = () => {
   return {
     addDataset: addDataset,
     checkValidDateTime: checkValidDateTime,
-    createDataset: createDataset,
-    createProject: createProject,
-    deleteProject: deleteProject,
     destroyDataset: destroyDataset,
-    doesDeviceBackupDirExist: doesDeviceBackupDirExist,
     getActiveDatasets: getActiveDatasets,
     getAllDeviceProjects: getAllDeviceProjects,
-    getAllExternalStorageProjects: getAllExternalStorageProjects,
     getAllServerProjects: getAllServerProjects,
-    getDatasetFromSpotId: getDatasetFromSpotId,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     initializeNewProject: initializeNewProject,
     loadProjectWeb: loadProjectWeb,

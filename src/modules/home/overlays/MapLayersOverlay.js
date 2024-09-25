@@ -11,16 +11,16 @@ import * as themes from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../../shared/ui/ListEmptyText';
 import SectionDivider from '../../../shared/ui/SectionDivider';
-import useCustomMapHook from '../../maps/custom-maps/useCustomMap';
+import useCustomMap from '../../maps/custom-maps/useCustomMap';
 import {BASEMAPS} from '../../maps/maps.constants';
-import useMapsOfflineHook from '../../maps/offline-maps/useMapsOffline';
-import useMapHook from '../../maps/useMap';
+import useMapsOffline from '../../maps/offline-maps/useMapsOffline';
+import useMap from '../../maps/useMap';
 
 const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visible}) => {
 
-  const useCustomMap = useCustomMapHook();
-  const useMap = useMapHook();
-  const useMapsOffline = useMapsOfflineHook();
+  const {setCustomMapSwitchValue} = useCustomMap();
+  const {setBasemap} = useMap();
+  const {setOfflineMapTiles} = useMapsOffline();
 
   const [dialogTitle, setDialogTitle] = useState('Map Layers');
 
@@ -145,7 +145,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
     return (
       <ListItem
         key={customMap.id + 'CustomMapItem'}
-        onPress={() => setBasemap(customMap)}>
+        onPress={() => onSetBasemap(customMap)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
@@ -161,7 +161,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
     return (
       <ListItem
         key={customMap.id + 'OfflineCustomMapItem'}
-        onPress={() => setBasemap(customMap)}>
+        onPress={() => onSetBasemap(customMap)}>
         <ListItem.Content>
           <ListItem.Title style={commonStyles.listItemTitle}>
             {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
@@ -179,7 +179,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
   const renderDefaultMapItem = map => (
     <ListItem
       key={map.id + 'DefaultMapItem'}
-      onPress={() => isInternetReachable ? useMap.setBasemap(map.id) : useMapsOffline.setOfflineMapTiles(map)}
+      onPress={() => isInternetReachable ? setBasemap(map.id) : setOfflineMapTiles(map)}
     >
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
@@ -205,20 +205,20 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
       <Switch
         style={{marginRight: 10}}
         value={customMap.isViewable}
-        onValueChange={val => useCustomMap.setCustomMapSwitchValue(val, customMap)}
+        onValueChange={val => setCustomMapSwitchValue(val, customMap)}
       />
     </ListItem>
   );
 
-  const setBasemap = async (customMap) => {
+  const onSetBasemap = async (customMap) => {
     let baseMap = {};
     if ((isInternetReachable && isConnected) || (!isInternetReachable && isConnected)) {
-      if (!customMap.url) baseMap = await useMapsOffline.setOfflineMapTiles(customMap);
-      else baseMap = await useMap.setBasemap(customMap.id);
+      if (!customMap.url) baseMap = await setOfflineMapTiles(customMap);
+      else baseMap = await setBasemap(customMap.id);
       baseMap.bbox && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(baseMap?.bbox), 1000);
     }
     else {
-      await useMapsOffline.setOfflineMapTiles(customMap);
+      await setOfflineMapTiles(customMap);
       offlineMaps[customMap.id].bbox
       && setTimeout(() => mapComponentRef.current?.zoomToCustomMap(offlineMaps[customMap.id].bbox, 10), 1000);
     }

@@ -8,7 +8,7 @@ import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 // Render a measurement item in a list
 const MeasurementItem = ({
@@ -19,7 +19,7 @@ const MeasurementItem = ({
                          }) => {
 
   const spot = useSelector(state => state.spot.selectedSpot);
-  const useTags = useTagsHook();
+  const {setFeaturesSelectedForMultiTagging} = useTags();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);
 
@@ -29,9 +29,7 @@ const MeasurementItem = ({
   }, [isMultipleFeaturesTaggingEnabled]);
 
   const onMeasurementPress = () => {
-    if (isMultipleFeaturesTaggingEnabled) {
-      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(item));
-    }
+    if (isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(setFeaturesSelectedForMultiTagging(item));
     else onPress();
   };
 

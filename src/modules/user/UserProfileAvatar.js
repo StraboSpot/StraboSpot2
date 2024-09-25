@@ -5,18 +5,18 @@ import {Avatar} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
-import useUserProfileHook from './useUserProfile';
+import useUserProfile from './useUserProfile';
 import defaultAvatar from '../../assets/images/splash.png';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
 
 const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage, size, tempUserProfileImageURI}) => {
   const isOnline = useSelector(state => state.connections.isOnline);
   const imageURI = useSelector(state => state.user?.image);
 
-  const useUserProfile = useUserProfileHook();
-  const useDevice = useDeviceHook();
+  const {getInitials} = useUserProfile();
+  const {doesFileExist} = useDevice();
 
   const [source, setSource] = useState(defaultAvatar);
 
@@ -28,16 +28,16 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
     console.log('tempUserProfileImageURI', tempUserProfileImageURI);
     if (Platform.OS === 'web') {
       if (!isEmpty(imageURI)) setSource({uri: imageURI});
-      else if (useUserProfile.getInitials()) setSource(undefined);
+      else if (getInitials()) setSource(undefined);
       else setSource(defaultAvatar);
     }
     else if (!isEditable && !isEmpty(tempUserProfileImageURI)) setSource({uri: tempUserProfileImageURI});
     else {
-      const doesProfileImageExist = await useDevice.doesFileExist(APP_DIRECTORIES.PROFILE_IMAGE);
+      const doesProfileImageExist = await doesFileExist(APP_DIRECTORIES.PROFILE_IMAGE);
       console.log('doesProfileImageExist', doesProfileImageExist);
       if (doesProfileImageExist) setSource({uri: 'file://' + APP_DIRECTORIES.PROFILE_IMAGE + '?' + new Date()}); // Avoid caching with date
       else if (!isEmpty(imageURI) && typeof imageURI.valueOf() === 'string') setSource({uri: imageURI});
-      else if (useUserProfile.getInitials()) setSource(undefined);
+      else if (getInitials()) setSource(undefined);
       else setSource(defaultAvatar);
     }
   };
@@ -48,7 +48,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
       rounded
       size={size}
       source={source}
-      title={useUserProfile.getInitials()}
+      title={getInitials()}
       titleStyle={userStyles.avatarPlaceholderTitleStyle}
     >
       {isEditable && isOnline.isInternetReachable && Platform.OS !== 'web' && (

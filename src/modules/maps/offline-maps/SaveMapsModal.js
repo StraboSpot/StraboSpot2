@@ -7,10 +7,10 @@ import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 
 import offlineMapsStyles from './offlineMaps.styles';
-import useMapsOfflineHook from './useMapsOffline';
+import useMapsOffline from './useMapsOffline';
 import {APP_DIRECTORIES} from '../../../services/directories.constants';
-import useDeviceHook from '../../../services/useDevice';
-import useServerRequestHook from '../../../services/useServerRequests';
+import useDevice from '../../../services/useDevice';
+import useServerRequests from '../../../services/useServerRequests';
 import {toNumberFixedValue} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import {
@@ -19,16 +19,23 @@ import {
   removedLastStatusMessage,
   setIsOfflineMapsModalVisible,
 } from '../../home/home.slice';
-// import ProgressBar from '../../../shared/ui/ProgressBar';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
 
 const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
   // console.log('Rendering SaveMapsModal...');
 
-  const useDevice = useDeviceHook();
-  const useMapsOffline = useMapsOfflineHook();
-  const useServerRequests = useServerRequestHook();
+  const {doesDeviceDirectoryExist, downloadAndSaveMap} = useDevice();
+  const {
+    checkTileZipFileExistence,
+    checkZipStatus,
+    doUnzip,
+    initializeSaveMap,
+    moveFiles,
+    moveTile,
+    updateMapTileCountWhenSaving,
+  } = useMapsOffline();
+  const {getTilehostUrl} = useServerRequests();
 
   const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -103,13 +110,11 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     }
   };
 
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-  const doUnzip = async () => {
+  const unzip = async () => {
     try {
       setIsLoadingWave(true);
       setPercentDone(0);
-      await useMapsOffline.doUnzip();
+      await doUnzip();
     }
     catch (err) {
       console.error('Unzip Error:', err);
@@ -118,7 +123,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
 
   const downloadZip = async (zipUID) => {
     try {
-      const tilehost = useServerRequests.getTilehostUrl();
+      const tilehost = getTilehostUrl();
       const downloadZipURL = tilehost + '/ziptemp/' + zipUID + '/' + zipUID + '.zip';
       const downloadOptions = {
         fromUrl: downloadZipURL,
@@ -139,11 +144,11 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       };
 
       //first try to delete from temp directories
-      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
-      await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
-      await useMapsOffline.checkTileZipFileExistence();
-      await useDevice.downloadAndSaveMap(downloadOptions);
-      await doUnzip(zipUID);
+      await doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_ZIP);
+      await doesDeviceDirectoryExist(APP_DIRECTORIES.TILE_TEMP);
+      await checkTileZipFileExistence();
+      await downloadAndSaveMap(downloadOptions);
+      await unzip(zipUID);
     }
     catch (err) {
       console.error('Server error in downloadZipUrl', err);
@@ -160,17 +165,17 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
       setIsLoadingCircle(false);
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Gathering Tiles...'));
-      const zipId = await useMapsOffline.initializeSaveMap(extentString, downloadZoom);
+      const zipId = await initializeSaveMap(extentString, downloadZoom);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Preparing Data...'));
-      await useMapsOffline.checkZipStatus(zipId);
+      await checkZipStatus(zipId);
       setShowLoadingBar(false);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Data ready to download.'));
       await downloadZip(zipId);
-      const tileArray = await useMapsOffline.moveFiles(zipId);
+      const tileArray = await moveFiles(zipId);
       await tileMove(tileArray, zipId);
-      await useMapsOffline.updateMapTileCountWhenSaving();
+      await updateMapTileCountWhenSaving();
       console.log('Saved offlineMaps to Redux.');
       setShowMainMenu(false);
       setShowLoadingMenu(false);
@@ -195,7 +200,7 @@ const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) =
     dispatch(removedLastStatusMessage());
     dispatch(addedStatusMessage('Installing tiles...'));
     for (const tile of tilearray) {
-      const progress = await useMapsOffline.moveTile(tile);
+      const progress = await moveTile(tile);
       setPercentDone(progress[0] / tilearray.length);
       setInstalledTiles(progress[2]);
       setTilesToInstall(progress[1]);

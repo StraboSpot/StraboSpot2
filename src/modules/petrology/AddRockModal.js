@@ -11,15 +11,15 @@ import AddRockIgneousModal from './AddRockIgneousModal';
 import AddRockMetamorphicModal from './AddRockMetamorphicModal';
 import AddRockSedimentaryModal from './AddRockSedimentaryModal';
 import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 import Templates from '../templates/Templates';
 
 const AddRockModal = ({
@@ -40,9 +40,9 @@ const AddRockModal = ({
   const [rockKey, setRockKey] = useState(null);
   const formRef = useRef(null);
 
-  const useForm = useFormHook();
-  const usePetrology = usePetrologyHook();
-  const useSed = useSedHook();
+  const {getChoices, getRelevantFields, getSurvey} = useForm();
+  const {savePetFeature, savePetFeatureValuesFromTemplates} = usePetrology();
+  const {saveSedFeature, saveSedFeatureValuesFromTemplates} = useSed();
 
   const areMultipleTemplates = templates[rockKey] && templates[rockKey].isInUse && templates[rockKey].active
     && templates[rockKey].active.length > 1;
@@ -71,8 +71,8 @@ const AddRockModal = ({
       setInitialValues(initialValuesTemp);
     }
     const formName = [groupKey, rockKeyUpdated];
-    setSurvey(useForm.getSurvey(formName));
-    setChoices(useForm.getChoices(formName));
+    setSurvey(getSurvey(formName));
+    setChoices(getChoices(formName));
     setChoicesViewKey(null);
   }, [modalValues, pageKey, templates]);
 
@@ -93,8 +93,8 @@ const AddRockModal = ({
       const type = types[i];
       dispatch(setModalValues({id: getNewId(), igneous_rock_class: type}));
       const formNameSwitched = ['pet', type];
-      setSurvey(useForm.getSurvey(formNameSwitched));
-      setChoices(useForm.getChoices(formNameSwitched));
+      setSurvey(getSurvey(formNameSwitched));
+      setChoices(getChoices(formNameSwitched));
     }
   };
 
@@ -214,7 +214,7 @@ const AddRockModal = ({
   };
 
   const renderSubform = (formProps) => {
-    const relevantFields = useForm.getRelevantFields(survey, choicesViewKey);
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
     return (
       <Form {...{formName: [groupKey, rockKey], surveyFragment: relevantFields, ...formProps}}/>
     );
@@ -222,16 +222,12 @@ const AddRockModal = ({
 
   const saveRock = async () => {
     if (areMultipleTemplates) {
-      if (groupKey === 'pet') {
-        usePetrology.savePetFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
-      }
-      else if (groupKey === 'sed') {
-        useSed.saveSedFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
-      }
+      if (groupKey === 'pet') savePetFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
+      else if (groupKey === 'sed') saveSedFeatureValuesFromTemplates(pageKey, spot, templates[rockKey].active);
     }
     else {
-      if (groupKey === 'pet') await usePetrology.savePetFeature(pageKey, spot, formRef.current);
-      else if (groupKey === 'sed') await useSed.saveSedFeature(pageKey, spot, formRef.current);
+      if (groupKey === 'pet') await savePetFeature(pageKey, spot, formRef.current);
+      else if (groupKey === 'sed') await saveSedFeature(pageKey, spot, formRef.current);
       dispatch(setModalValues({...formRef.current.values, id: getNewId()}));
     }
   };

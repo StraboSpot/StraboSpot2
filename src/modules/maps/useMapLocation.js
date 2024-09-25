@@ -4,17 +4,17 @@ import Geolocation from '@react-native-community/geolocation';
 import * as turf from '@turf/turf';
 import {useDispatch} from 'react-redux';
 
+import {useSpots} from '../spots';
 import {setSelectedSpot} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const useMapLocation = () => {
-  const useSpots = useSpotsHook();
+  const {createRandomSpots, createSpot} = useSpots();
   const dispatch = useDispatch();
 
   const generateRandomsSpotsAroundCurrentLocation = async (numRandomSpots) => {
     const currentLocation = await getCurrentLocation();
     let feature = turf.point([currentLocation.longitude, currentLocation.latitude]);
-    useSpots.createRandomSpots(feature, numRandomSpots);
+    createRandomSpots(feature, numRandomSpots);
   };
 
   // Get the current location from the device and set it in the state
@@ -48,7 +48,7 @@ const useMapLocation = () => {
     let feature = turf.point([currentLocation.longitude, currentLocation.latitude]);
     if (currentLocation.altitude) feature.properties.altitude = currentLocation.altitude;
     if (currentLocation.accuracy) feature.properties.gps_accuracy = currentLocation.accuracy;
-    const newSpot = await useSpots.createSpot(feature);
+    const newSpot = await createSpot(feature);
     console.log('Created new Spot at current location:', newSpot);
     dispatch(setSelectedSpot(newSpot));
     return newSpot;
