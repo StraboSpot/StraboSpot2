@@ -214,7 +214,7 @@ const useExport = () => {
         {
           title: 'Need permission to read Downloads Folder',
           message:
-            'StraboSpot2 needs permission to access your Downloads Folder to save backups,',
+            'StraboField needs permission to access your Downloads Folder to save backups,',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',

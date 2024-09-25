@@ -387,7 +387,7 @@ const useDevice = () => {
         {
           title: 'Need permission to read Downloads Folder',
           message:
-            'StraboSpot2 needs permission to access your Downloads Folder to retrieve backups,',
+            'StraboField needs permission to access your Downloads Folder to retrieve backups,',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
