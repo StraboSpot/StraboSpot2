@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Platform, View} from 'react-native';
+import {Animated, Keyboard, Platform, TextInput, View} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
@@ -24,6 +24,7 @@ import useExport from '../../services/useExport';
 import useVersionCheck from '../../services/versionCheck/useVersionCheck';
 import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
+import * as Helpers from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useHome from '../home/useHome';
@@ -38,6 +39,8 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useProject from '../project/useProject';
 import {useSpots} from '../spots';
 import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice';
+
+const {State: TextInputState} = TextInput;
 
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
@@ -89,6 +92,16 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     Platform.OS !== 'web' && createProjectDirectories().catch(
       err => console.error('Error creating app directories', err));
+      if (Platform.OS === 'ios') {
+        Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome);
+        Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome);
+        // console.log('Keyboard listeners added to HOME');
+        return function cleanup() {
+          Keyboard.addListener('keyboardDidShow', handleKeyboardDidShowHome).remove();
+          Keyboard.addListener('keyboardDidHide', handleKeyboardDidHideHome).remove();
+          // console.log('Home Keyboard Listeners Removed');
+        };
+      }
   }, []);
 
   useEffect(() => {
@@ -140,6 +153,12 @@ const Home = ({navigation, route}) => {
     if (mapMode !== MAP_MODES.DRAW.MEASURE) mapComponentRef.current?.endMapMeasurement();
   }, [mapMode]);
 
+
+
+  const handleKeyboardDidShowHome = event => Helpers.handleKeyboardDidShow(event, TextInputState,
+    animatedValueTextInputs);
+
+  const handleKeyboardDidHideHome = () => Helpers.handleKeyboardDidHide(animatedValueTextInputs);
 
   const cancelEdits = async () => {
     await mapComponentRef.current?.cancelEdits();

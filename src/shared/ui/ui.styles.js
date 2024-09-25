@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   customEndpointVerifyButtonContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 10
+    padding: 10,
   },
   customEndpointVerifyIconContainer: {
     alignItems: 'center',
@@ -89,6 +89,10 @@ const styles = StyleSheet.create({
   itemSeparator: {
     borderColor: themes.LIGHTGREY,
     borderTopWidth: 1,
+  },
+  keyboardAvoidanceContainer: {
+    // alignItems: 'center',
+    // flex: 1,
   },
   leftContainer: {
     flex: 1,
