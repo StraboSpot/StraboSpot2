@@ -14,6 +14,7 @@ const useMapFeatures = () => {
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const stratSection = useSelector(state => state.map.stratSection);
+  const mapSymbols = useSelector(state => state.map.mapSymbols);
 
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
@@ -111,7 +112,7 @@ const useMapFeatures = () => {
         }, []);
       return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
     }, []);
-    dispatch(setMapSymbols(featureTypes));
+    if (JSON.stringify(mapSymbols) !== JSON.stringify(featureTypes)) dispatch(setMapSymbols(featureTypes));
   };
 
   return {
