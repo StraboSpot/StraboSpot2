@@ -21,7 +21,7 @@ import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
 import useDevice from '../../services/useDevice';
 import useExport from '../../services/useExport';
-import {animateDrawer, isEmpty} from '../../shared/Helpers';
+import {animateDrawer, isEmpty, isEqual} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
 import useHome from '../home/useHome';
@@ -56,6 +56,7 @@ const Home = ({navigation, route}) => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
+  const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const stratSection = useSelector(state => state.map.stratSection);
   const userEmail = useSelector(state => state.user.email);
   const userName = useSelector(state => state.user.name);
@@ -303,7 +304,7 @@ const Home = ({navigation, route}) => {
 
   const openSpotInNotebook = (spot, notebookPage, attributes) => {
     handleSpotSelected(spot);
-    if (attributes) dispatch(setSelectedAttributes(attributes));
+    if (!isEqual(attributes, selectedAttributes)) dispatch(setSelectedAttributes(attributes));
     if (notebookPage) openNotebookPanel(notebookPage);
     else openNotebookPanel(PAGE_KEYS.OVERVIEW);
   };
