@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Platform, View} from 'react-native';
+import {Animated, Platform} from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
@@ -21,8 +21,6 @@ import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
 import useDevice from '../../services/useDevice';
 import useExport from '../../services/useExport';
-import useVersionCheck from '../../services/versionCheck/useVersionCheck';
-import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {animateDrawer, isEmpty} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
@@ -42,14 +40,13 @@ import {clearedSelectedSpots, setSelectedAttributes} from '../spots/spots.slice'
 const Home = ({navigation, route}) => {
   // console.log('Rendering Home...');
 
-  const {lockOrientation, unlockOrientation} = useHome();
-  const {getSelectedDatasetFromId} = useProject();
-  const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
   const toast = useToast();
   const {createProjectDirectories, openURL} = useDevice();
-  const {zipAndExportProjectFolder} = useExport();
+  const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
+  const {getSelectedDatasetFromId} = useProject();
+  const {lockOrientation, unlockOrientation} = useHome();
   const {setPointAtCurrentLocation} = useMapLocation();
-  const {checkAppStoreVersion} = useVersionCheck();
+  const {zipAndExportProjectFolder} = useExport();
 
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
@@ -71,7 +68,6 @@ const Home = ({navigation, route}) => {
   const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
   const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
-  const [showUpdateLabel, setShowUpdateLabel] = useState(false);
 
   const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
   const animatedValueMainMenuDrawer = useRef(new Animated.Value(-MAIN_MENU_DRAWER_WIDTH)).current;
@@ -89,21 +85,6 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     Platform.OS !== 'web' && createProjectDirectories().catch(
       err => console.error('Error creating app directories', err));
-  }, []);
-
-  useEffect(() => {
-    let updateTimer;
-    if (!isProjectLoadSelectionModalVisible && Platform.OS !== 'web') {
-      checkAppStoreVersion().then((res) => {
-        if (res.needsUpdate) {
-          setShowUpdateLabel(true);
-          updateTimer = setTimeout(() => setShowUpdateLabel(false), 5000);
-        }
-      });
-    }
-    return () => {
-      clearTimeout(updateTimer);
-    };
   }, []);
 
   useEffect(() => {
@@ -329,12 +310,6 @@ const Home = ({navigation, route}) => {
 
   const openStraboSpotURL = () => openURL('https://www.strabospot.org/login');
 
-  const renderVersionCheckLabel = () => (
-    <View style={homeStyles.versionPositionHome}>
-      <VersionCheckLabel/>
-    </View>
-  );
-
   const setDraw = async (mapModeToSet) => {
     mapComponentRef.current?.cancelDraw();
     if (mapMode === mapModeToSet
@@ -411,9 +386,7 @@ const Home = ({navigation, route}) => {
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
           ref={mapComponentRef}
-          renderVersionCheckLabel={renderVersionCheckLabel()}
           setDistance={setDistance}
-          showUpdateLabel={showUpdateLabel}
           startEdit={startEdit}
           toggleDialog={toggleDialog}
         />

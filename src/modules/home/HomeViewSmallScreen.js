@@ -15,6 +15,7 @@ import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import {MODAL_KEYS} from '../page/page.constants';
 import SpotNavigator from '../spots/SpotNavigator';
+import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
 const HomeViewSmallScreen = forwardRef(({
                                           animateLeftSide,
@@ -34,9 +35,7 @@ const HomeViewSmallScreen = forwardRef(({
                                           openMainMenuPanel,
                                           openNotebookPanel,
                                           openSpotInNotebook,
-                                          renderVersionCheckLabel,
                                           setDistance,
-                                          showUpdateLabel,
                                           startEdit,
                                           toggleDialog,
                                         }, mapComponentRef) => {
@@ -57,6 +56,7 @@ const HomeViewSmallScreen = forwardRef(({
     headerShown: false,
     swipeEnabled: false,
   };
+
   const Tab = createMaterialTopTabNavigator();
 
   const toggleSpotNavigator = () => {
@@ -188,7 +188,7 @@ const HomeViewSmallScreen = forwardRef(({
                   </View>
                 )}
                 <OfflineMapLabel/>
-                {showUpdateLabel && renderVersionCheckLabel}
+                <VersionCheckLabel/>
               </>
             }
           </Tab.Screen>

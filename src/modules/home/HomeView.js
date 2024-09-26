@@ -10,6 +10,7 @@ import Map from '../maps/Map';
 import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import notebookStyles from '../notebook-panel/notebook.styles';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
+import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
 const HomeView = forwardRef(({
                                animateLeftSide,
@@ -50,6 +51,7 @@ const HomeView = forwardRef(({
 
       <DeviceInfo/>
       <OfflineMapLabel/>
+      <VersionCheckLabel/>
 
       <RightSideButtons
         animateRightSide={animateRightSide}

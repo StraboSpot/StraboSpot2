@@ -49,6 +49,12 @@ const versionCheckStyles = StyleSheet.create({
     width: UPDATE_LABEL_WIDTH,
     zIndex: 1,
   },
+  versionPositionHome: {
+    bottom: 175,
+    position: 'absolute',
+    right: 150,
+    zIndex: 1000,
+  },
   versionText: {
     fontWeight: 'bold',
     textAlign: 'center',

@@ -209,19 +209,6 @@ const homeStyles = StyleSheet.create({
   urlText: {
     fontSize: themes.SMALL_TEXT_SIZE,
   },
-  versionPositionHome: {
-    bottom: '25%',
-    position: 'absolute',
-    right: '25%',
-    zIndex: 1000,
-  },
-  webScaleControl: {
-    background: 'red',
-    bottom: 20,
-    fontWeight: 'bold',
-    left: 50,
-    position: 'absolute',
-  },
   zoomAndScaleBarContainer: {
     bottom: 40,
     left: 100,
