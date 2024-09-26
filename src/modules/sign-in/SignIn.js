@@ -53,7 +53,7 @@ const SignIn = ({navigation, route}) => {
         <Button
           type={'solid'}
           containerStyle={signInStyles.buttonContainer}
-          onPress={() => handleSignIn()}
+          onPress={handleSignIn}
           buttonStyle={signInStyles.buttonStyle}
           disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
           title={'Log In'}
@@ -68,7 +68,7 @@ const SignIn = ({navigation, route}) => {
         />
         <Button
           type={'solid'}
-          onPress={() => handleGuestSignIn()}
+          onPress={handleGuestSignIn}
           containerStyle={signInStyles.buttonContainer}
           buttonStyle={signInStyles.buttonStyle}
           title={'Continue as Guest'}

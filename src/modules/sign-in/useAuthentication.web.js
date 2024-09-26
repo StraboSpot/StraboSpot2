@@ -24,11 +24,13 @@ const useAuthentication = () => {
   }, [isAuthenticated, isOnline]);
 
   const checkAuthentication = async () => {
-    const credentials = atob(encodedLogin);
-    const email = credentials.split(':')[0];
-    const password = credentials.split(':')[1];
-    await doAuthenticateUser(email, password);
-    console.log('Passed Authentication Check');
+    if (encodedLogin) {
+      const credentials = atob(encodedLogin);
+      const email = credentials.split(':')[0];
+      const password = credentials.split(':')[1];
+      await doAuthenticateUser(email, password);
+      console.log('Passed Authentication Check');
+    }
     checkAuthenticationRestartTimer();
   };
 

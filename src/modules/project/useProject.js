@@ -213,21 +213,6 @@ const useProject = () => {
     return Promise.resolve();
   };
 
-  const loadProjectWeb = async (projectId) => {
-    try {
-      await initializeDownload({id: projectId});
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-    }
-    catch (err) {
-      console.error('Error loading project', err);
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage('Error loading project!'));
-      dispatch(setIsErrorMessagesModalVisible(true));
-      dispatch(setLoadingStatus({view: 'home', bool: false}));
-      throw Error;
-    }
-  };
-
   const makeDatasetCurrent = (datasetId) => {
     const datasetName = datasets[datasetId].name;
     toast.show(`Selected Dataset has been switched to ${datasetName}!`, {type: 'warning', animationType: 'slide-in'});
@@ -292,7 +277,6 @@ const useProject = () => {
     getAllServerProjects: getAllServerProjects,
     getSelectedDatasetFromId: getSelectedDatasetFromId,
     initializeNewProject: initializeNewProject,
-    loadProjectWeb: loadProjectWeb,
     makeDatasetCurrent: makeDatasetCurrent,
     setSwitchValue: setSwitchValue,
     switchProject: switchProject,
