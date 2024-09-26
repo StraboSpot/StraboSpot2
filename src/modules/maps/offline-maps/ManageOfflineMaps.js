@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Animated, FlatList, Text, View} from 'react-native';
+import {Animated, FlatList, Platform, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -44,13 +44,13 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
     Animated.sequence([
       // increase size
       Animated.timing(animatedPulse, {
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         toValue: 2,
         duration: 750,
       }),
       // decrease size
       Animated.timing(animatedPulse, {
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         toValue: 1,
         duration: 500,
       }),

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Animated, Easing, ImageBackground, Pressable, View} from 'react-native';
+import {Animated, Easing, ImageBackground, Platform, Pressable, View} from 'react-native';
 
 import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import compassStyles from './compass.styles';
@@ -47,7 +47,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
           duration: 100,
           toValue: strikeAdjusted,
           easing: Easing.linear(),
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         },
       ).start();
 
@@ -80,7 +80,7 @@ const CompassFace = ({compassMeasurementTypes, compassData, grabMeasurements}) =
           duration: 100,
           toValue: trendAdjusted,
           easing: Easing.linear,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         },
       ).start();
 

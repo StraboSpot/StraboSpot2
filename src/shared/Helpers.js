@@ -1,7 +1,6 @@
 import {Animated, Dimensions, Easing, findNodeHandle, PixelRatio, Platform, UIManager} from 'react-native';
 
 import 'react-native-get-random-values';
-import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
 const platform = Platform.OS === 'ios' ? 'window' : 'screen';
@@ -148,7 +147,7 @@ export const handleKeyboardDidHide = (textInputAnimate) => {
     {
       toValue: 0,
       duration: 100,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     },
   ).start();
 };
@@ -179,7 +178,7 @@ export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) =
           {
             toValue: gap,
             duration: 100,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           },
         ).start();
       });
@@ -336,4 +335,5 @@ const notEmptyValidator = (val) => {
 };
 
 // Convert 1 to A, 2 to B, ... 27 to AA, 28 to AB, etc
-export const numToLetter = num => num <= 0 ? '' : numToLetter(Math.floor((num - 1) / 26)) + String.fromCharCode((num - 1) % 26 + 65);
+export const numToLetter = num => num <= 0 ? '' : numToLetter(Math.floor((num - 1) / 26)) + String.fromCharCode(
+  (num - 1) % 26 + 65);

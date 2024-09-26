@@ -1,4 +1,4 @@
-import {Animated} from 'react-native';
+import {Animated, Platform} from 'react-native';
 
 import {checkVersion} from 'react-native-check-version';
 import DeviceInfo from 'react-native-device-info';
@@ -8,13 +8,13 @@ const useVersionCheck = () => {
     Animated.sequence([
       // increase size
       Animated.timing(animatedPulse, {
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         toValue: 1,
         duration: 750,
       }),
       // decrease size
       Animated.timing(animatedPulse, {
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         toValue: 0.75,
         duration: 500,
       }),
