@@ -19,12 +19,12 @@ import homeStyles from './home.style';
 import HomeView from './HomeView';
 import HomeViewSmallScreen from './HomeViewSmallScreen';
 import {ErrorModal, InitialProjectLoadModal, StatusModal, WarningModal} from './modals';
+import useDeviceOrientation from './useDeviceOrientation';
 import useDevice from '../../services/useDevice';
 import useExport from '../../services/useExport';
 import {animateDrawer, isEmpty, isEqual} from '../../shared/Helpers';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
 import LoadingSpinner from '../../shared/ui/Loading';
-import useHome from '../home/useHome';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
@@ -42,11 +42,11 @@ const Home = ({navigation, route}) => {
 
   const toast = useToast();
   const {createProjectDirectories, openURL} = useDevice();
-  const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
-  const {getSelectedDatasetFromId} = useProject();
-  const {lockOrientation, unlockOrientation} = useHome();
-  const {setPointAtCurrentLocation} = useMapLocation();
+  const {lockOrientation, unlockOrientation} = useDeviceOrientation();
   const {zipAndExportProjectFolder} = useExport();
+  const {setPointAtCurrentLocation} = useMapLocation();
+  const {getSelectedDatasetFromId} = useProject();
+  const {getRootSpot, getSpotWithThisStratSection, handleSpotSelected} = useSpots();
 
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
