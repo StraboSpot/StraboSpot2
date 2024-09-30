@@ -8,7 +8,7 @@ import compassStyles from '../compass/compass.styles';
 import {Form, useForm} from '../form';
 
 const AddManualMeasurements = (props) => {
-  const {getSurvey} = useFormk();
+  const {getSurvey} = useForm();
 
   const [sliderValue, setSliderValue] = useState(6);
 
