@@ -6,6 +6,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useDevice from '../../../services/useDevice';
+import useDownload from '../../../services/useDownload';
 import useResetState from '../../../services/useResetState';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
@@ -20,6 +21,7 @@ import userStyles from '../../user/user.styles';
 import UserProfileAvatar from '../../user/UserProfileAvatar';
 import {setLoadingStatus, setStatusMessageModalTitle} from '../home.slice';
 import overlayStyles from '../overlays/overlay.styles';
+import Loading from '../../../shared/ui/Loading';
 
 const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   console.log('Rendering InitialProjectLoadModal...');
@@ -33,10 +35,14 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   const [importComplete, setImportComplete] = useState(false);
   const [importedProjectData, setImportedProjectData] = useState({});
   const [source, setSource] = useState('');
+  const [projectToLoad, setProjectToLoad] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
+  const [progressMessage, setProgressMessage] = useState('');
 
   const toast = useToast();
   const {getExternalProjectData} = useDevice();
+  const {initializeDownload, statusMessage} = useDownload();
   const {clearUser} = useResetState();
 
   const displayFirstName = () => {
@@ -121,10 +127,58 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
         setVisibleInitialSection('project');
         dispatch(setStatusMessageModalTitle('Start New Project'));
         break;
+      case 'downloadProject':
+        setVisibleInitialSection('downloadProject');
+        break;
       default:
         setVisibleInitialSection('none');
         dispatch(setStatusMessageModalTitle('Welcome to StraboSpot'));
     }
+  };
+
+  const selectProject = async (project) => {
+    console.log('SELECTED PROJECT', project);
+    setIsLoading(true)
+    setProjectToLoad(project);
+    setVisibleInitialSection('downloadProject');
+    await initializeDownload(project)
+    console.log('Project Loaded')
+    setIsLoading(false)
+  }
+
+  const renderDownloadProjectView = () => {
+    const projectName = projectToLoad.name || projectToLoad?.description?.project_name || 'Unknown';
+
+    return (
+      <View style={overlayStyles.overlayContent}>
+        <View style={{flexWrap: 'wrap', alignItems: 'center'}} >
+          <Text>Currently downloading:
+          </Text>
+          <Text style={commonStyles.textBold}> {projectName}</Text>
+        </View>
+        <View>
+          {/*<Loading isLoading={isLoading}/>*/}
+          <Text>{statusMessage}</Text>
+        </View>
+        <View>
+          <Text>Project:</Text>
+          <Text>Datasets:</Text>
+          <Text>Spots:</Text>
+        </View>
+        <Button
+          containerStyle={overlayStyles.button}
+          title={'Close'}
+          onPress={closeModal}
+          type={'clear'}
+        />
+        <Button
+          containerStyle={overlayStyles.button}
+          title={'Back'}
+          onPress={goBackToMain}
+          type={'clear'}
+        />
+      </View>
+    )
   };
 
   const renderListOfProjectsOnDevice = () => {
@@ -132,7 +186,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
       <>
         <View style={{alignContent: 'center', marginTop: 10}}>
           <Button
-            onPress={() => goBackToMain()}
+            onPress={goBackToMain}
             type={'clear'}
             icon={
               <Icon
@@ -148,7 +202,10 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
           />
         </View>
         <View style={{height: 400}}>
-          <ProjectList source={source}/>
+          <ProjectList
+            source={source}
+            selectProject={selectProject}
+          />
         </View>
       </>
     );
@@ -158,7 +215,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
     return (
       <View style={{alignContent: 'center', marginTop: 10}}>
         <Button
-          onPress={() => goBackToMain()}
+          onPress={goBackToMain}
           type={'clear'}
           icon={
             <Icon
@@ -174,7 +231,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
         />
         <Spacer/>
         <View style={{height: 400}}>
-          <ProjectList source={source}/>
+          <ProjectList source={source} selectProject={selectProject} />
         </View>
       </View>
     );
@@ -194,10 +251,14 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
         return (
           renderStartNewProject()
         );
+      case 'downloadProject':
+        return (
+          renderDownloadProjectView()
+        )
       case 'importData':
         return (
           <ImportProjectFromZip
-            goBackToMain={() => goBackToMain()}
+            goBackToMain={goBackToMain}
             importComplete={importComplete}
             importedProject={importedProjectData}
             setImportComplete={value => setImportComplete(value)}
@@ -216,7 +277,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
     return (
       <>
         <Button
-          onPress={() => goBackToMain()}
+          onPress={goBackToMain}
           type={'clear'}
           icon={
             <Icon

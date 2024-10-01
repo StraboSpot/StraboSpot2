@@ -107,12 +107,12 @@ const useServerRequests = () => {
     return request('GET', '/dataset/' + datasetId);
   };
 
-  const getDatasetSpots = (datasetId, encodedLogin) => {
-    return request('GET', '/datasetSpots/' + datasetId, encodedLogin);
+  const getDatasetSpots = (datasetId) => {
+    return request('GET', '/datasetSpots/' + datasetId, user.encoded_login);
   };
 
   const getDatasets = async (projectId, encodedLogin) => {
-    return request('GET', '/projectDatasets/' + projectId, encodedLogin);
+    return request('GET', '/projectDatasets/' + projectId, user.encoded_login);
   };
 
   const getDbUrl = () => {
@@ -193,8 +193,8 @@ const useServerRequests = () => {
     return baseUrl + '/profileimage';
   };
 
-  const getProject = async (projectId, encodedLogin) => {
-    return await request('GET', '/project/' + projectId, encodedLogin);
+  const getProject = async (projectId) => {
+    return await request('GET', '/project/' + projectId, user.encoded_login);
   };
 
   const getTilehostUrl = () => {

@@ -25,20 +25,24 @@ import {
   setLoadingStatus,
   setStatusMessageModalTitle,
 } from '../home/home.slice';
+import DownloadModal from './modals/DownloadModal';
 
-const ProjectList = ({source}) => {
+const ProjectList = ({source, selectProject}) => {
   const dispatch = useDispatch();
   const currentProject = useSelector(state => state.project.project);
   const endPoint = useSelector(state => state.connections.databaseEndpoint);
   const isInitialProjectLoadModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const isOnline = useSelector(state => state.connections.isOnline);
   const userData = useSelector(state => state.user);
+  const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isProjectOptionsModalVisible, setIsProjectOptionsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [projectsArr, setProjectsArr] = useState([]);
+  const [projectToDownload, setProjectToDownload] = useState({});
+  // const [isDownloadModalVisible, setIsDownloadModalVisible] = useState(false);
 
   const {initializeDownload} = useDownload();
   const {loadProjectFromDevice} = useImport();
@@ -108,8 +112,9 @@ const ProjectList = ({source}) => {
     else console.log('Project was not deleted.');
   };
 
+
   const initializeProjectOptions = async (project) => {
-    // const projectName;
+    selectProject(project);
     dispatch(setSelectedProject({project: project, source: source}));
     if (isInitialProjectLoadModalVisible || isEmpty(currentProject)) {
       dispatch(setSelectedProject({project: '', source: ''}));
@@ -173,7 +178,8 @@ const ProjectList = ({source}) => {
     return (
       <ListItem
         key={item.id}
-        onPress={() => initializeProjectOptions(item)}
+        // onPress={() => initializeProjectOptions(item)}
+        onPress={() => selectProject(item)}
         containerStyle={commonStyles.listItem}
         disabled={!isOnline.isConnected && source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}

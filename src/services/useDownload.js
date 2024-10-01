@@ -32,6 +32,7 @@ import {
 import {addedSpotsFromServer} from '../modules/spots/spots.slice';
 import {setUserData} from '../modules/user/userProfile.slice';
 import {isEmpty} from '../shared/Helpers';
+import {useState} from 'react';
 
 const useDownload = () => {
   let customMapsToSave = {};
@@ -44,6 +45,8 @@ const useDownload = () => {
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const project = useSelector(state => state.project.project);
+
+  const [statusMessage, setStatusMessage] = useState('');
 
   const {doesDeviceDirectoryExist, downloadAndSaveProfileImage, downloadImageAndSave} = useDevice();
   const {gatherNeededImages} = useImages();
@@ -73,18 +76,20 @@ const useDownload = () => {
   };
 
   // Download Project Properties
-  const downloadProject = async (selectedProject, encodedLoginScoped) => {
+  const downloadProject = async (selectedProject) => {
     try {
       console.log('Downloading Project Properties...');
-      dispatch(addedStatusMessage('Downloading Project Properties...'));
-      const projectResponse = await getProject(selectedProject.id, encodedLoginScoped);
+      // dispatch(addedStatusMessage('Downloading Project Properties...'));
+      setStatusMessage('Downloading Project Properties...');
+      const projectResponse = await getProject(selectedProject.id);
       if (!isEmpty(project)) clearProject();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);
       if (projectResponse.other_maps && !isEmpty(projectResponse.other_maps)) loadCustomMaps(customMaps);
-      dispatch(removedLastStatusMessage());
-      dispatch(addedStatusMessage('Finished Downloading Project Properties'));
+      // dispatch(removedLastStatusMessage());
+      // dispatch(addedStatusMessage('Finished Downloading Project Properties'));
+      setStatusMessage('Finished Downloading Project Properties');
     }
     catch (err) {
       console.error('Error Downloading Project Properties.', err);
@@ -175,25 +180,25 @@ const useDownload = () => {
     }
   };
 
-  const initializeDownload = async (selectedProject, encodedLoginScoped = encodedLogin) => {
-    const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
-    if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
-    dispatch(setStatusMessageModalTitle(projectName));
-    dispatch(clearedStatusMessages());
-    if (Platform.OS !== 'web') dispatch(setIsStatusMessagesModalVisible(true));
-    dispatch(setLoadingStatus({view: 'modal', bool: true}));
-    dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
+  const initializeDownload = async (selectedProject) => {
+    // const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
+    // if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
+    // dispatch(setStatusMessageModalTitle(projectName));
+    // dispatch(clearedStatusMessages());
+    // if (Platform.OS !== 'web') dispatch(setIsStatusMessagesModalVisible(true));
+    // dispatch(setLoadingStatus({view: 'modal', bool: true}));
+    // dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
     try {
-      await downloadProject(selectedProject, encodedLoginScoped);
-      await downloadDatasets(selectedProject, encodedLoginScoped);
+      await downloadProject(selectedProject);
+      // await downloadDatasets(selectedProject);
       console.log('Download Complete! Spots Downloaded!');
-      dispatch(addedStatusMessage('------------------'));
-      dispatch(addedSpotsFromServer(spotsToSave));
-      dispatch(addedDatasets(datasetsObjToSave));
-      dispatch(addedCustomMapsFromBackup(customMapsToSave));
-      dispatch(addedStatusMessage('Complete!'));
-      dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
-      dispatch(setLoadingStatus({view: 'modal', bool: false}));
+      // dispatch(addedStatusMessage('------------------'));
+      // dispatch(addedSpotsFromServer(spotsToSave));
+      // dispatch(addedDatasets(datasetsObjToSave));
+      // dispatch(addedCustomMapsFromBackup(customMapsToSave));
+      // dispatch(addedStatusMessage('Complete!'));
+      // dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS}));
+      // dispatch(setLoadingStatus({view: 'modal', bool: false}));
     }
     catch (err) {
       console.error('Error Initializing Download.', err);
@@ -289,6 +294,7 @@ const useDownload = () => {
     downloadUserProfile: downloadUserProfile,
     initializeDownload: initializeDownload,
     initializeDownloadImages: initializeDownloadImages,
+    statusMessage,
   };
 };
 
