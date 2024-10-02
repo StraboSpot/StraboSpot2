@@ -106,6 +106,7 @@ const HomeViewSmallScreen = forwardRef(({
       ) : (
         <Tab.Navigator
           screenOptions={{
+            tabBarIndicatorContainerStyle: {backgroundColor: themes.SECONDARY_BACKGROUND_COLOR},
             tabBarIndicatorStyle: {backgroundColor: themes.BLACK, height: 5},
             tabBarItemStyle: {padding: 0},
             tabBarLabelStyle: {fontSize: themes.PRIMARY_HEADER_TEXT_SIZE, color: themes.PRIMARY_TEXT_COLOR},
