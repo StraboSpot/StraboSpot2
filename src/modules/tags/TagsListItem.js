@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {useTags} from '.';
 import commonStyles from '../../shared/common.styles';
+import {toTitleCase} from '../../shared/Helpers';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
@@ -36,7 +37,7 @@ const TagsListItem = ({
         <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{getTagLabel(tag.type)}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Chevron/>
     </ListItem>

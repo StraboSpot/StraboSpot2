@@ -46,7 +46,6 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
     dispatch(setNotebookPageVisible(key));
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
-    else if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
     else if (page.modal_component) {
       const populatedPagesKeys = getPopulatedPagesKeys(spot);
       if (populatedPagesKeys.includes(page.key)) dispatch(setModalVisible({modal: null}));

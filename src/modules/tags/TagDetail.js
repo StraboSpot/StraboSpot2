@@ -78,8 +78,8 @@ const TagDetail = ({
   const renderTaggedFeaturesList = () => {
     return (
       <FlatList
-        listKey={2}
-        keyExtractor={item => item.toString()}
+        listKey={'features'}
+        keyExtractor={item => 'Feature' + item.id.toString()}
         data={getAllTaggedFeatures(selectedTag)}
         renderItem={({item}) => renderSpotFeatureItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
@@ -93,19 +93,19 @@ const TagDetail = ({
       ListHeaderComponent={
         <>
           <SectionDividerWithRightButton
-            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Geologic Unit Info' : 'Tag Info'}
             buttonTitle={'View/Edit'}
             onPress={setIsDetailModalVisible}
           />
           {selectedTag && renderTagInfo()}
           <SectionDividerWithRightButton
-            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots W/Geologic Unit' : 'Tagged Spots'}
             buttonTitle={'Add/Remove'}
             onPress={addRemoveSpots}
           />
           <FlatList
-            listKey={1}
-            keyExtractor={item => item.toString()}
+            listKey={'spots'}
+            keyExtractor={item => 'Spot' + item.toString()}
             data={selectedTag.spots && selectedTag.spots.filter(spotId => spots[spotId])}
             renderItem={({item}) => renderSpotItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}

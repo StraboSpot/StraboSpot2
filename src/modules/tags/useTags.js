@@ -1,12 +1,11 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {tagsStyles} from './index';
-import {deepFindFeatureById, getNewId, isEmpty, truncateText} from '../../shared/Helpers';
-import {Form, useForm} from '../form';
+import {deepFindFeatureById, isEmpty, toTitleCase, truncateText} from '../../shared/Helpers';
+import {useForm} from '../form';
 import MeasurementLabel from '../measurements/MeasurementLabel';
 import OtherFeatureLabel from '../other-features/OtherFeatureLabel';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
@@ -16,7 +15,6 @@ import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';
 
 const useTags = () => {
   const dispatch = useDispatch();
-  const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectTags = useSelector(state => state.project.project?.tags) || [];
@@ -25,10 +23,7 @@ const useTags = () => {
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);
 
-  const formRef = useRef(null);
-  const {getLabel, showErrors, validateForm} = useForm();
-
-  const formName = ['project', 'tags'];
+  const {getLabel} = useForm();
 
   // link unlink given tag and spot feature.
   const addRemoveSpotFeatureFromTag = (tag, feature, spotId) => {
@@ -130,7 +125,6 @@ const useTags = () => {
     dispatch(updatedProject({field: 'tags', value: updatedTags}));
     dispatch(setSelectedTag({}));
   };
-
 
   const filterTagsByTagType = (tags, tagType) => {
     if (isEmpty(tagType)) return tags;
@@ -237,24 +231,9 @@ const useTags = () => {
   };
 
   const getTagLabel = (key) => {
+    const formName = key && key === PAGE_KEYS.GEOLOGIC_UNITS ? ['project', 'geologic_unit'] : ['project', 'tags'];
     if (key) return getLabel(key, formName);
     return 'No Type Specified';
-  };
-
-  const renderTagForm = (type) => {
-    return (
-      <View style={{flex: 1}}>
-        <Formik
-          innerRef={formRef}
-          onSubmit={() => console.log('Submitting form...')}
-          validate={values => validateForm({formName: formName, values: values})}
-          component={formProps => Form({formName: formName, ...formProps})}
-          initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
-          initialStatus={{formName: formName}}
-          enableReinitialize={true}
-        />
-      </View>
-    );
   };
 
   const renderTagInfo = () => {
@@ -271,32 +250,11 @@ const useTags = () => {
     const notes = selectedTag.notes ? truncateText(selectedTag.notes, 100) : undefined;
     return (
       <View style={tagsStyles.sectionContainer}>
-        {<Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
+        {<Text style={tagsStyles.listText}>{toTitleCase(type)}{subType && ' - ' + subType.toUpperCase()}</Text>}
         {!isEmpty(rockUnitString) && <Text style={tagsStyles.listText}>{rockUnitString}</Text>}
         {notes && <Text style={tagsStyles.listText}>Notes: {notes}</Text>}
       </View>
     );
-  };
-
-  const saveForm = async () => {
-    try {
-      await formRef.current.submitForm();
-      const formValues = showErrors(formRef.current);
-      console.log('Saving tag data to Project ...');
-      console.log('Form values', formValues);
-      let updatedTag = formValues;
-      if (!updatedTag.id) updatedTag.id = getNewId();
-      if (addTagToSelectedSpot) {
-        if (!updatedTag.spots) updatedTag.spots = [];
-        updatedTag.spots.push(selectedSpot.properties.id);
-      }
-      saveTag(updatedTag);
-      return Promise.resolve();
-    }
-    catch (e) {
-      console.log('Error submitting form', e);
-      return Promise.reject();
-    }
   };
 
   const saveTag = (tagToSave) => {
@@ -361,9 +319,7 @@ const useTags = () => {
     getTagSpotsCount: getTagSpotsCount,
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,
-    renderTagForm: renderTagForm,
     renderTagInfo: renderTagInfo,
-    saveForm: saveForm,
     saveTag: saveTag,
     setFeaturesSelectedForMultiTagging: setFeaturesSelectedForMultiTagging,
     tagSpotExists: tagSpotExists,

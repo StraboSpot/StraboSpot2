@@ -7,7 +7,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import AddButton from '../../shared/ui/AddButton';
 import SaveButton from '../../shared/ui/ButtonRounded';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -16,9 +16,9 @@ import modalStyle from '../../shared/ui/modal/modal.style';
 import {SelectInputField} from '../form';
 import {setLoadingStatus, setModalVisible} from '../home/home.slice';
 import useMapLocation from '../maps/useMapLocation';
-import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
+import {MODAL_KEYS, PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
-import {addedTagToSelectedSpot, setSelectedTag} from '../project/projects.slice';
+import {addedTagToSelectedSpot} from '../project/projects.slice';
 import {TagDetailModal, useTags} from '../tags';
 
 const TagsModal = ({
@@ -47,10 +47,12 @@ const TagsModal = ({
 
   const pageVisible = pagesStack.slice(-1)[0];
 
-  const addTag = () => {
-    dispatch(setSelectedTag({}));
-    setIsDetailModalVisible(true);
-  };
+  const pageKey = pageVisible === PAGE_KEYS.GEOLOGIC_UNITS
+  || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS ? PAGE_KEYS.GEOLOGIC_UNITS : PAGE_KEYS.TAGS;
+  const page = PRIMARY_PAGES.find(p => p.key === pageKey);
+  const label = page.label;
+
+  const addTag = () => setIsDetailModalVisible(true);
 
   const checkTags = (tag) => {
     const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
@@ -163,7 +165,7 @@ const TagsModal = ({
           <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
         </ListItem.Content>
         <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{getTagLabel(tag.type)}</ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
         </ListItem.Content>
         {(!isFeatureLevelTagging) && (
           <ListItem.CheckBox
@@ -200,35 +202,30 @@ const TagsModal = ({
 
   return (
     <>
-      {modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS && (
+      <View style={{padding: 20}}>
         <View style={modalStyle.textContainer}>
           <AddButton
-            title={'Create New Tag'}
+            title={`Create New ${toTitleCase(label).slice(0, -1)}`}
             type={'outline'}
             onPress={addTag}
           />
-
         </View>
-      )}
-      <View style={modalStyle.textContainer}>
-        {tags && !isEmpty(tags) ? <Text style={modalStyle.textStyle}>Check all tags that apply</Text>
-          : <Text style={modalStyle.textStyle}>No Tags</Text>}
+        <View style={modalStyle.textContainer}>
+          {tags && !isEmpty(tags) ? <Text style={modalStyle.textStyle}>Check all {label.toLowerCase()} that apply</Text>
+            : <Text style={modalStyle.textStyle}>No {label}</Text>}
+        </View>
+        {renderSpotTagsList()}
+        {(!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS)
+          && (
+            <SaveButton
+              buttonStyle={{backgroundColor: 'red'}}
+              title={`Save ${label}`}
+              onPress={() => save()}
+              disabled={isEmpty(checkedTagsTemp)}
+            />
+          )}
       </View>
-      {renderSpotTagsList()}
-      {(!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS)
-        && (
-          <SaveButton
-            buttonStyle={{backgroundColor: 'red'}}
-            title={'Save tag(s)'}
-            onPress={() => save()}
-            disabled={isEmpty(checkedTagsTemp)}
-          />
-        )}
-      <TagDetailModal
-        isVisible={isDetailModalVisible}
-        closeModal={closeTagDetailModal}
-        type={modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS && PAGE_KEYS.GEOLOGIC_UNITS}
-      />
+      {isDetailModalVisible && <TagDetailModal closeModal={closeTagDetailModal}/>}
     </>
   );
 };

@@ -5,11 +5,11 @@ import {ButtonGroup, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import AddButton from '../../shared/ui/AddButton';
 import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
-import {PAGE_KEYS} from '../page/page.constants';
+import {PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, TagsList} from '../tags';
 
@@ -23,15 +23,24 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const pageKey = type === PAGE_KEYS.GEOLOGIC_UNITS ? PAGE_KEYS.GEOLOGIC_UNITS : PAGE_KEYS.TAGS;
+  const page = PRIMARY_PAGES.find(p => p.key === pageKey);
+  const label = page.label;
+
   const addTag = () => {
-    dispatch(setSelectedTag({}));
+    const newTag = type === PAGE_KEYS.GEOLOGIC_UNITS ? {type: PAGE_KEYS.GEOLOGIC_UNITS} : {type: 'concept'};
+    dispatch(setSelectedTag(newTag));
     setIsDetailModalVisible(true);
   };
+
+  const closeDetailModal = () => setIsDetailModalVisible(false);
 
   const getButtonTitle = () => {
     if (type === PAGE_KEYS.GEOLOGIC_UNITS) return ['Alphabetical', 'Map Extent'];
     return ['Categorized', 'Map Extent'];
   };
+
+  const handleContinuousTaggingSwitched = (value) => dispatch(setUseContinuousTagging(value));
 
   return (
     <View style={{flex: 1}}>
@@ -48,7 +57,7 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
           />
           {selectedIndex === 1 && (
             <UpdateSpotsInMapExtentButton
-              title={'Update Tags in Map Extent'}
+              title={`Update ${label} in Map Extent`}
               updateSpotsInMapExtent={updateSpotsInMapExtent}
             />
           )}
@@ -56,24 +65,17 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
       )}
       <AddButton
         onPress={addTag}
-        title={'Create New Tag'}
+        title={`Create New ${toTitleCase(label).slice(0, -1)}`}
         type={'outline'}
       />
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content>
-          <ListItem.Title
-            style={commonStyles.listItemTitle}>{'Continuous Tagging'}
-          </ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{`Continuous ${label}`}</ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={value => dispatch(setUseContinuousTagging(value))}
-                value={useContinuousTagging}/>
+        <Switch onValueChange={handleContinuousTaggingSwitched} value={useContinuousTagging}/>
       </ListItem>
       <TagsList type={type} selectedIndex={selectedIndex}/>
-      <TagDetailModal
-        isVisible={isDetailModalVisible}
-        closeModal={() => setIsDetailModalVisible(false)}
-        type={type}
-      />
+      {isDetailModalVisible && <TagDetailModal closeModal={closeDetailModal}/>}
     </View>
   );
 };

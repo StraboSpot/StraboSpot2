@@ -1,28 +1,49 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {FlatList, useWindowDimensions, View} from 'react-native';
 
+import {Formik} from 'formik';
 import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {isEmpty} from '../../shared/Helpers';
+import {getNewId, isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
+import {Form, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {useTags} from '../tags';
 
-const TagDetailModal = ({
-                          closeModal,
-                          isVisible,
-                          type,
-                        }) => {
+const TagDetailModal = ({closeModal}) => {
   const {height} = useWindowDimensions();
 
+  const formRef = useRef(null);
+
   const dispatch = useDispatch();
+  const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
+  const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedTag = useSelector(state => state.project.selectedTag);
-  const {deleteTag, renderTagForm, saveForm} = useTags();
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const {deleteTag, saveTag} = useTags();
+  const {validateForm, showErrors} = useForm();
+
+  let formName = ['project', 'tags'];
+  let initialValues;
+  if (modalVisible) {
+    let tagType = 'concept';
+    if (modalVisible === MODAL_KEYS.NOTEBOOK.GEOLOGIC_UNITS || modalVisible === MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS) {
+      tagType = PAGE_KEYS.GEOLOGIC_UNITS;
+      formName = ['project', 'geologic_unit'];
+    }
+    initialValues = {type: tagType};
+  }
+  else if (!isEmpty(selectedTag)) {
+    if (selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS) formName = ['project', 'geologic_unit'];
+    initialValues = selectedTag;
+  }
+  else console.log('Tag Problem. No modal and no selected tag');
 
   const confirmDeleteTag = () => {
     alert(
@@ -60,18 +81,29 @@ const TagDetailModal = ({
     );
   };
 
-  const saveFormAndClose = () => {
-    saveForm().then(() => {
+  const saveFormAndClose = async () => {
+    try {
+      await formRef.current.submitForm();
+      const formValues = showErrors(formRef.current);
+      console.log('Saving tag data to Project ...', formValues);
+      let updatedTag = formValues;
+      if (!updatedTag.id) updatedTag.id = getNewId();
+      if (addTagToSelectedSpot) {
+        if (!updatedTag.spots) updatedTag.spots = [];
+        updatedTag.spots.push(selectedSpot.properties.id);
+      }
+      saveTag(updatedTag);
       console.log('Finished saving tag data');
       closeModal();
-    }, () => {
-      console.log('Error saving tag data');
-    });
+    }
+    catch (e) {
+      console.log('Error saving tag data', e);
+    }
   };
 
   return (
     <Overlay
-      isVisible={isVisible}
+      isVisible
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen
         : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
       fullScreen={SMALL_SCREEN}
@@ -82,8 +114,18 @@ const TagDetailModal = ({
         <FlatList
           ListHeaderComponent={
             <>
-              {renderTagForm(type)}
-              {!isEmpty(selectedTag) && (
+              <View style={{flex: 1}}>
+                <Formik
+                  innerRef={formRef}
+                  onSubmit={() => console.log('Submitting form...')}
+                  validate={values => validateForm({formName: formName, values: values})}
+                  component={formProps => Form({formName: formName, ...formProps})}
+                  initialValues={initialValues}
+                  initialStatus={{formName: formName}}
+                  enableReinitialize={true}
+                />
+              </View>
+              {isEmpty(modalVisible) && (
                 <Button
                   titleStyle={{color: themes.RED}}
                   title={'Delete Tag'}

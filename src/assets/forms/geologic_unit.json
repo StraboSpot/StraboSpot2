@@ -1,0 +1,2128 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "text",
+      "name": "name",
+      "label": "Name",
+      "required": "true"
+    },
+    {
+      "type": "text",
+      "name": "unit_label_abbreviation",
+      "label": "Unit Label (abbreviation)",
+      "required": "true"
+    },
+    {
+      "type": "text",
+      "name": "map_unit_name",
+      "label": "Unit or Formation Name",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "member_name",
+      "label": "Member Name",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "submember_name",
+      "label": "Submember Name",
+      "required": "false",
+      "relevant": "${member_name} != ''"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_unit_type",
+      "label": "Unit Type",
+      "required": "false"
+    },
+    {
+      "type": "select_one rm0pv08",
+      "name": "rock_type",
+      "label": "Rock Type",
+      "hint": "Type: sedimentary, igneous, metamorphic, or sediment",
+      "required": "false",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_one ej6zw88",
+      "name": "sediment_type",
+      "label": "Sediment Type",
+      "hint": "Specific type of sediment",
+      "required": "false",
+      "relevant": "${rock_type} = 'sediment'",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "text",
+      "name": "other_sediment_type",
+      "label": "Other Sediment Type",
+      "required": "true",
+      "relevant": "${sediment_type} = 'other'"
+    },
+    {
+      "type": "select_one bt4yo56",
+      "name": "sedimentary_rock_type",
+      "label": "Sedimentary Rock Type",
+      "hint": "Specific type of sedimentary rock",
+      "required": "false",
+      "relevant": "${rock_type} = 'sedimentary'",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "text",
+      "name": "other_sedimentary_rock_type",
+      "label": "Other Sedimentary Rock Type",
+      "required": "true",
+      "relevant": "${sedimentary_rock_type} = 'other'"
+    },
+    {
+      "type": "select_one nm4yc64",
+      "name": "igneous_rock_class",
+      "label": "Igneous Rock Class",
+      "hint": "Volcanic, hypabyssal or plutonic",
+      "required": "false",
+      "relevant": "${rock_type} = 'igneous'",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_one gw1hp47",
+      "name": "volcanic_rock_type",
+      "label": "Volcanic Rock Type",
+      "hint": "Specific volcanic rock type",
+      "required": "false",
+      "relevant": "${igneous_rock_class} = 'volcanic' or ${igneous_rock_class} = 'hypabyssal'",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "text",
+      "name": "other_volcanic_rock_type",
+      "label": "Other Volcanic Rock Type",
+      "required": "true",
+      "relevant": "${volcanic_rock_type} = 'other'"
+    },
+    {
+      "type": "select_one pu9hj08",
+      "name": "plutonic_rock_types",
+      "label": "Plutonic Rock Types",
+      "hint": "Specific plutonic rock type",
+      "required": "false",
+      "relevant": "${igneous_rock_class} = 'plutonic'",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "text",
+      "name": "other_plutonic_rock_type",
+      "label": "Other Plutonic Rock Type",
+      "required": "true",
+      "relevant": "${plutonic_rock_types} = 'other'"
+    },
+    {
+      "type": "select_one yg0ew35",
+      "name": "metamorphic_rock_types",
+      "label": "Metamorphic Rock Types",
+      "hint": "Specific metamorphic rock type",
+      "required": "false",
+      "relevant": "${rock_type} = 'metamorphic'"
+    },
+    {
+      "type": "text",
+      "name": "other_metamorphic_rock_type",
+      "label": "Other Metamorphic Rock Type",
+      "required": "true",
+      "relevant": "${metamorphic_rock_types} = 'other'"
+    },
+    {
+      "type": "select_one ak6ci54",
+      "name": "metamorphic_grade",
+      "label": "Metamorphic Grade",
+      "hint": "Specific metamorphic grade",
+      "required": "false",
+      "relevant": "${rock_type} = 'metamorphic'"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "begin_group",
+      "name": "group_geologic_age",
+      "label": "Geologic Age",
+      "required": "false"
+    },
+    {
+      "type": "select_multiple fy5ep25",
+      "name": "eon",
+      "label": "Eon",
+      "hint": "Specific geologic time eon",
+      "required": "false",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple dy8di07",
+      "name": "era_phanerozoic",
+      "label": "Era Phanerozoic",
+      "required": "false",
+      "relevant": "selected(${eon}, 'phanerozoic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu04",
+      "name": "period_cenozoic",
+      "label": "Period Cenozoic",
+      "hint": "Specific geologic time period",
+      "required": "false",
+      "relevant": "selected(${era_phanerozoic}, 'cenozoic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu05",
+      "name": "epoch_quaternary",
+      "label": "Epoch Quaternary",
+      "required": "false",
+      "relevant": "selected(${period_cenozoic}, 'quaternary')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh57",
+      "name": "age_pleistocene",
+      "label": "Age Pleistocene",
+      "required": "false",
+      "relevant": "selected(${epoch_quaternary}, 'pleistocene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu11",
+      "name": "epoch_neogene",
+      "label": "Epoch Neogene",
+      "required": "false",
+      "relevant": "selected(${period_cenozoic}, 'neogene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh62",
+      "name": "age_pliocene",
+      "label": "Age Pliocene",
+      "required": "false",
+      "relevant": "selected(${epoch_neogene}, 'pliocene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh58",
+      "name": "age_miocene",
+      "label": "Age Miocene",
+      "required": "false",
+      "relevant": "selected(${epoch_neogene}, 'miocene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu12",
+      "name": "epoch_paleogene",
+      "label": "Epoch Paleogene",
+      "required": "false",
+      "relevant": "selected(${period_cenozoic}, 'paleogene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh59",
+      "name": "age_oligocene",
+      "label": "Age Oligocene",
+      "required": "false",
+      "relevant": "selected(${epoch_paleogene}, 'oligocene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh60",
+      "name": "age_eocene",
+      "label": "Age Eocene",
+      "required": "false",
+      "relevant": "selected(${epoch_paleogene}, 'eocene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh61",
+      "name": "age_paleocene",
+      "label": "Age Paleocene",
+      "required": "false",
+      "relevant": "selected(${epoch_paleogene}, 'paleocene')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu08",
+      "name": "epoch_tertiary",
+      "label": "Epoch Teritary",
+      "required": "false",
+      "relevant": "selected(${period_cenozoic}, 'tertiary')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh51",
+      "name": "period_mesozoic",
+      "label": "Period Mesozoic",
+      "hint": "Specific geologic time period",
+      "required": "false",
+      "relevant": "selected(${era_phanerozoic}, 'mesozoic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh52",
+      "name": "period_paleozoic",
+      "label": "Period Paleozoic",
+      "hint": "Specific geologic time period",
+      "required": "false",
+      "relevant": "selected(${era_phanerozoic}, 'paleozoic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple oa8wg40",
+      "name": "era_proterozoic",
+      "label": "Era Proterozoic",
+      "required": "false",
+      "relevant": "selected(${eon}, 'proterozoic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh53",
+      "name": "period_neoproterozoic",
+      "label": "Period Neoproterozoic",
+      "hint": "Specific geologic time period",
+      "required": "false",
+      "relevant": "selected(${era_proterozoic}, 'neoproterozoic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh54",
+      "name": "period_mesoproterozoic",
+      "label": "Period Mesoproterozoic",
+      "hint": "Specific geologic time period",
+      "required": "false",
+      "relevant": "selected(${era_proterozoic}, 'mesoproterozoi')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh55",
+      "name": "period_paleoproterozoic",
+      "label": "Period Paleoproterozoic",
+      "hint": "Specific geologic time period",
+      "required": "false",
+      "relevant": "selected(${era_proterozoic}, 'paleoproterozo')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple kb2cc45",
+      "name": "era_archean",
+      "label": "Era Archean",
+      "required": "false",
+      "relevant": "selected(${eon}, 'archean')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh82",
+      "name": "age_cretaceous",
+      "label": "Age Cretaceous",
+      "required": "false",
+      "relevant": "selected(${period_mesozoic}, 'cretaceous')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh83",
+      "name": "age_jurassic",
+      "label": "Age Jurassic",
+      "required": "false",
+      "relevant": "selected(${period_mesozoic}, 'jurassic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh84",
+      "name": "age_triassic",
+      "label": "Age Triassic",
+      "required": "false",
+      "relevant": "selected(${period_mesozoic}, 'triassic')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh85",
+      "name": "age_permian",
+      "label": "Age Permian",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'permian')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu86",
+      "name": "age_carboniferous",
+      "label": "Age Carboniferous",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'carboniferous')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu87",
+      "name": "age_pennsylvania",
+      "label": "Age Pennsylvania",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'pennsylvanian')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple xw5wu88",
+      "name": "age_mississippian",
+      "label": "Age Mississippian",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'mississippian')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh87",
+      "name": "age_devonian",
+      "label": "Age Devonian",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'devonian')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh88",
+      "name": "age_sliurian",
+      "label": "Age Siluran",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'silurian')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh89",
+      "name": "age_ordovician",
+      "label": "Age Ordovician",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'ordovician')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple lb3hh90",
+      "name": "age_cambrian",
+      "label": "Age Cambrian",
+      "required": "false",
+      "relevant": "selected(${period_paleozoic}, 'cambrian')",
+      "appearance": "horizontal"
+    },
+    {
+      "type": "select_multiple ns6qv42",
+      "name": "age_modifier",
+      "label": "Age Modifier",
+      "hint": "Age modifier to era, period or epoch",
+      "required": "false",
+      "appearance": "horizontal-compact"
+    },
+    {
+      "type": "end_group"
+    },
+    {
+      "type": "decimal",
+      "name": "absolute_age_of_geologic_unit",
+      "label": "Absolute Age of Geologic Unit (Ma)",
+      "required": "false",
+      "constraint": ". > 0",
+      "constraint_message": "Value must be greater than 0."
+    },
+    {
+      "type": "decimal",
+      "name": "age_uncertainty",
+      "label": "Age Uncertainty (Ma)",
+      "required": "false",
+      "constraint": ". > 0",
+      "constraint_message": "Value must be greater than 0."
+    },
+    {
+      "type": "decimal",
+      "name": "max_absolute_age_of_geol_unit",
+      "label": "Maximum Absolute Age of Geologic Unit (Ma)",
+      "required": "false",
+      "relevant": "${absolute_age_of_geologic_unit} = ''",
+      "constraint": ". > 0",
+      "constraint_message": "Value must be greater than 0."
+    },
+    {
+      "type": "decimal",
+      "name": "min_absolute_age_of_geol_unit",
+      "label": "Minimum Absolute Age of Geologic Unit (Ma)",
+      "required": "false",
+      "relevant": "${absolute_age_of_geologic_unit} = ''",
+      "constraint": ". > 0",
+      "constraint_message": "Value must be greater than 0."
+    },
+    {
+      "type": "text",
+      "name": "other_metamorphic_grade",
+      "label": "Other Metamorphic Grade",
+      "hint": "metamorphic grade not given in list",
+      "required": "false",
+      "relevant": "${metamorphic_grade} = 'other'"
+    },
+    {
+      "type": "text",
+      "name": "description",
+      "label": "Description",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": "false",
+      "appearance": "multiline"
+    },
+    {
+      "type": "calculate",
+      "name": "__version__",
+      "required": "false",
+      "calculation": "'vrFimdkpcJQXgiaWX9aEzu'"
+    },
+    {
+      "type": "calculate",
+      "name": "_version_",
+      "required": "false",
+      "calculation": "'vpyvbaLBTxvTvPJzWJjr5F'",
+      "$given_name": "__version__"
+    },
+    {
+      "type": "calculate",
+      "name": "_version__001",
+      "calculation": "'vpTmckk24xy7PMJXheYdjg'",
+      "$given_name": "__version__"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "rm0pv08",
+      "name": "igneous",
+      "label": "igneous",
+      "order": "0"
+    },
+    {
+      "list_name": "rm0pv08",
+      "name": "metamorphic",
+      "label": "metamorphic",
+      "order": "1"
+    },
+    {
+      "list_name": "rm0pv08",
+      "name": "sedimentary",
+      "label": "sedimentary",
+      "order": "2"
+    },
+    {
+      "list_name": "rm0pv08",
+      "name": "sediment",
+      "label": "sediment",
+      "order": "3"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "alluvium",
+      "label": "alluvium",
+      "order": "0"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "older_alluvium",
+      "label": "older alluvium",
+      "order": "1"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "colluvium",
+      "label": "colluvium",
+      "order": "2"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "lake_deposit",
+      "label": "lake deposit",
+      "order": "3"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "eolian",
+      "label": "eolian",
+      "order": "4"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "talus",
+      "label": "talus",
+      "order": "5"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "breccia",
+      "label": "breccia",
+      "order": "6"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "gravel",
+      "label": "gravel",
+      "order": "7"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "sand",
+      "label": "sand",
+      "order": "8"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "silt",
+      "label": "silt",
+      "order": "9"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "clay",
+      "label": "clay",
+      "order": "10"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "moraine",
+      "label": "moraine",
+      "order": "11"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "till",
+      "label": "till",
+      "order": "12"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "loess",
+      "label": "loess",
+      "order": "13"
+    },
+    {
+      "list_name": "ej6zw88",
+      "name": "other",
+      "label": "other",
+      "order": "14"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "sandstone",
+      "label": "sandstone",
+      "order": "0"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "shale",
+      "label": "shale",
+      "order": "1"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "siltstone",
+      "label": "siltstone",
+      "order": "2"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "mudstone",
+      "label": "mudstone",
+      "order": "3"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "claystone",
+      "label": "claystone",
+      "order": "4"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "conglomerate",
+      "label": "conglomerate",
+      "order": "5"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "breccia",
+      "label": "breccia",
+      "order": "6"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "limestone",
+      "label": "limestone",
+      "order": "7"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "dolostone",
+      "label": "dolostone",
+      "order": "8"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "chert",
+      "label": "chert",
+      "order": "9"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "travertine",
+      "label": "travertine",
+      "order": "10"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "evaporite",
+      "label": "evaporite",
+      "order": "11"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "coal",
+      "label": "coal",
+      "order": "12"
+    },
+    {
+      "list_name": "bt4yo56",
+      "name": "other",
+      "label": "other",
+      "order": "13"
+    },
+    {
+      "list_name": "nm4yc64",
+      "name": "volcanic",
+      "label": "volcanic"
+    },
+    {
+      "list_name": "nm4yc64",
+      "name": "plutonic",
+      "label": "plutonic"
+    },
+    {
+      "list_name": "nm4yc64",
+      "name": "hypabyssal",
+      "label": "hypabyssal"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "basalt",
+      "label": "basalt",
+      "order": "0"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "basaltic_andes",
+      "label": "basaltic-andesite",
+      "order": "1"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "andesite",
+      "label": "andesite",
+      "order": "2"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "latite",
+      "label": "latite",
+      "order": "3"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "dacite",
+      "label": "dacite",
+      "order": "4"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "rhyolite",
+      "label": "rhyolite",
+      "order": "5"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "tuff",
+      "label": "tuff",
+      "order": "6"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "ash_fall_tuff",
+      "label": "ash-fall tuff",
+      "order": "7"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "ash_flow_tuff",
+      "label": "ash-flow tuff",
+      "order": "8"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "vitrophyre",
+      "label": "vitrophyre",
+      "order": "10"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "trachyte",
+      "label": "trachyte",
+      "order": "11"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "trachyandesite",
+      "label": "trachyandesite",
+      "order": "12"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "tuff_breccia",
+      "label": "tuff breccia",
+      "order": "13"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "lapilli_tuff",
+      "label": "lapilli tuff",
+      "order": "14"
+    },
+    {
+      "list_name": "gw1hp47",
+      "name": "other",
+      "label": "other",
+      "order": "15"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "granite",
+      "label": "granite",
+      "order": "0"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "alkali_granite",
+      "label": "alkali feldspar granite",
+      "order": "1"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "quartz_monz",
+      "label": "quartz monzonite",
+      "order": "2"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "syenite",
+      "label": "syenite",
+      "order": "3"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "granodiorite",
+      "label": "granodiorite",
+      "order": "4"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "monzonite",
+      "label": "monzonite",
+      "order": "5"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "tonalite",
+      "label": "tonalite",
+      "order": "6"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "diorite",
+      "label": "diorite",
+      "order": "7"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "gabbro",
+      "label": "gabbro",
+      "order": "9"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "anorthosite",
+      "label": "anorthosite",
+      "order": "10"
+    },
+    {
+      "list_name": "pu9hj08",
+      "name": "other",
+      "label": "other",
+      "order": "15"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "slate",
+      "label": "slate",
+      "order": "0"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "phyllite",
+      "label": "phyllite",
+      "order": "1"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "schist",
+      "label": "schist",
+      "order": "2"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "gneiss",
+      "label": "gneiss",
+      "order": "3"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "migmatite",
+      "label": "migmatite",
+      "order": "4"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "marble",
+      "label": "marble",
+      "order": "5"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "calc_silicate",
+      "label": "calc-silicate",
+      "order": "6"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "calc_schist",
+      "label": "calc schist",
+      "order": "7"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "greenschist",
+      "label": "greenschist",
+      "order": "8"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "amphibolite",
+      "label": "amphibolite",
+      "order": "9"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "blueschist",
+      "label": "blueschist",
+      "order": "10"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "eclogite",
+      "label": "eclogite",
+      "order": "11"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "hornfels",
+      "label": "hornfels",
+      "order": "12"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "granofels",
+      "label": "granofels",
+      "order": "13"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "skarn",
+      "label": "skarn",
+      "order": "14"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "quartzite",
+      "label": "quartzite",
+      "order": "15"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "serpentinite",
+      "label": "serpentinite",
+      "order": "16"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "jadeite",
+      "label": "jadeite",
+      "order": "17"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "glaucophanite",
+      "label": "glaucophanite",
+      "order": "18"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "garnetite",
+      "label": "garnetite",
+      "order": "19"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "pyroxenite",
+      "label": "pyroxenite",
+      "order": "20"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "cordierite-ant",
+      "label": "cordierite-anthophyllite",
+      "order": "21"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "cataclasite",
+      "label": "cataclasite",
+      "order": "22"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "mylonite",
+      "label": "mylonite",
+      "order": "23"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metapelite",
+      "label": "metapelite",
+      "order": "24"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metaarkose",
+      "label": "metaarkose",
+      "order": "25"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metagreywacke",
+      "label": "metagreywacke",
+      "order": "26"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metabasite",
+      "label": "metabasite",
+      "order": "27"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metacarbonate",
+      "label": "metacarbonate",
+      "order": "28"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metagranite",
+      "label": "metagranite",
+      "order": "29"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metaigneous",
+      "label": "metaigneous",
+      "order": "30"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metavolcanic",
+      "label": "metavolcanic",
+      "order": "31"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "blackwall",
+      "label": "blackwall",
+      "order": "32"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "metasomatite",
+      "label": "metasomatite",
+      "order": "33"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "meta_ultramafi",
+      "label": "meta-ultramafic",
+      "order": "34"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "meta-iron_form",
+      "label": "meta-iron formation",
+      "order": "35"
+    },
+    {
+      "list_name": "yg0ew35",
+      "name": "other",
+      "label": "other",
+      "order": "36"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "zeolite_facies",
+      "label": "zeolite facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "prehnite-pumpe",
+      "label": "prehnite-pumpellyite facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "greenschist_fa",
+      "label": "greenschist facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "amphibolite_fa",
+      "label": "amphibolite facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "epidote_amphib",
+      "label": "epidote amphibolite facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "granulite_faci",
+      "label": "granulite facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "blueschist_fac",
+      "label": "blueschist facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "eclogite_facie",
+      "label": "eclogite facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "hornfels_facie",
+      "label": "hornfels facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "chlorite_zone",
+      "label": "chlorite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "biotite_zone",
+      "label": "biotite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "garnet_zone",
+      "label": "garnet zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "staurolite_zon",
+      "label": "staurolite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "staurolite-kya",
+      "label": "staurolite-kyanite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "kyanite_zone",
+      "label": "kyanite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "sillimanite_zo",
+      "label": "sillimanite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "andalusite_zon",
+      "label": "andalusite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "sillimanite-k",
+      "label": "sillimanite-K feldspar zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "garnet-cordier",
+      "label": "garnet-cordierite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "migmatite_zone",
+      "label": "migmatite zone"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "ultra_high_pre",
+      "label": "ultra high pressure facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "ultra_high_tem",
+      "label": "ultra high temperature facies"
+    },
+    {
+      "list_name": "ak6ci54",
+      "name": "other",
+      "label": "other"
+    },
+    {
+      "list_name": "fy5ep25",
+      "name": "phanerozoic",
+      "label": "Phanerozoic"
+    },
+    {
+      "list_name": "fy5ep25",
+      "name": "proterozoic",
+      "label": "Proterozoic"
+    },
+    {
+      "list_name": "fy5ep25",
+      "name": "archean",
+      "label": "Archean"
+    },
+    {
+      "list_name": "fy5ep25",
+      "name": "hadean",
+      "label": "Hadean"
+    },
+    {
+      "list_name": "dy8di07",
+      "name": "cenozoic",
+      "label": "Cenozoic"
+    },
+    {
+      "list_name": "dy8di07",
+      "name": "mesozoic",
+      "label": "Mesozoic"
+    },
+    {
+      "list_name": "dy8di07",
+      "name": "paleozoic",
+      "label": "Paleozoic"
+    },
+    {
+      "list_name": "xw5wu04",
+      "name": "quaternary",
+      "label": "Quaternary",
+      "order": "0"
+    },
+    {
+      "list_name": "xw5wu04",
+      "name": "tertiary",
+      "label": "Tertiary",
+      "order": "1"
+    },
+    {
+      "list_name": "xw5wu04",
+      "name": "neogene",
+      "label": "Neogene",
+      "order": "2"
+    },
+    {
+      "list_name": "xw5wu04",
+      "name": "paleogene",
+      "label": "Paleogene",
+      "order": "3"
+    },
+    {
+      "list_name": "xw5wu05",
+      "name": "holocene",
+      "label": "Holocene",
+      "order": "25"
+    },
+    {
+      "list_name": "xw5wu05",
+      "name": "pleistocene",
+      "label": "Pleistocene",
+      "order": "26"
+    },
+    {
+      "list_name": "lb3hh57",
+      "name": "calabrian",
+      "label": "Calabrian"
+    },
+    {
+      "list_name": "lb3hh57",
+      "name": "gelasian",
+      "label": "Gelasian"
+    },
+    {
+      "list_name": "xw5wu11",
+      "name": "pliocene",
+      "label": "Pliocene",
+      "order": "27"
+    },
+    {
+      "list_name": "xw5wu11",
+      "name": "miocene",
+      "label": "Miocene",
+      "order": "28"
+    },
+    {
+      "list_name": "lb3hh62",
+      "name": "piacenzian",
+      "label": "Piacenzian"
+    },
+    {
+      "list_name": "lb3hh62",
+      "name": "zanclean",
+      "label": "Zanclean"
+    },
+    {
+      "list_name": "lb3hh58",
+      "name": "messinian",
+      "label": "Messinian"
+    },
+    {
+      "list_name": "lb3hh58",
+      "name": "tortonian",
+      "label": "Tortonian"
+    },
+    {
+      "list_name": "lb3hh58",
+      "name": "serravallian",
+      "label": "Serravallian"
+    },
+    {
+      "list_name": "lb3hh58",
+      "name": "langhian",
+      "label": "Langhian"
+    },
+    {
+      "list_name": "lb3hh58",
+      "name": "burdigalian",
+      "label": "Burdigalian"
+    },
+    {
+      "list_name": "lb3hh58",
+      "name": "aquitanian",
+      "label": "Aquitanian"
+    },
+    {
+      "list_name": "xw5wu12",
+      "name": "oligocene",
+      "label": "Oligocene",
+      "order": "29"
+    },
+    {
+      "list_name": "xw5wu12",
+      "name": "eocene",
+      "label": "Eocene",
+      "order": "30"
+    },
+    {
+      "list_name": "xw5wu12",
+      "name": "paleocene",
+      "label": "Paleocene",
+      "order": "31"
+    },
+    {
+      "list_name": "lb3hh59",
+      "name": "chattian",
+      "label": "Chattian"
+    },
+    {
+      "list_name": "lb3hh59",
+      "name": "rupelian",
+      "label": "Rupelian"
+    },
+    {
+      "list_name": "lb3hh60",
+      "name": "priabonian",
+      "label": "Priabonian"
+    },
+    {
+      "list_name": "lb3hh60",
+      "name": "bartonian",
+      "label": "Bartonian"
+    },
+    {
+      "list_name": "lb3hh60",
+      "name": "lutetian",
+      "label": "Lutetian"
+    },
+    {
+      "list_name": "lb3hh60",
+      "name": "ypresian",
+      "label": "Ypresian"
+    },
+    {
+      "list_name": "lb3hh61",
+      "name": "thanetian",
+      "label": "Thanetian"
+    },
+    {
+      "list_name": "lb3hh61",
+      "name": "selandian",
+      "label": "Selandian"
+    },
+    {
+      "list_name": "lb3hh61",
+      "name": "danian",
+      "label": "Danian"
+    },
+    {
+      "list_name": "xw5wu08",
+      "name": "pliocene",
+      "label": "Pliocene",
+      "order": "32"
+    },
+    {
+      "list_name": "xw5wu08",
+      "name": "miocene",
+      "label": "Miocene",
+      "order": "33"
+    },
+    {
+      "list_name": "xw5wu08",
+      "name": "oligocene",
+      "label": "Oligocene",
+      "order": "34"
+    },
+    {
+      "list_name": "xw5wu08",
+      "name": "eocene",
+      "label": "Eocene",
+      "order": "35"
+    },
+    {
+      "list_name": "xw5wu08",
+      "name": "paleocene",
+      "label": "Paleocene",
+      "order": "36"
+    },
+    {
+      "list_name": "lb3hh51",
+      "name": "cretaceous",
+      "label": "Cretaceous",
+      "order": "4"
+    },
+    {
+      "list_name": "lb3hh51",
+      "name": "jurassic",
+      "label": "Jurassic",
+      "order": "5"
+    },
+    {
+      "list_name": "lb3hh51",
+      "name": "triassic",
+      "label": "Triassic",
+      "order": "6"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "permian",
+      "label": "Permian",
+      "order": "7"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "carboniferous",
+      "label": "Carboniferous",
+      "order": "8"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "pennsylvanian",
+      "label": "Pennsylvanian",
+      "order": "9"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "mississippian",
+      "label": "Mississippian",
+      "order": "10"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "devonian",
+      "label": "Devonian",
+      "order": "11"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "silurian",
+      "label": "Silurian",
+      "order": "12"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "ordovician",
+      "label": "Ordovician",
+      "order": "13"
+    },
+    {
+      "list_name": "lb3hh52",
+      "name": "cambrian",
+      "label": "Cambrian",
+      "order": "14"
+    },
+    {
+      "list_name": "oa8wg40",
+      "name": "neoproterozoic",
+      "label": "Neoproterozoic"
+    },
+    {
+      "list_name": "oa8wg40",
+      "name": "mesoproterozoi",
+      "label": "Mesoproterozoic"
+    },
+    {
+      "list_name": "oa8wg40",
+      "name": "paleoproterozo",
+      "label": "Paleoproterozoic"
+    },
+    {
+      "list_name": "lb3hh53",
+      "name": "ediacaran",
+      "label": "Ediacaran",
+      "order": "15"
+    },
+    {
+      "list_name": "lb3hh53",
+      "name": "cryogenian",
+      "label": "Cryogenian",
+      "order": "16"
+    },
+    {
+      "list_name": "lb3hh53",
+      "name": "tonian",
+      "label": "Tonian",
+      "order": "17"
+    },
+    {
+      "list_name": "lb3hh54",
+      "name": "stenian",
+      "label": "Stenian",
+      "order": "18"
+    },
+    {
+      "list_name": "lb3hh54",
+      "name": "ectasian",
+      "label": "Ectasian",
+      "order": "19"
+    },
+    {
+      "list_name": "lb3hh54",
+      "name": "calymmian",
+      "label": "Calymmian",
+      "order": "20"
+    },
+    {
+      "list_name": "lb3hh55",
+      "name": "statherian",
+      "label": "Statherian",
+      "order": "21"
+    },
+    {
+      "list_name": "lb3hh55",
+      "name": "orosirian",
+      "label": "Orosirian",
+      "order": "22"
+    },
+    {
+      "list_name": "lb3hh55",
+      "name": "rhyacian",
+      "label": "Rhyacian",
+      "order": "23"
+    },
+    {
+      "list_name": "lb3hh55",
+      "name": "siderian",
+      "label": "Siderian",
+      "order": "24"
+    },
+    {
+      "list_name": "kb2cc45",
+      "name": "neoarchean",
+      "label": "Neoarchean"
+    },
+    {
+      "list_name": "kb2cc45",
+      "name": "mesoarchean",
+      "label": "Mesoarchean"
+    },
+    {
+      "list_name": "kb2cc45",
+      "name": "paleoarchean",
+      "label": "Paleoarchean"
+    },
+    {
+      "list_name": "kb2cc45",
+      "name": "eoarchean",
+      "label": "Eoarchean"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "maastrichtian",
+      "label": "Maastrichtian",
+      "order": "25"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "campanian",
+      "label": "Campanian",
+      "order": "26"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "santonian",
+      "label": "Santonian",
+      "order": "27"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "coniacian",
+      "label": "Coniacian",
+      "order": "28"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "turonian",
+      "label": "Turonian",
+      "order": "29"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "cenomanian",
+      "label": "Cenomanian",
+      "order": "30"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "albian",
+      "label": "Albian",
+      "order": "31"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "aptian",
+      "label": "Aptian",
+      "order": "32"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "barremian",
+      "label": "Barremian",
+      "order": "33"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "hauterivian",
+      "label": "Hauterivian",
+      "order": "34"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "valanginian",
+      "label": "Valanginian",
+      "order": "35"
+    },
+    {
+      "list_name": "lb3hh82",
+      "name": "berriasian",
+      "label": "Berriasian",
+      "order": "36"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "tithonian",
+      "label": "Tithonian",
+      "order": "37"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "kimmeridgian",
+      "label": "Kimmeridgian",
+      "order": "38"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "oxfordian",
+      "label": "Oxfordian",
+      "order": "39"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "callovian",
+      "label": "Callovian",
+      "order": "40"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "bathonian",
+      "label": "Bathonian",
+      "order": "41"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "bajocian",
+      "label": "Bajocian",
+      "order": "42"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "aalenian",
+      "label": "Aalenian",
+      "order": "43"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "toarcian",
+      "label": "Toarcian",
+      "order": "44"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "pliensbachian",
+      "label": "Pliensbachian",
+      "order": "45"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "sinemurian",
+      "label": "Sinemurian",
+      "order": "46"
+    },
+    {
+      "list_name": "lb3hh83",
+      "name": "hettangian",
+      "label": "Hettangian",
+      "order": "47"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "rhaetian",
+      "label": "Rhaetian",
+      "order": "48"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "norian",
+      "label": "Norian",
+      "order": "49"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "carnian",
+      "label": "Carnian",
+      "order": "50"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "ladinian",
+      "label": "Ladinian",
+      "order": "51"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "anisian",
+      "label": "Anisian",
+      "order": "52"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "olenekian",
+      "label": "Olenekian",
+      "order": "53"
+    },
+    {
+      "list_name": "lb3hh84",
+      "name": "induan",
+      "label": "Induan",
+      "order": "54"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "changhsingian",
+      "label": "Changhsingian",
+      "order": "55"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "wuchiapingian",
+      "label": "Wuchiapingian",
+      "order": "56"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "capitanian",
+      "label": "Capitanian",
+      "order": "57"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "wordian",
+      "label": "Wordian",
+      "order": "58"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "roadian",
+      "label": "Roadian",
+      "order": "59"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "kungurian",
+      "label": "Kungurian",
+      "order": "60"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "artinskian",
+      "label": "Artinskian",
+      "order": "61"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "sakmarian",
+      "label": "Sakmarian",
+      "order": "62"
+    },
+    {
+      "list_name": "lb3hh85",
+      "name": "asselian",
+      "label": "Asselian",
+      "order": "63"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "gzelian",
+      "label": "Gzelian",
+      "order": "64"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "kasimovian",
+      "label": "Kasimovian",
+      "order": "65"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "moscovian",
+      "label": "Moscovian",
+      "order": "66"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "bashkirian",
+      "label": "Bashkirian",
+      "order": "67"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "serpukhovian",
+      "label": "Serpukhovian",
+      "order": "68"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "visean",
+      "label": "Visean",
+      "order": "69"
+    },
+    {
+      "list_name": "xw5wu86",
+      "name": "tournaisian",
+      "label": "Tournaisian",
+      "order": "70"
+    },
+    {
+      "list_name": "xw5wu87",
+      "name": "gzelian",
+      "label": "Gzelian",
+      "order": "71"
+    },
+    {
+      "list_name": "xw5wu87",
+      "name": "kasimovian",
+      "label": "Kasimovian",
+      "order": "72"
+    },
+    {
+      "list_name": "xw5wu87",
+      "name": "moscovian",
+      "label": "Moscovian",
+      "order": "73"
+    },
+    {
+      "list_name": "xw5wu87",
+      "name": "bashkirian",
+      "label": "Bashkirian",
+      "order": "74"
+    },
+    {
+      "list_name": "xw5wu88",
+      "name": "serpukhovian",
+      "label": "Serpukhovian",
+      "order": "75"
+    },
+    {
+      "list_name": "xw5wu88",
+      "name": "visean",
+      "label": "Visean",
+      "order": "76"
+    },
+    {
+      "list_name": "xw5wu88",
+      "name": "tournaisian",
+      "label": "Tournaisian",
+      "order": "77"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "famennian",
+      "label": "Famennian",
+      "order": "78"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "frasnian",
+      "label": "Frasnian",
+      "order": "79"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "givetian",
+      "label": "Givetian",
+      "order": "80"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "eifelian",
+      "label": "Eifelian",
+      "order": "81"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "emsian",
+      "label": "Emsian",
+      "order": "82"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "praghian",
+      "label": "Praghian",
+      "order": "83"
+    },
+    {
+      "list_name": "lb3hh87",
+      "name": "lockhovian",
+      "label": "Lockhovian",
+      "order": "84"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "pridolian",
+      "label": "Pridolian",
+      "order": "85"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "ludfordian",
+      "label": "Ludfordian",
+      "order": "86"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "gorstian",
+      "label": "Gorstian",
+      "order": "87"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "homerian",
+      "label": "Homerian",
+      "order": "88"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "sheinwoodian",
+      "label": "Sheinwoodian",
+      "order": "89"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "telychian",
+      "label": "Telychian",
+      "order": "90"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "aeronian",
+      "label": "Aeronian",
+      "order": "91"
+    },
+    {
+      "list_name": "lb3hh88",
+      "name": "rhuddanian",
+      "label": "Rhuddanian",
+      "order": "92"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "hirnantian",
+      "label": "Hirnantian",
+      "order": "93"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "katian",
+      "label": "Katian",
+      "order": "94"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "sandbian",
+      "label": "Sandbian",
+      "order": "95"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "darriwilian",
+      "label": "Darriwilian",
+      "order": "96"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "dapingian",
+      "label": "Dapingian",
+      "order": "97"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "floian",
+      "label": "Floian",
+      "order": "98"
+    },
+    {
+      "list_name": "lb3hh89",
+      "name": "tremadocian",
+      "label": "Tremadocian",
+      "order": "99"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "stage_10",
+      "label": "Stage 10",
+      "order": "100"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "stage_9",
+      "label": "Stage 9",
+      "order": "101"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "paibian",
+      "label": "Paibian",
+      "order": "102"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "guzhangian",
+      "label": "Guzhangian",
+      "order": "103"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "drumian",
+      "label": "Drumian",
+      "order": "104"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "stage_5",
+      "label": "Stage 5",
+      "order": "105"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "stage_4",
+      "label": "Stage 4",
+      "order": "106"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "stage_3",
+      "label": "Stage 3",
+      "order": "107"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "stage_2",
+      "label": "Stage 2",
+      "order": "108"
+    },
+    {
+      "list_name": "lb3hh90",
+      "name": "fortunian",
+      "label": "Fortunian",
+      "order": "109"
+    },
+    {
+      "list_name": "ns6qv42",
+      "name": "late",
+      "label": "Late"
+    },
+    {
+      "list_name": "ns6qv42",
+      "name": "middle",
+      "label": "Middle"
+    },
+    {
+      "list_name": "ns6qv42",
+      "name": "early",
+      "label": "Early"
+    }
+  ],
+  "settings": [
+    {
+      "id_string": "rock_unit",
+      "version": "vpTmckk24xy7PMJXheYdjg"
+    }
+  ]
+}
