@@ -83,7 +83,7 @@ const useMapView = () => {
     if (zoom !== newZoom) dispatch(setZoom(newZoom));
   };
 
-  const zoomToSpots = async (spotsToZoomTo, map, camera) => {
+  const zoomToSpotsNow = async (spotsToZoomTo, map, camera) => {
     if (spotsToZoomTo.length === 0) {
       console.log('No Spots to Zoom to');
       toast.show('No Spots to Zoom to');
@@ -130,7 +130,7 @@ const useMapView = () => {
     getZoomLevel: getZoomLevel,
     isOnGeoMap: isOnGeoMap,
     setMapView: setMapView,
-    zoomToSpots: zoomToSpots,
+    zoomToSpotsNow: zoomToSpotsNow,
   };
 };
 

@@ -69,7 +69,7 @@ const Map = forwardRef(({
   } = useMapFeaturesCalculated(mapRef);
   const {getCurrentLocation} = useMapLocation();
   const {getSymbology} = useMapSymbology();
-  const {setMapView, zoomToSpots} = useMapView();
+  const {setMapView, zoomToSpotsNow} = useMapView();
   const {getMapCenterTile, switchToOfflineMap} = useMapsOffline();
   const {createSpot, getSpotWithThisStratSection} = useSpots();
   const {getStereonet} = useStereonet();
@@ -1093,7 +1093,7 @@ const Map = forwardRef(({
       }
       else {
         const currentLocationAsPoint = turf.point([currentLocation.longitude, currentLocation.latitude]);
-        await zoomToSpots([currentLocationAsPoint], mapRef.current, cameraRef.current);
+        await zoomToSpotsNow([currentLocationAsPoint], mapRef.current, cameraRef.current);
       }
     }
     else throw 'Error Getting Map Camera';
@@ -1120,10 +1120,15 @@ const Map = forwardRef(({
     }
   };
 
+  // Zoom map to the extent of given Spots
+  const zoomToSpots = (spot) => {
+    zoomToSpotsNow(spot, mapRef.current, cameraRef.current);
+  };
+
   // Zoom map to the extent of the mapped Spots
   const zoomToSpotsExtent = () => {
     const spotsToZoomTo = [...spotsSelected, ...spotsNotSelected];
-    zoomToSpots(spotsToZoomTo, mapRef.current, cameraRef.current);
+    zoomToSpotsNow(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
   useImperativeHandle(mapComponentRef, () => {
@@ -1145,6 +1150,7 @@ const Map = forwardRef(({
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
       zoomToCurrentLocation: zoomToCurrentLocation,
       zoomToCustomMap: zoomToCustomMap,
+      zoomToSpots: zoomToSpots,
       zoomToSpotsExtent: zoomToSpotsExtent,
     };
   });
