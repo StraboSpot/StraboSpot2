@@ -35,7 +35,7 @@
     "@react-native-clipboard/clipboard": "1.14.2",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-community/geolocation": "3.4.0",
-    "@react-native-community/netinfo": "11.3.2",
+    "@react-native-community/netinfo": "11.4.1",
     "@react-native-community/slider": "4.5.2",
     "@react-native-picker/picker": "2.8.0",
     "@react-navigation/material-top-tabs": "6.6.14",
