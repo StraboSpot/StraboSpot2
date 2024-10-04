@@ -32,7 +32,7 @@ const HomeView = forwardRef(({
                                openMainMenuPanel,
                                openNotebookPanel,
                                setDistance,
-                               startEdit,
+                               setMapModeToEdit,
                                toggleDialog,
                              }, mapComponentRef) => {
   console.log('Rendering HomeView...');
@@ -46,7 +46,7 @@ const HomeView = forwardRef(({
         onEndDrawPressed={onEndDrawPressed}
         ref={mapComponentRef}
         setDistance={setDistance}
-        startEdit={startEdit}
+        setMapModeToEdit={setMapModeToEdit}
       />
 
       <DeviceInfo/>

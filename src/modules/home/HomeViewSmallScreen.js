@@ -36,7 +36,7 @@ const HomeViewSmallScreen = forwardRef(({
                                           openNotebookPanel,
                                           openSpotInNotebook,
                                           setDistance,
-                                          startEdit,
+                                          setMapModeToEdit,
                                           toggleDialog,
                                         }, mapComponentRef) => {
   console.log('Rendering HomeViewSmallScreen...');
@@ -131,7 +131,7 @@ const HomeViewSmallScreen = forwardRef(({
                   onEndDrawPressed={onEndDrawPressed}
                   ref={mapComponentRef}
                   setDistance={setDistance}
-                  startEdit={startEdit}
+                  setMapModeToEdit={setMapModeToEdit}
                 />
 
                 {currentImageBasemap && (

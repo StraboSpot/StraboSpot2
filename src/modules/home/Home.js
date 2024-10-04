@@ -331,7 +331,7 @@ const Home = ({navigation, route}) => {
     unlockOrientation();
   };
 
-  const startEdit = () => {
+  const setMapModeToEdit = () => {
     lockOrientation();
     setMapMode(MAP_MODES.EDIT);
     setButtons({
@@ -388,7 +388,7 @@ const Home = ({navigation, route}) => {
           openSpotInNotebook={openSpotInNotebook}
           ref={mapComponentRef}
           setDistance={setDistance}
-          startEdit={startEdit}
+          setMapModeToEdit={setMapModeToEdit}
           toggleDialog={toggleDialog}
         />
       ) : (
@@ -413,7 +413,7 @@ const Home = ({navigation, route}) => {
           openNotebookPanel={openNotebookPanel}
           ref={mapComponentRef}
           setDistance={setDistance}
-          startEdit={startEdit}
+          setMapModeToEdit={setMapModeToEdit}
           toggleDialog={toggleDialog}
         />
       )}
