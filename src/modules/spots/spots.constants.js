@@ -2,7 +2,7 @@ export const SORT_ORDER = {
   ALPHABETICAL: 'Alphabetical',
   DATE_CREATED: 'Date Created',
   DATE_LAST_MODIFIED: 'Date Last Modified',
-  DATE_LAST_VIEWED: 'Date Last Viewed',
+  RECENTLY_VIEWED: 'Recently Viewed',
 };
 
 export const SORTED_VIEWS = {

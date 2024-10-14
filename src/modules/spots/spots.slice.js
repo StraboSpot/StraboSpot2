@@ -50,7 +50,7 @@ const spotSlice = createSlice({
     editedOrCreatedSpot(state, action) {
       const modifiedSpot = {
         ...action.payload,
-        properties: {...action.payload.properties, modified_timestamp: Date.now(), viewed_timestamp: Date.now()},
+        properties: {...action.payload.properties, modified_timestamp: Date.now()},
       };
       state.spots = {...state.spots, [modifiedSpot.properties.id]: modifiedSpot};
       console.log('UPDATED Spot:', modifiedSpot, 'in Existing Spots:', state.spots);
@@ -83,7 +83,6 @@ const spotSlice = createSlice({
         const imagesFiltered = foundSpot.properties.images.filter(image => image.id !== action.payload.id);
         imagesFiltered.push(action.payload);
         foundSpot.properties.images = imagesFiltered;
-        foundSpot.properties.viewed_timestamp = Date.now();
         const selectedSpotCopy = isEmpty(state.selectedSpot)
         || state.selectedSpot.properties.id === foundSpot.properties.id ? foundSpot : state.selectedSpot;
         console.log('Edit Image for selectedSpot', selectedSpotCopy);
@@ -118,14 +117,13 @@ const spotSlice = createSlice({
       state.selectedAttributes = action.payload;
     },
     setSelectedSpot(state, action) {
-      let spotToSelect = {...action.payload, properties: {...action.payload.properties, viewed_timestamp: Date.now()}};
+      let spotToSelect = action.payload;
       let recentViewsArr = Object.assign([], state.recentViews);
       const index = recentViewsArr.indexOf(spotToSelect.properties.id);
       if (index !== -1) recentViewsArr.splice(index, 1);
       recentViewsArr.unshift(spotToSelect.properties.id);
       if (state.recentViews.length > 20) recentViewsArr.shift();
       state.selectedSpot = spotToSelect;
-      state.spots = {...state.spots, [spotToSelect.properties.id]: spotToSelect};
       state.recentViews = recentViewsArr;
       state.selectedAttributes = [];
     },

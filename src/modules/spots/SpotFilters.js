@@ -35,7 +35,7 @@ const SpotFilters = ({
     sortSpotsAlphabetically,
     sortSpotsByDateCreated,
     sortSpotsByDateLastModified,
-    sortSpotsByDateLastViewed,
+    sortSpotsByRecentlyViewed,
   } = useSpots();
 
   const recentViews = useSelector(state => state.spot.recentViews);
@@ -93,7 +93,7 @@ const SpotFilters = ({
     if (sort === SORT_ORDER.ALPHABETICAL) gotSpotsSorted = sortSpotsAlphabetically(gotSpotsSorted);
     else if (sort === SORT_ORDER.DATE_CREATED) gotSpotsSorted = sortSpotsByDateCreated(gotSpotsSorted);
     else if (sort === SORT_ORDER.DATE_LAST_MODIFIED) gotSpotsSorted = sortSpotsByDateLastModified(gotSpotsSorted);
-    else if (sort === SORT_ORDER.DATE_LAST_VIEWED) gotSpotsSorted = sortSpotsByDateLastViewed(gotSpotsSorted);
+    else if (sort === SORT_ORDER.RECENTLY_VIEWED) gotSpotsSorted = sortSpotsByRecentlyViewed(gotSpotsSorted);
     setSpotsSorted(gotSpotsSorted);
     closePicker();
   };
