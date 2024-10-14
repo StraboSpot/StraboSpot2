@@ -434,7 +434,7 @@ const Map = forwardRef(({
           spotsSelected={spotsSelected}
         />
       )}
-      {renderSetInCurrentViewModal()}
+      {showSetInCurrentViewModal && renderSetInCurrentViewModal()}
     </View>
   );
 });
