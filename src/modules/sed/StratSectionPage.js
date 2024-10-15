@@ -169,9 +169,14 @@ const StratSectionPage = ({page}) => {
   };
 
   const saveStratSection = async () => {
-    await saveSedFeature(page.key, spot, stratSectionRef.current);
-    await stratSectionRef.current.resetForm();
-    dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
+    try {
+      await saveSedFeature(page.key, spot, stratSectionRef.current);
+      await stratSectionRef.current.resetForm();
+      dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
+    }
+    catch (e) {
+      console.log('Error saving strat section', e);
+    }
   };
 
   return (

@@ -105,7 +105,6 @@ const useSpots = () => {
       modified_timestamp,
       images,
       samples,
-      viewed_timestamp,
       lat,
       lng,
       altitude,
@@ -139,7 +138,6 @@ const useSpots = () => {
           date: d.toISOString(),
           time: d.toISOString(),
           modified_timestamp: Date.now(),
-          viewed_timestamp: Date.now(),
           name: n.toString(),
         },
       };
@@ -161,7 +159,6 @@ const useSpots = () => {
     d.setMilliseconds(0);
     newSpot.properties.date = newSpot.properties.time = d.toISOString();
     newSpot.properties.modified_timestamp = Date.now();
-    newSpot.properties.viewed_timestamp = Date.now();
 
     // Set spot name
     if (!newSpot.properties.name) {
@@ -528,6 +525,16 @@ const useSpots = () => {
 
   const isOnImageBasemap = feature => feature.properties?.image_basemap;
 
+  const isOnSameImageBasemap = (spot1, spot2) => {
+    return isOnImageBasemap(spot1) && isOnImageBasemap(spot2)
+      && spot1.properties.image_basemap === spot2.properties.image_basemap;
+  };
+
+  const isOnSameStratSection = (spot1, spot2) => {
+    return isOnStratSection(spot1) && isOnStratSection(spot2)
+      && spot1.properties.strat_section_id === spot2.properties.strat_section_id;
+  };
+
   const isOnStratSection = feature => feature.properties?.strat_section_id;
 
   const isStratInterval = (spot) => {
@@ -550,9 +557,16 @@ const useSpots = () => {
     return spotsToSort;
   };
 
-  const sortSpotsByDateLastViewed = (spotsToSort) => {
-    spotsToSort.sort(((a, b) => new Date(b.properties.viewed_timestamp) - new Date(a.properties.viewed_timestamp)));
-    return spotsToSort;
+  // Use RecentViews to move those spots to the beginning of the spotsToSort
+  // Don't use viewed_timestamp as this is supposed to be removed from Spot objects. Updating viewed_timestamp
+  // in slice requires entire spots object to update in redux which breaks editing a feature on the map.
+  const sortSpotsByRecentlyViewed = (spotsToSort) => {
+    const spotsToSortIds = spotsToSort.map(spot => spot.properties.id);
+    let spotsToSortInRecentViewsIds = recentViews.reduce((acc, spotId) => {
+      return spotsToSortIds.includes(spotId) ? [...acc, spotId] : acc;
+    }, []);
+    const spotsSortedByRecentlyViewedIds = [...new Set([...spotsToSortInRecentViewsIds, ...spotsToSortIds])];
+    return spotsSortedByRecentlyViewedIds.map(spotId => spotsToSort.find(spot => spot.properties.id === spotId));
   };
 
   return {
@@ -590,12 +604,14 @@ const useSpots = () => {
     handleSpotSelected: handleSpotSelected,
     isOnGeoMap: isOnGeoMap,
     isOnImageBasemap: isOnImageBasemap,
+    isOnSameImageBasemap: isOnSameImageBasemap,
+    isOnSameStratSection: isOnSameStratSection,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
     sortSpotsAlphabetically: sortSpotsAlphabetically,
     sortSpotsByDateCreated: sortSpotsByDateCreated,
     sortSpotsByDateLastModified: sortSpotsByDateLastModified,
-    sortSpotsByDateLastViewed: sortSpotsByDateLastViewed,
+    sortSpotsByRecentlyViewed: sortSpotsByRecentlyViewed,
   };
 };
 

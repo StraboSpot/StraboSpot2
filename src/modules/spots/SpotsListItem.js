@@ -13,7 +13,6 @@ import {useTags} from '../tags';
 const SpotsListItem = ({
                          doShowTags,
                          isCheckedList,
-                         numSubspots,
                          onPress,
                          spot,
                        }) => {
@@ -53,10 +52,6 @@ const SpotsListItem = ({
     </View>
   );
 
-  const renderSubspots = () => {
-    return <ListItem.Subtitle>[{numSubspots} subspot{numSubspots !== 1 && 's'}]</ListItem.Subtitle>;
-  };
-
   const renderTags = () => {
     const tags = getTagsAtSpot(spot.properties.id);
     const tagsString = tags.map(tag => tag.name).sort().join(', ');
@@ -77,7 +72,6 @@ const SpotsListItem = ({
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>
         {doShowTags && spot && renderTags()}
-        {!isEmpty(numSubspots) && spot && renderSubspots()}
       </ListItem.Content>
       {isCheckedList ? renderCheckboxes() : (
         <>

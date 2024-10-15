@@ -238,31 +238,36 @@ const AddIntervalModal = () => {
   };
 
   const saveInterval = async () => {
-    await formRef.current.submitForm();
-    const intervalData = showErrors(formRef.current);
-    if (doUnitsFieldsMatch(intervalData)) {
-      let newInterval = createInterval(stratSection.strat_section_id, intervalData);
-      if (preFormRef.current?.values?.intervalName) {
-        newInterval.properties.name = preFormRef.current.values.intervalName;
+    try {
+      await formRef.current.submitForm();
+      const intervalData = showErrors(formRef.current);
+      if (doUnitsFieldsMatch(intervalData)) {
+        let newInterval = createInterval(stratSection.strat_section_id, intervalData);
+        if (preFormRef.current?.values?.intervalName) {
+          newInterval.properties.name = preFormRef.current.values.intervalName;
+        }
+        if (intervalToCopy) newInterval = copyRestOfInterval(newInterval);
+        const newSpot = await createSpot({type: 'Feature', ...newInterval});
+        if (preFormRef.current?.values?.intervalToInsertAfter) {
+          const intervalToInsertAfterObj = intervals.find(
+            i => i.properties.id === preFormRef.current.values.intervalToInsertAfter);
+          console.log('Insert after', preFormRef.current.values.intervalToInsertAfter, intervalToInsertAfterObj);
+          moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
+        }
+        dispatch(setSelectedSpot(newSpot));
+        dispatch(setModalValues({}));
+        dispatch(setModalVisible({modal: null}));
+        if (preferences.starting_number_for_spot) {
+          const updatedPreferences = {
+            ...preferences,
+            starting_number_for_spot: preferences.starting_number_for_spot + 1,
+          };
+          dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
+        }
       }
-      if (intervalToCopy) newInterval = copyRestOfInterval(newInterval);
-      const newSpot = await createSpot({type: 'Feature', ...newInterval});
-      if (preFormRef.current?.values?.intervalToInsertAfter) {
-        const intervalToInsertAfterObj = intervals.find(
-          i => i.properties.id === preFormRef.current.values.intervalToInsertAfter);
-        console.log('Insert after', preFormRef.current.values.intervalToInsertAfter, intervalToInsertAfterObj);
-        moveIntervalToAfter(newSpot, intervalToInsertAfterObj);
-      }
-      dispatch(setSelectedSpot(newSpot));
-      dispatch(setModalValues({}));
-      dispatch(setModalVisible({modal: null}));
-      if (preferences.starting_number_for_spot) {
-        const updatedPreferences = {
-          ...preferences,
-          starting_number_for_spot: preferences.starting_number_for_spot + 1,
-        };
-        dispatch(updatedProject({field: 'preferences', value: updatedPreferences}));
-      }
+    }
+    catch (e) {
+      console.log('Error saving interval', e);
     }
   };
 
