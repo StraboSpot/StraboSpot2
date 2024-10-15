@@ -66,10 +66,8 @@ const Nesting = () => {
   };
 
   const renderName = (spot) => {
-    const numSubspots = isEmpty(childrenGenerations) ? null : childrenGenerations.flat().length;
     return (
       <SpotsListItem
-        numSubspots={numSubspots}
         onPress={() => handleSpotSelected(spot)}
         spot={spot}
       />
