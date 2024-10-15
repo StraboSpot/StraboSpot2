@@ -525,6 +525,16 @@ const useSpots = () => {
 
   const isOnImageBasemap = feature => feature.properties?.image_basemap;
 
+  const isOnSameImageBasemap = (spot1, spot2) => {
+    return isOnImageBasemap(spot1) && isOnImageBasemap(spot2)
+      && spot1.properties.image_basemap === spot2.properties.image_basemap;
+  };
+
+  const isOnSameStratSection = (spot1, spot2) => {
+    return isOnStratSection(spot1) && isOnStratSection(spot2)
+      && spot1.properties.strat_section_id === spot2.properties.strat_section_id;
+  };
+
   const isOnStratSection = feature => feature.properties?.strat_section_id;
 
   const isStratInterval = (spot) => {
@@ -594,6 +604,8 @@ const useSpots = () => {
     handleSpotSelected: handleSpotSelected,
     isOnGeoMap: isOnGeoMap,
     isOnImageBasemap: isOnImageBasemap,
+    isOnSameImageBasemap: isOnSameImageBasemap,
+    isOnSameStratSection: isOnSameStratSection,
     isOnStratSection: isOnStratSection,
     isStratInterval: isStratInterval,
     sortSpotsAlphabetically: sortSpotsAlphabetically,
