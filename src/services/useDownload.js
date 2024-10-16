@@ -1,6 +1,6 @@
 import {Platform} from 'react-native';
 
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
@@ -136,9 +136,9 @@ const useDownload = () => {
         dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
 
-      Sentry.configureScope((scope) => {
-        scope.setUser({'username': userProfileRes.name, 'email': userProfileRes.email});
-      });
+      // Sentry.configureScope((scope) => {
+      //   scope.setUser({'username': userProfileRes.name, 'email': userProfileRes.email});
+      // });
     }
     catch (err) {
       throw Error(err);

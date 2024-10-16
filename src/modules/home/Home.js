@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Platform} from 'react-native';
 
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -58,8 +58,8 @@ const Home = ({navigation, route}) => {
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
   const stratSection = useSelector(state => state.map.stratSection);
-  const userEmail = useSelector(state => state.user.email);
-  const userName = useSelector(state => state.user.name);
+  // const userEmail = useSelector(state => state.user.email);
+  // const userName = useSelector(state => state.user.name);
 
   const [buttons, setButtons] = useState(
     {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
@@ -99,14 +99,14 @@ const Home = ({navigation, route}) => {
     };
   }, [navigation, route.params]);
 
-  useEffect(() => {
-    // console.log('UE Home [user]', userEmail);
-    if (userEmail && userName) {
-      Sentry.configureScope((scope) => {
-        scope.setUser({'email': userEmail, 'username': userName});
-      });
-    }
-  }, [userEmail, userName]);
+  // useEffect(() => {
+  //   // console.log('UE Home [user]', userEmail);
+  //   // if (userEmail && userName) {
+  //   //   Sentry.configureScope((scope) => {
+  //   //     scope.setUser({'email': userEmail, 'username': userName});
+  //   //   });
+  //   // }
+  // }, [userEmail, userName]);
 
   useEffect(() => {
     // console.log('UE Home [projectLoadComplete]', projectLoadComplete);

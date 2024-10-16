@@ -1,6 +1,6 @@
 import {Platform} from 'react-native';
 
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -399,7 +399,7 @@ const useSpots = () => {
 
   const getSpotById = (spotId) => {
     if (spots[spotId]) return spots[spotId];
-    else Sentry.captureMessage(`Missing Spot ${spotId}`);
+    // else Sentry.captureMessage(`Missing Spot ${spotId}`);
   };
 
   const getSpotByImageId = (imageId) => {

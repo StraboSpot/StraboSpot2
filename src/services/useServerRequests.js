@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
@@ -224,12 +224,12 @@ const useServerRequests = () => {
     else {
       try {
         const errorMessage = JSON.parse(await response.text());
-        Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
+        // Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
         return Promise.reject(errorMessage?.Error || 'Unknown Error');
       }
       catch (err) {
         console.log(err);
-        Sentry.captureMessage(`ERROR in useServerRequests: ${JSON.stringify(response)}`);
+        // Sentry.captureMessage(`ERROR in useServerRequests: ${JSON.stringify(response)}`);
         return Promise.reject('Unable to parse response. ' + err);
       }
     }

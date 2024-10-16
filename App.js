@@ -4,7 +4,6 @@ import 'react-native-devsettings';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
-import * as Sentry from '@sentry/react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -12,29 +11,10 @@ import {PersistGate} from 'redux-persist/integration/react';
 import Routes from './src/routes/Routes';
 import ConnectionStatus from './src/services/ConnectionStatus';
 import SystemBars from './src/services/SystemBars';
-import {RELEASE_NAME} from './src/shared/app.constants';
 import Toast from './src/shared/ui/Toast';
 import {store, persistor} from './src/store/ConfigureStore';
-import config from './src/utils/config';
 
 let didInit = false;
-
-if (Platform.OS !== 'web') {
-  Sentry.init({
-    dsn: config.get('Error_reporting_DSN'),
-    enableNative: Platform.OS !== 'web',
-    enableAppHangTracking: true,
-    debug: __DEV__,
-    release: RELEASE_NAME,
-    dist: RELEASE_NAME,
-    autoSessionTracking: true,
-    environment: __DEV__ ? 'development' : 'production',
-    tracesSampleRate: 0.30,
-    _experiments: {
-      profilesSampleRate: 0.50,
-    },
-  });
-} else console.log('SENTRY NOT RUNNING');
 
 NetInfo.configure({
   // reachabilityUrl: 'https://clients3.google.com/generate_204',
@@ -61,13 +41,11 @@ const App = () => {
       <Toast>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            {/*<Sentry.TouchEventBoundary>*/}
             <SystemBars/>
             <ConnectionStatus/>
             <NavigationContainer>
               <Routes/>
             </NavigationContainer>
-            {/*</Sentry.TouchEventBoundary>*/}
           </PersistGate>
         </Provider>
       </Toast>
@@ -75,4 +53,5 @@ const App = () => {
   );
 };
 
-export default Sentry.wrap(App);
+// export default Sentry.wrap(App);
+export default App;

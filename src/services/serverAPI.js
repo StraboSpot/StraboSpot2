@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 
 import {STRABO_APIS} from './urls.constants';
 import alert from '../shared/ui/alert';
@@ -27,12 +27,12 @@ const handleError = async (response) => {
   else {
     try {
       const errorMessage = JSON.parse(await response.text());
-      Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
+      // Sentry.captureMessage(`ERROR in useServerRequests: ${errorMessage.Error}`);
       return Promise.reject(errorMessage?.Error || 'Unknown Error');
     }
     catch (err) {
       console.log(err);
-      Sentry.captureMessage(`ERROR in useServerRequests: ${JSON.stringify(response)}`);
+      // Sentry.captureMessage(`ERROR in useServerRequests: ${JSON.stringify(response)}`);
       return Promise.reject('Unable to parse response. ' + err);
     }
   }

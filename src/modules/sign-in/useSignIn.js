@@ -1,6 +1,6 @@
 import {Platform} from 'react-native';
 
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {Base64} from 'js-base64';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -19,9 +19,9 @@ const useSignIn = () => {
   const {downloadUserProfile} = useDownload();
 
   const guestSignIn = async () => {
-    Sentry.configureScope((scope) => {
-      scope.setUser({'id': 'GUEST'});
-    });
+    // Sentry.configureScope((scope) => {
+    //   scope.setUser({'id': 'GUEST'});
+    // });
     if (!isEmpty(userEmail)) clearUser();
     console.log('Loading user: GUEST');
     setTimeout(() => isEmpty(currentProjectId) && dispatch(setIsProjectLoadSelectionModalVisible(true)), 500);
@@ -45,7 +45,7 @@ const useSignIn = () => {
     }
     catch (err) {
       console.error('Log In Error:', err);
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
       if (Platform.OS !== 'web') {
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         const errMsg = err.message || 'Credentials entered are incorrect. Please try again.';
