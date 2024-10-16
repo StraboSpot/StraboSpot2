@@ -1658,7 +1658,7 @@ PODS:
     - React-Core
   - RNDateTimePicker (8.2.0):
     - React-Core
-  - RNDeviceInfo (13.0.0):
+  - RNDeviceInfo (13.1.0):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
@@ -1694,7 +1694,7 @@ PODS:
     - React
     - React-Core
     - Turf
-  - RNReanimated (3.15.4):
+  - RNReanimated (3.15.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1714,10 +1714,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.15.4)
-    - RNReanimated/worklets (= 3.15.4)
+    - RNReanimated/reanimated (= 3.15.5)
+    - RNReanimated/worklets (= 3.15.5)
     - Yoga
-  - RNReanimated/reanimated (3.15.4):
+  - RNReanimated/reanimated (3.15.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1738,7 +1738,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNReanimated/worklets (3.15.4):
+  - RNReanimated/worklets (3.15.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2227,11 +2227,11 @@ SPEC CHECKSUMS:
   RNCClipboard: 5e503962f0719ace8f7fdfe9c60282b526305c85
   RNCPicker: 0b6860a6b208d4046227d2f626ad0722f99a969c
   RNDateTimePicker: 40ffda97d071a98a10fdca4fa97e3977102ccd14
-  RNDeviceInfo: 55264dd7cc939dad6e9c231a7621311f5277f1dc
+  RNDeviceInfo: e13b7d68878fba693c9fbb13ca4d56ad57d95917
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 6dfe7692a191ee224748964127114edf057a1475
   rnmapbox-maps: 86b215fe77632a897b34a2dbf0c3ad4e9e8c3570
-  RNReanimated: 6e79f3e3b37a88cddfb38525e9652aabd7c4c750
+  RNReanimated: 625f9e7f53cba61d7b3436e8e6e209d1dd4e6e9b
   RNScreens: 19719a9c326e925498ac3b2d35c4e50fe87afc06
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
   RNSentry: e061a36f0669c5853a75097bc4be6db96bc71328
