@@ -105,7 +105,7 @@ const useMapCoords = () => {
         console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id));
         myMapsBboxUrl = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id);
       }
-      const myMapsBbox = await useServerRequests.getMyMapsBbox(myMapsBboxUrl + map.id);
+      const myMapsBbox = await getMyMapsBbox(myMapsBboxUrl + map.id);
       if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
     }
   };

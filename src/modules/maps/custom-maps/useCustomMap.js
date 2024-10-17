@@ -29,7 +29,7 @@ const useCustomMap = () => {
   const {setBasemap} = useMap();
   const {getMyMapsBboxCoords} = useMapCoords();
   const {buildTileURL} = useMapURL();
-  const {testCustomMapUrl} = useServerRequests();
+  const {testCustomMapUrl, getMyMapsBbox} = useServerRequests();
 
   const deleteMap = async (mapId) => {
     console.log('Deleting Map Here');
@@ -61,10 +61,10 @@ const useCustomMap = () => {
     if (customDatabaseEndpoint.isSelected) {
       console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
       const bboxEndpoint = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
-      const response = await useServerRequests.getMyMapsBbox(bboxEndpoint);
+      const response = await getMyMapsBbox(bboxEndpoint);
       console.log(response)
     }
-    const response = await useServerRequests.getMyMapsBbox(STRABO_APIS.MY_MAPS_BBOX + mapId);
+    const response = await getMyMapsBbox(STRABO_APIS.MY_MAPS_BBOX + mapId);
     console.log(response)
   }
 
