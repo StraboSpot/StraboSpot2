@@ -7,8 +7,10 @@ import {useSelector} from 'react-redux';
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
 import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
+import {STRABO_APIS} from '../../services/urls.constants';
 
 const useMapCoords = () => {
+  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isOnline = useSelector(state => state.connections.isOnline);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const {getMyMapsBbox} = useServerRequests();
@@ -97,8 +99,13 @@ const useMapCoords = () => {
   };
 
   const getMyMapsBboxCoords = async (map) => {
+    let myMapsBboxUrl = STRABO_APIS.MY_MAPS_BBOX;
     if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
-      const myMapsBbox = await getMyMapsBbox(map.id);
+      if (customDatabaseEndpoint.isSelected) {
+        console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id));
+        myMapsBboxUrl = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id);
+      }
+      const myMapsBbox = await useServerRequests.getMyMapsBbox(myMapsBboxUrl + map.id);
       if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
     }
   };

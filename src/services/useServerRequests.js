@@ -10,7 +10,6 @@ const useServerRequests = () => {
   const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const baseUrl = url && isSelected ? url : STRABO_APIS.DB;
-  const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
 
   const user = useSelector(state => state.user);
@@ -141,14 +140,8 @@ const useServerRequests = () => {
     return await response.json();
   };
 
-  const getMyMapsBbox = async (mapId) => {
-    if (isSelected) {
-      console.log(url.replace('/db', '/geotiff/bbox/' + mapId));
-      const bboxEndpoint = url.replace('/db', '/geotiff/bbox/' + mapId);
-      const response = await fetch(bboxEndpoint);
-      return handleResponse(response);
-    }
-    const response = await fetch(straboMyMapsApi + mapId);
+  const getMyMapsBbox = async (mapUrl) => {
+    const response = await fetch(mapUrl);
     return handleResponse(response);
   };
 
