@@ -1783,9 +1783,29 @@ PODS:
     - Yoga
   - RNSensors (7.3.6):
     - React-Core
-  - RNSentry (4.12.0):
+  - RNSentry (5.33.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
-    - Sentry/HybridSDK (= 7.31.3)
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Sentry/HybridSDK (= 8.36.0)
+    - Yoga
   - RNSketchCanvas (0.8.0):
     - React
   - RNSound (0.11.2):
@@ -1821,7 +1841,7 @@ PODS:
   - RNZipArchive/Core (7.0.1):
     - React-Core
     - SSZipArchive (~> 2.5.5)
-  - Sentry/HybridSDK (7.31.3)
+  - Sentry/HybridSDK (8.36.0)
   - SocketRocket (0.7.0)
   - SSZipArchive (2.5.5)
   - Turf (2.8.0)
@@ -2214,12 +2234,12 @@ SPEC CHECKSUMS:
   RNReanimated: b0912c8ba12f6c03db07c851c4de71c3eed6c83c
   RNScreens: 19719a9c326e925498ac3b2d35c4e50fe87afc06
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
-  RNSentry: 4c09f4dd9740cb9b33e94303de5b6d0dbeb0737d
+  RNSentry: e061a36f0669c5853a75097bc4be6db96bc71328
   RNSketchCanvas: 9c28adb5381543ed55cc98ce6de46479cb3cb12c
   RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
   RNVectorIcons: ef957b2a1cd5efb71e53397257ec4ccffa34d0c4
   RNZipArchive: 7bb4c70d6aa2dd235212c0a4a3de0a4e237e2569
-  Sentry: 08884c523575ec0f6690d94ed3ccb0246a1600bf
+  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SSZipArchive: c69881e8ac5521f0e622291387add5f60f30f3c4
   Turf: aa2ede4298009639d10db36aba1a7ebaad072a5e
