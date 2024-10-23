@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   fieldValueMultiline: {
     height: 75,
     verticalAlign: 'top',
+    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   formButton: {
     borderColor: themes.MEDIUMGREY,
