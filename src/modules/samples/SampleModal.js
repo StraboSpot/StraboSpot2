@@ -1,23 +1,25 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {ButtonGroup} from 'react-native-elements';
+import {Button, ButtonGroup, Image, Overlay, Switch} from 'react-native-elements';
 import Toast from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
+import IGSNModal from './IGSNModal';
 import {getNewId, isEmpty, numToLetter} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
 import {Form, FormSlider, useForm} from '../form';
-import {setLoadingStatus} from '../home/home.slice';
+import {setLoadingStatus, setModalVisible} from '../home/home.slice';
 import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
+import overlayStyles from '../home/overlays/overlay.styles';
 
 const SampleModal = (props) => {
   const dispatch = useDispatch();
@@ -33,6 +35,8 @@ const SampleModal = (props) => {
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
   const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
+  const [IGSNSwitchValue, setIGSNSwitchValue] = useState(false);
+  const [showIGSNModal, setShowIGSNModal] = useState(false);
 
   const formRef = useRef(null);
   const toastRef = useRef();
@@ -111,6 +115,15 @@ const SampleModal = (props) => {
         {cancelable: false},
       );
     }
+  };
+
+  const handleIGSNModalCancel = () => {
+    setShowIGSNModal(false);
+  };
+
+  const handleIGSNLogin = () => {
+    console.log('JHELEFJLJDFLSDFJSLDFJ');
+    setShowIGSNModal(false);
   };
 
   const getAllSamplesCount = async () => {
@@ -208,6 +221,7 @@ const SampleModal = (props) => {
       await currentForm.resetForm();
 
       if (newSample.sample_id_name) await checkSampleName(newSample.sample_id_name, toastRef);
+      if (IGSNSwitchValue) setShowIGSNModal(true);
     }
     catch (err) {
       console.error('Error saving Sample', err);
@@ -215,27 +229,61 @@ const SampleModal = (props) => {
     }
   };
 
+  const renderIGSNRegistrationView = () => {
+    return (
+      <IGSNModal
+        showIGSNModal={showIGSNModal}
+        onModalLogin={handleIGSNLogin}
+        onModalCancel={handleIGSNModalCancel}/>
+    );
+  };
+
+  const renderSampleMainContent = () => {
+    return (
+      <>
+        <FlatList
+          bounces={false}
+          ListHeaderComponent={
+            <Formik
+              innerRef={formRef}
+              initialValues={{
+                sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
+                inplaceness_of_sample: '5___definitely',
+              }}
+              onSubmit={values => console.log('Submitting form...', values)}
+              enableReinitialize={true}>
+              {formProps => <View style={{}}>{renderForm(formProps)}</View>}
+            </Formik>
+          }
+        />
+        <View>
+          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginStart: 30}}>
+            <View style={{alignItems: 'center'}}>
+              <Text>ADD </Text>
+              <Image
+                source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
+                style={{height: 30, width: 30, marginEnd: 10, marginTop: 5}}
+              />
+            </View>
+            <Switch
+              value={IGSNSwitchValue}
+              onValueChange={setIGSNSwitchValue}
+              trackColor={'green'}
+            />
+          </View>
+          <SaveButton
+            title={'Save Sample'}
+            onPress={() => saveForm(formRef.current)}
+          />
+        </View>
+      </>
+    );
+  };
+
   return (
     <Modal onPress={props.onPress}>
-      <FlatList
-        bounces={false}
-        ListHeaderComponent={
-          <Formik
-            innerRef={formRef}
-            initialValues={{
-              sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
-              inplaceness_of_sample: '5___definitely',
-            }}
-            onSubmit={values => console.log('Submitting form...', values)}
-            enableReinitialize={true}>
-            {formProps => <View style={{}}>{renderForm(formProps)}</View>}
-          </Formik>
-        }
-      />
-      <SaveButton
-        title={'Save Sample'}
-        onPress={() => saveForm(formRef.current)}
-      />
+      {showIGSNModal && renderIGSNRegistrationView()}
+      {renderSampleMainContent()}
       {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>
   );
