@@ -17,7 +17,6 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 
 const OverlaysContainer = ({
-                             animatedValueTextInputs,
                              closeNotebookPanel,
                              getCurrentZoom,
                              getExtentString,
@@ -76,7 +75,6 @@ const OverlaysContainer = ({
       <LoadingSpinner isLoading={isHomeLoading}/>
       {modalVisible && (
         <Dialog
-          animatedValueTextInputs={animatedValueTextInputs}
           closeNotebookPanel={closeNotebookPanel}
           openNotebookPanel={openNotebookPanel}
           zoomToCurrentLocation={zoomToCurrentLocation}
