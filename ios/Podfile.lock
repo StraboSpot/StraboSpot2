@@ -1369,7 +1369,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (4.11.0):
     - React-Core
-  - react-native-slider (4.5.3):
+  - react-native-slider (4.5.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1662,7 +1662,7 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.20.0):
+  - RNGestureHandler (2.20.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1694,7 +1694,7 @@ PODS:
     - React
     - React-Core
     - Turf
-  - RNReanimated (3.15.5):
+  - RNReanimated (3.16.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1714,10 +1714,32 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.15.5)
-    - RNReanimated/worklets (= 3.15.5)
+    - RNReanimated/reanimated (= 3.16.1)
+    - RNReanimated/worklets (= 3.16.1)
     - Yoga
-  - RNReanimated/reanimated (3.15.5):
+  - RNReanimated/reanimated (3.16.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated/apple (= 3.16.1)
+    - Yoga
+  - RNReanimated/reanimated/apple (3.16.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1738,7 +1760,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNReanimated/worklets (3.15.5):
+  - RNReanimated/worklets (3.16.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2196,7 +2218,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: c476f76d54f946df5147645e902d3d7173688187
   react-native-pdf: 103940c90d62adfd259f63cca99c7c0c306b514c
   react-native-safe-area-context: 851c62c48dce80ccaa5637b6aa5991a1bc36eca9
-  react-native-slider: e610b253698a56fb51c9303035d74c71651eb26b
+  react-native-slider: 4a0f3386a38fc3d2d955efc515aef7096f7d1ee4
   React-nativeconfig: 8c83d992b9cc7d75b5abe262069eaeea4349f794
   React-NativeModulesApple: 9f7920224a3b0c7d04d77990067ded14cee3c614
   React-perflogger: 59e1a3182dca2cee7b9f1f7aab204018d46d1914
@@ -2229,9 +2251,9 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 40ffda97d071a98a10fdca4fa97e3977102ccd14
   RNDeviceInfo: e13b7d68878fba693c9fbb13ca4d56ad57d95917
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 6dfe7692a191ee224748964127114edf057a1475
+  RNGestureHandler: 511250b190a284388f9dd0d2e56c1df76f14cfb8
   rnmapbox-maps: 86b215fe77632a897b34a2dbf0c3ad4e9e8c3570
-  RNReanimated: 625f9e7f53cba61d7b3436e8e6e209d1dd4e6e9b
+  RNReanimated: f42a5044d121d68e91680caacb0293f4274228eb
   RNScreens: 19719a9c326e925498ac3b2d35c4e50fe87afc06
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
   RNSentry: e061a36f0669c5853a75097bc4be6db96bc71328
