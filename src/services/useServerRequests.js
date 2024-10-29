@@ -135,6 +135,19 @@ const useServerRequests = () => {
     return `${STRABO_APIS.STRABO}/pi/`;
   };
 
+  const getMacrostratData = async (coords) => {
+    const params = {
+      lng: coords[0].toFixed(4),
+      lat: coords[1].toFixed(4),
+    };
+    const url = `https://macrostrat.org/api/v2/mobile/point?${new URLSearchParams(params).toString()}`;
+    console.log(url);
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+    return handleResponse(response);
+  };
+
   const getMapTilesFromHost = async (zipUrl) => {
     const response = await timeoutPromise(60000, fetch(zipUrl));
     return await response.json();
@@ -439,6 +452,7 @@ const useServerRequests = () => {
     getImage: getImage,
     getImageUrl: getImageUrl,
     getMapTilesFromHost: getMapTilesFromHost,
+    getMacrostratData: getMacrostratData,
     getMyMapsBbox: getMyMapsBbox,
     getMyProjects: getMyProjects,
     getProfile: getProfile,
