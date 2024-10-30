@@ -443,7 +443,7 @@ const Map = forwardRef(({
             spotsSelected={spotsSelected}
           />
       )}
-      {currentBasemap?.source === 'macrostrat' && (
+      {currentBasemap?.source === 'macrostrat' && isOnline && (
         <MacrostratOverlay
         visible={isShowMacrostratOverlay}
         closeModal={() => setIsShowMacrostratOverlay(false)}
