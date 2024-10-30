@@ -3,21 +3,23 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {setMapSymbols} from './maps.slice';
 import {isEmpty} from '../../shared/Helpers';
-import useSpotsHook from '../spots/useSpots';
+import {useSpots} from '../spots';
 
 const useMapFeatures = () => {
   const dispatch = useDispatch();
 
-  const useSpots = useSpotsHook();
+  const {getMappableSpots} = useSpots();
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
+  const isShowOnly1stMeas = useSelector(state => state.map.isShowOnly1stMeas);
+  const mapSymbols = useSelector(state => state.map.mapSymbols);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const stratSection = useSelector(state => state.map.stratSection);
 
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
-    const spotsWithGeometry = useSpots.getMappableSpots();      // Spots with geometry
+    const spotsWithGeometry = getMappableSpots();      // Spots with geometry
     let mappedSpots;
     if (currentImageBasemap) {
       mappedSpots = spotsWithGeometry.filter(
@@ -63,7 +65,9 @@ const useMapFeatures = () => {
     spotsToFeatures.map((spot) => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint')
         && !isEmpty(spot.properties.orientation_data)) {
-        spot.properties.orientation_data.map((orientation, i) => {
+        const measurements = isShowOnly1stMeas ? [spot.properties.orientation_data[0]]
+          : spot.properties.orientation_data;
+        measurements.map((orientation, i) => {
           if (!isEmpty(orientation)) {
             const feature = JSON.parse(JSON.stringify(spot));
             delete feature.properties.orientation_data;
@@ -111,7 +115,7 @@ const useMapFeatures = () => {
         }, []);
       return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
     }, []);
-    dispatch(setMapSymbols(featureTypes));
+    if (JSON.stringify(mapSymbols) !== JSON.stringify(featureTypes)) dispatch(setMapSymbols(featureTypes));
   };
 
   return {

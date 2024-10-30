@@ -10,9 +10,9 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {PAGE_KEYS} from '../page/page.constants';
-import usePageHook from '../page/usePage';
-import {SpotsListItem, useSpotsHook} from '../spots';
-import {useTagsHook} from '../tags';
+import usePage from '../page/usePage';
+import {SpotsListItem, useSpots} from '../spots';
+import {useTags} from '../tags';
 
 const TagDetail = ({
                      addRemoveFeatures,
@@ -21,15 +21,15 @@ const TagDetail = ({
                      openSpot,
                      setIsDetailModalVisible,
                    }) => {
-  const usePage = usePageHook();
-  const useSpots = useSpotsHook();
-  const useTags = useTagsHook();
+  const {getSpotDataIconSource} = usePage();
+  const {getSpotById} = useSpots();
+  const {getAllTaggedFeatures, getFeatureDisplayComponent, renderTagInfo} = useTags();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);
   const [refresh, setRefresh] = useState(false);
 
-  // selectedTag.spots.map((x, index) => console.log(index, x, useSpots.getSpotById(x)));
+  // selectedTag.spots.map((x, index) => console.log(index, x, getSpotById(x)));
 
   useEffect(() => {
     console.log('UE TagDetail [selectedTag]', selectedTag);
@@ -38,7 +38,7 @@ const TagDetail = ({
   }, [selectedTag]);
 
   const renderSpotFeatureItem = (feature) => {
-    const spot = useSpots.getSpotById(feature.parentSpotId);
+    const spot = getSpotById(feature.parentSpotId);
     const featureType = deepFindFeatureTypeById(spot.properties, feature.id);
     if (!isEmpty(spot)) {
       return (
@@ -48,13 +48,13 @@ const TagDetail = ({
           onPress={() => openFeatureDetail(spot, feature, featureType)}
         >
           <Avatar
-            source={usePage.getSpotDataIconSource(featureType)}
+            source={getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
-              {useTags.getFeatureDisplayComponent(featureType, feature)}
+              {getFeatureDisplayComponent(featureType, feature)}
             </ListItem.Title>
             <ListItem.Subtitle>{spot.properties.name}</ListItem.Subtitle>
           </ListItem.Content>
@@ -65,7 +65,7 @@ const TagDetail = ({
   };
 
   const renderSpotItem = (id) => {
-    const spot = useSpots.getSpotById(id);
+    const spot = getSpotById(id);
     return (
       <SpotsListItem
         doShowTags={true}
@@ -78,9 +78,9 @@ const TagDetail = ({
   const renderTaggedFeaturesList = () => {
     return (
       <FlatList
-        listKey={2}
-        keyExtractor={item => item.toString()}
-        data={useTags.getAllTaggedFeatures(selectedTag)}
+        listKey={'features'}
+        keyExtractor={item => 'Feature' + item.id.toString()}
+        data={getAllTaggedFeatures(selectedTag)}
         renderItem={({item}) => renderSpotFeatureItem(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
         ListEmptyComponent={<ListEmptyText text={'No Features'}/>}
@@ -93,19 +93,19 @@ const TagDetail = ({
       ListHeaderComponent={
         <>
           <SectionDividerWithRightButton
-            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Info' : 'Tag Info'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Geologic Unit Info' : 'Tag Info'}
             buttonTitle={'View/Edit'}
             onPress={setIsDetailModalVisible}
           />
-          {selectedTag && useTags.renderTagInfo()}
+          {selectedTag && renderTagInfo()}
           <SectionDividerWithRightButton
-            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots' : 'Tagged Spots'}
+            dividerText={selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS ? 'Spots W/Geologic Unit' : 'Tagged Spots'}
             buttonTitle={'Add/Remove'}
             onPress={addRemoveSpots}
           />
           <FlatList
-            listKey={1}
-            keyExtractor={item => item.toString()}
+            listKey={'spots'}
+            keyExtractor={item => 'Spot' + item.toString()}
             data={selectedTag.spots && selectedTag.spots.filter(spotId => spots[spotId])}
             renderItem={({item}) => renderSpotItem(item)}
             ItemSeparatorComponent={FlatListItemSeparator}

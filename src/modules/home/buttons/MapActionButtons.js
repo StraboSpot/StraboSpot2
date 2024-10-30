@@ -5,13 +5,13 @@ import {useSelector} from 'react-redux';
 
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
-import useMapHook from '../../maps/useMap';
+import useMap from '../../maps/useMap';
 import homeStyles from '../home.style';
 import {MapActionsOverlay, MapLayersOverlay, MapSymbolsOverlay, overlayStyles} from '../overlays';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
   const {height} = useWindowDimensions();
-  const useMap = useMapHook();
+  const {setBasemap} = useMap();
 
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -67,7 +67,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         overlayStyle={{...overlayStyles.baseMapPosition, maxHeight: height * 0.80, flex: 1}}
         mapComponentRef={mapComponentRef}
         onPress={(name) => {
-          useMap.setBasemap(name);
+          setBasemap(name);
           toggleDialog('baseMapMenuVisible');
         }}
         onTouchOutside={() => toggleDialog('baseMapMenuVisible')}

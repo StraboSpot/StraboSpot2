@@ -7,12 +7,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import useSedHook from '../sed/useSed';
+import useSed from '../sed/useSed';
 import {editedSpotProperties} from '../spots/spots.slice';
 
 const IntervalPage = ({page}) => {
@@ -20,8 +20,8 @@ const IntervalPage = ({page}) => {
 
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const useForm = useFormHook();
-  const useSed = useSedHook();
+  const {validateForm} = useForm();
+  const {saveSedFeature} = useSed();
 
   const intervalRef = useRef(null);
 
@@ -61,7 +61,7 @@ const IntervalPage = ({page}) => {
   };
 
   const saveInterval = async (formCurrent) => {
-    await useSed.saveSedFeature(page.key, spot, formCurrent);
+    await saveSedFeature(page.key, spot, formCurrent);
     await formCurrent.resetForm();
     dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
   };
@@ -78,7 +78,7 @@ const IntervalPage = ({page}) => {
         innerRef={intervalRef}
         onSubmit={() => console.log('Submitting form...')}
         onReset={() => console.log('Resetting form...')}
-        validate={values => useForm.validateForm({formName: formName, values: values})}
+        validate={values => validateForm({formName: formName, values: values})}
         initialValues={{...interval, character}}
         validateOnChange={false}
         enableReinitialize={true}

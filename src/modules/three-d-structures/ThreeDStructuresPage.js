@@ -10,7 +10,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import NotebookContentTopSection from '../../shared/ui/NotebookContentTopSection';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import {setSelectedAttributes} from '../spots/spots.slice';
@@ -24,7 +24,7 @@ const ThreeDStructuresPage = ({page}) => {
   const [selected3dStructure, setSelected3dStructure] = useState({});
   const [isDetailView, setIsDetailView] = useState(false);
 
-  const useForm = useFormHook();
+  const {getLabel} = useForm();
 
   const SECTIONS = {
     // FABRICS: {title: 'Fabrics', key: 'fabric'}, // Hidden here and displayed on Fabrics page as deprecated
@@ -62,7 +62,7 @@ const ThreeDStructuresPage = ({page}) => {
 
   const get3dStructureTitle = (threeDStructure) => {
     return threeDStructure.label
-      || toTitleCase(useForm.getLabel(threeDStructure.feature_type || threeDStructure.fault_or_sz_type,
+      || toTitleCase(getLabel(threeDStructure.feature_type || threeDStructure.fault_or_sz_type,
         ['_3d_structures', threeDStructure.type]).toUpperCase())
       || '';
   };

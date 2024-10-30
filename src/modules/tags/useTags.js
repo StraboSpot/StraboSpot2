@@ -1,12 +1,11 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {tagsStyles} from './index';
-import {deepFindFeatureById, getNewId, isEmpty, truncateText} from '../../shared/Helpers';
-import {Form, useFormHook} from '../form';
+import {deepFindFeatureById, isEmpty, toTitleCase, truncateText} from '../../shared/Helpers';
+import {useForm} from '../form';
 import MeasurementLabel from '../measurements/MeasurementLabel';
 import OtherFeatureLabel from '../other-features/OtherFeatureLabel';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
@@ -16,7 +15,6 @@ import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';
 
 const useTags = () => {
   const dispatch = useDispatch();
-  const addTagToSelectedSpot = useSelector(state => state.project.addTagToSelectedSpot);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const projectTags = useSelector(state => state.project.project?.tags) || [];
@@ -25,10 +23,7 @@ const useTags = () => {
   const selectedTag = useSelector(state => state.project.selectedTag);
   const spots = useSelector(state => state.spot.spots);
 
-  const formRef = useRef(null);
-  const useForm = useFormHook();
-
-  const formName = ['project', 'tags'];
+  const {getLabel} = useForm();
 
   // link unlink given tag and spot feature.
   const addRemoveSpotFeatureFromTag = (tag, feature, spotId) => {
@@ -131,7 +126,6 @@ const useTags = () => {
     dispatch(setSelectedTag({}));
   };
 
-
   const filterTagsByTagType = (tags, tagType) => {
     if (isEmpty(tagType)) return tags;
     const tagsByTagsType = tags.filter(tag => tag.type.toUpperCase().startsWith(tagType.toUpperCase()));
@@ -201,11 +195,6 @@ const useTags = () => {
     return tagsAtSpot.filter(tag => tag.type === 'geologic_unit');
   };
 
-  const getLabel = (key) => {
-    if (key) return useForm.getLabel(key, formName);
-    return 'No Type Specified';
-  };
-
   const getNonGeologicUnitFeatureTagsAtSpot = (featuresAtSpot) => {
     const featureTagsAtSpot = getFeatureTagsAtSpot(featuresAtSpot);
     return featureTagsAtSpot.filter(tag => tag.type !== 'geologic_unit');
@@ -241,28 +230,18 @@ const useTags = () => {
     return projectTags.filter(tag => tag.spots && tag.spots.includes(spotId));
   };
 
-  const renderTagForm = (type) => {
-    return (
-      <View style={{flex: 1}}>
-        <Formik
-          innerRef={formRef}
-          onSubmit={() => console.log('Submitting form...')}
-          validate={values => useForm.validateForm({formName: formName, values: values})}
-          component={formProps => Form({formName: formName, ...formProps})}
-          initialValues={isEmpty(selectedTag) && type ? {type: type} : selectedTag}
-          initialStatus={{formName: formName}}
-          enableReinitialize={true}
-        />
-      </View>
-    );
+  const getTagLabel = (key) => {
+    const formName = key && key === PAGE_KEYS.GEOLOGIC_UNITS ? ['project', 'geologic_unit'] : ['project', 'tags'];
+    if (key) return getLabel(key, formName);
+    return 'No Type Specified';
   };
 
   const renderTagInfo = () => {
-    let type = selectedTag.type ? getLabel(selectedTag.type) : 'No type specified';
+    let type = selectedTag.type ? getTagLabel(selectedTag.type) : 'No type specified';
     if (selectedTag.type === 'other' && selectedTag.other_type) type = selectedTag.other_type;
     const subtypeFields = ['other_concept_type', 'other_documentation_type', 'concept_type', 'documentation_type'];
     const subTypeField = subtypeFields.find(subtype => selectedTag[subtype]);
-    const subType = subTypeField ? getLabel(selectedTag[subTypeField]) : undefined;
+    const subType = subTypeField ? getTagLabel(selectedTag[subTypeField]) : undefined;
     const rockUnitFields = ['unit_label_abbreviation', 'map_unit_name', 'member_name', 'rock_type'];
     let rockUnitString = rockUnitFields.reduce((acc, field) => {
       if (selectedTag[field]) return acc + (!isEmpty(acc) ? ' / ' : '') + selectedTag[field];
@@ -271,32 +250,11 @@ const useTags = () => {
     const notes = selectedTag.notes ? truncateText(selectedTag.notes, 100) : undefined;
     return (
       <View style={tagsStyles.sectionContainer}>
-        {<Text style={tagsStyles.listText}>{type}{subType && ' - ' + subType.toUpperCase()}</Text>}
+        {<Text style={tagsStyles.listText}>{toTitleCase(type)}{subType && ' - ' + subType.toUpperCase()}</Text>}
         {!isEmpty(rockUnitString) && <Text style={tagsStyles.listText}>{rockUnitString}</Text>}
         {notes && <Text style={tagsStyles.listText}>Notes: {notes}</Text>}
       </View>
     );
-  };
-
-  const saveForm = async () => {
-    try {
-      await formRef.current.submitForm();
-      const formValues = useForm.showErrors(formRef.current);
-      console.log('Saving tag data to Project ...');
-      console.log('Form values', formValues);
-      let updatedTag = formValues;
-      if (!updatedTag.id) updatedTag.id = getNewId();
-      if (addTagToSelectedSpot) {
-        if (!updatedTag.spots) updatedTag.spots = [];
-        updatedTag.spots.push(selectedSpot.properties.id);
-      }
-      saveTag(updatedTag);
-      return Promise.resolve();
-    }
-    catch (e) {
-      console.log('Error submitting form', e);
-      return Promise.reject();
-    }
   };
 
   const saveTag = (tagToSave) => {
@@ -354,16 +312,14 @@ const useTags = () => {
     getFeatureDisplayComponent: getFeatureDisplayComponent,
     getGeologicUnitFeatureTagsAtSpot: getGeologicUnitFeatureTagsAtSpot,
     getGeologicUnitTagsAtSpot: getGeologicUnitTagsAtSpot,
-    getLabel: getLabel,
     getNonGeologicUnitFeatureTagsAtSpot: getNonGeologicUnitFeatureTagsAtSpot,
     getNonGeologicUnitTagsAtSpot: getNonGeologicUnitTagsAtSpot,
     getTagFeaturesCount: getTagFeaturesCount,
+    getTagLabel: getTagLabel,
     getTagSpotsCount: getTagSpotsCount,
     getTagsAtFeature: getTagsAtFeature,
     getTagsAtSpot: getTagsAtSpot,
-    renderTagForm: renderTagForm,
     renderTagInfo: renderTagInfo,
-    saveForm: saveForm,
     saveTag: saveTag,
     setFeaturesSelectedForMultiTagging: setFeaturesSelectedForMultiTagging,
     tagSpotExists: tagSpotExists,

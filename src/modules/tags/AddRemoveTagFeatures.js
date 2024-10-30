@@ -11,14 +11,14 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import usePageHook from '../page/usePage';
-import {useSpotsHook} from '../spots';
-import {useTagsHook} from '../tags';
+import usePage from '../page/usePage';
+import {useSpots} from '../spots';
+import {useTags} from '../tags';
 
 const AddRemoveTagFeatures = () => {
-  const usePage = usePageHook();
-  const useSpots = useSpotsHook();
-  const useTags = useTagsHook();
+  const {getSpotDataIconSource} = usePage();
+  const {getAllFeaturesFromSpot} = useSpots();
+  const {addRemoveSpotFeatureFromTag, getFeatureDisplayComponent} = useTags();
 
   const dispatch = useDispatch();
   const selectedTag = useSelector(state => state.project.selectedTag);
@@ -34,16 +34,16 @@ const AddRemoveTagFeatures = () => {
       return (
         <ListItem
           containerStyle={commonStyles.listItem}
-          onPress={() => useTags.addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
+          onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
         >
           <Avatar
-            source={usePage.getSpotDataIconSource(featureType)}
+            source={getSpotDataIconSource(featureType)}
             placeholderStyle={{backgroundColor: 'transparent'}}
             size={20}
           />
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
-              {useTags.getFeatureDisplayComponent(featureType, feature)}
+              {getFeatureDisplayComponent(featureType, feature)}
             </ListItem.Title>
             <ListItem.Subtitle>{spot.properties.name || spotId}</ListItem.Subtitle>
           </ListItem.Content>
@@ -51,7 +51,7 @@ const AddRemoveTagFeatures = () => {
             checked={!isEmpty(selectedTag) && !isEmpty(selectedTag.features)
               && !isEmpty(selectedTag.features[spotId])
               && selectedTag.features[spotId].includes(feature.id)}
-            onPress={() => useTags.addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
+            onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
           />
         </ListItem>
       );
@@ -67,7 +67,7 @@ const AddRemoveTagFeatures = () => {
       />
       <View style={{...commonStyles.buttonContainer, flex: 1}}>
         <FlatList
-          data={useSpots.getAllFeaturesFromSpot()}
+          data={getAllFeaturesFromSpot()}
           renderItem={({item}) => renderSpotFeatureItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
           ListEmptyComponent={<ListEmptyText text={'No Features in Active Datasets'}/>}

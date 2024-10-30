@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import signInStyles from './signIn.styles';
-import useSignInHook from './useSignIn';
+import useSignIn from './useSignIn';
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
@@ -29,12 +29,12 @@ const SignIn = ({navigation, route}) => {
   const [password, setPassword] = useState(__DEV__ ? PASSWORD_TEST : '');
   const [username, setUsername] = useState(__DEV__ ? USERNAME_TEST : '');
 
-  const useSignIn = useSignInHook();
+  const {guestSignIn, signIn} = useSignIn();
 
   const handleSignIn = async () => {
     try {
       setLoading(true);
-      await useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
+      await signIn(username, password, setUsername, setPassword, setErrorMessage, setIsErrorModalVisible);
       setLoading(false);
     }
     catch (err) {
@@ -43,7 +43,7 @@ const SignIn = ({navigation, route}) => {
   };
 
   const handleGuestSignIn = async () => {
-    await useSignIn.guestSignIn();
+    await guestSignIn();
     dispatch(login());
   };
 
@@ -53,7 +53,7 @@ const SignIn = ({navigation, route}) => {
         <Button
           type={'solid'}
           containerStyle={signInStyles.buttonContainer}
-          onPress={() => handleSignIn()}
+          onPress={handleSignIn}
           buttonStyle={signInStyles.buttonStyle}
           disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
           title={'Log In'}
@@ -68,7 +68,7 @@ const SignIn = ({navigation, route}) => {
         />
         <Button
           type={'solid'}
-          onPress={() => handleGuestSignIn()}
+          onPress={handleGuestSignIn}
           containerStyle={signInStyles.buttonContainer}
           buttonStyle={signInStyles.buttonStyle}
           title={'Continue as Guest'}
@@ -112,7 +112,7 @@ const SignIn = ({navigation, route}) => {
             onChangeText={val => setPassword(val)}
             value={password || ''}
             returnKeyType={'go'}
-            onSubmitEditing={() => useSignIn.signIn(username, password, setUsername, setPassword, setErrorMessage,
+            onSubmitEditing={() => signIn(username, password, setUsername, setPassword, setErrorMessage,
               setIsErrorModalVisible)}
           />
           {renderButtons()}

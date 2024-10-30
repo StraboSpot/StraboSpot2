@@ -6,13 +6,13 @@ import {useSelector} from 'react-redux';
 
 import {isEmpty, truncateText} from '../../../shared/Helpers';
 import {MAP_MODES} from '../../maps/maps.constants';
-import useProjectHook from '../../project/useProject';
+import useProject from '../../project/useProject';
 import homeStyles from '../home.style';
 
 const DrawInfo = ({distance, endMeasurement, mapMode, onEndDrawPressed}) => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
-  const useProject = useProjectHook();
+  const {getSelectedDatasetFromId} = useProject();
 
   return (
     !isEmpty(selectedDatasetId)
@@ -27,7 +27,7 @@ const DrawInfo = ({distance, endMeasurement, mapMode, onEndDrawPressed}) => {
             <>
               <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
               <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
-                {truncateText(useProject.getSelectedDatasetFromId().name, 20)}
+                {truncateText(getSelectedDatasetFromId().name, 20)}
               </Text>
             </>
           )}

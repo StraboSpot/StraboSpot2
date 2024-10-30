@@ -11,16 +11,16 @@ import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
 import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
-import useMapSymbologyHook from './symbology/useMapSymbology';
-import useMapCoordsHook from './useMapCoords';
-import useMapFeaturesHook from './useMapFeatures';
-import useMapURLHook from './useMapURL';
-import useMapViewHook from './useMapView';
+import useMapSymbology from './symbology/useMapSymbology';
+import useMapCoords from './useMapCoords';
+import useMapFeatures from './useMapFeatures';
+import useMapURL from './useMapURL';
+import useMapView from './useMapView';
 import VertexDrag from './VertexDrag';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
-import useImagesHook from '../images/useImages';
+import {useImages} from '../images';
 import FreehandSketch from '../sketch/FreehandSketch';
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
@@ -51,12 +51,12 @@ const Basemap = ({
 
   const {mapRef, cameraRef} = forwardedRef;
 
-  const useImages = useImagesHook();
-  const useMapCoords = useMapCoordsHook();
-  const useMapFeatures = useMapFeaturesHook();
-  const useMapSymbology = useMapSymbologyHook();
-  const useMapURL = useMapURLHook();
-  const useMapView = useMapViewHook();
+  const {doesImageExistOnDevice, getLocalImageURI} = useImages();
+  const {getCoordQuad} = useMapCoords();
+  const {getSpotsAsFeatures} = useMapFeatures();
+  const {addSymbology, getLinesFilteredByPattern, getMapSymbology} = useMapSymbology();
+  const {buildTileURL} = useMapURL();
+  const {getInitialViewState, setMapView} = useMapView();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [initialCenter, setInitialCenter] = useState();
@@ -67,13 +67,11 @@ const Basemap = ({
 
   const cameraChangedTimestampRef = useRef(0);
 
-  const coordQuad = useMapCoords.getCoordQuad(currentImageBasemap);
+  const coordQuad = getCoordQuad(currentImageBasemap);
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
-  const featuresNotSelected = turf.featureCollection(
-    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsNotSelected)));
-  const featuresSelected = turf.featureCollection(
-    useMapFeatures.getSpotsAsFeatures(useMapSymbology.addSymbology(spotsSelected)));
+  const featuresNotSelected = turf.featureCollection(getSpotsAsFeatures(addSymbology(spotsNotSelected)));
+  const featuresSelected = turf.featureCollection(getSpotsAsFeatures(addSymbology(spotsSelected)));
 
   // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
   const featuresNotSelectedUniq = turf.featureCollection(
@@ -85,8 +83,8 @@ const Basemap = ({
 
   useEffect(() => {
       // console.log('UE Basemap');
-    if (!isMapMoved) dispatch(setIsMapMoved(true));
-    const {longitude, latitude, zoom} = useMapView.getInitialViewState();
+      if (!isMapMoved) dispatch(setIsMapMoved(true));
+      const {longitude, latitude, zoom} = getInitialViewState();
       console.log('Got initial center [' + longitude + ', ' + latitude + '] and zoom', zoom);
       setInitialCenter([longitude, latitude]);
       setInitialZoom(zoom);
@@ -99,7 +97,7 @@ const Basemap = ({
   }, [currentImageBasemap]);
 
   const checkImageExistence = async () => {
-    return useImages.doesImageExistOnDevice(currentImageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
+    return doesImageExistOnDevice(currentImageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
   // Update spots in extent and saved view (center and zoom)
@@ -113,7 +111,7 @@ const Basemap = ({
         const newCenter = await mapRef.current.getCenter();
         const newZoom = await mapRef.current.getZoom();
         setZoomText(newZoom);   // Update scale bar and zoom text
-        useMapView.setMapView(newCenter, newZoom);
+        setMapView(newCenter, newZoom);
       }
     }
   };
@@ -186,7 +184,7 @@ const Basemap = ({
               <MapboxGL.RasterSource
                 key={customMap.id}
                 id={customMap.id}
-                tileUrlTemplates={[useMapURL.buildTileURL(customMap)]}
+                tileUrlTemplates={[buildTileURL(customMap)]}
               >
                 <MapboxGL.RasterLayer
                   aboveLayerID={basemap.id}
@@ -214,7 +212,7 @@ const Basemap = ({
           <MapboxGL.ImageSource
             id={'currentImageBasemap'}
             coordinates={coordQuad}
-            url={useImages.getLocalImageURI(currentImageBasemap.id)}>
+            url={getLocalImageURI(currentImageBasemap.id)}>
             <MapboxGL.RasterLayer
               id={'imageBasemapLayer'}
               style={{rasterOpacity: 1}}
@@ -240,7 +238,7 @@ const Basemap = ({
             id={'pointLayerSelectedHalo'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointSelected}
+            style={getMapSymbology().pointSelected}
           />
         </MapboxGL.ShapeSource>
 
@@ -253,7 +251,7 @@ const Basemap = ({
             id={'pointLayerColorHalo'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointColorHalo}
+            style={getMapSymbology().pointColorHalo}
           />
         </MapboxGL.ShapeSource>
 
@@ -273,14 +271,14 @@ const Basemap = ({
             id={'polygonLayerNotSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]]}
-            style={useMapSymbology.getMapSymbology().polygon}
+            style={getMapSymbology().polygon}
           />
           <MapboxGL.FillLayer
             id={'polygonLayerWithPatternNotSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
             style={{
-              ...useMapSymbology.getMapSymbology().polygonWithPattern,
+              ...getMapSymbology().polygonWithPattern,
               visibility: stratSection && isStratStyleLoaded ? 'visible' : 'none',
             }}
           />
@@ -288,13 +286,13 @@ const Basemap = ({
             id={'polygonLayerNotSelectedBorder'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().line}
+            style={getMapSymbology().line}
           />
           <MapboxGL.SymbolLayer
             id={'polygonLabelLayerNotSelected'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().polygonLabel}
+            style={getMapSymbology().polygonLabel}
           />
 
           {/* Line Not Selected */}
@@ -303,32 +301,32 @@ const Basemap = ({
           <MapboxGL.LineLayer
             id={'lineLayerNotSelected'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('solid')}
-            style={useMapSymbology.getMapSymbology().line}
+            filter={getLinesFilteredByPattern('solid')}
+            style={getMapSymbology().line}
           />
           <MapboxGL.LineLayer
             id={'lineLayerNotSelectedDotted'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('dotted')}
-            style={useMapSymbology.getMapSymbology().lineDotted}
+            filter={getLinesFilteredByPattern('dotted')}
+            style={getMapSymbology().lineDotted}
           />
           <MapboxGL.LineLayer
             id={'lineLayerNotSelectedDashed'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('dashed')}
-            style={useMapSymbology.getMapSymbology().lineDashed}
+            filter={getLinesFilteredByPattern('dashed')}
+            style={getMapSymbology().lineDashed}
           />
           <MapboxGL.LineLayer
             id={'lineLayerNotSelectedDotDashed'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
-            style={useMapSymbology.getMapSymbology().lineDotDashed}
+            filter={getLinesFilteredByPattern('dotDashed')}
+            style={getMapSymbology().lineDotDashed}
           />
           <MapboxGL.SymbolLayer
             id={'lineLabelLayerNotSelected'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'LineString']}
-            style={useMapSymbology.getMapSymbology().lineLabel}
+            style={getMapSymbology().lineLabel}
           />
 
           {/* Point Not Selected */}
@@ -336,7 +334,7 @@ const Basemap = ({
             id={'pointLayerNotSelected'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().point}
+            style={getMapSymbology().point}
           />
         </MapboxGL.ShapeSource>
 
@@ -350,14 +348,14 @@ const Basemap = ({
             id={'polygonLayerSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['!', ['has', 'fillPattern', ['get', 'symbology']]]]}
-            style={useMapSymbology.getMapSymbology().polygonSelected}
+            style={getMapSymbology().polygonSelected}
           />
           <MapboxGL.FillLayer
             id={'polygonLayerWithPatternSelected'}
             minZoomLevel={1}
             filter={['all', ['==', ['geometry-type'], 'Polygon'], ['has', 'fillPattern', ['get', 'symbology']]]}
             style={{
-              ...useMapSymbology.getMapSymbology().polygonWithPatternSelected,
+              ...getMapSymbology().polygonWithPatternSelected,
               visibility: stratSection && isStratStyleLoaded ? 'visible' : 'none',
             }}
           />
@@ -365,13 +363,13 @@ const Basemap = ({
             id={'polygonLayerSelectedBorder'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().line}
+            style={getMapSymbology().line}
           />
           <MapboxGL.SymbolLayer
             id={'polygonLabelLayerSelected'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().polygonLabel}
+            style={getMapSymbology().polygonLabel}
           />
 
           {/* Line Selected */}
@@ -380,32 +378,32 @@ const Basemap = ({
           <MapboxGL.LineLayer
             id={'lineLayerSelected'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('solid')}
-            style={useMapSymbology.getMapSymbology().lineSelected}
+            filter={getLinesFilteredByPattern('solid')}
+            style={getMapSymbology().lineSelected}
           />
           <MapboxGL.LineLayer
             id={'lineLayerSelectedDotted'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('dotted')}
-            style={useMapSymbology.getMapSymbology().lineSelectedDotted}
+            filter={getLinesFilteredByPattern('dotted')}
+            style={getMapSymbology().lineSelectedDotted}
           />
           <MapboxGL.LineLayer
             id={'lineLayerSelectedDashed'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('dashed')}
-            style={useMapSymbology.getMapSymbology().lineSelectedDashed}
+            filter={getLinesFilteredByPattern('dashed')}
+            style={getMapSymbology().lineSelectedDashed}
           />
           <MapboxGL.LineLayer
             id={'lineLayerSelectedDotDashed'}
             minZoomLevel={1}
-            filter={useMapSymbology.getLinesFilteredByPattern('dotDashed')}
-            style={useMapSymbology.getMapSymbology().lineSelectedDotDashed}
+            filter={getLinesFilteredByPattern('dotDashed')}
+            style={getMapSymbology().lineSelectedDotDashed}
           />
           <MapboxGL.SymbolLayer
             id={'lineLabelLayerSelected'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'LineString']}
-            style={useMapSymbology.getMapSymbology().lineLabel}
+            style={getMapSymbology().lineLabel}
           />
 
         </MapboxGL.ShapeSource>
@@ -419,19 +417,19 @@ const Basemap = ({
             id={'pointLayerDraw'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointDraw}
+            style={getMapSymbology().pointDraw}
           />
           <MapboxGL.LineLayer
             id={'lineLayerDraw'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'LineString']}
-            style={useMapSymbology.getMapSymbology().lineDraw}
+            style={getMapSymbology().lineDraw}
           />
           <MapboxGL.FillLayer
             id={'polygonLayerDraw'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Polygon']}
-            style={useMapSymbology.getMapSymbology().polygonDraw}
+            style={getMapSymbology().polygonDraw}
           />
         </MapboxGL.ShapeSource>
 
@@ -444,7 +442,7 @@ const Basemap = ({
             id={'pointLayerEdit'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointEdit}
+            style={getMapSymbology().pointEdit}
           />
         </MapboxGL.ShapeSource>
 
@@ -462,13 +460,13 @@ const Basemap = ({
             id={'measureLayerPoints'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'Point']}
-            style={useMapSymbology.getMapSymbology().pointMeasure}
+            style={getMapSymbology().pointMeasure}
           />
           <MapboxGL.LineLayer
             id={'measureLayerLines'}
             minZoomLevel={1}
             filter={['==', ['geometry-type'], 'LineString']}
-            style={useMapSymbology.getMapSymbology().lineMeasure}
+            style={getMapSymbology().lineMeasure}
           />
         </MapboxGL.ShapeSource>
       </MapboxGL.MapView>

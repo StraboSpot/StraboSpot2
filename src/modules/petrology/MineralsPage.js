@@ -5,7 +5,7 @@ import {Field, Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import commonStyles from '../../shared/common.styles';
 import {getNewCopyId, isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -17,8 +17,8 @@ import BasicListItem from '../page/BasicListItem';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const MineralsPage = ({page}) => {
   const dispatch = useDispatch();
@@ -31,8 +31,8 @@ const MineralsPage = ({page}) => {
 
   const preFormRef = useRef(null);
 
-  const useSpots = useSpotsHook();
-  const usePetrology = usePetrologyHook();
+  const {getSpotById, getSpotsWithKey} = useSpots();
+  const {getMineralTitle} = usePetrology();
 
   useEffect(() => {
     console.log('UE MineralsPage []');
@@ -54,7 +54,7 @@ const MineralsPage = ({page}) => {
   };
 
   const copyMineralData = (spotId) => {
-    const spotToCopy = useSpots.getSpotById(spotId);
+    const spotToCopy = getSpotById(spotId);
     if (!isEmpty(spotToCopy)) {
       const mineralsToCopy = JSON.parse(JSON.stringify(spotToCopy.properties.pet[page.key]));
       mineralsToCopy.forEach((mineral, i) => {
@@ -78,7 +78,7 @@ const MineralsPage = ({page}) => {
   };
 
   const getSpotsWithMinerals = () => {
-    const allSpotsWithPet = useSpots.getSpotsWithKey('pet');
+    const allSpotsWithPet = getSpotsWithKey('pet');
     setSpotsWithMinerals(allSpotsWithPet.filter(s => s.properties.id !== spot.properties.id
       && s.properties.pet && s.properties.pet[page.key]));
   };
@@ -112,8 +112,7 @@ const MineralsPage = ({page}) => {
   const renderMineralsList = () => {
     let mineralData = spot.properties.pet && spot.properties.pet[page.key] || [];
     if (!Array.isArray(mineralData)) mineralData = [];
-    const mineralDataSorted = mineralData.slice().sort(
-      (a, b) => usePetrology.getMineralTitle(a).localeCompare(usePetrology.getMineralTitle(b)));
+    const mineralDataSorted = mineralData.slice().sort((a, b) => getMineralTitle(a).localeCompare(getMineralTitle(b)));
     return (
       <>
         <SectionDividerWithRightButton

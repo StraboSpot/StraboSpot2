@@ -3,12 +3,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getNewId, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {COMPASS_TOGGLE_BUTTONS} from '../compass/compass.constants';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 const useMeasurements = () => {
   const dispatch = useDispatch();
@@ -19,8 +19,8 @@ const useMeasurements = () => {
   const spot = useSelector(state => state.spot.selectedSpot);
   const useMeasurementTemplates = useSelector(state => state.project.project?.templates?.useMeasurementTemplates);
 
-  const useForm = useFormHook();
-  const useTags = useTagsHook();
+  const {getLabel} = useForm();
+  const {deleteFeatureTags} = useTags();
 
   const createNewMeasurement = () => {
     let measurements = [];
@@ -95,7 +95,7 @@ const useMeasurements = () => {
 
   const deleteMeasurements = (measurementsToDelete) => {
     console.log('Deleting measurements...', measurementsToDelete);
-    useTags.deleteFeatureTags(measurementsToDelete);
+    deleteFeatureTags(measurementsToDelete);
     let flattenedMeasurementsToDelete = measurementsToDelete.reduce((acc, meas) => {
       if (meas.associated_orientation) {
         const assocOrientations = meas.associated_orientation.reduce((acc1, aO) => [...acc1, aO], []);
@@ -113,8 +113,8 @@ const useMeasurements = () => {
     dispatch(setSelectedAttributes([]));
   };
 
-  const getLabel = (key) => {
-    return useForm.getLabel(key, ['measurement']);
+  const getMeasurementLabel = (key) => {
+    return getLabel(key, ['measurement']);
   };
 
   const removeMeasurementFromObj = (currentOrientationData, measurementToDelete) => {
@@ -147,7 +147,7 @@ const useMeasurements = () => {
   return {
     createNewMeasurement: createNewMeasurement,
     deleteMeasurements: deleteMeasurements,
-    getLabel: getLabel,
+    getMeasurementLabel: getMeasurementLabel,
   };
 };
 

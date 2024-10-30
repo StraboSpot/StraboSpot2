@@ -2,7 +2,7 @@ import {useEffect} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import {login, logout} from '../user/userProfile.slice';
 
 const useAuthentication = () => {
@@ -11,7 +11,7 @@ const useAuthentication = () => {
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
   const isOnline = useSelector(state => state.connections.isOnline.isInternetReachable);
 
-  const useServerRequests = useServerRequestsHook();
+  const {authenticateUser} = useServerRequests();
 
   let timeout;
 
@@ -24,11 +24,13 @@ const useAuthentication = () => {
   }, [isAuthenticated, isOnline]);
 
   const checkAuthentication = async () => {
-    const credentials = atob(encodedLogin);
-    const email = credentials.split(':')[0];
-    const password = credentials.split(':')[1];
-    await authenticateUser(email, password);
-    console.log('Passed Authentication Check');
+    if (encodedLogin) {
+      const credentials = atob(encodedLogin);
+      const email = credentials.split(':')[0];
+      const password = credentials.split(':')[1];
+      await doAuthenticateUser(email, password);
+      console.log('Passed Authentication Check');
+    }
     checkAuthenticationRestartTimer();
   };
 
@@ -41,10 +43,10 @@ const useAuthentication = () => {
     }, 10000 * 30);  // 300 Seconds (5 minutes)
   };
 
-  const authenticateUser = async (email, password) => {
+  const doAuthenticateUser = async (email, password) => {
     try {
       console.log('Authenticating user...');
-      const userAuthResponse = await useServerRequests.authenticateUser(email, password);
+      const userAuthResponse = await authenticateUser(email, password);
       if (userAuthResponse?.valid === 'true') {
         if (!isAuthenticated) dispatch(login());
         console.log('User Authenticated.');

@@ -9,8 +9,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import projectOptionsModalStyle from './projectOptionsModal.style';
 import {APP_DIRECTORIES} from '../../../../services/directories.constants';
 import {STRABO_APIS} from '../../../../services/urls.constants';
-import useDeviceHook from '../../../../services/useDevice';
-import useExportHook from '../../../../services/useExport';
+import useDevice from '../../../../services/useDevice';
+import useExport from '../../../../services/useExport';
 import commonStyles from '../../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../../shared/Helpers';
 import modalStyle from '../../../../shared/ui/modal/modal.style';
@@ -18,14 +18,11 @@ import ModalHeader from '../../../../shared/ui/modal/ModalHeader';
 import Spacer from '../../../../shared/ui/Spacer';
 import uiStyles from '../../../../shared/ui/ui.styles';
 import LottieAnimations from '../../../../utils/animations/LottieAnimations';
-import {
-  setLoadingStatus,
-  setIsProgressModalVisible,
-} from '../../../home/home.slice';
+import {setIsProgressModalVisible, setLoadingStatus} from '../../../home/home.slice';
 import overlayStyles from '../../../home/overlays/overlay.styles';
 import {BACKUP_TO_DEVICE, BACKUP_TO_SERVER, OVERWRITE} from '../../project.constants';
 import {setSelectedProject} from '../../projects.slice';
-import useProjectHook from '../../useProject';
+import useProject from '../../useProject';
 
 const ProjectOptionsDialogBox = ({
                                    closeModal,
@@ -49,10 +46,10 @@ const ProjectOptionsDialogBox = ({
   const [isProgressModalVisibleLocal, setIsProgressModalVisibleLocal] = useState(false);
   const [projectToDeleteName, setProjectToDeleteName] = useState('');
 
-  const useProject = useProjectHook();
+  const {switchProject} = useProject();
   const toast = useToast();
-  const useDevice = useDeviceHook();
-  const useExport = useExportHook();
+  const {deleteFromDevice} = useDevice();
+  const {initializeBackup, zipAndExportProjectFolder} = useExport();
 
   useEffect(() => {
     console.log('Images Included:', includeImages);
@@ -74,7 +71,7 @@ const ProjectOptionsDialogBox = ({
       setTimeout(async () => {
         setChecked(1);
         setProjectToDeleteName(selectedProject?.project?.fileName || '');
-        await useDevice.deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
+        await deleteFromDevice(APP_DIRECTORIES.BACKUP_DIR, selectedProject.project.fileName);
         setDeletingProjectStatus('complete');
         projectDeleted(true);
       }, 1000);
@@ -91,7 +88,7 @@ const ProjectOptionsDialogBox = ({
       console.log('FileName', exportFileName);
       closeModal();
       dispatch(setLoadingStatus({view: 'home', bool: true}));
-      await useExport.zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
+      await zipAndExportProjectFolder(selectedProject.project.fileName, exportFileName, true);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
       console.log('Project has been exported to Downloads folder!');
       toast.show('Project has been exported!');
@@ -113,7 +110,7 @@ const ProjectOptionsDialogBox = ({
     }
     else if (userAction === OVERWRITE) {
       closeModal();
-      await useProject.switchProject(OVERWRITE);
+      await switchProject(OVERWRITE);
       console.log('Project overwritten!');
     }
     else {
@@ -146,7 +143,7 @@ const ProjectOptionsDialogBox = ({
       console.log('Saving Project to Device');
       setErrorMessage('');
       closeModal();
-      await useExport.initializeBackup(backupFileName);
+      await initializeBackup(backupFileName);
     }
   };
 

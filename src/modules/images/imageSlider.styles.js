@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-const styles = StyleSheet.create({
+const imageSliderStyles = StyleSheet.create({
   buttonsContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default imageSliderStyles;

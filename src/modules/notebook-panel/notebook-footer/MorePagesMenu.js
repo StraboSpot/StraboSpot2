@@ -8,7 +8,7 @@ import footerStyles from './notebookFooter.styles';
 import {isEmpty} from '../../../shared/Helpers';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import overlayStyles from '../../home/overlays/overlay.styles';
-import usePageHook from '../../page/usePage';
+import usePage from '../../page/usePage';
 import {addedNotebookPageOn, removedNotebookPageOn, setNotebookPageVisible} from '../notebook.slice';
 
 const MorePagesMenu = ({
@@ -18,11 +18,11 @@ const MorePagesMenu = ({
   const dispatch = useDispatch();
   const notebookPagesOn = useSelector(state => state.notebook.notebookPagesOn);
 
-  const usePage = usePageHook();
+  const {getRelevantGeneralPages, getRelevantPetPages, getRelevantSedPages} = usePage();
 
-  const generalPagesToShow = usePage.getRelevantGeneralPages();
-  const petPagesToShow = usePage.getRelevantPetPages();
-  const sedPagesToShow = usePage.getRelevantSedPages();
+  const generalPagesToShow = getRelevantGeneralPages();
+  const petPagesToShow = getRelevantPetPages();
+  const sedPagesToShow = getRelevantSedPages();
 
   const switchPage = (key) => {
     dispatch(setNotebookPageVisible(key));

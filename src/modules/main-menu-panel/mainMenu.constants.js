@@ -8,7 +8,7 @@ export const MAIN_MENU_ITEMS = {
     // DATABASE_DETAILS: 'Database Details',
   },
   ATTRIBUTES: {
-    SPOTS_LIST: 'Spots List',
+    SPOTS: 'Spots',
     IMAGE_GALLERY: 'Image Gallery',
     SAMPLES: 'Samples',
     GEOLOGIC_UNITS: 'Geologic Units',
@@ -33,11 +33,9 @@ export const MAIN_MENU_ITEMS = {
   },
 };
 
-export const SORTED_VIEWS = {
-  CHRONOLOGICAL: 'CHRONOLOGICAL',
-  MAP_EXTENT: 'MAP_EXTENT',
-  RECENT_VIEWS: 'RECENT_VIEWS',
-};
+export const MAIN_MENU_DATA = Object.entries(MAIN_MENU_ITEMS).map(([key, value]) => {
+  return {title: key, data: Object.values(value)};
+});
 
 export const SIDE_PANEL_VIEWS = {
   MANAGE_CUSTOM_MAP: 'manageCustomMap',

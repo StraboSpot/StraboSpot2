@@ -17,9 +17,9 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import {setModalVisible} from '../home/home.slice';
 import Overview from '../page/Overview';
 import {NOTEBOOK_PAGES, PAGE_KEYS, SUBPAGES} from '../page/page.constants';
-import usePageHook from '../page/usePage';
+import usePage from '../page/usePage';
 import {setMultipleFeaturesTaggingEnabled} from '../project/projects.slice';
-import {SpotsListItem, useSpotsHook} from '../spots';
+import {SpotsListItem, useSpots} from '../spots';
 
 const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPanel, zoomToSpots}) => {
   console.log('Rendering NotebookContent...');
@@ -32,8 +32,8 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
   const spot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
 
-  const usePage = usePageHook();
-  const useSpots = useSpotsHook();
+  const {getPopulatedPagesKeys, getRelevantGeneralPages, getRelevantPetPages, getRelevantSedPages} = usePage();
+  const {getRootSpot, getSpotsSortedReverseChronologically, handleSpotSelected} = useSpots();
 
   const pageVisible = pagesStack.slice(-1)[0];
 
@@ -46,9 +46,8 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
     dispatch(setNotebookPageVisible(key));
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (SMALL_SCREEN) dispatch(setModalVisible({modal: null}));
-    else if (page.key === PAGE_KEYS.GEOLOGIC_UNITS) dispatch(setModalVisible({modal: PAGE_KEYS.TAGS}));
     else if (page.modal_component) {
-      const populatedPagesKeys = usePage.getPopulatedPagesKeys(spot);
+      const populatedPagesKeys = getPopulatedPagesKeys(spot);
       if (populatedPagesKeys.includes(page.key)) dispatch(setModalVisible({modal: null}));
       else dispatch(setModalVisible({modal: page.key}));
     }
@@ -57,9 +56,9 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
 
   const renderNotebookContent = () => {
     const isRelevantPage = pageVisible === PAGE_KEYS.OVERVIEW
-      || usePage.getRelevantGeneralPages().map(p => p.key).includes(pageVisible)
-      || usePage.getRelevantPetPages().map(p => p.key).includes(pageVisible)
-      || usePage.getRelevantSedPages().map(p => p.key).includes(pageVisible)
+      || getRelevantGeneralPages().map(p => p.key).includes(pageVisible)
+      || getRelevantPetPages().map(p => p.key).includes(pageVisible)
+      || getRelevantSedPages().map(p => p.key).includes(pageVisible)
       || SUBPAGES.map(p => p.key).includes(pageVisible);
     if (!isRelevantPage) dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
 
@@ -96,7 +95,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
   };
 
   const renderParentSpot = () => {
-    const parentSpot = useSpots.getRootSpot(currentImageBasemap.id);
+    const parentSpot = getRootSpot(currentImageBasemap.id);
     return (
       <View style={{justifyContent: 'flex-start'}}>
         <SectionDivider dividerText={'Parent Spot'}/>
@@ -107,7 +106,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
             <SpotsListItem
               doShowTags={true}
               spot={item}
-              onPress={() => useSpots.handleSpotSelected(item)}
+              onPress={() => handleSpotSelected(item)}
             />
           )}
           ItemSeparatorComponent={FlatListItemSeparator}
@@ -122,7 +121,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
       if (spots?.[key]) obj.push(spots[key]);
       return obj;
     }, []);
-    if (isEmpty(spotsList)) spotsList = useSpots.getSpotsSortedReverseChronologically();
+    if (isEmpty(spotsList)) spotsList = getSpotsSortedReverseChronologically();
 
     return (
       <View style={notebookStyles.centerContainer}>
@@ -135,7 +134,7 @@ const NotebookContent = ({closeNotebookPanel, createDefaultGeom, openMainMenuPan
             <SpotsListItem
               doShowTags={true}
               spot={item}
-              onPress={() => useSpots.handleSpotSelected(item)}
+              onPress={() => handleSpotSelected(item)}
             />
           )}
           ItemSeparatorComponent={FlatListItemSeparator}

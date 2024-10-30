@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {Animated} from 'react-native';
 
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -10,47 +10,48 @@ import Map from '../maps/Map';
 import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import notebookStyles from '../notebook-panel/notebook.styles';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
+import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
-const HomeView = ({
-                    animateLeftSide,
-                    animateNotebookDrawer,
-                    animateRightSide,
-                    areEditButtonsVisible,
-                    clickHandler,
-                    closeMainMenuPanel,
-                    closeNotebookPanel,
-                    dialogClickHandler,
-                    dialogs,
-                    distance,
-                    drawButtonsVisible,
-                    endMeasurement,
-                    isSelectingForStereonet,
-                    isSelectingForTagging,
-                    mapComponentRef,
-                    mapMode,
-                    onEndDrawPressed,
-                    openMainMenuPanel,
-                    openNotebookPanel,
-                    setDistance,
-                    startEdit,
-                    toggleDialog,
-                  }) => {
+const HomeView = forwardRef(({
+                               animateLeftSide,
+                               animateNotebookDrawer,
+                               animateRightSide,
+                               areEditButtonsVisible,
+                               clickHandler,
+                               closeMainMenuPanel,
+                               closeNotebookPanel,
+                               dialogClickHandler,
+                               dialogs,
+                               distance,
+                               drawButtonsVisible,
+                               endMeasurement,
+                               isSelectingForStereonet,
+                               isSelectingForTagging,
+                               mapMode,
+                               onEndDrawPressed,
+                               openMainMenuPanel,
+                               openNotebookPanel,
+                               setDistance,
+                               setMapModeToEdit,
+                               toggleDialog,
+                             }, mapComponentRef) => {
   console.log('Rendering HomeView...');
 
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
       <Map
-        onEndDrawPressed={onEndDrawPressed}
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}
-        mapComponentRef={mapComponentRef}
         mapMode={mapMode}
+        onEndDrawPressed={onEndDrawPressed}
+        ref={mapComponentRef}
         setDistance={setDistance}
-        startEdit={startEdit}
+        setMapModeToEdit={setMapModeToEdit}
       />
 
       <DeviceInfo/>
       <OfflineMapLabel/>
+      <VersionCheckLabel/>
 
       <RightSideButtons
         animateRightSide={animateRightSide}
@@ -86,6 +87,6 @@ const HomeView = ({
       </Animated.View>
     </SafeAreaView>
   );
-};
+});
 
 export default HomeView;

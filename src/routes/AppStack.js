@@ -2,7 +2,7 @@ import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
 
-import Home from '../modules/home/Home';
+import HomeContainer from '../modules/home/HomeContainer';
 import {ImageInfo, ImageSlider} from '../modules/images';
 import Sketch from '../modules/sketch/Sketch';
 
@@ -19,7 +19,7 @@ const AppStack = () => {
     <Stack.Navigator>
       <Stack.Screen
         name={'HomeScreen'}
-        component={Home}
+        component={HomeContainer}
         options={navigationOptions}
         // initialParams={{setIsSignedIn}}
       />

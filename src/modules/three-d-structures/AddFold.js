@@ -3,12 +3,12 @@ import React, {useState} from 'react';
 import {FoldGeometryButtons} from './fold-geometry';
 import {FOLD_MEASUREMENTS_KEYS} from './threeDStructures.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, FormSlider, MainButtons, useFormHook} from '../form';
+import {Form, FormSlider, MainButtons, useForm} from '../form';
 import MeasurementButtons from '../form/MeasurementButtons';
 import MeasurementModal from '../form/MeasurementModal';
 
 const AddFold = (props) => {
-  const useForm = useFormHook();
+  const {getSurvey} = useForm();
 
   const [isFoldMeasurementsModalVisible, setIsFoldMeasurementsModalVisible] = useState(false);
   const [foldMeasurementsGroupField, setFoldMeasurementsGroupField] = useState({});
@@ -21,7 +21,7 @@ const AddFold = (props) => {
   const lastKeys = ['fold_notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = useForm.getSurvey(props.formName);
+  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 

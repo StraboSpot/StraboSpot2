@@ -6,10 +6,10 @@ import {useSelector} from 'react-redux';
 import splashScreenStyles from './splashScreen.styles';
 import BatteryInfo from '../../services/BatteryInfo';
 import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
-import VersionCheckLabel from '../../services/versionCheck/VersionCheckLabel';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
+import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
 const SplashScreen = ({children}) => {
   const {width, height} = useWindowDimensions();
@@ -37,9 +37,6 @@ const SplashScreen = ({children}) => {
           </View>
           {children}
         </View>
-        <View style={splashScreenStyles.versionPositionSplashScreen}>
-          <VersionCheckLabel/>
-        </View>
         {/*{__DEV__ && (*/}
         {/*  <View style={splashScreenStyles.dimensionsContainer}>*/}
         {/*    <Text style={splashScreenStyles.dimensionsText}>*/}
@@ -55,6 +52,7 @@ const SplashScreen = ({children}) => {
         {/*  </View>*/}
         {/*)}*/}
       </ScrollView>
+      <VersionCheckLabel/>
       <Loading isLoading={loading} size={60}/>
     </ImageBackground>
   );

@@ -1,0 +1,32 @@
+export const DRAW_ACTION_IMAGES = {
+  POINT: {
+    BUTTON: require('../../../assets/icons/PointButton.png'),
+    BUTTON_PRESSED: require('../../../assets/icons/PointButton_pressed.png'),
+    ICON: require('../../../assets/icons/Point.png'),
+    ICON_PRESSED: require('../../../assets/icons/Point_pressed_1.png'),
+    LOCATION_BUTTON: require('../../../assets/icons/PointButtonCurrentLocation.png'),
+    LOCATION_BUTTON_PRESSED: require('../../../assets/icons/PointButtonCurrentLocation_pressed.png'),
+    LOCATION_ICON: require('../../../assets/icons/PointCurrentLocation.png'),
+    LOCATION_ICON_PRESSED: require('../../../assets/icons/PointCurrentLocation_pressed.png'),
+  },
+  LINE: {
+    BUTTON: require('../../../assets/icons/LineButton.png'),
+    BUTTON_PRESSED: require('../../../assets/icons/LineButton_pressed.png'),
+    ICON: require('../../../assets/icons/Line.png'),
+    ICON_PRESSED: require('../../../assets/icons/Line_pressed_1.png'),
+    FREEHAND_BUTTON: require('../../../assets/icons/LineFreehandButton.png'),
+    FREEHAND_BUTTON_PRESSED: require('../../../assets/icons/LineFreehandButton_pressed.png'),
+    FREEHAND_ICON: require('../../../assets/icons/LineFreehand.png'),
+    FREEHAND_ICON_PRESSED: require('../../../assets/icons/LineFreehand_pressed.png'),
+  },
+  POLYGON: {
+    BUTTON: require('../../../assets/icons/PolygonButton.png'),
+    BUTTON_PRESSED: require('../../../assets/icons/PolygonButton_pressed.png'),
+    ICON: require('../../../assets/icons/Polygon.png'),
+    ICON_PRESSED: require('../../../assets/icons/Polygon_pressed_1.png'),
+    FREEHAND_BUTTON: require('../../../assets/icons/PolygonFreehandButton.png'),
+    FREEHAND_BUTTON_PRESSED: require('../../../assets/icons/PolygonFreehandButton_pressed.png'),
+    FREEHAND_ICON: require('../../../assets/icons/PolygonFreehand.png'),
+    FREEHAND_ICON_PRESSED: require('../../../assets/icons/PolygonFreehand_pressed.png'),
+  },
+};

@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import modalStyle from './modal.style';
 import {setModalVisible} from '../../../modules/home/home.slice';
-import {MODALS, NOTEBOOK_PAGES, PAGE_KEYS} from '../../../modules/page/page.constants';
+import {MODALS} from '../../../modules/page/page.constants';
 import * as themes from '../../styles.constants';
 
 const ModalHeader = ({
@@ -18,17 +18,10 @@ const ModalHeader = ({
                      }) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
-  const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
 
   const modalInfo = MODALS.find(p => p.key === modalVisible);
-  const pageVisible = pagesStack.slice(-1)[0];
 
-  const getTitle = () => {
-    if (pageVisible === PAGE_KEYS.GEOLOGIC_UNITS) {
-      return NOTEBOOK_PAGES.find(p => p.key === PAGE_KEYS.GEOLOGIC_UNITS).action_label;
-    }
-    else return modalInfo && (modalInfo.action_label || modalInfo.label);
-  };
+  const getTitle = () => modalInfo && (modalInfo.action_label || modalInfo.label);
 
   return (
     <View style={modalStyle.modalTop}>

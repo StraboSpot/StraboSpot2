@@ -13,19 +13,18 @@ import userStyles from './user.styles';
 import {setUserData} from './userProfile.slice';
 import UserProfileAvatar from './UserProfileAvatar';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
-import useDownloadHook from '../../services/useDownload';
-import usePermissionsHook from '../../services/usePermissions';
-import useResetStateHook from '../../services/useResetState';
-import useServerRequestsHook from '../../services/useServerRequests';
-import useUploadHook from '../../services/useUpload';
-import useUploadImagesHook from '../../services/useUploadImages';
+import useDevice from '../../services/useDevice';
+import useDownload from '../../services/useDownload';
+import usePermissions from '../../services/usePermissions';
+import useResetState from '../../services/useResetState';
+import useServerRequests from '../../services/useServerRequests';
+import useUpload from '../../services/useUpload';
+import useUploadImages from '../../services/useUploadImages';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import TextInputModal from '../../shared/ui/TextInputModal';
-import {Form} from '../form';
-import useFormHook from '../form/useForm';
+import {Form, useForm} from '../form';
 import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -53,28 +52,28 @@ const UserProfilePage = () => {
 
   const navigation = useNavigation();
   const toast = useToast();
-  const useDevice = useDeviceHook();
-  const useDownload = useDownloadHook();
-  const useForm = useFormHook();
-  const usePermissions = usePermissionsHook();
-  const useResetState = useResetStateHook();
-  const useServerRequest = useServerRequestsHook();
-  const useUpload = useUploadHook();
-  const useUploadImages = useUploadImagesHook();
+  const {copyFiles, deleteFromDevice, deleteProfileImageFile} = useDevice();
+  const {downloadUserProfile} = useDownload();
+  const {hasErrors, validateForm} = useForm();
+  const {checkPermission} = usePermissions();
+  const {clearUser} = useResetState();
+  const {authenticateUser, deleteProfile, deleteProfileImage} = useServerRequests();
+  const {uploadProfile} = useUpload();
+  const {resizeImageForUpload, uploadProfileImage} = useUploadImages();
 
   const formName = ['general', 'user_profile'];
 
-  const deleteProfile = async () => {
+  const onDeleteProfile = async () => {
     console.log(deleteProfileInputValue);
     if (!isEmpty(deleteProfileInputValue)) {
-      const isAuthenticated = await useServerRequest.authenticateUser(userData.email, deleteProfileInputValue);
+      const isAuthenticated = await authenticateUser(userData.email, deleteProfileInputValue);
       if (isAuthenticated.valid === 'true') {
         const encodedLogin = Base64.encode(`${userData.email}:${deleteProfileInputValue}`);
         console.log(encodedLogin);
-        const res = await useServerRequest.deleteProfile(encodedLogin);
+        const res = await deleteProfile(encodedLogin);
         console.log('PROFILE DELETED!', res);
         setDeleteProfileModalVisible(false);
-        useResetState.clearUser();
+        clearUser();
         toast.show('Profile Successfully Deleted!', {type: 'success', duration: 2000});
         setTimeout(() => navigation.navigate('SignIn'), 200);
       }
@@ -83,9 +82,9 @@ const UserProfilePage = () => {
     else setErrorMessage('Need to enter your password');
   };
 
-  const downloadUserProfile = async () => {
+  const onDownloadUserProfile = async () => {
     setIsDownloading(true);
-    await useDownload.downloadUserProfile();
+    await downloadUserProfile();
     setIsDownloading(false);
   };
 
@@ -109,12 +108,12 @@ const UserProfilePage = () => {
         buttonText={'DELETE'}
         overlayButtonText={overlayStyles.importantText}
         visible={isDeleteProfileModalVisible}
-        onPress={deleteProfile}
+        onPress={onDeleteProfile}
         closeModal={() => setDeleteProfileModalVisible(false)}
         textAboveInput={isOnline.isInternetReachable ? deleteModalText : offlineText}
         onChangeText={text => handleOnChange(text)}
         errorMessage={errorMessage}
-        onSubmitEditing={deleteProfile}
+        onSubmitEditing={onDeleteProfile}
       />
     );
   };
@@ -136,9 +135,7 @@ const UserProfilePage = () => {
     else {
       let permissionGranted;
       console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-      if (Platform.OS === 'android') {
-        permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-      }
+      if (Platform.OS === 'android') permissionGranted = await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
       if (permissionGranted === 'granted' || Platform.OS === 'ios') {
         await launchCamera({}, (response) => {
           console.log('Launch Camera Response', response);
@@ -153,8 +150,8 @@ const UserProfilePage = () => {
   const removeProfileImage = async () => {
     try {
       setIsDeletingProfileImage(true);
-      await useServerRequest.deleteProfileImage(userEncodedLogin);
-      if (Platform.OS !== 'web') await useDevice.deleteProfileImageFile();
+      await deleteProfileImage(userEncodedLogin);
+      if (Platform.OS !== 'web') await deleteProfileImageFile();
       setShouldUpdateImage(true);
       setIsDeletingProfileImage(false);
       closeProfileImageModal();
@@ -173,10 +170,10 @@ const UserProfilePage = () => {
       setIsUploading(true);
       await formRef.current.submitForm();
       let newValues = JSON.parse(JSON.stringify(formCurrent.values));
-      if (useForm.hasErrors(formCurrent)) throw Error('Error in form.');
+      if (hasErrors(formCurrent)) throw Error('Error in form.');
       dispatch(setUserData(newValues));
       if (isOnline.isInternetReachable) {
-        await useUpload.uploadProfile(newValues);
+        await uploadProfile(newValues);
         toast.show('Profile uploaded successfully!', {type: 'success'});
         dispatch(setSidePanelVisible({bool: false}));
       }
@@ -195,11 +192,11 @@ const UserProfilePage = () => {
     try {
       setIsUploadingProfileImage(true);
       console.log('Need to upload', tempUserProfileImage.uri);
-      const resizedProfileImage = await useUploadImages.resizeImageForUpload(tempUserProfileImage,
+      const resizedProfileImage = await resizeImageForUpload(tempUserProfileImage,
         tempUserProfileImage.uri);
-      await useDevice.copyFiles(resizedProfileImage.uri, APP_DIRECTORIES.PROFILE_IMAGE);
-      await useDevice.deleteFromDevice(resizedProfileImage.uri);
-      await useUploadImages.uploadProfileImage();
+      await copyFiles(resizedProfileImage.uri, APP_DIRECTORIES.PROFILE_IMAGE);
+      await deleteFromDevice(resizedProfileImage.uri);
+      await uploadProfileImage();
       setShouldUpdateImage(true);
       closeProfileImageModal();
       setIsUploadingProfileImage(false);
@@ -275,8 +272,8 @@ const UserProfilePage = () => {
     );
   };
 
-  const validateForm = (values) => {
-    useForm.validateForm({formName: formName, values: values});
+  const validate = (values) => {
+    validateForm({formName: formName, values: values});
     setIsSaveButtonDisabled(false);
   };
 
@@ -315,7 +312,7 @@ const UserProfilePage = () => {
               <Formik
                 innerRef={formRef}
                 onSubmit={values => console.log('Submitting form...', values)}
-                validate={values => validateForm(values)}
+                validate={values => validate(values)}
                 component={formProps => Form({formName: formName, ...formProps})}
                 initialValues={userData}
                 validateOnChange={true}
@@ -334,7 +331,7 @@ const UserProfilePage = () => {
                   />
                   {Platform.OS !== 'web' && (
                     <Button
-                      onPress={downloadUserProfile}
+                      onPress={onDownloadUserProfile}
                       type={'clear'}
                       title={'Download Profile'}
                       loading={isDownloading}

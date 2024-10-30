@@ -7,8 +7,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
-import useImagesHook from '../../images/useImages';
-import useMapLocationHook from '../../maps/useMapLocation';
+import {useImages} from '../../images';
+import useMapLocation from '../../maps/useMapLocation';
 import {MODAL_KEYS, SHORTCUT_MODALS} from '../../page/page.constants';
 import {clearedSelectedSpots} from '../../spots/spots.slice';
 import {setLoadingStatus, setModalVisible} from '../home.slice';
@@ -20,19 +20,19 @@ const ShortcutButtons = ({openNotebookPanel}) => {
   const modalVisible = useSelector(state => state.home.modalVisible);
   const shortcutSwitchPositions = useSelector(state => state.home.shortcutSwitchPosition);
 
-  const useImages = useImagesHook();
+  const {launchCameraFromNotebook} = useImages();
   const navigation = useNavigation();
   const toast = useToast();
-  const useMapLocation = useMapLocationHook();
+  const {setPointAtCurrentLocation} = useMapLocation();
 
   const toggleShortcutModal = async (key) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
     dispatch(clearedSelectedSpots());
     switch (key) {
       case 'photo': {
-        const point = await useMapLocation.setPointAtCurrentLocation();
+        const point = await setPointAtCurrentLocation();
         if (point) {
-          const imagesSavedLength = await useImages.launchCameraFromNotebook(point.properties.id);
+          const imagesSavedLength = await launchCameraFromNotebook(point.properties.id);
           imagesSavedLength > 0 && toast.show(
             imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot '
             + point.properties.name, {type: 'success'},
@@ -42,7 +42,7 @@ const ShortcutButtons = ({openNotebookPanel}) => {
         break;
       }
       case 'sketch': {
-        const point = await useMapLocation.setPointAtCurrentLocation();
+        const point = await setPointAtCurrentLocation();
         if (point) navigation.navigate('Sketch');
         if (!SMALL_SCREEN) openNotebookPanel();
         break;

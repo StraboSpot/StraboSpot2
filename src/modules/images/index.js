@@ -6,4 +6,4 @@ export {default as ImagesOverview} from './ImagesOverview';
 export {default as ImagesViewPage} from './ImagesViewPage';
 export {default as imageSliderStyles} from './imageSlider.styles';
 export {default as imageStyles} from './image.styles';
-export {default as useImagesHook} from './useImages';
+export {default as useImages} from './useImages';

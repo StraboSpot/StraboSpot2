@@ -2,19 +2,19 @@ import React from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
 
-import useYAxisHook from './useYAxis';
-import useMapSymbologyHook from '../symbology/useMapSymbology';
+import useYAxis from './useYAxis';
+import useMapSymbology from '../symbology/useMapSymbology';
 
 const YAxis = ({spotsDisplayed}) => {
-  const useMapSymbology = useMapSymbologyHook();
-  const useYAxis = useYAxisHook(spotsDisplayed);
+  const {getMapSymbology} = useMapSymbology();
+  const {getYAxis, getYAxisTickMarks} = useYAxis(spotsDisplayed);
 
   return (
     <>
       {/* Y Axis Line */}
       <MapboxGL.ShapeSource
         id={'yAxisSource'}
-        shape={useYAxis.getYAxis()}
+        shape={getYAxis()}
       >
         <MapboxGL.LineLayer
           id={'yAxisLayer'}
@@ -25,7 +25,7 @@ const YAxis = ({spotsDisplayed}) => {
       {/* Y Axis Tick Marks */}
       <MapboxGL.ShapeSource
         id={'yAxisTickMarksSource'}
-        shape={useYAxis.getYAxisTickMarks()}
+        shape={getYAxisTickMarks()}
       >
         <MapboxGL.LineLayer
           id={'yAxisTickMarksLayer'}
@@ -34,7 +34,7 @@ const YAxis = ({spotsDisplayed}) => {
         <MapboxGL.SymbolLayer
           id={'yAxisTickMarksLabelLayer'}
           minZoomLevel={1}
-          style={useMapSymbology.getMapSymbology().yAxisTickMarkLabels}
+          style={getMapSymbology().yAxisTickMarkLabels}
         />
       </MapboxGL.ShapeSource>
     </>

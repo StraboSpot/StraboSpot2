@@ -117,12 +117,13 @@ const spotSlice = createSlice({
       state.selectedAttributes = action.payload;
     },
     setSelectedSpot(state, action) {
+      let spotToSelect = action.payload;
       let recentViewsArr = Object.assign([], state.recentViews);
-      const index = recentViewsArr.indexOf(action.payload.properties.id);
+      const index = recentViewsArr.indexOf(spotToSelect.properties.id);
       if (index !== -1) recentViewsArr.splice(index, 1);
-      recentViewsArr.unshift(action.payload.properties.id);
+      recentViewsArr.unshift(spotToSelect.properties.id);
       if (state.recentViews.length > 20) recentViewsArr.shift();
-      state.selectedSpot = action.payload;
+      state.selectedSpot = spotToSelect;
       state.recentViews = recentViewsArr;
       state.selectedAttributes = [];
     },

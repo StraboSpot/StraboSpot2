@@ -78,25 +78,25 @@ const useServerRequests = () => {
     }
   };
 
-  const deleteProject = async (project) => {
-    try {
-      const response = await fetch(
-        baseUrl + '/project/' + project.id,
-        {
-          method: 'DELETE',
-          headers: {
-            'Authorization': 'Basic ' + user.encoded_login,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      return handleResponse(response);
-    }
-    catch (err) {
-      console.error('Error deleting project in useServerRequests', err);
-    }
-  };
+  // const deleteProject = async (project) => {
+  //   try {
+  //     const response = await fetch(
+  //       baseUrl + '/project/' + project.id,
+  //       {
+  //         method: 'DELETE',
+  //         headers: {
+  //           'Authorization': 'Basic ' + user.encoded_login,
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //     );
+  //
+  //     return handleResponse(response);
+  //   }
+  //   catch (err) {
+  //     console.error('Error deleting project in useServerRequests', err);
+  //   }
+  // };
 
   const downloadImage = (imageId, encodedLogin) => {
     return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
@@ -133,6 +133,19 @@ const useServerRequests = () => {
   const getImageUrl = () => {
     if (isSelected) return baseUrl.replace('/db', '/pi/');
     return `${STRABO_APIS.STRABO}/pi/`;
+  };
+
+  const getMacrostratData = async (coords) => {
+    const params = {
+      lng: coords[0].toFixed(4),
+      lat: coords[1].toFixed(4),
+    };
+    const url = `https://macrostrat.org/api/v2/mobile/point?${new URLSearchParams(params).toString()}`;
+    console.log(url);
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+    return handleResponse(response);
   };
 
   const getMapTilesFromHost = async (zipUrl) => {
@@ -430,7 +443,7 @@ const useServerRequests = () => {
     deleteAllSpotsInDataset: deleteAllSpotsInDataset,
     deleteProfile: deleteProfile,
     deleteProfileImage: deleteProfileImage,
-    deleteProject: deleteProject,
+    // deleteProject: deleteProject,
     downloadImage: downloadImage,
     getDataset: getDataset,
     getDatasetSpots: getDatasetSpots,
@@ -439,6 +452,7 @@ const useServerRequests = () => {
     getImage: getImage,
     getImageUrl: getImageUrl,
     getMapTilesFromHost: getMapTilesFromHost,
+    getMacrostratData: getMacrostratData,
     getMyMapsBbox: getMyMapsBbox,
     getMyProjects: getMyProjects,
     getProfile: getProfile,

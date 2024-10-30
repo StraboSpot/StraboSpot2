@@ -11,30 +11,31 @@ import * as themes from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import {
   setAllSymbolsToggled,
+  setIsShowOnly1stMeas,
   setIsShowSpotLabelsOn,
   setSymbolsDisplayed,
   setTagTypeForColor,
 } from '../../maps/maps.slice';
 import styles from '../../measurements/measurements.styles';
-import useMeasurementsHook from '../../measurements/useMeasurements';
+import useMeasurements from '../../measurements/useMeasurements';
 
-const MapSymbolsOverlay = ({
-                             onTouchOutside,
-                             overlayStyle,
-                             visible,
-                           }) => {
+const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
 
   const dispatch = useDispatch();
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
+  const isShowOnly1stMeas = useSelector(state => state.map.isShowOnly1stMeas);
+  const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
   const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
-  const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
-  const useMeasurements = useMeasurementsHook();
 
-  const getSymbolTitle = (symbol) => {
-    return toTitleCase(useMeasurements.getLabel(symbol));
-  };
+  const {getMeasurementLabel} = useMeasurements();
+
+  const getSymbolTitle = symbol => toTitleCase(getMeasurementLabel(symbol));
+
+  const handleShowOnly1stMeas = () => dispatch(setIsShowOnly1stMeas(!isShowOnly1stMeas));
+
+  const handleShowSpotLabelsOn = () => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn));
 
   const renderSymbolsList = ({item, index}) => {
     return (
@@ -49,9 +50,7 @@ const MapSymbolsOverlay = ({
     );
   };
 
-  const toggleAllSymbolsOn = () => {
-    dispatch(setAllSymbolsToggled(!isAllSymbolsOn));
-  };
+  const toggleAllSymbolsOn = () => dispatch(setAllSymbolsToggled(!isAllSymbolsOn));
 
   const toggleShowTagColor = () => {
     if (tagTypeForColor) dispatch(setTagTypeForColor(undefined));
@@ -85,35 +84,32 @@ const MapSymbolsOverlay = ({
           ItemSeparatorComponent={FlatListItemSeparator}
         />
       )}
-      <ListItem
-        key={'all'}
-        containerStyle={commonStyles.listItem}
-      >
+      <ListItem key={'all'} containerStyle={commonStyles.listItem}>
         <ListItem.Content>
-          <ListItem.Title>{'All Symbols'}</ListItem.Title>
+          <ListItem.Title>All Symbols</ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={() => toggleAllSymbolsOn()} value={isAllSymbolsOn}/>
+        <Switch onValueChange={toggleAllSymbolsOn} value={isAllSymbolsOn}/>
       </ListItem>
       <FlatListItemSeparator/>
-      <ListItem
-        key={'spotLabels'}
-        containerStyle={commonStyles.listItem}
-      >
+      <ListItem key={'spotLabels'} containerStyle={commonStyles.listItem}>
         <ListItem.Content>
-          <ListItem.Title>{'Symbol Labels'}</ListItem.Title>
+          <ListItem.Title>Symbol Labels</ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={() => dispatch(setIsShowSpotLabelsOn(!isShowSpotLabelsOn))}
-                value={isShowSpotLabelsOn}/>
+        <Switch onValueChange={handleShowSpotLabelsOn} value={isShowSpotLabelsOn}/>
       </ListItem>
       <FlatListItemSeparator/>
-      <ListItem
-        key={'tag_color'}
-        containerStyle={commonStyles.listItem}
-      >
+      <ListItem key={'Only1stMeas'} containerStyle={commonStyles.listItem}>
         <ListItem.Content>
-          <ListItem.Title>{'Show Tag Color'}</ListItem.Title>
+          <ListItem.Title>Show Only 1st Meas.</ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={() => toggleShowTagColor()} value={tagTypeForColor !== undefined}/>
+        <Switch onValueChange={handleShowOnly1stMeas} value={isShowOnly1stMeas}/>
+      </ListItem>
+      <FlatListItemSeparator/>
+      <ListItem key={'tag_color'} containerStyle={commonStyles.listItem}>
+        <ListItem.Content>
+          <ListItem.Title>Show Tag Color</ListItem.Title>
+        </ListItem.Content>
+        <Switch onValueChange={toggleShowTagColor} value={tagTypeForColor !== undefined}/>
       </ListItem>
       {tagTypeForColor && (
         <ButtonGroup

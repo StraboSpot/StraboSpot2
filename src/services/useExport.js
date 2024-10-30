@@ -1,23 +1,20 @@
-import {useEffect} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
 
 import {zip} from 'react-native-zip-archive';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
+import useDevice from './useDevice';
 import {
   addedStatusMessage,
   clearedStatusMessages,
   removedLastStatusMessage,
   setIsWarningMessagesModalVisible,
-  // setLoadingStatus,
 } from '../modules/home/home.slice';
 import {setBackupFileName} from '../modules/project/projects.slice';
 import {isEmpty} from '../shared/Helpers';
 
 const useExport = () => {
-  console.log('useExport Render')
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
   const mapNamesDb = useSelector(state => state.offlineMap.offlineMaps);
@@ -32,13 +29,18 @@ const useExport = () => {
   const userDbCopy = JSON.parse(JSON.stringify(userDb));
   const configDb = {user: userDbCopy, other_maps: otherMapsDbCopy};
 
-  const useDevice = useDeviceHook();
+  const {
+    copyFiles,
+    deleteFromDevice,
+    doesDeviceBackupDirExist,
+    doesDeviceDirExist,
+    doesDeviceDirectoryExist,
+    makeDirectory,
+    readFile,
+    writeFileToDevice,
+  } = useDevice();
   let imageBackupFailures = 0;
   let imageSuccess = 0;
-
-  // useEffect(() => {
-  //   console.log(backupFileName);
-  // }, [backupFileName]);
 
   let dataForExport = {
     mapNamesDb: mapNamesDb,
@@ -60,8 +62,8 @@ const useExport = () => {
   };
 
   const exportData = async (directory, data, filename) => {
-    await useDevice.doesDeviceDirectoryExist(directory);
-    await useDevice.writeFileToDevice(directory, filename, data);
+    await doesDeviceDirectoryExist(directory);
+    await writeFileToDevice(directory, filename, data);
   };
 
   const gatherDataForBackup = async (filename) => {
@@ -84,7 +86,7 @@ const useExport = () => {
     try {
       const deviceDir = isBeingExported ? appExportDirectory : APP_DIRECTORIES.BACKUP_DIR;
       console.log('data:', data);
-      await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/images');
+      await doesDeviceDirectoryExist(deviceDir + fileName + '/images');
       dispatch(addedStatusMessage((isBeingExported ? 'Exporting' : 'Backing up') + ' Images...'));
       if (data.spotsDb) {
         console.groupCollapsed('Found Spots. Gathering Images...');
@@ -128,7 +130,7 @@ const useExport = () => {
       dispatch(addedStatusMessage('Exporting Offline Maps...'));
       if (!isEmpty(maps)) {
         console.log('Maps exist.', maps);
-        await useDevice.doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
+        await doesDeviceDirectoryExist(deviceDir + fileName + '/maps');
         await zip(APP_DIRECTORIES.TILE_CACHE, deviceDir + fileName + '/maps/OfflineTiles.zip');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage(`Offline Map${mapCount > 1 ? 's' : ''} backed up: ${mapCount}`));
@@ -152,7 +154,7 @@ const useExport = () => {
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Exporting Custom Maps...'));
       if (!isEmpty(configDb.other_maps)) {
-        await exportData(deviceDir + exportedFileName, configDb.other_maps,'other_maps.json');
+        await exportData(deviceDir + exportedFileName, configDb.other_maps, 'other_maps.json');
         dispatch(removedLastStatusMessage());
         dispatch(addedStatusMessage('Finished Exporting Custom Maps.'));
       }
@@ -175,11 +177,11 @@ const useExport = () => {
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Backing up Project to Device...'));
 
-      const hasBackupDir = await useDevice.doesDeviceBackupDirExist();
+      const hasBackupDir = await doesDeviceBackupDirExist();
       console.log('Has Backup Dir?: ', hasBackupDir);
       if (hasBackupDir) await backupProjectToDevice(fileName);
       else {
-        await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
+        await makeDirectory(APP_DIRECTORIES.BACKUP_DIR);
         await backupProjectToDevice(fileName);
       }
     }
@@ -190,9 +192,9 @@ const useExport = () => {
 
   const moveDistributedImage = async (image_id, fileName, directory) => {
     try {
-      const imageExists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES + image_id + '.jpg');
+      const imageExists = await doesDeviceDirExist(APP_DIRECTORIES.IMAGES + image_id + '.jpg');
       if (imageExists) {
-        await useDevice.copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
+        await copyFiles(APP_DIRECTORIES.IMAGES + image_id + '.jpg',
           directory + fileName + '/images/' + image_id + '.jpg');
         imageSuccess++;
         console.log(imageSuccess, 'Copied image to backup:', image_id);
@@ -229,7 +231,7 @@ const useExport = () => {
   const zipAndExportProjectFolder = async (isBeingExported) => {
     try {
       // dispatch(setLoadingStatus({view: 'modal', bool: true}));
-      await useDevice.makeDirectory(appExportDirectory + backupFileName);
+      await makeDirectory(appExportDirectory + backupFileName);
 
       // Make temp directory for the export files to be zipped up.
       console.log('Directory made:', appExportDirectory);
@@ -240,9 +242,9 @@ const useExport = () => {
       Platform.OS === 'android' && await requestWriteDirectoryPermission();
       console.log(backupFileName);
 
-      const dataFile = await useDevice.readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
+      const dataFile = await readFile(APP_DIRECTORIES.BACKUP_DIR + backupFileName + '/data.json');
       const exportedJSON = JSON.parse(dataFile);
-      await useDevice.copyFiles(source, `${destination}/data.json`);
+      await copyFiles(source, `${destination}/data.json`);
       console.log('Files Copied', exportedJSON);
       dispatch(removedLastStatusMessage());
       await gatherImagesForDistribution(exportedJSON, backupFileName, isBeingExported);
@@ -254,7 +256,7 @@ const useExport = () => {
       const path = await zip(appExportDirectory + backupFileName,
         zipPath + backupFileName + '.zip');
 
-      const deleteTempFolder = useDevice.deleteFromDevice(appExportDirectory, backupFileName);
+      const deleteTempFolder = deleteFromDevice(appExportDirectory, backupFileName);
       console.log('Folder', deleteTempFolder);
       console.log(`zip completed at ${path}`);
       console.log('All Done Exporting');

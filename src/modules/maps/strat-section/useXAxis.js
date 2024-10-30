@@ -2,14 +2,14 @@ import * as turf from '@turf/turf';
 import {useSelector} from 'react-redux';
 
 import {BASIC_LITHOLOGIES_LABELS, CARBONATE_KEYS, GRAIN_SIZE_KEYS, LITHOLOGIES_KEYS} from './stratSection.constants';
-import {useFormHook} from '../../form';
-import useMapCoordsHook from '../useMapCoords';
+import {useForm} from '../../form';
+import useMapCoords from '../useMapCoords';
 
 const useXAxis = (n) => {
   const stratSection = useSelector(state => state.map.stratSection);
 
-  const useForm = useFormHook();
-  const useMapCoords = useMapCoordsHook();
+  const {getChoices, getChoicesByKey, getSurvey} = useForm();
+  const {convertImagePixelsToLatLong} = useMapCoords();
 
   const xCl = 10;  // Horizontal spacing between clastic tick marks
   const xCa = 23.3; // Horizontal space between carbonate tick marks
@@ -25,12 +25,12 @@ const useXAxis = (n) => {
   const getXAxis = () => {
     const xAxis = JSON.parse(JSON.stringify(lineString));
     xAxis.geometry.coordinates = n === 1 ? [[0, 0], [15 * xCl + 5, 0]] : [[0, -n * s], [15 * xCl + 5, -n * s]];
-    return useMapCoords.convertImagePixelsToLatLong(xAxis);
+    return convertImagePixelsToLatLong(xAxis);
   };
 
   const getXAxisTickMarks = () => {
-    const survey = useForm.getSurvey(['sed', 'add_interval']);
-    const choices = useForm.getChoices(['sed', 'add_interval']);
+    const survey = getSurvey(['sed', 'add_interval']);
+    const choices = getChoices(['sed', 'add_interval']);
     let fieldKeys = [];
     let x = xCl;
     if (stratSection.column_profile === 'clastic') fieldKeys = GRAIN_SIZE_KEYS;
@@ -51,7 +51,7 @@ const useXAxis = (n) => {
     }
 
     const fields = survey.reduce((acc, key) => {
-      return fieldKeys.includes(key.name) ? [...acc, ...useForm.getChoicesByKey(survey, choices, key.name)] : acc;
+      return fieldKeys.includes(key.name) ? [...acc, ...getChoicesByKey(survey, choices, key.name)] : acc;
     }, []);
     const labels = stratSection.column_profile === 'basic_lithologies' ? BASIC_LITHOLOGIES_LABELS
       : fields.map(f => f.label);
@@ -63,7 +63,7 @@ const useXAxis = (n) => {
       const tickMark = JSON.parse(JSON.stringify(lineString));
       tickMark.properties.label = labels[i];
       tickMark.geometry.coordinates = n === 1 ? [[x, 0], [x, -5]] : [[x, n * -s], [x, n * -s - 5]];
-      tickMarks.push(useMapCoords.convertImagePixelsToLatLong(tickMark));
+      tickMarks.push(convertImagePixelsToLatLong(tickMark));
       x += xCl;
     });
     return turf.featureCollection(tickMarks);

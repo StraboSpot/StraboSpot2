@@ -6,14 +6,14 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {NOTEBOOK_PAGES, PRIMARY_PAGES} from './page.constants';
-import usePageHook from './usePage';
+import usePage from './usePage';
 import {isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import notebookStyles from '../notebook-panel/notebook.styles';
@@ -29,15 +29,15 @@ const Overview = ({openMainMenuPanel}) => {
 
   const formRef = useRef(null);
 
-  const useForm = useFormHook();
-  const usePage = usePageHook();
+  const {showErrors, validateForm} = useForm();
+  const {getPopulatedPagesKeys} = usePage();
 
   useEffect(() => {
     console.log('UE Overview []');
     dispatch(setModalVisible({modal: null}));
   }, []);
 
-  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...usePage.getPopulatedPagesKeys(spot)])];
+  const visiblePagesKeys = [...new Set([...PRIMARY_PAGES.map(p => p.key), ...getPopulatedPagesKeys(spot)])];
   const sections = visiblePagesKeys.reduce((acc, key) => {
     const page = NOTEBOOK_PAGES.find(p => p.key === key);
     if (page.overview_component) {
@@ -103,7 +103,7 @@ const Overview = ({openMainMenuPanel}) => {
               <Formik
                 innerRef={formRef}
                 onSubmit={onSubmitForm}
-                validate={values => useForm.validateForm({formName: formName, values: values})}
+                validate={values => validateForm({formName: formName, values: values})}
                 component={formProps => Form({formName: formName, ...formProps})}
                 initialValues={initialValues}
                 initialStatus={{formName: formName}}
@@ -140,7 +140,7 @@ const Overview = ({openMainMenuPanel}) => {
   const saveForm = async () => {
     try {
       await formRef.current.submitForm();
-      const formValues = useForm.showErrors(formRef.current);
+      const formValues = showErrors(formRef.current);
       console.log('Saving form data to Spot ...');
       if (spot.geometry.type === 'LineString' || spot.geometry.type === 'MultiLineString') {
         const traceValues = {...formValues, 'trace_feature': true};

@@ -6,7 +6,7 @@ import {
   ROCK_FIRST_ORDER_CLASS_FIELDS,
 } from './petrology.constants';
 import {getNewId, isEmpty, toTitleCase} from '../../shared/Helpers';
-import {useFormHook} from '../form';
+import {useForm} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedSpotProperties} from '../spots/spots.slice';
@@ -14,14 +14,14 @@ import {editedSpotProperties} from '../spots/spots.slice';
 const usePetrology = () => {
   const dispatch = useDispatch();
 
-  const useForm = useFormHook();
+  const {getLabel, getLabels, getSurvey, showErrors} = useForm();
 
   const deletePetFeature = (key, spot, selectedFeature) => {
     let editedPetData = spot.properties.pet ? JSON.parse(JSON.stringify(spot.properties.pet)) : {};
 
     // Delete SS1 style rock data of given type
     if (selectedFeature.rock_type) {
-      const survey = useForm.getSurvey(['pet_deprecated', key]);
+      const survey = getSurvey(['pet_deprecated', key]);
       survey.forEach(f => delete editedPetData[f.name]);
       editedPetData.rock_type = editedPetData.rock_type.filter(t => t !== key);
       if (isEmpty(editedPetData.rock_type)) delete editedPetData.rock_type;
@@ -52,15 +52,15 @@ const usePetrology = () => {
   const getReactionTextureTitle = (item) => {
     const formName = ['pet', 'reactions'];
     return (item.reactions || 'Unknown')
-      + (item.based_on && (' - ' + useForm.getLabels(item.based_on, formName).toUpperCase()));
+      + (item.based_on && (' - ' + getLabels(item.based_on, formName).toUpperCase()));
   };
 
-  const getRockTitle = (rock, type) => {
+  const getPetRockTitle = (rock, type) => {
     const formName = type === 'igneous' ? ['pet', rock.igneous_rock_class] : ['pet', type];
     const labelsArr = ROCK_FIRST_ORDER_CLASS_FIELDS[type].reduce((acc, fieldName) => {
       if (rock[fieldName]) {
-        const mainLabel = useForm.getLabel(fieldName, formName);
-        const choiceLabels = useForm.getLabels(rock[fieldName], formName);
+        const mainLabel = getLabel(fieldName, formName);
+        const choiceLabels = getLabels(rock[fieldName], formName);
         return [...acc, toTitleCase(mainLabel) + ' - ' + choiceLabels.toUpperCase()];
       }
       else return acc;
@@ -69,7 +69,7 @@ const usePetrology = () => {
       const defaultTitle = type === 'igneous' ? rock.igneous_rock_class
         : type === 'alteration_or' ? 'Alteration, Ore'
           : type;
-      return toTitleCase(useForm.getLabel(defaultTitle + ' Rock', formName));
+      return toTitleCase(getLabel(defaultTitle + ' Rock', formName));
     }
     else return labelsArr.join(', ');
   };
@@ -92,7 +92,7 @@ const usePetrology = () => {
   const savePetFeature = async (key, spot, formCurrent, isLeavingPage) => {
     try {
       await formCurrent.submitForm();
-      const editedFeatureData = useForm.showErrors(formCurrent, isLeavingPage);
+      const editedFeatureData = showErrors(formCurrent, isLeavingPage);
       console.log('Saving', key, 'data to Spot ...');
       if (editedFeatureData.rock_type && (key === PAGE_KEYS.ROCK_TYPE_IGNEOUS
         || key === PAGE_KEYS.ROCK_TYPE_METAMORPHIC || key === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE)) {
@@ -128,7 +128,7 @@ const usePetrology = () => {
     deletePetFeature: deletePetFeature,
     getMineralTitle: getMineralTitle,
     getReactionTextureTitle: getReactionTextureTitle,
-    getRockTitle: getRockTitle,
+    getPetRockTitle: getPetRockTitle,
     onMineralChange: onMineralChange,
     savePetFeature: savePetFeature,
     savePetFeatureValuesFromTemplates: savePetFeatureValuesFromTemplates,

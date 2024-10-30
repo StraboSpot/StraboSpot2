@@ -4,9 +4,9 @@ import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
-import useDeviceHook from './useDevice';
-import useResetStateHook from './useResetState';
-import useServerRequestsHook from './useServerRequests';
+import useDevice from './useDevice';
+import useResetState from './useResetState';
+import useServerRequests from './useServerRequests';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -17,7 +17,7 @@ import {
   setLoadingStatus,
   setStatusMessageModalTitle,
 } from '../modules/home/home.slice';
-import useImagesHook from '../modules/images/useImages';
+import {useImages} from '../modules/images';
 import {MAIN_MENU_ITEMS} from '../modules/main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage} from '../modules/main-menu-panel/mainMenuPanel.slice';
 import {MAP_PROVIDERS} from '../modules/maps/maps.constants';
@@ -45,15 +45,15 @@ const useDownload = () => {
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
   const project = useSelector(state => state.project.project);
 
-  const useDevice = useDeviceHook();
-  const useImages = useImagesHook();
-  const useResetState = useResetStateHook();
-  const useServerRequests = useServerRequestsHook();
+  const {doesDeviceDirectoryExist, downloadAndSaveProfileImage, downloadImageAndSave} = useDevice();
+  const {gatherNeededImages} = useImages();
+  const {clearProject} = useResetState();
+  const {getDatasets, getDatasetSpots, getImageUrl, getProfile, getProfileImage, getProject} = useServerRequests();
 
-  const downloadDatasets = async (selectedProject) => {
+  const downloadDatasets = async (selectedProject, encodedLoginScoped) => {
     try {
       dispatch(addedStatusMessage('Downloading Datasets...'));
-      const res = await useServerRequests.getDatasets(selectedProject.id, encodedLogin);
+      const res = await getDatasets(selectedProject.id, encodedLoginScoped);
       const datasets = res?.datasets || [];
       if (datasets.length === 1) {
         dispatch(setActiveDatasets({bool: true, dataset: datasets[0].id}));
@@ -61,7 +61,7 @@ const useDownload = () => {
       }
       datasetsObjToSave = Object.assign({},
         ...datasets.map(item => ({[item.id]: {...item, modified_timestamp: item.modified_timestamp || Date.now()}})));
-      await getDatasetSpots(datasets);
+      await doGetDatasetSpots(datasets, encodedLoginScoped);
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('Downloaded ' + spotsToSave.length + ' Spots\nDownloaded '
         + Object.keys(datasetsObjToSave).length + ' Datasets\nFinished Downloading Datasets'));
@@ -73,12 +73,12 @@ const useDownload = () => {
   };
 
   // Download Project Properties
-  const downloadProject = async (selectedProject) => {
+  const downloadProject = async (selectedProject, encodedLoginScoped) => {
     try {
       console.log('Downloading Project Properties...');
       dispatch(addedStatusMessage('Downloading Project Properties...'));
-      const projectResponse = await useServerRequests.getProject(selectedProject.id, encodedLogin);
-      if (!isEmpty(project)) useResetState.clearProject();
+      const projectResponse = await getProject(selectedProject.id, encodedLoginScoped);
+      if (!isEmpty(project)) clearProject();
       dispatch(addedProject(projectResponse));
       const customMaps = projectResponse.other_maps;
       console.log('Finished Downloading Project Properties.', projectResponse);
@@ -94,17 +94,17 @@ const useDownload = () => {
     }
   };
 
-  const downloadSpots = async (dataset) => {
+  const downloadSpots = async (dataset, encodedLoginScoped) => {
     try {
       // console.log(dataset.name, ':', 'Downloading Spots...');
-      const featureCollection = await useServerRequests.getDatasetSpots(dataset.id, encodedLogin);
+      const featureCollection = await getDatasetSpots(dataset.id, encodedLoginScoped);
       // console.log(dataset.name, ':', 'Finished Downloading Spots.');
       if (isEmpty(featureCollection) || !featureCollection.features) {
         // console.log(dataset.name, ': No Spots in dataset.');
       }
       else {
         const spotsDownloaded = featureCollection.features;
-        const spotImages = await gatherNeededImages(spotsDownloaded, dataset);
+        const spotImages = await findNeededImages(spotsDownloaded, dataset);
         if (spotImages) datasetsObjToSave[dataset.id] = {...datasetsObjToSave[dataset.id], images: spotImages};
         spotsToSave.push(...spotsDownloaded);
         const spotIds = Object.values(spotsDownloaded).map(spot => spot.properties.id);
@@ -121,10 +121,10 @@ const useDownload = () => {
 
   const downloadUserProfile = async (encodedLoginScoped = encodedLogin) => {
     try {
-      let userProfileRes = await useServerRequests.getProfile(encodedLoginScoped);
+      let userProfileRes = await getProfile(encodedLoginScoped);
 
       if (Platform.OS === 'web') {
-        const userProfileImageBlob = await useServerRequests.getProfileImage(encodedLoginScoped);
+        const userProfileImageBlob = await getProfileImage(encodedLoginScoped);
         if (userProfileImageBlob) {
           const image = URL.createObjectURL(userProfileImageBlob);
           dispatch(setUserData({...userProfileRes, image: image, encoded_login: encodedLoginScoped}));
@@ -132,7 +132,7 @@ const useDownload = () => {
         else dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
       else {
-        await useDevice.downloadAndSaveProfileImage(encodedLoginScoped);
+        await downloadAndSaveProfileImage(encodedLoginScoped);
         dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
 
@@ -145,10 +145,10 @@ const useDownload = () => {
     }
   };
 
-  const gatherNeededImages = async (spotsDownloaded, dataset) => {
+  const findNeededImages = async (spotsDownloaded, dataset) => {
     try {
       // console.log(dataset.name, ':', 'Gathering Needed Images...');
-      const spotImages = await useImages.gatherNeededImages(spotsDownloaded, dataset);
+      const spotImages = await gatherNeededImages(spotsDownloaded, dataset);
       if (spotImages?.imageIds.length > 0) {
         // console.log(dataset.name, ':', 'Images needed', spotImages.neededImagesIds.length, 'of', spotImages?.imageIds.length);
         return spotImages;
@@ -163,19 +163,19 @@ const useDownload = () => {
     }
   };
 
-  const getDatasetSpots = async (datasets) => {
+  const doGetDatasetSpots = async (datasets, encodedLoginScoped) => {
     if (datasets.length >= 1) {
       // console.log('Starting Dataset Spots Download!');
 
       // Synchronous download
       await datasets.reduce(async (previousPromise, dataset, i) => {
         await previousPromise;
-        await downloadSpots(dataset);
+        await downloadSpots(dataset, encodedLoginScoped);
       }, Promise.resolve());
     }
   };
 
-  const initializeDownload = async (selectedProject) => {
+  const initializeDownload = async (selectedProject, encodedLoginScoped = encodedLogin) => {
     const projectName = selectedProject.name || selectedProject?.description?.project_name || 'Unknown';
     if (isProjectLoadSelectionModalVisible) dispatch(setIsProjectLoadSelectionModalVisible(false));
     dispatch(setStatusMessageModalTitle(projectName));
@@ -184,8 +184,8 @@ const useDownload = () => {
     dispatch(setLoadingStatus({view: 'modal', bool: true}));
     dispatch(addedStatusMessage(`Downloading Project: ${projectName}`));
     try {
-      await downloadProject(selectedProject);
-      await downloadDatasets(selectedProject);
+      await downloadProject(selectedProject, encodedLoginScoped);
+      await downloadDatasets(selectedProject, encodedLoginScoped);
       console.log('Download Complete! Spots Downloaded!');
       dispatch(addedStatusMessage('------------------'));
       dispatch(addedSpotsFromServer(spotsToSave));
@@ -219,10 +219,10 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Needed Images...'));
       if (!isEmpty(neededImagesIds)) {
         // Check path first and if it doesn't exist, then create
-        await useDevice.doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
+        await doesDeviceDirectoryExist(APP_DIRECTORIES.IMAGES);
         for (const imageId of updatedNeededImagesIds) {
-          const imageUrl = await useServerRequests.getImageUrl();
-          const success = await useDevice.downloadImageAndSave(imageUrl + imageId, imageId);
+          const imageUrl = await getImageUrl();
+          const success = await downloadImageAndSave(imageUrl + imageId, imageId);
           if (success) {
             imagesDownloadedCount++;
             updatedNeededImagesIds = updatedNeededImagesIds.filter(id => id !== imageId);

@@ -5,14 +5,14 @@ import {useNavigation} from '@react-navigation/native';
 import {Image} from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 
-import {ImagePropertiesModal, imageStyles, useImagesHook} from '.';
+import {ImagePropertiesModal, imageStyles, useImages} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
 import {WarningModal} from '../home/modals';
 import overlayStyles from '../home/overlays/overlay.styles';
+import {useSpots} from '../spots';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import useSpotsHook from '../spots/useSpots';
 
 const ImageInfo = ({route}) => {
   console.log('Rendering ImageInfo...');
@@ -22,8 +22,8 @@ const ImageInfo = ({route}) => {
   const dispatch = useDispatch();
   const [isImagePropertiesModalVisible, setIsImagePropertiesModalVisible] = useState(false);
   const [imageData, setImageData] = useState({});
-  const useImages = useImagesHook();
-  const useSpots = useSpotsHook();
+  const {deleteImage, getImageScreenSizedURI, getLocalImageURI} = useImages();
+  const {getSpotByImageId} = useSpots();
   const navigation = useNavigation();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -52,9 +52,9 @@ const ImageInfo = ({route}) => {
     setIsImagePropertiesModalVisible(false);
   };
 
-  const deleteImage = async () => {
+  const onDeleteImage = async () => {
     setIsImageDeleteModalVisible(false);
-    const isImageDeleted = await useImages.deleteImage(imageData.id, useSpots.getSpotByImageId(imageData.id));
+    const isImageDeleted = await deleteImage(imageData.id, getSpotByImageId(imageData.id));
     if (isImageDeleted) navigation.goBack();
   };
 
@@ -68,7 +68,7 @@ const ImageInfo = ({route}) => {
         showConfirmButton
         showCancelButton
         confirmTitleStyle={overlayStyles.importantText}
-        onConfirmPress={() => deleteImage()}
+        onConfirmPress={onDeleteImage}
       >
         <Text>Are you sure you want to delete image:{'\n'}</Text>
         <Text>{imageData.id}</Text>
@@ -79,8 +79,8 @@ const ImageInfo = ({route}) => {
   return (
     <View style={{backgroundColor: 'black', justifyContent: 'center', alignContent: 'center'}}>
       <Image
-        source={Platform.OS === 'web' ? {uri: useImages.getImageScreenSizedURI(imageData.id)}
-          : {uri: useImages.getLocalImageURI(imageData.id)}}
+        source={Platform.OS === 'web' ? {uri: getImageScreenSizedURI(imageData.id)}
+          : {uri: getLocalImageURI(imageData.id)}}
         style={Platform.OS === 'web' ? {width: width, height: height}
           : {width: '100%', height: '100%'}}
         resizeMode={'contain'}

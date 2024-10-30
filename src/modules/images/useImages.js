@@ -8,8 +8,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import {STRABO_APIS} from '../../services/urls.constants';
-import useDeviceHook from '../../services/useDevice';
-import usePermissionsHook from '../../services/usePermissions';
+import useDevice from '../../services/useDevice';
+import usePermissions from '../../services/usePermissions';
 import {getNewId} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
@@ -33,8 +33,8 @@ import {
 const useImages = () => {
   const navigation = useNavigation();
   const toast = useToast();
-  const useDevice = useDeviceHook();
-  const usePermissions = usePermissionsHook();
+  const {copyFiles, deleteFromDevice, doesDeviceDirExist, makeDirectory, moveFile, readDirectory} = useDevice();
+  const {checkPermission, requestPermission} = usePermissions();
   const {width, height} = useWindowDimensions();
 
   const dispatch = useDispatch();
@@ -62,8 +62,8 @@ const useImages = () => {
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
       const localImageFile = getLocalImageURI(imageId);
       if (Platform.OS !== 'web') {
-        const fileExists = await useDevice.doesDeviceDirExist(localImageFile);
-        if (fileExists) await useDevice.deleteFromDevice(localImageFile);
+        const fileExists = await doesDeviceDirExist(localImageFile);
+        if (fileExists) await deleteFromDevice(localImageFile);
       }
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
@@ -81,7 +81,7 @@ const useImages = () => {
       const imageURI = getLocalImageURI(imageId);
       console.log('Looking on device for image at URI:', imageURI, '...');
       // console.log(`Image ${imageURI} Exists exists: ${exists}!!`);
-      return await useDevice.doesDeviceDirExist(imageURI);
+      return await doesDeviceDirExist(imageURI);
     }
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
@@ -183,15 +183,6 @@ const useImages = () => {
     return STRABO_APIS.PUBLIC_IMAGE_RESIZED + Math.max(width, height) + '/' + id;
   };
 
-  const getImageSize = (image, resizedImage) => {
-    let imageSizeText;
-    if (resizedImage.size < 1024) imageSizeText = resizedImage.size + ' bytes';
-    else if (resizedImage.size < 1048576) imageSizeText = (resizedImage.size / 1024).toFixed(3) + ' kB';
-    else if (resizedImage.size < 1073741824) imageSizeText = (resizedImage.size / 1048576).toFixed(2) + ' MB';
-    else imageSizeText = (resizedImage.size / 1073741824).toFixed(3) + ' GB';
-    console.log(resizedImage?.name + ': Finished Resizing Image', image?.id, 'New Size', imageSizeText);
-  };
-
   const getImageThumbnailURI = (id) => {
     return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
   };
@@ -206,7 +197,7 @@ const useImages = () => {
           }
           else {
             const imageUri = getLocalImageURI(image.id);
-            const exists = await useDevice.doesDeviceDirExist(imageUri);
+            const exists = await doesDeviceDirExist(imageUri);
             if (exists) {
               const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
               const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
@@ -267,7 +258,7 @@ const useImages = () => {
   const launchCameraFromNotebook = async (newSpotId) => {
     try {
       const permissionResult = Platform.OS === 'ios' ? true
-        : await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+        : await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
       if (permissionResult) {
         const savedPhoto = await takePicture();
         dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -294,7 +285,7 @@ const useImages = () => {
         }
       }
       else {
-        const permissionRequestResult = await usePermissions.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+        const permissionRequestResult = await requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
         if (permissionRequestResult === 'granted' || permissionRequestResult === 'never_ask_again') await launchCameraFromNotebook();
         else toast.show('StraboSpot can not access your camera due to permission denial.');
       }
@@ -354,9 +345,9 @@ const useImages = () => {
     let imageId = getNewId();
     let imageURI = getLocalImageURI(imageId);
     try {
-      const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
-      if (!exists) await useDevice.makeDirectory(APP_DIRECTORIES.IMAGES);
-      await useDevice.copyFiles(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
+      const exists = await doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
+      if (!exists) await makeDirectory(APP_DIRECTORIES.IMAGES);
+      await copyFiles(tempImageURI, APP_DIRECTORIES.IMAGES + imageId + '.jpg');
       console.log(imageCount, 'File saved to:', imageURI);
       // imageCount++;
       return {
@@ -374,13 +365,13 @@ const useImages = () => {
   };
 
   const saveImageFromDownloadsDir = async (image) => {
-    const exists = await useDevice.doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
+    const exists = await doesDeviceDirExist(APP_DIRECTORIES.IMAGES);
     console.log('EXISTS', exists);
     const source = image.fileCopyUri;
     const dest = APP_DIRECTORIES.IMAGES + image.name;
     console.log('source:', source, 'dest', dest);
-    await useDevice.moveFile(source, dest);
-    const imagesInDir = await useDevice.readDirectory(APP_DIRECTORIES.IMAGES);
+    await moveFile(source, dest);
+    const imagesInDir = await readDirectory(APP_DIRECTORIES.IMAGES);
     console.log('images in app directory', imagesInDir);
     // return imageRes;
   };
@@ -402,7 +393,7 @@ const useImages = () => {
   const setImageHeightAndWidth = async (image) => {
     const imageURI = getLocalImageURI(image.id);
     if (imageURI) {
-      const isValidImageURI = await useDevice.doesDeviceDirExist(imageURI);
+      const isValidImageURI = await doesDeviceDirExist(imageURI);
       if (isValidImageURI) {
         const imageSize = await getImageHeightAndWidth(imageURI);
         const updatedImage = {...image, ...imageSize};
@@ -420,9 +411,7 @@ const useImages = () => {
   const takePicture = async () => {
     let permissionGranted;
     console.log(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (Platform.OS === 'android') {
-      permissionGranted = await usePermissions.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
-    }
+    if (Platform.OS === 'android') permissionGranted = await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
     if (permissionGranted === 'granted' || Platform.OS === 'ios') {
       return new Promise((resolve, reject) => {
         try {
@@ -457,7 +446,6 @@ const useImages = () => {
     getImageBasemap: getImageBasemap,
     getImageHeightAndWidth: getImageHeightAndWidth,
     getImageScreenSizedURI: getImageScreenSizedURI,
-    getImageSize: getImageSize,
     getImageThumbnailURI: getImageThumbnailURI,
     getImageThumbnailURIs: getImageThumbnailURIs,
     getImagesFromCameraRoll: getImagesFromCameraRoll,

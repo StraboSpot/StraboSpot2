@@ -11,7 +11,7 @@ const LoadingSplashScreen = () => {
 
   return (
     <SplashScreen>
-      <Text style={splashScreenStyles.loadingSplashScreenText}>Getting Project Details...</Text>
+      <Text style={splashScreenStyles.loadingSplashScreenText}>Getting Project...</Text>
       <BallIndicator
         color={'darkgrey'}
         count={8}

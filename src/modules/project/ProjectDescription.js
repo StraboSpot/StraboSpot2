@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import { FlatList, Switch, Text, View} from 'react-native';
+import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {ListItem} from 'react-native-elements';
@@ -11,7 +11,7 @@ import {updatedProject} from './projects.slice';
 import commonStyles from '../../shared/common.styles';
 import alert from '../../shared/ui/alert';
 import SectionDivider from '../../shared/ui/SectionDivider';
-import {Form, useFormHook} from '../form';
+import {Form, useForm} from '../form';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
 
@@ -19,7 +19,7 @@ const ProjectDescription = () => {
   const dispatch = useDispatch();
   const project = useSelector(state => state.project.project);
 
-  const useForm = useFormHook();
+  const {getLabel, hasErrors, validateForm} = useForm();
   const toast = useToast();
 
   const formRef = useRef(null);
@@ -46,9 +46,9 @@ const ProjectDescription = () => {
       await formCurrent.submitForm();
       let newDescriptionValues = JSON.parse(JSON.stringify(formCurrent.values));
       // const newPublicPreferenceValue =
-      if (useForm.hasErrors(formCurrent)) {
+      if (hasErrors(formCurrent)) {
         const errorMessages = Object.entries(formCurrent.errors).map(([key, value]) => (
-          useForm.getLabel(key, formName) + ': ' + value
+          getLabel(key, formName) + ': ' + value
         ));
         alert('Project Description Errors!', 'Changes in the following fields were not saved.'
           + ' Please fix the errors:\n\n' + errorMessages.join('\n'));
@@ -91,7 +91,7 @@ const ProjectDescription = () => {
             <Formik
               innerRef={formRef}
               onSubmit={values => console.log('Submitting form...', values)}
-              validate={values => useForm.validateForm({formName: formName, values: values})}
+              validate={values => validateForm({formName: formName, values: values})}
               component={formProps => Form({formName: formName, ...formProps})}
               initialValues={projectDescription}
               validateOnChange={true}

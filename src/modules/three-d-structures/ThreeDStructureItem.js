@@ -7,13 +7,13 @@ import ThreeDStructureLabel from './ThreeDStructureLabel';
 import commonStyles from '../../shared/common.styles';
 import * as themes from '../../shared/styles.constants';
 import FeatureTagsList from '../../shared/ui/FeatureTagsList';
-import {useTagsHook} from '../tags';
+import {useTags} from '../tags';
 
 function ThreeDStructureItem({
                                edit3dStructure,
                                item,
                              }) {
-  const useTags = useTagsHook();
+  const {setFeaturesSelectedForMultiTagging} = useTags();
   const spot = useSelector(state => state.spot.selectedSpot);
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const [featureSelectedForTagging, setFeatureSelectedForTagging] = useState(false);
@@ -24,9 +24,7 @@ function ThreeDStructureItem({
   }, [isMultipleFeaturesTaggingEnabled]);
 
   const editFeature = (feature) => {
-    if (isMultipleFeaturesTaggingEnabled) {
-      setFeatureSelectedForTagging(useTags.setFeaturesSelectedForMultiTagging(feature));
-    }
+    if (isMultipleFeaturesTaggingEnabled) setFeatureSelectedForTagging(setFeaturesSelectedForMultiTagging(feature));
     else edit3dStructure(feature);
   };
 

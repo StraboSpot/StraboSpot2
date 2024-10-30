@@ -1,3 +1,4 @@
+// import './wdyr'; // <--- first import
 import {AppRegistry} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/Fonts/FontAwesome.ttf';

@@ -7,18 +7,19 @@ const initialMapsState = {
   currentBasemap: null,
   currentImageBasemap: undefined,
   customMaps: {},
-  selectedCustomMapToEdit: {},
-  vertexStartCoords: undefined,
-  vertexEndCoords: undefined,
   freehandFeatureCoords: undefined,
-  spotsInMapExtent: [],
-  symbolsOn: [],
   isAllSymbolsOn: true,
   isMapMoved: true,
-  mapSymbols: [],
-  tagTypeForColor: undefined,
+  isShowOnly1stMeas: false,
   isShowSpotLabelsOn: true,
+  mapSymbols: [],
+  selectedCustomMapToEdit: {},
+  spotsInMapExtentIds: [],
   stratSection: undefined,
+  symbolsOn: [],
+  tagTypeForColor: undefined,
+  vertexEndCoords: undefined,
+  vertexStartCoords: undefined,
   zoom: ZOOM,
 };
 
@@ -36,6 +37,9 @@ const mapsSlice = createSlice({
     },
     clearedMaps(state) {
       state.customMaps = {};
+    },
+    clearedSpotsInMapExtentIds(state) {
+      state.spotsInMapExtentIds = [];
     },
     clearedStratSection(state) {
       state.stratSection = undefined;
@@ -76,6 +80,9 @@ const mapsSlice = createSlice({
     setIsMapMoved(state, action) {
       state.isMapMoved = action.payload;
     },
+    setIsShowOnly1stMeas(state, action) {
+      state.isShowOnly1stMeas = action.payload;
+    },
     setIsShowSpotLabelsOn(state, action) {
       state.isShowSpotLabelsOn = action.payload;
     },
@@ -83,8 +90,8 @@ const mapsSlice = createSlice({
       // console.log('Set Map Symbols', action.payload);
       state.mapSymbols = action.payload;
     },
-    setSpotsInMapExtent(state, action) {
-      state.spotsInMapExtent = action.payload;
+    setSpotsInMapExtentIds(state, action) {
+      state.spotsInMapExtentIds = action.payload;
     },
     setStratSection(state, action) {
       state.currentImageBasemap = undefined;
@@ -119,6 +126,7 @@ export const {
   addedCustomMap,
   addedCustomMapsFromBackup,
   clearedMaps,
+  clearedSpotsInMapExtentIds,
   clearedStratSection,
   clearedVertexes,
   deletedCustomMap,
@@ -130,9 +138,10 @@ export const {
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
   setIsMapMoved: setIsMapMoved,
+  setIsShowOnly1stMeas,
   setIsShowSpotLabelsOn,
   setMapSymbols,
-  setSpotsInMapExtent,
+  setSpotsInMapExtentIds,
   setStratSection,
   setSymbolsDisplayed,
   setTagTypeForColor,

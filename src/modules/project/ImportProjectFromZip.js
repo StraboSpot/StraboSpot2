@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import projectStyles from './project.styles';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
-import useDeviceHook from '../../services/useDevice';
+import useDevice from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import alert from '../../shared/ui/alert';
 import Loading from '../../shared/ui/Loading';
@@ -30,7 +30,7 @@ const ImportProjectFromZip = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const useDevice = useDeviceHook();
+  const {doesBackupFileExist, makeDirectory, unZipAndCopyImportedData} = useDevice();
 
   const renderImportComplete = () => {
     return (
@@ -70,7 +70,7 @@ const ImportProjectFromZip = ({
     try {
       setIsLoading(true);
       dispatch(setStatusMessageModalTitle('Importing Project...'));
-      await useDevice.unZipAndCopyImportedData(importedProject);
+      await unZipAndCopyImportedData(importedProject);
       setImportComplete(true);
       dispatch(setStatusMessageModalTitle('Project Imported'));
       setIsLoading(false);
@@ -88,7 +88,7 @@ const ImportProjectFromZip = ({
   const verifyFileExistence = async (dataType) => {
     if (dataType === 'data') {
       const fileName = importedProject.name.replace('.zip', '');
-      const fileExists = await useDevice.doesBackupFileExist(fileName);
+      const fileExists = await doesBackupFileExist(fileName);
       if (fileExists) {
         console.log('File already exits!');
         alert('File Exists', 'A file with the name ' + fileName + ' exists already.  Saving'
@@ -106,7 +106,7 @@ const ImportProjectFromZip = ({
           ]);
       }
       else {
-        await useDevice.makeDirectory(APP_DIRECTORIES.BACKUP_DIR + fileName);
+        await makeDirectory(APP_DIRECTORIES.BACKUP_DIR + fileName);
         await saveToDevice();
       }
     }

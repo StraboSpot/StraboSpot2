@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Animated, useWindowDimensions, View} from 'react-native';
+import React, {forwardRef, useState} from 'react';
+import {useWindowDimensions, View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Button, Header, Icon} from 'react-native-elements';
@@ -15,32 +15,29 @@ import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import {MODAL_KEYS} from '../page/page.constants';
 import SpotNavigator from '../spots/SpotNavigator';
+import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
-const HomeViewSmallScreen = ({
-                               animateLeftSide,
-                               areEditButtonsVisible,
-                               clickHandler,
-                               closeMainMenuPanel,
-                               closeNotebookPanel,
-                               dialogClickHandler,
-                               dialogs,
-                               distance,
-                               drawButtonsVisible,
-                               endMeasurement,
-                               isSelectingForStereonet,
-                               isSelectingForTagging,
-                               mapComponentRef,
-                               mapMode,
-                               onEndDrawPressed,
-                               openMainMenuPanel,
-                               openNotebookPanel,
-                               openSpotInNotebook,
-                               renderVersionCheckLabel,
-                               setDistance,
-                               showUpdateLabel,
-                               startEdit,
-                               toggleDialog,
-                             }) => {
+const HomeViewSmallScreen = forwardRef(({
+                                          areEditButtonsVisible,
+                                          clickHandler,
+                                          closeMainMenuPanel,
+                                          closeNotebookPanel,
+                                          dialogClickHandler,
+                                          dialogs,
+                                          distance,
+                                          drawButtonsVisible,
+                                          endMeasurement,
+                                          isSelectingForStereonet,
+                                          isSelectingForTagging,
+                                          mapMode,
+                                          onEndDrawPressed,
+                                          openMainMenuPanel,
+                                          openNotebookPanel,
+                                          openSpotInNotebook,
+                                          setDistance,
+                                          setMapModeToEdit,
+                                          toggleDialog,
+                                        }, mapComponentRef) => {
   console.log('Rendering HomeViewSmallScreen...');
 
   const dispatch = useDispatch();
@@ -58,6 +55,7 @@ const HomeViewSmallScreen = ({
     headerShown: false,
     swipeEnabled: false,
   };
+
   const Tab = createMaterialTopTabNavigator();
 
   const toggleSpotNavigator = () => {
@@ -66,7 +64,7 @@ const HomeViewSmallScreen = ({
   };
 
   return (
-    <Animated.View style={[homeStyles.container, animateLeftSide]}>
+    <>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         barStyle={'dark-content'}
@@ -107,6 +105,7 @@ const HomeViewSmallScreen = ({
       ) : (
         <Tab.Navigator
           screenOptions={{
+            tabBarIndicatorContainerStyle: {backgroundColor: themes.SECONDARY_BACKGROUND_COLOR},
             tabBarIndicatorStyle: {backgroundColor: themes.BLACK, height: 5},
             tabBarItemStyle: {padding: 0},
             tabBarLabelStyle: {fontSize: themes.PRIMARY_HEADER_TEXT_SIZE, color: themes.PRIMARY_TEXT_COLOR},
@@ -127,11 +126,11 @@ const HomeViewSmallScreen = ({
                 <Map
                   isSelectingForStereonet={isSelectingForStereonet}
                   isSelectingForTagging={isSelectingForTagging}
-                  mapComponentRef={mapComponentRef}
                   mapMode={mapMode}
                   onEndDrawPressed={onEndDrawPressed}
+                  ref={mapComponentRef}
                   setDistance={setDistance}
-                  startEdit={startEdit}
+                  setMapModeToEdit={setMapModeToEdit}
                 />
 
                 {currentImageBasemap && (
@@ -189,7 +188,7 @@ const HomeViewSmallScreen = ({
                   </View>
                 )}
                 <OfflineMapLabel/>
-                {showUpdateLabel && renderVersionCheckLabel}
+                <VersionCheckLabel/>
               </>
             }
           </Tab.Screen>
@@ -205,8 +204,8 @@ const HomeViewSmallScreen = ({
           </Tab.Screen>
         </Tab.Navigator>
       )}
-    </Animated.View>
+    </>
   );
-};
+});
 
 export default HomeViewSmallScreen;

@@ -1,10 +1,10 @@
 import * as turf from '@turf/turf';
 
 import {isEmpty} from '../../shared/Helpers';
-import {useSpotsHook} from '../spots';
+import {useSpots} from '../spots';
 
 const useNesting = () => {
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj, getSpotById, isOnGeoMap, isOnSameImageBasemap, isOnSameStratSection} = useSpots();
 
   // Is spot 1 completely within spot 2?
   // Boolean-within returns true if the first geometry is completely within the second geometry.
@@ -76,7 +76,7 @@ const useNesting = () => {
     if (thisSpot.properties.nesting) {
       let nonGeomChildrenSpots = [];
       thisSpot.properties.nesting.forEach((spotId) => {
-        if (useSpots.getSpotById(spotId)) nonGeomChildrenSpots.push(useSpots.getSpotById(spotId));
+        if (getSpotById(spotId)) nonGeomChildrenSpots.push(getSpotById(spotId));
         else {
           thisSpot.properties.nesting = thisSpot.properties.nesting.filter(nestingId => nestingId !== spotId);
           if (isEmpty(thisSpot.properties.nesting)) delete thisSpot.properties.nesting;
@@ -85,23 +85,13 @@ const useNesting = () => {
       childrenSpots.push(nonGeomChildrenSpots);
     }
     childrenSpots = childrenSpots.flat();
-    // Find active children spots based on geometry
-    // Only non-point features can have children
-    if (thisSpot.geometry && thisSpot.geometry.type) {
-      if (thisSpot.geometry.type !== 'Point') {
-        const otherSpots = activeSpots.filter(spot => spot.geometry && spot.properties.id !== thisSpot.properties.id);
-        otherSpots.forEach((spot) => {
-          if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap)
-            || (thisSpot.properties.image_basemap && spot.properties.image_basemap
-              && thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-            if (thisSpot.geometry.type && thisSpot.geometry.type === 'Polygon'
-              || thisSpot.geometry.type === 'MultiPolygon'
-              || thisSpot.geometry.type === 'GeometryCollection') {
-              if (isWithin(spot, thisSpot)) childrenSpots.push(spot);
-            }
-          }
-        });
-      }
+    // Find active children spots based on geometry *Only polygon features can have children
+    if (thisSpot.geometry?.type === 'Polygon' || thisSpot.geometry?.type === 'MultiPolygon') {
+      const otherSpots = activeSpots.filter(spot => spot.geometry && spot.properties.id !== thisSpot.properties.id);
+      otherSpots.forEach((spot) => {
+        if (((isOnGeoMap(thisSpot) && isOnGeoMap(spot)) || isOnSameImageBasemap(thisSpot, spot)
+          || isOnSameStratSection(thisSpot, spot)) && isWithin(spot, thisSpot)) childrenSpots.push(spot);
+      });
     }
     return childrenSpots;
   }
@@ -118,7 +108,7 @@ const useNesting = () => {
 
   // Get i generations of active children spots for thisSpot
   function getChildrenGenerationsSpots(thisSpot, i) {
-    const activeSpots = Object.values(useSpots.getActiveSpotsObj());
+    const activeSpots = Object.values(getActiveSpotsObj());
     let childrenGenerations = [];
     let childSpots = [thisSpot];
     Array.from({length: i}, () => {
@@ -134,7 +124,7 @@ const useNesting = () => {
 
   // Get i generations of active parent spots for thisSpot
   const getParentGenerationsSpots = (thisSpot, i) => {
-    const activeSpots = Object.values(useSpots.getActiveSpotsObj());
+    const activeSpots = Object.values(getActiveSpotsObj());
     let parentGenerations = [];
     let parentSpots = [thisSpot];
     Array.from({length: i}, () => {
@@ -170,18 +160,13 @@ const useNesting = () => {
       spot => spot.properties.nesting && spot.properties.nesting.includes(thisSpot.properties.id));
     if (!isEmpty(parentNonGeomSpot)) parentSpots.push(parentNonGeomSpot);
     parentSpots = parentSpots.flat();
-    // Find active parent spots based on geometry
+    // Find active parent spots based on geometry *The parent must be a polygon
     if (thisSpot.geometry) {
       const otherSpots = activeSpots.filter(spot => spot.geometry && spot.properties.id !== thisSpot.properties.id);
       otherSpots.forEach((spot) => {
-        if ((!thisSpot.properties.image_basemap && !spot.properties.image_basemap)
-          || (thisSpot.properties.image_basemap && spot.properties.image_basemap
-            && thisSpot.properties.image_basemap === spot.properties.image_basemap)) {
-          if (spot.geometry.type && (spot.geometry.type === 'Polygon'
-            || spot.geometry.type === 'MultiPolygon' || spot.geometry.type === 'GeometryCollection')) {
-            if (isWithin(thisSpot, spot)) parentSpots.push(spot);
-          }
-        }
+        if ((spot.geometry?.type === 'Polygon' || spot.geometry?.type === 'MultiPolygon')
+          && ((isOnGeoMap(thisSpot) && isOnGeoMap(spot)) || isOnSameImageBasemap(thisSpot, spot)
+          || isOnSameStratSection(thisSpot, spot)) && isWithin(thisSpot, spot)) parentSpots.push(spot);
       });
     }
     return parentSpots;

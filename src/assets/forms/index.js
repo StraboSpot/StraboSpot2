@@ -2,6 +2,7 @@ import faultRock from './fabrics/fault-rock.json';
 import igneousRock from './fabrics/igneous-rock.json';
 import metamorphicRock from './fabrics/metamorphic-rock.json';
 import geography from './geography.json';
+import geologicUnit from './geologic_unit.json';
 import earthquake from './geomorph/earthquake.json';
 import imageProperties from './image-properties.json';
 import linearOrientation from './measurement/linear-orientation.json';
@@ -130,6 +131,7 @@ const forms = {
   },
   project: {
     tags: tags,
+    geologic_unit: geologicUnit,
   },
   sed: {
     add_interval: addInterval,

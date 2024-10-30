@@ -6,13 +6,13 @@ import {useSelector} from 'react-redux';
 
 import Spacer from './ui/Spacer';
 import overlayStyles from '../modules/home/overlays/overlay.styles';
-import {useTagsHook} from '../modules/tags';
+import {useTags} from '../modules/tags';
 
 const ColorPickerModal = ({
                             closeModal,
                             isVisible,
                           }) => {
-  const useTags = useTagsHook();
+  const {saveTag} = useTags();
   const selectedTag = useSelector(state => state.project.selectedTag);
   const COLOR_CHOICES = [
     ['#330000', '#331900', '#333300', '#193300', '#003300', '#003319', '#003333', '#001933', '#000033', '#190033', '#330033', '#330019', '#000000'],
@@ -29,12 +29,12 @@ const ColorPickerModal = ({
   const clearColor = () => {
     let selectedTagCopy = JSON.parse(JSON.stringify(selectedTag));
     if (selectedTagCopy.color) delete selectedTagCopy.color;
-    useTags.saveTag(selectedTagCopy);
+    saveTag(selectedTagCopy);
     closeModal();
   };
 
   const setColor = (color) => {
-    useTags.saveTag({...selectedTag, color: color});
+    saveTag({...selectedTag, color: color});
     closeModal();
   };
 

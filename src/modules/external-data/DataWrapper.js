@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 
 import TablesData from './TablesData';
 import UrlData from './URLData';
-import useExternalDataHook from './useExternalData';
+import useExternalData from './useExternalData';
 import {isEmpty} from '../../shared/Helpers';
 import DeleteConformationDialogBox from '../../shared/ui/DeleteConformationDialogBox';
 
@@ -14,12 +14,10 @@ function DataWrapper({
                      }) {
   const [itemToDelete, setItemToDelete] = useState({});
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
-  const useExternalData = useExternalDataHook();
+  const {deleteCSV, deleteURL} = useExternalData();
 
   const deleteSelection = () => {
-    itemToDelete.type === 'url'
-      ? useExternalData.deleteURL(itemToDelete.item)
-      : useExternalData.deleteCVS(itemToDelete.item);
+    itemToDelete.type === 'url' ? deleteURL(itemToDelete.item) : deleteCSV(itemToDelete.item);
     setIsDeleteConfirmModalVisible(false);
   };
 

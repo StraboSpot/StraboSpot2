@@ -3,8 +3,9 @@ import React from 'react';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {useTagsHook} from './index';
+import {useTags} from '.';
 import commonStyles from '../../shared/common.styles';
+import {toTitleCase} from '../../shared/Helpers';
 import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import {setSelectedTag} from '../project/projects.slice';
@@ -13,7 +14,7 @@ const TagsListItem = ({
                         openMainMenuPanel,
                         tag,
                       }) => {
-  const useTags = useTagsHook();
+  const {getTagLabel} = useTags();
   const dispatch = useDispatch();
   const isMainMenuPanelVisible = useSelector(state => state.home.isMainMenuPanelVisible);
 
@@ -36,7 +37,7 @@ const TagsListItem = ({
         <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{useTags.getLabel(tag.type)}</ListItem.Title>
+        <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
       </ListItem.Content>
       <ListItem.Chevron/>
     </ListItem>

@@ -5,8 +5,8 @@ import {Button, Icon, Overlay} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
-import useDeviceHook from '../../../services/useDevice';
-import useResetStateHook from '../../../services/useResetState';
+import useDevice from '../../../services/useDevice';
+import useResetState from '../../../services/useResetState';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
@@ -36,8 +36,8 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   const [visibleInitialSection, setVisibleInitialSection] = useState('none');
 
   const toast = useToast();
-  const useDevice = useDeviceHook();
-  const useResetState = useResetStateHook();
+  const {getExternalProjectData} = useDevice();
+  const {clearUser} = useResetState();
 
   const displayFirstName = () => {
     if (user.name && !isEmpty(user.name)) return user.name.split(' ')[0];
@@ -80,7 +80,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
   const getExportedAndroidProject = async () => {
     try {
       dispatch(setLoadingStatus({bool: true, view: 'modal'}));
-      const res = await useDevice.getExternalProjectData();
+      const res = await getExternalProjectData();
       console.log('EXTERNAL PROJECT', res);
       dispatch(setLoadingStatus({bool: false, view: 'modal'}));
       if (!isEmpty(res)) {
@@ -248,7 +248,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
             title={user.name ? `Not ${user.name}?` : 'Log in?'}
             type={'clear'}
             titleStyle={{...commonStyles.standardButtonText, fontSize: 10}}
-            onPress={() => useResetState.clearUser()}
+            onPress={clearUser}
           />
         </View>
       </View>

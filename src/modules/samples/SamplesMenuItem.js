@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SectionList, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -11,16 +10,20 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import uiStyles from '../../shared/ui/ui.styles';
-import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
-import {SORTED_VIEWS} from '../main-menu-panel/mainMenu.constants';
-import SortingButtons from '../main-menu-panel/SortingButtons';
 import {PAGE_KEYS} from '../page/page.constants';
-import useSpotsHook from '../spots/useSpots';
+import {useSpots} from '../spots';
+import SpotFilters from '../spots/SpotFilters';
 
 const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
-  const useSpots = useSpotsHook();
+  const {getActiveSpotsObj, getSpotsWithSamples} = useSpots();
 
-  const sortedView = useSelector(state => state.mainMenu.sortedView);
+  const activeSpotsObj = getActiveSpotsObj();
+  const activeSpots = Object.values(activeSpotsObj);
+
+  const [isReverseSort, setIsReverseSort] = useState(false);
+  const [spotsSearched, setSpotsSearched] = useState(activeSpots);
+  const [spotsSorted, setSpotsSorted] = useState(activeSpots);
+  const [textNoSpots, setTextNoSpots] = useState('No Spots in Active Datasets');
 
   const renderNoSamplesText = () => {
     return <ListEmptyText text={'No Samples in Active Datasets'}/>;
@@ -42,18 +45,8 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   };
 
   const renderSamplesList = () => {
-    let sortedSpotsWithSamples = useSpots.getSpotsWithSamplesSortedReverseChronologically();
-    let noSamplesText = 'No active Spots with samples';
-    if (sortedView === SORTED_VIEWS.MAP_EXTENT) {
-      const spotsInMapExtent = useSpots.getSpotsInMapExtent();
-      sortedSpotsWithSamples = spotsInMapExtent.filter(spot => !isEmpty(spot.properties.samples));
-      if (isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No active Spots with samples in current map extent';
-    }
-    else if (sortedView === SORTED_VIEWS.RECENT_VIEWS) {
-      const recentlyViewedSpots = useSpots.getRecentSpots();
-      sortedSpotsWithSamples = recentlyViewedSpots.filter(spot => !isEmpty(spot.properties.samples));
-      if (!isEmpty(sortedSpotsWithSamples)) noSamplesText = 'No recently viewed active Spots with samples';
-    }
+    let sortedSpotsWithSamples = spotsSorted.filter(spot => !isEmpty(spot.properties.samples));
+    if (isReverseSort) sortedSpotsWithSamples = sortedSpotsWithSamples.reverse();
     let count = 0;
     const dataSectioned = sortedSpotsWithSamples.map((s) => {
       count += s.properties.samples.length;
@@ -62,13 +55,15 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
     return (
       <View style={{flex: 1}}>
-        <SortingButtons/>
-        {sortedView === SORTED_VIEWS.MAP_EXTENT && (
-          <UpdateSpotsInMapExtentButton
-            title={'Update Samples in Map Extent'}
-            updateSpotsInMapExtent={updateSpotsInMapExtent}
-          />
-        )}
+        <SpotFilters
+          activeSpots={activeSpots}
+          setIsReverseSort={setIsReverseSort}
+          setSpotsSearched={setSpotsSearched}
+          setSpotsSorted={setSpotsSorted}
+          setTextNoSpots={setTextNoSpots}
+          spotsSearched={spotsSearched}
+          updateSpotsInMapExtent={updateSpotsInMapExtent}
+        />
         <View style={{flex: 1}}>
           <SectionDivider dividerText={count + (count === 1 ? ' Sample' : ' Samples') + ' in active Spots'}/>
           <SectionList
@@ -78,7 +73,7 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
             renderItem={({item, i, section}) => renderSample(item, section.spot)}
             stickySectionHeadersEnabled={true}
             ItemSeparatorComponent={FlatListItemSeparator}
-            ListEmptyComponent={<ListEmptyText text={noSamplesText}/>}
+            ListEmptyComponent={<ListEmptyText text={textNoSpots + ' with samples found'}/>}
           />
         </View>
       </View>
@@ -99,7 +94,7 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
 
   return (
     <>
-      {isEmpty(useSpots.getSpotsWithSamples()) ? renderNoSamplesText() : renderSamplesList()}
+      {isEmpty(getSpotsWithSamples()) ? renderNoSamplesText() : renderSamplesList()}
     </>
   );
 };

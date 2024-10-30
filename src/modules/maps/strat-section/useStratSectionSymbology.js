@@ -1,16 +1,16 @@
-import useStratSectionHook from './useStratSection';
-import useSedValidationHook from '../../sed/useSedValidation';
+import useStratSection from './useStratSection';
+import useSedValidation from '../../sed/useSedValidation';
 
 const useStratSectionSymbology = () => {
-  const useSedValidation = useSedValidationHook();
-  const useStratSection = useStratSectionHook();
+  const {getSiliciclasticGrainSize} = useSedValidation();
+  const {getStratSectionSettings} = useStratSection();
 
   const getGrainSize = (lithology) => {
     if (lithology.primary_lithology === 'limestone' || lithology.primary_lithology === 'dolostone') {
       return lithology.dunham_classification;
     }
-    else if (lithology.primary_lithology === 'siliciclastic' && useSedValidation.getSiliciclasticGrainSize(lithology)) {
-      return useSedValidation.getSiliciclasticGrainSize(lithology);
+    else if (lithology.primary_lithology === 'siliciclastic' && getSiliciclasticGrainSize(lithology)) {
+      return getSiliciclasticGrainSize(lithology);
     }
     return lithology.primary_lithology;
   };
@@ -26,7 +26,7 @@ const useStratSectionSymbology = () => {
         const lithologies = featureProperties.sed.lithologies;
         const lithologyField = lithologies[n].primary_lithology;
         const grainSize = getGrainSize(lithologies[n]);
-        const stratSectionSettings = useStratSection.getStratSectionSettings(featureProperties.strat_section_id);
+        const stratSectionSettings = getStratSectionSettings(featureProperties.strat_section_id);
         if (stratSectionSettings && stratSectionSettings.display_lithology_patterns) {
           if (stratSectionSettings.column_profile === 'basic_lithologies') {
             // Limestone / Dolostone / Misc. Lithologies

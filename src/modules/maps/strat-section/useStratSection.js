@@ -1,14 +1,14 @@
 import * as turf from '@turf/turf';
 
-import useStratSectionCalculationsHook from './useStratSectionCalculations';
+import useStratSectionCalculations from './useStratSectionCalculations';
 import {isEmpty} from '../../../shared/Helpers';
-import {useFormHook} from '../../form';
-import {useSpotsHook} from '../../spots';
+import {useForm} from '../../form';
+import {useSpots} from '../../spots';
 
 const useStratSection = () => {
-  const useForm = useFormHook();
-  const useSpots = useSpotsHook();
-  const useStratSectionCalculations = useStratSectionCalculationsHook();
+  const {getSurvey} = useForm();
+  const {deleteSpot, getSpotWithThisStratSection} = useSpots();
+  const {calculateIntervalGeometry, moveSpotsUpOrDownByPixels} = useStratSectionCalculations();
 
   // Create a new strat section interval, separating the fields to their respective objects
   const createInterval = (stratSectionId, data) => {
@@ -21,7 +21,7 @@ const useStratSection = () => {
     if (data.interval_type) geojsonObj.properties.sed.character = data.interval_type;
 
     // Interval fields in Add Interval
-    const intervalSurvey = useForm.getSurvey(['sed', 'interval']);
+    const intervalSurvey = getSurvey(['sed', 'interval']);
     const intervalFieldNames = intervalSurvey.map(f => f.name);
     const intervalFieldNamesFiltered = intervalFieldNames.filter(n => n !== 'interval_type');
     const intervalFields = intervalFieldNamesFiltered.reduce((acc, name) => {
@@ -31,7 +31,7 @@ const useStratSection = () => {
     if (!isEmpty(intervalFields)) geojsonObj.properties.sed.interval = intervalFields;
 
     // Bedding fields in Add Interval
-    const beddingSurvey = useForm.getSurvey(['sed', 'bedding']);
+    const beddingSurvey = getSurvey(['sed', 'bedding']);
     const beddingFieldNames = beddingSurvey.map(f => f.name);
     let beddingFields = [];
     Object.entries(data).map(([key, value]) => {
@@ -48,8 +48,8 @@ const useStratSection = () => {
     if (!isEmpty(beddingFields)) geojsonObj.properties.sed.bedding = {'beds': beddingFields};
 
     const beddingSharedSurvey = data.interval_type === 'interbedded' || data.interval_type === 'bed_mixed_lit'
-      ? useForm.getSurvey(['sed', 'bedding_shared_interbedded'])
-      : useForm.getSurvey(['sed', 'bedding_shared_package']);
+      ? getSurvey(['sed', 'bedding_shared_interbedded'])
+      : getSurvey(['sed', 'bedding_shared_package']);
     const beddingSharedFieldNames = beddingSharedSurvey.map(f => f.name);
     let beddingSharedFields = beddingSharedFieldNames.reduce((acc, name) => {
       if (data?.[name]) acc[name] = data[name];
@@ -61,8 +61,8 @@ const useStratSection = () => {
     }
 
     // Lithology fields in Add Interval (only fields from Lithology & Texture needed)
-    const lithologiesLithologySurvey = useForm.getSurvey(['sed', 'lithology']);
-    const lithologiesTextureSurvey = useForm.getSurvey(['sed', 'texture']);
+    const lithologiesLithologySurvey = getSurvey(['sed', 'lithology']);
+    const lithologiesTextureSurvey = getSurvey(['sed', 'texture']);
     const lithologiesLithologyFieldNames = lithologiesLithologySurvey.map(f => f.name);
     const lithologiesTextureFieldNames = lithologiesTextureSurvey.map(f => f.name);
     const lithologiesFieldNames = [...lithologiesLithologyFieldNames, ...lithologiesTextureFieldNames];
@@ -80,8 +80,7 @@ const useStratSection = () => {
     });
     if (!isEmpty(lithologiesFields)) geojsonObj.properties.sed.lithologies = lithologiesFields;
 
-    geojsonObj.geometry = useStratSectionCalculations.calculateIntervalGeometry(stratSectionId,
-      geojsonObj.properties.sed);
+    geojsonObj.geometry = calculateIntervalGeometry(stratSectionId, geojsonObj.properties.sed);
     return geojsonObj;
   };
 
@@ -89,13 +88,13 @@ const useStratSection = () => {
   const deleteInterval = (targetInterval) => {
     const targetIntervalExtent = turf.bbox(targetInterval);
     const targetIntervalHeight = targetIntervalExtent[3] - targetIntervalExtent[1];
-    useStratSectionCalculations.moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id,
-      targetIntervalExtent[3], -targetIntervalHeight, targetInterval.properties.id);
-    useSpots.deleteSpot(targetInterval.properties.id);
+    moveSpotsUpOrDownByPixels(targetInterval.properties.strat_section_id, targetIntervalExtent[3],
+      -targetIntervalHeight, targetInterval.properties.id);
+    deleteSpot(targetInterval.properties.id);
   };
 
   const getStratSectionSettings = (stratSectionId) => {
-    const spot = useSpots.getSpotWithThisStratSection(stratSectionId);
+    const spot = getSpotWithThisStratSection(stratSectionId);
     return spot && spot.properties && spot.properties.sed
     && spot.properties.sed.strat_section ? spot.properties.sed.strat_section : undefined;
   };

@@ -5,15 +5,15 @@ import proj4 from 'proj4';
 import {useSelector} from 'react-redux';
 
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
-import {STRABO_APIS} from '../../services/urls.constants';
-import useServerRequestsHook from '../../services/useServerRequests';
+import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
+import {STRABO_APIS} from '../../services/urls.constants';
 
 const useMapCoords = () => {
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isOnline = useSelector(state => state.connections.isOnline);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const useServerRequests = useServerRequestsHook();
+  const {getMyMapsBbox} = useServerRequests();
 
   // Convert WGS84 to x,y pixels, assuming x,y are web mercator, or vice versa
   const convertCoords = (feature, fromProjection, toProjection) => {
@@ -105,7 +105,7 @@ const useMapCoords = () => {
         console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id));
         myMapsBboxUrl = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id);
       }
-      const myMapsBbox = await useServerRequests.getMyMapsBbox(myMapsBboxUrl + map.id);
+      const myMapsBbox = await getMyMapsBbox(myMapsBboxUrl + map.id);
       if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
     }
   };

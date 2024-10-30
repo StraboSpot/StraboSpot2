@@ -1,13 +1,13 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Animated, FlatList, Text, View} from 'react-native';
+import {Animated, FlatList, Platform, Text, View} from 'react-native';
 
 import {Button, Icon, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';
 import styles from './offlineMaps.styles';
-import useMapsOfflineHook from './useMapsOffline';
-import useDeviceHook from '../../../services/useDevice';
+import useMapsOffline from './useMapsOffline';
+import useDevice from '../../../services/useDevice';
 import commonStyles from '../../../shared/common.styles';
 import {isEmpty, truncateText} from '../../../shared/Helpers';
 import alert from '../../../shared/ui/alert';
@@ -18,7 +18,7 @@ import SectionDividerWithRightButton from '../../../shared/ui/SectionDividerWith
 import TextInputModal from '../../../shared/ui/TextInputModal';
 import {setIsOfflineMapsModalVisible} from '../../home/home.slice';
 import {WarningModal} from '../../home/modals';
-import useMapHook from '../useMap';
+import useMap from '../useMap';
 
 const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   console.log('Rendering ManageOfflineMaps...');
@@ -36,21 +36,21 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   const [loading, setLoading] = useState(false);
   const [selectedMap, setSelectedMap] = useState({});
 
-  const useDevice = useDeviceHook();
-  const useMap = useMapHook();
-  const useMapsOffline = useMapsOfflineHook();
+  const {deleteOfflineMap} = useDevice();
+  const {setBasemap} = useMap();
+  const {getSavedMapsFromDevice, switchToOfflineMap} = useMapsOffline();
 
   useEffect(() => {
     Animated.sequence([
       // increase size
       Animated.timing(animatedPulse, {
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         toValue: 2,
         duration: 750,
       }),
       // decrease size
       Animated.timing(animatedPulse, {
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         toValue: 1,
         duration: 500,
       }),
@@ -76,7 +76,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
           text: 'OK',
           onPress: () => {
             Object.values(availableMaps).filter(mapId => mapId.id !== selectedMap.id);
-            useDevice.deleteOfflineMap(selectedMap);
+            deleteOfflineMap(selectedMap);
             setIsNameModalVisible(false);
           },
         },
@@ -221,11 +221,11 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
   const toggleOfflineMap = async (item) => {
     if (item.isOfflineMapVisible) {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: false}));
-      await useMap.setBasemap(item.id);
+      await setBasemap(item.id);
     }
     else {
       dispatch(setOfflineMapVisible({mapId: item.id, viewable: true}));
-      const res = await useMapsOffline.switchToOfflineMap(item.id);
+      const res = await switchToOfflineMap(item.id);
       if (!isEmpty(res)) {
         setSelectedMap(res);
         setIsWarningModalVisible(true);
@@ -236,7 +236,7 @@ const ManageOfflineMaps = ({closeMainMenuPanel, zoomToCenterOfflineTile}) => {
 
   const updateMapsFromDevice = async () => {
     setLoading(true);
-    await useMapsOffline.getSavedMapsFromDevice();
+    await getSavedMapsFromDevice();
     console.log(`Got maps from device`);
     setLoading(false);
   };

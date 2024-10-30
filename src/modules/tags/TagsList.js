@@ -4,7 +4,7 @@ import {FlatList, SectionList, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {useTagsHook} from './index';
+import {useTags} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -13,19 +13,22 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 import uiStyles from '../../shared/ui/ui.styles';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
-import {PAGE_KEYS} from '../page/page.constants';
+import {PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import {setSelectedTag} from '../project/projects.slice';
 
 const TagsList = ({type, selectedIndex}) => {
   console.log('Rendering TagsList...');
 
   const dispatch = useDispatch();
-  const spotsInMapExtent = useSelector(state => state.map.spotsInMapExtent);
+  const spotsInMapExtentIds = useSelector(state => state.map.spotsInMapExtentIds);
   const tags = useSelector(state => state.project.project?.tags) || [];
   const useContinuousTagging = useSelector(state => state.project.project?.useContinuousTagging);
 
-  const useTags = useTagsHook();
+  const {getTagFeaturesCount, getTagSpotsCount, toggleContinuousTagging} = useTags();
 
+  const pageKey = type === PAGE_KEYS.GEOLOGIC_UNITS ? PAGE_KEYS.GEOLOGIC_UNITS : PAGE_KEYS.TAGS;
+  const page = PRIMARY_PAGES.find(p => p.key === pageKey);
+  const label = page.label;
   const SECTIONS = type === PAGE_KEYS.GEOLOGIC_UNITS ? [{title: 'Geologic Units', key: 'geologic_unit'}] : [
     {title: 'Concepts', key: 'concept'},
     {title: 'Documentation', key: 'documentation'},
@@ -48,8 +51,8 @@ const TagsList = ({type, selectedIndex}) => {
   };
 
   const renderTag = (tag) => {
-    const tagSpotCount = useTags.getTagSpotsCount(tag);
-    const tagFeatureCount = useTags.getTagFeaturesCount(tag);
+    const tagSpotCount = getTagSpotsCount(tag);
+    const tagFeatureCount = getTagFeaturesCount(tag);
     const title = type === PAGE_KEYS.GEOLOGIC_UNITS ? tagSpotCount
       : '(' + tagSpotCount + ') (' + tagFeatureCount + ')';
     return (
@@ -63,7 +66,7 @@ const TagsList = ({type, selectedIndex}) => {
         {useContinuousTagging && (
           <ListItem.CheckBox
             checked={tag.continuousTagging}
-            onPress={() => useTags.toggleContinuousTagging(tag)}
+            onPress={() => toggleContinuousTagging(tag)}
           />
         )}
         <ListItem.Content>
@@ -79,16 +82,15 @@ const TagsList = ({type, selectedIndex}) => {
 
   const renderTagsListByMapExtent = () => {
     let tagsInMapExtent;
-    const spotIds = spotsInMapExtent.map(spot => spot.properties.id);
     if (type === PAGE_KEYS.GEOLOGIC_UNITS) {
       tagsInMapExtent = tags.filter((tag) => {
         return tag.spots && !isEmpty(
-          tag.spots.find(spotId => spotIds.includes(spotId))) && tag.type === PAGE_KEYS.GEOLOGIC_UNITS;
+          tag.spots.find(spotId => spotsInMapExtentIds?.includes(spotId))) && tag.type === PAGE_KEYS.GEOLOGIC_UNITS;
       });
     }
     else {
       tagsInMapExtent = tags.filter((tag) => {
-        return tag.spots && !isEmpty(tag.spots.find(spotId => spotIds.includes(spotId)))
+        return tag.spots && !isEmpty(tag.spots.find(spotId => spotsInMapExtentIds?.includes(spotId)))
           && tag.type !== 'geologic_unit';
       });
     }
@@ -100,7 +102,7 @@ const TagsList = ({type, selectedIndex}) => {
         data={tagsInMapExtent}
         renderItem={({item}) => renderTag(item)}
         ItemSeparatorComponent={FlatListItemSeparator}
-        ListEmptyComponent={<ListEmptyText text={'No Spots with tags in current map extent'}/>}
+        ListEmptyComponent={<ListEmptyText text={`No Spots with ${label.toLowerCase()} in current map extent`}/>}
       />
     );
   };
@@ -123,7 +125,7 @@ const TagsList = ({type, selectedIndex}) => {
         renderSectionHeader={({section: {title}}) => renderSectionHeader(title)}
         renderItem={({item}) => renderTag(item)}
         renderSectionFooter={({section: {data, title}}) => {
-          return data.length === 0 && <ListEmptyText text={'No ' + title + ' Tags'}/>;
+          return data.length === 0 && <ListEmptyText text={'No ' + title}/>;
         }}
         stickySectionHeadersEnabled={true}
         ItemSeparatorComponent={FlatListItemSeparator}
@@ -131,7 +133,7 @@ const TagsList = ({type, selectedIndex}) => {
     );
   };
 
-  if (isEmpty(tags)) return <ListEmptyText text={'No tags have been added to this project yet'}/>;
+  if (isEmpty(tags)) return <ListEmptyText text={'No ${label.toLowerCase()} have been added to this project yet'}/>;
   else {
     return (
       <View style={{flex: 1}}>

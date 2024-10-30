@@ -4,7 +4,7 @@ import {FlatList, View} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import usePetrologyHook from './usePetrology';
+import usePetrology from './usePetrology';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -25,7 +25,7 @@ const ReactionTexturesPage = ({page}) => {
   const [selectedReaction, setSelectedReaction] = useState({});
   const [isDetailView, setIsDetailView] = useState(false);
 
-  const usePetrology = usePetrologyHook();
+  const {getMineralTitle} = usePetrology();
 
   useEffect(() => {
     console.log('UE ReactionTexturesPage []');
@@ -56,7 +56,7 @@ const ReactionTexturesPage = ({page}) => {
       return 'No Minerals at this Spot';
     }
     else {
-      const existingMinerals = spot.properties.pet.minerals.map(mineral => usePetrology.getMineralTitle(mineral));
+      const existingMinerals = spot.properties.pet.minerals.map(mineral => getMineralTitle(mineral));
       const existingMineralsSorted = existingMinerals.slice().sort((a, b) => a.localeCompare(b));
       return existingMineralsSorted.join(' - ');
     }

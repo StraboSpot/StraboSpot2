@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
-import {Switch} from 'react-native';
+import {Switch, View} from 'react-native';
 
 import {ButtonGroup, ListItem} from 'react-native-elements';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import AddButton from '../../shared/ui/AddButton';
-import {PAGE_KEYS} from '../page/page.constants';
+import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
+import {PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import {setSelectedTag, setUseContinuousTagging} from '../project/projects.slice';
 import {TagDetailModal, TagsList} from '../tags';
 
-const Tags = ({type}) => {
+const Tags = ({type, updateSpotsInMapExtent}) => {
   console.log('Rendering Tags...');
 
   const dispatch = useDispatch();
@@ -23,50 +23,60 @@ const Tags = ({type}) => {
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const pageKey = type === PAGE_KEYS.GEOLOGIC_UNITS ? PAGE_KEYS.GEOLOGIC_UNITS : PAGE_KEYS.TAGS;
+  const page = PRIMARY_PAGES.find(p => p.key === pageKey);
+  const label = page.label;
+
   const addTag = () => {
-    dispatch(setSelectedTag({}));
+    const newTag = type === PAGE_KEYS.GEOLOGIC_UNITS ? {type: PAGE_KEYS.GEOLOGIC_UNITS} : {type: 'concept'};
+    dispatch(setSelectedTag(newTag));
     setIsDetailModalVisible(true);
   };
+
+  const closeDetailModal = () => setIsDetailModalVisible(false);
 
   const getButtonTitle = () => {
     if (type === PAGE_KEYS.GEOLOGIC_UNITS) return ['Alphabetical', 'Map Extent'];
     return ['Categorized', 'Map Extent'];
   };
 
+  const handleContinuousTaggingSwitched = (value) => dispatch(setUseContinuousTagging(value));
+
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       {!isEmpty(tags) && (
-        <ButtonGroup
-          selectedIndex={selectedIndex}
-          onPress={index => setSelectedIndex(index)}
-          buttons={getButtonTitle()}
-          containerStyle={{height: 50}}
-          buttonStyle={{padding: 5}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{fontSize: 12}}
-        />
+        <>
+          <ButtonGroup
+            selectedIndex={selectedIndex}
+            onPress={index => setSelectedIndex(index)}
+            buttons={getButtonTitle()}
+            containerStyle={{height: 50}}
+            buttonStyle={{padding: 5}}
+            selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
+            textStyle={{fontSize: 12}}
+          />
+          {selectedIndex === 1 && (
+            <UpdateSpotsInMapExtentButton
+              title={`Update ${label} in Map Extent`}
+              updateSpotsInMapExtent={updateSpotsInMapExtent}
+            />
+          )}
+        </>
       )}
       <AddButton
         onPress={addTag}
-        title={'Create New Tag'}
+        title={`Create New ${toTitleCase(label).slice(0, -1)}`}
         type={'outline'}
       />
       <ListItem containerStyle={commonStyles.listItem}>
         <ListItem.Content>
-          <ListItem.Title
-            style={commonStyles.listItemTitle}>{'Continuous Tagging'}
-          </ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{`Continuous ${label}`}</ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={value => dispatch(setUseContinuousTagging(value))}
-                value={useContinuousTagging}/>
+        <Switch onValueChange={handleContinuousTaggingSwitched} value={useContinuousTagging}/>
       </ListItem>
       <TagsList type={type} selectedIndex={selectedIndex}/>
-      <TagDetailModal
-        isVisible={isDetailModalVisible}
-        closeModal={() => setIsDetailModalVisible(false)}
-        type={type}
-      />
-    </SafeAreaView>
+      {isDetailModalVisible && <TagDetailModal closeModal={closeDetailModal}/>}
+    </View>
   );
 };
 
