@@ -26,6 +26,7 @@ import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {useSpots} from '../spots';
 import {editedOrCreatedSpot, setSelectedSpot} from '../spots/spots.slice';
+import MacrostratOverlay from './macrostrat/MacrostratOverlay';
 
 const Map = forwardRef(({
                           isSelectingForStereonet,
@@ -92,6 +93,8 @@ const Map = forwardRef(({
   const [measureFeatures, setMeasureFeatures] = useState([]);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [showUserLocation, setShowUserLocation] = useState(false);
+  const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
+  const [coords, setCoords] = useState([0, 0]);
 
   useEffect(() => {
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
@@ -246,7 +249,13 @@ const Map = forwardRef(({
         else if (stratSection) {
           dispatch(setSelectedSpot(getSpotWithThisStratSection(stratSection.strat_section_id)));
         }
-        else clearSelectedSpots();
+        else {
+          clearSelectedSpots();
+          if (currentBasemap?.source === 'macrostrat') {
+            setIsShowMacrostratOverlay(true);
+            setCoords(Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat));
+          }
+        }
       }
       // Draw a feature
       else if (isDrawMode(mapMode)) setDrawFeaturesNew(e);
@@ -419,21 +428,28 @@ const Map = forwardRef(({
   return (
     <View style={{flex: 1, zIndex: -1}}>
       {currentBasemap && (
-        <Basemap
-          allowMapViewMove={allowMapViewMove}
-          basemap={currentBasemap}
-          drawFeatures={drawFeatures}
-          editFeatureVertex={editFeatureVertex}
-          mapMode={mapMode}
-          measureFeatures={measureFeatures}
-          onMapLongPress={onMapLongPress}
-          onMapPress={onMapPress}
-          ref={{mapRef: mapRef, cameraRef: cameraRef}}
-          showUserLocation={showUserLocation}
-          spotsNotSelected={spotsNotSelected}
-          spotsSelected={spotsSelected}
-        />
+          <Basemap
+            allowMapViewMove={allowMapViewMove}
+            basemap={currentBasemap}
+            drawFeatures={drawFeatures}
+            editFeatureVertex={editFeatureVertex}
+            mapMode={mapMode}
+            measureFeatures={measureFeatures}
+            onMapLongPress={onMapLongPress}
+            onMapPress={onMapPress}
+            ref={{mapRef: mapRef, cameraRef: cameraRef}}
+            showUserLocation={showUserLocation}
+            spotsNotSelected={spotsNotSelected}
+            spotsSelected={spotsSelected}
+          />
       )}
+      {currentBasemap?.source === 'macrostrat' && isOnline && (
+        <MacrostratOverlay
+        visible={isShowMacrostratOverlay}
+        closeModal={() => setIsShowMacrostratOverlay(false)}
+        coords={coords}
+      />)
+      }
       {showSetInCurrentViewModal && renderSetInCurrentViewModal()}
     </View>
   );

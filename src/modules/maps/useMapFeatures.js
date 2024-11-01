@@ -12,9 +12,10 @@ const useMapFeatures = () => {
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
+  const isShowOnly1stMeas = useSelector(state => state.map.isShowOnly1stMeas);
+  const mapSymbols = useSelector(state => state.map.mapSymbols);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const stratSection = useSelector(state => state.map.stratSection);
-  const mapSymbols = useSelector(state => state.map.mapSymbols);
 
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
@@ -64,7 +65,9 @@ const useMapFeatures = () => {
     spotsToFeatures.map((spot) => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint')
         && !isEmpty(spot.properties.orientation_data)) {
-        spot.properties.orientation_data.map((orientation, i) => {
+        const measurements = isShowOnly1stMeas ? [spot.properties.orientation_data[0]]
+          : spot.properties.orientation_data;
+        measurements.map((orientation, i) => {
           if (!isEmpty(orientation)) {
             const feature = JSON.parse(JSON.stringify(spot));
             delete feature.properties.orientation_data;

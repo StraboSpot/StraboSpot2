@@ -7,18 +7,19 @@ const initialMapsState = {
   currentBasemap: null,
   currentImageBasemap: undefined,
   customMaps: {},
-  selectedCustomMapToEdit: {},
-  vertexStartCoords: undefined,
-  vertexEndCoords: undefined,
   freehandFeatureCoords: undefined,
-  spotsInMapExtentIds: [],
-  symbolsOn: [],
   isAllSymbolsOn: true,
   isMapMoved: true,
-  mapSymbols: [],
-  tagTypeForColor: undefined,
+  isShowOnly1stMeas: false,
   isShowSpotLabelsOn: true,
+  mapSymbols: [],
+  selectedCustomMapToEdit: {},
+  spotsInMapExtentIds: [],
   stratSection: undefined,
+  symbolsOn: [],
+  tagTypeForColor: undefined,
+  vertexEndCoords: undefined,
+  vertexStartCoords: undefined,
   zoom: ZOOM,
 };
 
@@ -79,6 +80,9 @@ const mapsSlice = createSlice({
     setIsMapMoved(state, action) {
       state.isMapMoved = action.payload;
     },
+    setIsShowOnly1stMeas(state, action) {
+      state.isShowOnly1stMeas = action.payload;
+    },
     setIsShowSpotLabelsOn(state, action) {
       state.isShowSpotLabelsOn = action.payload;
     },
@@ -134,6 +138,7 @@ export const {
   setCurrentImageBasemap,
   setFreehandFeatureCoords,
   setIsMapMoved: setIsMapMoved,
+  setIsShowOnly1stMeas,
   setIsShowSpotLabelsOn,
   setMapSymbols,
   setSpotsInMapExtentIds,

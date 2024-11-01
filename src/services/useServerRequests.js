@@ -10,7 +10,6 @@ const useServerRequests = () => {
   const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const baseUrl = url && isSelected ? url : STRABO_APIS.DB;
-  const straboMyMapsApi = STRABO_APIS.MY_MAPS_BBOX;
   const tilehost = STRABO_APIS.TILE_HOST;
 
   const user = useSelector(state => state.user);
@@ -136,19 +135,26 @@ const useServerRequests = () => {
     return `${STRABO_APIS.STRABO}/pi/`;
   };
 
+  const getMacrostratData = async (coords) => {
+    const params = {
+      lng: coords[0].toFixed(4),
+      lat: coords[1].toFixed(4),
+    };
+    const url = `https://macrostrat.org/api/v2/mobile/point?${new URLSearchParams(params).toString()}`;
+    console.log(url);
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+    return handleResponse(response);
+  };
+
   const getMapTilesFromHost = async (zipUrl) => {
     const response = await timeoutPromise(60000, fetch(zipUrl));
     return await response.json();
   };
 
-  const getMyMapsBbox = async (mapId) => {
-    if (isSelected) {
-      console.log(url.replace('/db', '/geotiff/bbox/' + mapId));
-      const bboxEndpoint = url.replace('/db', '/geotiff/bbox/' + mapId);
-      const response = await fetch(bboxEndpoint);
-      return handleResponse(response);
-    }
-    const response = await fetch(straboMyMapsApi + mapId);
+  const getMyMapsBbox = async (mapUrl) => {
+    const response = await fetch(mapUrl);
     return handleResponse(response);
   };
 
@@ -446,6 +452,7 @@ const useServerRequests = () => {
     getImage: getImage,
     getImageUrl: getImageUrl,
     getMapTilesFromHost: getMapTilesFromHost,
+    getMacrostratData: getMacrostratData,
     getMyMapsBbox: getMyMapsBbox,
     getMyProjects: getMyProjects,
     getProfile: getProfile,

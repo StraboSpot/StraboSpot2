@@ -72,7 +72,7 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-// apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
+apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -83,8 +83,8 @@ android {
         applicationId "com.strabospot2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 104
-        versionName "2.10.4"
+        versionCode 106
+        versionName "2.12.1"
     }
     signingConfigs {
         debug {
@@ -93,6 +93,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+          if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+             storeFile file(MYAPP_UPLOAD_STORE_FILE)
+             storePassword MYAPP_UPLOAD_STORE_PASSWORD
+             keyAlias MYAPP_UPLOAD_KEY_ALIAS
+             keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+           }
+         }
     }
     buildTypes {
         debug {
@@ -104,6 +112,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 }

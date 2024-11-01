@@ -29,7 +29,7 @@ const useCustomMap = () => {
   const {setBasemap} = useMap();
   const {getMyMapsBboxCoords} = useMapCoords();
   const {buildTileURL} = useMapURL();
-  const {testCustomMapUrl} = useServerRequests();
+  const {testCustomMapUrl, getMyMapsBbox} = useServerRequests();
 
   const deleteMap = async (mapId) => {
     console.log('Deleting Map Here');
@@ -39,7 +39,7 @@ const useCustomMap = () => {
     delete customMapsCopy[mapId];
     if (projectCopy.other_maps) {
       const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
-      dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
+      dispatch(updatedProject({field: 'other_maps', value: filteredCustomMaps})); // Deletes map from project
     }
     dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
     dispatch(setSidePanelVisible({view: null, bool: false}));
@@ -56,6 +56,17 @@ const useCustomMap = () => {
     dispatch(selectedCustomMapToEdit(map));
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
+
+  const getMyMapsBBox = async (mapId) => {
+    if (customDatabaseEndpoint.isSelected) {
+      console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
+      const response = await getMyMapsBbox(bboxEndpoint);
+      console.log(response)
+    }
+    const response = await getMyMapsBbox(STRABO_APIS.MY_MAPS_BBOX + mapId);
+    console.log(response)
+  }
 
   const getProviderInfo = (source) => {
     let providerInfo = {...MAP_PROVIDERS[source]};
@@ -126,7 +137,7 @@ const useCustomMap = () => {
     customMapsCopy[map.id] = map;
     console.log(customMapsCopy);
     dispatch(updateCustomMap(map));
-    dispatch(addedProject({...project, other_maps: Object.values(customMapsCopy)}));
+    dispatch(updatedProject({field: 'other_maps', value: Object.values(customMapsCopy)}));
   };
 
   const viewCustomMap = (map) => {
@@ -137,6 +148,7 @@ const useCustomMap = () => {
   return {
     deleteMap: deleteMap,
     getCustomMapDetails: getCustomMapDetails,
+    getMyMapsBBox: getMyMapsBBox,
     saveCustomMap: saveCustomMap,
     setCustomMapSwitchValue: setCustomMapSwitchValue,
     updateMap: updateMap,

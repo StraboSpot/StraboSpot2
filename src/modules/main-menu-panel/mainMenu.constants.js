@@ -33,6 +33,10 @@ export const MAIN_MENU_ITEMS = {
   },
 };
 
+export const MAIN_MENU_DATA = Object.entries(MAIN_MENU_ITEMS).map(([key, value]) => {
+  return {title: key, data: Object.values(value)};
+});
+
 export const SIDE_PANEL_VIEWS = {
   MANAGE_CUSTOM_MAP: 'manageCustomMap',
   PROJECT_DESCRIPTION: 'project description',
