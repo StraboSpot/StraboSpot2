@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated, Platform} from 'react-native';
 
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Home from './Home';
@@ -55,14 +55,14 @@ const HomeContainer = ({navigation, route}) => {
     };
   }, [navigation, route.params]);
 
-  useEffect(() => {
-    // console.log('UE HomeContainer [user]', userEmail);
-    if (userEmail && userName) {
-      Sentry.configureScope((scope) => {
-        scope.setUser({'email': userEmail, 'username': userName});
-      });
-    }
-  }, [userEmail, userName]);
+  // useEffect(() => {
+  //   // console.log('UE HomeContainer [user]', userEmail);
+  //   if (userEmail && userName) {
+  //     Sentry.configureScope((scope) => {
+  //       scope.setUser({'email': userEmail, 'username': userName});
+  //     });
+  //   }
+  // }, [userEmail, userName]);
 
   useEffect(() => {
     // console.log('UE HomeContainer [projectLoadComplete]', projectLoadComplete);
