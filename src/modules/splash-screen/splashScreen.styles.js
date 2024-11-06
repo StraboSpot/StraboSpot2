@@ -1,7 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
-import {PRIMARY_TEXT_SIZE} from '../../shared/styles.constants';
 import * as themes from '../../shared/styles.constants';
+import {PRIMARY_TEXT_SIZE} from '../../shared/styles.constants';
+
+const shadow = Platform.OS === 'web' ? {textShadow: '0 0 10px white'}
+  : {textShadowColor: 'white', textShadowRadius: 10};
 
 const splashScreenStyles = StyleSheet.create({
   backgroundImage: {
@@ -28,8 +31,7 @@ const splashScreenStyles = StyleSheet.create({
   },
   title: {
     color: 'black',
-    textShadowColor: 'white',
-    textShadowRadius: 10,
+    ...shadow,
   },
   titleContainer: {
     alignItems: 'center',
@@ -44,9 +46,9 @@ const splashScreenStyles = StyleSheet.create({
     fontFamily: 'ChalkboardSE-Bold',
     fontSize: 25,
     marginRight: 10,
-    textAlign: 'right', textShadowColor: 'white',
+    textAlign: 'right',
     // marginBottom: 10,
-    textShadowRadius: 10,
+    ...shadow,
   },
   wifiIndicatorContainer: {
     alignItems: 'flex-end',
