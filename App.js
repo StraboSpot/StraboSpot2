@@ -1,6 +1,5 @@
 import React from 'react';
 import {Platform} from 'react-native';
-import 'react-native-devsettings';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
