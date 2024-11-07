@@ -40,7 +40,7 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
     return ['Categorized', 'Map Extent'];
   };
 
-  const handleContinuousTaggingSwitched = (value) => dispatch(setUseContinuousTagging(value));
+  const handleContinuousTaggingSwitched = value => dispatch(setUseContinuousTagging(value));
 
   return (
     <View style={{flex: 1}}>

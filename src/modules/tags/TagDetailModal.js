@@ -43,7 +43,7 @@ const TagDetailModal = ({closeModal}) => {
     if (selectedTag.type === PAGE_KEYS.GEOLOGIC_UNITS) formName = ['project', 'geologic_unit'];
     initialValues = selectedTag;
   }
-  else console.log('Tag Problem. No modal and no selected tag');
+  else console.error('Tag Problem. No modal and no selected tag');
 
   const confirmDeleteTag = () => {
     alert(
@@ -92,9 +92,9 @@ const TagDetailModal = ({closeModal}) => {
         if (!updatedTag.spots) updatedTag.spots = [];
         updatedTag.spots.push(selectedSpot.properties.id);
       }
+      closeModal();
       saveTag(updatedTag);
       console.log('Finished saving tag data');
-      closeModal();
     }
     catch (e) {
       console.log('Error saving tag data', e);
