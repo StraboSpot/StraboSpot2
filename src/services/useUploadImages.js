@@ -17,7 +17,7 @@ const useUploadImages = () => {
   const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const {deleteTempImagesFolder, doesDeviceDirExist, makeDirectory} = useDevice();
-  const {getAllImages, getImageHeightAndWidth, getImageSize, getLocalImageURI} = useImages();
+  const {getAllImages, getImageHeightAndWidth, getLocalImageURI, getImageSize} = useImages();
   const {uploadImage, verifyImagesExistence} = useServerRequests();
 
   const dispatch = useDispatch();
@@ -92,15 +92,13 @@ const useUploadImages = () => {
 
         await makeDirectory(tempImagesDownsizedDirectory);
         const createResizedImageProps = [imageProps.uri, width, height, 'JPEG', 100, 0, tempImagesDownsizedDirectory];
-        const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-        getImageSize(imageProps, resizedImage);
-        return resizedImage;
+        return await ImageResizer.createResizedImage(...createResizedImageProps);
       }
       else return imageProps;
     }
     catch (err) {
       console.error('Error Resizing Image.', err);
-      // throw Error;
+      throw Error('Error Resizing Image.', err);
     }
   };
 
@@ -148,8 +146,8 @@ const useUploadImages = () => {
       dispatch(updatedProjectTransferProgress(0));
     }
     catch (err) {
-      console.log(': Error Uploading Image', imageId, err);
-      throw Error(err);
+      console.log('Error Uploading Image', imageId, err);
+      throw Error('Error Uploading Image', imageId, err);
     }
   };
 
