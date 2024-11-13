@@ -104,4 +104,9 @@ module.exports = {
     new webpack.EnvironmentPlugin({JEST_WORKER_ID: null}),
     new webpack.DefinePlugin({process: {env: {}}}),
   ],
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
 };
