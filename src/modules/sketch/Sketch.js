@@ -17,7 +17,7 @@ const Sketch = ({navigation, route}) => {
   const dispatch = useDispatch();
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
-  const {saveFile} = useImages();
+  const {getLocalImageURI, saveFile} = useImages();
 
   const [imageId, setImageId] = useState(null);
 
@@ -73,7 +73,7 @@ const Sketch = ({navigation, route}) => {
             borderColor: 'grey',
           }}
           localSourceImage={{
-            filename: useImages.getLocalImageURI(image.id).replace('file://', ''),
+            filename: getLocalImageURI(image.id).replace('file://', ''),
             mode: 'AspectFit',
           }}
           defaultStrokeIndex={0}
