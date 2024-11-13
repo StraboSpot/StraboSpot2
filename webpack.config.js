@@ -75,7 +75,6 @@ const cssLoaderConfiguration = {
 
 module.exports = {
   entry: [
-    'babel-polyfill',
     './polyfills-web.js',
     path.join(appDirectory, 'index.web.js'),
   ],
