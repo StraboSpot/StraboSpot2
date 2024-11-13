@@ -17,7 +17,7 @@ const useUploadImages = () => {
   const tempImagesDownsizedDirectory = APP_DIRECTORIES.APP_DIR + '/TempImages';
 
   const {deleteTempImagesFolder, doesDeviceDirExist, makeDirectory} = useDevice();
-  const {getAllImages, getImageHeightAndWidth, getLocalImageURI, getImageSize} = useImages();
+  const {getAllImages, getImageHeightAndWidth, getLocalImageURI} = useImages();
   const {uploadImage, verifyImagesExistence} = useServerRequests();
 
   const dispatch = useDispatch();
