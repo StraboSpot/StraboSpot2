@@ -24,8 +24,8 @@
     "bump-major": "npm version major --no-git-tag-version && bundle exec fastlane bump",
     "deploy-beta": "bundle exec fastlane beta",
     "create-changelog": "changelog generate-changelog",
-    "web": "webpack serve --mode=developpment -d inline-source-map --config webpack.config.js --hot --color",
-    "web-deploy": "rm -rf dist/ && webpack --mode=production --config webpack.config.js"
+    "web": "webpack serve --mode=development -d inline-source-map --config webpack.config.js --hot --color",
+    "web-deploy": "webpack --mode=production --config webpack.config.js"
   },
   "scriptComments": {
     "bundle:android": "Must be run with every build for android before deploying to PlayStore. Removed the --assets flag because of duplicates.",
