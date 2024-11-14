@@ -225,7 +225,7 @@ const Map = forwardRef(({
     if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots) && !isEmpty(spotToEdit)) {
       await switchToEditing(screenPointX, screenPointY, spotToEdit, setMapModeToEdit);
     }
-    else if (mapMode === MAP_MODES.EDIT) await getSpotToEdit(screenPointX, screenPointY, spotToEdit);
+    else if (mapMode === MAP_MODES.EDIT) await getSpotToEdit(e, screenPointX, screenPointY, spotToEdit);
     else console.log('No Spots to edit. No action taken.');
   };
 
