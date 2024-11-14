@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
 const appDirectory = path.resolve(__dirname);
+
 const {presets, plugins} = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
@@ -88,6 +89,7 @@ module.exports = {
     extensions: ['.web.js', '.js', '.web.ts', '.ts', '.web.jsx', '.jsx', '.web.tsx', '.tsx', '.css', '.json'],
     alias: {
       'react-native$': 'react-native-web',
+      'react-native-web': path.resolve('node_modules/react-native-web'),
       '../Utilities/Platform': 'react-native-web/dist/exports/Platform',
     },
   },
