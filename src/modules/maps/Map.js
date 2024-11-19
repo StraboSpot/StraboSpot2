@@ -110,6 +110,7 @@ const Map = forwardRef(({
   useEffect(() => {
     // console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
     updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
+    if (currentBasemap !== 'macrostrat') setIsShowMacrostratOverlay(false);
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
@@ -245,17 +246,15 @@ const Map = forwardRef(({
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
             : [e.properties.screenPointX, e.properties.screenPointY];
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+        if (currentBasemap?.source === 'macrostrat' && !stratSection && !currentImageBasemap) {
+            setIsShowMacrostratOverlay(true);
+            setCoords(Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat));
+        }
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
           dispatch(setSelectedSpot(getSpotWithThisStratSection(stratSection.strat_section_id)));
         }
-        else {
-          clearSelectedSpots();
-          if (currentBasemap?.source === 'macrostrat') {
-            setIsShowMacrostratOverlay(true);
-            setCoords(Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat));
-          }
-        }
+        else clearSelectedSpots();
       }
       // Draw a feature
       else if (isDrawMode(mapMode)) setDrawFeaturesNew(e);
@@ -441,6 +440,8 @@ const Map = forwardRef(({
             showUserLocation={showUserLocation}
             spotsNotSelected={spotsNotSelected}
             spotsSelected={spotsSelected}
+            coords={coords}
+            isShowMacrostratOverlay={isShowMacrostratOverlay}
           />
       )}
       {currentBasemap?.source === 'macrostrat' && isOnline && (

@@ -7,13 +7,16 @@ const platform = Platform.OS === 'ios' ? 'window' : 'screen';
 const {height, width} = Dimensions.get(platform);
 
 const styles = StyleSheet.create({
+  attributionText: {
+    fontSize: 12,
+  },
   container: {
     borderRadius: themes.MODAL_BORDER_RADIUS,
     borderWidth: 0.5,
     position: 'absolute',
     right: 50,
     top: 70,
-    width: 300,
+    width: 350,
   },
   containerPositionSmallScreen: {
     marginLeft: 0,
@@ -59,6 +62,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
   },
+  urlText: {
+    color: themes.BLUE,
+  }
 });
 
 export default styles;

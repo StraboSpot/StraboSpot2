@@ -3,9 +3,9 @@ import {Platform, useWindowDimensions} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {Layer, Map, ScaleControl, Source} from 'react-map-gl';
+import {Layer, Map, Marker, ScaleControl, Source} from 'react-map-gl';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {Icon} from 'react-native-elements'
 import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN, ZOOM_STRAT_SECTION} from './maps.constants';
 import {setIsMapMoved, setVertexEndCoords} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
@@ -25,8 +25,10 @@ import mapStyles from './maps.styles';
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
+                   coords,
                    drawFeatures,
                    editFeatureVertex,
+                   isShowMacrostratOverlay,
                    mapMode,
                    measureFeatures,
                    onMapLongPress,
@@ -208,6 +210,19 @@ const Basemap = ({
       interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
       styleDiffing={false}
     >
+
+      {isShowMacrostratOverlay && basemap.id === 'macrostrat' &&
+        <Marker
+          longitude={coords[0]}
+          latitude={coords[1]}
+          angle={'bottom'}
+        >
+          <Icon
+            size={30}
+            name="map-marker"
+            type="material-community"/>
+        </Marker>
+      }
 
       {!stratSection && !currentImageBasemap && (
         <ScaleControl

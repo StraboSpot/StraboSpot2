@@ -1,7 +1,7 @@
 import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {Text, View} from 'react-native';
 
-import MapboxGL from '@rnmapbox/maps';
+import MapboxGL, {PointAnnotation} from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -22,14 +22,17 @@ import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
 import {useImages} from '../images';
 import FreehandSketch from '../sketch/FreehandSketch';
+import {Icon} from 'react-native-elements';
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
+                   coords,
                    drawFeatures,
                    editFeatureVertex,
+                   isShowMacrostratOverlay,
                    mapMode,
                    measureFeatures,
                    onMapLongPress,
@@ -46,6 +49,7 @@ const Basemap = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isMapMoved = useSelector(state => state.map.isMapMoved);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
@@ -80,6 +84,10 @@ const Basemap = ({
   const featuresSelectedUniq = turf.featureCollection(
     featuresSelected.features?.reduce((acc, f) =>
       acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
+
+  useEffect(() => {
+    console.log('isShowMacrostratOverlay', isShowMacrostratOverlay);
+  }, [isShowMacrostratOverlay, basemap]);
 
   useEffect(() => {
       // console.log('UE Basemap');
@@ -127,6 +135,13 @@ const Basemap = ({
     return SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
   };
 
+  const setCoords = () => {
+    if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point'){
+      coords = selectedSpot.geometry.coordinates;
+    }
+    return coords;
+  }
+
   return (
     <>
       {!stratSection && !currentImageBasemap && zoomText && (
@@ -161,6 +176,16 @@ const Basemap = ({
         scaleBarEnabled={!currentImageBasemap && !stratSection}
         scaleBarPosition={scaleBarPosition()}
       >
+        {/*Displays the marker when Macrostrat view is displayed*/}
+        {isShowMacrostratOverlay && basemap.id === 'macrostrat' && <PointAnnotation id={'marker'} coordinate={setCoords()}>
+          <View style={{backgroundColor: 'transparent', padding: 5}}>
+            <Icon
+              size={35}
+              name='map-marker'
+              type='material-community'
+            />
+          </View>
+        </PointAnnotation>}
 
         {/* Blue dot for user location */}
         <MapboxGL.UserLocation
