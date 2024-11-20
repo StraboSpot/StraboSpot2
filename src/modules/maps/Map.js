@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import Basemap from './Basemap';
 import useCustomMap from './custom-maps/useCustomMap';
-import {MAP_MODES, ZOOM} from './maps.constants';
 import MacrostratOverlay from './macrostrat/MacrostratOverlay';
 import {ZOOM} from './maps.constants';
 import {setSpotsInMapExtentIds} from './maps.slice';
