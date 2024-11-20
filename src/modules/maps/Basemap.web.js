@@ -16,6 +16,8 @@ import useMapSymbology from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
+import useMapMouseActions from './useMapMouseActions.web';
+import useMapMoveEvents from './useMapMoveEvents';
 import useMapURL from './useMapURL';
 import useMapView from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
