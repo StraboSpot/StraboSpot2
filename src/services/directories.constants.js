@@ -13,6 +13,8 @@ const tilesDirectory = devicePath + '/StraboSpotTiles';
 const tileCacheDirectory = tilesDirectory + '/TileCache/';
 const tileTempDirectory = tilesDirectory + '/TileTemp/';
 const zipsDirectory = tilesDirectory + '/TileZips/';
+const microDirectory = appDirectory + '/Micro/';
+const microZipsDirectory = appDirectory + '/Micro/Zips/';
 
 export const APP_DIRECTORIES = {
   ROOT_PATH: devicePath,
@@ -23,10 +25,11 @@ export const APP_DIRECTORIES = {
   EXPORT_FILES_IOS: appDirectoryForDistributedBackups,
   SHARED_DOCUMENTS_PATH_IOS: sharedDocumentsPathIOS,
   IMAGES: imagesDirectory,
+  MICRO: microDirectory,
+  MICRO_ZIPS: microZipsDirectory,
   PROFILE_IMAGE: imagesDirectory + 'profileImage.jpg',
   TILE_CACHE: tileCacheDirectory,
   TILES_DIRECTORY: tilesDirectory,
   TILE_TEMP: tileTempDirectory,
   TILE_ZIP: zipsDirectory,
 };
-

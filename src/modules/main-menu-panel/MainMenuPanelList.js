@@ -17,9 +17,10 @@ const MainMenuPanelList = ({activeProject}) => {
 
     const handleMenuItemPress = () => dispatch(setMenuSelectionPage({name: item}));
 
-    if (item !== MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT && item !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS
-      || ((item === MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT || item === MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS)
-        && Platform.OS !== 'web')) {
+    if (item !== MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT && item !== MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS
+      && item !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS
+      || ((item === MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT || item === MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS
+        || item === MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS) && Platform.OS !== 'web')) {
       return (
         <ListItem containerStyle={commonStyles.listItem} onPress={handleMenuItemPress}>
           <ListItem.Content>
