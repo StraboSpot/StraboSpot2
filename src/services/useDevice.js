@@ -244,6 +244,16 @@ const useDevice = () => {
     else throw Error;
   };
 
+  const exportMicroProjectPDF = async (pdfFile) => {
+    await doesDeviceDirectoryExist(APP_DIRECTORIES.MICRO_EXPORTS);
+    const destination = APP_DIRECTORIES.MICRO_EXPORTS + pdfFile.name + '.pdf';
+    const fileExists = await doesFileExist(destination);
+    if (fileExists) await deleteFromDevice(destination);
+    const source = pdfFile.file.uri;
+    await RNFS.copyFile(source, destination);
+    console.log('Exported StraboMicro Project to', destination);
+  };
+
   const getDeviceStorageSpaceInfo = async () => {
     let imageSizeText;
     const {freeSpace, totalSpace} = await RNFS.getFSInfo();
@@ -471,6 +481,7 @@ const useDevice = () => {
     downloadImageAndSave: downloadImageAndSave,
     downloadAndSaveProfileImage: downloadAndSaveProfileImage,
     downloadAndSaveMap: downloadAndSaveMap,
+    exportMicroProjectPDF: exportMicroProjectPDF,
     getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
     getExternalProjectData: getExternalProjectData,
     getMicroProjectName: getMicroProjectName,
