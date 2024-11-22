@@ -45,7 +45,7 @@ const useMicroZips = () => {
 
   const downloadZip = async (projectId) => {
     try {
-      const downloadZipURL = STRABO_APIS.STRABO + MICRO_PATHS.WEB_PROJECT + '/' + projectId;
+      const downloadZipURL = STRABO_APIS.STRABO + MICRO_PATHS.PDF_PROJECT + '/' + projectId;
       const downloadOptions = {
         headers: {
           'Authorization': 'Basic ' + user.encoded_login,

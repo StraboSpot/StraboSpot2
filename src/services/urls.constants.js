@@ -40,5 +40,6 @@ const microDB = '/microdb';
 
 export const MICRO_PATHS = {
   MY_PROJECTS: microDB + '/myProjects',
+  PDF_PROJECT: microDB + '/projectPDF',
   WEB_PROJECT: microDB + '/webProject',
 };
