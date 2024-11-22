@@ -43,10 +43,14 @@ const MicroProjectsList = () => {
 
   useEffect(() => {
     console.log('UE ProjectList');
-    getAllMicroProjects().then(() => console.log('OK got projects'));
     return () => {
       closeStatusOverlay();
     };
+  }, []);
+
+  useEffect(() => {
+    console.log('UE ProjectList [showComplete, isConnected, isInternetReachable]');
+    getAllMicroProjects().then(() => console.log('OK got projects'));
   }, [showComplete, isConnected, isInternetReachable]);
 
   const checkForMicroProject = async (item) => {
