@@ -278,7 +278,7 @@ const useDevice = () => {
     return res;
   };
 
-  // Pull out the name for a local MicroProject from the json
+  // Grab out the name from project.json for a saved MicroProject
   const getMicroProjectName = async (projectId) => {
     const microJSON = APP_DIRECTORIES.MICRO + projectId + '/' + 'project.json';
     if (await RNFS.exists(microJSON)) {
@@ -287,6 +287,18 @@ const useDevice = () => {
       return fileAsJSON.name || 'Unknown';
     }
     return 'Unknown';
+  };
+
+  // Grab the timestamp from project.json for a saved MicroProject
+  const getSavedMicroProjectModifiedTimestamp = async (projectId) => {
+    const microJSON = APP_DIRECTORIES.MICRO + projectId + '/' + 'project.json';
+    if (await RNFS.exists(microJSON)) {
+      const file = await readFile(microJSON);
+      const fileAsJSON = JSON.parse(file);
+      // console.log('fileAsJSON', fileAsJSON);
+      return fileAsJSON.modifiedtimestamp || undefined;
+    }
+    else return undefined;
   };
 
   const isPickDocumentCanceled = (err) => {
@@ -485,6 +497,7 @@ const useDevice = () => {
     getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
     getExternalProjectData: getExternalProjectData,
     getMicroProjectName: getMicroProjectName,
+    getSavedMicroProjectModifiedTimestamp: getSavedMicroProjectModifiedTimestamp,
     isPickDocumentCanceled: isPickDocumentCanceled,
     makeDirectory: makeDirectory,
     moveFile: moveFile,

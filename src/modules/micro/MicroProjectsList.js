@@ -13,7 +13,7 @@ import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDevice from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
-import {MEDIUMGREY, PRIMARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
+import {LIGHTGREY, MEDIUMGREY, PRIMARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import Loading from '../../shared/ui/Loading';
@@ -28,9 +28,10 @@ const MicroProjectsList = () => {
   const [loading, setLoading] = useState(false);
   const [projectsArr, setProjectsArr] = useState([]);
   const [projectsExistsArr, setProjectsExistsArr] = useState([]);
+  const [projectsUpdateAvailableArr, setProjectsUpdateAvailableArr] = useState([]);
   const [visible, setVisible] = useState(false);
 
-  const {doesMicroProjectPDFExist} = useDevice();
+  const {doesMicroProjectPDFExist, deleteFromDevice, getSavedMicroProjectModifiedTimestamp} = useDevice();
   const {getAllLocalMicroProjects, getAllServerMicroProjects} = useMicro();
   const {
     clearStatus,
@@ -53,20 +54,8 @@ const MicroProjectsList = () => {
     getAllMicroProjects().then(() => console.log('OK got projects'));
   }, [showComplete, isConnected, isInternetReachable]);
 
-  const checkForMicroProject = async (item) => {
-    const exists = await doesMicroProjectPDFExist(item.id);
-    if (exists) {
-      console.log('PDF available');
-      setDoc({
-        id: item.id,
-        platform: ['ios', 'android'],
-        label: 'StraboMicroProject',
-        name: item.name,
-        file: {uri: APP_DIRECTORIES.MICRO + item.id + '/' + 'project.pdf'},
-      });
-      setVisible(true);
-    }
-    else {
+  const checkForMicroProject = async (item, i) => {
+    if (!projectsExistsArr[i] || (isConnected && isInternetReachable && projectsUpdateAvailableArr[i])) {
       console.log('Need to download project');
       try {
         await downloadZip(item.id);
@@ -77,6 +66,17 @@ const MicroProjectsList = () => {
         setErrorMessage(err.message);
       }
     }
+    else {
+      console.log('PDF available');
+      setDoc({
+        id: item.id,
+        platform: ['ios', 'android'],
+        label: 'StraboMicroProject',
+        name: item.name,
+        file: {uri: APP_DIRECTORIES.MICRO + item.id + '/' + 'project.pdf'},
+      });
+      setVisible(true);
+    }
   };
 
   const closeStatusOverlay = () => {
@@ -86,6 +86,8 @@ const MicroProjectsList = () => {
   };
 
   const getAllMicroProjects = async () => {
+    // await deleteFromDevice(APP_DIRECTORIES.MICRO);   // Just needed for testing
+
     let projectsResponse;
     setLoading(true);
     if (isConnected && isInternetReachable) {
@@ -100,11 +102,21 @@ const MicroProjectsList = () => {
         setProjectsArr(projectsResponse);
         setLoading(false);
         let projectsExistsArrTemp = [];
+        let projectsExistsUpdateAvailableTemp = [];
         await Promise.all(projectsResponse.projects.map(async (project, i) => {
           const exists = await doesMicroProjectPDFExist(project.id);
           projectsExistsArrTemp[i] = exists;
+          if (exists) {
+            // console.log('server project', project);
+            const modifiedTimestamp = await getSavedMicroProjectModifiedTimestamp(project.id);
+            if (modifiedTimestamp && project.modifiedtimestamp > modifiedTimestamp) {
+              projectsExistsUpdateAvailableTemp[i] = true;
+            }
+            else projectsExistsUpdateAvailableTemp[i] = false;
+          }
         }));
         setProjectsExistsArr(projectsExistsArrTemp);
+        setProjectsUpdateAvailableArr(projectsExistsUpdateAvailableTemp);
       }
     }
     else {
@@ -124,31 +136,37 @@ const MicroProjectsList = () => {
   };
 
   const renderMicroProjectItem = (item, i) => {
-    const modifiedTimeAndDate = moment.unix(item.modified_timestamp).format('MMMM Do YYYY, h:mm:ss a');
+    const modifiedTimeAndDate = moment.unix(item.modifiedtimestamp / 1000).format('MMM Do YYYY, h:mm a');
     return (
       <ListItem
         key={item.id}
-        onPress={() => checkForMicroProject(item)}
+        onPress={() => checkForMicroProject(item, i)}
         containerStyle={commonStyles.listItem}
         disabled={!isConnected && !projectsExistsArr[i]}
-        disabledStyle={{backgroundColor: 'lightgrey'}}
+        disabledStyle={{backgroundColor: LIGHTGREY}}
       >
         <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {item.name}
-          </ListItem.Title>
+          <ListItem.Title style={commonStyles.listItemTitle}>{item.name}</ListItem.Title>
           {modifiedTimeAndDate && modifiedTimeAndDate !== 'Invalid date' && (
             <ListItem.Subtitle style={commonStyles.listItemSubtitle}>Updated: {modifiedTimeAndDate}</ListItem.Subtitle>
           )}
         </ListItem.Content>
-        {projectsExistsArr[i] ? <ListItem.Chevron/> : (
-          <Icon
-            name={'download-circle-outline'}
-            type={'material-community'}
-            size={20}
-            color={MEDIUMGREY}
-          />
-        )}
+        {isConnected && isInternetReachable && projectsUpdateAvailableArr[i] ? (
+            <Icon
+              name={'sync'}
+              type={'material-community'}
+              size={20}
+              color={MEDIUMGREY}
+            />
+          )
+          : projectsExistsArr[i] ? <ListItem.Chevron/> : (
+            <Icon
+              name={'download-circle-outline'}
+              type={'material-community'}
+              size={20}
+              color={MEDIUMGREY}
+            />
+          )}
       </ListItem>
     );
   };
