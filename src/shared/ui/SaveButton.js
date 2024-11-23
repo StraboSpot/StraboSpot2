@@ -10,9 +10,9 @@ const SaveButton = ({
   return (
     <Button
       title={title}
-      type={'solid'}
-      containerStyle={{alignItems: 'center', padding: 10}}
-      buttonStyle={{borderRadius: 10, marginTop: 10, marginBottom: 10, backgroundColor: PRIMARY_ACCENT_COLOR}}
+      type={'clear'}
+      // containerStyle={{alignItems: 'center', padding: 10}}
+      // buttonStyle={{borderRadius: 10, marginTop: 10, marginBottom: 10, backgroundColor: PRIMARY_ACCENT_COLOR}}
       onPress={onPress}
     />
   );
