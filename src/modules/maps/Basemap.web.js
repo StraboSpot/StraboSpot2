@@ -25,7 +25,7 @@ import mapStyles from './maps.styles';
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
-                   coords,
+                   location,
                    drawFeatures,
                    editFeatureVertex,
                    isShowMacrostratOverlay,
@@ -213,8 +213,8 @@ const Basemap = ({
 
       {isShowMacrostratOverlay && basemap.id === 'macrostrat' &&
         <Marker
-          longitude={coords[0]}
-          latitude={coords[1]}
+          longitude={location.coords[0]}
+          latitude={location.coords[1]}
           angle={'bottom'}
         >
           <Icon

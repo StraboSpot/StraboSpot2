@@ -11,9 +11,9 @@ import commonStyles from '../../../shared/common.styles';
 import alert from '../../../shared/ui/alert';
 
 const MacrostratOverlay = ({
-                             visible,
+                             isVisible,
                              closeModal,
-                             coords,
+                             location,
                            }) => {
 
   // let ref = useRef(null);
@@ -35,7 +35,7 @@ const MacrostratOverlay = ({
     macrostratDataRequest().then((res) => {
       console.log('complete', res);
     });
-  }, [coords]);
+  }, [location]);
 
   const handleLinkPress = useCallback(async (url) => {
     const supported = await Linking.canOpenURL(url);
@@ -43,7 +43,7 @@ const MacrostratOverlay = ({
     else {
       alert(`Don't know how to open this URL: ${url}`);
     }
-  },[]);
+  }, []);
 
   const handleShowMore = () => {
     setShowMore(!showMore);
@@ -51,7 +51,7 @@ const MacrostratOverlay = ({
 
   const macrostratDataRequest = async () => {
     try {
-      const res = await getMacrostratData(coords);
+      const res = await getMacrostratData(location);
       console.log('Here is the data for the point', res);
 
       setDataObject(res.success.data);
@@ -64,7 +64,8 @@ const MacrostratOverlay = ({
   const renderContent = () => {
     const {age, name, rocktype, map_ref} = dataObject;
     const commaSeparatedString = rocktype?.join(', ');
-    const macrostratUrl = 'https://www.macrostrat.org';
+    const macrostratUrl = `https://www.macrostrat.org/map/loc/${location.coords[0]?.toFixed(
+      2)}/${location.coords[1]?.toFixed(2)}#z=${location.zoom.toFixed(1)}`;
 
     return (
       <ScrollView style={{padding: 10}}>
@@ -76,11 +77,13 @@ const MacrostratOverlay = ({
           style={macrostratOverlayStyles.contentText}>{isEmpty(
           rocktype) || (rocktype?.[0] === null) ? 'N/A' : commaSeparatedString}</Text></Text>
         <Text style={macrostratOverlayStyles.mapRefContent}><Text
-          style={macrostratOverlayStyles.mapRefBoldText}>Title:</Text> {isEmpty(map_ref?.ref_title) ? 'N/A' : map_ref?.ref_title }</Text>
+          style={macrostratOverlayStyles.mapRefBoldText}>Source:</Text> {isEmpty(
+          map_ref?.ref_title) ? 'N/A' : map_ref?.ref_title}</Text>
         <View style={{alignSelf: 'flex-end'}}>
           <Text
             onPress={() => handleLinkPress(macrostratUrl)}
-            style={[macrostratOverlayStyles.urlText, macrostratOverlayStyles.attributionText]}>-Data by Macrostrat</Text>
+            style={[macrostratOverlayStyles.urlText, macrostratOverlayStyles.attributionText]}>View in Macrostrat
+          </Text>
         </View>
       </ScrollView>
     );
@@ -141,31 +144,36 @@ const MacrostratOverlay = ({
 
   return (
     <>
-      {visible
-        && <Card
-          containerStyle={SMALL_SCREEN ? [macrostratOverlayStyles.containerPositionSmallScreen] : [macrostratOverlayStyles.container]}>
-          <Card.Title>{isEmpty(dataObject.name) ? 'Unnamed' : dataObject.name}</Card.Title>
-          {coords && (
-            <Text style={macrostratOverlayStyles.coordsText}>Lat: {coords[1].toFixed(4)}, Lng: {coords[0].toFixed(
-              4)}
-            </Text>
-          )}
-          {renderContent()}
-          <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
-            <Button
-              type={'clear'}
-              title={showMore ? 'Hide Description' : 'Show Description'}
-              // containerStyle={commonStyles.buttonContainer}
-              onPress={handleShowMore}>
-            </Button>
-            {renderDescription()}
+      {isVisible
+        && (
+          <Card
+            containerStyle={SMALL_SCREEN ? [macrostratOverlayStyles.containerPositionSmallScreen] : [macrostratOverlayStyles.container]}>
             <Button
               title={'Close'}
+              containerStyle={{alignItems: 'flex-end'}}
               onPress={closeModal}
               type={'clear'}
             />
-          </View>
-        </Card>}
+            <Card.Title>{isEmpty(dataObject.name) ? 'Unnamed' : dataObject.name}</Card.Title>
+            {location.coords && (
+              <Text style={macrostratOverlayStyles.coordsText}>Lat: {location.coords[1].toFixed(4)},
+                Lng: {location.coords[0].toFixed(
+                  4)}
+              </Text>
+            )}
+            {renderContent()}
+            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
+              <Button
+                type={'clear'}
+                title={showMore ? 'Hide Description' : 'Show Description'}
+                // containerStyle={commonStyles.buttonContainer}
+                onPress={handleShowMore}>
+              </Button>
+              {renderDescription()}
+
+            </View>
+          </Card>
+        )}
     </>
   );
 };

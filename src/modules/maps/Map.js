@@ -94,7 +94,7 @@ const Map = forwardRef(({
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [showUserLocation, setShowUserLocation] = useState(false);
   const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
-  const [coords, setCoords] = useState([0, 0]);
+  const [location, setLocation] = useState({coords: [0, 0], zoom: 16});
 
   useEffect(() => {
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
@@ -248,7 +248,8 @@ const Map = forwardRef(({
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
         if (currentBasemap?.source === 'macrostrat' && !stratSection && !currentImageBasemap) {
             setIsShowMacrostratOverlay(true);
-            setCoords(Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat));
+            const currentZoom = await getCurrentZoom();
+            setLocation({coords: (Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat)), zoom: currentZoom});
         }
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
@@ -440,15 +441,15 @@ const Map = forwardRef(({
             showUserLocation={showUserLocation}
             spotsNotSelected={spotsNotSelected}
             spotsSelected={spotsSelected}
-            coords={coords}
+            location={location}
             isShowMacrostratOverlay={isShowMacrostratOverlay}
           />
       )}
       {currentBasemap?.source === 'macrostrat' && isOnline && (
         <MacrostratOverlay
-        visible={isShowMacrostratOverlay}
+        isVisible={isShowMacrostratOverlay}
         closeModal={() => setIsShowMacrostratOverlay(false)}
-        coords={coords}
+        location={location}
       />)
       }
       {showSetInCurrentViewModal && renderSetInCurrentViewModal()}

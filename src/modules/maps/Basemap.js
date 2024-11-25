@@ -29,7 +29,7 @@ MapboxGL.setAccessToken(MAPBOX_TOKEN);
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
-                   coords,
+                   location,
                    drawFeatures,
                    editFeatureVertex,
                    isShowMacrostratOverlay,
@@ -137,9 +137,9 @@ const Basemap = ({
 
   const setCoords = () => {
     if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point'){
-      coords = selectedSpot.geometry.coordinates;
+      location.coords = selectedSpot.geometry.coordinates;
     }
-    return coords;
+    return location.coords;
   }
 
   return (

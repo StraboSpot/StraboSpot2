@@ -135,10 +135,10 @@ const useServerRequests = () => {
     return `${STRABO_APIS.STRABO}/pi/`;
   };
 
-  const getMacrostratData = async (coords) => {
+  const getMacrostratData = async (location) => {
     const params = {
-      lng: coords[0].toFixed(4),
-      lat: coords[1].toFixed(4),
+      lng: location.coords[0].toFixed(4),
+      lat: location.coords[1].toFixed(4),
     };
     const url = `https://macrostrat.org/api/v2/mobile/point?${new URLSearchParams(params).toString()}`;
     console.log(url);
