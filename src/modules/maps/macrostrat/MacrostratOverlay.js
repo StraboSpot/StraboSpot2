@@ -9,6 +9,7 @@ import {isEmpty, truncateText} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import commonStyles from '../../../shared/common.styles';
 import alert from '../../../shared/ui/alert';
+import * as Helpers from '../../../shared/Helpers';
 
 const MacrostratOverlay = ({
                              isVisible,
@@ -36,6 +37,10 @@ const MacrostratOverlay = ({
       console.log('complete', res);
     });
   }, [location]);
+
+  const copyToClipboard = () => {
+    Helpers.copyToClipboard(dataObject.comm);
+  };
 
   const handleLinkPress = useCallback(async (url) => {
     const supported = await Linking.canOpenURL(url);
@@ -102,6 +107,17 @@ const MacrostratOverlay = ({
             )
             : (
               <>
+                <Button
+                  type={'clear'}
+                  containerStyle={{alignSelf: 'flex-end'}}
+                  onPress={copyToClipboard}
+                  icon={{
+                    name: 'copy-outline',
+                    type: 'ionicon',
+                    size: 25,
+                    // color: "white"
+                  }}
+                />
                 <Text
                   style={macrostratOverlayStyles.descriptionContent}>{dataObject.desc} {'\n\n'}{dataObject.comm}</Text>
               </>
