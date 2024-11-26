@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
-import {STRABO_APIS} from './urls.constants';
+import {MICRO_PATHS, STRABO_APIS} from './urls.constants';
 import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
@@ -10,6 +10,7 @@ const useServerRequests = () => {
   const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const baseUrl = url && isSelected ? url : STRABO_APIS.DB;
+  const domain = url && isSelected ? url : STRABO_APIS.STRABO;
   const tilehost = STRABO_APIS.TILE_HOST;
 
   const user = useSelector(state => state.user);
@@ -158,6 +159,10 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
+  const getMyMicroProjects = (encodedLogin) => {
+    return requestMicro('GET', MICRO_PATHS.MY_PROJECTS, encodedLogin);
+  };
+
   const getMyProjects = (encodedLogin) => {
     return request('GET', '/myProjects', encodedLogin);
   };
@@ -273,6 +278,32 @@ const useServerRequests = () => {
           'Authorization': 'Basic ' + login + '/',
           'Content-Type': 'application/json',
         },
+        // body: JSON.stringify({data: data}),
+        ...otherParams,
+      }));
+      return handleResponse(response);
+    }
+    catch (err) {
+      console.error('Error Fetching', err);
+      alert('Error', `${err.toString()}`);
+      throw Error(err);
+    }
+  };
+
+  const requestMicro = async (method, path, login, ...otherParams) => {
+    try {
+      // beforeSend request fetch
+      const requestFetch = function () {
+        return fetch(domain + path, {
+          headers: {
+            'Authorization': 'Basic ' + login,
+            'Content-Type': 'application/json',
+          },
+        });
+      };
+
+      const response = await timeoutPromise(60000, requestFetch(domain + path, {
+        method: method,
         // body: JSON.stringify({data: data}),
         ...otherParams,
       }));
@@ -451,9 +482,10 @@ const useServerRequests = () => {
     getDbUrl: getDbUrl,
     getImage: getImage,
     getImageUrl: getImageUrl,
-    getMapTilesFromHost: getMapTilesFromHost,
     getMacrostratData: getMacrostratData,
+    getMapTilesFromHost: getMapTilesFromHost,
     getMyMapsBbox: getMyMapsBbox,
+    getMyMicroProjects: getMyMicroProjects,
     getMyProjects: getMyProjects,
     getProfile: getProfile,
     getProfileImage: getProfileImage,

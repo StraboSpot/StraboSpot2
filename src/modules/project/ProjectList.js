@@ -169,7 +169,7 @@ const ProjectList = ({source}) => {
   };
 
   const renderProjectItem = (item) => {
-    const modifiedTimeAndDate = moment.unix(item.modified_timestamp).format('MMMM Do YYYY, h:mm:ss a');
+    const modifiedTimeAndDate = moment.unix(item.modified_timestamp).format('MMM Do YYYY, h:mm a');
     return (
       <ListItem
         key={item.id}

@@ -67,6 +67,7 @@ const AddTephraModal = ({onPress}) => {
           bounces={false}
           ListHeaderComponent={
             <View style={{flex: 1}}>
+              {!choicesViewKey && <SaveAndCloseModalButtons saveAction={saveTephra}/>}
               <Formik
                 innerRef={formRef}
                 initialValues={{}}
@@ -83,7 +84,6 @@ const AddTephraModal = ({onPress}) => {
             </View>
           }
         />
-        {!choicesViewKey && <SaveAndCloseModalButtons saveAction={saveTephra}/>}
       </Modal>
     );
   };

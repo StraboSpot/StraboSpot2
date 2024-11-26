@@ -18,6 +18,7 @@ import ManageCustomMaps from '../maps/custom-maps/ManageCustomMaps';
 import ImageBasemapsList from '../maps/ImageBasemapsList';
 import ManageOfflineMapsMenu from '../maps/offline-maps/ManageOfflineMaps';
 import StratSectionsList from '../maps/strat-section/StratSectionsList';
+import MicroProjectsList from '../micro/MicroProjectsList';
 import Miscellaneous from '../preferences/Miscellaneous';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
@@ -69,6 +70,8 @@ const MainMenuPanel = ({
         );
       case MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT:
         return <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>;
+      case MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS:
+        return <MicroProjectsList/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS:
         return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
