@@ -1,11 +1,21 @@
 import {Linking, PixelRatio} from 'react-native';
 
 import 'react-native-get-random-values';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {v4 as uuidv4} from 'uuid';
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
 const schema = new passwordValidator();
+
+export const copyToClipboard = (data) => {
+  Clipboard.setString(data);
+  console.log('copied to clipboard.', data);
+};
+
+export const pasteFromClipboard = () => {
+  return Clipboard.getString();
+};
 
 // Parsing CSV Strings With Javascript Exec() Regular Expression Command
 // https://gist.github.com/bennadel/9753411#file-code-1-htm
