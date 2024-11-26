@@ -45,6 +45,7 @@ const Basemap = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isMapMoved = useSelector(state => state.map.isMapMoved);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {mapRef} = forwardedRef;
@@ -110,6 +111,13 @@ const Basemap = ({
     }
   });
 
+  const setCoords = () => {
+    if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point') {
+      location.coords = selectedSpot.geometry.coordinates;
+    }
+    return location.coords;
+  };
+
   return (
     <Map
       {...viewState}
@@ -137,8 +145,8 @@ const Basemap = ({
 
       {isShowMacrostratOverlay && basemap.id === 'macrostrat' && (
         <Marker
-          longitude={location.coords[0]}
-          latitude={location.coords[1]}
+          longitude={setCoords()[0]}
+          latitude={setCoords()[1]}
           angle={'bottom'}
         >
           <Icon

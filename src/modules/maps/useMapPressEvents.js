@@ -26,8 +26,9 @@ const useMapPressEvents = ({
                              setMeasureFeatures,
                              switchToEditing,
                            }) => {
-  const dispatch = useDispatch();
   const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {getAllMappedSpots} = useMapFeatures();
@@ -69,18 +70,16 @@ const useMapPressEvents = ({
           : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
             : [e.properties.screenPointX, e.properties.screenPointY];
         const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+        if (currentBasemap?.source === 'macrostrat' && !stratSection && !currentImageBasemap) {
+          setIsShowMacrostratOverlay(true);
+          const currentZoom = await mapRef.current.getZoom();
+          setLocation({coords: (Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat)), zoom: currentZoom});
+        }
         if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
         else if (stratSection) {
           dispatch(setSelectedSpot(getSpotWithThisStratSection(stratSection.strat_section_id)));
         }
-        else {
-          clearSelectedSpots();
-          if (currentBasemap?.source === 'macrostrat') {
-            setIsShowMacrostratOverlay(true);
-            const currentZoom = await mapRef.current.getZoom();
-            setLocation({coords: (Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat)), zoom: currentZoom});
-          }
-        }
+        else clearSelectedSpots();
       }
       // Draw a feature
       else if (isDrawMode(mapMode)) setDrawFeaturesNew(e);
@@ -91,6 +90,7 @@ const useMapPressEvents = ({
       }
     }
   };
+
 
   return {
     location: location,
