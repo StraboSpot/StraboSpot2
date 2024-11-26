@@ -36,7 +36,7 @@ const useMapPressEvents = ({
   const {getSpotWithThisStratSection} = useSpots();
   const {isDrawMode} = useMap();
 
-  const [coords, setCoords] = useState([0, 0]);
+  const [location, setLocation] = useState({coords: [0, 0], zoom: 16});
 
   // Handle a long press on the map by making the point or vertex at the point "selected"
   const handleMapLongPress = async (e) => {
@@ -77,7 +77,8 @@ const useMapPressEvents = ({
           clearSelectedSpots();
           if (currentBasemap?.source === 'macrostrat') {
             setIsShowMacrostratOverlay(true);
-            setCoords(Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat));
+            const currentZoom = await mapRef.current.getZoom();
+            setLocation({coords: (Platform.OS !== 'web' ? e.geometry?.coordinates : Object.values(e.lngLat)), zoom: currentZoom});
           }
         }
       }
@@ -92,7 +93,7 @@ const useMapPressEvents = ({
   };
 
   return {
-    coords: coords,
+    location: location,
     handleMapLongPress: handleMapLongPress,
     handleMapPress: handleMapPress,
   };

@@ -344,30 +344,31 @@ const Map = forwardRef(({
           editFeatureVertex={editFeatureVertex}
           handleMapLongPress={handleMapLongPress}
           handleMapPress={handleMapPress}
+          isShowMacrostratOverlay={isShowMacrostratOverlay}
+          location={location}
           mapMode={mapMode}
           measureFeatures={measureFeatures}
           ref={{mapRef: mapRef, cameraRef: cameraRef}}
           showUserLocation={showUserLocation}
           spotsNotSelected={spotsNotSelected}
           spotsSelected={spotsSelected}
-          location={location}
-          isShowMacrostratOverlay={isShowMacrostratOverlay}
         />
       )}
       {currentBasemap?.source === 'macrostrat' && isOnline && (
         <MacrostratOverlay
-        isVisible={isShowMacrostratOverlay}
-        closeModal={() => setIsShowMacrostratOverlay(false)}
-        location={location}
-      />)
-      }
+          closeModal={() => setIsShowMacrostratOverlay(false)}
+          isVisible={isShowMacrostratOverlay}
+          location={location}
+        />
+      )}
       {showSetInCurrentViewModal && (
         <SetInCurrentViewOverlay
           createDefaultGeomContinued={createDefaultGeomContinued}
           setShowSetInCurrentViewModal={setShowSetInCurrentViewModal}
           showSetInCurrentViewModal={showSetInCurrentViewModal}
         />
-      )}    </View>
+      )}
+    </View>
   );
 });
 

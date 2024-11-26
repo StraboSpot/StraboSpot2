@@ -4,10 +4,8 @@ import {Platform, useWindowDimensions} from 'react-native';
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {Layer, Map, Marker, ScaleControl, Source} from 'react-map-gl';
+import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
-import {Icon} from 'react-native-elements'
-import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN, ZOOM_STRAT_SECTION} from './maps.constants';
-import {setIsMapMoved, setVertexEndCoords} from './maps.slice';
 
 import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
 import {setIsMapMoved} from './maps.slice';
@@ -30,12 +28,12 @@ import mapStyles from './maps.styles';
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
-                   location,
                    drawFeatures,
                    editFeatureVertex,
-                   isShowMacrostratOverlay,
                    handleMapLongPress,
                    handleMapPress,
+                   isShowMacrostratOverlay,
+                   location,
                    mapMode,
                    measureFeatures,
                    spotsNotSelected,
@@ -137,7 +135,7 @@ const Basemap = ({
       touchZoomRotate={false}
     >
 
-      {isShowMacrostratOverlay && basemap.id === 'macrostrat' &&
+      {isShowMacrostratOverlay && basemap.id === 'macrostrat' && (
         <Marker
           longitude={location.coords[0]}
           latitude={location.coords[1]}
@@ -145,10 +143,11 @@ const Basemap = ({
         >
           <Icon
             size={30}
-            name="map-marker"
-            type="material-community"/>
+            name={'map-marker'}
+            type={'material-community'}
+          />
         </Marker>
-      }
+      )}
 
       {!stratSection && !currentImageBasemap && (
         <ScaleControl

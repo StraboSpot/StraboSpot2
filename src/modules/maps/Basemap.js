@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 import MapboxGL, {PointAnnotation} from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
+import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
@@ -24,7 +25,6 @@ import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
 import {useImages} from '../images';
 import FreehandSketch from '../sketch/FreehandSketch';
-import {Icon} from 'react-native-elements';
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
@@ -118,11 +118,11 @@ const Basemap = ({
   };
 
   const setCoords = () => {
-    if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point'){
+    if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point') {
       location.coords = selectedSpot.geometry.coordinates;
     }
     return location.coords;
-  }
+  };
 
   return (
     <>
@@ -156,16 +156,18 @@ const Basemap = ({
         styleURL={currentImageBasemap || stratSection ? JSON.stringify(BACKGROUND) : JSON.stringify(basemap)}
         zoomEnabled={allowMapViewMove}
       >
-        {/*Displays the marker when Macrostrat view is displayed*/}
-        {isShowMacrostratOverlay && basemap.id === 'macrostrat' && <PointAnnotation id={'marker'} coordinate={setCoords()}>
-          <View style={{backgroundColor: 'transparent', padding: 5}}>
-            <Icon
-              size={35}
-              name='map-marker'
-              type='material-community'
-            />
-          </View>
-        </PointAnnotation>}
+
+        {/* Displays the marker when Macrostrat view is displayed */}
+        {isShowMacrostratOverlay && basemap.id === 'macrostrat'
+          && <PointAnnotation id={'marker'} coordinate={setCoords()}>
+            <View style={{backgroundColor: 'transparent', padding: 5}}>
+              <Icon
+                size={35}
+                name={'map-marker'}
+                type={'material-community'}
+              />
+            </View>
+          </PointAnnotation>}
 
         {/* Blue dot for user location */}
         <MapboxGL.UserLocation
