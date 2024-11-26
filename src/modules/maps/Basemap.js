@@ -1,12 +1,14 @@
-import React, {forwardRef, useEffect, useRef, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
-import MapboxGL from '@rnmapbox/maps';
+import MapboxGL, {PointAnnotation} from '@rnmapbox/maps';
 import * as turf from '@turf/turf';
+import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
 import {setIsMapMoved} from './maps.slice';
+import mapStyles from './maps.styles';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -14,6 +16,7 @@ import {MAP_SYMBOLS} from './symbology/mapSymbology.constants';
 import useMapSymbology from './symbology/useMapSymbology';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
+import useMapMoveEvents from './useMapMoveEvents';
 import useMapURL from './useMapURL';
 import useMapView from './useMapView';
 import VertexDrag from './VertexDrag';
@@ -25,15 +28,19 @@ import FreehandSketch from '../sketch/FreehandSketch';
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
+const scaleBarPosition = SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
+
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
+                   location,
                    drawFeatures,
                    editFeatureVertex,
+                   isShowMacrostratOverlay,
+                   handleMapLongPress,
+                   handleMapPress,
                    mapMode,
                    measureFeatures,
-                   onMapLongPress,
-                   onMapPress,
                    showUserLocation,
                    spotsNotSelected,
                    spotsSelected,
@@ -46,6 +53,7 @@ const Basemap = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isMapMoved = useSelector(state => state.map.isMapMoved);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
   const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
@@ -54,18 +62,16 @@ const Basemap = ({
   const {doesImageExistOnDevice, getLocalImageURI} = useImages();
   const {getCoordQuad} = useMapCoords();
   const {getSpotsAsFeatures} = useMapFeatures();
+  const {handleMapMoved, zoomText} = useMapMoveEvents(mapRef);
   const {addSymbology, getLinesFilteredByPattern, getMapSymbology} = useMapSymbology();
   const {buildTileURL} = useMapURL();
-  const {getInitialViewState, setMapView} = useMapView();
+  const {getInitialViewState} = useMapView();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
   const [initialCenter, setInitialCenter] = useState();
   const [initialZoom, setInitialZoom] = useState();
   const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});
-  const [zoomText, setZoomText] = useState();
-
-  const cameraChangedTimestampRef = useRef(0);
 
   const coordQuad = getCoordQuad(currentImageBasemap);
 
@@ -80,6 +86,10 @@ const Basemap = ({
   const featuresSelectedUniq = turf.featureCollection(
     featuresSelected.features?.reduce((acc, f) =>
       acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
+
+  useEffect(() => {
+    console.log('isShowMacrostratOverlay', isShowMacrostratOverlay);
+  }, [isShowMacrostratOverlay, basemap]);
 
   useEffect(() => {
       // console.log('UE Basemap');
@@ -100,22 +110,6 @@ const Basemap = ({
     return doesImageExistOnDevice(currentImageBasemap.id).then(doesExist => setDoesImageExist(doesExist));
   };
 
-  // Update spots in extent and saved view (center and zoom)
-  const onMapMoved = async (e) => {
-    // console.log('Event onMapMoved Timestamp difference', e.timestamp - cameraChangedTimestampRef.current);
-    if (e.timestamp - cameraChangedTimestampRef.current > 1000) {
-      console.log('Map Moved. Updating View...');
-      cameraChangedTimestampRef.current = e.timestamp;
-      if (!isMapMoved) dispatch(setIsMapMoved(true));
-      if (!currentImageBasemap && !stratSection && mapRef?.current) {
-        const newCenter = await mapRef.current.getCenter();
-        const newZoom = await mapRef.current.getZoom();
-        setZoomText(newZoom);   // Update scale bar and zoom text
-        setMapView(newCenter, newZoom);
-      }
-    }
-  };
-
   // Set flag for when the map has been loaded
   // This is a fix for patterns loading too slowly after v10 update
   // ToDo: Check if this bug is fixed in rnmapbox and therefore can be removed
@@ -123,8 +117,11 @@ const Basemap = ({
     stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
   };
 
-  const scaleBarPosition = () => {
-    return SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
+  const setCoords = () => {
+    if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point') {
+      location.coords = selectedSpot.geometry.coordinates;
+    }
+    return location.coords;
   };
 
   return (
@@ -138,29 +135,39 @@ const Basemap = ({
         </View>
       )}
       <MapboxGL.MapView
-        id={currentImageBasemap ? currentImageBasemap.id : stratSection ? stratSection.strat_section_id
-          : basemap.id}
-        ref={mapRef}
-        style={{flex: 1}}
-        styleURL={currentImageBasemap || stratSection ? JSON.stringify(BACKGROUND)
-          : JSON.stringify(basemap)}
         animated={true}
+        attributionEnabled={true}
+        attributionPosition={homeStyles.mapboxAttributionPosition}
+        id={currentImageBasemap ? currentImageBasemap.id : stratSection ? stratSection.strat_section_id : basemap.id}
         localizeLabels={true}
         logoEnabled={true}
         logoPosition={homeStyles.mapboxLogoPosition}
-        rotateEnabled={false}
-        pitchEnabled={false}
-        attributionEnabled={true}
-        attributionPosition={homeStyles.mapboxAttributionPosition}
-        onPress={onMapPress}
-        onLongPress={onMapLongPress}
-        scrollEnabled={allowMapViewMove}
-        zoomEnabled={allowMapViewMove}
-        onCameraChanged={onMapMoved}  // Update spots in extent and saved view (center and zoom)
+        onCameraChanged={handleMapMoved}  // Update spots in extent and saved view (center and zoom)
         onDidFinishLoadingMap={onDidFinishLoadingMap}
+        onLongPress={handleMapLongPress}
+        onPress={handleMapPress}
+        pitchEnabled={false}
+        ref={mapRef}
+        rotateEnabled={false}
         scaleBarEnabled={!currentImageBasemap && !stratSection}
-        scaleBarPosition={scaleBarPosition()}
+        scaleBarPosition={scaleBarPosition}
+        scrollEnabled={allowMapViewMove}
+        style={mapStyles.map}
+        styleURL={currentImageBasemap || stratSection ? JSON.stringify(BACKGROUND) : JSON.stringify(basemap)}
+        zoomEnabled={allowMapViewMove}
       >
+
+        {/* Displays the marker when Macrostrat view is displayed */}
+        {isShowMacrostratOverlay && basemap.id === 'macrostrat'
+          && <PointAnnotation id={'marker'} coordinate={setCoords()}>
+            <View style={{backgroundColor: 'transparent', padding: 5}}>
+              <Icon
+                size={35}
+                name={'map-marker'}
+                type={'material-community'}
+              />
+            </View>
+          </PointAnnotation>}
 
         {/* Blue dot for user location */}
         <MapboxGL.UserLocation

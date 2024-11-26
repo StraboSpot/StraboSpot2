@@ -217,6 +217,10 @@ const SampleModal = (props) => {
 
   return (
     <Modal onPress={props.onPress}>
+      <SaveButton
+        title={'Save Sample'}
+        onPress={() => saveForm(formRef.current)}
+      />
       <FlatList
         bounces={false}
         ListHeaderComponent={
@@ -231,10 +235,6 @@ const SampleModal = (props) => {
             {formProps => <View style={{}}>{renderForm(formProps)}</View>}
           </Formik>
         }
-      />
-      <SaveButton
-        title={'Save Sample'}
-        onPress={() => saveForm(formRef.current)}
       />
       {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>

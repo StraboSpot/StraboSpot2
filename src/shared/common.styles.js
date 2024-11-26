@@ -43,7 +43,7 @@ const commonStyles = StyleSheet.create({
   listItemSubtitle: {
     color: themes.DARKGREY,
     fontSize: themes.SMALL_TEXT_SIZE,
-    marginTop: 5,
+    // marginTop: 5,
   },
   listItemTitle: {
     color: themes.PRIMARY_TEXT_COLOR,

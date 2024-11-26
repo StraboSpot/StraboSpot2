@@ -300,9 +300,8 @@ const useMapFeaturesDraw = ({
         }
         if (isEmpty(vertexSelected)) {
           // draw features did not return anything - generally a scenario of selecting a vertex on a spot press.
-          closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound,
-            screenPointX,
-            screenPointY, spotsEdited);
+          closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY,
+            spotsEdited);
           vertexSelected = closestVertexDetails[0];
           isVertexIdentifiedAtSpotPress = true;
         }

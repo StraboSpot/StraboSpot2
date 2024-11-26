@@ -1,13 +1,14 @@
-import React, {forwardRef, useEffect, useRef, useState} from 'react';
+import React, {forwardRef, useEffect} from 'react';
 import {Platform, useWindowDimensions} from 'react-native';
 
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {Layer, Map, ScaleControl, Source} from 'react-map-gl';
+import {Layer, Map, Marker, ScaleControl, Source} from 'react-map-gl';
+import {Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN, ZOOM_STRAT_SECTION} from './maps.constants';
-import {setIsMapMoved, setVertexEndCoords} from './maps.slice';
+import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
+import {setIsMapMoved} from './maps.slice';
 import CoveredIntervalsXLines from './strat-section/CoveredIntervalsXLines';
 import {STRAT_PATTERNS} from './strat-section/stratSection.constants';
 import StratSectionBackground from './strat-section/StratSectionBackground';
@@ -16,6 +17,8 @@ import useMapSymbology from './symbology/useMapSymbology';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
+import useMapMouseActions from './useMapMouseActions.web';
+import useMapMoveEvents from './useMapMoveEvents';
 import useMapURL from './useMapURL';
 import useMapView from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
@@ -27,10 +30,12 @@ const Basemap = ({
                    basemap,
                    drawFeatures,
                    editFeatureVertex,
+                   handleMapLongPress,
+                   handleMapPress,
+                   isShowMacrostratOverlay,
+                   location,
                    mapMode,
                    measureFeatures,
-                   onMapLongPress,
-                   onMapPress,
                    spotsNotSelected,
                    spotsSelected,
                  }, forwardedRef) => {
@@ -40,24 +45,23 @@ const Basemap = ({
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const customMaps = useSelector(state => state.map.customMaps);
   const isMapMoved = useSelector(state => state.map.isMapMoved);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const stratSection = useSelector(state => state.map.stratSection);
 
   const {mapRef} = forwardedRef;
+
+  const [viewState, setViewState] = React.useState({});
 
   const useDimensions = useWindowDimensions();
   const {getImageScreenSizedURI, getLocalImageURI} = useImages();
   const {isDrawMode} = useMap();
   const {getCoordQuad} = useMapCoords();
   const {getSpotsAsFeatures} = useMapFeatures();
+  const {handleMapMoved} = useMapMoveEvents({setViewState});
+  const {cursor, handleMouseEnter, handleMouseLeave} = useMapMouseActions({editFeatureVertex, mapRef, mapMode});
   const {addSymbology, getLayoutSymbology, getLinesFilteredByPattern, getPaintSymbology} = useMapSymbology();
   const {buildTileURL} = useMapURL();
-  const {getInitialViewState, setMapView} = useMapView();
-
-  const [cursor, setCursor] = useState('');
-  const [prevMapMode, setPrevMapMode] = useState(mapMode);
-  const [viewState, setViewState] = React.useState({});
-
-  const pointMoving = useRef(null);
+  const {getInitialViewState} = useMapView();
 
   const layerIdsNotSelected = ['polygonLayerNotSelected', 'polygonLayerWithPatternNotSelected',
     'polygonLayerNotSelectedBorder', 'polygonLabelLayerNotSelected', 'lineLayerNotSelected',
@@ -90,13 +94,6 @@ const Basemap = ({
     }, [currentImageBasemap, stratSection],
   );
 
-  if (mapMode !== prevMapMode) {
-    // console.log('MapMode changed from', prevMapMode, 'to', mapMode);
-    setPrevMapMode(mapMode);
-    if (isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT) setCursor('pointer');
-    else setCursor('');
-  }
-
   // Add the image to the map style.
   mapRef.current?.on('styleimagemissing', (e) => {
     const id = e.id;  // id of the missing image
@@ -114,100 +111,51 @@ const Basemap = ({
     }
   });
 
-  // Update spots in extent and saved view (center and zoom)
-  const onMapMoved = (e) => {
-    // console.log('Event onMapMoved', e);
-    if (!isMapMoved) dispatch(setIsMapMoved(true));
-    if (currentImageBasemap || stratSection) {
-      // TODO Next line is a hack to fix image basemaps and strat section zooming issue on fresh load
-      const newZoom = e.viewState.zoom < 1 ? ZOOM_STRAT_SECTION : e.viewState.zoom;
-      setViewState({...e.viewState, zoom: newZoom});
+  const setCoords = () => {
+    if (!isEmpty(selectedSpot) && selectedSpot.geometry.type === 'Point') {
+      location.coords = selectedSpot.geometry.coordinates;
     }
-    else {
-      console.log('evt.viewState', e.viewState);
-      setViewState(e.viewState);
-      const newCenter = [e.viewState.longitude, e.viewState.latitude];
-      const newZoom = e.viewState.zoom;
-      setMapView(newCenter, newZoom);
-    }
+    return location.coords;
   };
-
-  const onMouseEnter = () => {
-    if (mapMode === MAP_MODES.VIEW || mapMode === MAP_MODES.EDIT) setCursor('pointer');
-  };
-
-  const onMouseLeave = () => {
-    if (mapMode === MAP_MODES.VIEW) setCursor('');
-    else if (isDrawMode(mapMode)) setCursor('pointer');
-    else if (mapMode === MAP_MODES.EDIT) setCursor('default');
-  };
-
-  const onPointMove = (e) => {
-    setCursor('grabbing'); // Set a UI indicator for dragging
-
-    // Update the Point feature and call setData to the update source edit layer
-    const coords = e.lngLat;
-    pointMoving.current = [{
-      ...pointMoving.current[0],
-      geometry: {...pointMoving.current[0].geometry, coordinates: [coords.lng, coords.lat]},
-    }];
-    mapRef.current?.getSource('editFeatureVertex').setData(turf.featureCollection(pointMoving.current));
-  };
-
-  const onUp = (e) => {
-    setCursor('');
-
-    // Unbind mouse/touch events
-    mapRef.current?.off('mousemove', onPointMove);
-    mapRef.current?.off('touchmove', onPointMove);
-
-    const coords = e.lngLat;
-    const vertexScreenCoords = mapRef.current.project([coords.lng, coords.lat]);
-    dispatch(setVertexEndCoords([vertexScreenCoords.x, vertexScreenCoords.y]));
-  };
-
-  //When the cursor enters a feature in the point edit layer, prepare for dragging.
-  mapRef.current?.on('mouseenter', 'pointLayerEdit', () => {
-    setCursor('move');
-  });
-
-  mapRef.current?.on('mouseleave', 'pointLayerEdit', () => {
-    setCursor('default');
-  });
-
-  mapRef.current?.on('mousedown', 'pointLayerEdit', (e) => {
-    pointMoving.current = editFeatureVertex;
-    if (isEmpty(e.point)) return;
-    setCursor('grab');
-    mapRef.current?.on('mousemove', onPointMove);
-    mapRef.current?.once('mouseup', onUp);
-  });
 
   return (
     <Map
       {...viewState}
-      id={currentImageBasemap ? currentImageBasemap.id : stratSection ? stratSection.strat_section_id
-        : basemap.id}
+      boxZoom={allowMapViewMove}
+      cursor={cursor}
+      doubleClickZoom={!(isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
+      dragPan={allowMapViewMove}
+      dragRotate={false}
+      id={currentImageBasemap ? currentImageBasemap.id : stratSection ? stratSection.strat_section_id : basemap.id}
+      interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
+      mapStyle={currentImageBasemap || stratSection ? BACKGROUND : basemap}
+      mapboxAccessToken={MAPBOX_TOKEN}
+      onClick={handleMapPress}
+      onDblClick={handleMapLongPress}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMoveEnd={handleMapMoved}   // Update spots in extent and saved view (center and zoom)
+      pitchWithRotate={false}
       ref={mapRef}
       style={{flex: 1}}
-      mapStyle={currentImageBasemap || stratSection ? BACKGROUND : basemap}
-      boxZoom={allowMapViewMove}
-      dragRotate={false}
-      dragPan={allowMapViewMove}
-      pitchWithRotate={false}
+      styleDiffing={false}
       touchPitch={false}
       touchZoomRotate={false}
-      doubleClickZoom={!(isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT)}
-      onClick={onMapPress}
-      onDblClick={onMapLongPress}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onMoveEnd={onMapMoved}   // Update spots in extent and saved view (center and zoom)
-      mapboxAccessToken={MAPBOX_TOKEN}
-      cursor={cursor}
-      interactiveLayerIds={[...layerIdsNotSelected, ...layerIdsSelected]}
-      styleDiffing={false}
     >
+
+      {isShowMacrostratOverlay && basemap.id === 'macrostrat' && (
+        <Marker
+          longitude={setCoords()[0]}
+          latitude={setCoords()[1]}
+          angle={'bottom'}
+        >
+          <Icon
+            size={30}
+            name={'map-marker'}
+            type={'material-community'}
+          />
+        </Marker>
+      )}
 
       {!stratSection && !currentImageBasemap && (
         <ScaleControl

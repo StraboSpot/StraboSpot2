@@ -180,6 +180,11 @@ const useDevice = () => {
     return await RNFS.exists(path + file);
   };
 
+  const doesMicroProjectPDFExist = async (projectId) => {
+    const microPDF = APP_DIRECTORIES.MICRO + projectId + '/' + 'project.pdf';
+    return await RNFS.exists(microPDF);
+  };
+
   const downloadImageAndSave = async (url, imageId) => {
     try {
       const path = APP_DIRECTORIES.IMAGES + imageId + '.jpg';
@@ -234,15 +239,19 @@ const useDevice = () => {
   };
 
   const downloadAndSaveMap = async (downloadOptions) => {
-    try {
-      const res = await RNFS.downloadFile(downloadOptions).promise;
-      if (res.statusCode === 200) {
-        console.log(`Download Complete to ${downloadOptions.toFile}`);
-      }
-    }
-    catch (err) {
-      console.error('An error occurred:', err);
-    }
+    const res = await RNFS.downloadFile(downloadOptions).promise;
+    if (res.statusCode === 200) console.log(`Download Complete to ${downloadOptions.toFile}`);
+    else throw Error;
+  };
+
+  const exportMicroProjectPDF = async (pdfFile) => {
+    await doesDeviceDirectoryExist(APP_DIRECTORIES.MICRO_EXPORTS);
+    const destination = APP_DIRECTORIES.MICRO_EXPORTS + pdfFile.name + '.pdf';
+    const fileExists = await doesFileExist(destination);
+    if (fileExists) await deleteFromDevice(destination);
+    const source = pdfFile.file.uri;
+    await RNFS.copyFile(source, destination);
+    console.log('Exported StraboMicro Project to', destination);
   };
 
   const getDeviceStorageSpaceInfo = async () => {
@@ -267,6 +276,29 @@ const useDevice = () => {
     const res = await DocumentPicker.pickSingle(options);
     console.log('External Document', res);
     return res;
+  };
+
+  // Grab out the name from project.json for a saved MicroProject
+  const getMicroProjectName = async (projectId) => {
+    const microJSON = APP_DIRECTORIES.MICRO + projectId + '/' + 'project.json';
+    if (await RNFS.exists(microJSON)) {
+      const file = await readFile(microJSON);
+      const fileAsJSON = JSON.parse(file);
+      return fileAsJSON.name || 'Unknown';
+    }
+    return 'Unknown';
+  };
+
+  // Grab the timestamp from project.json for a saved MicroProject
+  const getSavedMicroProjectModifiedTimestamp = async (projectId) => {
+    const microJSON = APP_DIRECTORIES.MICRO + projectId + '/' + 'project.json';
+    if (await RNFS.exists(microJSON)) {
+      const file = await readFile(microJSON);
+      const fileAsJSON = JSON.parse(file);
+      // console.log('fileAsJSON', fileAsJSON);
+      return fileAsJSON.modifiedtimestamp || undefined;
+    }
+    else return undefined;
   };
 
   const isPickDocumentCanceled = (err) => {
@@ -457,11 +489,15 @@ const useDevice = () => {
     doesDeviceDirExist: doesDeviceDirExist,
     doesDeviceDirectoryExist: doesDeviceDirectoryExist,
     doesFileExist: doesFileExist,
+    doesMicroProjectPDFExist: doesMicroProjectPDFExist,
     downloadImageAndSave: downloadImageAndSave,
     downloadAndSaveProfileImage: downloadAndSaveProfileImage,
     downloadAndSaveMap: downloadAndSaveMap,
+    exportMicroProjectPDF: exportMicroProjectPDF,
     getDeviceStorageSpaceInfo: getDeviceStorageSpaceInfo,
     getExternalProjectData: getExternalProjectData,
+    getMicroProjectName: getMicroProjectName,
+    getSavedMicroProjectModifiedTimestamp: getSavedMicroProjectModifiedTimestamp,
     isPickDocumentCanceled: isPickDocumentCanceled,
     makeDirectory: makeDirectory,
     moveFile: moveFile,
