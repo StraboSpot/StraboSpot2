@@ -6,6 +6,7 @@ const lottieAssets = {
     uploadingCloud: require('./uploading-cloud.json'),
     uploadingComplete: require('./check-ok-done.json'),
     error: require('./error.json'),
+    warning: require('./warning.json'),
   },
 };
 export default lottieAssets;

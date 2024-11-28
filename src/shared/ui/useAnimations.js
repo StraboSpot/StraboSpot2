@@ -16,6 +16,8 @@ const useAnimations = () => {
         return Assets.lottieFiles.error;
       case 'loadingFile' :
         return Assets.lottieFiles.loadingFile;
+      case 'warning' :
+        return Assets.lottieFiles.warning;
     }
   };
 

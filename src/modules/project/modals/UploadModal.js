@@ -157,6 +157,16 @@ const UploadModal = ({closeModal, visible}) => {
     );
   };
 
+  const renderUploadWarningAnimation = () => {
+    return (
+      <LottieAnimations
+        type={'warning'}
+        doesLoop={false}
+        animationStyle={{height: 50, width: 50}}
+      />
+    );
+  };
+
   const renderInitialUploadView = () => (
     <View>
       <View>
