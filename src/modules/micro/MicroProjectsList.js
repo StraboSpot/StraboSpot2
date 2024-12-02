@@ -92,15 +92,12 @@ const MicroProjectsList = () => {
     setLoading(true);
     if (isConnected && isInternetReachable) {
       projectsResponse = await getAllServerMicroProjects();
-      if (!projectsResponse || !projectsResponse.projects) {
-        setErrorMessage('Error Getting StraboMicro Projects');
-        setLoading(false);
-      }
+      if (!projectsResponse || !projectsResponse.projects) setErrorMessage('Error Getting StraboMicro Projects');
+      else if (isEmpty(projectsResponse.projects)) setErrorMessage('No StraboMico Projects');
       else {
         setIsError(false);
         console.log('List of Projects:', projectsResponse);
         setProjectsArr(projectsResponse);
-        setLoading(false);
         let projectsExistsArrTemp = [];
         let projectsExistsUpdateAvailableTemp = [];
         await Promise.all(projectsResponse.projects.map(async (project, i) => {
@@ -123,16 +120,15 @@ const MicroProjectsList = () => {
       projectsResponse = await getAllLocalMicroProjects();
       if (!projectsResponse || !projectsResponse.projects) {
         setErrorMessage('No Offline StraboMicro Projects Found');
-        setLoading(false);
       }
       else {
         setIsError(false);
         console.log('List of Projects:', projectsResponse);
         setProjectsArr(projectsResponse);
-        setLoading(false);
         setProjectsExistsArr(Array(projectsResponse.projects.length).fill(true));
       }
     }
+    setLoading(false);
   };
 
   const renderMicroProjectItem = (item, i) => {

@@ -85,6 +85,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 114
         versionName "2.12.9"
+
     }
     signingConfigs {
         debug {

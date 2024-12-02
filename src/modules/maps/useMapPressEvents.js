@@ -31,11 +31,11 @@ const useMapPressEvents = ({
   const dispatch = useDispatch();
   const stratSection = useSelector(state => state.map.stratSection);
 
+  const {isDrawMode} = useMap();
   const {getAllMappedSpots} = useMapFeatures();
   const {getMeasureFeatures} = useMapMeasure();
   const {getSpotAtPress} = useMapFeaturesCalculated(mapRef);
   const {getSpotWithThisStratSection} = useSpots();
-  const {isDrawMode} = useMap();
 
   const [location, setLocation] = useState({coords: [0, 0], zoom: 16});
 
@@ -91,13 +91,11 @@ const useMapPressEvents = ({
     }
   };
 
-
   return {
-    location: location,
     handleMapLongPress: handleMapLongPress,
     handleMapPress: handleMapPress,
+    location: location,
   };
-
 };
 
 export default useMapPressEvents;

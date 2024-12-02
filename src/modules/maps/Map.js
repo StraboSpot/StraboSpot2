@@ -85,9 +85,9 @@ const Map = forwardRef(({
     onEndDrawPressed: onEndDrawPressed,
   });
   const {
-    location,
     handleMapLongPress,
     handleMapPress,
+    location,
   } = useMapPressEvents({
     clearSelectedSpots,
     editSpot,

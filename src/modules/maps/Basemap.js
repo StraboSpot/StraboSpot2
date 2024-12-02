@@ -33,12 +33,12 @@ const scaleBarPosition = SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left:
 const Basemap = ({
                    allowMapViewMove,
                    basemap,
-                   location,
                    drawFeatures,
                    editFeatureVertex,
-                   isShowMacrostratOverlay,
                    handleMapLongPress,
                    handleMapPress,
+                   isShowMacrostratOverlay,
+                   location,
                    mapMode,
                    measureFeatures,
                    showUserLocation,
@@ -158,8 +158,8 @@ const Basemap = ({
       >
 
         {/* Displays the marker when Macrostrat view is displayed */}
-        {isShowMacrostratOverlay && basemap.id === 'macrostrat'
-          && <PointAnnotation id={'marker'} coordinate={setCoords()}>
+        {isShowMacrostratOverlay && basemap.id === 'macrostrat' && (
+          <PointAnnotation id={'marker'} coordinate={setCoords()}>
             <View style={{backgroundColor: 'transparent', padding: 5}}>
               <Icon
                 size={35}
@@ -167,7 +167,8 @@ const Basemap = ({
                 type={'material-community'}
               />
             </View>
-          </PointAnnotation>}
+          </PointAnnotation>
+        )}
 
         {/* Blue dot for user location */}
         <MapboxGL.UserLocation
