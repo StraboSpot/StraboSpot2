@@ -36,7 +36,7 @@ const ModalHeader = ({
           />
           <Button
             titleStyle={{color: themes.PRIMARY_ACCENT_COLOR, fontSize: 16}}
-            title={buttonTitleRight === '' ? '' : buttonTitleRight || 'Cancel'}
+            title={buttonTitleRight === '' ? '' : buttonTitleRight || 'Close'}
             type={'clear'}
             onPress={closeModal || (() => dispatch(setModalVisible({modal: null})))}
           />
