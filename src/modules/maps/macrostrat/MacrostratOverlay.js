@@ -1,15 +1,15 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, Linking, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Linking, ScrollView, Text, View} from 'react-native';
 
-import {Button, Card, Icon} from 'react-native-elements';
+import {Button, Card} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 
 import macrostratOverlayStyles from './macrostratOverlay.styles';
 import useServerRequests from '../../../services/useServerRequests';
-import {isEmpty, truncateText} from '../../../shared/Helpers';
-import {SMALL_SCREEN} from '../../../shared/styles.constants';
-import commonStyles from '../../../shared/common.styles';
-import alert from '../../../shared/ui/alert';
+import {isEmpty} from '../../../shared/Helpers';
 import * as Helpers from '../../../shared/Helpers';
+import {SMALL_SCREEN} from '../../../shared/styles.constants';
+import alert from '../../../shared/ui/alert';
 
 const MacrostratOverlay = ({
                              isVisible,
@@ -24,6 +24,7 @@ const MacrostratOverlay = ({
   const [showMapRef, setShowMapRef] = useState(false);
 
   const {getMacrostratData} = useServerRequests();
+  const toast = useToast();
 
   useEffect(() => {
     return () => {
@@ -40,6 +41,7 @@ const MacrostratOverlay = ({
 
   const copyToClipboard = () => {
     Helpers.copyToClipboard(dataObject.comm);
+    toast.show('Copied to clipboard!', {type: 'success'});
   };
 
   const handleLinkPress = useCallback(async (url) => {
@@ -58,7 +60,6 @@ const MacrostratOverlay = ({
     try {
       const res = await getMacrostratData(location);
       console.log('Here is the data for the point', res);
-
       setDataObject(res.success.data);
     }
     catch (err) {
@@ -130,7 +131,7 @@ const MacrostratOverlay = ({
   };
 
   const renderMapRef = () => {
-    const {url, name, authors, isbn_doi, ref_year, source_id, ref_source} = dataObject.map_ref;
+    const {url, name, authors, isbn_doi, ref_year, source_id, ref_source} = dataObject?.map_ref;
     return (
       <View>
         <Card.Divider/>
@@ -183,10 +184,8 @@ const MacrostratOverlay = ({
                 type={'clear'}
                 title={showMore ? 'Hide Description' : 'Show Description'}
                 // containerStyle={commonStyles.buttonContainer}
-                onPress={handleShowMore}>
-              </Button>
+                onPress={handleShowMore}/>
               {renderDescription()}
-
             </View>
           </Card>
         )}
