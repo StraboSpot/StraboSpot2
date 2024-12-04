@@ -557,7 +557,7 @@ const useMapFeaturesDraw = ({
   };
 
   const getStereonetForFeature = async (feature) => {
-    const selectedSpots = useMapFeaturesCalculated.getLassoedSpots(spotsNotSelected, feature);
+    const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
     console.log('Selected Spots', selectedSpots);
     await getStereonet(selectedSpots);
   };
