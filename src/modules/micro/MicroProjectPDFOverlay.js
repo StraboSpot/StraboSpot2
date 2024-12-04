@@ -6,7 +6,7 @@ import Pdf from 'react-native-pdf';
 import {useToast} from 'react-native-toast-notifications';
 
 import useDevice from '../../services/useDevice';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, openUrl} from '../../shared/Helpers';
 import {BLACK, POSITIVE_COLOR, WARNING_COLOR} from '../../shared/styles.constants';
 import overlayStyles from '../home/overlays/overlay.styles';
 
@@ -88,8 +88,9 @@ const MicroProjectPDFOverlay = ({doc, setVisible, visible}) => {
           onError={(error) => {
             console.log(error);
           }}
-          onPressLink={(uri) => {
+          onPressLink={async (uri) => {
             console.log(`Link pressed: ${uri}`);
+            await openUrl(uri);
           }}
         />
       )}

@@ -1,4 +1,4 @@
-import {PixelRatio} from 'react-native';
+import {Linking, PixelRatio} from 'react-native';
 
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
@@ -201,6 +201,12 @@ export const isEqual = (a, b) => {
 export function toTitleCase(str) {
   return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
+
+export const openUrl = async (url) => {
+  const canOpenUrl = await Linking.canOpenURL(url);
+  if (!canOpenUrl) throw Error('Unable to open url!');
+  else await Linking.openURL(url);
+};
 
 export const readDataUrl = (file, callback) => {
   const reader = new FileReader();
