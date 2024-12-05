@@ -30,15 +30,15 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - MapboxCommon (23.11.0)
-  - MapboxCoreMaps (10.19.1):
-    - MapboxCommon (~> 23.11)
-  - MapboxMaps (10.19.0):
-    - MapboxCommon (= 23.11.0)
-    - MapboxCoreMaps (= 10.19.1)
-    - MapboxMobileEvents (= 2.0.0)
+  - MapboxCommon (23.10.1)
+  - MapboxCoreMaps (10.18.0):
+    - MapboxCommon (~> 23.10)
+  - MapboxMaps (10.18.2):
+    - MapboxCommon (= 23.10.1)
+    - MapboxCoreMaps (= 10.18.0)
+    - MapboxMobileEvents (= 1.0.10)
     - Turf (= 2.8.0)
-  - MapboxMobileEvents (2.0.0)
+  - MapboxMobileEvents (1.0.10)
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1683,14 +1683,14 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - rnmapbox-maps (10.1.32):
-    - MapboxMaps (~> 10.19.0)
+  - rnmapbox-maps (10.1.31):
+    - MapboxMaps (~> 10.18.2)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.1.32)
+    - rnmapbox-maps/DynamicLibrary (= 10.1.31)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.1.32):
-    - MapboxMaps (~> 10.19.0)
+  - rnmapbox-maps/DynamicLibrary (10.1.31):
+    - MapboxMaps (~> 10.18.2)
     - React
     - React-Core
     - Turf
@@ -2173,10 +2173,10 @@ SPEC CHECKSUMS:
   hermes-engine: ea92f60f37dba025e293cbe4b4a548fd26b610a0
   lottie-ios: a881093fab623c467d3bce374367755c272bdd59
   lottie-react-native: 2a3335e7f3cfdc881f400b08c7e9e84d18920db1
-  MapboxCommon: 119f3759f7dc9457f0695848108ab323eb643cb4
-  MapboxCoreMaps: ca17f67baced23f8c952166ac6314c35bad3f66c
-  MapboxMaps: b7f29ec7c33f7dc6d2947c1148edce6db81db9a7
-  MapboxMobileEvents: d044b9edbe0ec7df60f6c2c9634fe9a7f449266b
+  MapboxCommon: 0ff437e44988da6856e280d00ffb266564ed0487
+  MapboxCoreMaps: f1bd9405f5b9d3e343f2fe4138775299699a22fb
+  MapboxMaps: e76b14f52c54c40b76ddecd04f40448e6f35a864
+  MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   RCT-Folly: 4464f4d875961fce86008d45f4ecf6cef6de0740
   RCTDeprecation: 726d24248aeab6d7180dac71a936bbca6a994ed1
   RCTRequired: a94e7febda6db0345d207e854323c37e3a31d93b
@@ -2252,7 +2252,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 6192a9c9167e256803e554038b22b3b2b40163dc
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 511250b190a284388f9dd0d2e56c1df76f14cfb8
-  rnmapbox-maps: 2a81e5b9e8e034fac6d387c4e22f2634e1b4f603
+  rnmapbox-maps: 86b215fe77632a897b34a2dbf0c3ad4e9e8c3570
   RNReanimated: f42a5044d121d68e91680caacb0293f4274228eb
   RNScreens: c7ceced6a8384cb9be5e7a5e88e9e714401fd958
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b

@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.12.11</string>
+	<string>2.12.12</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>95</string>
+	<string>96</string>
 
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
