@@ -22,7 +22,7 @@ import MicroProjectsList from '../micro/MicroProjectsList';
 import Miscellaneous from '../preferences/Miscellaneous';
 import NamingConventions from '../preferences/naming-conventions/NamingConventions';
 import ShortcutMenu from '../preferences/shortcuts-menu/ShortcutsMenu';
-import ActiveProject from '../project/ActiveProjectPanel';
+import ActiveProjectPanel from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadBackupAndExport from '../project/UploadBackupExport';
@@ -64,7 +64,7 @@ const MainMenuPanel = ({
         return <MyStraboSpot openMainMenuPanel={openMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MANAGE.ACTIVE_PROJECTS:
         return (
-          <ActiveProject
+          <ActiveProjectPanel
             title={!isEmpty(project) && project.description ? project.description.project_name : 'Un-named'}
           />
         );
