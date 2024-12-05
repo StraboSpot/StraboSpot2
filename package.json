@@ -43,7 +43,7 @@
     "@react-navigation/native": "6.1.18",
     "@react-navigation/stack": "6.4.1",
     "@reduxjs/toolkit": "2.3.0",
-    "@rnmapbox/maps": "10.1.32",
+    "@rnmapbox/maps": "10.1.31",
     "@sentry/cli": "2.37.0",
     "@sentry/react-native": "5.33.2",
     "@sentry/tracing": "7.114.0",
