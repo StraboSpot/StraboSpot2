@@ -55,7 +55,7 @@ const useDownload = () => {
       dispatch(addedStatusMessage('Downloading Datasets...'));
       const res = await getDatasets(selectedProject.id, encodedLoginScoped);
       const datasets = res?.datasets || [];
-      if (datasets.length === 1) {
+      if (datasets.length >= 1) {
         dispatch(setActiveDatasets({bool: true, dataset: datasets[0].id}));
         dispatch(setSelectedDataset(datasets[0].id));
       }
