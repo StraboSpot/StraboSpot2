@@ -1,5 +1,5 @@
 import React, {forwardRef, useState} from 'react';
-import {Animated, useWindowDimensions, View} from 'react-native';
+import {useWindowDimensions, View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Button, Header, Icon} from 'react-native-elements';
@@ -18,7 +18,6 @@ import SpotNavigator from '../spots/SpotNavigator';
 import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
 const HomeViewSmallScreen = forwardRef(({
-                                          animateLeftSide,
                                           areEditButtonsVisible,
                                           clickHandler,
                                           closeMainMenuPanel,
@@ -65,7 +64,7 @@ const HomeViewSmallScreen = forwardRef(({
   };
 
   return (
-    <Animated.View style={[homeStyles.container, animateLeftSide]}>
+    <>
       <Header
         backgroundColor={themes.SECONDARY_BACKGROUND_COLOR}
         barStyle={'dark-content'}
@@ -205,7 +204,7 @@ const HomeViewSmallScreen = forwardRef(({
           </Tab.Screen>
         </Tab.Navigator>
       )}
-    </Animated.View>
+    </>
   );
 });
 

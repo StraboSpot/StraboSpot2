@@ -1,10 +1,7 @@
-import {Animated, Dimensions, Easing, findNodeHandle, PixelRatio, Platform, UIManager} from 'react-native';
+import {Linking, PixelRatio} from 'react-native';
 
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
-
-const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-const {height: windowHeight} = Dimensions.get(platform);
 
 const lodashIsEqual = require('lodash.isequal');
 const passwordValidator = require('password-validator');
@@ -141,50 +138,6 @@ function getOrientation(window) {
   return window.width < window.height ? 'portrait' : 'landscape';
 }
 
-export const handleKeyboardDidHide = (textInputAnimate) => {
-  Animated.timing(
-    textInputAnimate,
-    {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: Platform.OS !== 'web',
-    },
-  ).start();
-};
-
-export const handleKeyboardDidShow = (event, TextInputState, textInputAnimate) => {
-  const keyboardHeight = event.endCoordinates.height;
-  const currentlyFocusedField = TextInputState.currentlyFocusedInput
-    ? findNodeHandle(TextInputState.currentlyFocusedInput()) : TextInputState.currentlyFocusedField();
-  if (currentlyFocusedField === null) return null;
-  else {
-    UIManager.measure(currentlyFocusedField,
-      (
-        originX,
-        originY,
-        width,
-        height,
-        pageX,
-        pageY,
-      ) => {
-        const fieldHeight = height + 30;
-        const fieldTop = pageY;
-        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
-        if (gap >= 0) {
-          return;
-        }
-        Animated.timing(
-          textInputAnimate,
-          {
-            toValue: gap,
-            duration: 100,
-            useNativeDriver: Platform.OS !== 'web',
-          },
-        ).start();
-      });
-  }
-};
-
 export const hexToRgb = (hex) => {
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -249,14 +202,10 @@ export function toTitleCase(str) {
   return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-// Used to animate open and close of Settings Panel and Notebook Panel
-export const animateDrawer = (animatedState, toValue) => {
-  Animated.timing(animatedState, {
-    toValue: toValue,
-    duration: 300,
-    easing: Easing.linear,
-    useNativeDriver: Platform.OS !== 'web',
-  }).start();
+export const openUrl = async (url) => {
+  const canOpenUrl = await Linking.canOpenURL(url);
+  if (!canOpenUrl) throw Error('Unable to open url!');
+  else await Linking.openURL(url);
 };
 
 export const readDataUrl = (file, callback) => {

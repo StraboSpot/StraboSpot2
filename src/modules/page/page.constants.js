@@ -8,7 +8,8 @@ import FabricsPage from '../fabrics/FabricsPage';
 import Geography from '../geography/Geography';
 import AddEarthquakeModal from '../geomorph/AddEarthquakeModal';
 import EarthquakesPage from '../geomorph/EarthquakesPage';
-import {ImagesOverview, ImagesViewPage} from '../images';
+import ImagesOverview from '../images/ImagesOverview'; // import {ImagesOverview, ImagesViewPage} from '../images'; errors in web
+import ImagesViewPage from '../images/ImagesViewPage';
 import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
 import AddMeasurementModal from '../measurements/AddMeasurementModal';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -90,6 +91,8 @@ export const PAGE_KEYS = {
   TERNARY: 'ternary',
   THREE_D_STRUCTURES: '_3d_structures',
 };
+
+console.log('PAGE_KEYS', PAGE_KEYS);
 
 export const OVERVIEW_PAGE = {
   key: PAGE_KEYS.OVERVIEW,

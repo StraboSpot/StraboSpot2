@@ -1,6 +1,5 @@
 import React from 'react';
 import {Platform} from 'react-native';
-import 'react-native-devsettings';
 
 import * as NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
@@ -32,7 +31,12 @@ if (Platform.OS !== 'web') {
     tracesSampleRate: 0.30,
     _experiments: {
       profilesSampleRate: 0.50,
+      replaysSessionSampleRate: __DEV__ ? 1.0 : 0.5,
+      replaysOnErrorSampleRate: 1.0,
     },
+    integrations: [
+      Sentry.mobileReplayIntegration(),
+    ],
   });
 } else console.log('SENTRY NOT RUNNING');
 

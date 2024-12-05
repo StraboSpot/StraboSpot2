@@ -39,7 +39,7 @@ const useCustomMap = () => {
     delete customMapsCopy[mapId];
     if (projectCopy.other_maps) {
       const filteredCustomMaps = projectCopy.other_maps.filter(map => map.id !== mapId);
-      dispatch(addedProject({...projectCopy, other_maps: filteredCustomMaps})); // Deletes map from project
+      dispatch(updatedProject({field: 'other_maps', value: filteredCustomMaps})); // Deletes map from project
     }
     dispatch(deletedCustomMap(customMapsCopy)); // replaces customMaps with updated object
     dispatch(setSidePanelVisible({view: null, bool: false}));
@@ -137,7 +137,7 @@ const useCustomMap = () => {
     customMapsCopy[map.id] = map;
     console.log(customMapsCopy);
     dispatch(updateCustomMap(map));
-    dispatch(addedProject({...project, other_maps: Object.values(customMapsCopy)}));
+    dispatch(updatedProject({field: 'other_maps', value: Object.values(customMapsCopy)}));
   };
 
   const viewCustomMap = (map) => {

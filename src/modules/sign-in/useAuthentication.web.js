@@ -40,7 +40,7 @@ const useAuthentication = () => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       checkAuthentication();
-    }, 10000 * 30);  // 300 Seconds (5 minutes)
+    }, 1000 * 60 * 5);  // 5 minutes
   };
 
   const doAuthenticateUser = async (email, password) => {

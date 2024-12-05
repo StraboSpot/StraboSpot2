@@ -22,7 +22,7 @@ import {
 import overlayStyles from '../../home/overlays/overlay.styles';
 import {MAP_PROVIDERS} from '../maps.constants';
 
-const SaveMapsModal = ({map: {getCurrentZoom, getExtentString, getTileCount}}) => {
+const SaveMapsModal = ({getCurrentZoom, getExtentString, getTileCount}) => {
   // console.log('Rendering SaveMapsModal...');
 
   const {doesDeviceDirectoryExist, downloadAndSaveMap} = useDevice();

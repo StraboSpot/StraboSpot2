@@ -94,7 +94,7 @@ const useMapFeaturesDraw = ({
     if (mapMode !== MAP_MODES.EDIT) setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [selectedSpot, activeDatasetsIds]);
 
-  const addNewVertex = (spotEditingCopy, spotToEdit) => {
+  const addNewVertex = (e, spotEditingCopy, spotToEdit) => {
     console.log('Adding new vertex...');
     let vertexAdded = {};
     const newVertexCoords = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
@@ -300,9 +300,8 @@ const useMapFeaturesDraw = ({
         }
         if (isEmpty(vertexSelected)) {
           // draw features did not return anything - generally a scenario of selecting a vertex on a spot press.
-          closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound,
-            screenPointX,
-            screenPointY, spotsEdited);
+          closestVertexDetails = await identifyClosestVertexOnSpotPress(spotFound, screenPointX, screenPointY,
+            spotsEdited);
           vertexSelected = closestVertexDetails[0];
           isVertexIdentifiedAtSpotPress = true;
         }
@@ -507,14 +506,14 @@ const useMapFeaturesDraw = ({
     return Promise.resolve(newOrEditedSpot);
   };
 
-  const getSpotToEdit = async (screenPointX, screenPointY, spotToEdit) => {
+  const getSpotToEdit = async (e, screenPointX, screenPointY, spotToEdit) => {
     if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
     else if (!isEmpty(spotEditing)) {
       let spotEditingCopy = JSON.parse(JSON.stringify(spotEditing));
       if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
         const vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
         if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
-          if (isEmpty(vertexSelected)) spotEditingCopy = addNewVertex(spotEditingCopy, spotToEdit);
+          if (isEmpty(vertexSelected)) spotEditingCopy = addNewVertex(e, spotEditingCopy, spotToEdit);
           else spotEditingCopy = deleteSelectedVertex(spotEditingCopy, vertexSelected);
           console.log('Edited coords:', turf.getCoords(spotEditingCopy));
           let explodedFeatures = turf.explode(spotEditingCopy).features;
@@ -558,7 +557,7 @@ const useMapFeaturesDraw = ({
   };
 
   const getStereonetForFeature = async (feature) => {
-    const selectedSpots = useMapFeaturesCalculated.getLassoedSpots(spotsNotSelected, feature);
+    const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
     console.log('Selected Spots', selectedSpots);
     await getStereonet(selectedSpots);
   };

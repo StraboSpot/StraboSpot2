@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   statusMessageText: {
     lineHeight: 20,
     padding: 10,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   tagColorPickerColorItem: {
     height: 25,

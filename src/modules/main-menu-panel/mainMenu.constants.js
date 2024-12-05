@@ -6,6 +6,7 @@ export const MAIN_MENU_ITEMS = {
     ACTIVE_PROJECTS: 'Active Project',
     UPLOAD_BACKUP_EXPORT: 'Upload, Backup & Export',
     // DATABASE_DETAILS: 'Database Details',
+    STRABOMICRO_PROJECTS: 'StraboMicro Projects',
   },
   ATTRIBUTES: {
     SPOTS: 'Spots',
@@ -32,6 +33,10 @@ export const MAIN_MENU_ITEMS = {
     DOCUMENTATION: 'Documentation',
   },
 };
+
+export const MAIN_MENU_DATA = Object.entries(MAIN_MENU_ITEMS).map(([key, value]) => {
+  return {title: key, data: Object.values(value)};
+});
 
 export const SIDE_PANEL_VIEWS = {
   MANAGE_CUSTOM_MAP: 'manageCustomMap',

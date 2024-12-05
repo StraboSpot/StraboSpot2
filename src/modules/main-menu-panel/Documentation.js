@@ -9,7 +9,7 @@ import styles from './documentation.styles';
 import mainMenuPanelStyles from './mainMenuPanel.styles';
 import {STRABO_APIS} from '../../services/urls.constants';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, openUrl} from '../../shared/Helpers';
 import {BLACK, BLUE} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -55,6 +55,16 @@ const Documentation = () => {
     setVisible(!visible);
   };
 
+  const openLink = async (url) => {
+    try {
+      await openUrl(url);
+    }
+    catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  };
+
   const viewOnlineHelp = async (path) => {
     try {
       const canOpen = await Linking.canOpenURL(path);
@@ -68,7 +78,7 @@ const Documentation = () => {
   };
 
   const viewPDF = () => (
-    <Overlay isVisible={visible} overlayStyle={styles.overlayContainer}>
+    <Overlay isVisible={visible} fullScreen>
       <Button
         type={'clear'}
         containerStyle={{alignItems: 'flex-end'}}
@@ -92,9 +102,7 @@ const Documentation = () => {
           onError={(error) => {
             console.log(error);
           }}
-          onPressLink={(uri) => {
-            console.log(`Link pressed: ${uri}`);
-          }}
+          onPressLink={openLink}
         />
       )}
     </Overlay>

@@ -1,31 +1,28 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {PixelRatio, Platform, Text, View} from 'react-native';
+import {Platform, View} from 'react-native';
 
 import * as turf from '@turf/turf';
-import {Button, Overlay} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Basemap from './Basemap';
 import useCustomMap from './custom-maps/useCustomMap';
-import {MAP_MODES, ZOOM} from './maps.constants';
+import MacrostratOverlay from './macrostrat/MacrostratOverlay';
+import {ZOOM} from './maps.constants';
 import {setSpotsInMapExtentIds} from './maps.slice';
 import useMapsOffline from './offline-maps/useMapsOffline';
+import SetInCurrentViewOverlay from './SetInCurrentViewOverlay';
 import useMap from './useMap';
 import useMapCoords from './useMapCoords';
-import useMapFeatures from './useMapFeatures';
 import useMapFeaturesCalculated from './useMapFeaturesCalculated';
 import useMapFeaturesDraw from './useMapFeaturesDraw';
 import useMapLocation from './useMapLocation';
-import useMapMeasure from './useMapMeasure';
+import useMapPressEvents from './useMapPressEvents';
 import useMapView from './useMapView';
 import {isEmpty} from '../../shared/Helpers';
-import IconButton from '../../shared/ui/IconButton';
 import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
-import overlayStyles from '../home/overlays/overlay.styles';
 import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {useSpots} from '../spots';
-import {editedOrCreatedSpot, setSelectedSpot} from '../spots/spots.slice';
+import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Map = forwardRef(({
                           isSelectingForStereonet,
@@ -41,12 +38,27 @@ const Map = forwardRef(({
   const mapRef = useRef(null);
   const spotsRef = useRef(null);
 
+  const dispatch = useDispatch();
+  const currentBasemap = useSelector(state => state.map.currentBasemap);
+  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const customBasemap = useSelector(state => state.map.customMaps);
+  const isOnline = useSelector(state => state.connections.isOnline.isInternetReachable);
+  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+  const stratSection = useSelector(state => state.map.stratSection);
+  const userEmail = useSelector(state => state.user.email);
+
+  const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
+  const [measureFeatures, setMeasureFeatures] = useState([]);
+  const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
+  const [showUserLocation, setShowUserLocation] = useState(false);
+  const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
+
   const {setCustomMapSwitchValue} = useCustomMap();
   const {setImageHeightAndWidth} = useImages();
-  const {isDrawMode, getExtentAndZoomCall, setBasemap} = useMap();
+  const {getExtentAndZoomCall, setBasemap} = useMap();
   const {convertFeatureGeometryToImagePixels} = useMapCoords();
-  const {getAllMappedSpots} = useMapFeatures();
-  const {getLassoedSpots, getSpotAtPress} = useMapFeaturesCalculated(mapRef);
+  const {getLassoedSpots} = useMapFeaturesCalculated(mapRef);
   const {
     allowMapViewMove,
     cancelDraw,
@@ -72,26 +84,27 @@ const Map = forwardRef(({
     mapRef: mapRef,
     onEndDrawPressed: onEndDrawPressed,
   });
+  const {
+    handleMapLongPress,
+    handleMapPress,
+    location,
+  } = useMapPressEvents({
+    clearSelectedSpots,
+    editSpot,
+    getSpotToEdit,
+    mapMode,
+    mapRef,
+    measureFeatures,
+    setDistance,
+    setDrawFeaturesNew,
+    setIsShowMacrostratOverlay,
+    setMapModeToEdit,
+    setMeasureFeatures,
+    switchToEditing,
+  });
   const {getCurrentLocation} = useMapLocation();
-  const {getMeasureFeatures} = useMapMeasure();
   const {setMapView, zoomToSpotsNow} = useMapView();
   const {getMapCenterTile, switchToOfflineMap} = useMapsOffline();
-  const {getSpotWithThisStratSection} = useSpots();
-
-  const dispatch = useDispatch();
-  const currentBasemap = useSelector(state => state.map.currentBasemap);
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const customBasemap = useSelector(state => state.map.customMaps);
-  const isOnline = useSelector(state => state.connections.isOnline.isInternetReachable);
-  const offlineMaps = useSelector(state => state.offlineMap.offlineMaps);
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const stratSection = useSelector(state => state.map.stratSection);
-  const userEmail = useSelector(state => state.user.email);
-
-  const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
-  const [measureFeatures, setMeasureFeatures] = useState([]);
-  const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
-  const [showUserLocation, setShowUserLocation] = useState(false);
 
   useEffect(() => {
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
@@ -107,10 +120,11 @@ const Map = forwardRef(({
   useEffect(() => {
     // console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
     updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
+    if (currentBasemap !== 'macrostrat') setIsShowMacrostratOverlay(false);
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    // console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
+    console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
     if (isOnline && !currentBasemap) setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
       // console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');
@@ -125,7 +139,7 @@ const Map = forwardRef(({
       });
     }
     else if (!isOnline && isOnline !== null && currentBasemap && Platform.OS !== 'web') {
-      // console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
+      console.log('ITS IN THIS ONE!!!! -!isOnline && isOnline !== null && currentBasemap');
       Object.values(customBasemap).map((map) => {
         if (offlineMaps[map.id]?.id !== map.id) setCustomMapSwitchValue(false, map);
       });
@@ -209,102 +223,6 @@ const Map = forwardRef(({
       dispatch(addedStatusMessage('Error fetching data from tile count service.'));
       dispatch(setIsErrorMessagesModalVisible(true));
     }
-  };
-
-  // Handle a long press on the map by making the point or vertex at the point "selected"
-  const onMapLongPress = async (e) => {
-    console.log('Map long press detected:', e);
-    const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
-      : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
-        : [e.properties.screenPointX, e.properties.screenPointY];
-    const spotToEdit = await getSpotAtPress(screenPointX, screenPointY);
-    const mappedSpots = getAllMappedSpots();
-    if (mapMode === MAP_MODES.VIEW && !isEmpty(mappedSpots) && !isEmpty(spotToEdit)) {
-      await switchToEditing(screenPointX, screenPointY, spotToEdit, setMapModeToEdit);
-    }
-    else if (mapMode === MAP_MODES.EDIT) await getSpotToEdit(screenPointX, screenPointY, spotToEdit);
-    else console.log('No Spots to edit. No action taken.');
-  };
-
-  // Mapbox: Handle map press
-  const onMapPress = async (e) => {
-    console.log('Map press detected:', e);
-    console.log('Map mode:', mapMode);
-    if (mapMode === MAP_MODES.DRAW.MEASURE) {
-      const updatedMeasureFeatures = await getMeasureFeatures(e, [...measureFeatures], setDistance);
-      setMeasureFeatures(updatedMeasureFeatures);
-    }
-    else if (mapMode !== MAP_MODES.DRAW.FREEHANDPOLYGON && mapMode !== MAP_MODES.DRAW.FREEHANDLINE) {
-      // Select/Unselect a feature
-      if (mapMode === MAP_MODES.VIEW) {
-        console.log('Selecting or unselect a feature ...');
-        const [screenPointX, screenPointY] = Platform.OS === 'web' ? [e.point.x, e.point.y]
-          : Platform.OS === 'android' ? [e.properties.screenPointX / PixelRatio.get(), e.properties.screenPointY / PixelRatio.get()]
-            : [e.properties.screenPointX, e.properties.screenPointY];
-        const spotFound = await getSpotAtPress(screenPointX, screenPointY);
-        if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
-        else if (stratSection) {
-          dispatch(setSelectedSpot(getSpotWithThisStratSection(stratSection.strat_section_id)));
-        }
-        else clearSelectedSpots();
-      }
-      // Draw a feature
-      else if (isDrawMode(mapMode)) setDrawFeaturesNew(e);
-      // Edit a Spot
-      else if (mapMode === MAP_MODES.EDIT) await editSpot(e);
-      else {
-        console.log('Error. Unknown map mode:', mapMode);
-      }
-    }
-  };
-
-  // Modal to prompt the user to select a geometry if no geometry has been set
-  const renderSetInCurrentViewModal = () => {
-    const buttons = ['Point', 'LineString', 'Polygon'];
-
-    const buttonIcon = (button) => {
-      return button === 'LineString' ? require('../../assets/icons/LineButton.png')
-        : button === 'Point' ? require('../../assets/icons/PointButton.png')
-          : button === 'Polygon' ? require('../../assets/icons/PolygonButton.png')
-            : null;
-    };
-
-    const updateDefaultGeomType = (geomType) => {
-      setShowSetInCurrentViewModal(false);
-      createDefaultGeomContinued(geomType);
-    };
-
-    return (
-      <Overlay
-        animationType={'slide'}
-        overlayStyle={overlayStyles.overlayContainer}
-        isVisible={showSetInCurrentViewModal}
-        onBackdropPress={() => {
-        }}
-      >
-        <View style={overlayStyles.titleContainer}>
-          <Text style={overlayStyles.titleText}>Select a Geometry Type</Text>
-        </View>
-        <View style={[overlayStyles.overlayContent, overlayStyles.selectGeometryTypeContent]}>
-          {buttons.map(button =>
-            <Button
-              icon={
-                <IconButton
-                  style={{paddingRight: 15}}
-                  source={buttonIcon(button)}
-                  onPress={() => updateDefaultGeomType(button)}
-                />
-              }
-              title={button}
-              buttonStyle={overlayStyles.buttonText}
-              type={'clear'}
-              onPress={() => updateDefaultGeomType(button)}
-              key={button}
-            />,
-          )}
-        </View>
-      </Overlay>
-    );
   };
 
   const toggleUserLocation = (value) => {
@@ -424,17 +342,32 @@ const Map = forwardRef(({
           basemap={currentBasemap}
           drawFeatures={drawFeatures}
           editFeatureVertex={editFeatureVertex}
+          handleMapLongPress={handleMapLongPress}
+          handleMapPress={handleMapPress}
+          isShowMacrostratOverlay={isShowMacrostratOverlay}
+          location={location}
           mapMode={mapMode}
           measureFeatures={measureFeatures}
-          onMapLongPress={onMapLongPress}
-          onMapPress={onMapPress}
           ref={{mapRef: mapRef, cameraRef: cameraRef}}
           showUserLocation={showUserLocation}
           spotsNotSelected={spotsNotSelected}
           spotsSelected={spotsSelected}
         />
       )}
-      {showSetInCurrentViewModal && renderSetInCurrentViewModal()}
+      {currentBasemap?.source === 'macrostrat' && isOnline && (
+        <MacrostratOverlay
+          closeModal={() => setIsShowMacrostratOverlay(false)}
+          isVisible={isShowMacrostratOverlay}
+          location={location}
+        />
+      )}
+      {showSetInCurrentViewModal && (
+        <SetInCurrentViewOverlay
+          createDefaultGeomContinued={createDefaultGeomContinued}
+          setShowSetInCurrentViewModal={setShowSetInCurrentViewModal}
+          showSetInCurrentViewModal={showSetInCurrentViewModal}
+        />
+      )}
     </View>
   );
 });
