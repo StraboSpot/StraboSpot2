@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Linking, ScrollView, Text, View} from 'react-native';
 
+import moment from 'moment';
 import {Button, Card} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 
@@ -40,7 +41,17 @@ const MacrostratOverlay = ({
   }, [location]);
 
   const copyToClipboard = () => {
-    Helpers.copyToClipboard(dataObject.comm);
+    const joinedStrings = [
+      `***From Macrostrat ${moment(new Date()).format('YYYY-MM-DD-HH:mm')}***`,
+      `Name: ${dataObject.name}\n`,
+      `Age: ${dataObject.age}\n`,
+      `Lithology: ${dataObject.rocktype}\n`,
+      `Description:\n ${dataObject.desc}\n`,
+      dataObject.comm,
+      '*** *** *** *** *** *** *** ***',
+    ].join('\r\n');
+    console.log(joinedStrings);
+    Helpers.copyToClipboard(joinedStrings);
     toast.show('Copied to clipboard!', {type: 'success'});
   };
 
@@ -107,21 +118,7 @@ const MacrostratOverlay = ({
               </View>
             )
             : (
-              <>
-                <Button
-                  type={'clear'}
-                  containerStyle={{alignSelf: 'flex-end'}}
-                  onPress={copyToClipboard}
-                  icon={{
-                    name: 'copy-outline',
-                    type: 'ionicon',
-                    size: 25,
-                    // color: "white"
-                  }}
-                />
-                <Text
-                  style={macrostratOverlayStyles.descriptionContent}>{dataObject.desc} {'\n\n'}{dataObject.comm}</Text>
-              </>
+              <Text style={macrostratOverlayStyles.descriptionContent}>{dataObject.desc} {'\n\n'}{dataObject.comm}</Text>
             )
           }
           {renderMapRef()}
@@ -165,12 +162,25 @@ const MacrostratOverlay = ({
         && (
           <Card
             containerStyle={SMALL_SCREEN ? [macrostratOverlayStyles.containerPositionSmallScreen] : [macrostratOverlayStyles.container]}>
-            <Button
-              title={'Close'}
-              containerStyle={{alignItems: 'flex-end'}}
-              onPress={closeModal}
-              type={'clear'}
-            />
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Button
+                type={'clear'}
+                containerStyle={{alignSelf: 'flex-end'}}
+                onPress={copyToClipboard}
+                icon={{
+                  name: 'copy-outline',
+                  type: 'ionicon',
+                  size: 25,
+                  // color: "white"
+                }}
+              />
+              <Button
+                title={'Close'}
+                containerStyle={{alignItems: 'flex-end'}}
+                onPress={closeModal}
+                type={'clear'}
+              />
+            </View>
             <Card.Title>{isEmpty(dataObject.name) ? 'Unnamed' : dataObject.name}</Card.Title>
             {location.coords && (
               <Text style={macrostratOverlayStyles.coordsText}>Lat: {location.coords[1].toFixed(4)},
