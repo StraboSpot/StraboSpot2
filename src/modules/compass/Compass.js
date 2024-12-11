@@ -65,6 +65,7 @@ const Compass = ({
   useEffect(() => {
     console.log('UE Compass []');
     getDeclination().catch(err => console.error('Error getting user\'s declination', err));
+    subscribeToSensors();
     AppState.addEventListener('change', handleAppStateChange);
     return () => {
       unsubscribeFromSensors();
@@ -95,10 +96,15 @@ const Compass = ({
   const groupButtons = [{element: trueNorthButton}, {element: magNorthButton}];
 
   const getDeclination = async () => {
-    const declination = await getUserDeclination();
-    console.log('Declination is:', declination);
-    magneticDeclination.current = declination;
-    subscribeToSensors();
+    try {
+      const declination = await getUserDeclination();
+      console.log('Declination is:', declination);
+      magneticDeclination.current = declination;
+    }
+    catch (err) {
+      console.error('Magnetic Declination not available', err);
+    }
+
   };
 
   const grabMeasurements = async (isCompassMeasurement) => {
