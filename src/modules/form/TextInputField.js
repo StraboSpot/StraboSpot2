@@ -5,6 +5,7 @@ import {Icon} from 'react-native-elements';
 
 import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
+import {isEmpty} from '../../shared/Helpers';
 
 const TextInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -17,13 +18,25 @@ const TextInputField = ({
       {props.label && (
         <View style={formStyles.fieldLabelContainer}>
           <Text style={formStyles.fieldLabel}>{props.label}</Text>
-          {props.placeholder && (
+          {(name === 'Sample_IGSN' && isEmpty(value)) ? (
+              <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', backgroundColor: 'yellow', width: '50%'}}>
+                <Text style={{marginEnd: 5}}>Get IGSN</Text>
+                <Icon
+                  name={'information-circle-outline'}
+                  type={'ionicon'}
+                  color={'green'}
+                  onPress={() => console.log('Show IGSN Get Modal')}
+                />
+              </View>
+          ) : (
+            props.placeholder && (
             <Icon
               name={'information-circle-outline'}
               type={'ionicon'}
               color={themes.PRIMARY_ACCENT_COLOR}
               onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
             />
+          )
           )}
         </View>
       )}
