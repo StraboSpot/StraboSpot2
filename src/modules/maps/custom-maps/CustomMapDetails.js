@@ -169,7 +169,6 @@ const CustomMapDetails = () => {
               errorStyle={customMapStyles.requiredMessage}
               inputContainerStyle={{borderBottomWidth: 0}}
               inputStyle={{...formStyles.fieldValue, backgroundColor: 'white'}}
-              keyboardType={numericKeyboardType}
               onChangeText={text => setEditableCustomMapData(e => ({...e, id: text}))}
               placeholder={'Strabo My Maps ID'}
               placeholderTextColor={MEDIUMGREY}
