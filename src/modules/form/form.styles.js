@@ -1,7 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 // Constants
 import * as themes from '../../shared/styles.constants';
+
+const platform = Platform.OS === 'ios' ? 'window' : 'screen';
+const {height} = Dimensions.get(platform);
 
 const styles = StyleSheet.create({
   dropdownContainer: {
@@ -45,8 +48,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   fieldValueFull: {
-    maxHeight: 300,
-    minHeight: 200,
+    maxHeight: height * 0.5,
+    minHeight: height * .50,
     verticalAlign: 'top',
   },
   fieldValueMultiline: {

@@ -20,8 +20,8 @@ const SpotNotesOverview = ({page}) => {
             containerStyle={commonStyles.listItem}
             onPress={() => dispatch(setNotebookPageVisible(page.key))}
           >
-            <ListItem.Content>
-              <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(savedNote, 750)}</ListItem.Title>
+            <ListItem.Content style={{maxHeight: 300}}>
+              <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(savedNote, 300)}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
         )
