@@ -52,6 +52,17 @@ NetInfo.configure({
   shouldFetchWiFiSSID: true,
 });
 
+
+const linking = {
+  prefixes: ['strabofield://'], // Custom URL scheme
+  config: {
+    screens: {
+      Home: '', // Default screen
+      IGSN: 'orcid_id/:id', // Example route with a parameter
+    },
+  },
+};
+
 const App = () => {
   if (Platform.OS === 'web' && !didInit) {
     console.count('Rendering App...');
@@ -68,7 +79,7 @@ const App = () => {
             {/*<Sentry.TouchEventBoundary>*/}
             <SystemBars/>
             <ConnectionStatus/>
-            <NavigationContainer>
+            <NavigationContainer linking={linking}>
               <Routes/>
             </NavigationContainer>
             {/*</Sentry.TouchEventBoundary>*/}

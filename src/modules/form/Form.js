@@ -16,6 +16,7 @@ import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 const Form = ({
                 errors,
                 formName,
+                IGSN,
                 onMyChange,
                 setFieldValue,
                 subkey,
@@ -67,6 +68,7 @@ const Form = ({
         appearance={field.appearance}
         placeholder={field.hint}
         onMyChange={onMyChange}
+        IGSN={IGSN}
         onShowFieldInfo={showFieldInfo}
       />
     );
