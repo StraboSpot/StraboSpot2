@@ -25,7 +25,7 @@ const TextInputField = ({
                   name={'information-circle-outline'}
                   type={'ionicon'}
                   color={'green'}
-                  onPress={() => console.log('Show IGSN Get Modal')}
+                  onPress={props.IGSNModal}
                 />
               </View>
           ) : (
