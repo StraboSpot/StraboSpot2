@@ -1,12 +1,13 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialUserState = {
-  isAuthenticated: false,
-  encoded_login: null,
-  name: null,
   email: null,
-  mapboxToken: null,
+  encoded_login: null,
   image: null,
+  isAuthenticated: false,
+  mapboxToken: null,
+  name: null,
+  orcidToken: null,
 };
 
 // createSlice combines reducers, actions, and constants
@@ -15,10 +16,11 @@ const userProfileSlice = createSlice({
   initialState: initialUserState,
   reducers: {
     setUserData(state, action) {
-      const {name, email, mapboxToken, encoded_login, image} = action.payload;
+      const {name, email, mapboxToken, orcidToken, encoded_login, image} = action.payload;
       state.name = name;
       state.email = email;
       state.mapboxToken = mapboxToken;
+      state.orcidToken = orcidToken;
       state.encoded_login = encoded_login;
       state.image = image;
     },
