@@ -1,16 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
-import {Button} from 'react-native-elements';
-import myStraboSpot from '../project/MyStraboSpot';
 
+import {Button} from 'react-native-elements';
+import {parseString} from 'react-native-xml2js'
+import {isEmpty} from '../../shared/Helpers';
+
+const xml = require('../../assets/forms/Sesar.xml')
 const IGSNPage = ({route, navigation}) => {
   const orcidToken = route.params.id;
 
-  const [SesarToken, setSesarToken] = useState('');
+  const [SesarToken, setSesarToken] = useState({});
 
 
   useEffect(() => {
-    getSesarToken()
+    getSesarToken().then(() => {
+      if (!isEmpty(SesarToken)) {
+        console.log('Sesar Token', SesarToken);
+      }
+    })
+
   }, []);
 
   const getSesarToken = async () => {
@@ -19,9 +27,9 @@ const IGSNPage = ({route, navigation}) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({connection: 'strabospot', orcid_id_token: orcidToken})
+      body: JSON.stringify({connection: 'strabospot', orcid_id_token: orcidToken}),
     });
-    console.log('Sesar JWT', sesarToken);
+    setSesarToken(sesarToken);
   };
 
   console.log('Orcid Token', orcidToken);

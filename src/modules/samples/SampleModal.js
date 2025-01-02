@@ -221,7 +221,7 @@ const SampleModal = (props) => {
       await currentForm.resetForm();
 
       if (newSample.sample_id_name) await checkSampleName(newSample.sample_id_name, toastRef);
-      if (IGSNSwitchValue) setShowIGSNModal(true);
+      // if (IGSNSwitchValue) setShowIGSNModal(true);
     }
     catch (err) {
       console.error('Error saving Sample', err);
@@ -229,14 +229,14 @@ const SampleModal = (props) => {
     }
   };
 
-  const renderIGSNRegistrationView = () => {
-    return (
-      <IGSNModal
-        showIGSNModal={showIGSNModal}
-        onModalLogin={handleIGSNLogin}
-        onModalCancel={handleIGSNModalCancel}/>
-    );
-  };
+  // const renderIGSNRegistrationView = () => {
+  //   return (
+  //     <IGSNModal
+  //       showIGSNModal={showIGSNModal}
+  //       onModalLogin={handleIGSNLogin}
+  //       onModalCancel={handleIGSNModalCancel}/>
+  //   );
+  // };
 
   const renderSampleMainContent = () => {
     return (
@@ -257,20 +257,20 @@ const SampleModal = (props) => {
           }
         />
         <View>
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginStart: 30}}>
-            <View style={{alignItems: 'center'}}>
-              <Text>ADD </Text>
-              <Image
-                source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
-                style={{height: 30, width: 30, marginEnd: 10, marginTop: 5}}
-              />
-            </View>
-            <Switch
-              value={IGSNSwitchValue}
-              onValueChange={setIGSNSwitchValue}
-              trackColor={'green'}
-            />
-          </View>
+          {/*<View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginStart: 30}}>*/}
+          {/*  <View style={{alignItems: 'center'}}>*/}
+          {/*    <Text>ADD </Text>*/}
+          {/*    <Image*/}
+          {/*      source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}*/}
+          {/*      style={{height: 30, width: 30, marginEnd: 10, marginTop: 5}}*/}
+          {/*    />*/}
+          {/*  </View>*/}
+          {/*  <Switch*/}
+          {/*    value={IGSNSwitchValue}*/}
+          {/*    onValueChange={setIGSNSwitchValue}*/}
+          {/*    trackColor={'green'}*/}
+          {/*  />*/}
+          {/*</View>*/}
           <SaveButton
             title={'Save Sample'}
             onPress={() => saveForm(formRef.current)}
@@ -282,7 +282,7 @@ const SampleModal = (props) => {
 
   return (
     <Modal onPress={props.onPress}>
-      {showIGSNModal && renderIGSNRegistrationView()}
+      {/*{showIGSNModal && renderIGSNRegistrationView()}*/}
       {renderSampleMainContent()}
       {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>

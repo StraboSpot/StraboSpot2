@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Linking, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -10,6 +10,7 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
+import config from '../../utils/config';
 import {Form, useForm} from '../form';
 import NoteForm from '../notes/NoteForm';
 import usePetrology from '../petrology/usePetrology';
@@ -30,6 +31,7 @@ const BasicPageDetail = ({
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+  const user = useSelector(state => state.user);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -121,6 +123,23 @@ const BasicPageDetail = ({
     );
   };
 
+  const getIGSN = async (event) => {
+    try {
+      if (isEmpty(user.orcidToken)) {
+        const ORCID_CLIENT_ID = config.get('orcid_client_id');
+        const url = `https://orcid.org/oauth/authorize?client_id=${ORCID_CLIENT_ID}&response_type=code&scope=openid&redirect_uri=https://www.strabospot.org/orcid_callback%3Fcreds%3D${encodeURIComponent(user.encoded_login)}`
+        console.log(url);
+        await Linking.openURL(url);
+      }
+      else {
+
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
   const getFormName = () => {
     let formName = [groupKey, pageKey];
     if (groupKey === 'pet' && selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
@@ -153,6 +172,7 @@ const BasicPageDetail = ({
                 : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
                   ? ((name, value) => onSedFormChange(formRef.current, name, value))
                   : undefined,
+              IGSN: getIGSN,
             }}/>
           )}
         </Formik>
