@@ -1,11 +1,11 @@
 import React from 'react';
 import {Text, TextInput, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Button, Icon} from 'react-native-elements';
 
+import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
-import {isEmpty} from '../../shared/Helpers';
 
 const TextInputField = ({
                           field: {name, onBlur, onChange, value},
@@ -20,12 +20,17 @@ const TextInputField = ({
           <Text style={formStyles.fieldLabel}>{props.label}</Text>
           {(name === 'Sample_IGSN' && isEmpty(value)) ? (
               <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', backgroundColor: 'yellow', width: '50%'}}>
-                <Text style={{marginEnd: 5}}>Get IGSN</Text>
+                <Button style={{marginEnd: 5}}
+                  title="Register IGSN"
+                        titleStyle={{fontSize: 11}}
+                        onPress={onMyChange}
+                  containerStyle={{marginRight: 5}}
+                />
                 <Icon
                   name={'information-circle-outline'}
                   type={'ionicon'}
                   color={'green'}
-                  onPress={props.IGSNModal}
+                  onPress={props.IGSN}
                 />
               </View>
           ) : (
