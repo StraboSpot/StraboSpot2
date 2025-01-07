@@ -25,16 +25,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   customEndpointInput: {
-    borderBottomColor: 'transparent',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
     fontSize: themes.SMALL_TEXT_SIZE,
     marginLeft: 10,
   },
   customEndpointInputContainer: {
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 15,
+    borderRadius: 1,
     height: 55,
-    width: '95%',
+    marginTop: 10,
+    width: '60%',
   },
   customEndpointText: {
     color: themes.WHITE,

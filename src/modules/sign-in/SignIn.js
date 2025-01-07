@@ -8,7 +8,7 @@ import signInStyles from './signIn.styles';
 import useSignIn from './useSignIn';
 import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import * as themes from '../../shared/styles.constants';
-import CustomEndpoint from '../../shared/ui/CustomEndpoint';
+import CustomEndpoint from '../../shared/ui/CustomEndpoint/CustomEndpoint';
 import {ErrorModal} from '../home/modals';
 import SplashScreen from '../splash-screen/SplashScreen';
 import {login} from '../user/userProfile.slice';
