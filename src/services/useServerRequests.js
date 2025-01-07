@@ -19,8 +19,8 @@ const useServerRequests = () => {
     return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
   };
 
-  const authenticateUser = async (username, password) => {
-    const authenticationBaseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
+  const authenticateUser = async (customUrl, username, password) => {
+    const authenticationBaseUrl = isSelected ? customUrl : baseUrl.slice(0, baseUrl.lastIndexOf('/')); //URL to send authentication API call
     let response = await timeoutPromise(60000, fetch(authenticationBaseUrl + '/userAuthenticate',
       {
         method: 'POST',
@@ -246,9 +246,12 @@ const useServerRequests = () => {
     }
   };
 
-  const handleResponse = (response) => {
+  const handleResponse = async (response) => {
     if (response.ok && response.status === 204) return response.text() || 'no  content';
-    else if (response.ok) return response.json();
+    else if (response.ok) {
+      const responseJSON = await response.json();
+      return responseJSON;
+    }
     else return handleError(response);
   };
 
@@ -359,6 +362,21 @@ const useServerRequests = () => {
     }
   };
 
+  async function fetchWithTimeout(resource, options = {}) {
+    const {timeout = 5000} = options;
+
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+
+    return response;
+  }
+
   const timeoutPromise = async (ms, promise) => {
     const timeoutPromiseException = (err) => {
       const timeoutError = Symbol();
@@ -432,8 +450,56 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
+  const validateIP = (url) => {
+    const ip = url.split('//')[1];
+    const ipv4Pattern =
+      /^(\d{1,3}\.){3}\d{1,3}$/;
+    const ipv6Pattern =
+      /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+    return ipv4Pattern.test(ip) || ipv6Pattern.test(ip);
+  };
+
   const verifyEndpoint = async (customEndpointURL) => {
-    return await testEndpoint(customEndpointURL);
+    try {
+      const isIPValid = validateIP(customEndpointURL);
+      if (isIPValid) {
+        console.log(`Endpoint Test Response: ${customEndpointURL} is valid`);
+        return await fetchWithTimeout(customEndpointURL)
+          .then((response) => {
+            console.log('response ', response)
+            if (response.status === 200) {
+              console.log('success')
+              return true
+            } else {
+              console.warn('error')
+            }
+          })
+          .catch((error) => {
+            console.error('network error: ' + error)
+            return false
+          })
+
+        // return 'IP is valid';
+      }
+      else {
+        return 'IP not valid';
+      }
+      //   const [username, password] = Base64.decode(user.encoded_login).split(':');
+      //
+      //   console.log('username:', username);
+      //   console.log('password:', password);
+      // return await timeoutPromise(1000, authenticateUser(customEndpointURL, 'nathan.novak79@gmail.com', password));
+      //   const response = await fetchWithTimeout(`${customEndpointURL}/db/`, {
+      //     timeout: 5000,
+      //   });
+      //   const isValid = await response.json();
+      //   return isValid;
+
+    }
+    catch (err) {
+      console.log(err.name === 'AbortError');
+      // return err;
+    }
   };
 
   const verifyImageExistence = (imageId, encodedLogin) => {
