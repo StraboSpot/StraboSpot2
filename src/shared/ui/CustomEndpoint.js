@@ -76,8 +76,8 @@ const CustomEndpoint = ({
                 inputContainerStyle={{borderBottomWidth: 0}}
                 inputStyle={signInStyles.customEndpointInput}
                 onChangeText={value => handleEndpointTextValues(value)}
-                label={'Enter full endpoint address'}
-                placeholder={'http://192.168.xxx/db/'}
+                label={'Enter endpoint IP address'}
+                placeholder={'http://192.168.xxx'}
                 labelStyle={{fontSize: 10}}
                 defaultValue={customEndpointURLLocal}
                 autoCapitalize={'none'}
