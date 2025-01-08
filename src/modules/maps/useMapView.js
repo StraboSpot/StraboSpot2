@@ -43,7 +43,7 @@ const useMapView = () => {
       }
       else if (stratSection) return STRAT_SECTION_CENTER;
     }
-    return center || [LONGITUDE, LATITUDE];  // ToDo Zoom to Extent of Spots if no saved center
+    return [LONGITUDE, LATITUDE];  // ToDo Zoom to Extent of Spots if no saved center
   };
 
   // Set initial center and zoom

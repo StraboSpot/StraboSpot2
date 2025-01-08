@@ -9,7 +9,7 @@ const useServerRequests = () => {
   const dispatch = useDispatch();
   const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const baseUrl = url && isSelected ? url : STRABO_APIS.DB;
+  const baseUrl = url && isSelected ? `${url}/db` : STRABO_APIS.DB;
   const domain = url && isSelected ? url : STRABO_APIS.STRABO;
   const tilehost = STRABO_APIS.TILE_HOST;
 
@@ -349,7 +349,7 @@ const useServerRequests = () => {
 
   const testEndpoint = async (customEndpointURL) => {
     try {
-      const res = await timeoutPromise(15000, fetch(customEndpointURL));
+      const res = await timeoutPromise(10000, fetch(customEndpointURL));
       console.log('Endpoint Test Response:', res);
       return res.ok;
     }

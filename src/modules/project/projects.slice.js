@@ -1,7 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+import {v4 as uuidv4} from 'uuid';
+
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
-import {isEmpty, isEqual} from '../../shared/Helpers';
+import {isEmpty, isEqual, getNewId} from '../../shared/Helpers';
 
 const initialProjectState = {
   activeDatasetsIds: [],
@@ -56,6 +58,7 @@ const projectSlice = createSlice({
       };
     },
     addedProject(state, action) {
+      if (!action.payload.id) action.payload.id = getNewId();
       if (!action.payload.description) action.payload.description = {};
       if (!action.payload.description.project_name) action.payload.description.project_name = 'Unnamed';
       if (!action.payload.other_features) action.payload.other_features = DEFAULT_GEOLOGIC_TYPES;

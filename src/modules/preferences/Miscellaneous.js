@@ -111,15 +111,15 @@ const Miscellaneous = () => {
 
   const renderEndpointFieldContent = () => (
     <>
-      <SectionDivider dividerText={'Endpoint'}/>
+      <SectionDivider dividerText={'Endpoint Selection'}/>
       <Text style={[commonStyles.noValueText, {paddingBottom: 0}]}>
         Current Endpoint{'\n'}
-        {url || 'https://strabospot.org/db'}
+        {isSelected ? url : 'https://strabospot.org/db'}
       </Text>
       <CustomEndpoint/>
       {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
-        *Currently StraboSpot <Text style={{fontWeight: themes.TEXT_WEIGHT}}>ONLY</Text> supports endpoints with the
-        format StraboSpot Offline uses (see placeholder in box for example). If you need to use an endpoint not
+        *Currently StraboField <Text style={{fontWeight: themes.TEXT_WEIGHT}}>ONLY</Text> supports endpoints with the
+        format StraboSpot Offline uses (see above for example). If you need to use an endpoint not
         associated with StraboSpot Offline, the URL must contain a trailing &lsquo;/db&lsquo;.
       </Text>}
     </>

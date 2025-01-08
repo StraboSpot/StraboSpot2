@@ -130,9 +130,9 @@ const useImport = () => {
       dispatch(addedMapsFromDevice({mapType: 'offlineMaps', maps: mapNamesDb}));
       dispatch(removedLastStatusMessage());
       dispatch(addedStatusMessage('---------------------'));
-      dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount}`));
-      dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles}`));
-      dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles}`));
+      dispatch(addedStatusMessage(`Map tiles imported: ${progress.fileCount || 0}`));
+      dispatch(addedStatusMessage(`Map tiles installed: ${progress.neededTiles || 0}`));
+      dispatch(addedStatusMessage(`Map tiles already installed: ${progress.notNeededTiles || 0}`));
       dispatch(addedStatusMessage('Finished moving tiles'));
     }
     else {
