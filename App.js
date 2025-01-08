@@ -28,15 +28,15 @@ if (Platform.OS !== 'web') {
     dist: RELEASE_NAME,
     autoSessionTracking: true,
     environment: __DEV__ ? 'development' : 'production',
-    tracesSampleRate: 0.30,
-    _experiments: {
-      profilesSampleRate: 0.50,
-      replaysSessionSampleRate: __DEV__ ? 1.0 : 0.5,
-      replaysOnErrorSampleRate: 1.0,
-    },
-    integrations: [
-      Sentry.mobileReplayIntegration(),
-    ],
+    // tracesSampleRate: 0.30,
+    // _experiments: {
+    //   profilesSampleRate: 0.50,
+    //   replaysSessionSampleRate: __DEV__ ? 1.0 : 0.5,
+    //   replaysOnErrorSampleRate: 1.0,
+    // },
+    // integrations: [
+    //   Sentry.mobileReplayIntegration(),
+    // ],
   });
 } else console.log('SENTRY NOT RUNNING');
 
@@ -51,6 +51,17 @@ NetInfo.configure({
   // reachabilityRequestTimeout: 15 * 1000, // 15s
   shouldFetchWiFiSSID: true,
 });
+
+
+const linking = {
+  prefixes: ['strabofield://'], // Custom URL scheme
+  config: {
+    screens: {
+      Home: '', // Default screen
+      IGSN: 'orcid_id/:id', // Example route with a parameter
+    },
+  },
+};
 
 const App = () => {
   if (Platform.OS === 'web' && !didInit) {
@@ -68,7 +79,7 @@ const App = () => {
             {/*<Sentry.TouchEventBoundary>*/}
             <SystemBars/>
             <ConnectionStatus/>
-            <NavigationContainer>
+            <NavigationContainer linking={linking}>
               <Routes/>
             </NavigationContainer>
             {/*</Sentry.TouchEventBoundary>*/}
