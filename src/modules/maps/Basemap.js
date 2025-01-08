@@ -68,7 +68,7 @@ const Basemap = ({
   const {getInitialViewState} = useMapView();
 
   const [doesImageExist, setDoesImageExist] = useState(false);
-  const [initialCenter, setInitialCenter] = useState();
+  const [initialCenter, setInitialCenter] = useState([0,0]);
   const [initialZoom, setInitialZoom] = useState();
   const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
   const [symbols, setSymbol] = useState({...MAP_SYMBOLS, ...STRAT_PATTERNS});

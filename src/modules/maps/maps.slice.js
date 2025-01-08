@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {LATITUDE, LONGITUDE, ZOOM} from './maps.constants';
 
 const initialMapsState = {
-  center: [LONGITUDE, LATITUDE],
+  center: [LONGITUDE, LATITUDE || [0,0]],
   currentBasemap: null,
   currentImageBasemap: undefined,
   customMaps: {},
