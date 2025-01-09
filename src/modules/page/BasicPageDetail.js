@@ -132,7 +132,7 @@ const BasicPageDetail = ({
         await Linking.openURL(url);
       }
       else {
-
+        console.log('Check user ORCID token')
       }
     }
     catch (err) {

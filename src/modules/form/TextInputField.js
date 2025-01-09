@@ -19,18 +19,18 @@ const TextInputField = ({
         <View style={formStyles.fieldLabelContainer}>
           <Text style={formStyles.fieldLabel}>{props.label}</Text>
           {(name === 'Sample_IGSN' && isEmpty(value)) ? (
-              <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', backgroundColor: 'yellow', width: '50%'}}>
+              <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', width: '50%'}}>
                 <Button style={{marginEnd: 5}}
                   title="Register IGSN"
                         titleStyle={{fontSize: 11}}
-                        onPress={onMyChange}
+                        onPress={props.IGSN}
                   containerStyle={{marginRight: 5}}
                 />
                 <Icon
                   name={'information-circle-outline'}
                   type={'ionicon'}
                   color={'green'}
-                  onPress={props.IGSN}
+                  // onPress={props.IGSN}
                 />
               </View>
           ) : (
