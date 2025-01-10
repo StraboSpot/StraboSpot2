@@ -13,11 +13,12 @@ import useMapCoords from './useMapCoords';
 import useMapFeatures from './useMapFeatures';
 import useMapFeaturesCalculated from './useMapFeaturesCalculated';
 import useStereonet from './useStereonet';
-import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import {getNewId, getNewUUID, isEmpty} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import {setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS} from '../page/page.constants';
-import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import {addedNewSpotIdsToDataset, updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import useProject from '../project/useProject';
 import {
   clearedSelectedSpots,
   editedOrCreatedSpots,
@@ -32,6 +33,8 @@ const useMapFeaturesDraw = ({
                               mapMode,
                               mapRef,
                               onEndDrawPressed,
+                              setIsShowVertexActionsModal,
+                              setVertexActionValues,
                             }) => {
   const {isDrawMode} = useMap();
   const {convertFeatureGeometryToImagePixels, convertImagePixelsToLatLong} = useMapCoords();
@@ -43,6 +46,7 @@ const useMapFeaturesDraw = ({
     identifyClosestVertexOnSpotPress,
   } = useMapFeaturesCalculated(mapRef);
   const {getSymbology} = useMapSymbology();
+  const {getSelectedDatasetFromId} = useProject();
   const {createSpot} = useSpots();
   const {getStereonet} = useStereonet();
 
@@ -97,36 +101,22 @@ const useMapFeaturesDraw = ({
   const addNewVertex = (e, spotEditingCopy, spotToEdit) => {
     console.log('Adding new vertex...');
     let vertexAdded = {};
-    const newVertexCoords = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
-    const newVertex = turf.point(newVertexCoords);
     // To add a vertex to a line the new point selected must be on the line
-    if (turf.getType(spotEditingCopy) === 'LineString' && !isEmpty(spotToEdit)) {
+    if ((turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon')
+      && !isEmpty(spotToEdit)) {
       if (currentImageBasemap || stratSection) {
         spotEditingCopy = convertImagePixelsToLatLong(spotEditingCopy);
-        [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, newVertex);
+        [spotEditingCopy, vertexAdded] = getFeatureWithNewVertex(e, spotEditingCopy);
         spotEditingCopy = convertFeatureGeometryToImagePixels(spotEditingCopy);
         setSelectedSpotToEdit(convertFeatureGeometryToImagePixels(vertexAdded));
       }
       else {
-        [spotEditingCopy, vertexAdded] = addVertexToLine(spotEditingCopy, newVertex);
+        [spotEditingCopy, vertexAdded] = getFeatureWithNewVertex(e, spotEditingCopy);
         setSelectedSpotToEdit(vertexAdded);
       }
       setVertexIndex(vertexAdded.properties.index + 1);
     }
-    else if (turf.getType(spotEditingCopy) === 'Polygon' && !isEmpty(spotToEdit)) {
-      if (currentImageBasemap || stratSection) {
-        spotEditingCopy = convertImagePixelsToLatLong(spotEditingCopy);
-        [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, newVertex);
-        spotEditingCopy = convertFeatureGeometryToImagePixels(spotEditingCopy);
-        setSelectedSpotToEdit(convertFeatureGeometryToImagePixels(vertexAdded));
-      }
-      else {
-        [spotEditingCopy, vertexAdded] = addVertexToPolygon(spotEditingCopy, newVertex);
-        setSelectedSpotToEdit(vertexAdded);
-      }
-      setVertexIndex(vertexAdded.properties.index + 1);
-    }
-    return spotEditingCopy;
+    getSpotToEditCont(spotEditingCopy);
   };
 
   // Add a new vertex to a line
@@ -173,8 +163,11 @@ const useMapFeaturesDraw = ({
     console.log('Canceling editing...');
     if (!isEmpty(spotEditing)) {
       const spotOrig = spots[spotEditing.properties.id];
-      setDisplayedSpots([spotOrig]);
-      dispatch(setSelectedSpot(spotOrig));
+      if (spotOrig) {
+        setDisplayedSpots([spotOrig]);
+        dispatch(setSelectedSpot(spotOrig));
+      }
+      else clearSelectedSpots();
     }
     else setDisplayedSpots([]);
     clearEditing();
@@ -258,7 +251,7 @@ const useMapFeaturesDraw = ({
       console.log('Finished deleting vertex. Edited Spot:', spotEditingCopy);
     }
     else console.warn('Problem editing Spot');
-    return spotEditingCopy;
+    getSpotToEditCont(spotEditingCopy);
   };
 
   const editSpot = async (e) => {
@@ -506,6 +499,13 @@ const useMapFeaturesDraw = ({
     return Promise.resolve(newOrEditedSpot);
   };
 
+  const getFeatureWithNewVertex = (e, spotEditingCopy) => {
+    const newVertexCoords = Platform.OS === 'web' ? [e.lngLat.lng, e.lngLat.lat] : turf.getCoord(e);
+    const newVertex = turf.point(newVertexCoords);
+    return turf.getType(spotEditingCopy) === 'LineString' ? addVertexToLine(spotEditingCopy, newVertex)
+      : addVertexToPolygon(spotEditingCopy, newVertex);
+  };
+
   const getSpotToEdit = async (e, screenPointX, screenPointY, spotToEdit) => {
     if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
     else if (!isEmpty(spotEditing)) {
@@ -513,47 +513,61 @@ const useMapFeaturesDraw = ({
       if (turf.getType(spotEditingCopy) === 'LineString' || turf.getType(spotEditingCopy) === 'Polygon') {
         const vertexSelected = await getDrawFeatureAtPress(screenPointX, screenPointY);
         if (spotEditingCopy.properties.id === spotToEdit.properties.id) {
-          if (isEmpty(vertexSelected)) spotEditingCopy = addNewVertex(e, spotEditingCopy, spotToEdit);
-          else spotEditingCopy = deleteSelectedVertex(spotEditingCopy, vertexSelected);
-          console.log('Edited coords:', turf.getCoords(spotEditingCopy));
-          let explodedFeatures = turf.explode(spotEditingCopy).features;
-          // If polygon remove last exploded point because it is the same as the first
-          if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
-          explodedFeatures = explodedFeatures.map((feature) => {
-            return {
-              ...feature,
-              properties: {
-                ...feature.properties,
-                tempEditId: getNewUUID(),
-              },
-            };
-          });
-          if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
-            if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
-              explodedFeatures = explodedFeatures.map(spot => convertImagePixelsToLatLong(spot));
-            }
+          if (turf.getType(spotEditingCopy) === 'LineString') {
+            setVertexActionValues({
+              e: e,
+              spotEditingCopy: spotEditingCopy,
+              spotToEdit: spotToEdit,
+              vertexSelected: isEmpty(vertexSelected) ? undefined : vertexSelected,
+            });
+            setIsShowVertexActionsModal(true);
           }
-          // setDrawFeatures(explodedFeatures);
-          // setMapFeatures(prevState => ({...prevState, draw: explodedFeatures}));
-          const spotsEditedTmp = spotsEdited.filter(
-            spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
-          spotsEditedTmp.push(spotEditingCopy);
-          const spotsNotEditedTmp = spotsNotEdited.filter(
-            spotNotEdited => spotNotEdited.properties.id !== spotEditingCopy.properties.id);
-          setSpotEditing(spotEditingCopy);
-          setSpotsEdited(spotsEditedTmp);
-          setSpotsNotEdited(spotsNotEditedTmp);
-          setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
-          clearSelectedVertexToEdit();
-          //setSelectedVertexToEdit(vertexToEditThisScope);
-          console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
-          setDrawFeatures(explodedFeatures);
+          else {
+            if (isEmpty(vertexSelected)) addNewVertex(e, spotEditingCopy, spotToEdit);
+            else deleteSelectedVertex(spotEditingCopy, vertexSelected);
+          }
         }
         else console.log('Invalid vertex selected. No action');
       }
       else console.log('Selected Spot is not a line or polygon. No action taken.');
     }
     else console.log('No feature selected. No action taken.');
+  };
+
+  const getSpotToEditCont = (spotEditingCopy) => {
+    console.log('Edited coords:', turf.getCoords(spotEditingCopy));
+    let explodedFeatures = turf.explode(spotEditingCopy).features;
+    // If polygon remove last exploded point because it is the same as the first
+    if (turf.getType(spotEditingCopy) === 'Polygon') explodedFeatures.pop();
+    explodedFeatures = explodedFeatures.map((feature) => {
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          tempEditId: getNewUUID(),
+        },
+      };
+    });
+    if (currentImageBasemap || stratSection) { // if imagebasemap, features, need to be converted to getLatLng inOrder to project them.
+      if (turf.getType(spotEditingCopy) === 'Polygon' || turf.getType(spotEditingCopy) === 'LineString') {
+        explodedFeatures = explodedFeatures.map(spot => convertImagePixelsToLatLong(spot));
+      }
+    }
+    // setDrawFeatures(explodedFeatures);
+    // setMapFeatures(prevState => ({...prevState, draw: explodedFeatures}));
+    const spotsEditedTmp = spotsEdited.filter(
+      spotEdited => spotEdited.properties.id !== spotEditingCopy.properties.id);
+    spotsEditedTmp.push(spotEditingCopy);
+    const spotsNotEditedTmp = spotsNotEdited.filter(
+      spotNotEdited => spotNotEdited.properties.id !== spotEditingCopy.properties.id);
+    setSpotEditing(spotEditingCopy);
+    setSpotsEdited(spotsEditedTmp);
+    setSpotsNotEdited(spotsNotEditedTmp);
+    setDisplayedSpotsWhileEditing(spotEditingCopy, spotsEditedTmp, spotsNotEditedTmp);
+    clearSelectedVertexToEdit();
+    //setSelectedVertexToEdit(vertexToEditThisScope);
+    console.log('Finished editing Spot. Spot Editing: ', spotEditingCopy);
+    setDrawFeatures(explodedFeatures);
   };
 
   const getStereonetForFeature = async (feature) => {
@@ -606,6 +620,8 @@ const useMapFeaturesDraw = ({
     }
     if (!isEmpty(spotsEdited)) {
       const spotIds = spotsEdited.map(s => s.properties.id);
+      const selectedDataset = getSelectedDatasetFromId();
+      dispatch(addedNewSpotIdsToDataset({datasetId: selectedDataset.id, spotIds: spotIds}));
       dispatch(updatedModifiedTimestampsBySpotsIds(spotIds));
       dispatch(editedOrCreatedSpots(spotsEdited));
     }
@@ -765,6 +781,81 @@ const useMapFeaturesDraw = ({
     dispatch(setVertexStartCoords(vertexScreenCoords));
   };
 
+  const splitLine = async (e, spotEditingCopy, spotToEdit, vertexSelected) => {
+    console.log('Splitting Line...', e, spotEditingCopy, spotToEdit, vertexSelected);
+    let vertexAdded = {};
+    if (currentImageBasemap || stratSection) {
+      spotEditingCopy = convertImagePixelsToLatLong(spotEditingCopy);
+      [spotEditingCopy, vertexAdded] = getFeatureWithNewVertex(e, spotEditingCopy);
+    }
+    else {
+      [spotEditingCopy, vertexAdded] = getFeatureWithNewVertex(e, spotEditingCopy);
+    }
+    console.log('feature w new vertex', spotEditingCopy);
+    console.log('new vertex', vertexAdded);
+
+    // Get geometries for split lines
+    const lineCoords = turf.getCoords(spotEditingCopy);
+    const endCoords1 = lineCoords[0];
+    const endCoords2 = lineCoords[lineCoords.length - 1];
+    const endPoint1 = turf.point(endCoords1);
+    const endPoint2 = turf.point(endCoords2);
+    const lineSplitTemp1 = turf.lineSlice(endPoint1, vertexAdded, spotEditingCopy);
+    const lineSplitTemp2 = turf.lineSlice(vertexAdded, endPoint2, spotEditingCopy);
+    const lineSplit1 = turf.cleanCoords(lineSplitTemp1);
+    const lineSplit2 = turf.cleanCoords(lineSplitTemp2);
+    console.log('Split Line 1 Geometry', lineSplit1.geometry);
+    console.log('Split Line 2 Geometry', lineSplit2.geometry);
+
+    // Set attributes in new split lines
+    let newLine1 = turf.clone(spotEditingCopy);
+    newLine1.geometry = lineSplit1.geometry;
+    let newLine2 = {
+      geometry: lineSplit2.geometry,
+      properties: {id: getNewId(), modified_timestamp: Date.now()},
+      type: 'Feature',
+    };
+    if (spotEditingCopy.properties.date) newLine2.properties.date = spotEditingCopy.properties.date;
+    if (spotEditingCopy.properties.image_basemap) newLine2.properties.image_basemap = spotEditingCopy.properties.image_basemap;
+    if (spotEditingCopy.properties.name) newLine2.properties.name = spotEditingCopy.properties.name + ' Split';
+    if (spotEditingCopy.properties.notes) newLine2.properties.notes = spotEditingCopy.properties.notes;
+    if (spotEditingCopy.properties.notesTimestamp) newLine2.properties.notesTimestamp = spotEditingCopy.properties.notesTimestamp;
+    if (spotEditingCopy.properties.strat_section_id) newLine2.properties.strat_section_id = spotEditingCopy.properties.strat_section_id;
+    if (spotEditingCopy.properties.symbology) newLine2.properties.symbology = spotEditingCopy.properties.symbology;
+    if (spotEditingCopy.properties.time) newLine2.properties.time = spotEditingCopy.properties.time;
+    if (spotEditingCopy.properties.trace) newLine2.properties.trace = spotEditingCopy.properties.trace;
+    console.log('Split Line 1', newLine1);
+    console.log('Split Line 2', newLine2);
+
+    console.log('Edited coords:', turf.getCoords(newLine1));
+    let explodedFeatures = turf.explode(newLine1).features;
+    explodedFeatures = explodedFeatures.map((feature) => {
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          tempEditId: getNewUUID(),
+        },
+      };
+    });
+    if (currentImageBasemap || stratSection) {
+      newLine1 = convertFeatureGeometryToImagePixels(newLine1);
+      newLine2 = convertFeatureGeometryToImagePixels(newLine2);
+    }
+    const spotsEditedTmp = spotsEdited.filter(
+      spotEdited => spotEdited.properties.id !== newLine1.properties.id && spotEdited.properties.id !== newLine2.properties.id);
+    spotsEditedTmp.push(...[newLine1, newLine2]);
+    const spotsNotEditedTmp = spotsNotEdited.filter(
+      spotNotEdited => spotNotEdited.properties.id !== newLine1.properties.id && spotNotEdited.properties.id !== newLine2.properties.id);
+    setSpotEditing(newLine1);
+    setSpotsEdited(spotsEditedTmp);
+    setSpotsNotEdited(spotsNotEditedTmp);
+    setDisplayedSpotsWhileEditing(newLine1, spotsEditedTmp, spotsNotEditedTmp);
+    clearSelectedVertexToEdit();
+    console.log('Finished editing Spot. Spot Editing: ', newLine1);
+    setDrawFeatures(explodedFeatures);
+  };
+
   const startEditing = (spotToEdit, vertexToEditTemp, index, setMapModeToEdit) => {
     setMapModeToEdit();
     clearEditing();
@@ -802,11 +893,13 @@ const useMapFeaturesDraw = ({
   };
 
   return {
+    addNewVertex: addNewVertex,
     allowMapViewMove: allowMapViewMove,
     cancelDraw: cancelDraw,
     cancelEdits: cancelEdits,
     clearSelectedSpots: clearSelectedSpots,
     clearVertexes: clearVertexes,
+    deleteSelectedVertex: deleteSelectedVertex,
     drawFeatures: drawFeatures,
     editFeatureVertex: editFeatureVertex,
     editSpot: editSpot,
@@ -815,6 +908,7 @@ const useMapFeaturesDraw = ({
     moveVertex: moveVertex,
     saveEdits: saveEdits,
     setDrawFeaturesNew: setDrawFeaturesNew,
+    splitLine: splitLine,
     spotsNotSelected: spotsNotSelected,
     spotsSelected: spotsSelected,
     startEditing: startEditing,

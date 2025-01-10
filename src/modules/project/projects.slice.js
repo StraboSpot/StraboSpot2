@@ -78,7 +78,7 @@ const projectSlice = createSlice({
     addedNewSpotIdsToDataset(state, action) {
       const {datasetId, spotIds} = action.payload;
       const timestamp = Date.now();
-      const spotIdsInDataset = [...state.datasets[action.payload.datasetId].spotIds || [], ...spotIds];
+      const spotIdsInDataset = [...new Set([...state.datasets[action.payload.datasetId].spotIds || [], ...spotIds])];
       const dataset = {...state.datasets[datasetId], modified_timestamp: timestamp, spotIds: spotIdsInDataset};
       state.datasets = {...state.datasets, [datasetId]: dataset};
       state.project.modified_timestamp = timestamp;
