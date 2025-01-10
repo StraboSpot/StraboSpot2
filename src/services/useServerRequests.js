@@ -169,7 +169,7 @@ const useServerRequests = () => {
 
   const getProfile = async (encodedLogin) => {
     // return request('GET', '/profile', encodedLogin);
-    const response = await fetch(
+    const response = await timeoutPromise(10000, fetch(
       `${baseUrl}/profile`,
       {
         method: 'GET',
@@ -178,7 +178,7 @@ const useServerRequests = () => {
           'Content-Type': 'application/json',
         },
       },
-    );
+    ));
     return handleResponse(response);
   };
 
