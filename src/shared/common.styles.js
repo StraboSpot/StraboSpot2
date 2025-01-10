@@ -22,6 +22,11 @@ const commonStyles = StyleSheet.create({
   imagePlaceholder: {
     backgroundColor: themes.MEDIUMGREY,
   },
+  importantText: {
+    color: 'red',
+    fontWeight: themes.TEXT_WEIGHT,
+    textAlign: 'center',
+  },
   listItem: {
     padding: Platform.OS === 'web' ? 5 : 10,
   },
