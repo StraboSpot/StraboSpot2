@@ -18,6 +18,7 @@ import useMapFeaturesDraw from './useMapFeaturesDraw';
 import useMapLocation from './useMapLocation';
 import useMapPressEvents from './useMapPressEvents';
 import useMapView from './useMapView';
+import VertexActionsOverlay from './VertexActionsOverlay';
 import {isEmpty} from '../../shared/Helpers';
 import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 import {useImages} from '../images';
@@ -48,11 +49,13 @@ const Map = forwardRef(({
   const stratSection = useSelector(state => state.map.stratSection);
   const userEmail = useSelector(state => state.user.email);
 
+  const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
+  const [isShowVertexActionsModal, setIsShowVertexActionsModal] = useState(false);
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
   const [measureFeatures, setMeasureFeatures] = useState([]);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [showUserLocation, setShowUserLocation] = useState(false);
-  const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
+  const [vertexActionValues, setVertexActionValues] = useState(null);
 
   const {setCustomMapSwitchValue} = useCustomMap();
   const {setImageHeightAndWidth} = useImages();
@@ -60,11 +63,13 @@ const Map = forwardRef(({
   const {convertFeatureGeometryToImagePixels} = useMapCoords();
   const {getLassoedSpots} = useMapFeaturesCalculated(mapRef);
   const {
+    addNewVertex,
     allowMapViewMove,
     cancelDraw,
     cancelEdits,
     clearSelectedSpots,
     clearVertexes,
+    deleteSelectedVertex,
     drawFeatures,
     editFeatureVertex,
     editSpot,
@@ -73,6 +78,7 @@ const Map = forwardRef(({
     moveVertex,
     saveEdits,
     setDrawFeaturesNew,
+    splitLine,
     spotsNotSelected,
     spotsSelected,
     startEditing,
@@ -83,6 +89,8 @@ const Map = forwardRef(({
     mapMode: mapMode,
     mapRef: mapRef,
     onEndDrawPressed: onEndDrawPressed,
+    setIsShowVertexActionsModal: setIsShowVertexActionsModal,
+    setVertexActionValues: setVertexActionValues,
   });
   const {
     handleMapLongPress,
@@ -366,6 +374,16 @@ const Map = forwardRef(({
           createDefaultGeomContinued={createDefaultGeomContinued}
           setShowSetInCurrentViewModal={setShowSetInCurrentViewModal}
           showSetInCurrentViewModal={showSetInCurrentViewModal}
+        />
+      )}
+      {isShowVertexActionsModal && (
+        <VertexActionsOverlay
+          addNewVertex={addNewVertex}
+          deleteSelectedVertex={deleteSelectedVertex}
+          isShowVertexActionsModal={isShowVertexActionsModal}
+          setIsShowVertexActionsModal={setIsShowVertexActionsModal}
+          splitLine={splitLine}
+          vertexActionValues={vertexActionValues}
         />
       )}
     </View>

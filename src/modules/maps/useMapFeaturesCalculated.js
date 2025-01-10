@@ -128,7 +128,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   // Get the Spot where screen was pressed
   const getSpotAtPress = async (screenPointX, screenPointY) => {
     const nearestFeature = await getNearestFeatureInBBox([screenPointX, screenPointY], spotLayers);
-    const nearestSpot = nearestFeature?.properties?.id ? getSpotById(nearestFeature.properties.id) : {};
+    const nearestSpot = nearestFeature?.properties?.id ? getSpotById(nearestFeature.properties.id) || nearestFeature : {};
     if (isEmpty(nearestSpot)) console.log('No spots near press.');
     else console.log('Got nearest spot:', nearestSpot);
     return Promise.resolve(...[nearestSpot]);
