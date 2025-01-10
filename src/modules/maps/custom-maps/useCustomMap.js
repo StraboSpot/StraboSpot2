@@ -105,7 +105,7 @@ const useCustomMap = () => {
     const testUrlResponse = await testCustomMapUrl(testTileUrl);
     console.log('RES', testUrlResponse);
     if (testUrlResponse) {
-      bbox = await getMyMapsBboxCoords(map);
+      if (!customDatabaseEndpoint.isSelected) bbox = await getMyMapsBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
         await setBasemap(null);
