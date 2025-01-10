@@ -3,7 +3,7 @@ import {Animated} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {DrawActionButtons, EditCancelSaveButtons, ShortcutButtons} from './index';
+import {DrawActionButtons, ShortcutButtons} from './';
 import NotebookButton from './NotebookButton';
 import IconButton from '../../../shared/ui/IconButton';
 import {MODAL_KEYS} from '../../page/page.constants';
@@ -13,11 +13,9 @@ import DrawInfo from '../pop-ups/DrawInfo';
 
 const RightSideButtons = ({
                             animateRightSide,
-                            areEditButtonsVisible,
                             clickHandler,
                             closeNotebookPanel,
                             distance,
-                            drawButtonsVisible,
                             endMeasurement,
                             mapMode,
                             onEndDrawPressed,
@@ -53,26 +51,19 @@ const RightSideButtons = ({
         </Animated.View>
       )}
 
-      {drawButtonsVisible && (
-        <Animated.View style={[homeStyles.drawContainer, animateRightSide]}>
-          <DrawInfo
-            distance={distance}
-            endMeasurement={endMeasurement}
-            mapMode={mapMode}
-            onEndDrawPressed={onEndDrawPressed}
-          />
-          <DrawActionButtons
-            clickHandler={clickHandler}
-            mapMode={mapMode}
-          />
-        </Animated.View>
-      )}
-
-      {areEditButtonsVisible && (
-        <Animated.View style={[homeStyles.editButtonsContainer, animateRightSide]}>
-          <EditCancelSaveButtons clickHandler={clickHandler}/>
-        </Animated.View>
-      )}
+      <Animated.View style={[homeStyles.drawContainer, animateRightSide]}>
+        <DrawInfo
+          clickHandler={clickHandler}
+          distance={distance}
+          endMeasurement={endMeasurement}
+          mapMode={mapMode}
+          onEndDrawPressed={onEndDrawPressed}
+        />
+        <DrawActionButtons
+          clickHandler={clickHandler}
+          mapMode={mapMode}
+        />
+      </Animated.View>
     </>
   );
 };
