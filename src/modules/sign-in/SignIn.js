@@ -55,7 +55,7 @@ const SignIn = ({navigation, route}) => {
           containerStyle={signInStyles.buttonContainer}
           onPress={handleSignIn}
           buttonStyle={signInStyles.buttonStyle}
-          disabled={username === '' || password === '' || (isSelected && !isVerified) || !isOnline.isConnected}
+          disabled={username === '' || password === '' || !isOnline.isConnected}
           title={'Log In'}
           loading={loading}
         />
@@ -117,9 +117,8 @@ const SignIn = ({navigation, route}) => {
           />
           {renderButtons()}
           <CustomEndpoint
-            containerStyles={signInStyles.customEndpointContainer}
-            textStyles={signInStyles.customEndpointText}
-          />
+            containerStyles={{width: '70%'}}
+            textStyles={signInStyles.customEndpointText}/>
         </View>
         {renderErrorModal()}
       </View>

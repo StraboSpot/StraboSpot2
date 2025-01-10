@@ -20,7 +20,7 @@ import {setTestingMode} from '../project/projects.slice';
 const Miscellaneous = () => {
   const dispatch = useDispatch();
   const isTestingMode = useSelector(state => state.project.isTestingMode);
-  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {endpoint} = useSelector(state => state.connections.databaseEndpoint);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
   const [isTestingModalVisible, setIsTestingModalVisible] = useState(false);
@@ -31,7 +31,7 @@ const Miscellaneous = () => {
 
   const formRef = useRef('null');
 
-  const initialValues = {database_endpoint: url};
+  const initialValues = {database_endpoint: endpoint};
   const testingModePassword = 'Strab0R0cks';
   const errorMessage = 'Wrong Password!';
 
@@ -64,6 +64,13 @@ const Miscellaneous = () => {
     }
     else alert('Error Generating Random Spots', 'The number of Spots must be an integer.');
   };
+
+  const renderCustomEndpoint = () => (
+    <>
+      <SectionDivider dividerText={'Endpoint Selection'}/>
+      <CustomEndpoint/>
+    </>
+  );
 
   const renderGenerateRandomSpotsSection = () => {
     return (
@@ -109,22 +116,6 @@ const Miscellaneous = () => {
     </StandardModal>
   );
 
-  const renderEndpointFieldContent = () => (
-    <>
-      <SectionDivider dividerText={'Endpoint Selection'}/>
-      <Text style={[commonStyles.noValueText, {paddingBottom: 0}]}>
-        Current Endpoint{'\n'}
-        {isSelected ? url : 'https://strabospot.org/db'}
-      </Text>
-      <CustomEndpoint/>
-      {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}]}>
-        *Currently StraboField <Text style={{fontWeight: themes.TEXT_WEIGHT}}>ONLY</Text> supports endpoints with the
-        format StraboSpot Offline uses (see above for example). If you need to use an endpoint not
-        associated with StraboSpot Offline, the URL must contain a trailing &lsquo;/db&lsquo;.
-      </Text>}
-    </>
-  );
-
   const renderTestingModeField = () => (
     <>
       <SectionDivider dividerText={'Testing Mode'}/>
@@ -156,7 +147,7 @@ const Miscellaneous = () => {
       enableReinitialize
     >
       <>
-        {renderEndpointFieldContent()}
+        {renderCustomEndpoint()}
         {renderTestingModeField()}
         {isTestingMode && renderGenerateRandomSpotsSection()}
         {renderPrompt()}

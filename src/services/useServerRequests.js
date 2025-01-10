@@ -7,10 +7,10 @@ import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
-  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {endpoint, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const baseUrl = url && isSelected ? `${url}/db` : STRABO_APIS.DB;
-  const domain = url && isSelected ? url : STRABO_APIS.STRABO;
+  const baseUrl = endpoint && isSelected ? endpoint : STRABO_APIS.DB;
+  const domain = endpoint && isSelected ? endpoint : STRABO_APIS.STRABO;
   const tilehost = STRABO_APIS.TILE_HOST;
 
   const user = useSelector(state => state.user);

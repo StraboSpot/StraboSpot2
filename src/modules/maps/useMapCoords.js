@@ -102,8 +102,8 @@ const useMapCoords = () => {
     let myMapsBboxUrl = STRABO_APIS.MY_MAPS_BBOX;
     if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
       if (customDatabaseEndpoint.isSelected) {
-        console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id));
-        myMapsBboxUrl = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + map.id);
+        console.log(customDatabaseEndpoint.endpoint.replace('/db', '/geotiff/bbox/' + map.id));
+        myMapsBboxUrl = customDatabaseEndpoint.endpoint.replace('/db', '/geotiff/bbox/' + map.id);
       }
       const myMapsBbox = await getMyMapsBbox(myMapsBboxUrl + map.id);
       if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
