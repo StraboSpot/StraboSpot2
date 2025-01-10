@@ -15,8 +15,6 @@ import {useSpots} from '../spots';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 
 const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomToCurrentLocation}) => {
-  const [buttons, setButtons] = useState(
-    {drawButtonsVisible: true, editButtonsVisible: false, userLocationButtonOn: false});
   const [dialogs, setDialogs] = useState(
     {mapActionsMenuVisible: false, mapSymbolsMenuVisible: false, baseMapMenuVisible: false});
   const [distance, setDistance] = useState(0);
@@ -44,10 +42,6 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
   const cancelEdits = async () => {
     await mapComponentRef.current?.cancelEdits();
     setMapMode(MAP_MODES.VIEW);
-    setButtons({
-      'editButtonsVisible': false,
-      'drawButtonsVisible': true,
-    });
     unlockOrientation();
   };
 
@@ -159,10 +153,6 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
     mapComponentRef.current?.saveEdits();
     //cancelEdits();
     setMapMode(MAP_MODES.VIEW);
-    setButtons({
-      'editButtonsVisible': false,
-      'drawButtonsVisible': true,
-    });
     unlockOrientation();
   };
 
@@ -178,10 +168,6 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
   const setMapModeToEdit = () => {
     lockOrientation();
     setMapMode(MAP_MODES.EDIT);
-    setButtons({
-      editButtonsVisible: true,
-      drawButtonsVisible: false,
-    });
   };
 
   // Toggle given dialog between true (visible) and false (hidden)
@@ -199,8 +185,6 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
     dialogClickHandler: dialogClickHandler,
     dialogs: dialogs,
     distance: distance,
-    drawButtonsVisible: buttons.drawButtonsVisible,
-    editButtonsVisible: buttons.editButtonsVisible,
     endMeasurement: endMeasurement,
     isSelectingForStereonet: isSelectingForStereonet,
     isSelectingForTagging: isSelectingForTagging,

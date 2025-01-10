@@ -25,8 +25,6 @@ const Home = forwardRef(({
     dialogClickHandler,
     dialogs,
     distance,
-    drawButtonsVisible,
-    editButtonsVisible,
     endMeasurement,
     isSelectingForStereonet,
     isSelectingForTagging,
@@ -41,14 +39,12 @@ const Home = forwardRef(({
     return (
       <Animated.View style={[homeStyles.container, animateLeftSide]}>
         <HomeViewSmallScreen
-          areEditButtonsVisible={editButtonsVisible}
           clickHandler={clickHandler}
           closeMainMenuPanel={closeMainMenuPanel}
           closeNotebookPanel={closeNotebookPanel}
           dialogClickHandler={dialogClickHandler}
           dialogs={dialogs}
           distance={distance}
-          drawButtonsVisible={drawButtonsVisible}
           endMeasurement={endMeasurement}
           isSelectingForStereonet={isSelectingForStereonet}
           isSelectingForTagging={isSelectingForTagging}
@@ -71,14 +67,12 @@ const Home = forwardRef(({
         animateLeftSide={animateLeftSide}
         animateNotebookDrawer={animateNotebookDrawer}
         animateRightSide={animateRightSide}
-        areEditButtonsVisible={editButtonsVisible}
         clickHandler={clickHandler}
         closeMainMenuPanel={closeMainMenuPanel}
         closeNotebookPanel={closeNotebookPanel}
         dialogClickHandler={dialogClickHandler}
         dialogs={dialogs}
         distance={distance}
-        drawButtonsVisible={drawButtonsVisible}
         endMeasurement={endMeasurement}
         isSelectingForStereonet={isSelectingForStereonet}
         isSelectingForTagging={isSelectingForTagging}

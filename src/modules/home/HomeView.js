@@ -16,14 +16,12 @@ const HomeView = forwardRef(({
                                animateLeftSide,
                                animateNotebookDrawer,
                                animateRightSide,
-                               areEditButtonsVisible,
                                clickHandler,
                                closeMainMenuPanel,
                                closeNotebookPanel,
                                dialogClickHandler,
                                dialogs,
                                distance,
-                               drawButtonsVisible,
                                endMeasurement,
                                isSelectingForStereonet,
                                isSelectingForTagging,
@@ -55,11 +53,9 @@ const HomeView = forwardRef(({
 
       <RightSideButtons
         animateRightSide={animateRightSide}
-        areEditButtonsVisible={areEditButtonsVisible}
         clickHandler={clickHandler}
         closeNotebookPanel={closeNotebookPanel}
         distance={distance}
-        drawButtonsVisible={drawButtonsVisible}
         endMeasurement={endMeasurement}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}

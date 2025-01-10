@@ -78,26 +78,12 @@ const homeStyles = StyleSheet.create({
     paddingBottom: 3,
     paddingTop: 3,
   },
-
   drawToolsContainer: {
     flexDirection: 'row',
   },
   drawToolsTitle: {
     color: 'white',
     fontSize: themes.PRIMARY_TEXT_SIZE,
-  },
-  editButtonsContainer: {
-    backgroundColor: themes.LIGHTGREY,
-    borderRadius: 10,
-    bottom: 10,
-    elevation: 2,
-    padding: 10,
-    position: 'absolute',
-    right: 10,
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    width: 185,
   },
   homeIconContainer: {
     left: 10,
@@ -110,6 +96,7 @@ const homeStyles = StyleSheet.create({
   },
   iconSizeSmallScreen: {
     height: 40,
+    marginHorizontal: -2,
   },
   imageSliderContainer: {
     alignItems: 'center',
