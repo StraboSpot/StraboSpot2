@@ -455,7 +455,7 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const myMapsEndpoint = isSelected ? url.replace('/db', '/strabotiles') : tilehost;
+      const myMapsEndpoint = isSelected ? endpoint.replace('/db', '/strabotiles') : tilehost;
       const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);
