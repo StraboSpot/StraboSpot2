@@ -32,6 +32,7 @@
     "deploy:android": "creates a .aab file in app/build/outputs/bundle/release"
   },
   "dependencies": {
+    "@StraboSpot/react-native-sketch-canvas": "github:StraboSpot/react-native-sketch-canvas",
     "@react-native-async-storage/async-storage": "2.0.0",
     "@react-native-clipboard/clipboard": "1.14.3",
     "@react-native-community/datetimepicker": "8.2.0",
@@ -47,7 +48,6 @@
     "@sentry/cli": "2.37.0",
     "@sentry/react-native": "5.33.2",
     "@sentry/tracing": "7.114.0",
-    "@StraboSpot/react-native-sketch-canvas": "github:StraboSpot/react-native-sketch-canvas",
     "@turf/turf": "7.1.0",
     "formik": "2.4.6",
     "geomagnetism": "0.1.1",
@@ -61,6 +61,7 @@
     "prop-types": "15.8.1",
     "react": "18.3.1",
     "react-datepicker": "7.5.0",
+    "react-dom": "18.3.1",
     "react-image-file-resizer": "0.4.8",
     "react-map-gl": "7.1.7",
     "react-native": "0.75.4",
@@ -108,6 +109,7 @@
     "@react-native/metro-config": "0.75.4",
     "@react-native/typescript-config": "0.75.4",
     "@types/react": "^18.2.6",
+    "@types/react-dom": "18.3.1",
     "@types/react-test-renderer": "^18.0.0",
     "@welldone-software/why-did-you-render": "^8.0.3",
     "babel-jest": "^29.6.3",
