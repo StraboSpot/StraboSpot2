@@ -2,15 +2,17 @@ import {PixelRatio, Platform} from 'react-native';
 
 import * as turf from '@turf/turf';
 import proj4 from 'proj4';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {GEO_LAT_LNG_PROJECTION, PIXEL_PROJECTION} from './maps.constants';
 import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
 import {STRABO_APIS} from '../../services/urls.constants';
+import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
 
 const useMapCoords = () => {
-  const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
+  const dispatch = useDispatch();
+  const {isSelected, endpoint} = useSelector(state => state.connections.databaseEndpoint);
   const isOnline = useSelector(state => state.connections.isOnline);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const {getMyMapsBbox} = useServerRequests();
@@ -99,14 +101,22 @@ const useMapCoords = () => {
   };
 
   const getMyMapsBboxCoords = async (map) => {
-    let myMapsBboxUrl = STRABO_APIS.MY_MAPS_BBOX;
-    if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
-      if (customDatabaseEndpoint.isSelected) {
-        console.log(customDatabaseEndpoint.endpoint.replace('/db', '/geotiff/bbox/' + map.id));
-        myMapsBboxUrl = customDatabaseEndpoint.endpoint.replace('/db', '/geotiff/bbox/' + map.id);
+    try {
+      let myMapsBboxUrl = STRABO_APIS.MY_MAPS_BBOX;
+      if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
+        if (isSelected) {
+          console.log(endpoint.replace('/db', '/geotiff/bbox/'));
+          myMapsBboxUrl = endpoint.replace('/db', '/geotiff/bbox/');
+        }
+        const myMapsBbox = await getMyMapsBbox(myMapsBboxUrl + map.id);
+        if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
       }
-      const myMapsBbox = await getMyMapsBbox(myMapsBboxUrl + map.id);
-      if (!isEmpty(myMapsBbox)) return myMapsBbox.data.bbox;
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('Cannot retrieve map\'s bounding box'));
+      dispatch(setIsErrorMessagesModalVisible(true));
     }
   };
 
