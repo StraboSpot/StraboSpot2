@@ -245,18 +245,17 @@ const CustomMapDetails = () => {
   };
 
   const renderMapTypeOverview = () => {
-    const name = CUSTOM_MAP_TYPES.find(map => map.source === customMapToEdit.source);
-
     return (
       <View style={{paddingTop: 10}}>
         <SectionDivider dividerText={'Map Details Overview'}/>
         <View style={{padding: 10}}>
-          <Text style={customMapStyles.mapOverviewText}>Type: {name.title}</Text>
+          <Text style={customMapStyles.mapOverviewText}>Type: {customMapToEdit.title}</Text>
+          <Text style={customMapStyles.mapOverviewText}>Source: {customMapToEdit.url[0]}</Text>
           <Text style={customMapStyles.mapOverviewText}>Id: {customMapToEdit.id}</Text>
           <Text style={customMapStyles.mapOverviewText}>Bounding Box Coords:</Text>
           {!isOnline && <Text>Need to be online to get bounding box</Text>}
         </View>
-        {bboxCoordsLayout()}
+        {isOnline && bboxCoordsLayout()}
       </View>
     );
   };
