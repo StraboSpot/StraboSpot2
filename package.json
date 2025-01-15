@@ -46,7 +46,7 @@
     "@reduxjs/toolkit": "2.5.0",
     "@rnmapbox/maps": "10.1.31",
     "@sentry/cli": "2.40.0",
-    "@sentry/react-native": "5.36.0",
+    "@sentry/react-native": "6.5.0",
     "@sentry/tracing": "7.120.3",
     "@turf/turf": "7.2.0",
     "formik": "2.4.6",
