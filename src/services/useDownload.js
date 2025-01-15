@@ -275,7 +275,7 @@ const useDownload = () => {
       const providerInfo = MAP_PROVIDERS[map.source];
       const customMap = {
         ...map,
-        ...providerInfo,
+        // ...providerInfo,
         id: mapId,
         key: map.accessToken || map.key,
         source: map.source,
