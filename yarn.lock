@@ -13469,16 +13469,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:3.35.0":
-  version: 3.35.0
-  resolution: "react-native-screens@npm:3.35.0"
+"react-native-screens@npm:4.5.0":
+  version: 4.5.0
+  resolution: "react-native-screens@npm:4.5.0"
   dependencies:
     react-freeze: "npm:^1.0.0"
     warn-once: "npm:^0.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/51b4ae9a5432dc980d560ac07baaddda12a78f56f2106e0e9498f6b46d4928c26d8288c4818627903675cc8c4d3643f14358d3ae448a3de2cb962a16270c201d
+  checksum: 10c0/948b5bf0eb2fe250f9bbc0de011bf7ed14456924a0fb08ce66660913362c89849b5f4355fc8eb6577ab25cd74dbaa1492ea923b4ec173686c5e05ad0c3a699b3
   languageName: node
   linkType: hard
 
@@ -14913,7 +14913,7 @@ __metadata:
     react-native-reanimated: "npm:3.16.7"
     react-native-reanimated-table: "npm:0.0.2"
     react-native-safe-area-context: "npm:5.1.0"
-    react-native-screens: "npm:3.35.0"
+    react-native-screens: "npm:4.5.0"
     react-native-sensors: "npm:7.3.6"
     react-native-sound: "npm:0.11.2"
     react-native-system-navigation-bar: "npm:2.6.4"
