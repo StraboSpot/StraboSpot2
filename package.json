@@ -34,7 +34,7 @@
   "dependencies": {
     "@StraboSpot/react-native-sketch-canvas": "github:StraboSpot/react-native-sketch-canvas",
     "@react-native-async-storage/async-storage": "2.1.0",
-    "@react-native-clipboard/clipboard": "1.16.0",
+    "@react-native-clipboard/clipboard": "1.16.1",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-community/geolocation": "3.4.0",
     "@react-native-community/netinfo": "11.4.1",
