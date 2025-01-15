@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setIsMapMoved} from './maps.slice';
 import useMapView from './useMapView';
 
-const useMapPressEvents = ({mapRef}) => {
+const useMapMoveEvents = ({mapRef}) => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isMapMoved = useSelector(state => state.map.isMapMoved);
@@ -40,4 +40,4 @@ const useMapPressEvents = ({mapRef}) => {
 
 };
 
-export default useMapPressEvents;
+export default useMapMoveEvents;
