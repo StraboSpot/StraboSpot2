@@ -50,12 +50,8 @@ const Basemap = ({
     : homeStyles.currentZoomTextBlack;
 
   const dispatch = useDispatch();
-  const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const customMaps = useSelector(state => state.map.customMaps);
-  const isMapMoved = useSelector(state => state.map.isMapMoved);
+  const {currentImageBasemap, customMaps, isMapMoved, zoom, stratSection, vertexStartCoords} = useSelector(state => state.map);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
-  const stratSection = useSelector(state => state.map.stratSection);
-  const vertexStartCoords = useSelector(state => state.map.vertexStartCoords);
 
   const {mapRef, cameraRef} = forwardedRef;
 
@@ -126,12 +122,12 @@ const Basemap = ({
 
   return (
     <>
-      {!stratSection && !currentImageBasemap && zoomText && (
+      {!stratSection && !currentImageBasemap && zoom && (
         <View
           style={SMALL_SCREEN ? homeStyles.zoomAndScaleBarContainerSmallScreen : homeStyles.zoomAndScaleBarContainer}
         >
           <Text style={zoomTextStyle}>Zoom: </Text>
-          <Text style={zoomTextStyle}>{zoomText.toFixed(1)}</Text>
+          <Text style={zoomTextStyle}>{zoom.toFixed(1)}</Text>
         </View>
       )}
       <MapboxGL.MapView
