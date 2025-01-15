@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@StraboSpot/react-native-sketch-canvas@github:StraboSpot/react-native-sketch-canvas":
+"@StraboSpot/react-native-sketch-canvas@https://github.com/StraboSpot/react-native-sketch-canvas.git#commit=d0eac854dfd3120303944dda08e13abf08684b27":
   version: 0.8.0
   resolution: "@StraboSpot/react-native-sketch-canvas@https://github.com/StraboSpot/react-native-sketch-canvas.git#commit=d0eac854dfd3120303944dda08e13abf08684b27"
   checksum: 10c0/b2e737bd3957a34a1f0b4b5f038f6f8c1bc81fe6681f2c962357caabe45c39b40d512e1fa9912d6807fb6d5b2f1676399bf3a16b398098f68c50e97536fa7105
@@ -13459,13 +13459,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:4.14.1":
-  version: 4.14.1
-  resolution: "react-native-safe-area-context@npm:4.14.1"
+"react-native-safe-area-context@npm:5.1.0":
+  version: 5.1.0
+  resolution: "react-native-safe-area-context@npm:5.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/c34c6fe9002a89c80ddb206fc68db99f1e432e19c7cf5aaa93b430584051b7e7caf889093224029437dc5b66fe434b09e9950d755aa40b58e1e3a1f976c2fec1
+  checksum: 10c0/82e305f5f29607a35471331dc3d86d641e4fc302654d56afb2cbe0e87e6129a845121e8daa29fccdf5298076d0ddbb53666a138492eedf1c2477c5653d9a6556
   languageName: node
   linkType: hard
 
@@ -14832,7 +14832,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "strabospot2@workspace:."
   dependencies:
-    "@StraboSpot/react-native-sketch-canvas": "github:StraboSpot/react-native-sketch-canvas"
+    "@StraboSpot/react-native-sketch-canvas": "https://github.com/StraboSpot/react-native-sketch-canvas.git#commit=d0eac854dfd3120303944dda08e13abf08684b27"
     "@babel/core": "npm:^7.26.0"
     "@babel/plugin-proposal-export-namespace-from": "npm:^7.18.9"
     "@babel/preset-env": "npm:^7.20.0"
@@ -14912,7 +14912,7 @@ __metadata:
     react-native-progress: "npm:5.0.1"
     react-native-reanimated: "npm:3.16.7"
     react-native-reanimated-table: "npm:0.0.2"
-    react-native-safe-area-context: "npm:4.14.1"
+    react-native-safe-area-context: "npm:5.1.0"
     react-native-screens: "npm:3.35.0"
     react-native-sensors: "npm:7.3.6"
     react-native-sound: "npm:0.11.2"
