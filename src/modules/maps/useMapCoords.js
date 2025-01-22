@@ -103,7 +103,7 @@ const useMapCoords = () => {
   const getMyMapsBboxCoords = async (map) => {
     try {
       let myMapsBboxUrl = STRABO_APIS.MY_MAPS_BBOX;
-      if (isOnline.isInternetReachable && !map.bbox && map.source === 'strabospot_mymaps') {
+      if (isOnline.isConnected && !map.bbox && map.source === 'strabospot_mymaps') {
         if (isSelected) {
           console.log(endpoint.replace('/db', '/geotiff/bbox/'));
           myMapsBboxUrl = endpoint.replace('/db', '/geotiff/bbox/');

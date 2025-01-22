@@ -43,6 +43,7 @@ const useDownload = () => {
   const dispatch = useDispatch();
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+  const {endpoint} = useSelector(state => state.connections.databaseEndpoint);
   const project = useSelector(state => state.project.project);
 
   const {doesDeviceDirectoryExist, downloadAndSaveProfileImage, downloadImageAndSave} = useDevice();
@@ -272,10 +273,14 @@ const useDownload = () => {
       if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
         mapId = map.id.split('/').slice(3).join('/');
       }
-      const providerInfo = MAP_PROVIDERS[map.source];
+      let providerInfo =  MAP_PROVIDERS[map.source];
+      if (map.source === 'strabospot_mymaps' && !map.url.includes('https://strabospot.org')) {
+        const tileEndpoint = endpoint.replace('/db', '/geotiff/tiles/');
+        providerInfo = {...providerInfo, url: [tileEndpoint]};
+      }
       const customMap = {
         ...map,
-        // ...providerInfo,
+        ...providerInfo,
         id: mapId,
         key: map.accessToken || map.key,
         source: map.source,
