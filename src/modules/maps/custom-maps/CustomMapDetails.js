@@ -205,43 +205,29 @@ const CustomMapDetails = () => {
   );
 
   const getBboxData = () => {
-    const bboxArr = editableCustomMapData.bbox.split(',');
-    return [[bboxArr[0], bboxArr[1]], [bboxArr[2], bboxArr[3]]];
+    const bboxArr = customMapToEdit?.bbox.split(',');
+    if (bboxArr) return [[bboxArr[0], bboxArr[1]], [bboxArr[2], bboxArr[3]]];
+    else return [['N/A', 'N/A'], ['N/A', 'N/A']];
   };
 
   const bboxCoordsLayout = () => {
-    if (editableCustomMapData.bbox) {
-      return (
-        <View style={customMapStyles.bboxCoordsContainers}>
-          <Table style={{}}>
-            <Row data={['', 'Longitude', 'Latitude']} flexArr={[1, 2, 2]} style={customMapStyles.bboxTableHead}
+    return (
+      <View style={customMapStyles.bboxCoordsContainers}>
+        <Table style={{}}>
+          <Row data={['', 'Longitude', 'Latitude']} flexArr={[1, 2, 2]} style={customMapStyles.bboxTableHead}
+               textStyle={customMapStyles.bboxText}/>
+          <TableWrapper style={{flexDirection: 'row'}}>
+            <Col data={['SW', 'NE']} style={customMapStyles.bboxColumnContainer} heightArr={[25, 25]}
                  textStyle={customMapStyles.bboxText}/>
-            <TableWrapper style={{flexDirection: 'row'}}>
-              <Col data={['SW', 'NE']} style={customMapStyles.bboxColumnContainer} heightArr={[25, 25]}
-                   textStyle={customMapStyles.bboxText}/>
-              <Rows data={getBboxData()} flexArr={[2, 2]} style={customMapStyles.bboxRowContainer}
-                    textStyle={customMapStyles.bboxText}/>
-            </TableWrapper>
-            <View style={customMapStyles.bboxCoordsContainers}>
-              <Text style={customMapStyles.bboxMessageText}>{bboxMessage}</Text>
-            </View>
-          </Table>
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={customMapStyles.bboxButton}>
-          <Button
-            title={'Get Coords'}
-            type={'clear'}
-            disabled={!isOnline}
-            onPress={getBoundingBox}
-            loading={isLoading}
-          />
-        </View>
-      );
-    }
+            <Rows data={getBboxData()} flexArr={[2, 2]} style={customMapStyles.bboxRowContainer}
+                  textStyle={customMapStyles.bboxText}/>
+          </TableWrapper>
+          <View style={customMapStyles.bboxCoordsContainers}>
+            <Text style={customMapStyles.bboxMessageText}>{bboxMessage}</Text>
+          </View>
+        </Table>
+      </View>
+    );
   };
 
   const renderMapTypeOverview = () => {
@@ -252,10 +238,8 @@ const CustomMapDetails = () => {
           <Text style={customMapStyles.mapOverviewText}>Type: {customMapToEdit.title}</Text>
           <Text style={customMapStyles.mapOverviewText}>Source: {customMapToEdit.url[0]}</Text>
           <Text style={customMapStyles.mapOverviewText}>Id: {customMapToEdit.id}</Text>
-          <Text style={customMapStyles.mapOverviewText}>Bounding Box Coords:</Text>
-          {!isOnline && <Text>Need to be online to get bounding box</Text>}
         </View>
-        {isOnline && bboxCoordsLayout()}
+        {isOnline.isConnected && bboxCoordsLayout()}
       </View>
     );
   };

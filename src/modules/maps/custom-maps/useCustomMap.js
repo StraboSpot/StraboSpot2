@@ -46,13 +46,6 @@ const useCustomMap = () => {
   };
 
   const getCustomMapDetails = (map) => {
-    if (map.source === 'map_warper') {
-      const warningMessage = 'Map Warper maps are no longer available. Download the .tiff'
-        + ' file from Mapwarper.net and upload it into your Strabo MyMaps account.';
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(warningMessage));
-      dispatch(setIsWarningMessagesModalVisible(true));
-    }
     dispatch(selectedCustomMapToEdit(map));
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
@@ -105,7 +98,7 @@ const useCustomMap = () => {
     const testUrlResponse = await testCustomMapUrl(testTileUrl);
     console.log('RES', testUrlResponse);
     if (testUrlResponse) {
-      if (!customDatabaseEndpoint.isSelected) bbox = await getMyMapsBboxCoords(map);
+      bbox = await getMyMapsBboxCoords(map);
       if (map.overlay && map.id === currentBasemap.id) {
         console.log(('Setting Basemap to Mapbox Topo...'));
         await setBasemap(null);

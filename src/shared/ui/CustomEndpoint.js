@@ -5,11 +5,12 @@ import {Input} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import uiStyles from './ui.styles';
+import {updateCustomMap} from '../../modules/maps/maps.slice';
+import useMap from '../../modules/maps/useMap';
 import signInStyles from '../../modules/sign-in/signIn.styles';
 import {setDatabaseIsSelected, setCustomDatabaseUrl} from '../../services/connections.slice';
 import commonStyles from '../common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
-import * as themes from '../styles.constants';
 
 const CustomEndpoint = ({
                           containerStyles,
@@ -18,13 +19,18 @@ const CustomEndpoint = ({
                         }) => {
     const dispatch = useDispatch();
     const {endpoint, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+    const customMaps = useSelector(state => state.map.customMaps);
 
     const [customEndpointURLLocal, setCustomEndpointURLLocal] = useState(endpoint);
     const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
     const [isVerified, setIsVerified] = useState(null);
     const [verifiedButtonTitle, setVerifiedButtonTitle] = useState('Test Endpoint');
 
-    const handleEndpointSwitchValue = (value) => {
+    const {setBasemap} = useMap();
+
+    const handleEndpointSwitchValue = async (value) => {
+      Object.values(customMaps).map(map => map.isViewable && dispatch(updateCustomMap({...map, isViewable: false})));
+      await setBasemap();
       dispatch(setDatabaseIsSelected(value));
     };
 
@@ -53,7 +59,7 @@ const CustomEndpoint = ({
                 inputStyle={signInStyles.customEndpointInput}
                 onChangeText={value => handleEndpointTextValues(value)}
                 label={'Enter endpoint IP address'}
-                placeholder={'http://192.168.xxx'}
+                placeholder={'http://192.168.xxx/db'}
                 labelStyle={{fontSize: 10}}
                 defaultValue={customEndpointURLLocal}
                 autoCapitalize={'none'}
@@ -63,7 +69,8 @@ const CustomEndpoint = ({
             </View>
             <>
               {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}, textStyles]}>
-                *If using StraboSpot Offline make sure that the endpoint address contains a trailing {'\n'} &lsquo;/db&lsquo;. Otherwise use the proper
+                *If using StraboSpot Offline make sure that the endpoint address contains a
+                trailing &ldquo;/db&ldquo;.{'\n'} Otherwise use the proper
                 path associated with your endpoint address.
               </Text>}
             </>
