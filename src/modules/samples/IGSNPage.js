@@ -5,7 +5,6 @@ import {Button} from 'react-native-elements';
 import {parseString} from 'react-native-xml2js'
 import {isEmpty} from '../../shared/Helpers';
 
-const xml = require('../../assets/forms/Sesar.xml')
 const IGSNPage = ({route, navigation}) => {
   const orcidToken = route.params.id;
 
