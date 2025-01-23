@@ -319,6 +319,10 @@ const Map = forwardRef(({
     zoomToSpotsNow(spotsToZoomTo, mapRef.current, cameraRef.current);
   };
 
+  const startEditingMode = () => {
+    startEditing(undefined, undefined, undefined, setMapModeToEdit);
+  };
+
   useImperativeHandle(mapComponentRef, () => {
     return {
       cancelDraw: cancelDraw,
@@ -332,6 +336,7 @@ const Map = forwardRef(({
       getTileCount: getTileCount,
       moveVertex: moveVertex,
       saveEdits: saveEdits,
+      startEditingMode: startEditingMode,
       toggleUserLocation: toggleUserLocation,
       updateSpotsInMapExtent: updateSpotsInMapExtent,
       zoomToCenterOfflineTile: zoomToCenterOfflineTile,
