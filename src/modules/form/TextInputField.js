@@ -18,31 +18,14 @@ const TextInputField = ({
       {props.label && (
         <View style={formStyles.fieldLabelContainer}>
           <Text style={formStyles.fieldLabel}>{props.label}</Text>
-          {(name === 'Sample_IGSN' && isEmpty(value)) ? (
-              <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', width: '50%'}}>
-                <Button style={{marginEnd: 5}}
-                  title="Register IGSN"
-                        titleStyle={{fontSize: 11}}
-                        onPress={props.IGSN}
-                  containerStyle={{marginRight: 5}}
-                />
-                <Icon
-                  name={'information-circle-outline'}
-                  type={'ionicon'}
-                  color={'green'}
-                  // onPress={props.IGSN}
-                />
-              </View>
-          ) : (
-            props.placeholder && (
-            <Icon
-              name={'information-circle-outline'}
-              type={'ionicon'}
-              color={themes.PRIMARY_ACCENT_COLOR}
-              onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
-            />
-          )
-          )}
+          {props.placeholder && (
+              <Icon
+                name={'information-circle-outline'}
+                type={'ionicon'}
+                color={themes.PRIMARY_ACCENT_COLOR}
+                onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
+              />
+            )}
         </View>
       )}
       <TextInput

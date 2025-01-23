@@ -21,30 +21,12 @@ const IGNSModal = (
           // style={{height: 60, width: 70}}
           size={'large'}
         />
-        <Text style={{textAlign: 'center', padding: 10}}>This is the ORCID login section</Text>
+        <Text style={{textAlign: 'center', padding: 10}}>This is the the data that will be uploaded to SESAR:</Text>
       </View>
-
-      <Input
-        label={'Email or ORCID ID'}
-        leftIcon={{ type: 'font-awesome', name: 'user' }}
-        placeholder={'Email or 16-digit ORCID ID'}
-      />
-      <Input
-        label={'Password'}
-        leftIcon={{ type: 'font-awesome', name: 'lock' }}
-        placeholder={'ORCID password'}
-        secureTextEntry
-      />
-      <View style={overlayStyles.buttonContainer}>
-        <Button
-          onPress={onModalLogin}
-          title={'Login'}
-        />
         <Button
           onPress={onModalCancel}
           title={'Cancel'}
         />
-      </View>
     </Overlay>
   );
 };

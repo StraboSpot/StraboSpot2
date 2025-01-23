@@ -4,18 +4,15 @@ import {View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import SamplesList from './SamplesList';
-import {isEmpty, toTitleCase} from '../../shared/Helpers';
+import {isEmpty} from '../../shared/Helpers';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import {PAGE_KEYS} from '../page/page.constants';
-import {ButtonGroup} from 'react-native-elements';
-import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
+import IGSNModal from './IGSNModal';
 
 const SamplesPage = ({page}) => {
-  const buttons = ['samples', 'Register for IGSN'];
   const dispatch = useDispatch();
 
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
@@ -23,7 +20,7 @@ const SamplesPage = ({page}) => {
 
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedSample, setSelectedSample] = useState({});
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
+  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false)
 
 
   useEffect(() => {
@@ -49,19 +46,16 @@ const SamplesPage = ({page}) => {
   const renderSamplesDetail = () => {
     return (
       <>
-        <ButtonGroup
-          selectedIndex={selectedTypeIndex}
-          onPress={i => setSelectedTypeIndex(i)}
-          buttons={buttons}
-          containerStyle={{height: 40, borderRadius: 10}}
-          buttonStyle={{padding: 5}}
-          selectedButtonStyle={{backgroundColor: PRIMARY_ACCENT_COLOR}}
-          textStyle={{color: PRIMARY_TEXT_COLOR}}
-        />
         <BasicPageDetail
           closeDetailView={() => setIsDetailView(false)}
-          page={{...page, key: 'samples', subkey: buttons[selectedTypeIndex]}}
+          page={page}
           selectedFeature={selectedSample}
+          showIGSNModal={value => setIsIGSNModalVisible(value)}
+
+        />
+        <IGSNModal
+          showIGSNModal={isIGSNModalVisible}
+          onModalCancel={() => setIsIGSNModalVisible(false)}
         />
       </>
     );

@@ -1,8 +1,8 @@
-import React, {useEffect, useLayoutEffect, useRef} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Linking, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button} from 'react-native-elements';
+import {Button, CheckBox} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';
@@ -28,10 +28,14 @@ const BasicPageDetail = ({
                            page,
                            selectedFeature,
                            saveTemplate,
+                           showIGSNModal,
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const user = useSelector(state => state.user);
+  const isOnline = useSelector(state => state.connections.isOnline);
+
+  const [IGSNChecked, setIGSNChecked] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -67,7 +71,7 @@ const BasicPageDetail = ({
 
   useEffect(() => {
     console.log('UE BasicPageDetail [selectedFeature]', selectedFeature);
-    if (!isTemplate && isEmpty(selectedFeature)) closeDetailView();
+    if (!isTemplate && isEmpty(selectedFeature) && !IGSNChecked) closeDetailView();
   }, [selectedFeature]);
 
   const cancelForm = async () => {
@@ -123,16 +127,17 @@ const BasicPageDetail = ({
     );
   };
 
-  const getIGSN = async (event) => {
+  const getIGSN = async () => {
     try {
       if (isEmpty(user.orcidToken)) {
         const ORCID_CLIENT_ID = config.get('orcid_client_id');
-        const url = `https://orcid.org/oauth/authorize?client_id=${ORCID_CLIENT_ID}&response_type=code&scope=openid&redirect_uri=https://www.strabospot.org/orcid_callback%3Fcreds%3D${encodeURIComponent(user.encoded_login)}`
+        const url = `https://orcid.org/oauth/authorize?client_id=${ORCID_CLIENT_ID}&response_type=code&scope=openid&redirect_uri=https://www.strabospot.org/orcid_callback%3Fcreds%3D${encodeURIComponent(
+          user.encoded_login)}`;
         console.log(url);
         await Linking.openURL(url);
       }
       else {
-        console.log('Check user ORCID token')
+        console.log('Check user ORCID token');
       }
     }
     catch (err) {
@@ -149,6 +154,18 @@ const BasicPageDetail = ({
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
     return formName;
   };
+
+  const renderIGSNButton = () => (
+    <CheckBox
+      title={'Register Sample with Sesar to obtain an IGSN'}
+      textStyle={isOnline.isInternetReachable ? {color: 'grey'} : {color: 'red'}}
+      checked={IGSNChecked}
+      checkedTitle={'Registering Sample with Sesar'}
+      onPress={() => setIGSNChecked(!IGSNChecked)}
+      disabled={!isOnline.isInternetReachable}
+
+    />
+  );
 
   const renderFormFields = () => {
     const formName = getFormName();
@@ -172,7 +189,7 @@ const BasicPageDetail = ({
                 : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
                   ? ((name, value) => onSedFormChange(formRef.current, name, value))
                   : undefined,
-              IGSN: getIGSN,
+              // IGSN: getIGSN,
             }}/>
           )}
         </Formik>
@@ -236,8 +253,13 @@ const BasicPageDetail = ({
         await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else await saveFeature(formCurrent);
-      await formCurrent.resetForm();
-      closeDetailView();
+      if (IGSNChecked) {
+        showIGSNModal(true)
+      }
+      else {
+        await formCurrent.resetForm();
+        closeDetailView();
+      }
     }
     catch (err) {
       console.error('ERROR saving form', err);
@@ -258,6 +280,7 @@ const BasicPageDetail = ({
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />
+          {page.key === PAGE_KEYS.SAMPLES && renderIGSNButton()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
