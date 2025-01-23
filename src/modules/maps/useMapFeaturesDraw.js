@@ -133,11 +133,7 @@ const useMapFeaturesDraw = ({
     console.log('Adding vertex to selected polygon feature...');
 
     // Get all the lines that make up the polygon
-    let lines = [];
-    const coords = turf.getCoords(polygon)[0];
-    for (let i = 0; i < coords.length - 1; i++) {
-      lines.push(turf.lineString([coords[i], coords[i + 1]]));
-    }
+    let lines = turf.lineSegment(polygon).features;
 
     // Get the nearest point among all lines to the pressed screen point
     const nearestPointOnLine = lines.reduce((acc, line, i) => {
@@ -273,7 +269,8 @@ const useMapFeaturesDraw = ({
     // If so, check to see if point pressed was at another vertex of the selected feature
     //     If not edit vertex coords to those of pressed point
     //     If so switch selected vertex to vertex at pressed point
-    const spotFound = await getSpotAtPress(screenPointX, screenPointY);
+    const spotAtPress = await getSpotAtPress(screenPointX, screenPointY);
+    const spotFound = turf.cleanCoords(spotAtPress);
     // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
     if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
     if (isEmpty(spotEditing)) {
@@ -877,7 +874,7 @@ const useMapFeaturesDraw = ({
         setVertexIndex(index);
       }
     }
-    if (turf.getType(spotToEdit) === 'Point') setSelectedVertexToEdit(spotToEdit);
+    if (spotToEdit?.geometry?.type === 'Point') setSelectedVertexToEdit(spotToEdit);
   };
 
   const switchToEditing = async (screenPointX, screenPointY, spotToEdit, setMapModeToEdit) => {
