@@ -57,11 +57,7 @@ const HomeContainer = ({navigation, route}) => {
 
   useEffect(() => {
     // console.log('UE HomeContainer [user]', userEmail);
-    if (userEmail && userName) {
-      Sentry.configureScope((scope) => {
-        scope.setUser({'email': userEmail, 'username': userName});
-      });
-    }
+    if (userEmail && userName) Sentry.setUser({'email': userEmail, 'username': userName});
   }, [userEmail, userName]);
 
   useEffect(() => {
