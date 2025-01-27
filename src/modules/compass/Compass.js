@@ -139,7 +139,7 @@ const Compass = ({
     if (state === 'background' || state === 'inactive') {
       dispatch(setModalVisible({modal: null}));
       setShowCompassRawDataView(false);
-      unsubscribeFromSensors();
+      // unsubscribeFromSensors();
     }
   };
 
@@ -341,7 +341,7 @@ const Compass = ({
 
   const subscribeToSensors = () => {
     try {
-      CompassEvents.addListener('rotationMatrix', handleMatrixRotationData);
+      // CompassEvents.addListener('rotationMatrix', handleMatrixRotationData);
 
       Platform.OS === 'ios' ? getDeviceRotation() : startSensors();
       console.log('%cSUBSCRIBING to native compass data!', 'color: green');
@@ -353,7 +353,7 @@ const Compass = ({
 
   const unsubscribeFromSensors = () => {
     try {
-      CompassEvents.addListener('rotationMatrix', handleMatrixRotationData).remove();
+      // CompassEvents.addListener('rotationMatrix', handleMatrixRotationData).remove();
       Platform.OS === 'ios' ? stopCompass() : stopSensors();
       console.log('%cEnded Compass observation and rotationMatrix listener.', 'color: red');
     }
