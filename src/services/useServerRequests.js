@@ -222,10 +222,26 @@ const useServerRequests = () => {
       return Promise.reject(msg401);
     }
     else if (response.status === 404) {
+      const contentType = response.headers.get('content-type');
+      if (contentType.includes('text/html')) {
+
+        // Assume HTML response
+
+        const htmlData = await response.text();
+        console.log(htmlData);
+        // Parse HTML data and display custom 404 page
+        return Promise.reject('The requested URL was not found on this server.');
+
+      } else {
+        const responseJSON = await response.json();
+        const errorMessage = responseJSON.error || responseJSON.Error;
+        if (errorMessage) return Promise.reject(errorMessage);
+      }
+
       const responseJSON = await response.json();
       const errorMessage = responseJSON.error || responseJSON.Error;
       if (errorMessage) return Promise.reject(errorMessage);
-      return Promise.reject('The requested URL was not found on this server.');
+      // return Promise.reject('The requested URL was not found on this server.');
     }
     else if (response.status === 400) {
       const res = await response.json();
