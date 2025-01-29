@@ -206,7 +206,7 @@ export const SECONDARY_PAGES = [
     modal_component: AddTephraModal,
     overview_component: BasicOverviewList,
     action_label: 'Add a Tephra Layer',
-    testing: false,
+    testing: true,
   }, {
     key: PAGE_KEYS.EARTHQUAKES,
     label: 'Earthquakes',
