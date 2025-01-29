@@ -9,6 +9,7 @@ import {updateCustomMap} from '../../modules/maps/maps.slice';
 import useMap from '../../modules/maps/useMap';
 import signInStyles from '../../modules/sign-in/signIn.styles';
 import {setDatabaseIsSelected, setCustomDatabaseUrl} from '../../services/connections.slice';
+import {STRABO_APIS} from '../../services/urls.constants';
 import commonStyles from '../common.styles';
 import {PRIMARY_ACCENT_COLOR} from '../styles.constants';
 
@@ -21,7 +22,6 @@ const CustomEndpoint = ({
     const {endpoint, isSelected} = useSelector(state => state.connections.databaseEndpoint);
     const customMaps = useSelector(state => state.map.customMaps);
 
-    const [customEndpointURLLocal, setCustomEndpointURLLocal] = useState(endpoint);
     const [isLoadingEndpoint, setIsLoadingEndpoint] = useState(false);
     const [isVerified, setIsVerified] = useState(null);
     const [verifiedButtonTitle, setVerifiedButtonTitle] = useState('Test Endpoint');
@@ -31,12 +31,13 @@ const CustomEndpoint = ({
     const handleEndpointSwitchValue = async (value) => {
       Object.values(customMaps).map(map => map.isViewable && dispatch(updateCustomMap({...map, isViewable: false})));
       await setBasemap();
+      if (!value) dispatch(setCustomDatabaseUrl(STRABO_APIS.DB));
       dispatch(setDatabaseIsSelected(value));
     };
 
     const handleEndpointTextValues = (endpointURLLocal) => {
       dispatch(setCustomDatabaseUrl(endpointURLLocal));
-      console.log('Endpoint dispatched', customEndpointURLLocal);
+      console.log('Endpoint dispatched', endpointURLLocal);
     };
 
     return (
@@ -61,7 +62,7 @@ const CustomEndpoint = ({
                 label={'Enter endpoint IP address'}
                 placeholder={'http://192.168.xxx/db'}
                 labelStyle={{fontSize: 10}}
-                defaultValue={customEndpointURLLocal}
+                defaultValue={endpoint}
                 autoCapitalize={'none'}
                 returnKeyType={'send'}
               />
