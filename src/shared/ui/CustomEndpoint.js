@@ -70,8 +70,8 @@ const CustomEndpoint = ({
             </View>
             <>
               {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}, textStyles]}>
-                *If using StraboSpot Offline make sure that the endpoint address contains a
-                trailing &ldquo;/db&ldquo;.{'\n'} Otherwise use the proper
+                *If using StraboSpot Offline make sure that the endpoint address contains <Text style={{fontWeight: 'bold'}}>&ldquo;http://&ldquo; and a
+                trailing &ldquo;/db&ldquo;</Text>.{'\n'} Otherwise use the proper
                 path associated with your endpoint address.
               </Text>}
             </>
