@@ -91,9 +91,7 @@ const HomeContainer = ({navigation, route}) => {
         closeNotebookPanel={closeNotebookPanel}
         openMainMenuPanel={openMainMenuPanel}
         openNotebookPanel={openNotebookPanel}
-        getCurrentZoom={mapComponentRef.current?.getCurrentZoom}
-        getExtentString={mapComponentRef.current?.getExtentString}
-        getTileCount={mapComponentRef.current?.getTileCount}
+        ref={mapComponentRef}
         zoomToCurrentLocation={zoomToCurrentLocation}
       />
       <Animated.View style={[settingPanelStyles.settingsDrawer, animateMainMenuDrawer]}>
@@ -102,9 +100,7 @@ const HomeContainer = ({navigation, route}) => {
           openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
-          updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
-          zoomToCenterOfflineTile={mapComponentRef.current?.zoomToCenterOfflineTile}
-          zoomToCustomMap={mapComponentRef.current?.zoomToCustomMap}
+          ref={mapComponentRef}
         />
       </Animated.View>
     </Animated.View>

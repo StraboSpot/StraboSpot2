@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {SafeAreaView} from 'react-native';
 
 import {useToast} from 'react-native-toast-notifications';
@@ -31,15 +31,12 @@ import {SpotsList} from '../spots';
 import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel, Tags} from '../tags';
 import UserProfilePage from '../user/UserProfilePage';
 
-const MainMenuPanel = ({
+const MainMenuPanel = forwardRef(({
                          closeMainMenuPanel,
                          openMainMenuPanel,
                          openNotebookPanel,
                          openSpotInNotebook,
-                         updateSpotsInMapExtent,
-                         zoomToCenterOfflineTile,
-                         zoomToCustomMap,
-                       }) => {
+                       }, mapComponentRef) => {
   console.log('Rendering MainMenuPanel...');
 
   const isSidePanelVisible = useSelector(state => state.mainMenu.isSidePanelVisible);
@@ -73,22 +70,22 @@ const MainMenuPanel = ({
       case MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS:
         return <MicroProjectsList/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS:
-        return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
-        return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SAMPLES:
         return (
           <SamplesMenuItem
             openSpotInNotebook={openSpotInNotebook}
-            updateSpotsInMapExtent={updateSpotsInMapExtent}
+            updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}
           />
         );
       case MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS:
-        return <Tags type={'geologic_unit'} updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        return <Tags type={'geologic_unit'} updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.TAGS:
-        return <Tags updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        return <Tags updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.MAPS.CUSTOM:
-        return <ManageCustomMaps zoomToCustomMap={zoomToCustomMap}/>;
+        return <ManageCustomMaps zoomToCustomMap={mapComponentRef.current.zoomToCustomMap}/>;
       case MAIN_MENU_ITEMS.MAPS.IMAGE_BASEMAPS :
         return <ImageBasemapsList closeManMenuPanel={closeMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MAPS.STRAT_SECTIONS :
@@ -97,7 +94,7 @@ const MainMenuPanel = ({
         return (
           <ManageOfflineMapsMenu
             closeMainMenuPanel={closeMainMenuPanel}
-            zoomToCenterOfflineTile={zoomToCenterOfflineTile}
+            zoomToCenterOfflineTile={mapComponentRef.current.zoomToCenterOfflineTile}
           />
         );
       case MAIN_MENU_ITEMS.PREFERENCES.SHORTCUTS:
@@ -129,7 +126,7 @@ const MainMenuPanel = ({
       case SIDE_PANEL_VIEWS.TAG_DETAIL:
         return <TagDetailSidePanel openNotebookPanel={openNotebookPanel}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_SPOTS:
-        return <AddRemoveTagSpots updateSpotsInMapExtent={updateSpotsInMapExtent}/>;
+        return <AddRemoveTagSpots updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case SIDE_PANEL_VIEWS.TAG_ADD_REMOVE_FEATURES:
         return <AddRemoveTagFeatures/>;
       case SIDE_PANEL_VIEWS.USER_PROFILE:
@@ -142,6 +139,6 @@ const MainMenuPanel = ({
       {isSidePanelVisible ? renderSidePanelContent() : renderMainMenuContent()}
     </SafeAreaView>
   );
-};
+});
 
 export default MainMenuPanel;
