@@ -69,14 +69,14 @@ const CustomMapDetails = () => {
         key: MBAccessToken,
       });
     }
-    if (customMapToEdit && isEmpty(customMapToEdit?.bbox && isOnline.isConnected)) {
-      getMyMapsBboxCoords(customMapToEdit)
-        .then((bboxCoords) => {
-          getBboxData(bboxCoords);
-          updateMap({...customMapToEdit, bbox: bboxCoords});
-        });
-    }
-    else getBboxData(customMapToEdit.bbox);
+    // if (customMapToEdit && isEmpty(customMapToEdit?.bbox && isOnline.isConnected)) {
+    //   getMyMapsBboxCoords(customMapToEdit)
+    //     .then((bboxCoords) => {
+    //       getBboxData(bboxCoords);
+    //       updateMap({...customMapToEdit, bbox: bboxCoords});
+    //     });
+    // }
+    // else getBboxData(customMapToEdit.bbox);
   }, [customMapToEdit]);
 
   const saveMap = async () => {
@@ -263,7 +263,7 @@ const CustomMapDetails = () => {
           {/*<Text style={customMapStyles.mapOverviewText}>Source: {customMapToEdit?.url[0]}</Text>*/}
           <Text style={customMapStyles.mapOverviewText}>Id: {customMapToEdit.id}</Text>
         </View>
-        {isOnline.isConnected && bboxCoordsLayout()}
+        {/*{isOnline.isConnected && bboxCoordsLayout()}*/}
       </View>
     );
   };

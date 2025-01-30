@@ -51,8 +51,7 @@ const CustomEndpoint = ({
             ios_backgroundColor={'white'}
           />
         </View>
-        {isSelected && (
-          <>
+        {/*{isSelected && (*/}
             <View style={uiStyles.customEndpointVerifyInputContainer}>
               <Input
                 containerStyle={signInStyles.customEndpointInputContainer}
@@ -66,17 +65,13 @@ const CustomEndpoint = ({
                 autoCapitalize={'none'}
                 returnKeyType={'send'}
               />
-
-            </View>
-            <>
-              {isSelected && <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}, textStyles]}>
+              <Text style={[commonStyles.noValueText, {paddingTop: 0, fontStyle: 'italic'}, textStyles]}>
                 *If using StraboSpot Offline make sure that the endpoint address contains <Text style={{fontWeight: 'bold'}}>&ldquo;http://&ldquo; and a
                 trailing &ldquo;/db&ldquo;</Text>.{'\n'} Otherwise use the proper
                 path associated with your endpoint address.
-              </Text>}
-            </>
-          </>
-        )}
+              </Text>
+            </View>
+        {/*)}*/}
       </View>
     );
   }
