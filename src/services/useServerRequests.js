@@ -7,10 +7,10 @@ import alert from '../shared/ui/alert';
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
-  const {url, isSelected} = useSelector(state => state.connections.databaseEndpoint);
+  const {endpoint, isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
-  const baseUrl = url && isSelected ? `${url}/db` : STRABO_APIS.DB;
-  const domain = url && isSelected ? url : STRABO_APIS.STRABO;
+  const baseUrl = endpoint && isSelected ? endpoint : STRABO_APIS.DB;
+  const domain = endpoint && isSelected ? endpoint : STRABO_APIS.STRABO;
   const tilehost = STRABO_APIS.TILE_HOST;
 
   const user = useSelector(state => state.user);
@@ -169,7 +169,7 @@ const useServerRequests = () => {
 
   const getProfile = async (encodedLogin) => {
     // return request('GET', '/profile', encodedLogin);
-    const response = await fetch(
+    const response = await timeoutPromise(10000, fetch(
       `${baseUrl}/profile`,
       {
         method: 'GET',
@@ -178,7 +178,7 @@ const useServerRequests = () => {
           'Content-Type': 'application/json',
         },
       },
-    );
+    ));
     return handleResponse(response);
   };
 
@@ -222,10 +222,26 @@ const useServerRequests = () => {
       return Promise.reject(msg401);
     }
     else if (response.status === 404) {
+      const contentType = response.headers.get('content-type');
+      if (contentType.includes('text/html')) {
+
+        // Assume HTML response
+
+        const htmlData = await response.text();
+        console.log(htmlData);
+        // Parse HTML data and display custom 404 page
+        return Promise.reject('The requested URL was not found on this server.');
+
+      } else {
+        const responseJSON = await response.json();
+        const errorMessage = responseJSON.error || responseJSON.Error;
+        if (errorMessage) return Promise.reject(errorMessage);
+      }
+
       const responseJSON = await response.json();
       const errorMessage = responseJSON.error || responseJSON.Error;
       if (errorMessage) return Promise.reject(errorMessage);
-      return Promise.reject('The requested URL was not found on this server.');
+      // return Promise.reject('The requested URL was not found on this server.');
     }
     else if (response.status === 400) {
       const res = await response.json();
@@ -455,7 +471,7 @@ const useServerRequests = () => {
 
   const zipURLStatus = async (zipId) => {
     try {
-      const myMapsEndpoint = isSelected ? url.replace('/db', '/strabotiles') : tilehost;
+      const myMapsEndpoint = isSelected ? endpoint.replace('/db', '/strabotiles') : tilehost;
       const response = await timeoutPromise(60000, fetch(myMapsEndpoint + '/asyncstatus/' + zipId));
       const responseJson = await response.json();
       console.log(responseJson);

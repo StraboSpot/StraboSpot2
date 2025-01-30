@@ -6,10 +6,11 @@ import styles from '../../shared/ui/ui.styles';
 const SectionDivider = ({
                           dividerText,
                           style,
+                          textStyle,
                         }) => {
   return (
     <View style={[styles.sectionDivider, style]}>
-      <Text style={styles.sectionDividerText}>{dividerText.toUpperCase()}</Text>
+      <Text style={[styles.sectionDividerText, textStyle]}>{dividerText.toUpperCase()}</Text>
     </View>
   );
 };

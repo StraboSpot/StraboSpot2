@@ -31,7 +31,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
   const {isConnected, isInternetReachable} = useSelector(state => state.connections.isOnline);
 
   useEffect(() => {
-    if (customEndpoint.isSelected) setDialogTitle(`Map Layers - ${customEndpoint.url}`);
+    if (customEndpoint.isSelected) setDialogTitle(`Map Layers - ${customEndpoint.endpoint}`);
   }, []);
 
   const isValidSource = map => map.source === 'mapbox_styles' || map.source === 'strabospot_mymaps';

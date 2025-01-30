@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {Platform} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,15 +16,12 @@ import useExport from '../../services/useExport.web';
 import LoadingSpinner from '../../shared/ui/Loading';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 
-const OverlaysContainer = ({
+const OverlaysContainer = forwardRef(({
                              closeNotebookPanel,
-                             getCurrentZoom,
-                             getExtentString,
-                             getTileCount,
                              openMainMenuPanel,
                              openNotebookPanel,
                              zoomToCurrentLocation,
-                           }) => {
+                           }, mapComponentRef) => {
 
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
@@ -82,13 +79,13 @@ const OverlaysContainer = ({
       )}
       {isOfflineMapModalVisible && (
         <SaveMapsModal
-          getCurrentZoom={getCurrentZoom}
-          getExtentString={getExtentString}
-          getTileCount={getTileCount}
+          getCurrentZoom={mapComponentRef.current.getCurrentZoom}
+          getExtentString={mapComponentRef.current.getExtentString}
+          getTileCount={mapComponentRef.current.getTileCount}
         />
       )}
     </>
   );
-};
+});
 
 export default OverlaysContainer;

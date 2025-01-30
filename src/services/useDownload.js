@@ -43,12 +43,13 @@ const useDownload = () => {
   const dispatch = useDispatch();
   const encodedLogin = useSelector(state => state.user.encoded_login);
   const isProjectLoadSelectionModalVisible = useSelector(state => state.home.isProjectLoadSelectionModalVisible);
+  const {endpoint, isSelected} = useSelector(state => state.connections.databaseEndpoint);
   const project = useSelector(state => state.project.project);
 
   const {doesDeviceDirectoryExist, downloadAndSaveProfileImage, downloadImageAndSave} = useDevice();
   const {gatherNeededImages} = useImages();
   const {clearProject} = useResetState();
-  const {getDatasets, getDatasetSpots, getImageUrl, getProfile, getProfileImage, getProject} = useServerRequests();
+  const {getDatasets, getDatasetSpots, getImageUrl, getProfile, getProfileImage, getProject, testCustomMapUrl} = useServerRequests();
 
   const downloadDatasets = async (selectedProject, encodedLoginScoped) => {
     try {
@@ -264,13 +265,23 @@ const useDownload = () => {
   };
 
   const loadCustomMaps = (maps) => {
-    maps.map((map) => {
+    maps.map(async (map) => {
       let mapId = map.id;
       // Pull out mapbox styles map id
       if (map.source === 'mapbox_styles' && map.id.includes('mapbox://styles/')) {
         mapId = map.id.split('/').slice(3).join('/');
       }
-      const providerInfo = MAP_PROVIDERS[map.source];
+      let providerInfo =  MAP_PROVIDERS[map.source];
+      if (map.source === 'strabospot_mymaps') {
+        if (!isEmpty(endpoint) && isSelected) {
+          let tileEndpoint = endpoint.replace('/db', '/strabo_mymaps_check/');
+          if (await testCustomMapUrl(tileEndpoint + map.id)){
+            tileEndpoint = endpoint.replace('/db', '/geotiff/tiles/');
+            providerInfo = {...providerInfo, url: [tileEndpoint]};
+          }
+          else throw Error('Invalid IP address')
+        }
+      }
       const customMap = {
         ...map,
         ...providerInfo,

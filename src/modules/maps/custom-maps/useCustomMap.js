@@ -46,21 +46,14 @@ const useCustomMap = () => {
   };
 
   const getCustomMapDetails = (map) => {
-    if (map.source === 'map_warper') {
-      const warningMessage = 'Map Warper maps are no longer available. Download the .tiff'
-        + ' file from Mapwarper.net and upload it into your Strabo MyMaps account.';
-      dispatch(clearedStatusMessages());
-      dispatch(addedStatusMessage(warningMessage));
-      dispatch(setIsWarningMessagesModalVisible(true));
-    }
     dispatch(selectedCustomMapToEdit(map));
     dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.MANAGE_CUSTOM_MAP, bool: true}));
   };
 
   const getMyMapsBBox = async (mapId) => {
     if (customDatabaseEndpoint.isSelected) {
-      console.log(customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId));
-      const bboxEndpoint = customDatabaseEndpoint.url.replace('/db', '/geotiff/bbox/' + mapId);
+      console.log(customDatabaseEndpoint.endpoint.replace('/db', '/geotiff/bbox/' + mapId));
+      const bboxEndpoint = customDatabaseEndpoint.endpoint.replace('/db', '/geotiff/bbox/' + mapId);
       const response = await getMyMapsBbox(bboxEndpoint);
       console.log(response)
     }
@@ -71,7 +64,7 @@ const useCustomMap = () => {
   const getProviderInfo = (source) => {
     let providerInfo = {...MAP_PROVIDERS[source]};
     if (customDatabaseEndpoint.isSelected) {
-      const serverUrl = customDatabaseEndpoint.url;
+      const serverUrl = customDatabaseEndpoint.endpoint;
       const lastOccur = serverUrl.lastIndexOf('/');
       providerInfo.url = [serverUrl.substring(0, lastOccur) + '/geotiff/tiles/'];
       return providerInfo;
@@ -93,8 +86,8 @@ const useCustomMap = () => {
     const tileUrl = buildTileURL(customMap);
     let testTileUrl = tileUrl.replace(/({z}\/{x}\/{y})/, '0/0/0');
     if (map.source === 'strabospot_mymaps') {
-      if (!isEmpty(customDatabaseEndpoint.url) && customDatabaseEndpoint.isSelected) {
-        const customEndpointTest = customDatabaseEndpoint.url.replace('/db', '/strabo_mymaps_check/');
+      if (!isEmpty(customDatabaseEndpoint.endpoint) && customDatabaseEndpoint.isSelected) {
+        const customEndpointTest = customDatabaseEndpoint.endpoint.replace('/db', '/strabo_mymaps_check/');
         testTileUrl = customEndpointTest + map.id;
       }
       else testTileUrl = STRABO_APIS.MY_MAPS_CHECK + map.id;

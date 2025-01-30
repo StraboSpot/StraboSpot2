@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialConnectionsState = {
   isOnline: {},
   databaseEndpoint: {
-    url: '',
+    endpoint: '',
     isSelected: false,
     isVerified: false,
   },
@@ -23,7 +23,7 @@ const connectionsSlice = createSlice({
       state.databaseEndpoint.isSelected = action.payload;
     },
     setCustomDatabaseUrl(state, action) {
-      state.databaseEndpoint.url = action.payload;
+      state.databaseEndpoint.endpoint = action.payload;
     },
     updatedProjectTransferProgress(state, action) {
       state.projectTransferProgress = action.payload;

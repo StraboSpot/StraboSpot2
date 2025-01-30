@@ -52,8 +52,10 @@ const useMap = () => {
         if (newBasemap) {
           newBasemap = buildStyleURL(newBasemap);
           console.log('Mapbox StyleURL for basemap', newBasemap);
-          bbox = await getMyMapsBboxCoords(newBasemap);
-          if (bbox) newBasemap = {...newBasemap, bbox: bbox};
+          if (!customDatabaseEndpoint.isSelected) {
+            bbox = await getMyMapsBboxCoords(newBasemap);
+            if (bbox ) newBasemap = {...newBasemap, bbox: bbox};
+          }
         }
         else {
           dispatch(clearedStatusMessages());

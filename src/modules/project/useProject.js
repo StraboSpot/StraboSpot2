@@ -168,7 +168,7 @@ const useProject = () => {
       return await getMyProjects(user.encoded_login);
     }
     catch (err) {
-      return err.ok;
+      console.error(err);
     }
   };
 

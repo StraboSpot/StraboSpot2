@@ -2,7 +2,7 @@ import {useRef, useState} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {setIsMapMoved} from './maps.slice';
+import {setIsMapMoved, setZoom} from './maps.slice';
 import useMapView from './useMapView';
 
 const useMapMoveEvents = ({mapRef}) => {
@@ -27,7 +27,8 @@ const useMapMoveEvents = ({mapRef}) => {
       if (!currentImageBasemap && !stratSection && mapRef?.current) {
         const newCenter = await mapRef.current.getCenter();
         const newZoom = await mapRef.current.getZoom();
-        setZoomText(newZoom);   // Update scale bar and zoom text
+        dispatch(setZoom(newZoom));
+        // setZoomText(newZoom);   // Update scale bar and zoom text
         setMapView(newCenter, newZoom);
       }
     }
@@ -35,7 +36,7 @@ const useMapMoveEvents = ({mapRef}) => {
 
   return {
     handleMapMoved: handleMapMoved,
-    zoomText: zoomText,
+    // zoomText: zoomText,
   };
 
 };
