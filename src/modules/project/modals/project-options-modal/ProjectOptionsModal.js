@@ -307,7 +307,7 @@ const ProjectOptionsDialogBox = ({
           <Text style={overlayStyles.importantText}>Uploading {'\n'}{!isEmpty(
             currentProject) && currentProject.description.project_name} {'\n'}to:</Text>
           <Text style={overlayStyles.importantText}>
-            {endpoint?.isSelected ? endpoint.url : STRABO_APIS.DB}
+            {endpoint?.isSelected ? endpoint.endpoint : STRABO_APIS.DB}
           </Text>
         </View>
         <Spacer/>

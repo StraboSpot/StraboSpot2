@@ -22,28 +22,34 @@ import Loading from '../../../shared/ui/Loading';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import SliderBar from '../../../shared/ui/SliderBar';
 import {formStyles} from '../../form';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setIsErrorMessagesModalVisible,
+} from '../../home/home.slice';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import {MAIN_MENU_ITEMS} from '../../main-menu-panel/mainMenu.constants';
 import {setMenuSelectionPage, setSidePanelVisible} from '../../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../../main-menu-panel/sidePanel/SidePanelHeader';
 import {CUSTOM_MAP_TYPES} from '../maps.constants';
 import {selectedCustomMapToEdit} from '../maps.slice';
-import useMapCoordsHook from '../useMapCoords';
+import useMapCoords from '../useMapCoords';
 
 
 const urlKeyboardType = Platform.OS === 'ios' ? 'url' : 'default';
-const numericKeyboardType = Platform.OS === 'ios' ? 'numeric' : 'phone-pad';
 // const {State: TextInputState} = TextInput;
 
 const CustomMapDetails = () => {
+  let defaultBbox = [['N/A', 'N/A'], ['N/A', 'N/A']];
   const {deleteMap, saveCustomMap, updateMap} = useCustomMap();
-  const useMapCoords = useMapCoordsHook();
+  const {getMyMapsBboxCoords} = useMapCoords();
 
   const dispatch = useDispatch();
   const MBAccessToken = useSelector(state => state.user.mapboxToken);
   const customMapToEdit = useSelector(state => state.map.selectedCustomMapToEdit);
   const isOnline = useSelector(state => state.connections.isOnline);
 
+  const [bboxCoords, setBboxCoords] = useState(defaultBbox);
   const [editableCustomMapData, setEditableCustomMapData] = useState({});
   const [isLoadingModalVisible, setIsLoadingModalVisible] = useState(false);
   const [message, setMessage] = useState('Starting...');
@@ -52,7 +58,6 @@ const CustomMapDetails = () => {
   const [title, setTitle] = useState('');
 
   useEffect(() => {
-    // console.log('UE CustomMapDetails [customMapToEdit]', customMapToEdit);
     if (!isEmpty(customMapToEdit)) setEditableCustomMapData(customMapToEdit);
     else {
       setEditableCustomMapData({
@@ -64,6 +69,14 @@ const CustomMapDetails = () => {
         key: MBAccessToken,
       });
     }
+    // if (customMapToEdit && isEmpty(customMapToEdit?.bbox && isOnline.isConnected)) {
+    //   getMyMapsBboxCoords(customMapToEdit)
+    //     .then((bboxCoords) => {
+    //       getBboxData(bboxCoords);
+    //       updateMap({...customMapToEdit, bbox: bboxCoords});
+    //     });
+    // }
+    // else getBboxData(customMapToEdit.bbox);
   }, [customMapToEdit]);
 
   const saveMap = async () => {
@@ -111,13 +124,13 @@ const CustomMapDetails = () => {
     );
   };
 
-  const getBoundingBox = async () => {
-    setIsLoading(true);
-    const bbox = await useMapCoords.getMyMapsBboxCoords(customMapToEdit);
-    setEditableCustomMapData(prevState => ({...prevState, bbox: bbox}));
-    setIsLoading(false);
-    setBboxMessage('Be sure to UPDATE map to save bounding box.');
-  };
+  // const getBoundingBox = async () => {
+  //   setIsLoading(true);
+  //   const bbox = await useMapCoords.getMyMapsBboxCoords(customMapToEdit);
+  //   setEditableCustomMapData(prevState => ({...prevState, bbox: bbox}));
+  //   setIsLoading(false);
+  //   setBboxMessage('Be sure to UPDATE map to save bounding box.');
+  // };
 
   const handlePress = () => {
     setIsLoadingModalVisible(false);
@@ -204,59 +217,53 @@ const CustomMapDetails = () => {
     </View>
   );
 
-  const getBboxData = () => {
-    const bboxArr = editableCustomMapData.bbox.split(',');
-    return [[bboxArr[0], bboxArr[1]], [bboxArr[2], bboxArr[3]]];
+  const getBboxData = (bboxCoords) => {
+    try {
+      if (!isEmpty(bboxCoords)) {
+        const bboxArr = bboxCoords.split(',');
+        setBboxCoords([[bboxArr[0], bboxArr[1]], [bboxArr[2], bboxArr[3]]]);
+      }
+      else setBboxCoords(defaultBbox);
+    }
+    catch (err) {
+      console.error('Error getting bbox coords', err);
+      dispatch(clearedStatusMessages());
+      dispatch(addedStatusMessage('There was an error getting the bounding box coordinates of the custom map.\n' +
+        'Please pan to the map manually.'));
+      dispatch(setIsErrorMessagesModalVisible(true));
+    }
   };
 
   const bboxCoordsLayout = () => {
-    if (editableCustomMapData.bbox) {
-      return (
-        <View style={customMapStyles.bboxCoordsContainers}>
-          <Table style={{}}>
-            <Row data={['', 'Longitude', 'Latitude']} flexArr={[1, 2, 2]} style={customMapStyles.bboxTableHead}
+    return (
+      <View style={customMapStyles.bboxCoordsContainers}>
+        <Table style={{}}>
+          <Row data={['', 'Longitude', 'Latitude']} flexArr={[1, 2, 2]} style={customMapStyles.bboxTableHead}
+               textStyle={customMapStyles.bboxText}/>
+          <TableWrapper style={{flexDirection: 'row'}}>
+            <Col data={['SW', 'NE']} style={customMapStyles.bboxColumnContainer} heightArr={[25, 25]}
                  textStyle={customMapStyles.bboxText}/>
-            <TableWrapper style={{flexDirection: 'row'}}>
-              <Col data={['SW', 'NE']} style={customMapStyles.bboxColumnContainer} heightArr={[25, 25]}
-                   textStyle={customMapStyles.bboxText}/>
-              <Rows data={getBboxData()} flexArr={[2, 2]} style={customMapStyles.bboxRowContainer}
-                    textStyle={customMapStyles.bboxText}/>
-            </TableWrapper>
-            <View style={customMapStyles.bboxCoordsContainers}>
-              <Text style={customMapStyles.bboxMessageText}>{bboxMessage}</Text>
-            </View>
-          </Table>
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={customMapStyles.bboxButton}>
-          <Button
-            title={'Get Coords'}
-            type={'clear'}
-            disabled={!isOnline}
-            onPress={getBoundingBox}
-            loading={isLoading}
-          />
-        </View>
-      );
-    }
+            <Rows data={bboxCoords} flexArr={[2, 2]} style={customMapStyles.bboxRowContainer}
+                  textStyle={customMapStyles.bboxText}/>
+          </TableWrapper>
+          <View style={customMapStyles.bboxCoordsContainers}>
+            <Text style={customMapStyles.bboxMessageText}>{bboxMessage}</Text>
+          </View>
+        </Table>
+      </View>
+    );
   };
 
   const renderMapTypeOverview = () => {
-    const name = CUSTOM_MAP_TYPES.find(map => map.source === customMapToEdit.source);
-
     return (
       <View style={{paddingTop: 10}}>
         <SectionDivider dividerText={'Map Details Overview'}/>
         <View style={{padding: 10}}>
-          <Text style={customMapStyles.mapOverviewText}>Type: {name.title}</Text>
+          <Text style={customMapStyles.mapOverviewText}>Type: {customMapToEdit.title}</Text>
+          {/*<Text style={customMapStyles.mapOverviewText}>Source: {customMapToEdit?.url[0]}</Text>*/}
           <Text style={customMapStyles.mapOverviewText}>Id: {customMapToEdit.id}</Text>
-          <Text style={customMapStyles.mapOverviewText}>Bounding Box Coords:</Text>
-          {!isOnline && <Text>Need to be online to get bounding box</Text>}
         </View>
-        {bboxCoordsLayout()}
+        {/*{isOnline.isConnected && bboxCoordsLayout()}*/}
       </View>
     );
   };

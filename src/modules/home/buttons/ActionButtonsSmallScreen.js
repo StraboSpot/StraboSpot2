@@ -28,6 +28,7 @@ const ActionButtonsSmallScreen = ({
         }
 
         <DrawInfo
+          clickHandler={clickHandler}
           distance={distance}
           endMeasurement={endMeasurement}
           mapMode={mapMode}

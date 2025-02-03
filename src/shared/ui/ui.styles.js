@@ -72,9 +72,8 @@ const styles = StyleSheet.create({
   },
   customEndpointVerifyInputContainer: {
     alignItems: 'center',
-    flexDirection: 'row',
     justifyContent: 'center',
-    width: 300,
+    width: '70%',
   },
   headerContainer: {
     alignItems: 'center',

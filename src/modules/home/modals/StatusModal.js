@@ -18,6 +18,7 @@ import overlayStyles from '../overlays/overlay.styles';
 
 const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
   const dispatch = useDispatch();
+  const {isInternetReachable} = useSelector(state => state.connections.isOnline);
   const isModalLoading = useSelector(state => state.home.loading.modal);
   const isStatusMessagesModalVisible = useSelector(state => state.home.isStatusMessagesModalVisible);
   const selectedProject = useSelector(state => state.project.selectedProject) || {};
@@ -93,7 +94,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
           {/*    onPress={exportProject}*/}
           {/*  />*/}
           {/*)}*/}
-          <Button
+          {isInternetReachable && <Button
             titleStyle={overlayStyles.urlText}
             icon={{
               name: 'globe-outline',
@@ -103,7 +104,7 @@ const StatusModal = ({exportProject, openMainMenuPanel, openUrl, visible}) => {
             }}
             title={'Visit account at StraboSpot.org'}
             type={'clear'}
-            onPress={openUrl}/>
+            onPress={openUrl}/>}
         </View>
         }
       </View>

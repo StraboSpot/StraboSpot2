@@ -18,8 +18,15 @@ import useMapFeaturesDraw from './useMapFeaturesDraw';
 import useMapLocation from './useMapLocation';
 import useMapPressEvents from './useMapPressEvents';
 import useMapView from './useMapView';
+import VertexActionsOverlay from './VertexActionsOverlay';
+import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
-import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setIsErrorMessagesModalVisible,
+  setIsOfflineMapsModalVisible,
+} from '../home/home.slice';
 import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
@@ -48,11 +55,13 @@ const Map = forwardRef(({
   const stratSection = useSelector(state => state.map.stratSection);
   const userEmail = useSelector(state => state.user.email);
 
+  const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
+  const [isShowVertexActionsModal, setIsShowVertexActionsModal] = useState(false);
   const [isZoomToCenterOffline, setIsZoomToCenterOffline] = useState(false);
   const [measureFeatures, setMeasureFeatures] = useState([]);
   const [showSetInCurrentViewModal, setShowSetInCurrentViewModal] = useState(false);
   const [showUserLocation, setShowUserLocation] = useState(false);
-  const [isShowMacrostratOverlay, setIsShowMacrostratOverlay] = useState(false);
+  const [vertexActionValues, setVertexActionValues] = useState(null);
 
   const {setCustomMapSwitchValue} = useCustomMap();
   const {setImageHeightAndWidth} = useImages();
@@ -60,11 +69,13 @@ const Map = forwardRef(({
   const {convertFeatureGeometryToImagePixels} = useMapCoords();
   const {getLassoedSpots} = useMapFeaturesCalculated(mapRef);
   const {
+    addNewVertex,
     allowMapViewMove,
     cancelDraw,
     cancelEdits,
     clearSelectedSpots,
     clearVertexes,
+    deleteSelectedVertex,
     drawFeatures,
     editFeatureVertex,
     editSpot,
@@ -73,6 +84,7 @@ const Map = forwardRef(({
     moveVertex,
     saveEdits,
     setDrawFeaturesNew,
+    splitLine,
     spotsNotSelected,
     spotsSelected,
     startEditing,
@@ -83,6 +95,8 @@ const Map = forwardRef(({
     mapMode: mapMode,
     mapRef: mapRef,
     onEndDrawPressed: onEndDrawPressed,
+    setIsShowVertexActionsModal: setIsShowVertexActionsModal,
+    setVertexActionValues: setVertexActionValues,
   });
   const {
     handleMapLongPress,
@@ -105,6 +119,7 @@ const Map = forwardRef(({
   const {getCurrentLocation} = useMapLocation();
   const {setMapView, zoomToSpotsNow} = useMapView();
   const {getMapCenterTile, switchToOfflineMap} = useMapsOffline();
+  const {getTileCountFromHost} = useServerRequests();
 
   useEffect(() => {
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
@@ -212,13 +227,14 @@ const Map = forwardRef(({
       //Assign the promise unresolved first then get the data using the json method.
       console.log('sending this extent to server: ', extentString);
       console.log('sending zoom to server: ', zoomLevel);
-      const tileCountApiCall = await fetch(getExtentAndZoomCall(extentString, zoomLevel));
-      const tileCountThisScope = await tileCountApiCall.json();
+      const tileCallURL = getExtentAndZoomCall(extentString, zoomLevel);
+      const tileCountThisScope = await getTileCountFromHost(tileCallURL);
       console.log('got count from server: ', tileCountThisScope);
       return tileCountThisScope;
     }
     catch (err) {
       console.error(err);
+      dispatch((setIsOfflineMapsModalVisible(false)));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Error fetching data from tile count service.'));
       dispatch(setIsErrorMessagesModalVisible(true));
@@ -366,6 +382,16 @@ const Map = forwardRef(({
           createDefaultGeomContinued={createDefaultGeomContinued}
           setShowSetInCurrentViewModal={setShowSetInCurrentViewModal}
           showSetInCurrentViewModal={showSetInCurrentViewModal}
+        />
+      )}
+      {isShowVertexActionsModal && (
+        <VertexActionsOverlay
+          addNewVertex={addNewVertex}
+          deleteSelectedVertex={deleteSelectedVertex}
+          isShowVertexActionsModal={isShowVertexActionsModal}
+          setIsShowVertexActionsModal={setIsShowVertexActionsModal}
+          splitLine={splitLine}
+          vertexActionValues={vertexActionValues}
         />
       )}
     </View>

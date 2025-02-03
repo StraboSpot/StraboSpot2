@@ -5,7 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {Button, Header, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {ActionButtonsSmallScreen, EditCancelSaveButtons, MainMenuButton, ShortcutButtons} from './buttons';
+import {ActionButtonsSmallScreen, MainMenuButton, ShortcutButtons} from './buttons';
 import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import * as themes from '../../shared/styles.constants';
@@ -18,14 +18,12 @@ import SpotNavigator from '../spots/SpotNavigator';
 import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
 const HomeViewSmallScreen = forwardRef(({
-                                          areEditButtonsVisible,
                                           clickHandler,
                                           closeMainMenuPanel,
                                           closeNotebookPanel,
                                           dialogClickHandler,
                                           dialogs,
                                           distance,
-                                          drawButtonsVisible,
                                           endMeasurement,
                                           isSelectingForStereonet,
                                           isSelectingForTagging,
@@ -162,31 +160,24 @@ const HomeViewSmallScreen = forwardRef(({
                   </View>
                 )}
 
-                {drawButtonsVisible && (
-                  <View
-                    style={[homeStyles.actionButtonsSmallScreenContainer,
-                      width < height ? homeStyles.actionButtonsSmallScreenContainerPortrait
-                        : homeStyles.actionButtonsSmallScreenContainerLandscape]}
-                  >
-                    <ActionButtonsSmallScreen
-                      clickHandler={clickHandler}
-                      dialogClickHandler={dialogClickHandler}
-                      dialogs={dialogs}
-                      distance={distance}
-                      endMeasurement={endMeasurement}
-                      mapComponentRef={mapComponentRef}
-                      mapMode={mapMode}
-                      onEndDrawPressed={onEndDrawPressed}
-                      toggleDialog={toggleDialog}
-                    />
-                  </View>
-                )}
+                <View
+                  style={[homeStyles.actionButtonsSmallScreenContainer,
+                    width < height ? homeStyles.actionButtonsSmallScreenContainerPortrait
+                      : homeStyles.actionButtonsSmallScreenContainerLandscape]}
+                >
+                  <ActionButtonsSmallScreen
+                    clickHandler={clickHandler}
+                    dialogClickHandler={dialogClickHandler}
+                    dialogs={dialogs}
+                    distance={distance}
+                    endMeasurement={endMeasurement}
+                    mapComponentRef={mapComponentRef}
+                    mapMode={mapMode}
+                    onEndDrawPressed={onEndDrawPressed}
+                    toggleDialog={toggleDialog}
+                  />
+                </View>
 
-                {areEditButtonsVisible && (
-                  <View style={homeStyles.editButtonsContainer}>
-                    <EditCancelSaveButtons clickHandler={clickHandler}/>
-                  </View>
-                )}
                 <OfflineMapLabel/>
                 <VersionCheckLabel/>
               </>

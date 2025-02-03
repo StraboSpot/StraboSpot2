@@ -64,6 +64,11 @@ const DatasetList = () => {
     setIsDeleteConfirmModalVisible(true);
   };
 
+  const handleSetCurrentDatasetPressed = () => {
+    makeDatasetCurrent(selectedDataset.id);
+    setMakeIsDatasetCurrentModalVisible(false);
+  };
+
   const renderDatasetListItem = (dataset) => {
     const needImages = isEmpty(dataset?.images?.neededImagesIds);
     const spotIds = dataset.spotIds
@@ -192,16 +197,14 @@ const DatasetList = () => {
         dialogTitle={'Make Current?'}
         rightButtonText={'Yes'}
         leftButtonText={'No'}
-        onPress={() => {
-          makeDatasetCurrent(selectedDataset.id);
-          setMakeIsDatasetCurrentModalVisible(false);
-        }}
+        onPress={handleSetCurrentDatasetPressed}
         closeModal={() => setMakeIsDatasetCurrentModalVisible(false)}
       >
         <View>
-          <Text style={overlayStyles.statusMessageText}>By selecting &quot;Yes&quot; any new data will be saved
-            into</Text>
-          <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>{selectedDataset.name}.</Text>
+          <Text style={overlayStyles.statusMessageText}>
+            By selecting &quot;Yes&quot; any new Spots will be saved into:
+          </Text>
+          <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>{selectedDataset.name}</Text>
         </View>
       </StandardModal>
     );

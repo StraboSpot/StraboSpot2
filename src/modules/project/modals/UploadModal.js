@@ -162,7 +162,7 @@ const UploadModal = ({closeModal, visible}) => {
       <View>
         <Text style={overlayStyles.importantText}>Uploading to:</Text>
         <Text style={overlayStyles.importantText}>
-          {endPoint.isSelected ? endPoint.url : STRABO_APIS.DB}
+          {endPoint.isSelected ? endPoint.endpoint : STRABO_APIS.DB}
         </Text>
       </View>
       <Spacer/>
