@@ -149,6 +149,11 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
+  const getTileCountFromHost = async (url) => {
+    const response = await timeoutPromise(10000, fetch(url));
+    return await response.json();
+  };
+
   const getMapTilesFromHost = async (zipUrl) => {
     const response = await timeoutPromise(60000, fetch(zipUrl));
     return await response.json();
@@ -232,7 +237,8 @@ const useServerRequests = () => {
         // Parse HTML data and display custom 404 page
         return Promise.reject('The requested URL was not found on this server.');
 
-      } else {
+      }
+      else {
         const responseJSON = await response.json();
         const errorMessage = responseJSON.error || responseJSON.Error;
         if (errorMessage) return Promise.reject(errorMessage);
@@ -499,6 +505,7 @@ const useServerRequests = () => {
     getImage: getImage,
     getImageUrl: getImageUrl,
     getMacrostratData: getMacrostratData,
+    getTileCountFromHost: getTileCountFromHost,
     getMapTilesFromHost: getMapTilesFromHost,
     getMyMapsBbox: getMyMapsBbox,
     getMyMicroProjects: getMyMicroProjects,

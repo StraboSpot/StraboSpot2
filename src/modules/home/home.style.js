@@ -89,7 +89,6 @@ const homeStyles = StyleSheet.create({
     left: 10,
     position: 'absolute',
     top: 10,
-    zIndex: -1,
   },
   iconButton: {
     top: 5,

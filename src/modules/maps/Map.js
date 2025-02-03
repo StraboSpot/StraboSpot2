@@ -19,8 +19,14 @@ import useMapLocation from './useMapLocation';
 import useMapPressEvents from './useMapPressEvents';
 import useMapView from './useMapView';
 import VertexActionsOverlay from './VertexActionsOverlay';
+import useServerRequests from '../../services/useServerRequests';
 import {isEmpty} from '../../shared/Helpers';
-import {addedStatusMessage, clearedStatusMessages, setIsErrorMessagesModalVisible} from '../home/home.slice';
+import {
+  addedStatusMessage,
+  clearedStatusMessages,
+  setIsErrorMessagesModalVisible,
+  setIsOfflineMapsModalVisible,
+} from '../home/home.slice';
 import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
@@ -113,6 +119,7 @@ const Map = forwardRef(({
   const {getCurrentLocation} = useMapLocation();
   const {setMapView, zoomToSpotsNow} = useMapView();
   const {getMapCenterTile, switchToOfflineMap} = useMapsOffline();
+  const {getTileCountFromHost} = useServerRequests();
 
   useEffect(() => {
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
@@ -220,13 +227,14 @@ const Map = forwardRef(({
       //Assign the promise unresolved first then get the data using the json method.
       console.log('sending this extent to server: ', extentString);
       console.log('sending zoom to server: ', zoomLevel);
-      const tileCountApiCall = await fetch(getExtentAndZoomCall(extentString, zoomLevel));
-      const tileCountThisScope = await tileCountApiCall.json();
+      const tileCallURL = getExtentAndZoomCall(extentString, zoomLevel);
+      const tileCountThisScope = await getTileCountFromHost(tileCallURL);
       console.log('got count from server: ', tileCountThisScope);
       return tileCountThisScope;
     }
     catch (err) {
       console.error(err);
+      dispatch((setIsOfflineMapsModalVisible(false)));
       dispatch(clearedStatusMessages());
       dispatch(addedStatusMessage('Error fetching data from tile count service.'));
       dispatch(setIsErrorMessagesModalVisible(true));
