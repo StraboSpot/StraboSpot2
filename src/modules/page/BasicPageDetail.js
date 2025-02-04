@@ -160,10 +160,9 @@ const BasicPageDetail = ({
       title={'Register Sample with Sesar to obtain an IGSN'}
       textStyle={isOnline.isInternetReachable ? {color: 'grey'} : {color: 'red'}}
       checked={IGSNChecked}
-      checkedTitle={'Registering Sample with Sesar'}
+      // checkedTitle={'Registering Sample with Sesar'}
       onPress={() => setIGSNChecked(!IGSNChecked)}
       disabled={!isOnline.isInternetReachable}
-
     />
   );
 
