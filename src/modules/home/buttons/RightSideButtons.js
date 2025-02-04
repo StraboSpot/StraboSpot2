@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animated} from 'react-native';
+import {Animated, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -52,13 +52,15 @@ const RightSideButtons = ({
       )}
 
       <Animated.View style={[homeStyles.drawContainer, animateRightSide]}>
-        <DrawInfo
-          clickHandler={clickHandler}
-          distance={distance}
-          endMeasurement={endMeasurement}
-          mapMode={mapMode}
-          onEndDrawPressed={onEndDrawPressed}
-        />
+        <View style={{alignItems: 'flex-end'}}>
+          <DrawInfo
+            clickHandler={clickHandler}
+            distance={distance}
+            endMeasurement={endMeasurement}
+            mapMode={mapMode}
+            onEndDrawPressed={onEndDrawPressed}
+          />
+        </View>
         <DrawActionButtons
           clickHandler={clickHandler}
           mapMode={mapMode}

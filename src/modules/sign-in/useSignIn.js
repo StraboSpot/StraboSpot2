@@ -19,9 +19,7 @@ const useSignIn = () => {
   const {downloadUserProfile} = useDownload();
 
   const guestSignIn = async () => {
-    Sentry.configureScope((scope) => {
-      scope.setUser({'id': 'GUEST'});
-    });
+    Sentry.setUser({'id': 'GUEST'});
     if (!isEmpty(userEmail)) clearUser();
     console.log('Loading user: GUEST');
     setTimeout(() => isEmpty(currentProjectId) && dispatch(setIsProjectLoadSelectionModalVisible(true)), 500);
