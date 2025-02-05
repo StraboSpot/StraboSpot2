@@ -2,9 +2,9 @@ import React from 'react';
 
 import {Form} from '../form';
 
-const AddTensor = (props) => {
+const AddTensor = ({formName, formProps}) => {
   return (
-    <Form {...{formName: props.formName, ...props.formProps}}/>
+    <Form {...{formName: formName, ...formProps}}/>
   );
 };
 

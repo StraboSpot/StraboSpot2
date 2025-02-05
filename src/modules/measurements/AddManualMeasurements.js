@@ -7,7 +7,7 @@ import SliderBar from '../../shared/ui/SliderBar';
 import compassStyles from '../compass/compass.styles';
 import {Form, useForm} from '../form';
 
-const AddManualMeasurements = (props) => {
+const AddManualMeasurements = ({formProps, measurementType}) => {
   const {getSurvey} = useForm();
 
   const [sliderValue, setSliderValue] = useState(6);
@@ -33,28 +33,27 @@ const AddManualMeasurements = (props) => {
   useEffect(() => {
     console.log('UE AddManualMeasurements [sliderValue]', sliderValue);
     const sliderValueString = sliderValue <= 5 ? sliderValue.toString() : undefined;
-    props.formProps.setFieldValue(qualityKey, sliderValueString);
-    if (props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
-      props.formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValueString);
+    formProps.setFieldValue(qualityKey, sliderValueString);
+    if (measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) {
+      formProps.setFieldValue('associated_orientation[0].' + qualityKey, sliderValueString);
     }
   }, [sliderValue]);
 
   return (
     <>
-      <Form {...{...props.formProps, formName: planarFormName, surveyFragment: [labelField]}}/>
+      <Form {...{...formProps, formName: planarFormName, surveyFragment: [labelField]}}/>
       <>
-        {(props.measurementType === MEASUREMENT_KEYS.PLANAR || props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR)
-          && <Form {...{...props.formProps, formName: planarFormName, surveyFragment: planarKeysFields}}/>
+        {(measurementType === MEASUREMENT_KEYS.PLANAR || measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR)
+          && <Form {...{...formProps, formName: planarFormName, surveyFragment: planarKeysFields}}/>
         }
-        {(props.measurementType === MEASUREMENT_KEYS.LINEAR || props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR)
-          && (
-            <Form {...{
-              ...props.formProps,
-              formName: linearFormName,
-              surveyFragment: linearKeysFields,
-              subkey: props.measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR && 'associated_orientation',
-            }}/>
-          )}
+        {(measurementType === MEASUREMENT_KEYS.LINEAR || measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR) && (
+          <Form {...{
+            ...formProps,
+            formName: linearFormName,
+            surveyFragment: linearKeysFields,
+            subkey: measurementType === MEASUREMENT_KEYS.PLANAR_LINEAR && 'associated_orientation',
+          }}/>
+        )}
         <View style={compassStyles.sliderContainer}>
           <Text style={{...commonStyles.listItemTitle, fontWeight: 'bold'}}>Quality of Measurement</Text>
           <SliderBar

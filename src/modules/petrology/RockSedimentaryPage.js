@@ -9,7 +9,7 @@ const RockSedimentaryPage = ({page}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE RockSedimentaryPage [props.page]', page);
+    console.log('UE RockSedimentaryPage [page]', page);
     return () => dispatch(setSelectedAttributes([]));
   }, [page]);
 

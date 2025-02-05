@@ -3,12 +3,11 @@ import React, {useState} from 'react';
 import {FoldGeometryButtons} from './fold-geometry';
 import {FOLD_MEASUREMENTS_KEYS} from './threeDStructures.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, FormSlider, MainButtons, useForm} from '../form';
+import {Form, FormSlider, MainButtons} from '../form';
 import MeasurementButtons from '../form/MeasurementButtons';
 import MeasurementModal from '../form/MeasurementModal';
 
-const AddFold = (props) => {
-  const {getSurvey} = useForm();
+const AddFold = ({choices, formName, formProps, setChoicesViewKey, survey}) => {
 
   const [isFoldMeasurementsModalVisible, setIsFoldMeasurementsModalVisible] = useState(false);
   const [foldMeasurementsGroupField, setFoldMeasurementsGroupField] = useState({});
@@ -21,39 +20,55 @@ const AddFold = (props) => {
   const lastKeys = ['fold_notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
     <>
-      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
+      <Form {...{formName: formName, surveyFragment: firstKeysFields, ...formProps}}/>
+      <MainButtons
+        formName={formName}
+        formProps={formProps}
+        mainKeys={mainButtonsKeys}
+        setChoicesViewKey={setChoicesViewKey}
+      />
       <MeasurementButtons
-        formProps={props.formProps}
+        formProps={formProps}
         measurementsKeys={FOLD_MEASUREMENTS_KEYS}
-        setMeasurementsGroupField={setFoldMeasurementsGroupField}
         setIsMeasurementsModalVisible={setIsFoldMeasurementsModalVisible}
+        setMeasurementsGroupField={setFoldMeasurementsGroupField}
         survey={survey}
       />
-      <FoldGeometryButtons {...props}/>
+      <FoldGeometryButtons
+        formProps={formProps}
+        setChoicesViewKey={setChoicesViewKey}
+      />
       <FormSlider
+        choices={choices}
         fieldKey={tightnessKey}
+        formProps={formProps}
         hasNoneChoice={true}
         hasRotatedLabels={true}
         isHideLabels={true}
         showSliderValue={true}
-        {...props}
+        survey={survey}
       />
-      <FormSlider {...{fieldKey: vergenceKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
+      <FormSlider
+        choices={choices}
+        fieldKey={vergenceKey}
+        formProps={formProps}
+        hasNoneChoice={true}
+        hasRotatedLabels={true}
+        survey={survey}
+      />
       <LittleSpacer/>
-      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
       {isFoldMeasurementsModalVisible && (
         <MeasurementModal
+          formName={formName}
+          formProps={formProps}
           measurementsGroup={FOLD_MEASUREMENTS_KEYS[foldMeasurementsGroupField.name]}
           measurementsGroupLabel={foldMeasurementsGroupField.label}
-          formName={props.formName}
-          formProps={props.formProps}
           setIsMeasurementModalVisible={setIsFoldMeasurementsModalVisible}
         />
       )}

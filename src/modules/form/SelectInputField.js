@@ -10,22 +10,34 @@ import * as themes from '../../shared/styles.constants';
 import {DARKGREY, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
 import {formStyles} from '../form';
 
-const SelectInputField = (props) => {
-  const placeholderText = props.name === 'spot_id_for_pet_copy' ? '-- None --' : `-- Select ${props.label} --`;
+const SelectInputField = ({
+                            choices,
+                            errors,
+                            label,
+                            name,
+                            onMyChange,
+                            onShowFieldInfo,
+                            placeholder,
+                            setFieldValue,
+                            showExpandedChoices,
+                            single,
+                            value,
+                          }) => {
+  const placeholderText = name === 'spot_id_for_pet_copy' ? '-- None --' : `-- Select ${label} --`;
 
-  const fieldValueChanged = (value) => {
-    if (props.single) {
-      if (value[0] === props.value) props.setFieldValue(props.name, undefined);
-      else if (props.onMyChange && typeof props.onMyChange === 'function') props.onMyChange(props.name, value[0]);
-      else props.setFieldValue(props.name, value[0]);
+  const fieldValueChanged = (itemValue) => {
+    if (single) {
+      if (itemValue[0] === value) setFieldValue(name, undefined);
+      else if (onMyChange && typeof onMyChange === 'function') onMyChange(name, itemValue[0]);
+      else setFieldValue(name, itemValue[0]);
     }
-    else props.setFieldValue(props.name, isEmpty(value) ? undefined : value);
+    else setFieldValue(name, isEmpty(itemValue) ? undefined : itemValue);
   };
 
-  const getChoiceLabel = (value) => {
-    if (typeof value === 'object' && Array.isArray(value) && value.length > 1) return 'Multiple Selected';
-    else if (typeof value === 'object' && Array.isArray(value) && value.length === 1) value = value[0];
-    const choiceFound = props.choices.find(choice => choice.value === value);
+  const getChoiceLabel = (itemValue) => {
+    if (typeof itemValue === 'object' && Array.isArray(itemValue) && itemValue.length > 1) return 'Multiple Selected';
+    else if (typeof itemValue === 'object' && Array.isArray(itemValue) && itemValue.length === 1) itemValue = itemValue[0];
+    const choiceFound = choices.find(choice => choice.value === itemValue);
     return choiceFound ? choiceFound.label : '';
   };
 
@@ -38,20 +50,20 @@ const SelectInputField = (props) => {
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
           </ListItem.Content>
-          {props.single && (
+          {single && (
             <ListItem.CheckBox
-              checked={props.value === item.value}
+              checked={value === item.value}
               checkedIcon={radioSelected}
               uncheckedIcon={radioUnselected}
               onPress={() => fieldValueChanged([item.value])}
             />
           )}
-          {!props.single && (
+          {!single && (
             <ListItem.CheckBox
-              checked={props.value?.includes(item.value)}
-              onPress={() => props.value?.includes(item.value)
-                ? fieldValueChanged(props.value.filter(v => v !== item.value))
-                : fieldValueChanged([...props.value || [], item.value])}
+              checked={value?.includes(item.value)}
+              onPress={() => value?.includes(item.value)
+                ? fieldValueChanged(value.filter(v => v !== item.value))
+                : fieldValueChanged([...value || [], item.value])}
             />
           )}
         </ListItem>
@@ -60,7 +72,7 @@ const SelectInputField = (props) => {
   };
 
   const renderChoices = () => {
-    // console.log('Field Choices', props.choices);
+    // console.log('Field Choices', choices);
     return (
       <>
         <ListItem containerStyle={commonStyles.listItemFormField}>
@@ -68,7 +80,7 @@ const SelectInputField = (props) => {
             {renderFieldLabel()}
           </ListItem.Content>
         </ListItem>
-        {props.choices.map((item, index) => renderChoiceItem(item, index))}
+        {choices.map((item, index) => renderChoiceItem(item, index))}
       </>
     );
   };
@@ -76,13 +88,13 @@ const SelectInputField = (props) => {
   const renderFieldLabel = () => {
     return (
       <View style={formStyles.fieldLabelContainer}>
-        <Text style={formStyles.fieldLabel}>{props.label}</Text>
-        {props.placeholder && (
+        <Text style={formStyles.fieldLabel}>{label}</Text>
+        {placeholder && (
           <Icon
             name={'information-circle-outline'}
             type={'ionicon'}
             color={themes.PRIMARY_ACCENT_COLOR}
-            onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
+            onPress={() => onShowFieldInfo(label, placeholder)}
           />
         )}
       </View>
@@ -97,17 +109,17 @@ const SelectInputField = (props) => {
           <MultiSelect
             hideSubmitButton={true}
             hideTags={false}
-            single={props.single}
+            single={single}
             hideDropdown={true}
             searchIcon={false}
-            items={props.choices}
+            items={choices}
             uniqueKey={'value'}
             displayKey={'label'}
             onSelectedItemsChange={fieldValueChanged}
-            selectedItems={isEmpty(props.value) || typeof props.value === 'object' ? props.value : [props.value]}
+            selectedItems={isEmpty(value) || typeof value === 'object' ? value : [value]}
             textInputProps={{editable: false}}
-            selectText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
-            searchInputPlaceholderText={isEmpty(props.value) ? placeholderText : getChoiceLabel(props.value)}
+            selectText={isEmpty(value) ? placeholderText : getChoiceLabel(value)}
+            searchInputPlaceholderText={isEmpty(value) ? placeholderText : getChoiceLabel(value)}
             searchInputStyle={formStyles.dropdownSelectionListHeader}
             fontSize={themes.PRIMARY_TEXT_SIZE}
             selectedItemTextColor={themes.PRIMARY_TEXT_COLOR}
@@ -121,15 +133,15 @@ const SelectInputField = (props) => {
             tagTextColor={themes.PRIMARY_TEXT_COLOR}
           />
         </View>
-        {props.errors && props.errors[props.name]
-          && <Text style={formStyles.fieldError}>{props.errors[props.name]}</Text>}
+        {errors && errors[name]
+          && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
       </>
     );
   };
 
   return (
     <>
-      {props.showExpandedChoices ? renderChoices() : renderMultiSelect()}
+      {showExpandedChoices ? renderChoices() : renderMultiSelect()}
     </>
   );
 };

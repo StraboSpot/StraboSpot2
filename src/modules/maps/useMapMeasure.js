@@ -29,9 +29,6 @@ const useMapMeasure = (mapRef) => {
     // Remove the linestring from the group so that we can redraw it based on points collection.
     if (measureFeaturesTemp.length > 1) measureFeaturesTemp.pop();
 
-    // Clear the distance container to populate it with a new value.
-    // props.setDistance(0);
-
     // If a feature was clicked, remove it from the map.
     if (!isEmpty(featureAtPoint)) {
       const id = featureAtPoint.properties.id;

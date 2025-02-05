@@ -9,7 +9,7 @@ const RockAlterationOrePage = ({page}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE RockAlterationOrePage [props.page]', page);
+    console.log('UE RockAlterationOrePage [page]', page);
     return () => dispatch(setSelectedAttributes([]));
   }, [page]);
 

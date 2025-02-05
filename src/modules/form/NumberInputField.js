@@ -10,7 +10,7 @@ import {formStyles} from '../form';
 const NumberInputField = ({
                             field: {name, onBlur, onChange, value},
                             form: {errors, touched},
-                            onMyChange, ...props
+                            editable, label, onMyChange, onShowFieldInfo, placeholder,
                           }) => {
 
   const getDisplayValue = () => {
@@ -21,13 +21,13 @@ const NumberInputField = ({
   return (
     <>
       <View style={formStyles.fieldLabelContainer}>
-        <Text style={formStyles.fieldLabel}>{props.label}</Text>
-        {props.placeholder && (
+        <Text style={formStyles.fieldLabel}>{label}</Text>
+        {placeholder && (
           <Icon
             name={'information-circle-outline'}
             type={'ionicon'}
             color={themes.PRIMARY_ACCENT_COLOR}
-            onPress={() => props.onShowFieldInfo(props.label, props.placeholder)}
+            onPress={() => onShowFieldInfo(label, placeholder)}
           />
         )}
       </View>
@@ -36,10 +36,10 @@ const NumberInputField = ({
         onBlur={onBlur(name)}
         style={formStyles.fieldValue}
         value={getDisplayValue()}
-        placeholder={props.placeholder}
+        placeholder={placeholder}
         placeholderTextColor={themes.MEDIUMGREY}
         keyboardType={'numeric'}
-        editable={props.editable}
+        editable={editable}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </>

@@ -2,10 +2,9 @@ import React from 'react';
 
 import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, FormSlider, MainButtons, useForm} from '../form';
+import {Form, FormSlider, MainButtons} from '../form';
 
-const FaultRockFabric = (props) => {
-  const {getSurvey} = useForm();
+const FaultRockFabric = ({choices, formName, formProps, setChoicesViewKey, survey}) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -14,19 +13,30 @@ const FaultRockFabric = (props) => {
   const tectoniteTypesKey = 'tectonite_type';
 
   // Relevant fields for quick-entry modal
-  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
     <>
-      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
+      <Form {...{formName: formName, surveyFragment: firstKeysFields, ...formProps}}/>
       <LittleSpacer/>
-      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
+      <MainButtons
+        mainKeys={mainButtonsKeys}
+        formName={formName}
+        formProps={formProps}
+        setChoicesViewKey={setChoicesViewKey}
+      />
       <LittleSpacer/>
-      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
       <LittleSpacer/>
-      <FormSlider {...{fieldKey: tectoniteTypesKey, hasNoneChoice: true, hasRotatedLabels: true, ...props}}/>
+      <FormSlider
+        choices={choices}
+        fieldKey={tectoniteTypesKey}
+        formProps={formProps}
+        hasNoneChoice={true}
+        hasRotatedLabels={true}
+        survey={survey}
+      />
     </>
   );
 };

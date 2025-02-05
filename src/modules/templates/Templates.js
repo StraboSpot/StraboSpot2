@@ -17,7 +17,13 @@ import BasicPageDetail from '../page/BasicPageDetail';
 import {MODAL_KEYS, MODALS, PET_PAGES, SED_PAGES} from '../page/page.constants';
 import {addedTemplates, setActiveTemplates, setUseTemplate} from '../project/projects.slice';
 
-const Templates = (props) => {
+const Templates = ({
+                     isShowTemplates,
+                     page = {},
+                     rockKey,
+                     setIsShowTemplates,
+                     typeKey,
+                   }) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const templates = useSelector(state => state.project.project?.templates);
@@ -31,7 +37,6 @@ const Templates = (props) => {
   const [templatesForKey, setTemplatesForKey] = useState([]);
   const [templateType, setTemplateType] = useState(null);
 
-  let page = props.page || {};
   const measurementKey = 'measurementTemplates';
   let templateKey = page.key || undefined;
   if (isEmpty(page) && modalVisible) {
@@ -39,13 +44,13 @@ const Templates = (props) => {
     templateKey = modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
     || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT ? measurementKey
       : modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_IGNEOUS
-      || modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_SEDIMENTARY ? props.rockKey
+      || modalVisible === MODAL_KEYS.NOTEBOOK.ROCK_TYPE_SEDIMENTARY ? rockKey
         : page.notebook_modal_key ? page.notebook_modal_key
           : modalVisible;
   }
 
   useEffect(() => {
-    console.log('UE Templates [templates, templateKey, props.typeKey]', templates, templateKey, props.typeKey);
+    console.log('UE Templates [templates, templateKey, typeKey]', templates, templateKey, typeKey);
     if (templateKey === measurementKey) {
       setIsTemplateInUse(templates.useMeasurementTemplates || false);
       let activeTemplatesTemp = templates.activeMeasurementTemplates || [];
@@ -58,7 +63,7 @@ const Templates = (props) => {
       setTemplatesForKey((templates[templateKey] && templates[templateKey].templates) || []);
       setActiveTemplatesForKey((templates[templateKey] && templates[templateKey].active) || []);
     }
-  }, [templates, templateKey, props.typeKey]);
+  }, [templates, templateKey, typeKey]);
 
   const clearTemplate = () => {
     if (templateType === 'planar_orientation') {
@@ -75,7 +80,7 @@ const Templates = (props) => {
 
   const closeTemplates = () => {
     setIsShowForm(false);
-    props.setIsShowTemplates(false);
+    setIsShowTemplates(false);
   };
 
   const continueToTemplateForm = () => {
@@ -274,7 +279,7 @@ const Templates = (props) => {
 
   const renderTemplatesSelected = () => {
     if (templateKey === measurementKey) {
-      if (!props.typeKey || (props.typeKey && props.typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)) {
+      if (!typeKey || (typeKey && typeKey === MEASUREMENT_KEYS.PLANAR_LINEAR)) {
         return (
           <>
             {renderTemplateSelection('planar_orientation')}
@@ -282,7 +287,7 @@ const Templates = (props) => {
           </>
         );
       }
-      else return renderTemplateSelection(props.typeKey);
+      else return renderTemplateSelection(typeKey);
     }
     else {
       return (
@@ -317,7 +322,7 @@ const Templates = (props) => {
                 title={title}
                 type={'clear'}
                 onPress={() => {
-                  props.setIsShowTemplates(true);
+                  setIsShowTemplates(true);
                   setTemplateType(type);
                 }}
               />
@@ -340,7 +345,7 @@ const Templates = (props) => {
                     title={'Change'}
                     type={'clear'}
                     onPress={() => {
-                      props.setIsShowTemplates(true);
+                      setIsShowTemplates(true);
                       setTemplateType(type);
                     }}
                   />
@@ -422,9 +427,9 @@ const Templates = (props) => {
 
   return (
     <>
-      {props.isShowTemplates && isShowNameInput ? renderTemplateNameInput()
-        : props.isShowTemplates && isShowForm ? renderFormFields()
-          : props.isShowTemplates ? renderTemplatesList()
+      {isShowTemplates && isShowNameInput ? renderTemplateNameInput()
+        : isShowTemplates && isShowForm ? renderFormFields()
+          : isShowTemplates ? renderTemplatesList()
             : renderTemplateToggle()}
     </>
   );

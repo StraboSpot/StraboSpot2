@@ -9,7 +9,7 @@ const RockIgneousPage = ({page}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE RockIgneousPage [props.page]', page);
+    console.log('UE RockIgneousPage [page]', page);
     return () => dispatch(setSelectedAttributes([]));
   }, [page]);
 
