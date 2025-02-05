@@ -13226,13 +13226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-image-picker@npm:7.2.3":
-  version: 7.2.3
-  resolution: "react-native-image-picker@npm:7.2.3"
+"react-native-image-picker@npm:8.0.0":
+  version: 8.0.0
+  resolution: "react-native-image-picker@npm:8.0.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/0da1133e1ea2474577ebb91ba8af2f567d131489781ba2a73af0198f100c1ba5390cc9479e492abd7dd217c8bedc6f41794e961c7125aced9068ced07f2d96f5
+  checksum: 10c0/27eb32b45566be98fe0a8730c522d8a4dfb7ab577404691d421fa4e1e496a4a145d87dd417874848562345b2991308bdf3c4d223b914eb1e13610a1cd56f6979
   languageName: node
   linkType: hard
 
@@ -14802,7 +14802,7 @@ __metadata:
     react-native-fs: "npm:2.20.0"
     react-native-gesture-handler: "npm:2.23.0"
     react-native-get-random-values: "npm:1.11.0"
-    react-native-image-picker: "npm:7.2.3"
+    react-native-image-picker: "npm:8.0.0"
     react-native-image-resizer: "npm:1.4.5"
     react-native-indicators: "npm:0.17.0"
     react-native-keep-awake: "npm:4.0.0"
