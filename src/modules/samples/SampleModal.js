@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup, Image, Overlay, Switch} from 'react-native-elements';
+import {Button, ButtonGroup, CheckBox, Image} from 'react-native-elements';
 import Toast from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -12,26 +12,28 @@ import {PRIMARY_ACCENT_COLOR, PRIMARY_TEXT_COLOR, SMALL_SCREEN} from '../../shar
 import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
-import {Form, FormSlider, useForm} from '../form';
+import {Form, FormSlider, MainButtons, useForm} from '../form';
 import {setLoadingStatus, setModalVisible} from '../home/home.slice';
 import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
-import overlayStyles from '../home/overlays/overlay.styles';
+import {sample} from 'rxjs';
 
 const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const dispatch = useDispatch();
+  const isOnline = useSelector(state => state.connections.isOnline);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project?.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const {getChoices, getSurvey} = useForm();
+  const {getChoices, getRelevantFields, getSurvey} = useForm();
   const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
   const {setPointAtCurrentLocation} = useMapLocation();
 
   const initialNamePrefix = preferences.sample_prefix || '';
+  const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
   const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
@@ -44,6 +46,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const formName = ['general', 'samples'];
 
   // Relevant keys for quick-entry modal
+  const sampleTypeKey = ['sample_type'];
   const firstKeys = ['sample_id_name', 'label', 'sample_description'];
   const inplacenessKey = 'inplaceness_of_sample';
   const orientedKey = 'oriented_sample';
@@ -117,6 +120,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
     }
   };
 
+
   const handleIGSNModalCancel = () => {
     setShowIGSNModal(false);
   };
@@ -130,6 +134,11 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
     const count = await getAllSpotSamplesCount();
     console.log('SAMPLE COUNT', count);
     setStartingNumber(count);
+  };
+
+  const onCloseModalPressed = () => {
+    if (choicesViewKey) setChoicesViewKey(null);
+    else dispatch(setModalVisible({modal: null}));
   };
 
   const onOrientedButtonPress = (i) => {
@@ -146,6 +155,12 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const renderForm = (formProps) => {
     return (
       <>
+        <MainButtons
+          mainKeys={sampleTypeKey}
+          formName={formName}
+          setChoicesViewKey={setChoicesViewKey}
+          formProps={formProps}
+        />
         <Form
           {...{
             formName: formName,
@@ -184,6 +199,11 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
         />
       </>
     );
+  };
+
+  const renderSubform = (formProps) => {
+    const relevantFields = getRelevantFields(survey, choicesViewKey);
+    return <Form {...{formName: formName, surveyFragment: relevantFields, ...formProps}}/>;
   };
 
   const saveForm = async (currentForm) => {
@@ -229,44 +249,83 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
     }
   };
 
+  // const renderIGSNRegistrationView = () => {
+  //   return (
+  //     <IGSNModal
+  //       showIGSNModal={showIGSNModal}
+  //       onModalLogin={handleIGSNLogin}
+  //       onModalCancel={handleIGSNModalCancel}/>
+  //   );
+  // };
+
+  const renderSampleMainContent = () => {
+    return (
+      <>
+          <FlatList
+            bounces={false}
+            ListHeaderComponent={
+              <Formik
+                innerRef={formRef}
+                initialValues={{
+                  sample_type: 'grab',
+                  sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
+                  inplaceness_of_sample: '5___definitely',
+                }}
+                onSubmit={values => console.log('Submitting form...', values)}
+                enableReinitialize={true}>
+                {formProps => (
+                  <View style={{flex: 1}}>
+                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                  </View>
+                )}
+              </Formik>
+            }
+          />
+        <View style={{
+          // flex: 1,
+          // width: '85%',
+          marginHorizontal: 50,
+          height: 75,
+          flexDirection: 'row',
+          // backgroundColor: 'red',
+          // alignContent: 'center',
+          // justifyContent: 'center',
+        }}>
+          <View style={{flex: 2, height: '100%', alignItems: 'center', flexDirection: 'row'}}>
+            <Image
+              source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
+              style={{height: 30, width: 30, marginEnd: 10}}
+            />
+            <Text style={{textAlign: 'center', margin: 5}}>Register with SESAR </Text>
+
+          </View>
+          <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: 15}}>
+            <CheckBox
+              textStyle={isOnline.isInternetReachable ? {color: 'grey'} : {color: 'red'}}
+              checked={IGSNSwitchValue}
+              onPress={() => setIGSNSwitchValue(!IGSNSwitchValue)}
+              disabled={!isOnline.isInternetReachable}
+            />
+          </View>
+        </View>
+        {!choicesViewKey && <SaveButton
+          title={'Save Sample'}
+          onPress={() => saveForm(formRef.current)}
+        />}
+      </>
+    );
+  };
+
   return (
-    <Modal onPress={onPress}>
-      <FlatList
-        bounces={false}
-        ListHeaderComponent={
-          <Formik
-            innerRef={formRef}
-            initialValues={{
-              sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
-              inplaceness_of_sample: '5___definitely',
-            }}
-            onSubmit={values => console.log('Submitting form...', values)}
-            enableReinitialize={true}>
-            {formProps => <View style={{}}>{renderForm(formProps)}</View>}
-          </Formik>
-        }
-      />
-      <View>
-      {/*<View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginStart: 30}}>*/}
-      {/*  <View style={{alignItems: 'center'}}>*/}
-      {/*    <Text>ADD </Text>*/}
-      {/*    <Image*/}
-      {/*      source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}*/}
-      {/*      style={{height: 30, width: 30, marginEnd: 10, marginTop: 5}}*/}
-      {/*    />*/}
-      {/*  </View>*/}
-      {/*  <Switch*/}
-      {/*    value={IGSNSwitchValue}*/}
-      {/*    onValueChange={setIGSNSwitchValue}*/}
-      {/*    trackColor={'green'}*/}
-      {/*  />*/}
-      {/*</View>*/}
-      <SaveButton
-        title={'Save Sample'}
-        onPress={() => saveForm(formRef.current)}
-      />
-    </View>
-  {SMALL_SCREEN && <Toast ref={toastRef}/>}
+    <Modal
+      closeModal={onCloseModalPressed}
+      buttonTitleRight={choicesViewKey ? 'Done' : null}
+      onPress={onPress}
+    >
+
+        {/*{showIGSNModal && renderIGSNRegistrationView()}*/}
+        {renderSampleMainContent()}
+        {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>
   );
 };

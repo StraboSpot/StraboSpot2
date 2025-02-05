@@ -22,6 +22,13 @@
       "required": "false"
     },
     {
+      "type": "select_one fm9fj68",
+      "name": "sample_type",
+      "label": "Sample Type",
+      "required": "false",
+      "default": "grab"
+    },
+    {
       "type": "text",
       "name": "Sample_IGSN",
       "label": "Sample IGSN ",
@@ -245,6 +252,66 @@
     }
   ],
   "choices": [
+    {
+      "list_name": "fm9fj68",
+      "name": "core",
+      "label": "Core"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "ctd",
+      "label": "CTD"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "cuttings",
+      "label": "Cuttings"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "dredge",
+      "label": "Dredge"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "grab",
+      "label": "Grab"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "hole",
+      "label": "Hole"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "oriented_core",
+      "label": "Oriented Core"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "other",
+      "label": "Other"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "rock_powder",
+      "label": "Rock Powder"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "site",
+      "label": "Site"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "terrestrial_section",
+      "label": "Terrestrial Section"
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "trawl",
+      "label": "Trawl"
+    },
     {
       "list_name": "to0mv13",
       "name": "fabric___micro",
