@@ -13,17 +13,18 @@ import useHomeContainer from './useHomeContainer';
 import useDevice from '../../services/useDevice';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
+import {setUserData, setOrcidToken} from '../user/userProfile.slice';
 
 const HomeContainer = ({navigation, route}) => {
   console.log('Rendering HomeContainer...');
+  const orcidID = route.params?.id;
 
   const dispatch = useDispatch();
 
   const mapComponentRef = useRef(null);
 
   const projectLoadComplete = useSelector(state => state.home.isProjectLoadComplete);
-  const userEmail = useSelector(state => state.user.email);
-  const userName = useSelector(state => state.user.name);
+  const {email, name} = useSelector(state => state.user);
 
   const {createProjectDirectories} = useDevice();
   const {
@@ -45,7 +46,8 @@ const HomeContainer = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    // console.log('UE HomeContainer', '[navigation, route.params]', route.params);
+    console.log('UE HomeContainer', '[navigation, route.params]', route.params);
+    if (route.params?.orcidToken) dispatch(setOrcidToken(route.params.orcidToken));
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });
@@ -56,9 +58,9 @@ const HomeContainer = ({navigation, route}) => {
   }, [navigation, route.params]);
 
   useEffect(() => {
-    // console.log('UE HomeContainer [user]', userEmail);
-    if (userEmail && userName) Sentry.setUser({'email': userEmail, 'username': userName});
-  }, [userEmail, userName]);
+    // console.log('UE HomeContainer [user]', email);
+    if (email && name) Sentry.setUser({'email': email, 'username': name});
+  }, [email, name]);
 
   useEffect(() => {
     // console.log('UE HomeContainer [projectLoadComplete]', projectLoadComplete);

@@ -57,8 +57,7 @@ const linking = {
   prefixes: ['strabofield://'], // Custom URL scheme
   config: {
     screens: {
-      Home: '', // Default screen
-      IGSN: 'orcid_id/:id', // Example route with a parameter
+      HomeScreen: 'orcid_id/:orcidToken', // Default screen
     },
   },
 };

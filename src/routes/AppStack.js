@@ -4,7 +4,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeContainer from '../modules/home/HomeContainer';
 import {ImageInfo, ImageSlider} from '../modules/images';
-import IGSNPage from '../modules/samples/IGSNPage';
 import Sketch from '../modules/sketch/Sketch';
 
 const AppStack = () => {
@@ -38,11 +37,6 @@ const AppStack = () => {
       <Stack.Screen
         name={'Sketch'}
         component={Sketch}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'IGSN'}
-        component={IGSNPage}
         options={navigationOptions}
       />
     </Stack.Navigator>
