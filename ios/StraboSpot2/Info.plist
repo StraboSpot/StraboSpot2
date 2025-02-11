@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>StraboSpot2</string>
+	<string>StraboField</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -24,7 +24,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>103</string>
-
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -96,5 +95,14 @@
 	<false/>
 	<key>MBXAccessToken</key>
 	<string>pk.eyJ1Ijoic3RyYWJvLWdlb2xvZ3kiLCJhIjoiY2lpYzdhbzEwMDA1ZnZhbTEzcTV3Z3ZnOSJ9.myyChr6lmmHfP8LYwhH5Sg</string>
+		<key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>strabofield</string> <!-- Replace "myapp" with your custom scheme -->
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>
