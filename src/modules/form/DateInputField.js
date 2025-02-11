@@ -17,6 +17,7 @@ const DateInputField = ({
                           isShowTime,
                           isShowTimeOnly,
                           label,
+                          onMyChange,
                         }) => {
   const [isDatePickerModalVisible, setIsDatePickerModalVisible] = useState(false);
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : new Date());
@@ -34,7 +35,10 @@ const DateInputField = ({
 
   const saveDate = (event, selectedDate) => {
     // console.log('Change Date', name, event, selectedDate);
-    if (Platform.OS === 'ios') selectedDate = selectedDate.toISOString();
+    if (Platform.OS === 'ios') {
+      selectedDate = selectedDate.toISOString();
+      if (onMyChange && typeof onMyChange === 'function') onMyChange(name, selectedDate);
+    }
     else {
       setIsDatePickerModalVisible(false);
       if (event.type === 'neutralButtonPressed') selectedDate = undefined;

@@ -48,6 +48,7 @@ const Form = ({
         label={field.label}
         key={field.name}
         isShowTimeOnly={isShowTimeOnly}
+        onMyChange={onMyChange}
       />
     );
   };
