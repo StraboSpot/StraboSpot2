@@ -17,8 +17,6 @@ import {setUserData, setOrcidToken} from '../user/userProfile.slice';
 
 const HomeContainer = ({navigation, route}) => {
   console.log('Rendering HomeContainer...');
-  const orcidID = route.params?.id;
-
   const dispatch = useDispatch();
 
   const mapComponentRef = useRef(null);

@@ -90,7 +90,7 @@ const Modal = ({
     );
   }
   return (
-    <View style={{...overlayStyles.overlayContainer, ...overlayStyles.overlayPosition, maxHeight: height * 0.80}}>
+    <View style={{...overlayStyles.overlayContainer, ...overlayStyles.overlayPosition, maxHeight: height * 0.80, zIndex: 1000}}>
       <ModalHeader
         buttonTitleLeft={buttonTitleLeft}
         buttonTitleRight={buttonTitleRight}

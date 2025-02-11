@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   buttonContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     paddingTop: 10,
