@@ -10,11 +10,13 @@ import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
-import config from '../../utils/config';
 import {Form, useForm} from '../form';
+import GeoFieldsInputs from '../geography/GeoFieldInputs';
 import NoteForm from '../notes/NoteForm';
 import usePetrology from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import IGSNModal from '../samples/IGSNModal';
+import useSamples from '../samples/useSamples';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSed from '../sed/useSed';
 import {useSpots} from '../spots';
@@ -36,9 +38,11 @@ const BasicPageDetail = ({
   const isOnline = useSelector(state => state.connections.isOnline);
 
   const [IGSNChecked, setIGSNChecked] = useState(false);
+  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
+  const {onSampleFormChange} = useSamples();
   const {deleteSedFeature, onSedFormChange, saveSedBedFeature, saveSedFeature} = useSed();
   const {checkSampleName} = useSpots();
   const {deleteFeatureTags} = useTags();
@@ -127,24 +131,6 @@ const BasicPageDetail = ({
     );
   };
 
-  const getIGSN = async () => {
-    try {
-      if (isEmpty(user.orcidToken)) {
-        const ORCID_CLIENT_ID = config.get('orcid_client_id');
-        const url = `https://orcid.org/oauth/authorize?client_id=${ORCID_CLIENT_ID}&response_type=code&scope=openid&redirect_uri=https://www.strabospot.org/orcid_callback%3Fcreds%3D${encodeURIComponent(
-          user.encoded_login)}`;
-        console.log(url);
-        await Linking.openURL(url);
-      }
-      else {
-        console.log('Check user ORCID token');
-      }
-    }
-    catch (err) {
-      console.log(err);
-    }
-  };
-
   const getFormName = () => {
     let formName = [groupKey, pageKey];
     if (groupKey === 'pet' && selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
@@ -155,7 +141,7 @@ const BasicPageDetail = ({
     return formName;
   };
 
-  const renderIGSNButton = () => (
+  const renderIGSNCheckbox = () => (
     <CheckBox
       title={'Register Sample with Sesar to obtain an IGSN'}
       textStyle={isOnline.isInternetReachable ? {color: 'grey'} : {color: 'red'}}
@@ -180,16 +166,21 @@ const BasicPageDetail = ({
           enableReinitialize={true}
         >
           {formProps => (
-            <Form {...{
+            <>
+              <GeoFieldsInputs geomFormRef={formRef} />
+              <Form {...{
               ...formProps,
               formName: formName,
               onMyChange: page.key === PAGE_KEYS.MINERALS
                 ? ((name, value) => onMineralChange(formRef.current, name, value))
                 : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
                   ? ((name, value) => onSedFormChange(formRef.current, name, value))
-                  : undefined,
-              // IGSN: getIGSN,
+                  : page.key === PAGE_KEYS.SAMPLES
+                    ? ((name, value) => onSampleFormChange(formRef.current, name, value))
+                    : undefined
+                ,
             }}/>
+            </>
           )}
         </Formik>
         <Button
@@ -251,11 +242,11 @@ const BasicPageDetail = ({
       else if (groupKey === 'sed') {
         await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
-      else await saveFeature(formCurrent);
-      if (IGSNChecked) {
-        showIGSNModal(true)
+      else if (IGSNChecked) {
+        setIsIGSNModalVisible(true);
       }
       else {
+        await saveFeature(formCurrent);
         await formCurrent.resetForm();
         closeDetailView();
       }
@@ -279,10 +270,17 @@ const BasicPageDetail = ({
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />
-          {page.key === PAGE_KEYS.SAMPLES && renderIGSNButton()}
+          {page.key === PAGE_KEYS.SAMPLES && renderIGSNCheckbox()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
+      )}
+      {isIGSNModalVisible && (
+        <IGSNModal
+          onModalCancel={() => setIsIGSNModalVisible(false)}
+          formRef={formRef.current}
+          onSavePress={formCurrent => saveFeature(formCurrent)}
+        />
       )}
     </>
   );

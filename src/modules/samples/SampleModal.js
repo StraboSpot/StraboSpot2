@@ -13,13 +13,13 @@ import alert from '../../shared/ui/alert';
 import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
 import {Form, FormSlider, MainButtons, useForm} from '../form';
+import useSamples from './useSamples'
 import {setLoadingStatus, setModalVisible} from '../home/home.slice';
 import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS} from '../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/projects.slice';
 import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
-import {sample} from 'rxjs';
 
 const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const dispatch = useDispatch();
@@ -29,16 +29,18 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const {getChoices, getRelevantFields, getSurvey} = useForm();
-  const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
-  const {setPointAtCurrentLocation} = useMapLocation();
+  const {checkSampleName, getNewSpotName} = useSpots();
+  const {getCurrentLocation, setPointAtCurrentLocation} = useMapLocation();
+  const {getAllSamplesCount} = useSamples();
 
   const initialNamePrefix = preferences.sample_prefix || '';
   const [choicesViewKey, setChoicesViewKey] = useState(null);
   const [namePrefix, setNamePrefix] = useState(initialNamePrefix);
   const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
-  const [IGSNSwitchValue, setIGSNSwitchValue] = useState(false);
-  const [showIGSNModal, setShowIGSNModal] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState({});
+  const [collectionTime, setCollectionTime] = useState(null);
+  const [collectionDate, setCollectionDate] = useState(null);
 
   const formRef = useRef(null);
   const toastRef = useRef();
@@ -46,7 +48,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const formName = ['general', 'samples'];
 
   // Relevant keys for quick-entry modal
-  const sampleTypeKey = ['sample_type'];
+  const sampleTypeKey = ['sample_type', 'material_type'];
   const firstKeys = ['sample_id_name', 'label', 'sample_description'];
   const inplacenessKey = 'inplaceness_of_sample';
   const orientedKey = 'oriented_sample';
@@ -67,6 +69,13 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
 
   useEffect(() => {
     console.log('UE SampleModal [spot]', spot);
+    getCurrentLocation()
+      .then((location) => {
+        const date = new Date().toISOString();
+        setCurrentLocation(location);
+        // setCollectionTime(date);
+        setCollectionDate(date);
+      });
 
     if (preferences.prepend_spot_name_sample_name) {
       const spotName = modalVisible === MODAL_KEYS.SHORTCUTS.SAMPLE || !spot ? getNewSpotName()
@@ -118,22 +127,6 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
         {cancelable: false},
       );
     }
-  };
-
-
-  const handleIGSNModalCancel = () => {
-    setShowIGSNModal(false);
-  };
-
-  const handleIGSNLogin = () => {
-    console.log('JHELEFJLJDFLSDFJSLDFJ');
-    setShowIGSNModal(false);
-  };
-
-  const getAllSamplesCount = async () => {
-    const count = await getAllSpotSamplesCount();
-    console.log('SAMPLE COUNT', count);
-    setStartingNumber(count);
   };
 
   const onCloseModalPressed = () => {
@@ -241,7 +234,6 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
       await currentForm.resetForm();
 
       if (newSample.sample_id_name) await checkSampleName(newSample.sample_id_name, toastRef);
-      // if (IGSNSwitchValue) setShowIGSNModal(true);
     }
     catch (err) {
       console.error('Error saving Sample', err);
@@ -249,65 +241,34 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
     }
   };
 
-  // const renderIGSNRegistrationView = () => {
-  //   return (
-  //     <IGSNModal
-  //       showIGSNModal={showIGSNModal}
-  //       onModalLogin={handleIGSNLogin}
-  //       onModalCancel={handleIGSNModalCancel}/>
-  //   );
-  // };
-
   const renderSampleMainContent = () => {
     return (
       <>
-          <FlatList
-            bounces={false}
-            ListHeaderComponent={
-              <Formik
-                innerRef={formRef}
-                initialValues={{
-                  sample_type: 'grab',
-                  sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
-                  inplaceness_of_sample: '5___definitely',
-                }}
-                onSubmit={values => console.log('Submitting form...', values)}
-                enableReinitialize={true}>
-                {formProps => (
-                  <View style={{flex: 1}}>
-                    {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
-                  </View>
-                )}
-              </Formik>
-            }
-          />
-        <View style={{
-          // flex: 1,
-          // width: '85%',
-          marginHorizontal: 50,
-          height: 75,
-          flexDirection: 'row',
-          // backgroundColor: 'red',
-          // alignContent: 'center',
-          // justifyContent: 'center',
-        }}>
-          <View style={{flex: 2, height: '100%', alignItems: 'center', flexDirection: 'row'}}>
-            <Image
-              source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
-              style={{height: 30, width: 30, marginEnd: 10}}
-            />
-            <Text style={{textAlign: 'center', margin: 5}}>Register with SESAR </Text>
-
-          </View>
-          <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: 15}}>
-            <CheckBox
-              textStyle={isOnline.isInternetReachable ? {color: 'grey'} : {color: 'red'}}
-              checked={IGSNSwitchValue}
-              onPress={() => setIGSNSwitchValue(!IGSNSwitchValue)}
-              disabled={!isOnline.isInternetReachable}
-            />
-          </View>
-        </View>
+        <FlatList
+          bounces={false}
+          ListHeaderComponent={
+            <Formik
+              innerRef={formRef}
+              initialValues={{
+                material_type: 'intact rock',
+                sample_type: 'grab',
+                sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
+                inplaceness_of_sample: '5___definitely',
+                longitude: currentLocation.longitude,
+                latitude: currentLocation.latitude,
+                collection_time: collectionDate,
+                collection_date: collectionDate,
+              }}
+              onSubmit={values => console.log('Submitting form...', values)}
+              enableReinitialize={true}>
+              {formProps => (
+                <View style={{flex: 1}}>
+                  {choicesViewKey ? renderSubform(formProps) : renderForm(formProps)}
+                </View>
+              )}
+            </Formik>
+          }
+        />
         {!choicesViewKey && <SaveButton
           title={'Save Sample'}
           onPress={() => saveForm(formRef.current)}
@@ -323,9 +284,8 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
       onPress={onPress}
     >
 
-        {/*{showIGSNModal && renderIGSNRegistrationView()}*/}
-        {renderSampleMainContent()}
-        {SMALL_SCREEN && <Toast ref={toastRef}/>}
+      {renderSampleMainContent()}
+      {SMALL_SCREEN && <Toast ref={toastRef}/>}
     </Modal>
   );
 };

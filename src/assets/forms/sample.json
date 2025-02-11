@@ -9,6 +9,18 @@
       "name": "end"
     },
     {
+      "type": "date",
+      "name": "collection_date",
+      "label": "Collection Date",
+      "required": "false"
+    },
+    {
+      "type": "time",
+      "name": "collection_time",
+      "label": "Collection Time",
+      "required": "false"
+    },
+    {
       "type": "text",
       "name": "label",
       "label": "Label",

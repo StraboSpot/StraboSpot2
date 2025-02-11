@@ -20,8 +20,6 @@ const SamplesPage = ({page}) => {
 
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedSample, setSelectedSample] = useState({});
-  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false)
-
 
   useEffect(() => {
     console.log('UE SamplesPage []');
@@ -50,12 +48,6 @@ const SamplesPage = ({page}) => {
           closeDetailView={() => setIsDetailView(false)}
           page={page}
           selectedFeature={selectedSample}
-          showIGSNModal={value => setIsIGSNModalVisible(value)}
-
-        />
-        <IGSNModal
-          showIGSNModal={isIGSNModalVisible}
-          onModalCancel={() => setIsIGSNModalVisible(false)}
         />
       </>
     );
