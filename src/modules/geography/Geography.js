@@ -12,7 +12,7 @@ import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import {Form, formStyles, NumberInputField, TextInputField, useForm} from '../form';
-import useMapLocation from '../maps/useMapLocation';
+import GeoFieldInputs from './GeoFieldInputs';
 import useMapView from '../maps/useMapView';
 import {setNotebookPageVisibleToPrev} from '../notebook-panel/notebook.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
@@ -20,7 +20,6 @@ import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const Geography = () => {
   const {showErrors, validateForm} = useForm();
-  const {getCurrentLocation} = useMapLocation();
   const {isOnGeoMap} = useMapView();
 
   const dispatch = useDispatch();
@@ -31,18 +30,6 @@ const Geography = () => {
 
   const cancelFormAndGo = () => {
     dispatch(setNotebookPageVisibleToPrev());
-  };
-
-  // Fill in current location
-  const fillWithCurrentLocation = async () => {
-    const currentLocation = await getCurrentLocation();
-    if (currentLocation.latitude) geomFormRef.current.setFieldValue('latitude', currentLocation.latitude);
-    if (currentLocation.longitude) geomFormRef.current.setFieldValue('longitude', currentLocation.longitude);
-    if (currentLocation.altitude) formRef.current.setFieldValue('altitude', currentLocation.altitude);
-    if (currentLocation.accuracy) formRef.current.setFieldValue('gps_accuracy', currentLocation.accuracy);
-    if (currentLocation.altitudeAccuracy) {
-      formRef.current.setFieldValue('altitude_accuracy', currentLocation.altitudeAccuracy);
-    }
   };
 
   const renderCancelSaveButtons = () => {
@@ -159,49 +146,8 @@ const Geography = () => {
     return (
       <>
         {!isEmpty(initialGeomValues.latitude) && !isEmpty(initialGeomValues.longitude)
-          ? renderGeoFieldInputs() : renderGeoFieldText(initialGeomValues)}
+          ? <GeoFieldInputs formRef={formRef} geomFormRef={geomFormRef}/> : renderGeoFieldText(initialGeomValues)}
       </>
-    );
-  };
-
-  const renderGeoFieldInputs = () => {
-    return (
-      <ListItem containerStyle={commonStyles.listItemFormField}>
-        <ListItem.Content>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <View style={{flex: 1, flexDirection: 'row', overflow: 'hidden'}}>
-              <View style={{flex: 1, paddingRight: 5}}>
-                <Field
-                  component={NumberInputField}
-                  name={'longitude'}
-                  key={'longitude'}
-                  label={'Longitude'}
-                />
-              </View>
-              <View style={{flex: 1}}>
-                <Field
-                  component={NumberInputField}
-                  name={'latitude'}
-                  key={'latitude'}
-                  label={'Latitude'}
-                />
-              </View>
-            </View>
-            <View>
-              <Button
-                onPress={fillWithCurrentLocation}
-                type={'clear'}
-                icon={{
-                  name: 'locate',
-                  type: 'ionicon',
-                  size: 30,
-                  color: commonStyles.iconColor.color,
-                }}
-              />
-            </View>
-          </View>
-        </ListItem.Content>
-      </ListItem>
     );
   };
 
