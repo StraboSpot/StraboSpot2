@@ -98,7 +98,8 @@
     "react-redux": "9.2.0",
     "redux-logger": "3.0.6",
     "redux-persist": "6.0.0",
-    "uuid": "11.0.5"
+    "uuid": "11.0.5",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

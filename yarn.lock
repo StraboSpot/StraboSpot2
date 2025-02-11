@@ -14234,6 +14234,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sax@npm:^1.2.4":
+  version: 1.4.1
+  resolution: "sax@npm:1.4.1"
+  checksum: 10c0/6bf86318a254c5d898ede6bd3ded15daf68ae08a5495a2739564eb265cd13bcc64a07ab466fb204f67ce472bb534eb8612dac587435515169593f4fffa11de7c
+  languageName: node
+  linkType: hard
+
 "scheduler@npm:0.24.0-canary-efb381bbf-20230505":
   version: 0.24.0-canary-efb381bbf-20230505
   resolution: "scheduler@npm:0.24.0-canary-efb381bbf-20230505"
@@ -14921,6 +14928,7 @@ __metadata:
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.0"
+    xml-js: "npm:^1.6.11"
   languageName: unknown
   linkType: soft
 
@@ -16267,6 +16275,17 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/25eb33aff17edcb90721ed6b0eb250976328533ad3cd1a28a274bd263682e7296a6591ff1436d6cbc50fa67463158b062f9d1122013b361cec99a05f84680e06
+  languageName: node
+  linkType: hard
+
+"xml-js@npm:^1.6.11":
+  version: 1.6.11
+  resolution: "xml-js@npm:1.6.11"
+  dependencies:
+    sax: "npm:^1.2.4"
+  bin:
+    xml-js: ./bin/cli.js
+  checksum: 10c0/c83631057f10bf90ea785cee434a8a1a0030c7314fe737ad9bf568a281083b565b28b14c9e9ba82f11fc9dc582a3a907904956af60beb725be1c9ad4b030bc5a
   languageName: node
   linkType: hard
 
