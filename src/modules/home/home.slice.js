@@ -26,6 +26,7 @@ const initialHomeState = {
   shortcutSwitchPosition: {
     all: false,
     tag: false,
+    geologic_units: false,
     measurement: false,
     sample: false,
     note: false,
