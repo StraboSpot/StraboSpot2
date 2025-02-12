@@ -26,6 +26,7 @@ import ActiveProjectPanel from '../project/ActiveProjectPanel';
 import MyStraboSpot from '../project/MyStraboSpot';
 import ProjectDescription from '../project/ProjectDescription';
 import UploadBackupAndExport from '../project/UploadBackupExport';
+import {ReportsMenu} from '../reports';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 import {SpotsList} from '../spots';
 import {AddRemoveTagFeatures, AddRemoveTagSpots, TagDetailSidePanel, Tags} from '../tags';
@@ -69,6 +70,8 @@ const MainMenuPanel = forwardRef(({
         return <UploadBackupAndExport closeMainMenuPanel={closeMainMenuPanel}/>;
       case MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS:
         return <MicroProjectsList/>;
+      case MAIN_MENU_ITEMS.MANAGE.REPORTS:
+        return <ReportsMenu/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS:
         return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:

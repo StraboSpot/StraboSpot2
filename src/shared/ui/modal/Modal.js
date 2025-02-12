@@ -22,7 +22,7 @@ const Modal = ({
                  title,
                }) => {
 
-  const {height} = useWindowDimensions();
+  const {height, width} = useWindowDimensions();
 
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);
@@ -66,13 +66,15 @@ const Modal = ({
   };
 
   if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT
-    || SMALL_SCREEN) {
+    || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS || SMALL_SCREEN) {
     return (
       <Overlay
-        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || SMALL_SCREEN}
+        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT
+          || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS || SMALL_SCREEN}
         overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {
           ...overlayStyles.overlayContainer,
           maxHeight: height * 0.80,
+          width: modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS ? width * 0.80 : null,
         }}
         fullScreen={SMALL_SCREEN}
         animationType={'slide'}
