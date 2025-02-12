@@ -250,7 +250,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
             <Formik
               innerRef={formRef}
               initialValues={{
-                material_type: 'intact rock',
+                material_type: 'intact_rock',
                 sample_type: 'grab',
                 sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
                 inplaceness_of_sample: '5___definitely',
