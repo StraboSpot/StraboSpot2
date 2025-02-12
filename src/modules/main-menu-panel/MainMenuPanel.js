@@ -49,7 +49,7 @@ const MainMenuPanel = forwardRef(({
   const renderMainMenuContent = () => {
     return (
       <>
-        <MainMenuPanelHeader/>
+        <MainMenuPanelHeader closeMainMenuPanel={closeMainMenuPanel}/>
         {renderMainMenuList()}
       </>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animated} from 'react-native';
+import {Animated, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -24,9 +24,9 @@ const LeftSideButtons = ({
 
   return (
     <>
-      <Animated.View style={[homeStyles.homeIconContainer, animateLeftSide]}>
+      <View style={[homeStyles.homeIconContainer, animateLeftSide]}>
         <MainMenuButton closeMainMenuPanel={closeMainMenuPanel} openMainMenuPanel={openMainMenuPanel}/>
-      </Animated.View>
+      </View>
 
       <Animated.View style={[homeStyles.mapActionsContainer, animateLeftSide]}>
         <MapActionButtons

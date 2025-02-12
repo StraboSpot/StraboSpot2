@@ -8,7 +8,7 @@ import {MAIN_MENU_TITLE} from './mainMenu.constants';
 import {setMenuSelectionPage} from './mainMenuPanel.slice';
 import mainMenuPanelStyles from './mainMenuPanel.styles';
 
-const MainMenuPanelHeader = ({onPress}) => {
+const MainMenuPanelHeader = ({closeMainMenuPanel}) => {
   const dispatch = useDispatch();
 
   const settingsPageVisible = useSelector(state => state.mainMenu.mainMenuPageVisible);
@@ -16,8 +16,8 @@ const MainMenuPanelHeader = ({onPress}) => {
 
   return (
     <View style={mainMenuPanelStyles.mainMenuHeaderContainer}>
-      <View style={mainMenuPanelStyles.mainMenuIconContainer}>
-        {settingsPageVisible && !isSideMenuVisible && (
+      {settingsPageVisible && !isSideMenuVisible ? (
+        <View style={mainMenuPanelStyles.mainMenuIconContainer}>
           <Icon
             name={'arrow-back'}
             type={'ionicon'}
@@ -26,12 +26,20 @@ const MainMenuPanelHeader = ({onPress}) => {
             onPress={() => dispatch(setMenuSelectionPage({name: null}))}
             size={30}
           />
-        )}
-      </View>
+        </View>
+      ) : <View style={mainMenuPanelStyles.mainMenuIconContainer}/>}
       <View style={mainMenuPanelStyles.mainMenuHeaderTextContainer}>
         <Text style={mainMenuPanelStyles.headerText}>{settingsPageVisible || MAIN_MENU_TITLE}</Text>
       </View>
-      <View style={{flex: 1, paddingBottom: 10}}/>
+      <View style={{padding: 5, justifyContent: 'flex-start'}}>
+        <Icon
+          name={'close'}
+          type={'ionicon'}
+          color={'black'}
+          onPress={closeMainMenuPanel}
+          size={30}
+        />
+      </View>
     </View>
   );
 };

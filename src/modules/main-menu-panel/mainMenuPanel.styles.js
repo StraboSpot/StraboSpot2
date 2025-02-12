@@ -5,8 +5,6 @@ import * as themes from '../../shared/styles.constants';
 const styles = StyleSheet.create({
   buttons: {
     color: themes.PRIMARY_ACCENT_COLOR,
-    paddingLeft: 10,
-    paddingRight: 10,
   },
   container: {
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
@@ -35,9 +33,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   mainMenuIconContainer: {
-    alignItems: 'flex-start',
-    flex: 1,
     justifyContent: 'center',
+    padding: 5,
   },
   settingsDrawer: {
     height: '100%',

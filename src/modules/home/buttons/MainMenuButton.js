@@ -12,14 +12,14 @@ const MainMenuButton = ({closeMainMenuPanel, openMainMenuPanel}) => {
     else openMainMenuPanel();
   };
 
-  return (
-    <IconButton
-      source={isMainMenuPanelVisible
-        ? require('../../../assets/icons/HomeButton_pressed.png')
-        : require('../../../assets/icons/HomeButton.png')}
-      onPress={toggleHomeDrawer}
-    />
-  );
+  if (!isMainMenuPanelVisible) {
+    return (
+      <IconButton
+        source={require('../../../assets/icons/HomeButton.png')}
+        onPress={toggleHomeDrawer}
+      />
+    );
+  }
 };
 
 export default MainMenuButton;
