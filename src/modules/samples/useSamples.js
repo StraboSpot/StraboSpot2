@@ -1,7 +1,23 @@
 import {useSpots} from '../spots';
+// import convert from 'xml-js';
 
-const useSamples = (props) => {
+const useSamples = () => {
   const {getAllSpotSamplesCount} = useSpots();
+
+  const selectedSampleData = (selectedFeature) => {
+    // console.log('Selected Feature in useSamples', selectedFeature);
+    const {collection_date, collection_time, latitude, longitude,material_type, sample_type, sample_id_name} = selectedFeature;
+    const selectedFeatureJSON = {
+      collection_date: collection_date,
+      collection_time: collection_time,
+      latitude: latitude,
+      longitude: longitude,
+      material_type: material_type,
+      sample_id_name: sample_id_name,
+      sample_type: sample_type,
+    };
+    console.log('Selected Feature JSON in useSamples', selectedFeatureJSON);
+  };
 
   const getAllSamplesCount = async () => {
     const count = await getAllSpotSamplesCount();
@@ -22,6 +38,7 @@ const useSamples = (props) => {
   return {
     getAllSamplesCount: getAllSamplesCount,
     onSampleFormChange: onSampleFormChange,
+    selectedSampleData,
   };
 };
 

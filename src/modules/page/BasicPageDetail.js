@@ -280,6 +280,7 @@ const BasicPageDetail = ({
           onModalCancel={() => setIsIGSNModalVisible(false)}
           formRef={formRef.current}
           onSavePress={formCurrent => saveFeature(formCurrent)}
+          selectedFeature={selectedFeature}
         />
       )}
     </>

@@ -4,6 +4,7 @@ import {Linking, ScrollView, Text, useWindowDimensions, View} from 'react-native
 import {Button, Overlay, Input, Icon, Avatar, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import useSamples from './useSamples';
 import useForm from '../../modules/form/useForm';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -18,11 +19,13 @@ const IGNSModal = (
     formRef,
     onModalCancel,
     onSavePress,
+    selectedFeature,
   },
 ) => {
   const formName = ['general', 'samples'];
 
   const {height} = useWindowDimensions();
+  const {getSesarUserCode, selectedSampleData} = useSamples();
 
   const {getLabel} = useForm();
 
@@ -46,6 +49,8 @@ const IGNSModal = (
 
   useEffect(() => {
     console.log('Orcid Token');
+    // console.log('Selected Feature', selectedFeature);
+    selectedSampleData(selectedFeature);
     setIsLoading(true);
     getSesarToken(orcidToken).catch(err => console.log('Orcid Token ERROR', err));
   }, [orcidToken]);
