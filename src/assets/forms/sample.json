@@ -151,7 +151,8 @@
       "type": "select_one jq8qd30",
       "name": "material_type",
       "label": "Material Type",
-      "required": "false"
+      "required": "false",
+      "default": "intact_rock"
     },
     {
       "type": "select_multiple za9kv60",
