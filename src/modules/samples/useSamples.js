@@ -25,6 +25,34 @@ const useSamples = () => {
     return count;
   };
 
+  const getSesarUserCode = async (token) => {
+    try {
+      const url = 'https://app.geosamples.org/webservices/credentials_service_v2.php';
+      console.log(JSON.parse(atob(token.access.split('.')[1])));
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token.access}`,
+        },
+      }).then(res => {
+        res.text()
+      });
+      // const xmlData = await userCodeXml.text();
+      // const jsonData = parse(xmlData);
+      // const convert = require('xml-js');
+      // const result = convert.xml2json(xmlData, {compact: true, spaces: 2});
+      // console.log(result);
+      // console.log(jsonData);
+      // const jsonResult = convert.xml2js(userCodeXml, {compact: true, spaces: 2});
+      // console.log(jsonResult);
+      // return jsonResult;
+    }
+    catch (error) {
+      console.log('Error getting SESAR user code', error);
+    }
+
+  };
+
   const onSampleFormChange = (formCurrent, name, value) => {
     console.log(name, 'changed to', value);
     name === 'collection_date'
@@ -37,6 +65,7 @@ const useSamples = () => {
 
   return {
     getAllSamplesCount: getAllSamplesCount,
+    getSesarUserCode: getSesarUserCode,
     onSampleFormChange: onSampleFormChange,
     selectedSampleData,
   };

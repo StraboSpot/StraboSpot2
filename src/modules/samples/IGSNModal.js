@@ -98,6 +98,8 @@ const IGNSModal = (
       else {
         console.log(sesarJson);
         !isEmpty(sesarJson) && dispatch(setSesarToken(sesarJson));
+        const userCode = await getSesarUserCode(sesarJson);
+        console.log ('USER CODE', userCode);
         setIsOrcidSignInPrompt(false);
       }
       setIsLoading(false);
