@@ -49,7 +49,11 @@ const ImageGallery = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
     try {
       const spotsWithImages = getSpotsWithImages();
       // console.log('Getting Image URI Thumbnails!');
-      const imageThumbnailURIsTemp = await getImageThumbnailURIs(spotsWithImages);
+      let imageThumbnailURIsTemp = {};
+      await Promise.all(spotsWithImages.map(async (spot) => {
+        const gotImageThumbnailURIs = await getImageThumbnailURIs(spot.properties.images);
+        imageThumbnailURIsTemp = {...imageThumbnailURIsTemp, ...gotImageThumbnailURIs};
+      }));
       setIsImageLoadedObj(Object.assign({}, ...Object.keys(imageThumbnailURIsTemp).map(key => ({[key]: false}))));
       // console.log('Image URI Thumbnails are done!');
       setImageThumbnails(imageThumbnailURIsTemp);

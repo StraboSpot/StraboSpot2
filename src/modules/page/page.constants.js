@@ -9,7 +9,7 @@ import Geography from '../geography/Geography';
 import AddEarthquakeModal from '../geomorph/AddEarthquakeModal';
 import EarthquakesPage from '../geomorph/EarthquakesPage';
 import ImagesOverview from '../images/ImagesOverview'; // import {ImagesOverview, ImagesViewPage} from '../images'; errors in web
-import ImagesViewPage from '../images/ImagesViewPage';
+import ImagesPage from '../images/ImagesPage';
 import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
 import AddMeasurementModal from '../measurements/AddMeasurementModal';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -135,7 +135,7 @@ export const PRIMARY_PAGES = [
     icon_src: require('../../assets/icons/Photo.png'),
     icon_pressed_src: require('../../assets/icons/Photo_pressed.png'),
     overview_component: ImagesOverview,
-    page_component: ImagesViewPage,
+    page_component: ImagesPage,
   }, {
     key: PAGE_KEYS.TAGS,
     label: 'Tags',

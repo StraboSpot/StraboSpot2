@@ -1,9 +1,11 @@
+export {default as AddImageButtons} from './AddImageButtons';
 export {default as ImageGallery} from './ImageGallery';
 export {default as ImageInfo} from './ImageInfo';
 export {default as ImagePropertiesModal} from './ImagePropertiesModal';
 export {default as ImageSlider} from './ImageSlider';
+export {default as ImagesList} from './ImagesList';
 export {default as ImagesOverview} from './ImagesOverview';
-export {default as ImagesViewPage} from './ImagesViewPage';
+export {default as ImagesViewPage} from './ImagesPage';
 export {default as imageSliderStyles} from './imageSlider.styles';
 export {default as imageStyles} from './image.styles';
 export {default as useImages} from './useImages';

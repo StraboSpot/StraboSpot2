@@ -10,7 +10,8 @@ import IconButton from '../../../shared/ui/IconButton';
 import {useImages} from '../../images';
 import useMapLocation from '../../maps/useMapLocation';
 import {MODAL_KEYS, SHORTCUT_MODALS} from '../../page/page.constants';
-import {clearedSelectedSpots} from '../../spots/spots.slice';
+import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
+import {clearedSelectedSpots, editedSpotImages} from '../../spots/spots.slice';
 import {setLoadingStatus, setModalVisible} from '../home.slice';
 
 const ShortcutButtons = ({openNotebookPanel}) => {
@@ -32,11 +33,16 @@ const ShortcutButtons = ({openNotebookPanel}) => {
       case 'photo': {
         const point = await setPointAtCurrentLocation();
         if (point) {
-          const imagesSavedLength = await launchCameraFromNotebook(point.properties.id);
-          imagesSavedLength > 0 && toast.show(
-            imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot '
-            + point.properties.name, {type: 'success'},
-          );
+          const newImages = await launchCameraFromNotebook();
+          const imagesSavedLength = newImages.length;
+          if (imagesSavedLength > 0) {
+            dispatch(updatedModifiedTimestampsBySpotsIds([point.properties.id]));
+            dispatch(editedSpotImages(newImages));
+            toast.show(
+              imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved in new Spot '
+              + point.properties.name, {type: 'success'},
+            );
+          }
           if (!SMALL_SCREEN) openNotebookPanel();
         }
         break;

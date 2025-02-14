@@ -24,7 +24,6 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {
   clearedSelectedSpots,
   editedSpotImage,
-  editedSpotImages,
   editedSpotProperties,
   setSelectedAttributes,
   setSelectedSpot,
@@ -187,25 +186,23 @@ const useImages = () => {
     return STRABO_APIS.PUBLIC_IMAGE_THUMBNAIL + id;
   };
 
-  const getImageThumbnailURIs = async (spotsWithImages) => {
+  const getImageThumbnailURIs = async (images) => {
     try {
       let imageThumbnailURIs = {};
-      await Promise.all(spotsWithImages.map(async (spot) => {
-        await Promise.all(spot.properties.images.map(async (image) => {
-          if (Platform.OS === 'web') {
-            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: getImageThumbnailURI(image.id)};
+      await Promise.all(images.map(async (image) => {
+        if (Platform.OS === 'web') {
+          imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: getImageThumbnailURI(image.id)};
+        }
+        else {
+          const imageUri = getLocalImageURI(image.id);
+          const exists = await doesDeviceDirExist(imageUri);
+          if (exists) {
+            const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
+            const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
+            imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
           }
-          else {
-            const imageUri = getLocalImageURI(image.id);
-            const exists = await doesDeviceDirExist(imageUri);
-            if (exists) {
-              const createResizedImageProps = [imageUri, 200, 200, 'JPEG', 100, 0];
-              const resizedImage = await ImageResizer.createResizedImage(...createResizedImageProps);
-              imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: resizedImage.uri};
-            }
-            else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
-          }
-        }));
+          else imageThumbnailURIs = {...imageThumbnailURIs, [image.id]: undefined};
+        }
       }));
       return imageThumbnailURIs;
     }
@@ -233,12 +230,11 @@ const useImages = () => {
                 imageCount++;
                 const resizedImage = await resizeImageIfNecessary(image);
                 const savedPhoto = await saveFile(resizedImage);
+                newImages.push(savedPhoto);
                 console.log('Saved Photo in getImagesFromCameraRoll:', savedPhoto);
-                dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
-                dispatch(editedSpotImages([savedPhoto]));
               }),
             );
-            res(imageCount);
+            res(newImages);
           }
         });
       }
@@ -255,7 +251,7 @@ const useImages = () => {
     else return 'file://' + APP_DIRECTORIES.IMAGES + id + '.jpg';
   };
 
-  const launchCameraFromNotebook = async (newSpotId) => {
+  const launchCameraFromNotebook = async () => {
     try {
       const permissionResult = Platform.OS === 'ios' ? true
         : await checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
@@ -263,14 +259,10 @@ const useImages = () => {
         const savedPhoto = await takePicture();
         dispatch(setLoadingStatus({view: 'home', bool: true}));
         if (savedPhoto === 'cancelled') {
-          if (newImages.length > 0) {
-            console.log('ALL PHOTOS SAVED', newImages);
-            dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id || newSpotId]));
-            dispatch(editedSpotImages(newImages));
-          }
+          if (newImages.length > 0) console.log('ALL PHOTOS SAVED', newImages);
           else toast.show('No Photos Saved', {duration: 2000, type: 'warning'});
           dispatch(setLoadingStatus({view: 'home', bool: false}));
-          return newImages.length;
+          return newImages;
         }
         else {
           const photoProperties = {
@@ -281,7 +273,7 @@ const useImages = () => {
           };
           console.log('Photos to Save:', [...newImages, photoProperties]);
           newImages.push(photoProperties);
-          return launchCameraFromNotebook(newSpotId);
+          return launchCameraFromNotebook();
         }
       }
       else {

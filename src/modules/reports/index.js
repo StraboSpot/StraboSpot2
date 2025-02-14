@@ -1,3 +1,5 @@
+export {default as ReportForm} from './ReportForm';
+export {default as ReportImages} from './ReportImages';
 export {default as ReportModal} from './ReportModal';
 export {default as ReportsListItem} from './ReportsListItem';
 export {default as ReportsList} from './ReportsList';
