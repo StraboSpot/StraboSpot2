@@ -4,7 +4,7 @@ import {FlatList, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {ReportForm, ReportImages} from '.';
-import {getNewUUID, isEmpty} from '../../shared/Helpers';
+import {getNewUUID, isEmpty, isEqual} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import Modal from '../../shared/ui/modal/Modal';
@@ -15,13 +15,14 @@ import {updatedProject} from '../project/projects.slice';
 
 const ReportModal = () => {
   const dispatch = useDispatch();
-  const reports = useSelector(state => state.project.project?.reports) || [];
   const report = useSelector(state => state.home.modalValues);
+  const reports = useSelector(state => state.project.project?.reports) || [];
 
   const formRef = useRef(null);
   const {showErrors} = useForm();
 
-  const [updatedImages, setUpdatedImages] = useState(report?.images || []);
+  const reportImages = report?.images ? JSON.parse(JSON.stringify(report?.images)) : [];
+  const [updatedImages, setUpdatedImages] = useState(reportImages);
   const initialValues = isEmpty(report) ? {} : report;
 
   const closeModal = () => {
@@ -29,8 +30,9 @@ const ReportModal = () => {
   };
 
   const confirmCloseModal = () => {
-    if (formRef.current && formRef.current.dirty) {
-      const formCurrent = formRef.current;
+    const areImageChanged = !isEqual(report?.images, updatedImages);
+    if ((formRef.current && formRef.current.dirty) || areImageChanged) {
+      const formCurrent = formRef?.current || {};
       alert(
         'Unsaved Changes',
         'Would you like to save your report before continuing?',
@@ -82,7 +84,7 @@ const ReportModal = () => {
           <View style={{flex: 1}}>
             <ReportForm initialValues={initialValues} ref={formRef}/>
             <FlatListItemSeparator/>
-            <ReportImages updatedImages={updatedImages} setUpdatedImages={setUpdatedImages}/>
+            <ReportImages setUpdatedImages={setUpdatedImages} updatedImages={updatedImages}/>
           </View>
         }
       />

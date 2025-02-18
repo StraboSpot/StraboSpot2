@@ -3,22 +3,24 @@ import {ActivityIndicator, FlatList, Switch, Text, View} from 'react-native';
 
 import {Button, Card, Icon, Image} from 'react-native-elements';
 
-import {imageStyles, useImages} from './index';
+import {ImageModal, imageStyles, useImages} from './index';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 
-const ImagesList = ({images}) => {
+const ImagesList = ({deleteImage, images, saveImages, saveUpdatedImage}) => {
 
   const [imageThumbnails, setImageThumbnails] = useState({});
+  const [imageToView, setImageToView] = useState({});
   const [isError, setIsError] = useState(false);
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
-  const {editImage, getImageBasemap, getImageThumbnailURIs, setAnnotation} = useImages();
+  const {getImageBasemap, getImageThumbnailURIs, setAnnotation} = useImages();
 
   useEffect(() => {
-    console.log('UE ImagesPage [images]', images);
+    console.log('UE ImagesList [images]', images);
     loadImageThumbnailURIs().catch(err => console.error('Error getting thumbnails', err));
   }, [images]);
 
@@ -51,7 +53,7 @@ const ImagesList = ({images}) => {
         <Card.Image
           resizeMode={'contain'}
           source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
-          onPress={() => editImage(image)}
+          onPress={() => viewImage(image)}
           PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
             : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
           placeholderStyle={commonStyles.imagePlaceholder}
@@ -93,10 +95,27 @@ const ImagesList = ({images}) => {
     );
   };
 
+  const viewImage = (image) => {
+    setImageToView(image);
+    setIsImageModalVisible(true);
+  };
+
   return (
-    <View style={{padding: 5, flex: 1}}>
-      {isError ? renderError() : renderImages()}
-    </View>
+    <>
+      <View style={{padding: 5, flex: 1}}>
+        {isError ? renderError() : renderImages()}
+      </View>
+      {isImageModalVisible && (
+        <ImageModal
+          deleteImage={deleteImage}
+          image={imageToView}
+          saveImages={saveImages}
+          saveUpdatedImage={saveUpdatedImage}
+          setImageToView={setImageToView}
+          setIsImageModalVisible={setIsImageModalVisible}
+        />
+      )}
+    </>
   );
 };
 

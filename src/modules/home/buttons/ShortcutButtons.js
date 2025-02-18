@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Platform} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -11,20 +10,29 @@ import {useImages} from '../../images';
 import useMapLocation from '../../maps/useMapLocation';
 import {MODAL_KEYS, SHORTCUT_MODALS} from '../../page/page.constants';
 import {updatedModifiedTimestampsBySpotsIds} from '../../project/projects.slice';
+import SketchModal from '../../sketch/SketchModal';
 import {clearedSelectedSpots, editedSpotImages} from '../../spots/spots.slice';
 import {setLoadingStatus, setModalVisible} from '../home.slice';
 
 const ShortcutButtons = ({openNotebookPanel}) => {
   console.log('Rendering ShortcutButtons...');
 
+  const [isSketchModalVisible, setIsSketchModalVisible] = useState(false);
+
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const shortcutSwitchPositions = useSelector(state => state.home.shortcutSwitchPosition);
 
-  const {launchCameraFromNotebook} = useImages();
-  const navigation = useNavigation();
   const toast = useToast();
+  const {launchCameraFromNotebook} = useImages();
   const {setPointAtCurrentLocation} = useMapLocation();
+
+  const saveImagesToSpot = (newImages) => {
+    dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot?.properties?.id]));
+    dispatch(editedSpotImages(newImages));
+    toast.show(`${newImages.length} image(s) saved!`, {type: 'success', duration: 1500});
+  };
 
   const toggleShortcutModal = async (key) => {
     dispatch(setLoadingStatus({view: 'home', bool: true}));
@@ -49,7 +57,7 @@ const ShortcutButtons = ({openNotebookPanel}) => {
       }
       case 'sketch': {
         const point = await setPointAtCurrentLocation();
-        if (point) navigation.navigate('Sketch');
+        if (point) setIsSketchModalVisible(true);
         if (!SMALL_SCREEN) openNotebookPanel();
         break;
       }
@@ -75,6 +83,9 @@ const ShortcutButtons = ({openNotebookPanel}) => {
         }
         else return acc;
       }, [])}
+      {isSketchModalVisible && (
+        <SketchModal saveImages={saveImagesToSpot} setIsSketchModalVisible={setIsSketchModalVisible}/>
+      )}
     </>
   );
 };

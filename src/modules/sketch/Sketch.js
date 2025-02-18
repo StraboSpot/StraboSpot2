@@ -1,46 +1,28 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
 
 import styles from './sketch.styles';
 import alert from '../../shared/ui/alert';
-import {setModalVisible} from '../home/home.slice';
 import {useImages} from '../images';
-import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {editedSpotImages} from '../spots/spots.slice';
 
-const Sketch = ({navigation, route}) => {
-  const image = route?.params?.imageInfo || {};
-  const dispatch = useDispatch();
-  const selectedSpot = useSelector(state => state.spot.selectedSpot);
+const Sketch = ({image = {}, saveImages, setIsSketchModalVisible}) => {
 
   const {getLocalImageURI, saveFile} = useImages();
-
-  const [imageId, setImageId] = useState(null);
-
-  useEffect(() => {
-    console.log('UE Sketch [imageId]', image.id);
-    if (image.id) setImageId(image.id);
-  }, []);
 
   const saveSketch = async (success, path) => {
     try {
       console.log(success, 'Path:', path);
       if (success) {
         const savedSketch = await saveFile({...image, 'path': path});
-        dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
-        dispatch(editedSpotImages([{...savedSketch, image_type: 'sketch'}]));
+        saveImages([savedSketch]);
         alert(
           'Sketch Saved!',
-          `Sketch saved to ${selectedSpot.properties.name}.`,
+          'Sketch saved.',
           [{
-            text: 'OK', onPress: () => {
-              dispatch(setModalVisible({modal: null}));
-              navigation.pop();
-            },
+            text: 'OK', onPress: () => setIsSketchModalVisible(false),
           }],
         );
       }
@@ -55,7 +37,7 @@ const Sketch = ({navigation, route}) => {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         }, {
-          text: 'OK', onPress: () => navigation.pop(),
+          text: 'OK', onPress: () => setIsSketchModalVisible(false),
         }],
       );
     }
@@ -78,15 +60,12 @@ const Sketch = ({navigation, route}) => {
           }}
           defaultStrokeIndex={0}
           defaultStrokeWidth={1}
-          onClosePressed={() => {
-            dispatch(setModalVisible({modal: null}));
-            navigation.goBack();
-          }}
-          onSketchSaved={(success, path) => saveSketch(success, path)}
+          onClosePressed={() => setIsSketchModalVisible(false)}
+          onSketchSaved={saveSketch}
           closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}
           undoComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Undo</Text></View>}
-          clearComponent={<View style={{...styles.functionButton, backgroundColor: 'red'}}><Text
-            style={{color: 'white'}}>Clear</Text></View>}
+          clearComponent={<View style={{...styles.functionButton, backgroundColor: 'red'}}>
+            <Text style={{color: 'white'}}>Clear</Text></View>}
           eraseComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Eraser</Text></View>}
           strokeComponent={color => <View style={[{backgroundColor: color}, styles.strokeColorButton]}/>}
           strokeSelectedComponent={(color, index, changed) => {

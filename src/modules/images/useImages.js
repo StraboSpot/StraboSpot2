@@ -21,13 +21,7 @@ import {
 } from '../home/home.slice';
 import {setCurrentImageBasemap} from '../maps/maps.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import {
-  clearedSelectedSpots,
-  editedSpotImage,
-  editedSpotProperties,
-  setSelectedAttributes,
-  setSelectedSpot,
-} from '../spots/spots.slice';
+import {clearedSelectedSpots, editedSpotImage, editedSpotProperties, setSelectedSpot} from '../spots/spots.slice';
 
 const useImages = () => {
   const navigation = useNavigation();
@@ -44,7 +38,15 @@ const useImages = () => {
   let imageCount = 0;
   let newImages = [];
 
-  const deleteImage = async (imageId, spotWithImage) => {
+  const deleteImageFile = async (imageId) => {
+    if (Platform.OS !== 'web') {
+      const localImageFile = getLocalImageURI(imageId);
+      const fileExists = await doesDeviceDirExist(localImageFile);
+      if (fileExists) await deleteFromDevice(localImageFile);
+    }
+  };
+
+  const deleteImageFromSpot = async (imageId, spotWithImage) => {
     const spotsOnImage = Object.values(spots).filter(spot => spot.properties.image_basemap === imageId);
     if (spotsOnImage && spotsOnImage.length >= 1) {
       dispatch(clearedStatusMessages());
@@ -59,11 +61,7 @@ const useImages = () => {
       dispatch(setSelectedSpot(spotWithImage));
       dispatch(updatedModifiedTimestampsBySpotsIds([selectedSpot.properties.id]));
       dispatch(editedSpotProperties({field: 'images', value: allOtherImages}));
-      const localImageFile = getLocalImageURI(imageId);
-      if (Platform.OS !== 'web') {
-        const fileExists = await doesDeviceDirExist(localImageFile);
-        if (fileExists) await deleteFromDevice(localImageFile);
-      }
+      await deleteImageFile(imageId);
       if (currentImageBasemap && currentImageBasemap.id === imageId) dispatch(setCurrentImageBasemap(undefined));
       return true;
     }
@@ -85,11 +83,6 @@ const useImages = () => {
     catch (err) {
       console.error('Error Checking if Image Exists on Device.');
     }
-  };
-
-  const editImage = (image) => {
-    dispatch(setSelectedAttributes([image]));
-    navigation.navigate('ImageInfo', {imageInfo: image});
   };
 
   const gatherNeededImages = async (spotsToSearch, dataset) => {
@@ -429,9 +422,9 @@ const useImages = () => {
   };
 
   return {
-    deleteImage: deleteImage,
+    deleteImageFile: deleteImageFile,
+    deleteImageFromSpot: deleteImageFromSpot,
     doesImageExistOnDevice: doesImageExistOnDevice,
-    editImage: editImage,
     gatherNeededImages: gatherNeededImages,
     getAllImages: getAllImages,
     getAllImagesIds: getAllImagesIds,

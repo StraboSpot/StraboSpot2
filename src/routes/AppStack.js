@@ -3,8 +3,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeContainer from '../modules/home/HomeContainer';
-import {ImageInfo, ImageSlider} from '../modules/images';
-import Sketch from '../modules/sketch/Sketch';
+import {ImageSlider} from '../modules/images';
 
 const AppStack = () => {
 
@@ -24,18 +23,8 @@ const AppStack = () => {
         // initialParams={{setIsSignedIn}}
       />
       <Stack.Screen
-        name={'ImageInfo'}
-        component={ImageInfo}
-        options={navigationOptions}
-      />
-      <Stack.Screen
         name={'ImageSlider'}
         component={ImageSlider}
-        options={navigationOptions}
-      />
-      <Stack.Screen
-        name={'Sketch'}
-        component={Sketch}
         options={navigationOptions}
       />
     </Stack.Navigator>

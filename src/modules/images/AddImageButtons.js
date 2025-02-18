@@ -1,9 +1,7 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Platform, View} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
-import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
@@ -14,6 +12,7 @@ import {getNewId} from '../../shared/Helpers';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import {setLoadingStatus} from '../home/home.slice';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import SketchModal from '../sketch/SketchModal';
 import {editedSpotImages} from '../spots/spots.slice';
 
 const AddImageButtons = ({saveImages}) => {
@@ -21,11 +20,11 @@ const AddImageButtons = ({saveImages}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const {getImagesFromCameraRoll, launchCameraFromNotebook} = useImages();
-  const navigation = useNavigation();
-  const toast = useToast();
   const {uploadFromWeb} = useUpload();
 
   const inputRef = useRef(null);
+
+  const [isSketchModalVisible, setIsSketchModalVisible] = useState(false);
 
   const clickedFileInput = () => {
     window.addEventListener('focus', handleFocusBack);
@@ -85,11 +84,6 @@ const AddImageButtons = ({saveImages}) => {
       console.log('newImages', newImages);
       saveImages(newImages);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
-      toast.show(`${newImages.length} image(s) saved!`,
-        {
-          type: 'success',
-          duration: 1500,
-        });
     }
     else {
       console.log('Import from web');
@@ -100,61 +94,39 @@ const AddImageButtons = ({saveImages}) => {
   const takePhoto = async () => {
     const newImages = await launchCameraFromNotebook();
     const imagesSavedLength = newImages.length;
-    if (imagesSavedLength > 0) {
-      saveImages(newImages);
-      toast.show(
-        imagesSavedLength + ' photo' + (imagesSavedLength === 1 ? '' : 's') + ' saved',
-        {
-          type: 'success',
-          duration: 1000,
-        });
-    }
+    if (imagesSavedLength > 0) saveImages(newImages);
   };
 
   return (
-    <View style={imageStyles.buttonsContainer}>
-      {Platform.OS === 'web' ? (
-        <input
-          style={{display: 'none'}}
-          id={'selectedImage'}
-          ref={inputRef}
-          type={'file'}
-          name={'image'}
-          accept={'image/*'}
-          onChange={handleFileChange}
-          onClick={clickedFileInput}
-        />
-      ) : (
-        <ButtonRounded
-          icon={
-            <Icon
-              name={'camera-outline'}
-              type={'ionicon'}
-              iconStyle={imageStyles.icon}
-              color={commonStyles.iconColor.color}/>
-          }
-          title={'Take'}
-          titleStyle={commonStyles.standardButtonText}
-          buttonStyle={imageStyles.buttonContainer}
-          type={'outline'}
-          onPress={takePhoto}
-        />
-      )}
-      <ButtonRounded
-        icon={
-          <Icon
-            name={'images-outline'}
-            type={'ionicon'}
-            iconStyle={imageStyles.icon}
-            color={commonStyles.iconColor.color}/>
-        }
-        title={'Import'}
-        titleStyle={commonStyles.standardButtonText}
-        buttonStyle={imageStyles.buttonContainer}
-        type={'outline'}
-        onPress={importImages}
-      />
-      {Platform.OS !== 'web' && (
+    <>
+      <View style={imageStyles.buttonsContainer}>
+        {Platform.OS === 'web' ? (
+          <input
+            style={{display: 'none'}}
+            id={'selectedImage'}
+            ref={inputRef}
+            type={'file'}
+            name={'image'}
+            accept={'image/*'}
+            onChange={handleFileChange}
+            onClick={clickedFileInput}
+          />
+        ) : (
+          <ButtonRounded
+            icon={
+              <Icon
+                name={'camera-outline'}
+                type={'ionicon'}
+                iconStyle={imageStyles.icon}
+                color={commonStyles.iconColor.color}/>
+            }
+            title={'Take'}
+            titleStyle={commonStyles.standardButtonText}
+            buttonStyle={imageStyles.buttonContainer}
+            type={'outline'}
+            onPress={takePhoto}
+          />
+        )}
         <ButtonRounded
           icon={
             <Icon
@@ -163,14 +135,31 @@ const AddImageButtons = ({saveImages}) => {
               iconStyle={imageStyles.icon}
               color={commonStyles.iconColor.color}/>
           }
-          title={'Sketch'}
+          title={'Import'}
           titleStyle={commonStyles.standardButtonText}
           buttonStyle={imageStyles.buttonContainer}
           type={'outline'}
-          onPress={() => navigation.navigate('Sketch')}
+          onPress={importImages}
         />
-      )}
-    </View>
+        {Platform.OS !== 'web' && (
+          <ButtonRounded
+            icon={
+              <Icon
+                name={'images-outline'}
+                type={'ionicon'}
+                iconStyle={imageStyles.icon}
+                color={commonStyles.iconColor.color}/>
+            }
+            title={'Sketch'}
+            titleStyle={commonStyles.standardButtonText}
+            buttonStyle={imageStyles.buttonContainer}
+            type={'outline'}
+            onPress={() => setIsSketchModalVisible(true)}
+          />
+        )}
+      </View>
+      {isSketchModalVisible && <SketchModal saveImages={saveImages} setIsSketchModalVisible={setIsSketchModalVisible}/>}
+    </>
   );
 };
 
