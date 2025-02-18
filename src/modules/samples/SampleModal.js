@@ -23,7 +23,6 @@ import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
 const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const dispatch = useDispatch();
-  const isOnline = useSelector(state => state.connections.isOnline);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project?.preferences) || {};
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -251,7 +250,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
               innerRef={formRef}
               initialValues={{
                 material_type: 'intact_rock',
-                sample_type: 'grab',
+                sample_type: 'individual_sample',
                 sample_id_name: namePrefix + (namePostfix || (startingNumber < 10 ? '0' + startingNumber : startingNumber)),
                 inplaceness_of_sample: '5___definitely',
                 longitude: currentLocation.longitude,
