@@ -7,6 +7,7 @@ import {ReportsList} from '.';
 import AddButton from '../../shared/ui/AddButton';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS} from '../page/page.constants';
+import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 
 const ReportsPage = ({}) => {
   console.log('Rendering ReportsPage...');
@@ -20,6 +21,7 @@ const ReportsPage = ({}) => {
 
   return (
     <View style={{flex: 1}}>
+      <ReturnToOverviewButton/>
       <AddButton
         onPress={addReport}
         title={'Create New Report'}
