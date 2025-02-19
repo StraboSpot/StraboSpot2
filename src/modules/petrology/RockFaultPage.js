@@ -9,7 +9,7 @@ const RockFaultPage = ({page}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE RockFaultPage [props.page]', page);
+    console.log('UE RockFaultPage [page]', page);
     return () => dispatch(setSelectedAttributes([]));
   }, [page]);
 

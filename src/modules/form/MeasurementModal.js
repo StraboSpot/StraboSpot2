@@ -16,7 +16,13 @@ import compassStyles from '../compass/compass.styles';
 import ManualMeasurement from '../compass/ManualMeasurement';
 import overlayStyles from '../home/overlays/overlay.styles';
 
-const MeasurementModal = (props) => {
+const MeasurementModal = ({
+                            formName,
+                            formProps,
+                            measurementsGroup,
+                            measurementsGroupLabel,
+                            setIsMeasurementModalVisible,
+                          }) => {
   const {height} = useWindowDimensions();
 
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
@@ -29,26 +35,26 @@ const MeasurementModal = (props) => {
   const addAttributeMeasurement = (data) => {
     const sliderQuality = sliderValue ? {quality: sliderValue.toString()} : undefined;
     setMeasurements({...data, ...sliderQuality});
-    props.setIsMeasurementModalVisible(false);
+    setIsMeasurementModalVisible(false);
   };
 
   const setMeasurements = (compassData) => {
     let renamedCompassData = {};
     if (isEmpty(compassData)) {
-      let updatedFormData = JSON.parse(JSON.stringify(props.formProps.values));
-      Object.values(props.measurementsGroup).forEach((k) => {
+      let updatedFormData = JSON.parse(JSON.stringify(formProps.values));
+      Object.values(measurementsGroup).forEach((k) => {
         if (isEmpty(compassData) && updatedFormData[k]) delete updatedFormData[k];
       });
-      props.formProps.setValues(updatedFormData);
-      props.setIsMeasurementModalVisible(false);
+      formProps.setValues(updatedFormData);
+      setIsMeasurementModalVisible(false);
     }
     else {
-      Object.entries(props.measurementsGroup).forEach(([compassFieldKey, foldFieldKey]) => {
+      Object.entries(measurementsGroup).forEach(([compassFieldKey, foldFieldKey]) => {
         if (!isEmpty(compassData[compassFieldKey])) {
           // Convert quality to choice names for fold group, assumes qualities listed highest to lowest
           if (compassFieldKey === 'quality') {
-            const survey = getSurvey(props.formName);
-            const choices = getChoices(props.formName);
+            const survey = getSurvey(formName);
+            const choices = getChoices(formName);
             const qualityChoices = getChoicesByKey(survey, choices, foldFieldKey);
             const choiceNum = Math.round(parseInt(compassData[compassFieldKey], 10) / 5 * qualityChoices.length);
             renamedCompassData[foldFieldKey] = qualityChoices.reverse()[choiceNum - 1]?.name;
@@ -56,7 +62,7 @@ const MeasurementModal = (props) => {
           else renamedCompassData[foldFieldKey] = compassData[compassFieldKey];
         }
       });
-      props.formProps.setValues({...props.formProps.values, ...renamedCompassData});
+      formProps.setValues({...formProps.values, ...renamedCompassData});
     }
   };
 
@@ -72,8 +78,8 @@ const MeasurementModal = (props) => {
     >
       <ModalHeader
         buttonTitleRight={'Done'}
-        title={props.measurementsGroupLabel}
-        closeModal={() => props.setIsMeasurementModalVisible(false)}
+        title={measurementsGroupLabel}
+        closeModal={() => setIsMeasurementModalVisible(false)}
       />
       {Platform.OS === 'ios' && (
         <Button
@@ -96,7 +102,7 @@ const MeasurementModal = (props) => {
         <>
           <Compass
             setAttributeMeasurements={setMeasurements}
-            closeCompass={() => props.setIsMeasurementModalVisible(false)}
+            closeCompass={() => setIsMeasurementModalVisible(false)}
             sliderValue={sliderValue}
           />
           <View style={compassStyles.sliderContainer}>

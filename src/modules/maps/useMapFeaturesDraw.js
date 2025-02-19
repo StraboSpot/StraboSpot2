@@ -270,7 +270,7 @@ const useMapFeaturesDraw = ({
     //     If not edit vertex coords to those of pressed point
     //     If so switch selected vertex to vertex at pressed point
     const spotAtPress = await getSpotAtPress(screenPointX, screenPointY);
-    const spotFound = turf.cleanCoords(spotAtPress);
+    const spotFound = !isEmpty(spotAtPress) && spotAtPress?.geometry ? turf.cleanCoords(spotAtPress) : undefined;
     // #114, while editing, click on a different spot to edit, should immediately identify it as the selected spot and hence update the notebook panel.
     if (!isEmpty(spotFound)) dispatch(setSelectedSpot(spotFound));
     if (isEmpty(spotEditing)) {

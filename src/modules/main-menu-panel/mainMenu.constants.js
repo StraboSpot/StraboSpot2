@@ -1,4 +1,4 @@
-export const MAIN_MENU_TITLE = 'Settings & Preferences';
+export const MAIN_MENU_TITLE = 'StraboField';
 
 export const MAIN_MENU_ITEMS = {
   MANAGE: {

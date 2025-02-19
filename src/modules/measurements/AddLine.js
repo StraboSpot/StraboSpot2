@@ -1,10 +1,9 @@
 import React from 'react';
 
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, MainButtons, useForm} from '../form';
+import {Form, MainButtons} from '../form';
 
-const AddLine = (props) => {
-  const {getSurvey} = useForm();
+const AddLine = ({formName, formProps, isManualMeasurement, isPlanarLinear, setChoicesViewKey, survey}) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -12,38 +11,35 @@ const AddLine = (props) => {
   const lastKeys = ['defined_by', 'notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
-  let updatedProps = {...props};
-  if (props.isPlanarLinear) {
-    updatedProps = {
-      ...updatedProps,
-      formProps: {
-        ...updatedProps.formProps,
-        values: (updatedProps.formProps.values.associated_orientation
-          && updatedProps.formProps.values.associated_orientation[0]) || {},
-      },
+  let updatedFormProps = {...formProps};
+  if (isPlanarLinear) {
+    updatedFormProps = {
+      ...formProps,
+      values: (formProps.values.associated_orientation && formProps.values.associated_orientation[0]) || {},
     };
   }
 
   return (
     <>
-      {!props.isManualMeasurement && !props.isPlanarLinear && (
-        <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...updatedProps.formProps}}/>
+      {!isManualMeasurement && !isPlanarLinear && (
+        <Form {...{formName: formName, surveyFragment: firstKeysFields, ...updatedFormProps}}/>
       )}
-      <MainButtons {...{
-        mainKeys: mainButtonsKeys,
-        subkey: props.isPlanarLinear && 'associated_orientation',
-        ...updatedProps,
-      }}/>
+      <MainButtons
+        formName={formName}
+        formProps={updatedFormProps}
+        mainKeys={mainButtonsKeys}
+        setChoicesViewKey={setChoicesViewKey}
+        subkey={isPlanarLinear && 'associated_orientation'}
+      />
       <LittleSpacer/>
       <Form {...{
-        formName: props.formName,
+        formName: formName,
         surveyFragment: lastKeysFields,
-        subkey: props.isPlanarLinear && 'associated_orientation',
-        ...updatedProps.formProps,
+        subkey: isPlanarLinear && 'associated_orientation',
+        ...updatedFormProps,
       }}/>
     </>
   );

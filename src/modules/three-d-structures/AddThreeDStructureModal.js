@@ -98,9 +98,6 @@ const AddThreeDStructureModal = ({onPress}) => {
           )}
           {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.TENSOR && (
             <AddTensor
-              survey={survey}
-              choices={choices}
-              setChoicesViewKey={setChoicesViewKey}
               formName={formProps.status.formName}
               formProps={formProps}
             />
@@ -108,7 +105,6 @@ const AddThreeDStructureModal = ({onPress}) => {
           {types[selectedTypeIndex] === THREE_D_STRUCTURE_TYPES.OTHER && (
             <AddOther
               survey={survey}
-              choices={choices}
               setChoicesViewKey={setChoicesViewKey}
               formName={formProps.status.formName}
               formProps={formProps}

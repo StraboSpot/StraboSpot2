@@ -9,7 +9,7 @@ const RockMetamorphicPage = ({page}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('UE RockMetamorphicPage [props.page]', page);
+    console.log('UE RockMetamorphicPage [page]', page);
     return () => dispatch(setSelectedAttributes([]));
   }, [page]);
 

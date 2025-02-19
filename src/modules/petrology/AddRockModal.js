@@ -22,10 +22,7 @@ import {PAGE_KEYS} from '../page/page.constants';
 import useSed from '../sed/useSed';
 import Templates from '../templates/Templates';
 
-const AddRockModal = ({
-                        modalKey,
-                        onPress,
-                      }) => {
+const AddRockModal = ({modalKey, onPress}) => {
   const dispatch = useDispatch();
   const modalValues = useSelector(state => state.home.modalValues);
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -163,50 +160,43 @@ const AddRockModal = ({
       <>
         {Object.values(IGNEOUS_ROCK_CLASSES).includes(rockKey) && (
           <AddRockIgneousModal
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
             formName={[groupKey, rockKey]}
             formProps={formProps}
-            setPetKey={setRockKey}
-            setSurvey={setSurvey}
-            setChoices={setChoices}
+            setChoicesViewKey={setChoicesViewKey}
+            survey={survey}
           />
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_ALTERATION_ORE && (
           <AddRockAlterationOreModal
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
             formName={[groupKey, rockKey]}
             formProps={formProps}
+            setChoicesViewKey={setChoicesViewKey}
+            survey={survey}
           />
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_FAULT && (
           <AddRockFaultModal
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
             formName={[groupKey, rockKey]}
             formProps={formProps}
+            setChoicesViewKey={setChoicesViewKey}
+            survey={survey}
           />
         )}
         {rockKey === PAGE_KEYS.ROCK_TYPE_METAMORPHIC && (
           <AddRockMetamorphicModal
-            survey={survey}
-            choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
             formName={[groupKey, rockKey]}
             formProps={formProps}
+            setChoicesViewKey={setChoicesViewKey}
+            survey={survey}
           />
         )}
         {rockKey === PAGE_KEYS.LITHOLOGIES && (
           <AddRockSedimentaryModal
-            survey={survey}
             choices={choices}
-            setChoicesViewKey={setChoicesViewKey}
             formName={[groupKey, rockKey]}
             formProps={formProps}
+            setChoicesViewKey={setChoicesViewKey}
+            survey={survey}
           />
         )}
       </>

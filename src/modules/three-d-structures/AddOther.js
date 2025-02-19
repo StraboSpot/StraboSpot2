@@ -6,7 +6,7 @@ import {Form, MainButtons} from '../form';
 import MeasurementButtons from '../form/MeasurementButtons';
 import MeasurementModal from '../form/MeasurementModal';
 
-const AddOther = (props) => {
+const AddOther = ({formName, formProps, setChoicesViewKey, survey}) => {
   const [isOtherMeasurementsModalVisible, setIsOtherMeasurementsModalVisible] = useState(false);
   const [otherMeasurementsGroupField, setOtherMeasurementsGroupField] = useState({});
 
@@ -23,80 +23,80 @@ const AddOther = (props) => {
   const lastKeys = ['struct_notes'];
 
   // Relevant fields for quick-entry modal
-  const labelField = labelKey.map(k => props.survey.find(f => f.name === k));
-  const boudinageKeysFields = boudinageThirdKeys.map(k => props.survey.find(f => f.name === k));
-  const mullionKeysFields = mullionThirdKeys.map(k => props.survey.find(f => f.name === k));
-  const lobateCuspateKeysFields = lobateCuspateKeys.map(k => props.survey.find(f => f.name === k));
-  const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
+  const labelField = labelKey.map(k => survey.find(f => f.name === k));
+  const boudinageKeysFields = boudinageThirdKeys.map(k => survey.find(f => f.name === k));
+  const mullionKeysFields = mullionThirdKeys.map(k => survey.find(f => f.name === k));
+  const lobateCuspateKeysFields = lobateCuspateKeys.map(k => survey.find(f => f.name === k));
+  const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
     <>
-      <Form {...{surveyFragment: labelField, ...props.formProps}}/>
+      <Form {...{surveyFragment: labelField, ...formProps}}/>
       <MainButtons
         mainKeys={firstKeys}
-        formName={props.formName}
-        formProps={props.formProps}
-        setChoicesViewKey={props.setChoicesViewKey}
+        formName={formName}
+        formProps={formProps}
+        setChoicesViewKey={setChoicesViewKey}
       />
-      {props.formProps.values.feature_type === 'boudinage' && (
+      {formProps.values.feature_type === 'boudinage' && (
         <>
           <MainButtons
             mainKeys={boudinageFirstKeys}
-            formName={props.formName}
-            formProps={props.formProps}
-            setChoicesViewKey={props.setChoicesViewKey}
+            formName={formName}
+            formProps={formProps}
+            setChoicesViewKey={setChoicesViewKey}
           />
           <MeasurementButtons
-            formProps={props.formProps}
+            formProps={formProps}
             measurementsKeys={BOUDINAGE_MEASUREMENTS_KEYS}
             setMeasurementsGroupField={setOtherMeasurementsGroupField}
             setIsMeasurementsModalVisible={setIsOtherMeasurementsModalVisible}
-            survey={props.survey}
+            survey={survey}
           />
-          <Form {...{surveyFragment: boudinageKeysFields, ...props.formProps}}/>
+          <Form {...{surveyFragment: boudinageKeysFields, ...formProps}}/>
           {isOtherMeasurementsModalVisible && (
             <MeasurementModal
               measurementsGroup={BOUDINAGE_MEASUREMENTS_KEYS[otherMeasurementsGroupField.name]}
               measurementsGroupLabel={otherMeasurementsGroupField.label}
-              formName={props.formName}
-              formProps={props.formProps}
+              formName={formName}
+              formProps={formProps}
               setIsMeasurementModalVisible={setIsOtherMeasurementsModalVisible}
             />
           )}
         </>
       )}
-      {props.formProps.values.feature_type === 'mullion' && (
+      {formProps.values.feature_type === 'mullion' && (
         <>
           <MainButtons
             mainKeys={mullionFirstKeys}
-            formName={props.formName}
-            formProps={props.formProps}
-            setChoicesViewKey={props.setChoicesViewKey}
+            formName={formName}
+            formProps={formProps}
+            setChoicesViewKey={setChoicesViewKey}
           />
           <MeasurementButtons
-            formProps={props.formProps}
+            formProps={formProps}
             measurementsKeys={MULLION_MEASUREMENTS_KEYS}
             setMeasurementsGroupField={setOtherMeasurementsGroupField}
             setIsMeasurementsModalVisible={setIsOtherMeasurementsModalVisible}
-            survey={props.survey}
+            survey={survey}
           />
-          <Form {...{surveyFragment: mullionKeysFields, ...props.formProps}}/>
+          <Form {...{surveyFragment: mullionKeysFields, ...formProps}}/>
           {isOtherMeasurementsModalVisible && (
             <MeasurementModal
               measurementsGroup={MULLION_MEASUREMENTS_KEYS[otherMeasurementsGroupField.name]}
               measurementsGroupLabel={otherMeasurementsGroupField.label}
-              formName={props.formName}
-              formProps={props.formProps}
+              formName={formName}
+              formProps={formProps}
               setIsMeasurementModalVisible={setIsOtherMeasurementsModalVisible}
             />
           )}
         </>
       )}
-      {props.formProps.values.feature_type === 'lobate_cuspate' && (
-        <Form {...{surveyFragment: lobateCuspateKeysFields, ...props.formProps}}/>
+      {formProps.values.feature_type === 'lobate_cuspate' && (
+        <Form {...{surveyFragment: lobateCuspateKeysFields, ...formProps}}/>
       )}
       <LittleSpacer/>
-      <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <Form {...{surveyFragment: lastKeysFields, ...formProps}}/>
     </>
   );
 };
