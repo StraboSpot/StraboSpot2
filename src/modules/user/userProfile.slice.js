@@ -7,8 +7,15 @@ const initialUserState = {
   isAuthenticated: false,
   mapboxToken: null,
   name: null,
-  orcidToken: null,
-  sesarToken: null,
+  orcidToken: {
+    token: null,
+    expiration: null,
+  },
+  sesarToken: {
+    access: null,
+    refresh: null,
+    expiration: null,
+  },
 };
 
 // createSlice combines reducers, actions, and constants
@@ -35,10 +42,15 @@ const userProfileSlice = createSlice({
       return initialUserState;
     },
     setOrcidToken(state, action) {
-      state.orcidToken = action.payload;
+      const {token, expiration} = action.payload;
+      state.orcidToken.token = token;
+      state.orcidToken.expiration = expiration;
     },
     setSesarToken(state, action) {
-      state.sesarToken = action.payload;
+      const {access, refresh, expiration} = action.payload;
+      state.sesarToken.access = access;
+      state.sesarToken.refresh = refresh;
+      state.sesarToken.expiration = expiration;
     },
   },
 });
