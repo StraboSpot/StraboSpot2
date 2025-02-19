@@ -17,6 +17,7 @@ import {setUserData, setOrcidToken} from '../user/userProfile.slice';
 
 const HomeContainer = ({navigation, route}) => {
   console.log('Rendering HomeContainer...');
+  const orcidToken = route?.params?.orcidToken;
   const dispatch = useDispatch();
 
   const mapComponentRef = useRef(null);
@@ -45,7 +46,10 @@ const HomeContainer = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE HomeContainer', '[navigation, route.params]', route.params);
-    if (route.params?.orcidToken) dispatch(setOrcidToken(route.params.orcidToken));
+    if (orcidToken) {
+      const tokenParsed = JSON.parse(atob(route.params?.orcidToken.split('.')[1]));
+      dispatch(setOrcidToken({token: orcidToken, expiration: tokenParsed.expiration}));
+    }
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });
