@@ -1,4 +1,9 @@
+import config from '../utils/config';
+
 const account = '/account';
+const orcid = 'https://orcid.org/oauth';
+const orcidClientId = config.get('orcid_client_id');
+const sesarAPI =  __DEV__ ? 'https://app-sandbox.geosamples.org/webservices' :  'https://app.geosamples.org/webservices';
 const straboSpotAPI = 'https://strabospot.org';
 const tilehost = 'https://tiles.strabospot.org';
 
@@ -43,3 +48,17 @@ export const MICRO_PATHS = {
   PDF_PROJECT: microDB + '/projectPDF',
   WEB_PROJECT: microDB + '/webProject',
 };
+
+export const SESAR_PATHS = {
+  GET_TOKEN: '/get_token.php',
+  GET_USER_CODE: '/credentials_service_v2.php',
+  SESAR_API: sesarAPI,
+  UPLOAD: '/upload.php',
+};
+
+export const ORCID_PATHS = {
+  AUTH: '/authorize',
+  ORCID: orcid,
+  REDIRECT_URL: 'redirect_uri=https://www.strabospot.org/orcid_callback%3Fcreds%3D$',
+  SCOPE:`client_id=${orcidClientId}&response_type=code&scope=openid&`,
+}
