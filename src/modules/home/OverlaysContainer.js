@@ -74,6 +74,7 @@ const OverlaysContainer = forwardRef(({
         <Dialog
           closeNotebookPanel={closeNotebookPanel}
           openNotebookPanel={openNotebookPanel}
+          updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
           zoomToCurrentLocation={zoomToCurrentLocation}
         />
       )}

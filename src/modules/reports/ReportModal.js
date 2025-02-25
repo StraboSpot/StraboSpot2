@@ -1,9 +1,9 @@
 import React, {useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {ReportForm, ReportImages} from '.';
+import {ReportForm, ReportImages, ReportSpots} from '.';
 import {getNewUUID, isEmpty, isEqual} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -13,7 +13,7 @@ import {useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {updatedProject} from '../project/projects.slice';
 
-const ReportModal = () => {
+const ReportModal = ({updateSpotsInMapExtent}) => {
   const dispatch = useDispatch();
   const report = useSelector(state => state.home.modalValues);
   const reports = useSelector(state => state.project.project?.reports) || [];
@@ -23,6 +23,8 @@ const ReportModal = () => {
 
   const reportImages = report?.images ? JSON.parse(JSON.stringify(report?.images)) : [];
   const [updatedImages, setUpdatedImages] = useState(reportImages);
+  const reportSpots = report?.spots ? JSON.parse(JSON.stringify(report?.spots)) : [];
+  const [checkedSpotsIds, setCheckedSpotsIds] = useState(reportSpots);
   const initialValues = isEmpty(report) ? {} : report;
 
   const closeModal = () => {
@@ -53,6 +55,12 @@ const ReportModal = () => {
     else closeModal();
   };
 
+  const handleSpotChecked = (spotId) => {
+    console.log('Spot', spotId, checkedSpotsIds);
+    if (checkedSpotsIds.find(id => id === spotId)) setCheckedSpotsIds(checkedSpotsIds.filter(id => id !== spotId));
+    else setCheckedSpotsIds([...checkedSpotsIds, spotId]);
+  };
+
   const saveReport = async () => {
     try {
       console.log('Saving report ...');
@@ -62,6 +70,7 @@ const ReportModal = () => {
       if (!editedReport.created_timestamp) editedReport.created_timestamp = Date.now();
       editedReport.updated_timestamp = Date.now();
       editedReport.images = updatedImages;
+      editedReport.spots = checkedSpotsIds;
       let updatedReports = reports.filter(r => r.id !== editedReport.id);
       updatedReports.push({...editedReport});
       dispatch(updatedProject({field: 'reports', value: updatedReports}));
@@ -81,11 +90,16 @@ const ReportModal = () => {
       <FlatList
         bounces={false}
         ListHeaderComponent={
-          <View style={{flex: 1}}>
+          <>
             <ReportForm initialValues={initialValues} ref={formRef}/>
             <FlatListItemSeparator/>
             <ReportImages setUpdatedImages={setUpdatedImages} updatedImages={updatedImages}/>
-          </View>
+            <ReportSpots
+              checkedSpotsIds={checkedSpotsIds}
+              handleSpotChecked={handleSpotChecked}
+              updateSpotsInMapExtent={updateSpotsInMapExtent}
+            />
+          </>
         }
       />
       <SaveButton title={'Save Report'} onPress={saveReport}/>

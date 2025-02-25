@@ -44,7 +44,7 @@ const ReportImages = ({setUpdatedImages, updatedImages}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View>
       <SectionDivider dividerText={'Photos & Sketches'}/>
       <AddImageButtons saveImages={saveImagesToReport}/>
       <ImagesList

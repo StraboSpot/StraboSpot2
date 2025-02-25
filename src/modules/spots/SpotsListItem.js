@@ -10,12 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import usePage from '../page/usePage';
 import {useTags} from '../tags';
 
-const SpotsListItem = ({
-                         doShowTags,
-                         isCheckedList,
-                         onPress,
-                         spot,
-                       }) => {
+const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onPress, spot}) => {
   // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
   const {getSpotGeometryIconSource} = useSpots();
@@ -27,8 +22,9 @@ const SpotsListItem = ({
   const renderCheckboxes = () => {
     return (
       <ListItem.CheckBox
-        checked={selectedTag.spots && selectedTag.spots.includes(spot.properties.id)}
-        onPress={() => addRemoveSpotFromTag(spot.properties.id, selectedTag)}
+        checked={isItemChecked || (selectedTag.spots && selectedTag.spots.includes(spot.properties.id))}
+        onPress={() => onChecked ? onChecked(spot.properties.id)
+          : addRemoveSpotFromTag(spot.properties.id, selectedTag)}
       />
     );
   };
@@ -62,7 +58,7 @@ const SpotsListItem = ({
     <ListItem
       containerStyle={commonStyles.listItem}
       keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
-      onPress={() => onPress(spot)}
+      onPress={() => onPress && onPress(spot)}
     >
       <Avatar
         placeholderStyle={{backgroundColor: 'transparent'}}
