@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import {Platform, View} from 'react-native';
 
 import {Icon} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';
 import {imageStyles, useImages} from './index';
@@ -11,13 +11,10 @@ import commonStyles from '../../shared/common.styles';
 import {getNewId} from '../../shared/Helpers';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import {setLoadingStatus} from '../home/home.slice';
-import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import SketchModal from '../sketch/SketchModal';
-import {editedSpotImages} from '../spots/spots.slice';
 
 const AddImageButtons = ({saveImages}) => {
   const dispatch = useDispatch();
-  const spot = useSelector(state => state.spot.selectedSpot);
 
   const {getImagesFromCameraRoll, launchCameraFromNotebook} = useImages();
   const {uploadFromWeb} = useUpload();
@@ -62,11 +59,8 @@ const AddImageButtons = ({saveImages}) => {
         width: metaData.width,
       };
       const res = await uploadFromWeb(imageId, imageToUpload);
-      console.log(res);
-      if (spot) {
-        dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
-        dispatch(editedSpotImages([imageObj]));
-      }
+      console.log('uploadFromWeb res', res);
+      saveImages([imageObj]);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
   };
