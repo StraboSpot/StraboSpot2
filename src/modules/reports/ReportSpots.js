@@ -32,7 +32,7 @@ const ReportSpots = ({checkedSpotsIds, handleSpotChecked, updateSpotsInMapExtent
 
   return (
     <>
-      <View style={{flex: 1}}>
+      <View>
         <SectionDivider dividerText={'Associated Spots'}/>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start'}}>
           <ButtonRounded
