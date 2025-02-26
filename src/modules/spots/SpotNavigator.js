@@ -9,6 +9,7 @@ import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
 import styles from '../../shared/ui/ui.styles';
 import {ImageGallery} from '../images';
+import {ReportsList} from '../reports';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
 
 const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebook}) => {
@@ -18,13 +19,14 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
 
   const pickerRef = useRef();
 
-  const pickerKeys = {SPOTS: 'spots', IMAGES: 'images', SAMPLES: 'samples'};
+  const pickerKeys = {SPOTS: 'spots', IMAGES: 'images', SAMPLES: 'samples', REPORTS: 'reports'};
   const [pickerKey, setPickerKey] = useState(pickerKeys.SPOTS);
 
   const pickerLabels = {
     [pickerKeys.SPOTS]: 'SPOTS LISTS',
     [pickerKeys.SAMPLES]: 'SAMPLES',
     [pickerKeys.IMAGES]: 'IMAGE GALLERY',
+    [pickerKeys.REPORTS]: 'REPORTS',
   };
 
   const openSpotInNotebookFromNavigator = (spot, notebookPage, attributes) => {
@@ -46,6 +48,7 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
         <Picker.Item label={pickerLabels[pickerKeys.SPOTS]} value={pickerKeys.SPOTS}/>
         <Picker.Item label={pickerLabels[pickerKeys.IMAGES]} value={pickerKeys.IMAGES}/>
         <Picker.Item label={pickerLabels[pickerKeys.SAMPLES]} value={pickerKeys.SAMPLES}/>
+        <Picker.Item label={pickerLabels[pickerKeys.REPORTS]} value={pickerKeys.REPORTS}/>
       </Picker>
       {pickerKey === pickerKeys.SPOTS && <SpotsList onPress={openSpotInNotebook}/>}
       {pickerKey === pickerKeys.IMAGES && <ImageGallery openSpotInNotebook={openSpotInNotebook}/>}
@@ -55,6 +58,7 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
           openNotebookPanel={openNotebookPanel}
         />
       )}
+      {pickerKey === pickerKeys.REPORTS && <ReportsList openSpotInNotebook={openSpotInNotebook}/>}
     </>
   );
 };

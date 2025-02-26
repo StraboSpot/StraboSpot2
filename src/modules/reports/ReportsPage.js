@@ -1,9 +1,10 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {ReportsList} from '.';
+import commonStyles from '../../shared/common.styles';
 import AddButton from '../../shared/ui/AddButton';
 import {setModalValues, setModalVisible} from '../home/home.slice';
 import {MODAL_KEYS} from '../page/page.constants';
@@ -13,9 +14,16 @@ const ReportsPage = ({}) => {
   console.log('Rendering ReportsPage...');
 
   const dispatch = useDispatch();
+  const reports = useSelector(state => state.project.project?.reports) || [];
+  const spot = useSelector(state => state.spot.selectedSpot);
+
+  const reportsUsingThisSpot = reports.reduce((acc, report) => {
+    const doesThisReportUseThisSpot = report?.spots?.find(id => id === spot.properties.id);
+    return doesThisReportUseThisSpot ? [...acc, report] : acc;
+  }, []);
 
   const addReport = () => {
-    dispatch(setModalValues({}));
+    dispatch(setModalValues({spots: [spot.properties.id]}));
     dispatch(setModalVisible({modal: MODAL_KEYS.NOTEBOOK.REPORTS}));
   };
 
@@ -24,10 +32,13 @@ const ReportsPage = ({}) => {
       <ReturnToOverviewButton/>
       <AddButton
         onPress={addReport}
-        title={'Create New Report'}
+        title={'Create New Report with this Spot'}
         type={'outline'}
       />
-      <ReportsList/>
+      <Text style={[commonStyles.listItemTitle,commonStyles.textBold, {paddingLeft: 10}]}>
+        Reports referencing this Spot:
+      </Text>
+      <ReportsList reportsSubset={reportsUsingThisSpot}/>
     </View>
   );
 };

@@ -69,6 +69,7 @@ const ReportSpots = ({checkedSpotsIds, handleSpotChecked, updateSpotsInMapExtent
           {isEmpty(checkedSpots) && <ListEmptyText text={'No Associated Spots'}/>}
           {checkedSpots.map(d => (
             <TouchableOpacity
+              key={d.properties.id.toString()}
               style={{borderWidth: 0.75, padding: 2, margin: 2, width: listWidth < 600 ? listWidth : itemWidth}}
             >
               <SpotsListItem
