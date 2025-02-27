@@ -49,6 +49,7 @@
     "@sentry/react-native": "6.6.0",
     "@sentry/tracing": "7.120.3",
     "@turf/turf": "7.2.0",
+    "fast-xml-parser": "5.0.7",
     "formik": "2.4.6",
     "geomagnetism": "0.2.0",
     "js-base64": "3.7.7",
