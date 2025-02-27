@@ -30,7 +30,7 @@ const BasicPageDetail = ({
                            page,
                            selectedFeature,
                            saveTemplate,
-                           showIGSNModal,
+                           isIGSNModalVisible,
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
@@ -38,7 +38,7 @@ const BasicPageDetail = ({
   const isOnline = useSelector(state => state.connections.isOnline);
 
   const [IGSNChecked, setIGSNChecked] = useState(false);
-  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
+  // const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -48,6 +48,7 @@ const BasicPageDetail = ({
   const {deleteFeatureTags} = useTags();
 
   const formRef = useRef(null);
+  const sampleValuesRef = useRef(null);
 
   const pageKey = page.key === PAGE_KEYS.FABRICS && selectedFeature.type === 'fabric' ? '_3d_structures'
     : page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
@@ -167,19 +168,19 @@ const BasicPageDetail = ({
         >
           {formProps => (
             <>
-              <GeoFieldsInputs geomFormRef={formRef} />
+              <GeoFieldsInputs geomFormRef={formRef}/>
               <Form {...{
-              ...formProps,
-              formName: formName,
-              onMyChange: page.key === PAGE_KEYS.MINERALS
-                ? ((name, value) => onMineralChange(formRef.current, name, value))
-                : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
-                  ? ((name, value) => onSedFormChange(formRef.current, name, value))
-                  : page.key === PAGE_KEYS.SAMPLES
-                    ? ((name, value) => onSampleFormChange(formRef.current, name, value))
-                    : undefined
+                ...formProps,
+                formName: formName,
+                onMyChange: page.key === PAGE_KEYS.MINERALS
+                  ? ((name, value) => onMineralChange(formRef.current, name, value))
+                  : page.key === LITHOLOGY_SUBPAGES.LITHOLOGY
+                    ? ((name, value) => onSedFormChange(formRef.current, name, value))
+                    : page.key === PAGE_KEYS.SAMPLES
+                      ? ((name, value) => onSampleFormChange(formRef.current, name, value))
+                      : undefined
                 ,
-            }}/>
+              }}/>
             </>
           )}
         </Formik>
@@ -220,9 +221,11 @@ const BasicPageDetail = ({
       editedPageData.push(editedFeatureData);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
+      sampleValuesRef.current = editedFeatureData;
 
       if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
         await checkSampleName(editedFeatureData.sample_id_name);
+
       }
     }
     catch (err) {
@@ -242,13 +245,13 @@ const BasicPageDetail = ({
       else if (groupKey === 'sed') {
         await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
-      else if (IGSNChecked) {
-        setIsIGSNModalVisible(true);
-      }
       else {
         await saveFeature(formCurrent);
         await formCurrent.resetForm();
-        closeDetailView();
+        // closeDetailView();
+        if (IGSNChecked) {
+          isIGSNModalVisible(true);
+        }
       }
     }
     catch (err) {
@@ -275,14 +278,14 @@ const BasicPageDetail = ({
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
       )}
-      {isIGSNModalVisible && (
-        <IGSNModal
-          onModalCancel={() => setIsIGSNModalVisible(false)}
-          formRef={formRef.current}
-          onSavePress={formCurrent => saveFeature(formCurrent)}
-          selectedFeature={selectedFeature}
-        />
-      )}
+      {/*{isIGSNModalVisible && (*/}
+      {/*  <IGSNModal*/}
+      {/*    onModalCancel={() => setIsIGSNModalVisible(false)}*/}
+      {/*    sampleValues={sampleValuesRef.current}*/}
+      {/*    onSavePress={formCurrent => saveFeature(formCurrent)}*/}
+      {/*    selectedFeature={selectedFeature}*/}
+      {/*  />*/}
+      {/*)}*/}
     </>
   );
 };
