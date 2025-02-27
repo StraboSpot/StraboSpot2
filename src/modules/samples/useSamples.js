@@ -1,13 +1,16 @@
 import {useState} from 'react';
 import {Linking} from 'react-native';
 
-import {useDispatch} from 'react-redux';
+import { XMLParser } from 'fast-xml-parser';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {ORCID_PATHS, SESAR_PATHS} from '../../services/urls.constants';
 import {isEmpty, unixToDateTime} from '../../shared/Helpers';
 import config from '../../utils/config';
 import {useSpots} from '../spots';
-import {setSesarToken} from '../user/userProfile.slice';
-import {ORCID_PATHS, SESAR_PATHS} from '../../services/urls.constants';
+import {setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
+
+// import {parseString} from 'xml2js';
 // import convert from 'xml-js';
 
 const useSamples = (selectedFeature) => {
@@ -23,7 +26,7 @@ const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
     if (materialType === 'intact_rock' || materialType === 'fragmented_rock') {
 
     }
-  }
+  };
 
   const selectedSampleData = () => {
     // console.log('Selected Feature in useSamples', selectedFeature);
@@ -37,6 +40,7 @@ const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
       sample_type,
       sample_id_name,
     } = selectedFeature;
+
     const selectedFeatureJSON = {
       collection_date: collection_date,
       collection_time: collection_time,
@@ -58,17 +62,9 @@ const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
 
   const getOrcidToken = async (encoded_login) => {
     try {
-      // if (isEmpty(orcidToken)) {
       const url = ORCID + AUTH + SCOPE + REDIRECT_URL + encodeURIComponent(encoded_login);
-      // const url = `https://orcid.org/oauth/authorize
-      // ?client_id=${ORCID_CLIENT_ID}&response_type=code&scope=openid
-      // &redirect_uri=https://www.strabospot.org/orcid_callback%3Fcreds%3D${encodeURIComponent(encoded_login)}`;
       console.log(url);
-      // await Linking.openURL(url);
-      // }
-      // else {
-      //   console.log('Check user ORCID token');
-      // }
+      await Linking.openURL(url);
     }
     catch (err) {
       console.log(err);
@@ -100,7 +96,7 @@ const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
         const accessTokenParsed = JSON.parse(atob(sesarJson.access.split('.')[1]));
         const expDateTime = unixToDateTime(accessTokenParsed.exp).toUTCString();
         !isEmpty(sesarJson) && dispatch(setSesarToken({access: sesarJson.access, refresh: sesarJson.refresh, expiration: expDateTime}));
-        await getSesarUserCode(sesarJson);
+        // await getSesarUserCode(sesarJson);
         // console.log('USER CODE', userCode);
         setIsOrcidSignInPrompt(false);
       }
@@ -110,39 +106,22 @@ const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
     }
   };
 
-  const getSesarUserCode = async (token) => {
+  const getSesarUserCode = async (accessToken) => {
     try {
-      const myHeaders = new Headers();
-      myHeaders.append('Authorization',
-        `Bearer ${token.access}`);
-
-      const requestOptions = {
+      const userCodeXml = await fetch(SESAR_API + GET_USER_CODE, {
         method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow',
-      };
-
-      fetch(SESAR_API + GET_USER_CODE, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
-      // fetch(url, {
-      //   method: 'GET',
-      //   headers: {
-      //     'Authorization': `Bearer ${token.access}`,
-      //   },
-      // }).then((res) => {
-      //   res.text();
-      // });
-      // const xmlData = await userCodeXml.text();
-      // const jsonData = parse(xmlData);
-      // const convert = require('xml-js');
-      // const result = convert.xml2json(xmlData, {compact: true, spaces: 2});
-      // console.log(result);
-      // console.log(jsonData);
-      // const jsonResult = convert.xml2js(userCodeXml, {compact: true, spaces: 2});
-      // console.log(jsonResult);
-      // return jsonResult;
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+      const xmlData = await userCodeXml.text();
+      console.log(xmlData);
+      const parser = new XMLParser();
+      const jsonData = parser.parse(xmlData);
+      console.log(jsonData);
+      if (jsonData.results.valid === 'yes' && !isEmpty(jsonData.results.user_codes.user_code)) {
+        dispatch(setSesarUserCodes(jsonData.results.user_codes.user_code));
+      }
     }
     catch (error) {
       console.log('Error getting SESAR user code', error);
@@ -160,15 +139,19 @@ const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
     // formCurrent.setFieldValue(name, value);
   };
 
+  const registerSample = (sample) => {
+    console.log('Register sample', sample);
+  }
+
   return {
     getAllSamplesCount: getAllSamplesCount,
     getOrcidToken: getOrcidToken,
     getSesarToken: getSesarToken,
-    // getSesarUserCode: getSesarUserCode,
+    getSesarUserCode: getSesarUserCode,
     isOrcidSignInPrompt,
     onSampleFormChange: onSampleFormChange,
+    registerSample: registerSample,
     selectedSampleData,
-
   };
 };
 
