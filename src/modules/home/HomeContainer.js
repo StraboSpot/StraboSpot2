@@ -46,10 +46,7 @@ const HomeContainer = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE HomeContainer', '[navigation, route.params]', route.params);
-    if (orcidToken) {
-      const tokenParsed = JSON.parse(atob(route.params?.orcidToken.split('.')[1]));
-      dispatch(setOrcidToken({token: orcidToken, expiration: tokenParsed.expiration}));
-    }
+    if (orcidToken) dispatch(setOrcidToken({token: orcidToken}));
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });
