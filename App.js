@@ -62,6 +62,9 @@ const linking = {
   },
 };
 
+// persistor.purge(); // Use this to clear persistStore completely
+
+
 const App = () => {
   if (Platform.OS === 'web' && !didInit) {
     console.count('Rendering App...');
