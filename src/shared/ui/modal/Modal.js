@@ -74,7 +74,7 @@ const Modal = ({
         overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {
           ...overlayStyles.overlayContainer,
           maxHeight: height * 0.80,
-          width: modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS ? width * 0.80 : null,
+          width: modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS ? width * 0.80 : 300,
         }}
         fullScreen={SMALL_SCREEN}
         animationType={'slide'}
