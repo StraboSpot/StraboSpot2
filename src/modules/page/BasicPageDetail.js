@@ -1,8 +1,8 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, Linking, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, CheckBox} from 'react-native-elements';
+import {Button, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';
@@ -30,15 +30,13 @@ const BasicPageDetail = ({
                            page,
                            selectedFeature,
                            saveTemplate,
-                           isIGSNModalVisible,
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
-  const user = useSelector(state => state.user);
   const isOnline = useSelector(state => state.connections.isOnline);
 
   const [IGSNChecked, setIGSNChecked] = useState(false);
-  // const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
+  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -48,7 +46,6 @@ const BasicPageDetail = ({
   const {deleteFeatureTags} = useTags();
 
   const formRef = useRef(null);
-  const sampleValuesRef = useRef(null);
 
   const pageKey = page.key === PAGE_KEYS.FABRICS && selectedFeature.type === 'fabric' ? '_3d_structures'
     : page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
@@ -142,16 +139,37 @@ const BasicPageDetail = ({
     return formName;
   };
 
-  const renderIGSNCheckbox = () => (
-    <CheckBox
-      title={'Register Sample with Sesar to obtain an IGSN'}
-      textStyle={isOnline.isInternetReachable ? {color: 'grey'} : {color: 'red'}}
-      checked={IGSNChecked}
-      // checkedTitle={'Registering Sample with Sesar'}
-      onPress={() => setIGSNChecked(!IGSNChecked)}
-      disabled={!isOnline.isInternetReachable}
-    />
-  );
+  const renderIGSNUploadButton = () => {
+    if (isOnline.isInternetReachable) {
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'}}>
+          <View >
+            <Text style={{fontSize: 18}}>Register Sample?</Text>
+          </View>
+          <View style={{alignItems: 'flex-end', justifyContent: 'center'}}>
+            <Button
+              onPress={() => setIsIGSNModalVisible(true)}
+              title={'MYSESAR'}
+              containerStyle={{padding: 10, }}
+              buttonStyle={{borderRadius: 10, backgroundColor: 'black'}}
+              icon={<Image
+                source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
+                style={{ width: 20, height: 20, marginLeft: 10 }}
+              />}
+              iconRight
+            />
+          </View>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={{alignItems: 'center', padding: 10}}>
+          <Text style={{fontWeight: 'bold'}}>Must be online to register sample with SESAR</Text>
+        </View>
+      )
+    }
+  };
 
   const renderFormFields = () => {
     const formName = getFormName();
@@ -221,7 +239,6 @@ const BasicPageDetail = ({
       editedPageData.push(editedFeatureData);
       dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
       dispatch(editedSpotProperties({field: pageKey, value: editedPageData}));
-      sampleValuesRef.current = editedFeatureData;
 
       if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
         await checkSampleName(editedFeatureData.sample_id_name);
@@ -250,7 +267,7 @@ const BasicPageDetail = ({
         await formCurrent.resetForm();
         // closeDetailView();
         if (IGSNChecked) {
-          isIGSNModalVisible(true);
+          setIsIGSNModalVisible(true);
         }
       }
     }
@@ -273,19 +290,19 @@ const BasicPageDetail = ({
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />
-          {page.key === PAGE_KEYS.SAMPLES && renderIGSNCheckbox()}
+          {page.key === PAGE_KEYS.SAMPLES && renderIGSNUploadButton()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
       )}
-      {/*{isIGSNModalVisible && (*/}
-      {/*  <IGSNModal*/}
-      {/*    onModalCancel={() => setIsIGSNModalVisible(false)}*/}
-      {/*    sampleValues={sampleValuesRef.current}*/}
-      {/*    onSavePress={formCurrent => saveFeature(formCurrent)}*/}
-      {/*    selectedFeature={selectedFeature}*/}
-      {/*  />*/}
-      {/*)}*/}
+      {isIGSNModalVisible && (
+        <IGSNModal
+          onModalCancel={() => setIsIGSNModalVisible(false)}
+          sampleValues={formRef.current}
+          onSavePress={formCurrent => saveFeature(formCurrent)}
+          selectedFeature={selectedFeature}
+        />
+      )}
     </>
   );
 };

@@ -1,9 +1,13 @@
+import {Linking} from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
 import {MICRO_PATHS, STRABO_APIS} from './urls.constants';
+import {setSesarToken, setSesarUserCodes} from '../modules/user/userProfile.slice';
+import {ORCID_PATHS, SESAR_PATHS} from '../services/urls.constants';
 import alert from '../shared/ui/alert';
+
 
 const useServerRequests = () => {
   const dispatch = useDispatch();
@@ -12,6 +16,8 @@ const useServerRequests = () => {
   const baseUrl = endpoint && isSelected ? endpoint : STRABO_APIS.DB;
   const domain = endpoint && isSelected ? endpoint : STRABO_APIS.STRABO;
   const tilehost = STRABO_APIS.TILE_HOST;
+  const {SESAR_API, GET_TOKEN, GET_USER_CODE, REFRESH_TOKEN} = SESAR_PATHS;
+  const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
 
   const user = useSelector(state => state.user);
 
@@ -216,6 +222,65 @@ const useServerRequests = () => {
   const getTilehostUrl = () => {
     if (isSelected) return baseUrl.replace('/db', '/strabotiles');
     return tilehost;
+  };
+
+  const getSesarToken = async (orcidToken) => {
+    const formData = new FormData();
+    formData.append('connection', 'strabospot');
+    formData.append('orcid_id_token', orcidToken);
+    const res = await fetch(SESAR_API + GET_TOKEN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json',
+      },
+      // body: JSON.stringify({connection: 'strabospot', orcid_id_token: orcidToken}),
+      body: formData,
+    });
+    const sesarJson = await res.json();
+    if (sesarJson.error) {
+      console.error('SESAR Token Error', sesarJson.error);
+      throw Error(sesarJson.error);
+    }
+    else {
+      console.log('NEW SESAR TOKEN', sesarJson);
+      dispatch(setSesarToken(sesarJson));
+      return sesarJson;
+    }
+  };
+
+  const getSesarUserCode = async (accessToken) => {
+      const userCodeXmlRes = await fetch(SESAR_API + GET_USER_CODE, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+    return userCodeXmlRes.text();
+  };
+
+  const getOrcidToken = async (encoded_login) => {
+    try {
+      const url = ORCID + AUTH + SCOPE + REDIRECT_URL + encodeURIComponent(encoded_login);
+      console.log(url);
+      await Linking.openURL(url);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
+  const refreshSesarToken = async (accessToken) => {
+    const formData = new FormData();
+    formData.append('refresh', accessToken);
+    const res = await fetch(SESAR_API + REFRESH_TOKEN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    });
+    return await res.json();
   };
 
   const handleError = async (response) => {
@@ -515,6 +580,10 @@ const useServerRequests = () => {
     getProfileImageURL: getProfileImageURL,
     getProject: getProject,
     getTilehostUrl: getTilehostUrl,
+    getSesarToken: getSesarToken,
+    getSesarUserCode: getSesarUserCode,
+    getOrcidToken: getOrcidToken,
+    refreshSesarToken:refreshSesarToken,
     registerUser: registerUser,
     testCustomMapUrl: testCustomMapUrl,
     testEndpoint: testEndpoint,

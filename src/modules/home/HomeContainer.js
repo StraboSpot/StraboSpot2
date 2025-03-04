@@ -13,11 +13,9 @@ import useHomeContainer from './useHomeContainer';
 import useDevice from '../../services/useDevice';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
-import {setUserData, setOrcidToken} from '../user/userProfile.slice';
 
 const HomeContainer = ({navigation, route}) => {
   console.log('Rendering HomeContainer...');
-  const orcidToken = route?.params?.orcidToken;
   const dispatch = useDispatch();
 
   const mapComponentRef = useRef(null);
@@ -46,7 +44,6 @@ const HomeContainer = ({navigation, route}) => {
 
   useEffect(() => {
     console.log('UE HomeContainer', '[navigation, route.params]', route.params);
-    if (orcidToken) dispatch(setOrcidToken({token: orcidToken}));
     const unsubscribe = navigation.addListener('focus', () => {
       route?.params?.pageKey === 'overview' && openNotebookPanel(route.params.pageKey);
     });

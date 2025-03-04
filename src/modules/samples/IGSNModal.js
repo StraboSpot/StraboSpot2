@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Text, useWindowDimensions, View} from 'react-native';
 
+import {Picker} from '@react-native-picker/picker';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button, Overlay, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useSamples from './useSamples';
 import useForm from '../../modules/form/useForm';
+import useServerRequests from '../../services/useServerRequests';
+import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import overlayStyles from '../home/overlays/overlay.styles';
-import {isEmpty} from '../../shared/Helpers';
-import {Picker} from '@react-native-picker/picker';
 import {setSelectedUserCode} from '../user/userProfile.slice';
-
 
 const IGNSModal = (
   {
@@ -23,34 +24,51 @@ const IGNSModal = (
   },
 ) => {
   const formName = ['general', 'samples'];
-
   const {height} = useWindowDimensions();
-  const {isOrcidSignInPrompt, getOrcidToken, getSesarToken, getSesarUserCode, registerSample, selectedSampleData} = useSamples(selectedFeature);
+  const {
+    registerSample,
+  } = useSamples(selectedFeature);
+
+  const navigation = useNavigation();
+  const route = useRoute();
 
   const {getLabel} = useForm();
+  const {authenticateWithSesar} = useSamples(selectedFeature);
+  const {getSesarToken, getOrcidToken} = useServerRequests();
 
   // const formValues = formRef?.values;
   const dispatch = useDispatch();
-  const {encoded_login, orcidToken, name, sesar} = useSelector(state => state.user);
+  const {name, encoded_login, sesar} = useSelector(state => state.user);
 
-  // useSelector(state => state.spot.selectedSpot);
   const [changeUserCode, setChangeUserCode] = useState(false);
   const [commonFields, setCommonFields] = useState({
-    sampleType: getLabel(selectedFeature.sample_type, formName),
-    materialType: getLabel(selectedFeature.material_type, formName),
+    sampleType: getLabel(sampleValues.values.sample_type, formName),
+    materialType: getLabel(sampleValues.values.material_type, formName),
     collector: name,
-    collectionDate: selectedFeature.collection_date,
-    description: selectedFeature.description || '',
-    latitude: selectedFeature.latitude,
-    longitude: selectedFeature.longitude,
-    samplingPurpose: selectedFeature.main_sampling_purpose,
+    collectionDate: sampleValues.values.collection_date,
+    description: sampleValues.values.description || '',
+    latitude: sampleValues.values.latitude,
+    longitude: sampleValues.values.longitude,
+    samplingPurpose: sampleValues.values.main_sampling_purpose,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isOrcidSignInPrompt, setIsOrcidSignInPrompt] = useState(false);
+  const [checkSesarAuth, setCheckSesarAuth] = useState(true);
+  const [errorView, setErrorView] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
 
   useEffect(() => {
-    // selectedSampleData();
-    loginToSesar().catch(err => console.error('Error logging into SESAR', err));
-  }, [orcidToken]);
+    if (route.params?.orcidToken) {
+      getSesarToken(route.params?.orcidToken)
+        .then((token) => {
+          console.log('SESAR TOKEN', token);
+          navigation.setParams({orcidToken: undefined});
+        })
+        .catch(error => console.error(error));
+    }
+    else sesarAuth().catch(err => console.error('Error logging into SESAR', err));
+  }, [route.params]);
 
   const isoToLocalDateTime = (isoString, type) => {
     const date = new Date(isoString);
@@ -58,11 +76,44 @@ const IGNSModal = (
     return timeAndDate;
   };
 
-  const loginToSesar = async () => {
-    setIsLoading(true);
-    await getSesarToken(orcidToken.token);
-    await getSesarUserCode(sesar.sesarToken.access);
-    setIsLoading(false);
+  const sesarAuth = async () => {
+    try {
+      setIsLoading(true);
+      setCheckSesarAuth(true);
+      if (await authenticateWithSesar()) {
+        setCheckSesarAuth(false);
+      }
+      else {
+        setIsOrcidSignInPrompt(true);
+      }
+      setIsLoading(false);
+    }
+    catch (error) {
+      setIsLoading(false);
+      setErrorMessage(error.toString());
+      setErrorView(true);
+    }
+  };
+
+  const signIntoOrcid = async () => {
+    try {
+      setIsLoading(true);
+      await getOrcidToken(encoded_login);
+      setIsOrcidSignInPrompt(false);
+      setIsLoading(false);
+    }
+    catch (error) {
+      console.error(error.toString());
+      setErrorView(true);
+    }
+  };
+
+  const renderErrorView = () => {
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center', maxHeight: 400}}>
+        <Text>{errorMessage}</Text>
+      </View>
+    );
   };
 
   const renderOrcidSignIn = () => {
@@ -86,13 +137,27 @@ const IGNSModal = (
               </Text>
               <Button
                 title={'Sign into Orcid'}
-                onPress={() => getOrcidToken(encoded_login)}
+                onPress={signIntoOrcid}
                 buttonStyle={{backgroundColor: 'rgb(78, 114, 33)', paddingHorizontal: 50}}
               />
             </View>
           )
         }
       </View>
+    );
+  };
+
+  const renderSesarAuth = () => {
+    return (
+      <>
+        <View style={{backgroundColor: 'rgb(164, 200, 209)'}}>
+          <Image
+            source={require('../../assets/images/logos/sesar2_logo.png')}
+            style={{height: 100, width: '100%', borderWidth: 2}}
+          />
+        </View>
+        {checkSesarAuth ? <View><Text>Checking SESAR Auth...</Text></View> : renderUploadContent()}
+      </>
     );
   };
 
@@ -129,13 +194,7 @@ const IGNSModal = (
   const renderUploadContent = () => {
     return (
       <>
-        <View style={{backgroundColor: 'rgb(164, 200, 209)'}}>
-          <Image
-            source={require('../../assets/images/logos/sesar2_logo.png')}
-            style={{height: 100, width: '100%', borderWidth: 2}}
-          />
-        </View>
-        {!isEmpty(selectedFeature.sample_id_name)
+        {!isEmpty(sampleValues.values.sample_id_name)
           ? <ScrollView style={{}}>
             {changeUserCode ? renderUserCodeSelection()
               : (
@@ -186,7 +245,7 @@ const IGNSModal = (
     return (
       <View>
         <Text style={{fontSize: 18, textAlign: 'center'}}>
-
+          There was a error!
         </Text>
       </View>
     );
@@ -206,7 +265,8 @@ const IGNSModal = (
         containerStyle={{alignItems: 'flex-end'}}
         onPress={onModalCancel}
       />
-      {isOrcidSignInPrompt ? renderOrcidSignIn() : renderUploadContent()}
+      {isOrcidSignInPrompt ? renderOrcidSignIn() : renderSesarAuth()}
+      {errorView && renderErrorView()}
       <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
     </Overlay>
   );

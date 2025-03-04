@@ -51,6 +51,7 @@ export const MICRO_PATHS = {
 
 export const SESAR_PATHS = {
   GET_TOKEN: '/get_token.php',
+  REFRESH_TOKEN: '/refresh_token.php',
   GET_USER_CODE: '/credentials_service_v2.php',
   SESAR_API: sesarAPI,
   UPLOAD: '/upload.php',
