@@ -36,8 +36,10 @@ const useReportModal = ({openSpotInNotebook}) => {
   };
 
   const checkReportChanged = (itemText, go) => {
-    const isImageObjChanged = !isEqual(report?.images, updatedImages);
-    if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
+    const isImageObjChanged = !isEqual(reportImages, updatedImages);
+    const isSpotsObjChanged = !isEqual(reportSpots, checkedSpotsIds);
+    const isTagsObjChanged = !isEqual(reportTags, checkedTagsIds);
+    if ((formRef.current && formRef.current.dirty) || isImageObjChanged || isSpotsObjChanged || isTagsObjChanged) {
       const formCurrent = formRef?.current || {};
       alert(
         'Unsaved Changes',
