@@ -14,7 +14,7 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {imageStyles} from '../images';
 import {SpotsList, SpotsListItem} from '../spots';
 
-const ReportSpots = ({checkedSpotsIds, handleSpotChecked, updateSpotsInMapExtent}) => {
+const ReportSpots = ({checkedSpotsIds, handleSpotChecked, handleSpotPressed, updateSpotsInMapExtent}) => {
 
   const {height, width} = useWindowDimensions();
   const itemWidth = 300;
@@ -72,10 +72,7 @@ const ReportSpots = ({checkedSpotsIds, handleSpotChecked, updateSpotsInMapExtent
               key={d.properties.id.toString()}
               style={{borderWidth: 0.75, padding: 2, margin: 2, width: listWidth < 600 ? listWidth : itemWidth}}
             >
-              <SpotsListItem
-                // onPress={onPress}
-                spot={d}
-              />
+              <SpotsListItem onPress={handleSpotPressed} spot={d}/>
             </TouchableOpacity>
           ))}
         </View>

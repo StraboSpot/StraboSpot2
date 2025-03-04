@@ -87,6 +87,7 @@ const HomeContainer = ({navigation, route}) => {
         closeNotebookPanel={closeNotebookPanel}
         openMainMenuPanel={openMainMenuPanel}
         openNotebookPanel={openNotebookPanel}
+        openSpotInNotebook={openSpotInNotebook}
         ref={mapComponentRef}
         zoomToCurrentLocation={zoomToCurrentLocation}
       />

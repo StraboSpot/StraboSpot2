@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -13,7 +13,7 @@ import {useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
 import {updatedProject} from '../project/projects.slice';
 
-const ReportModal = ({updateSpotsInMapExtent}) => {
+const ReportModal = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   const dispatch = useDispatch();
   const report = useSelector(state => state.home.modalValues);
   const reports = useSelector(state => state.project.project?.reports) || [];
@@ -34,8 +34,8 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
   };
 
   const confirmCloseModal = () => {
-    const areImageChanged = !isEqual(report?.images, updatedImages);
-    if ((formRef.current && formRef.current.dirty) || areImageChanged) {
+    const isImageObjChanged = !isEqual(report?.images, updatedImages);
+    if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
       const formCurrent = formRef?.current || {};
       alert(
         'Unsaved Changes',
@@ -57,10 +57,61 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
     else closeModal();
   };
 
+  const goToSpot = (spot) => {
+    console.log('Going to Spot', spot);
+    closeModal();
+    openSpotInNotebook(spot);
+  };
+
   const handleSpotChecked = (spotId) => {
     console.log('Spot', spotId, checkedSpotsIds);
     if (checkedSpotsIds.find(id => id === spotId)) setCheckedSpotsIds(checkedSpotsIds.filter(id => id !== spotId));
     else setCheckedSpotsIds([...checkedSpotsIds, spotId]);
+  };
+
+  const handleSpotPressed = (spot) => {
+    alert(
+      'Leave Report',
+      'Are you sure you want to close this report and open the selected Spot?',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => handleSpotPressedCont(spot),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleSpotPressedCont = (spot) => {
+    const isImageObjChanged = !isEqual(report?.images, updatedImages);
+    if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
+      const formCurrent = formRef?.current || {};
+      alert(
+        'Unsaved Changes',
+        'Would you like to save your report before navigating to this Spot?',
+        [
+          {
+            text: 'No',
+            style: 'cancel',
+            onPress: () => goToSpot(spot),
+          },
+          {
+            text: 'Yes',
+            onPress: async () => {
+              await saveReport(formCurrent);
+              goToSpot(spot);
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+    else goToSpot(spot);
   };
 
   const handleTagChecked = (tagId) => {
@@ -103,12 +154,15 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
             <ReportForm initialValues={initialValues} ref={formRef}/>
             <FlatListItemSeparator/>
             <ReportImages setUpdatedImages={setUpdatedImages} updatedImages={updatedImages}/>
+            <View style={{paddingTop: 10}}/>
             <FlatListItemSeparator/>
             <ReportSpots
               checkedSpotsIds={checkedSpotsIds}
               handleSpotChecked={handleSpotChecked}
+              handleSpotPressed={handleSpotPressed}
               updateSpotsInMapExtent={updateSpotsInMapExtent}
             />
+            <View style={{paddingTop: 10}}/>
             <FlatListItemSeparator/>
             <ReportTags
               checkedTagsIds={checkedTagsIds}
