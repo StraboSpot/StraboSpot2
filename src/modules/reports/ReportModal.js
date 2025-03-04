@@ -11,7 +11,9 @@ import Modal from '../../shared/ui/modal/Modal';
 import SaveButton from '../../shared/ui/SaveButton';
 import {useForm} from '../form';
 import {setModalVisible} from '../home/home.slice';
-import {updatedProject} from '../project/projects.slice';
+import {MAIN_MENU_ITEMS, SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
+import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
+import {setSelectedTag, updatedProject} from '../project/projects.slice';
 
 const ReportModal = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
   const dispatch = useDispatch();
@@ -61,6 +63,14 @@ const ReportModal = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
     console.log('Going to Spot', spot);
     closeModal();
     openSpotInNotebook(spot);
+  };
+
+  const goToTag = (tag) => {
+    closeModal();
+    dispatch(setSidePanelVisible({bool: true, view: SIDE_PANEL_VIEWS.TAG_DETAIL}));
+    dispatch(setSelectedTag(tag));
+    if (tag.type === 'geologic_unit') dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.GEOLOGIC_UNITS}));
+    else dispatch(setMenuSelectionPage({name: MAIN_MENU_ITEMS.ATTRIBUTES.TAGS}));
   };
 
   const handleSpotChecked = (spotId) => {
@@ -120,6 +130,51 @@ const ReportModal = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
     else setCheckedTagsIds([...checkedTagsIds, tagId]);
   };
 
+  const handleTagPressed = (tag) => {
+    alert(
+      'Leave Report',
+      'Are you sure you want to close this report and open the selected Tag?',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => handleTagPressedCont(tag),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleTagPressedCont = (tag) => {
+    const isImageObjChanged = !isEqual(report?.images, updatedImages);
+    if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
+      const formCurrent = formRef?.current || {};
+      alert(
+        'Unsaved Changes',
+        'Would you like to save your report before navigating to this Tag?',
+        [
+          {
+            text: 'No',
+            style: 'cancel',
+            onPress: () => goToTag(tag),
+          },
+          {
+            text: 'Yes',
+            onPress: async () => {
+              await saveReport(formCurrent);
+              goToTag(tag);
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+    else goToSpot(tag);
+  };
+
   const saveReport = async () => {
     try {
       console.log('Saving report ...');
@@ -167,6 +222,7 @@ const ReportModal = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
             <ReportTags
               checkedTagsIds={checkedTagsIds}
               handleTagChecked={handleTagChecked}
+              handleTagPressed={handleTagPressed}
               updateSpotsInMapExtent={updateSpotsInMapExtent}
             />
           </>

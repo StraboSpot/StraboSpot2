@@ -14,7 +14,7 @@ import overlayStyles from '../home/overlays/overlay.styles';
 import {imageStyles} from '../images';
 import {TagsListItem, TagsModal} from '../tags';
 
-const ReportTags = ({checkedTagsIds, handleTagChecked, updateSpotsInMapExtent}) => {
+const ReportTags = ({checkedTagsIds, handleTagChecked, handleTagPressed}) => {
 
   const {height, width} = useWindowDimensions();
   const itemWidth = 300;
@@ -58,7 +58,7 @@ const ReportTags = ({checkedTagsIds, handleTagChecked, updateSpotsInMapExtent}) 
               key={t.id.toString()}
               style={{borderWidth: 0.75, padding: 2, margin: 2, width: listWidth < 600 ? listWidth : itemWidth}}
             >
-              <TagsListItem tag={t} isChevronVisible/>
+              <TagsListItem isChevronVisible onPress={handleTagPressed} tag={t}/>
             </TouchableOpacity>
           ))}
         </View>

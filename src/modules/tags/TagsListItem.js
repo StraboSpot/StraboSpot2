@@ -15,6 +15,7 @@ const TagsListItem = ({
                         isChecked,
                         isChevronVisible,
                         onChecked,
+                        onPress,
                         openMainMenuPanel,
                         tag,
                       }) => {
@@ -34,7 +35,7 @@ const TagsListItem = ({
     <ListItem
       containerStyle={commonStyles.listItem}
       key={tag.id}
-      onPress={() => isChevronVisible ? openTag() : onChecked()}
+      onPress={() => onPress ? onPress(tag) : isChevronVisible ? openTag() : onChecked()}
       pad={5}
     >
       <ListItem.Content>
