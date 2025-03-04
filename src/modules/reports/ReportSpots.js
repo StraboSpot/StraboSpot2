@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {FlatList, Platform, ScrollView, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 
 import {Button, Icon, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -82,25 +82,36 @@ const ReportSpots = ({checkedSpotsIds, handleSpotChecked, updateSpotsInMapExtent
 
       </View>
       {isSpotsListModalVisible && (
-        <Overlay overlayStyle={[overlayStyles.overlayContainer, {height: height * 0.8}]}>
-          <View style={{flex: 1}}>
-            <View style={{alignItems: 'flex-end'}}>
-              <Button
-                onPress={() => setIsSpotsListModalVisible(false)}
-                type={'clear'}
-                icon={{name: 'close', type: 'ionicon', size: 20}}
-                buttonStyle={{padding: 0}}
-              />
-            </View>
-            <View style={{...commonStyles.buttonContainer, flex: 1}}>
+        <Overlay overlayStyle={{...overlayStyles.overlayContainer, maxHeight: height * 0.80}}>
+          <View style={{alignItems: 'flex-end'}}>
+            <Button
+              onPress={() => setIsSpotsListModalVisible(false)}
+              type={'clear'}
+              icon={{name: 'close', type: 'ionicon', size: 20}}
+              buttonStyle={{padding: 0}}
+            />
+          </View>
+          {Platform.OS === 'web' ? (
+            <ScrollView>
               <SpotsList
                 checkedItems={checkedSpotsIds}
                 isCheckedList={true}
                 onChecked={handleSpotChecked}
                 updateSpotsInMapExtent={updateSpotsInMapExtent}
               />
-            </View>
-          </View>
+            </ScrollView>
+          ) : (
+            <FlatList
+              ListHeaderComponent={
+                <SpotsList
+                  checkedItems={checkedSpotsIds}
+                  isCheckedList={true}
+                  onChecked={handleSpotChecked}
+                  updateSpotsInMapExtent={updateSpotsInMapExtent}
+                />
+              }
+            />
+          )}
         </Overlay>
       )}
     </>

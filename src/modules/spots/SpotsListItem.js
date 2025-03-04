@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -30,22 +30,20 @@ const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onP
   };
 
   const renderSpotDataIcons = () => (
-    <View>
-      <FlatList
-        data={getPopulatedPagesKeys(spot)}
-        horizontal={false}
-        keyExtractor={(item, index) => index.toString()}
-        listKey={new Date().toISOString()}
-        numColumns={5}
-        renderItem={({item}) => (
-          <Avatar
-            source={getSpotDataIconSource(item)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
-        )}
-      />
-    </View>
+    <FlatList
+      data={getPopulatedPagesKeys(spot)}
+      horizontal={false}
+      keyExtractor={(item, index) => index.toString()}
+      listKey={new Date().toISOString()}
+      numColumns={5}
+      renderItem={({item}) => (
+        <Avatar
+          source={getSpotDataIconSource(item)}
+          placeholderStyle={{backgroundColor: 'transparent'}}
+          size={20}
+        />
+      )}
+    />
   );
 
   const renderTags = () => {
