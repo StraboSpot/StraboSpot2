@@ -54,7 +54,7 @@ NetInfo.configure({
 
 
 const linking = {
-  prefixes: ['strabofield://'], // Custom URL scheme
+  prefixes: ['strabofield://', 'http://strabofield.com'], // Custom URL scheme
   config: {
     screens: {
       HomeScreen: 'orcid_id/:orcidToken', // Default screen
