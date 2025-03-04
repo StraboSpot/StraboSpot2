@@ -17,9 +17,7 @@ const AddRemoveTagSpots = ({updateSpotsInMapExtent}) => {
 
   const {addRemoveSpotFromTag} = useTags();
 
-  const handleSpotChecked = (spot) => {
-    addRemoveSpotFromTag(spot.properties.id, selectedTag);
-  };
+  const handleSpotChecked = spot => addRemoveSpotFromTag(spot.properties.id, selectedTag);
 
   return (
     <View style={{flex: 1}}>
@@ -30,6 +28,7 @@ const AddRemoveTagSpots = ({updateSpotsInMapExtent}) => {
       />
       <View style={{...commonStyles.buttonContainer, flex: 1}}>
         <SpotsList
+          checkedItems={selectedTag?.spots || []}
           isCheckedList={true}
           onPress={handleSpotChecked}
           updateSpotsInMapExtent={updateSpotsInMapExtent}

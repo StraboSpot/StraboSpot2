@@ -22,7 +22,7 @@ const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onP
   const renderCheckboxes = () => {
     return (
       <ListItem.CheckBox
-        checked={isItemChecked || (selectedTag.spots && selectedTag.spots.includes(spot.properties.id))}
+        checked={isItemChecked}
         onPress={() => onChecked ? onChecked(spot.properties.id)
           : addRemoveSpotFromTag(spot.properties.id, selectedTag)}
       />
