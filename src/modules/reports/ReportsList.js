@@ -17,6 +17,10 @@ const ReportsList = ({isCheckedList, reportsSubset}) => {
   const reports = useSelector(state => state.project.project?.reports) || [];
 
   const reportsToList = reportsSubset ? isEmpty(reportsSubset) ? [] : reportsSubset : reports;
+  let reportsToListSorted = JSON.parse(JSON.stringify(reportsToList));
+  reportsToListSorted.sort((a, b) => {
+    return new Date(b.updated_timestamp) - new Date(a.updated_timestamp);
+  });
 
   const onShowReport = (report) => {
     dispatch(setModalValues(report));
@@ -27,7 +31,7 @@ const ReportsList = ({isCheckedList, reportsSubset}) => {
     <View style={{flex: 1}}>
       <FlatList
         keyExtractor={report => report.id}
-        data={reportsToList}
+        data={reportsToListSorted}
         renderItem={({item}) => (
           <ReportsListItem
             doShowTags={true}
