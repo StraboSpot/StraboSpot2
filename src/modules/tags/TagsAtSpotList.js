@@ -13,7 +13,7 @@ const TagsAtSpotList = ({openMainMenuPanel, page}) => {
   const listEmptyText = page.key === PAGE_KEYS.GEOLOGIC_UNITS ? 'No Geologic Units' : 'No Tags';
 
   const renderTag = (tag) => {
-    return <TagsListItem openMainMenuPanel={openMainMenuPanel} tag={tag}/>;
+    return <TagsListItem isChevronVisible openMainMenuPanel={openMainMenuPanel} tag={tag} />;
   };
 
   return (

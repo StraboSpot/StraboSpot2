@@ -426,7 +426,7 @@ export const SHORTCUT_MODALS = [
     icon_src: require('../../assets/icons/GeologicUnitButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/GeologicUnitButtonShortcut_pressed.png'),
     modal_component: TagsShortcutModal,
-    notebook_modal_key: MODAL_KEYS.NOTEBOOK.TAGS,
+    notebook_modal_key: MODAL_KEYS.NOTEBOOK.GEOLOGIC_UNITS,
   }, {
     key: MODAL_KEYS.SHORTCUTS.TAG,
     label: 'Tag',

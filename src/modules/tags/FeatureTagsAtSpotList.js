@@ -23,7 +23,7 @@ const FeatureTagsAtSpotList = ({openMainMenuPanel, page}) => {
   };
 
   const renderTag = (tag) => {
-    return <TagsListItem openMainMenuPanel={openMainMenuPanel} tag={tag}/>;
+    return <TagsListItem isChevronVisible openMainMenuPanel={openMainMenuPanel} tag={tag}/>;
   };
 
   return (

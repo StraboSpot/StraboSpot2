@@ -3,7 +3,7 @@ import {FlatList} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {ReportForm, ReportImages, ReportSpots} from '.';
+import {ReportForm, ReportImages, ReportSpots, ReportTags} from '.';
 import {getNewUUID, isEmpty, isEqual} from '../../shared/Helpers';
 import alert from '../../shared/ui/alert';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -25,6 +25,8 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
   const [updatedImages, setUpdatedImages] = useState(reportImages);
   const reportSpots = report?.spots ? JSON.parse(JSON.stringify(report?.spots)) : [];
   const [checkedSpotsIds, setCheckedSpotsIds] = useState(reportSpots);
+  const reportTags = report?.tags ? JSON.parse(JSON.stringify(report?.tags)) : [];
+  const [checkedTagsIds, setCheckedTagsIds] = useState(reportTags);
   const initialValues = isEmpty(report) ? {} : report;
 
   const closeModal = () => {
@@ -61,6 +63,12 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
     else setCheckedSpotsIds([...checkedSpotsIds, spotId]);
   };
 
+  const handleTagChecked = (tagId) => {
+    console.log('Tag', tagId, checkedTagsIds);
+    if (checkedTagsIds.find(id => id === tagId)) setCheckedTagsIds(checkedTagsIds.filter(id => id !== tagId));
+    else setCheckedTagsIds([...checkedTagsIds, tagId]);
+  };
+
   const saveReport = async () => {
     try {
       console.log('Saving report ...');
@@ -71,6 +79,7 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
       editedReport.updated_timestamp = Date.now();
       editedReport.images = updatedImages;
       editedReport.spots = checkedSpotsIds;
+      editedReport.tags = checkedTagsIds;
       let updatedReports = reports.filter(r => r.id !== editedReport.id);
       updatedReports.push({...editedReport});
       dispatch(updatedProject({field: 'reports', value: updatedReports}));
@@ -94,9 +103,16 @@ const ReportModal = ({updateSpotsInMapExtent}) => {
             <ReportForm initialValues={initialValues} ref={formRef}/>
             <FlatListItemSeparator/>
             <ReportImages setUpdatedImages={setUpdatedImages} updatedImages={updatedImages}/>
+            <FlatListItemSeparator/>
             <ReportSpots
               checkedSpotsIds={checkedSpotsIds}
               handleSpotChecked={handleSpotChecked}
+              updateSpotsInMapExtent={updateSpotsInMapExtent}
+            />
+            <FlatListItemSeparator/>
+            <ReportTags
+              checkedTagsIds={checkedTagsIds}
+              handleTagChecked={handleTagChecked}
               updateSpotsInMapExtent={updateSpotsInMapExtent}
             />
           </>
