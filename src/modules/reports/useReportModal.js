@@ -26,33 +26,44 @@ const useReportModal = ({openSpotInNotebook}) => {
   const [checkedTagsIds, setCheckedTagsIds] = useState(reportTags);
   const initialValues = isEmpty(report) ? {} : report;
 
-  const closeModal = () => {
-    dispatch(setModalVisible({modal: null}));
+  const alertLeaveReport = (itemText, cont) => {
+    alert(
+      'Leave Report',
+      'Are you sure you want to close this report and open the selected ' + itemText + '?',
+      [{text: 'No', style: 'cancel'}, {text: 'Yes', onPress: cont}],
+      {cancelable: false},
+    );
   };
 
-  const confirmCloseModal = () => {
+  const checkReportChanged = (itemText, go) => {
     const isImageObjChanged = !isEqual(report?.images, updatedImages);
     if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
       const formCurrent = formRef?.current || {};
       alert(
         'Unsaved Changes',
-        'Would you like to save your report before continuing?',
-        [
-          {
-            text: 'No',
-            style: 'cancel',
-            onPress: closeModal,
-          },
+        'Would you like to save your report before ' + (itemText ? 'navigating to this ' + itemText : 'continuing') + '?',
+        [{
+          text: 'No',
+          style: 'cancel',
+          onPress: go,
+        },
           {
             text: 'Yes',
-            onPress: () => saveReport(formCurrent),
+            onPress: async () => {
+              await saveReport(formCurrent);
+              go();
+            },
           },
         ],
         {cancelable: false},
       );
     }
-    else closeModal();
+    else go();
   };
+
+  const closeModal = () => dispatch(setModalVisible({modal: null}));
+
+  const confirmCloseModal = () => checkReportChanged(null, closeModal);
 
   const goToSpot = (spot) => {
     console.log('Going to Spot', spot);
@@ -74,50 +85,9 @@ const useReportModal = ({openSpotInNotebook}) => {
     else setCheckedSpotsIds([...checkedSpotsIds, spotId]);
   };
 
-  const handleSpotPressed = (spot) => {
-    alert(
-      'Leave Report',
-      'Are you sure you want to close this report and open the selected Spot?',
-      [
-        {
-          text: 'No',
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => handleSpotPressedCont(spot),
-        },
-      ],
-      {cancelable: false},
-    );
-  };
+  const handleSpotPressed = spot => alertLeaveReport('Spot', () => handleSpotPressedCont(spot));
 
-  const handleSpotPressedCont = (spot) => {
-    const isImageObjChanged = !isEqual(report?.images, updatedImages);
-    if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
-      const formCurrent = formRef?.current || {};
-      alert(
-        'Unsaved Changes',
-        'Would you like to save your report before navigating to this Spot?',
-        [
-          {
-            text: 'No',
-            style: 'cancel',
-            onPress: () => goToSpot(spot),
-          },
-          {
-            text: 'Yes',
-            onPress: async () => {
-              await saveReport(formCurrent);
-              goToSpot(spot);
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-    else goToSpot(spot);
-  };
+  const handleSpotPressedCont = spot => checkReportChanged('Spot', () => goToSpot(spot));
 
   const handleTagChecked = (tagId) => {
     console.log('Tag', tagId, checkedTagsIds);
@@ -125,50 +95,9 @@ const useReportModal = ({openSpotInNotebook}) => {
     else setCheckedTagsIds([...checkedTagsIds, tagId]);
   };
 
-  const handleTagPressed = (tag) => {
-    alert(
-      'Leave Report',
-      'Are you sure you want to close this report and open the selected Tag?',
-      [
-        {
-          text: 'No',
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => handleTagPressedCont(tag),
-        },
-      ],
-      {cancelable: false},
-    );
-  };
+  const handleTagPressed = tag => alertLeaveReport('Tag', () => handleTagPressedCont(tag));
 
-  const handleTagPressedCont = (tag) => {
-    const isImageObjChanged = !isEqual(report?.images, updatedImages);
-    if ((formRef.current && formRef.current.dirty) || isImageObjChanged) {
-      const formCurrent = formRef?.current || {};
-      alert(
-        'Unsaved Changes',
-        'Would you like to save your report before navigating to this Tag?',
-        [
-          {
-            text: 'No',
-            style: 'cancel',
-            onPress: () => goToTag(tag),
-          },
-          {
-            text: 'Yes',
-            onPress: async () => {
-              await saveReport(formCurrent);
-              goToTag(tag);
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-    else goToSpot(tag);
-  };
+  const handleTagPressedCont = tag => checkReportChanged('Tag', () => goToTag(tag));
 
   const saveReport = async () => {
     try {
@@ -184,7 +113,6 @@ const useReportModal = ({openSpotInNotebook}) => {
       let updatedReports = reports.filter(r => r.id !== editedReport.id);
       updatedReports.push({...editedReport});
       dispatch(updatedProject({field: 'reports', value: updatedReports}));
-      closeModal();
     }
     catch (e) {
       console.log('Error saving report data', e);
@@ -196,7 +124,7 @@ const useReportModal = ({openSpotInNotebook}) => {
     checkedTagsIds: checkedTagsIds,
     confirmCloseModal: confirmCloseModal,
     formRef: formRef,
-    handleSpotChecked:handleSpotChecked,
+    handleSpotChecked: handleSpotChecked,
     handleSpotPressed: handleSpotPressed,
     handleTagChecked: handleTagChecked,
     handleTagPressed: handleTagPressed,
