@@ -11,10 +11,12 @@ const ActionButtonsSmallScreen = ({
                                     dialogClickHandler,
                                     dialogs,
                                     distance,
-                                    onEndDrawPressed,
                                     endMeasurement,
-                                    mapMode,
+                                    isSelectingForStereonet,
+                                    isSelectingForTagging,
                                     mapComponentRef,
+                                    mapMode,
+                                    onEndDrawPressed,
                                     toggleDialog,
                                   }) => {
 
@@ -31,6 +33,8 @@ const ActionButtonsSmallScreen = ({
           clickHandler={clickHandler}
           distance={distance}
           endMeasurement={endMeasurement}
+          isSelectingForStereonet={isSelectingForStereonet}
+          isSelectingForTagging={isSelectingForTagging}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
         />

@@ -17,6 +17,8 @@ const RightSideButtons = ({
                             closeNotebookPanel,
                             distance,
                             endMeasurement,
+                            isSelectingForStereonet,
+                            isSelectingForTagging,
                             mapMode,
                             onEndDrawPressed,
                             openNotebookPanel,
@@ -57,6 +59,8 @@ const RightSideButtons = ({
             clickHandler={clickHandler}
             distance={distance}
             endMeasurement={endMeasurement}
+            isSelectingForStereonet={isSelectingForStereonet}
+            isSelectingForTagging={isSelectingForTagging}
             mapMode={mapMode}
             onEndDrawPressed={onEndDrawPressed}
           />

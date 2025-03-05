@@ -54,6 +54,8 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
+        setIsSelectingForStereonet(false);
+        setIsSelectingForTagging(false);
         dispatch(clearedSelectedSpots());
         const selectedDataset = getSelectedDatasetFromId();
         if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await createPointAtCurrentLocation();

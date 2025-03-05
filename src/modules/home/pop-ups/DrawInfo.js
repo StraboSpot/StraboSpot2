@@ -10,7 +10,15 @@ import useProject from '../../project/useProject';
 import EditCancelSaveButtons from '../buttons/EditCancelSaveButtons';
 import homeStyles from '../home.style';
 
-const DrawInfo = ({clickHandler, distance, endMeasurement, mapMode, onEndDrawPressed}) => {
+const DrawInfo = ({
+                    clickHandler,
+                    distance,
+                    endMeasurement,
+                    isSelectingForStereonet,
+                    isSelectingForTagging,
+                    mapMode,
+                    onEndDrawPressed,
+                  }) => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
   const {getSelectedDatasetFromId} = useProject();
@@ -24,7 +32,7 @@ const DrawInfo = ({clickHandler, distance, endMeasurement, mapMode, onEndDrawPre
         {mapMode === MAP_MODES.DRAW.MEASURE ? (
             <Text style={{textAlign: 'center'}}>Total Distance: {distance.toFixed(3)}km</Text>
           )
-          : mapMode !== MAP_MODES.EDIT && (
+          : mapMode !== MAP_MODES.EDIT && !isSelectingForStereonet && !isSelectingForTagging && (
           <>
             <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
             <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
@@ -55,7 +63,7 @@ const DrawInfo = ({clickHandler, distance, endMeasurement, mapMode, onEndDrawPre
                     buttonStyle={homeStyles.drawToolsButtons}
                     containerStyle={{alignContent: 'center'}}
                     onPress={onEndDrawPressed}
-                    title={'Save New Spot'}
+                    title={isSelectingForStereonet || isSelectingForTagging ? 'Set Area' : 'Save New Spot'}
                     titleStyle={homeStyles.drawToolsTitle}
                     type={'clear'}
                   />
