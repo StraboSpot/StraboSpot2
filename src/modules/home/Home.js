@@ -26,10 +26,9 @@ const Home = forwardRef(({
     dialogs,
     distance,
     endMeasurement,
-    isSelectingForStereonet,
-    isSelectingForTagging,
     mapMode,
     onEndDrawPressed,
+    selectingMode,
     setDistance,
     setMapModeToEdit,
     toggleDialog,
@@ -46,14 +45,13 @@ const Home = forwardRef(({
           dialogs={dialogs}
           distance={distance}
           endMeasurement={endMeasurement}
-          isSelectingForStereonet={isSelectingForStereonet}
-          isSelectingForTagging={isSelectingForTagging}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
           openMainMenuPanel={openMainMenuPanel}
           openNotebookPanel={openNotebookPanel}
           openSpotInNotebook={openSpotInNotebook}
           ref={mapComponentRef}
+          selectingMode={selectingMode}
           setDistance={setDistance}
           setMapModeToEdit={setMapModeToEdit}
           toggleDialog={toggleDialog}
@@ -74,13 +72,12 @@ const Home = forwardRef(({
         dialogs={dialogs}
         distance={distance}
         endMeasurement={endMeasurement}
-        isSelectingForStereonet={isSelectingForStereonet}
-        isSelectingForTagging={isSelectingForTagging}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}
         openMainMenuPanel={openMainMenuPanel}
         openNotebookPanel={openNotebookPanel}
         ref={mapComponentRef}
+        selectingMode={selectingMode}
         setDistance={setDistance}
         setMapModeToEdit={setMapModeToEdit}
         toggleDialog={toggleDialog}

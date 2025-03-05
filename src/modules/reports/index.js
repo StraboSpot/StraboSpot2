@@ -4,6 +4,7 @@ export {default as ReportModal} from './ReportModal';
 export {default as ReportSpots} from './ReportSpots';
 export {default as ReportTags} from './ReportTags';
 export {default as ReportsListItem} from './ReportsListItem';
+export {default as ReportsListModal} from './ReportsListModal';
 export {default as ReportsList} from './ReportsList';
 export {default as ReportsMenu} from './ReportsMenu';
 export {default as ReportsPage} from './ReportsPage';

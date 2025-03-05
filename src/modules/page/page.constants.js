@@ -33,7 +33,7 @@ import RockMetamorphicPage from '../petrology/RockMetamorphicPage';
 import RockSedimentaryPage from '../petrology/RockSedimentaryPage';
 import TernaryPage from '../petrology/TernaryPage';
 import DailyNotesModal from '../project/description/DailyNotesModal';
-import {ReportModal, ReportsPage} from '../reports';
+import {ReportModal, ReportsListModal, ReportsPage} from '../reports';
 import SampleModal from '../samples/SampleModal';
 import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
@@ -408,11 +408,12 @@ export const MODAL_KEYS = {
     PHOTO: 'photo',
   },
   OTHER: {
+    ADD_INTERVAL: 'add_interval',
+    ADD_SPOTS_TO_REPORTS: 'AddSpotsToReports',
     ADD_TAGS_TO_SPOTS: 'AddTagsToSpots',
+    DAILY_NOTES: 'daily_setup',
     FEATURE_TAGS: 'FeatureTags',
     GEOLOGIC_UNITS: 'geologic_unit',
-    DAILY_NOTES: 'daily_setup',
-    ADD_INTERVAL: 'add_interval',
   },
 };
 
@@ -476,21 +477,25 @@ export const SHORTCUT_MODALS = [
 
 const OTHER_MODALS = [
   {
+    key: MODAL_KEYS.OTHER.ADD_INTERVAL,
+    label: 'Add Interval',
+    modal_component: AddIntervalModal,
+  }, {
+    key: MODAL_KEYS.OTHER.ADD_SPOTS_TO_REPORTS,
+    label: 'Add Spots To Reports',
+    modal_component: ReportsListModal,
+  }, {
     key: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS,
     label: 'Add Tags To Spots',
     modal_component: AddTagsToSpotsShortcutModal,
-  }, {
-    key: MODAL_KEYS.OTHER.FEATURE_TAGS,
-    label: 'Add Feature Tags',
-    modal_component: FeatureTagsModal,
   }, {
     key: MODAL_KEYS.OTHER.DAILY_NOTES,
     label: 'Daily Notes',
     modal_component: DailyNotesModal,
   }, {
-    key: MODAL_KEYS.OTHER.ADD_INTERVAL,
-    label: 'Add Interval',
-    modal_component: AddIntervalModal,
+    key: MODAL_KEYS.OTHER.FEATURE_TAGS,
+    label: 'Add Feature Tags',
+    modal_component: FeatureTagsModal,
   },
 ];
 

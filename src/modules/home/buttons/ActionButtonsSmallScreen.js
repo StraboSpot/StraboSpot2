@@ -12,11 +12,10 @@ const ActionButtonsSmallScreen = ({
                                     dialogs,
                                     distance,
                                     endMeasurement,
-                                    isSelectingForStereonet,
-                                    isSelectingForTagging,
                                     mapComponentRef,
                                     mapMode,
                                     onEndDrawPressed,
+                                    selectingMode,
                                     toggleDialog,
                                   }) => {
 
@@ -33,10 +32,9 @@ const ActionButtonsSmallScreen = ({
           clickHandler={clickHandler}
           distance={distance}
           endMeasurement={endMeasurement}
-          isSelectingForStereonet={isSelectingForStereonet}
-          isSelectingForTagging={isSelectingForTagging}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
+          selectingMode={selectingMode}
         />
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>

@@ -14,10 +14,9 @@ const DrawInfo = ({
                     clickHandler,
                     distance,
                     endMeasurement,
-                    isSelectingForStereonet,
-                    isSelectingForTagging,
                     mapMode,
                     onEndDrawPressed,
+                    selectingMode,
                   }) => {
   const selectedDatasetId = useSelector(state => state.project.selectedDatasetId);
 
@@ -32,7 +31,7 @@ const DrawInfo = ({
         {mapMode === MAP_MODES.DRAW.MEASURE ? (
             <Text style={{textAlign: 'center'}}>Total Distance: {distance.toFixed(3)}km</Text>
           )
-          : mapMode !== MAP_MODES.EDIT && !isSelectingForStereonet && !isSelectingForTagging && (
+          : mapMode !== MAP_MODES.EDIT && !selectingMode && (
           <>
             <Text style={{textAlign: 'center'}}>Selected Dataset:</Text>
             <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
@@ -63,7 +62,7 @@ const DrawInfo = ({
                     buttonStyle={homeStyles.drawToolsButtons}
                     containerStyle={{alignContent: 'center'}}
                     onPress={onEndDrawPressed}
-                    title={isSelectingForStereonet || isSelectingForTagging ? 'Set Area' : 'Save New Spot'}
+                    title={selectingMode ? 'Set Area' : 'Save New Spot'}
                     titleStyle={homeStyles.drawToolsTitle}
                     type={'clear'}
                   />

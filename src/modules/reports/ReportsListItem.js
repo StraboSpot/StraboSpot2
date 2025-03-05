@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {ListItem} from 'react-native-elements';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_TEXT_COLOR} from '../../shared/styles.constants';
 import {useForm} from '../form';
 import {PAGE_KEYS} from '../page/page.constants';
+import {updatedProject} from '../project/projects.slice';
 import {useTags} from '../tags';
 
 const ReportsListItem = ({
@@ -17,23 +18,39 @@ const ReportsListItem = ({
                            report,
                          }) => {
   console.log('Rendering ReportsListItem', report.id, '...');
-  console.log(report);
+
+  const dispatch = useDispatch();
+  const reports = useSelector(state => state.project.project?.reports) || [];
+  const selectedSpots = useSelector(state => state.spot.intersectedSpotsForTagging);
+
+  const [selectedReports, setSelectedReports] = useState([]);
 
   const {getLabel} = useForm();
-  const {addRemoveSpotFromTag, getTagsAtSpot} = useTags();
-
-  const selectedTag = useSelector(state => state.project.selectedTag);
+  const {getTagsAtSpot} = useTags();
 
   const groupKey = 'general';
   const pageKey = PAGE_KEYS.REPORTS;
   const formName = [groupKey, pageKey];
   const reportTypeLabel = report.report_type ? getLabel(report.report_type, formName) : 'No Type';
 
+  const addSpotsToReports = () => {
+    setSelectedReports(prevState => [...prevState, report.id]);
+    let reportSpotsIds = report.spots || [];
+    reportSpotsIds = [... new Set([...reportSpotsIds, ...selectedSpots.map(s=>s.properties.id)])];
+    console.log('Add selected spot ids', reportSpotsIds, 'to report', report);
+    const editedReport = JSON.parse(JSON.stringify(report));
+    editedReport.updated_timestamp = Date.now();
+    editedReport.spots = reportSpotsIds;
+    let updatedReports = reports.filter(r => r.id !== editedReport.id);
+    updatedReports.push({...editedReport});
+    dispatch(updatedProject({field: 'reports', value: updatedReports}));
+  };
+
   const renderCheckboxes = () => {
     return (
       <ListItem.CheckBox
-        checked={selectedTag.spots && selectedTag.spots.includes(report.id)}
-        onPress={() => addRemoveSpotFromTag(report.id, selectedTag)}
+        checked={selectedReports.includes(report.id)}
+        onPress={addSpotsToReports}
       />
     );
   };
@@ -48,7 +65,7 @@ const ReportsListItem = ({
     <ListItem
       containerStyle={commonStyles.listItem}
       keyExtractor={(item, index) => item?.id || index.toString()}
-      onPress={() => onPress(report)}
+      onPress={() => (!isCheckedList || (isCheckedList && selectedReports.includes(report.id))) && onPress(report)}
     >
       <ListItem.Content>
         <ListItem.Title style={[commonStyles.listItemTitle, {fontWeight: 'bold'}]}>{reportTypeLabel}</ListItem.Title>
@@ -57,7 +74,7 @@ const ReportsListItem = ({
         </ListItem.Subtitle>
         {doShowTags && report && renderTags()}
       </ListItem.Content>
-      {isCheckedList ? renderCheckboxes() : report && <ListItem.Chevron/>}
+      {isCheckedList && !selectedReports.includes(report.id) ? renderCheckboxes() : report && <ListItem.Chevron/>}
     </ListItem>
   );
 };

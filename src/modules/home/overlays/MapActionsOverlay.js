@@ -27,6 +27,7 @@ const MapActionsOverlay = ({
     {key: 'stereonet', title: 'Lasso Spots for Stereonet'},
     // {key: 'zoomToOfflineMap', title: 'Zoom to Offline Map'},
     {key: 'addTag', title: 'Add Tag(s) to Spot(s)'},
+    {key: 'addToReport', title: 'Add Spot(s) to Report'},
     {key: 'mapMeasurement', title: 'Measure Distance'},
     {key: 'stratSection', title: 'Strat Section Settings'},
   ];

@@ -28,11 +28,10 @@ import {
 import useSpots from '../spots/useSpots';
 
 const useMapFeaturesDraw = ({
-                              isSelectingForStereonet,
-                              isSelectingForTagging,
                               mapMode,
                               mapRef,
                               onEndDrawPressed,
+                              selectingMode,
                               setIsShowVertexActionsModal,
                               setVertexActionValues,
                             }) => {
@@ -459,8 +458,9 @@ const useMapFeaturesDraw = ({
           feature = convertFeatureGeometryToImagePixels(feature);
           feature.properties.strat_section_id = stratSection.strat_section_id;
         }
-        if (isSelectingForStereonet) await getStereonetForFeature(feature);
-        else if (isSelectingForTagging) await selectSpotsForTagging(feature);
+        if (selectingMode === 'report') selectReports(feature);
+        else if (selectingMode === 'stereonet') await getStereonetForFeature(feature);
+        else if (selectingMode === 'tag') selectSpotsForTagging(feature);
         else {
           feature.properties.symbology = getSymbology(feature);
           newOrEditedSpot = await createSpot(feature);
@@ -484,8 +484,9 @@ const useMapFeaturesDraw = ({
         newFeature = convertFeatureGeometryToImagePixels(newFeature);
         newFeature.properties.strat_section_id = stratSection.strat_section_id;
       }
-      if (isSelectingForStereonet) await getStereonetForFeature(newFeature);
-      if (isSelectingForTagging) await selectSpotsForTagging(newFeature);
+      if (selectingMode === 'report') selectReports(newFeature);
+      else if (selectingMode === 'stereonet') await getStereonetForFeature(newFeature);
+      else if (selectingMode === 'tag') selectSpotsForTagging(newFeature);
       else {
         newOrEditedSpot = await createSpot(newFeature);
         dispatch(setSelectedSpot(newOrEditedSpot));
@@ -625,7 +626,21 @@ const useMapFeaturesDraw = ({
     clearEditing();
   };
 
-  const selectSpotsForTagging = async (feature) => {
+  const selectReports = (feature) => {
+    const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
+    if (selectedSpots.length > 0) {
+      dispatch(setIntersectedSpotsForTagging(selectedSpots));
+      dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.ADD_SPOTS_TO_REPORTS}));
+    }
+    else {
+      alert(
+        'Error!',
+        'No Spots selected.',
+      );
+    }
+  };
+
+  const selectSpotsForTagging = (feature) => {
     const selectedSpots = getLassoedSpots(spotsNotSelected, feature);
     if (selectedSpots.length > 0) {
       dispatch(setIntersectedSpotsForTagging(selectedSpots));

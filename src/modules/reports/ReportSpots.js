@@ -49,20 +49,20 @@ const ReportSpots = ({checkedSpotsIds, handleSpotChecked, handleSpotPressed, upd
             type={'outline'}
             onPress={addAssociatedSpots}
           />
-          <ButtonRounded
-            icon={
-              <Icon
-                name={'lasso'}
-                type={'material-community'}
-                iconStyle={imageStyles.icon}
-                color={commonStyles.iconColor.color}/>
-            }
-            title={'Add Spots with Lasso'}
-            titleStyle={commonStyles.standardButtonText}
-            buttonStyle={imageStyles.buttonContainer}
-            type={'outline'}
-            onPress={addAssociatedSpots}
-          />
+          {/*<ButtonRounded*/}
+          {/*  icon={*/}
+          {/*    <Icon*/}
+          {/*      name={'lasso'}*/}
+          {/*      type={'material-community'}*/}
+          {/*      iconStyle={imageStyles.icon}*/}
+          {/*      color={commonStyles.iconColor.color}/>*/}
+          {/*  }*/}
+          {/*  title={'Add Spots with Lasso'}*/}
+          {/*  titleStyle={commonStyles.standardButtonText}*/}
+          {/*  buttonStyle={imageStyles.buttonContainer}*/}
+          {/*  type={'outline'}*/}
+          {/*  onPress={addAssociatedSpots}*/}
+          {/*/>*/}
         </View>
 
         <View style={{flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 5, paddingTop: 15}}>

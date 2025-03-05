@@ -17,11 +17,10 @@ const RightSideButtons = ({
                             closeNotebookPanel,
                             distance,
                             endMeasurement,
-                            isSelectingForStereonet,
-                            isSelectingForTagging,
                             mapMode,
                             onEndDrawPressed,
                             openNotebookPanel,
+                            selectingMode,
                           }) => {
   console.log('Rendering RightSideButtons...');
 
@@ -59,10 +58,9 @@ const RightSideButtons = ({
             clickHandler={clickHandler}
             distance={distance}
             endMeasurement={endMeasurement}
-            isSelectingForStereonet={isSelectingForStereonet}
-            isSelectingForTagging={isSelectingForTagging}
             mapMode={mapMode}
             onEndDrawPressed={onEndDrawPressed}
+            selectingMode={selectingMode}
           />
         </View>
         <DrawActionButtons

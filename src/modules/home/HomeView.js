@@ -23,12 +23,11 @@ const HomeView = forwardRef(({
                                dialogs,
                                distance,
                                endMeasurement,
-                               isSelectingForStereonet,
-                               isSelectingForTagging,
                                mapMode,
                                onEndDrawPressed,
                                openMainMenuPanel,
                                openNotebookPanel,
+                               selectingMode,
                                setDistance,
                                setMapModeToEdit,
                                toggleDialog,
@@ -38,11 +37,10 @@ const HomeView = forwardRef(({
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
       <Map
-        isSelectingForStereonet={isSelectingForStereonet}
-        isSelectingForTagging={isSelectingForTagging}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}
         ref={mapComponentRef}
+        selectingMode={selectingMode}
         setDistance={setDistance}
         setMapModeToEdit={setMapModeToEdit}
       />
@@ -57,11 +55,10 @@ const HomeView = forwardRef(({
         closeNotebookPanel={closeNotebookPanel}
         distance={distance}
         endMeasurement={endMeasurement}
-        isSelectingForStereonet={isSelectingForStereonet}
-        isSelectingForTagging={isSelectingForTagging}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}
         openNotebookPanel={openNotebookPanel}
+        selectingMode={selectingMode}
       />
 
       <LeftSideButtons
