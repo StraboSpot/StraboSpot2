@@ -13,7 +13,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import overlayStyles from '../home/overlays/overlay.styles';
-import {setSelectedUserCode} from '../user/userProfile.slice';
+import {setSelectedUserCode, setSesarToken} from '../user/userProfile.slice';
 
 const IGNSModal = (
   {
@@ -25,20 +25,15 @@ const IGNSModal = (
 ) => {
   const formName = ['general', 'samples'];
   const {height} = useWindowDimensions();
-  const {
-    registerSample,
-  } = useSamples(selectedFeature);
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
+  const {authenticateWithSesar, registerSample} = useSamples(selectedFeature);
+  const {name, encoded_login, sesar} = useSelector(state => state.user);
 
   const {getLabel} = useForm();
-  const {authenticateWithSesar} = useSamples(selectedFeature);
   const {getSesarToken, getOrcidToken} = useServerRequests();
-
-  // const formValues = formRef?.values;
-  const dispatch = useDispatch();
-  const {name, encoded_login, sesar} = useSelector(state => state.user);
 
   const [changeUserCode, setChangeUserCode] = useState(false);
   const [commonFields, setCommonFields] = useState({
@@ -63,6 +58,7 @@ const IGNSModal = (
       getSesarToken(route.params?.orcidToken)
         .then((token) => {
           console.log('SESAR TOKEN', token);
+          dispatch(setSesarToken(token));
           navigation.setParams({orcidToken: undefined});
         })
         .catch(error => console.error(error));

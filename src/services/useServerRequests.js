@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
 import {MICRO_PATHS, STRABO_APIS} from './urls.constants';
-import {setSesarToken, setSesarUserCodes} from '../modules/user/userProfile.slice';
 import {ORCID_PATHS, SESAR_PATHS} from '../services/urls.constants';
 import alert from '../shared/ui/alert';
 
@@ -244,7 +243,6 @@ const useServerRequests = () => {
     }
     else {
       console.log('NEW SESAR TOKEN', sesarJson);
-      dispatch(setSesarToken(sesarJson));
       return sesarJson;
     }
   };

@@ -1,16 +1,11 @@
 import {XMLParser} from 'fast-xml-parser';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {ORCID_PATHS} from '../../services/urls.constants';
 import useServerRequests from '../../services/useServerRequests';
 import {useSpots} from '../spots';
 import {setSelectedUserCode, setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
 
-// import {parseString} from 'xml2js';
-// import convert from 'xml-js';
-
 const useSamples = (selectedFeature) => {
-  const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
   const dispatch = useDispatch();
 
   const {getAllSpotSamplesCount} = useSpots();
@@ -110,7 +105,7 @@ const useSamples = (selectedFeature) => {
       latitude,
       longitude,
       material_type,
-      rock_classification,
+      rock_classifications,
       sample_type,
       sample_id_name,
     } = selectedFeature;

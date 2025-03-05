@@ -73,7 +73,7 @@ const BasicPageDetail = ({
 
   useEffect(() => {
     console.log('UE BasicPageDetail [selectedFeature]', selectedFeature);
-    if (!isTemplate && isEmpty(selectedFeature) && !IGSNChecked) closeDetailView();
+    if (!isTemplate && isEmpty(selectedFeature) && page.key !== PAGE_KEYS.SAMPLES) closeDetailView();
   }, [selectedFeature]);
 
   const cancelForm = async () => {
@@ -242,7 +242,6 @@ const BasicPageDetail = ({
 
       if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
         await checkSampleName(editedFeatureData.sample_id_name);
-
       }
     }
     catch (err) {
@@ -266,9 +265,6 @@ const BasicPageDetail = ({
         await saveFeature(formCurrent);
         await formCurrent.resetForm();
         // closeDetailView();
-        if (IGSNChecked) {
-          setIsIGSNModalVisible(true);
-        }
       }
     }
     catch (err) {
@@ -298,8 +294,7 @@ const BasicPageDetail = ({
       {isIGSNModalVisible && (
         <IGSNModal
           onModalCancel={() => setIsIGSNModalVisible(false)}
-          sampleValues={formRef.current}
-          onSavePress={formCurrent => saveFeature(formCurrent)}
+          sampleValues={formRef?.current}
           selectedFeature={selectedFeature}
         />
       )}
