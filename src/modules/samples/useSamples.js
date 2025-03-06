@@ -4,13 +4,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import useServerRequests from '../../services/useServerRequests';
 import {useSpots} from '../spots';
 import {setSelectedUserCode, setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
+import useForm from '../form/useForm';
 
-const useSamples = (selectedFeature) => {
+const useSamples = () => {
+  const formName = ['general', 'samples'];
   const dispatch = useDispatch();
 
+  const {getLabel} = useForm();
   const {getAllSpotSamplesCount} = useSpots();
   const {getSesarUserCode, refreshSesarToken} = useServerRequests();
-  const {sesar} = useSelector(state => state.user);
+  const {sesar, name} = useSelector(state => state.user);
 
 
   const {sesarToken} = sesar;
@@ -34,10 +37,30 @@ const useSamples = (selectedFeature) => {
     }
   };
 
-  const getRockClassification = (materialType) => {
-    if (materialType === 'intact_rock' || materialType === 'fragmented_rock') {
+  const buildSesarJsonObj = (sample) => {
 
-    }
+    const selectedFeatureJSON = {
+      user_code: sesar.selectedUserCode,
+      sample_type: getLabel(sample.sample_type, formName),
+      description: sample?.sample_method_description,
+      name: sample.sample_id_name,
+      material: getLabel(sample.material_type, formName),
+      purpose: sample?.main_sampling_purpose,
+      collection_date: sample?.collection_date,
+      collection_start_time: sample?.collection_time,
+      latitude: sample?.latitude,
+      longitude: sample?.longitude,
+      // rock_classification: getRockClassification(sample.material_type),
+      collector: name,
+    };
+
+    return selectedFeatureJSON;
+  };
+
+  const getRockClassification = (materialType) => {
+    if (materialType === 'intact_rock' || materialType === 'fragmented_rock') return 'Rock';
+    else if (materialType === 'carbon_or_animal') return 'Organic Material';
+    else return materialType;
   };
 
   const getAllSamplesCount = async () => {
@@ -97,39 +120,13 @@ const useSamples = (selectedFeature) => {
     console.log('Register sample', sample);
   };
 
-  const selectedSampleData = () => {
-    // console.log('Selected Feature in useSamples', selectedFeature);
-    const {
-      collection_date,
-      collection_time,
-      latitude,
-      longitude,
-      material_type,
-      rock_classifications,
-      sample_type,
-      sample_id_name,
-    } = selectedFeature;
-
-    const selectedFeatureJSON = {
-      collection_date: collection_date,
-      collection_time: collection_time,
-      latitude: latitude,
-      longitude: longitude,
-      material_type: material_type,
-      rock_classification: getRockClassification(material_type),
-      sample_id_name: sample_id_name,
-      sample_type: sample_type,
-    };
-    console.log('Selected Feature JSON in useSamples', selectedFeatureJSON);
-  };
-
   return {
     authenticateWithSesar: authenticateWithSesar,
+    buildSesarJsonObj: buildSesarJsonObj,
     getAllSamplesCount: getAllSamplesCount,
     getSesarUserCode: getSesarUserCode,
     onSampleFormChange: onSampleFormChange,
     registerSample: registerSample,
-    selectedSampleData,
   };
 };
 

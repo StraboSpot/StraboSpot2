@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useSamples from './useSamples';
 import useForm from '../../modules/form/useForm';
 import useServerRequests from '../../services/useServerRequests';
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
@@ -23,37 +24,31 @@ const IGNSModal = (
     selectedFeature,
   },
 ) => {
-  const formName = ['general', 'samples'];
   const {height} = useWindowDimensions();
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {authenticateWithSesar, registerSample} = useSamples(selectedFeature);
-  const {name, encoded_login, sesar} = useSelector(state => state.user);
+  const {authenticateWithSesar, buildSesarJsonObj, registerSample} = useSamples();
+  const {encoded_login, sesar} = useSelector(state => state.user);
 
-  const {getLabel} = useForm();
   const {getSesarToken, getOrcidToken} = useServerRequests();
 
   const [changeUserCode, setChangeUserCode] = useState(false);
-  const [commonFields, setCommonFields] = useState({
-    sampleType: getLabel(sampleValues.values.sample_type, formName),
-    materialType: getLabel(sampleValues.values.material_type, formName),
-    collector: name,
-    collectionDate: sampleValues.values.collection_date,
-    description: sampleValues.values.description || '',
-    latitude: sampleValues.values.latitude,
-    longitude: sampleValues.values.longitude,
-    samplingPurpose: sampleValues.values.main_sampling_purpose,
-  });
+  const [commonFields, setCommonFields] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isOrcidSignInPrompt, setIsOrcidSignInPrompt] = useState(false);
   const [checkSesarAuth, setCheckSesarAuth] = useState(true);
   const [errorView, setErrorView] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  useEffect(() => {
+    const sesarFields = buildSesarJsonObj(sampleValues);
+    setCommonFields(sesarFields);
+  }, [sampleValues]);
 
   useEffect(() => {
+    console.log('Sample Values:', sampleValues);
     if (route.params?.orcidToken) {
       getSesarToken(route.params?.orcidToken)
         .then((token) => {
@@ -190,7 +185,7 @@ const IGNSModal = (
   const renderUploadContent = () => {
     return (
       <>
-        {!isEmpty(sampleValues.values.sample_id_name)
+        {!isEmpty(sampleValues.sample_id_name)
           ? <ScrollView style={{}}>
             {changeUserCode ? renderUserCodeSelection()
               : (
@@ -208,17 +203,24 @@ const IGNSModal = (
                         onPress={() => setChangeUserCode(true)}
                       />
                     </View>
-                    <Text style={{textAlign: 'left', padding: 5}}>Collector: {commonFields.collector}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Collection Date: {isoToLocalDateTime(
-                      commonFields.collectionDate)}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Collection Time: {isoToLocalDateTime(
-                      commonFields.collectionDate, 'time')}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Sample Type: {commonFields.sampleType}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Material Type: {commonFields.materialType}</Text>
+                    <Text style={commonStyles.textBold}>Sample</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Sample Type: {commonFields.sample_type}</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Sample Name: {commonFields.name}</Text>
+                    <Text style={commonStyles.textBold}>Description</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Material: {commonFields.material_type}</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Sample Description: {commonFields.description}</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Purpose: {commonFields.purpose}</Text>
+                    <Text style={commonStyles.textBold}>Geolocation</Text>
                     <Text style={{textAlign: 'left', padding: 5}}>Longitude: {commonFields.longitude.toFixed(5)}</Text>
                     <Text style={{textAlign: 'left', padding: 5}}>Latitude: {commonFields.latitude.toFixed(5)}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Purpose: {commonFields.samplingPurpose}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Description: {commonFields.description}</Text>
+                    <Text style={commonStyles.textBold}>Collection</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Collector/Chief Scientist: {commonFields.name}</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Collection Date: {isoToLocalDateTime(
+                      commonFields.collection_date)}</Text>
+                    <Text style={{textAlign: 'left', padding: 5}}>Collection Time: {isoToLocalDateTime(
+                      commonFields.collectionDate, 'time')}</Text>
+
+
                   </View>
                   {!isOrcidSignInPrompt && <View style={overlayStyles.buttonContainer}>
                     <Button
