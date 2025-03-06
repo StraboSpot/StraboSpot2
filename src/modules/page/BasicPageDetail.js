@@ -33,10 +33,8 @@ const BasicPageDetail = ({
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
-  const isOnline = useSelector(state => state.connections.isOnline);
 
   const [IGSNChecked, setIGSNChecked] = useState(false);
-  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -73,7 +71,7 @@ const BasicPageDetail = ({
 
   useEffect(() => {
     console.log('UE BasicPageDetail [selectedFeature]', selectedFeature);
-    if (!isTemplate && isEmpty(selectedFeature) && page.key !== PAGE_KEYS.SAMPLES) closeDetailView();
+    if (!isTemplate && isEmpty(selectedFeature)) closeDetailView();
   }, [selectedFeature]);
 
   const cancelForm = async () => {
@@ -137,38 +135,6 @@ const BasicPageDetail = ({
     else if (page.subkey) formName = [pageKey, page.subkey];
     console.log('Rendering form:', formName[0] + '.' + formName[1]);
     return formName;
-  };
-
-  const renderIGSNUploadButton = () => {
-    if (isOnline.isInternetReachable) {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'}}>
-          <View >
-            <Text style={{fontSize: 18}}>Register Sample?</Text>
-          </View>
-          <View style={{alignItems: 'flex-end', justifyContent: 'center'}}>
-            <Button
-              onPress={() => setIsIGSNModalVisible(true)}
-              title={'MYSESAR'}
-              containerStyle={{padding: 10, }}
-              buttonStyle={{borderRadius: 10, backgroundColor: 'black'}}
-              icon={<Image
-                source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
-                style={{ width: 20, height: 20, marginLeft: 10 }}
-              />}
-              iconRight
-            />
-          </View>
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={{alignItems: 'center', padding: 10}}>
-          <Text style={{fontWeight: 'bold'}}>Must be online to register sample with SESAR</Text>
-        </View>
-      )
-    }
   };
 
   const renderFormFields = () => {
@@ -286,17 +252,9 @@ const BasicPageDetail = ({
             cancel={cancelForm}
             save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
           />
-          {page.key === PAGE_KEYS.SAMPLES && renderIGSNUploadButton()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
-      )}
-      {isIGSNModalVisible && (
-        <IGSNModal
-          onModalCancel={() => setIsIGSNModalVisible(false)}
-          sampleValues={formRef?.current}
-          selectedFeature={selectedFeature}
-        />
       )}
     </>
   );

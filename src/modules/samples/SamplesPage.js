@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
 import SamplesList from './SamplesList';
+import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
 import BasicPageDetail from '../page/BasicPageDetail';
 import ReturnToOverviewButton from '../page/ui/ReturnToOverviewButton';
 import {setSelectedAttributes} from '../spots/spots.slice';
-import IGSNModal from './IGSNModal';
 
 const SamplesPage = ({page}) => {
   const dispatch = useDispatch();
@@ -66,6 +66,10 @@ const SamplesPage = ({page}) => {
             onPress={() => dispatch(setModalVisible({modal: page.key}))}
           />
         </>
+        <View style={{padding: 10}}>
+          <Text style={commonStyles.importantText}>To register your sample with SESAR press the IGSN logo</Text>
+          <Text style={commonStyles.importantText}>If the logo is green then there is already an IGSN assigned.</Text>
+        </View>
         <SamplesList
           onPress={editSample}
           page={page}
