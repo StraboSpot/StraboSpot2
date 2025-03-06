@@ -82,7 +82,7 @@ const MainMenuPanel = forwardRef(({
         return (
           <ImageGallery
             openSpotInNotebook={openSpotInNotebook}
-            updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}/>
+            updateSpotsInMapExtent={mapComponentRef?.current?.updateSpotsInMapExtent}/>
         );
       case MAIN_MENU_ITEMS.ATTRIBUTES.SAMPLES:
         return (
