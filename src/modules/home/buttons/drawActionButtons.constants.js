@@ -29,4 +29,10 @@ export const DRAW_ACTION_IMAGES = {
     FREEHAND_ICON: require('../../../assets/icons/PolygonFreehand.png'),
     FREEHAND_ICON_PRESSED: require('../../../assets/icons/PolygonFreehand_pressed.png'),
   },
+  EDIT: {
+    BUTTON: require('../../../assets/icons/EditShapeButton.png'),
+    BUTTON_PRESSED: require('../../../assets/icons/EditShapeButton_pressed.png'),
+    ICON: require('../../../assets/icons/EditShape.png'),
+    ICON_PRESSED: require('../../../assets/icons/EditShape_pressed.png'),
+  },
 };

@@ -10,7 +10,7 @@ import ModalHeader from '../../shared/ui/modal/ModalHeader';
 import {Form, formStyles, MainButtons, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';
 
-const AddRockMetamorphicModal = (props) => {
+const AddRockMetamorphicModal = ({formName, formProps, setChoicesViewKey, survey}) => {
   const {width} = useWindowDimensions();
 
   const [isFaciesModalVisible, setIsFaciesModalVisible] = useState(false);
@@ -25,26 +25,26 @@ const AddRockMetamorphicModal = (props) => {
   const lastKeys = ['notes_metamorphic'];
 
   // Relevant fields for quick-entry modal
-  const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
+  const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   const addFacies = (faciesPressed) => {
-    const currentFacies = JSON.parse(JSON.stringify(props.formProps.values?.facies || []));
+    const currentFacies = JSON.parse(JSON.stringify(formProps.values?.facies || []));
     const updatedFacies = currentFacies.includes(faciesPressed) ? currentFacies.filter(f => f !== faciesPressed)
       : [...currentFacies, faciesPressed];
     if (isEmpty(updatedFacies)) {
-      const {facies, ...valuesNew} = props.formProps.values;
-      props.formProps.setValues(valuesNew);
+      const {facies, ...valuesNew} = formProps.values;
+      formProps.setValues(valuesNew);
     }
-    else props.formProps.setFieldValue('facies', updatedFacies);
+    else formProps.setFieldValue('facies', updatedFacies);
   };
 
   const faciesButtonText = (key) => {
     return (
       <View style={{flex: 1, alignItems: 'center'}}>
         <Text
-          style={props.formProps?.values?.facies?.includes(key) ? formStyles.formButtonSelectedTitle
+          style={formProps?.values?.facies?.includes(key) ? formStyles.formButtonSelectedTitle
             : formStyles.formButtonTitle}>
-          {getLabel(key, props.formName)}
+          {getLabel(key, formName)}
         </Text>
       </View>
     );
@@ -55,7 +55,7 @@ const AddRockMetamorphicModal = (props) => {
       <Button
         containerStyle={{padding: 2.5}}
         buttonStyle={[formStyles.formButtonLarge, {
-          backgroundColor: props.formProps?.values?.facies?.includes(faciesProps.faciesKey)
+          backgroundColor: formProps?.values?.facies?.includes(faciesProps.faciesKey)
             ? PRIMARY_ACCENT_COLOR : SECONDARY_BACKGROUND_COLOR,
           height: '100%',
         }]}
@@ -148,30 +148,30 @@ const AddRockMetamorphicModal = (props) => {
   return (
     <>
       <MainButtons
+        formName={formName}
+        formProps={formProps}
         mainKeys={firstKeys}
-        formName={props.formName}
-        formProps={props.formProps}
-        setChoicesViewKey={props.setChoicesViewKey}
+        setChoicesViewKey={setChoicesViewKey}
       />
       <MainButtons
+        formName={formName}
+        formProps={formProps}
         mainKeys={secondKeys}
-        formName={props.formName}
-        formProps={props.formProps}
-        setChoicesViewKey={props.setChoicesViewKey}
+        setChoicesViewKey={setChoicesViewKey}
       />
       <MainButtons
+        formName={formName}
+        formProps={formProps}
         mainKeys={thirdKeys}
-        formName={props.formName}
-        formProps={props.formProps}
         setChoicesViewKey={() => setIsFaciesModalVisible(true)}
       />
       <MainButtons
+        formName={formName}
+        formProps={formProps}
         mainKeys={fourthKeys}
-        formName={props.formName}
-        formProps={props.formProps}
-        setChoicesViewKey={props.setChoicesViewKey}
+        setChoicesViewKey={setChoicesViewKey}
       />
-      <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <Form {...{surveyFragment: lastKeysFields, ...formProps}}/>
       {isFaciesModalVisible && renderFaciesModal()}
     </>
   );

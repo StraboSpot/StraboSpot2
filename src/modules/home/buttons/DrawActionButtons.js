@@ -11,6 +11,7 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
 
   const {
     getImageSource,
+    handleEditShapePressed,
     handleLineLongPressed,
     handleLinePressed,
     handlePointLongPressed,
@@ -37,6 +38,11 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
         source={getImageSource(MAP_MODES.DRAW.POLYGON)}
         onPress={handlePolygonPressed}
         onLongPress={handlePolygonLongPressed}
+        imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
+      />
+      <IconButton
+        source={getImageSource(MAP_MODES.EDIT)}
+        onPress={handleEditShapePressed}
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
     </View>

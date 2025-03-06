@@ -66,6 +66,9 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
       case 'saveEdits':
         await saveEdits();
         break;
+      case 'startEditing':
+        mapComponentRef.current?.startEditingMode();
+        break;
       case 'toggleUserLocation':
         if (value) zoomToCurrentLocation().catch(console.error);
         mapComponentRef.current?.toggleUserLocation(value);

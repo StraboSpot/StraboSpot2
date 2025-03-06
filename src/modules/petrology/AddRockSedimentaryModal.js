@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Form, FormSlider, MainButtons} from '../form';
 
-const AddRockSedimentaryModal = (props) => {
+const AddRockSedimentaryModal = ({choices, formName, formProps, setChoicesViewKey, survey}) => {
   // Relevant keys for quick-entry modal
   const firstKeys = ['primary_lithology'];
   const siliciclasticKeys = ['siliciclastic_type'];
@@ -16,80 +16,81 @@ const AddRockSedimentaryModal = (props) => {
   const lastKeys = ['fresh_color', 'weathered_color', 'notes'];
 
   // Relevant fields for quick-entry modal
-  const lastKeysFields = lastKeys.map(k => props.survey.find(f => f.name === k));
+  const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
     <>
       <MainButtons
+        formName={formName}
+        formProps={formProps}
         mainKeys={firstKeys}
-        formName={props.formName}
-        formProps={props.formProps}
-        setChoicesViewKey={props.setChoicesViewKey}
+        setChoicesViewKey={setChoicesViewKey}
       />
-      {props.formProps.values.primary_lithology === 'siliciclastic' && (
+      {formProps.values.primary_lithology === 'siliciclastic' && (
         <MainButtons
+          formName={formName}
+          formProps={formProps}
           mainKeys={siliciclasticKeys}
-          formName={props.formName}
-          formProps={props.formProps}
-          setChoicesViewKey={props.setChoicesViewKey}
+          setChoicesViewKey={setChoicesViewKey}
         />
       )}
-      {(props.formProps.values.primary_lithology === 'limestone'
-        || props.formProps.values.primary_lithology === 'dolostone') && (
+      {(formProps.values.primary_lithology === 'limestone' || formProps.values.primary_lithology === 'dolostone') && (
         <MainButtons
+          formName={formName}
+          formProps={formProps}
           mainKeys={dunhamKeys}
-          formName={props.formName}
-          formProps={props.formProps}
-          setChoicesViewKey={props.setChoicesViewKey}
+          setChoicesViewKey={setChoicesViewKey}
         />
       )}
-      {props.formProps.values.primary_lithology === 'evaporite' && (
+      {formProps.values.primary_lithology === 'evaporite' && (
         <MainButtons
+          formName={formName}
+          formProps={formProps}
           mainKeys={evaporiteKeys}
-          formName={props.formName}
-          formProps={props.formProps}
-          setChoicesViewKey={props.setChoicesViewKey}
+          setChoicesViewKey={setChoicesViewKey}
         />
       )}
-      {props.formProps.values.primary_lithology === 'organic_coal' && (
+      {formProps.values.primary_lithology === 'organic_coal' && (
         <MainButtons
+          formName={formName}
+          formProps={formProps}
           mainKeys={organicCoalKeys}
-          formName={props.formName}
-          formProps={props.formProps}
-          setChoicesViewKey={props.setChoicesViewKey}
+          setChoicesViewKey={setChoicesViewKey}
         />
       )}
-      {props.formProps.values.primary_lithology === 'volcaniclastic' && (
+      {formProps.values.primary_lithology === 'volcaniclastic' && (
         <MainButtons
+          formName={formName}
+          formProps={formProps}
           mainKeys={volcaniclasticKeys}
-          formName={props.formName}
-          formProps={props.formProps}
-          setChoicesViewKey={props.setChoicesViewKey}
+          setChoicesViewKey={setChoicesViewKey}
         />
       )}
-      {props.formProps.values.primary_lithology === 'phosphatic' && (
+      {formProps.values.primary_lithology === 'phosphatic' && (
         <MainButtons
+          formName={formName}
+          formProps={formProps}
           mainKeys={phosphoriteKeys}
-          formName={props.formName}
-          formProps={props.formProps}
-          setChoicesViewKey={props.setChoicesViewKey}
+          setChoicesViewKey={setChoicesViewKey}
         />
       )}
-      <FormSlider {...{
-        fieldKey: weatheringKey,
-        hasNoneChoice: true,
-        hasRotatedLabels: true,
-        isHideLabels: true,
-        showSliderValue: true,
-        ...props,
-      }}/>
-      <MainButtons
-        mainKeys={thirdKeys}
-        formName={props.formName}
-        formProps={props.formProps}
-        setChoicesViewKey={props.setChoicesViewKey}
+      <FormSlider
+        choices={choices}
+        fieldKey={weatheringKey}
+        formProps={formProps}
+        hasNoneChoice={true}
+        hasRotatedLabels={true}
+        isHideLabels={true}
+        showSliderValue={true}
+        survey={survey}
       />
-      <Form {...{surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <MainButtons
+        formName={formName}
+        formProps={formProps}
+        mainKeys={thirdKeys}
+        setChoicesViewKey={setChoicesViewKey}
+      />
+      <Form {...{surveyFragment: lastKeysFields, ...formProps}}/>
     </>
   );
 };

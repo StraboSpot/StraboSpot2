@@ -72,7 +72,7 @@ const MainMenuPanel = forwardRef(({
       case MAIN_MENU_ITEMS.ATTRIBUTES.SPOTS:
         return <SpotsList onPress={openSpotInNotebook} updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.IMAGE_GALLERY:
-        return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={mapComponentRef.current.updateSpotsInMapExtent}/>;
+        return <ImageGallery openSpotInNotebook={openSpotInNotebook} updateSpotsInMapExtent={mapComponentRef?.current?.updateSpotsInMapExtent}/>;
       case MAIN_MENU_ITEMS.ATTRIBUTES.SAMPLES:
         return (
           <SamplesMenuItem

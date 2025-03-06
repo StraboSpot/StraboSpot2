@@ -19,7 +19,7 @@ import {updatedModifiedTimestampsBySpotsIds, updatedProject} from '../project/pr
 import {useSpots} from '../spots';
 import {editedOrCreatedSpot, editedSpotProperties} from '../spots/spots.slice';
 
-const SampleModal = (props) => {
+const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const dispatch = useDispatch();
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project?.preferences) || {};
@@ -130,19 +130,19 @@ const SampleModal = (props) => {
     else formRef.current?.setFieldValue(orientedKey, 'no');
   };
 
-  const renderForm = () => {
+  const renderForm = (formProps) => {
     return (
       <>
         <Form
           {...{
-            formName: props.formName,
+            formName: formName,
             surveyFragment: firstKeysFields,
-            ...props.formProps,
+            ...formProps,
           }}
         />
         <FormSlider
           fieldKey={inplacenessKey}
-          formProps={props.formProps}
+          formProps={formProps}
           survey={survey}
           choices={choices}
           labels={['In Place', 'Float']}
@@ -164,9 +164,9 @@ const SampleModal = (props) => {
         />
         <Form
           {...{
-            formName: props.formName,
+            formName: formName,
             surveyFragment: lastKeysFields,
-            ...props.formProps,
+            ...formProps,
           }}
         />
       </>
@@ -190,7 +190,7 @@ const SampleModal = (props) => {
         console.log('pointSetAtCurrentLocation', pointSetAtCurrentLocation);
         dispatch(updatedModifiedTimestampsBySpotsIds([pointSetAtCurrentLocation.properties.id]));
         dispatch(editedOrCreatedSpot(pointSetAtCurrentLocation));
-        await props.zoomToCurrentLocation();
+        await zoomToCurrentLocation();
       }
       else {
         const samples = spot.properties?.samples
@@ -216,7 +216,7 @@ const SampleModal = (props) => {
   };
 
   return (
-    <Modal onPress={props.onPress}>
+    <Modal onPress={onPress}>
       <FlatList
         bounces={false}
         ListHeaderComponent={

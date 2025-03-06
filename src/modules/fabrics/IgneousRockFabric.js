@@ -1,10 +1,9 @@
 import React from 'react';
 
 import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
-import {Form, MainButtons, useForm} from '../form';
+import {Form, MainButtons} from '../form';
 
-const IgneousRockFabric = (props) => {
-  const {getSurvey} = useForm();
+const IgneousRockFabric = ({formName, formProps, setChoicesViewKey, survey}) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -12,15 +11,19 @@ const IgneousRockFabric = (props) => {
   const lastKeys = ['mag_interp_note'];
 
   // Relevant fields for quick-entry modal
-  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
   return (
     <>
-      <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
-      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
-      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <Form {...{formName: formName, surveyFragment: firstKeysFields, ...formProps}}/>
+      <MainButtons
+        formName={formName}
+        formProps={formProps}
+        mainKeys={mainButtonsKeys}
+        setChoicesViewKey={setChoicesViewKey}
+      />
+      <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
     </>
   );
 };

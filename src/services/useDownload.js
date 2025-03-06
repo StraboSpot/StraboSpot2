@@ -137,9 +137,7 @@ const useDownload = () => {
         dispatch(setUserData({...userProfileRes, encoded_login: encodedLoginScoped}));
       }
 
-      Sentry.configureScope((scope) => {
-        scope.setUser({'username': userProfileRes.name, 'email': userProfileRes.email});
-      });
+      Sentry.setUser({'username': userProfileRes.name, 'email': userProfileRes.email});
     }
     catch (err) {
       throw Error(err);

@@ -133,7 +133,7 @@ const TagsList = ({type, selectedIndex}) => {
     );
   };
 
-  if (isEmpty(tags)) return <ListEmptyText text={'No ${label.toLowerCase()} have been added to this project yet'}/>;
+  if (isEmpty(tags)) return <ListEmptyText text={`No ${label.toLowerCase()} have been added to this project yet`}/>;
   else {
     return (
       <View style={{flex: 1}}>

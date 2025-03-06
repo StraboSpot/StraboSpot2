@@ -18,6 +18,11 @@ const useDrawActionButtons = ({clickHandler, mapMode}) => {
   });
 
   const getImageSource = (type) => {
+    if (type === MAP_MODES.EDIT) {
+      return mapMode === MAP_MODES.EDIT
+        ? SMALL_SCREEN ? DRAW_ACTION_IMAGES.EDIT.ICON_PRESSED : DRAW_ACTION_IMAGES.EDIT.BUTTON_PRESSED
+        : SMALL_SCREEN ? DRAW_ACTION_IMAGES.EDIT.ICON : DRAW_ACTION_IMAGES.EDIT.BUTTON;
+    }
     switch (drawTypes[type]) {
       case MAP_MODES.DRAW.POINT:
         return mapMode === MAP_MODES.DRAW.POINT
@@ -44,6 +49,11 @@ const useDrawActionButtons = ({clickHandler, mapMode}) => {
           ? SMALL_SCREEN ? DRAW_ACTION_IMAGES.POLYGON.FREEHAND_ICON_PRESSED : DRAW_ACTION_IMAGES.POLYGON.FREEHAND_BUTTON_PRESSED
           : SMALL_SCREEN ? DRAW_ACTION_IMAGES.POLYGON.FREEHAND_ICON : DRAW_ACTION_IMAGES.POLYGON.FREEHAND_BUTTON;
     }
+  };
+
+  const handleEditShapePressed = () => {
+    if (mapMode === MAP_MODES.EDIT) clickHandler('cancelEdits');
+    else clickHandler('startEditing');
   };
 
   const handleLineLongPressed = () => {
@@ -94,6 +104,7 @@ const useDrawActionButtons = ({clickHandler, mapMode}) => {
 
   return {
     getImageSource: getImageSource,
+    handleEditShapePressed: handleEditShapePressed,
     handleLineLongPressed: handleLineLongPressed,
     handleLinePressed: handleLinePressed,
     handlePointLongPressed: handlePointLongPressed,

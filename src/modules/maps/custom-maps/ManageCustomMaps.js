@@ -17,8 +17,6 @@ import useMap from '../useMap';
 const ManageCustomMaps = ({zoomToCustomMap}) => {
   // console.log('Rendering ManageCustomMaps...');
 
-  // let filteredMaps = [];
-
   const customMaps = useSelector(state => state.map.customMaps);
   const {isSelected, endpoint} = useSelector(state => state.connections.databaseEndpoint);
   const currentBasemap = useSelector(state => state.map.currentBasemap);
@@ -33,18 +31,18 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   const {isInternetReachable, isConnected} = isOnline;
 
   useEffect(() => {
-     const maps = isSelected ? filterCustomEndpointCustomMaps() : filterDefaultCustomMaps();
-     setFilteredMaps(maps);
+    const maps = isSelected ? filterCustomEndpointCustomMaps() : filterDefaultCustomMaps();
+    setFilteredMaps(maps);
     console.log('MAPS', maps);
   }, []);
 
   const filterDefaultCustomMaps = () => {
     return Object.values(customMaps).filter(map => map.url[0].includes('https://strabospot.org/geotiff/tiles/'));
-  }
+  };
 
   const filterCustomEndpointCustomMaps = () => {
     return Object.values(customMaps).filter(map => map.url[0].includes('http://'));
-  }
+  };
 
   const mapTypeName = (source) => {
     let name;
@@ -55,7 +53,7 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   };
 
   const renderCustomMapListItem = (item) => {
-    console.log(item)
+    console.log(item);
     return (
       <ListItem
         containerStyle={commonStyles.listItem}
@@ -82,12 +80,13 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
   };
 
   const viewCustomMap = async (item) => {
+    let basemap = {};
     if (item.overlay) {
       updateMap({...item, isViewable: true});
-      if (DEFAULT_MAPS.every(map => currentBasemap.id !== map.id)) await setBasemap();
+      if (DEFAULT_MAPS.every(map => currentBasemap.id !== map.id)) basemap = await setBasemap();
     }
-    else await setBasemap(item.id);
-    item?.bbox && setTimeout(() => zoomToCustomMap(item.bbox), 1000);
+    else basemap = await setBasemap(item.id);
+    basemap.bbox && setTimeout(() => zoomToCustomMap(basemap.bbox), 1000);
   };
 
   return (
@@ -98,7 +97,12 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
         type={'outline'}
       />
       <SectionDivider dividerText={'Current Custom Maps'}/>
-      {isSelected && <SectionDivider textStyle={{fontSize: 12, textAlign: 'center'}} dividerText={`Endpoint: ${endpoint.replace('/db', '')}`}/>}
+      {isSelected && (
+        <SectionDivider
+          textStyle={{fontSize: 12, textAlign: 'center'}}
+          dividerText={`Endpoint: ${endpoint.replace('/db', '')}`}
+        />
+      )}
       <FlatList
         keyExtractor={(item, index) => item.id?.toString() || index.toString()}
         data={filteredMaps}

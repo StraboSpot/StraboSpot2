@@ -1,10 +1,9 @@
 import React from 'react';
 
 import LittleSpacer from '../../shared/ui/LittleSpacer';
-import {Form, MainButtons, useForm} from '../form';
+import {Form, MainButtons} from '../form';
 
-const AddPlane = (props) => {
-  const {getSurvey} = useForm();
+const AddPlane = ({formName, formProps, isManualMeasurement, setChoicesViewKey, survey}) => {
 
   // Relevant keys for quick-entry modal
   const firstKeys = ['label'];
@@ -18,31 +17,39 @@ const AddPlane = (props) => {
   const lastKeys = ['thickness', 'length', 'notes'];
 
   // Relevant fields for quick-entry modal
-  const survey = getSurvey(props.formName);
   const firstKeysFields = firstKeys.map(k => survey.find(f => f.name === k));
   const lastKeysFields = lastKeys.map(k => survey.find(f => f.name === k));
 
-  const featureType = props.formProps?.values?.feature_type;
+  const featureType = formProps?.values?.feature_type;
+  const featureTypeSubKeys = featureType === 'bedding' ? beddingButtonsKeys
+    : featureType === 'contact' ? contactButtonsKeys
+      : featureType === 'foliation' ? foliationButtonsKeys
+        : featureType === 'fracture' ? fractureButtonsKeys
+          : featureType === 'vein' ? veinButtonsKeys
+            : featureType === 'fault' || featureType === 'shear_zone_bou' || featureType === 'shear_zone' ? faultButtonsKeys
+              : undefined;
 
   return (
     <>
-      {!props.isManualMeasurement && (
-        <Form {...{formName: props.formName, surveyFragment: firstKeysFields, ...props.formProps}}/>
+      {!isManualMeasurement && (
+        <Form {...{formName: formName, surveyFragment: firstKeysFields, ...formProps}}/>
       )}
-      <MainButtons {...{mainKeys: mainButtonsKeys, ...props}}/>
-      {featureType && (
-        <>
-          {featureType === 'bedding' && <MainButtons {...{mainKeys: beddingButtonsKeys, ...props}}/>}
-          {featureType === 'contact' && <MainButtons {...{mainKeys: contactButtonsKeys, ...props}}/>}
-          {featureType === 'foliation' && <MainButtons {...{mainKeys: foliationButtonsKeys, ...props}}/>}
-          {featureType === 'fracture' && <MainButtons {...{mainKeys: fractureButtonsKeys, ...props}}/>}
-          {featureType === 'vein' && <MainButtons {...{mainKeys: veinButtonsKeys, ...props}}/>}
-          {featureType === 'fault' || featureType === 'shear_zone_bou' || featureType === 'shear_zone'
-            && <MainButtons {...{mainKeys: faultButtonsKeys, ...props}}/>}
-        </>
+      <MainButtons
+        formName={formName}
+        formProps={formProps}
+        mainKeys={mainButtonsKeys}
+        setChoicesViewKey={setChoicesViewKey}
+      />
+      {featureTypeSubKeys && (
+        <MainButtons
+          formName={formName}
+          formProps={formProps}
+          mainKeys={featureTypeSubKeys}
+          setChoicesViewKey={setChoicesViewKey}
+        />
       )}
       <LittleSpacer/>
-      <Form {...{formName: props.formName, surveyFragment: lastKeysFields, ...props.formProps}}/>
+      <Form {...{formName: formName, surveyFragment: lastKeysFields, ...formProps}}/>
     </>
   );
 };

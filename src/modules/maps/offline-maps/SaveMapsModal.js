@@ -73,7 +73,7 @@ const SaveMapsModal = ({getCurrentZoom, getExtentString, getTileCount}) => {
   }, []);
 
   useEffect(() => {
-    console.log('UE SaveMapsModal [map Props]');
+    console.log('UE SaveMapsModal [getCurrentZoom]');
     if (getCurrentZoom) {
       getCurrentZoom().then((zoom) => {
         let initialZoom = [];

@@ -4,7 +4,7 @@ import {ZOOM_STRAT_SECTION} from './maps.constants';
 import {setIsMapMoved} from './maps.slice';
 import useMapView from './useMapView';
 
-const useMapPressEvents = ({setViewState}) => {
+const useMapMoveEvents = ({setViewState}) => {
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const isMapMoved = useSelector(state => state.map.isMapMoved);
@@ -36,4 +36,4 @@ const useMapPressEvents = ({setViewState}) => {
 
 };
 
-export default useMapPressEvents;
+export default useMapMoveEvents;
