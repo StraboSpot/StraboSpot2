@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-
 import {v4 as uuidv4} from 'uuid';
 
 import {DEFAULT_GEOLOGIC_TYPES, DEFAULT_RELATIONSHIP_TYPES} from './project.constants';
@@ -112,6 +111,22 @@ const projectSlice = createSlice({
       state.datasets = datasetsList;
       state.activeDatasetsIds = state.activeDatasetsIds.filter(activeDatasetId => activeDatasetId !== action.payload);
       state.project.modified_timestamp = Date.now();
+    },
+    deletedSpotIdFromReports(state, action) {
+      const spotId = action.payload;
+      if (!isEmpty(state.project.reports)) {
+        const updatedReports = state.project.reports.map((report) => {
+          let updatedReport = JSON.parse(JSON.stringify(report));
+          if (updatedReport.spots?.includes(spotId)) {
+            updatedReport.spots = updatedReport.spots.filter(id => id !== spotId);
+            if (isEmpty(updatedReport.spots)) delete updatedReport.spots;
+            updatedReport.updated_timestamp = Date.now();
+          }
+          return updatedReport;
+        });
+        state.project.reports = updatedReports;
+        state.project.modified_timestamp = Date.now();
+      }
     },
     deletedSpotIdFromTags(state, action) {
       const spotId = action.payload;
@@ -284,6 +299,7 @@ export const {
   deletedDataset,
   deletedSpotIdFromDataset,
   deletedSpotIdFromDatasets,
+  deletedSpotIdFromReports,
   deletedSpotIdFromTags,
   doesBackupDirectoryExist,
   doesDownloadsDirectoryExist,

@@ -15,6 +15,7 @@ import {
   addedNewSpotIdsToDataset,
   addedNewSpotIdToDataset,
   deletedSpotIdFromDatasets,
+  deletedSpotIdFromReports,
   deletedSpotIdFromTags,
   updatedModifiedTimestampsBySpotsIds,
   updatedProject,
@@ -202,6 +203,7 @@ const useSpots = () => {
 
   const deleteSpot = (spotId) => {
     console.log('Deleting Spot ID', spotId, '...');
+    dispatch(deletedSpotIdFromReports(spotId));
     dispatch(deletedSpotIdFromTags(spotId));
     dispatch(deletedSpotIdFromDatasets(spotId));
     dispatch(deletedSpot(spotId));
