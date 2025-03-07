@@ -169,6 +169,22 @@ const projectSlice = createSlice({
       state.datasets = updatedDatasets;
       state.project.modified_timestamp = timestamp;
     },
+    deletedTagIdFromReports(state, action) {
+      const tagId = action.payload;
+      if (!isEmpty(state.project.reports)) {
+        const updatedReports = state.project.reports.map((report) => {
+          let updatedReport = JSON.parse(JSON.stringify(report));
+          if (updatedReport.tags?.includes(tagId)) {
+            updatedReport.tags = updatedReport.tags.filter(id => id !== tagId);
+            if (isEmpty(updatedReport.tags)) delete updatedReport.tags;
+            updatedReport.updated_timestamp = Date.now();
+          }
+          return updatedReport;
+        });
+        state.project.reports = updatedReports;
+        state.project.modified_timestamp = Date.now();
+      }
+    },
     doesBackupDirectoryExist(state, action) {
       state.deviceBackUpDirectoryExists = action.payload;
     },
@@ -301,6 +317,7 @@ export const {
   deletedSpotIdFromDatasets,
   deletedSpotIdFromReports,
   deletedSpotIdFromTags,
+  deletedTagIdFromReports,
   doesBackupDirectoryExist,
   doesDownloadsDirectoryExist,
   movedSpotIdBetweenDatasets,
