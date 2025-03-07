@@ -35,7 +35,7 @@ const TagsModal = ({
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
-  const selectedFeature = useSelector(state => state.spot.selectedAttributes[0]);
+  const selectedFeature = useSelector(state => state.spot.selectedAttributes?.[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes) || [];
   const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
