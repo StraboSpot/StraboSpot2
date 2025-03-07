@@ -218,7 +218,7 @@ const IGNSModal = (
                     <Text style={{textAlign: 'left', padding: 5}}>Collection Date: {isoToLocalDateTime(
                       commonFields.collection_date)}</Text>
                     <Text style={{textAlign: 'left', padding: 5}}>Collection Time: {isoToLocalDateTime(
-                      commonFields.collectionDate, 'time')}</Text>
+                      commonFields.collection_date, 'time')}</Text>
 
 
                   </View>
