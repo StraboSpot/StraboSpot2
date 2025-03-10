@@ -102,7 +102,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
       setStartingNumber(
         preferences.starting_sample_number
         || spot.properties?.samples?.length + 1
-        || getAllSamplesCount(),
+        || 1,
       );
     }
   }, [spot]);
