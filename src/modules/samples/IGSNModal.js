@@ -14,7 +14,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import overlayStyles from '../home/overlays/overlay.styles';
-import {setSelectedUserCode, setSesarToken} from '../user/userProfile.slice';
+import {setSelectedUserCode, setSesarToken, updatedKey} from '../user/userProfile.slice';
 
 const IGNSModal = (
   {
@@ -41,6 +41,21 @@ const IGNSModal = (
   const [checkSesarAuth, setCheckSesarAuth] = useState(true);
   const [errorView, setErrorView] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (!sesar) {
+      dispatch(updatedKey({
+        sesar: {
+          selectedUserCode: '',
+          userCodes: [],
+          sesarToken: {
+            access: '',
+            refresh: '',
+          },
+        },
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     const sesarFields = buildSesarJsonObj(sampleValues);

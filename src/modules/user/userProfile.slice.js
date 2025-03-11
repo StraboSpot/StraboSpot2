@@ -12,8 +12,8 @@ const initialUserState = {
     selectedUserCode: '',
     userCodes: [],
     sesarToken: {
-      access: null,
-      refresh: null,
+      access: '',
+      refresh: '',
     },
   },
 };
@@ -50,10 +50,23 @@ const userProfileSlice = createSlice({
     },
     setSelectedUserCode(state, action) {
       state.sesar.selectedUserCode = action.payload;
-    }
+    },
+    updatedKey(state, action) {
+      Object.assign(state, action.payload);
+    },
   },
 });
 
-export const {login, logout, resetUserState, setUserData, setOrcidToken, setSesarToken, setSesarUserCodes, setSelectedUserCode} = userProfileSlice.actions;
+export const {
+  login,
+  logout,
+  resetUserState,
+  setUserData,
+  setOrcidToken,
+  setSesarToken,
+  setSesarUserCodes,
+  setSelectedUserCode,
+  updatedKey,
+} = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;

@@ -15,9 +15,6 @@ const useSamples = () => {
   const {getSesarUserCode, refreshSesarToken} = useServerRequests();
   const {sesar, name} = useSelector(state => state.user);
 
-
-  const {sesarToken} = sesar;
-
   const authenticateWithSesar = async () => {
     const validSesarToken = await getValidToken();
     if (!validSesarToken) {
@@ -40,7 +37,7 @@ const useSamples = () => {
   const buildSesarJsonObj = (sample) => {
 
     const selectedFeatureJSON = {
-      user_code: sesar.selectedUserCode,
+      user_code: sesar?.selectedUserCode,
       sample_type: getLabel(sample.sample_type, formName),
       description: sample?.sample_method_description,
       name: sample.sample_id_name,
@@ -70,7 +67,7 @@ const useSamples = () => {
   };
 
   const getValidToken = async () => {
-    let token = sesarToken.access;
+    let token = sesar?.sesarToken.access;
     if (isTokenExpired(token)) {
       console.log('Token expired, refreshing...');
       token = await refreshToken();
@@ -101,7 +98,7 @@ const useSamples = () => {
 
   const refreshToken = async () => {
     try {
-      const newAccessToken = await refreshSesarToken(sesarToken.refresh);
+      const newAccessToken = await refreshSesarToken(sesar?.sesarToken.refresh);
       console.log(newAccessToken);
       if (newAccessToken.error) {
         console.error('Token refresh failed:', newAccessToken.error);
