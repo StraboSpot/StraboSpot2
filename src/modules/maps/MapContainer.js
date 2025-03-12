@@ -31,7 +31,7 @@ import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
-const Map = forwardRef(({
+const MapContainer = forwardRef(({
                           isSelectingForStereonet,
                           isSelectingForTagging,
                           mapMode,
@@ -403,4 +403,4 @@ const Map = forwardRef(({
   );
 });
 
-export default Map;
+export default MapContainer;
