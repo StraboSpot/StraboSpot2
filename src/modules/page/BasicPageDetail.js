@@ -230,7 +230,7 @@ const BasicPageDetail = ({
       else {
         await saveFeature(formCurrent);
         await formCurrent.resetForm();
-        // closeDetailView();
+        closeDetailView();
       }
     }
     catch (err) {
