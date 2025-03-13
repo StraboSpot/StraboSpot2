@@ -23,7 +23,7 @@ if (Platform.OS !== 'web') {
     dsn: config.get('Error_reporting_DSN'),
     enableNative: Platform.OS !== 'web',
     enableAppHangTracking: true,
-    debug: __DEV__,
+    debug: false,
     release: RELEASE_NAME,
     dist: RELEASE_NAME,
     autoSessionTracking: true,
