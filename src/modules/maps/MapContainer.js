@@ -4,9 +4,9 @@ import {Platform, View} from 'react-native';
 import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
-import Basemap from './Basemap';
 import useCustomMap from './custom-maps/useCustomMap';
 import MacrostratOverlay from './macrostrat/MacrostratOverlay';
+import Map from './Map';
 import {ZOOM} from './maps.constants';
 import {setSpotsInMapExtentIds} from './maps.slice';
 import useMapsOffline from './offline-maps/useMapsOffline';
@@ -358,7 +358,7 @@ const MapContainer = forwardRef(({
   return (
     <View style={{flex: 1, zIndex: -1}}>
       {currentBasemap && (
-        <Basemap
+        <Map
           allowMapViewMove={allowMapViewMove}
           basemap={currentBasemap}
           drawFeatures={drawFeatures}

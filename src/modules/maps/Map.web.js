@@ -1,7 +1,7 @@
 import React, {forwardRef, useEffect} from 'react';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {Map} from 'react-map-gl';
+import {Map as ReactMapGL} from 'react-map-gl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {MapLayers} from './layers';
@@ -14,7 +14,7 @@ import useMapMouseActions from './useMapMouseActions.web';
 import useMapMoveEvents from './useMapMoveEvents';
 import useMapView from './useMapView';
 
-const Basemap = ({
+const Map = ({
                    allowMapViewMove,
                    basemap,
                    drawFeatures,
@@ -28,7 +28,7 @@ const Basemap = ({
                    spotsNotSelected,
                    spotsSelected,
                  }, forwardedRef) => {
-  // console.log('Rendering Basemap...');
+  // console.log('Rendering Map...');
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -54,7 +54,7 @@ const Basemap = ({
   const symbols = {...MAP_SYMBOLS, ...STRAT_PATTERNS};
 
   useEffect(() => {
-      // console.log('UE Basemap', viewState);
+      // console.log('UE Map', viewState);
       // console.log('Dimensions', useDimensions);
       if (!isMapMoved) dispatch(setIsMapMoved(true));
       setViewState(getInitialViewState());
@@ -79,7 +79,7 @@ const Basemap = ({
   });
 
   return (
-    <Map
+    <ReactMapGL
       {...viewState}
       boxZoom={allowMapViewMove}
       cursor={cursor}
@@ -112,8 +112,8 @@ const Basemap = ({
         spotsNotSelected={spotsNotSelected}
         spotsSelected={spotsSelected}
       />
-    </Map>
+    </ReactMapGL>
   );
 };
 
-export default forwardRef(Basemap);
+export default forwardRef(Map);

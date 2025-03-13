@@ -16,7 +16,7 @@ MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const scaleBarPosition = SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
 
-const Basemap = ({
+const Map = ({
                    allowMapViewMove,
                    basemap,
                    drawFeatures,
@@ -31,7 +31,7 @@ const Basemap = ({
                    spotsNotSelected,
                    spotsSelected,
                  }, forwardedRef) => {
-  // console.log('Rendering Basemap...');
+  // console.log('Rendering Map...');
   const zoomTextStyle = basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
     : homeStyles.currentZoomTextBlack;
 
@@ -106,4 +106,4 @@ const Basemap = ({
   );
 };
 
-export default forwardRef(Basemap);
+export default forwardRef(Map);
