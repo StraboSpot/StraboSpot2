@@ -10,6 +10,7 @@ import {PASSWORD_TEST, USERNAME_TEST} from '../../../dev-test-logins';
 import * as themes from '../../shared/styles.constants';
 import CustomEndpoint from '../../shared/ui/CustomEndpoint';
 import {ErrorModal} from '../home/modals';
+import GlyphDownloader from '../maps/GlyphDownloader';
 import SplashScreen from '../splash-screen/SplashScreen';
 import {login} from '../user/userProfile.slice';
 
@@ -122,6 +123,7 @@ const SignIn = ({navigation, route}) => {
         </View>
         {renderErrorModal()}
       </View>
+      <GlyphDownloader/>
     </SplashScreen>
   );
 };
