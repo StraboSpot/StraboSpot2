@@ -142,62 +142,6 @@
       "required": "false"
     },
     {
-      "type": "select_one zm5vz64",
-      "name": "rock_classifications",
-      "label": "Rock Classifications",
-      "required": "false",
-      "relevant": "${material_type} = 'intact_rock' or ${material_type} = 'fragmented_rock'"
-    },
-    {
-      "type": "acknowledge",
-      "name": "xenolithic",
-      "label": "Xenolithic",
-      "required": "false",
-      "relevant": "${rock_classifications} = 'igneous' or ${rock_classifications} = 'metamorphic'"
-    },
-    {
-      "type": "select_one vy06o90",
-      "name": "hydrothermal_type",
-      "label": "HydroThermal Type",
-      "required": "false",
-      "relevant": "${rock_classifications} = 'hydrothermal'"
-    },
-    {
-      "type": "select_one ot98n11",
-      "name": "igneous_type",
-      "label": "Igneous Type",
-      "required": "false",
-      "relevant": "${rock_classifications} = 'igneous'"
-    },
-    {
-      "type": "select_one xo01b09",
-      "name": "plutonic_volcanic",
-      "label": "Plutonic / Volcanic",
-      "required": "false",
-      "relevant": "${igneous_type} = 'plutonic' or ${igneous_type} = 'volcanic'"
-    },
-    {
-      "type": "select_one bk3ri74",
-      "name": "metamorphic_type",
-      "label": "Metamorphic Type",
-      "required": "false",
-      "relevant": "${rock_classifications} = 'metamorphic'"
-    },
-    {
-      "type": "select_one uo2nd32",
-      "name": "ore_type",
-      "label": "Ore Type",
-      "required": "false",
-      "relevant": "${rock_classifications} = 'ore'"
-    },
-    {
-      "type": "select_one pm23g50",
-      "name": "sedimentary_type",
-      "label": "Sedimentary Type",
-      "required": "false",
-      "relevant": "${rock_classifications} = 'sedimentary'"
-    },
-    {
       "type": "select_multiple za9kv60",
       "name": "sample_type_1",
       "label": "Sample Type 1",
@@ -316,62 +260,74 @@
     {
       "list_name": "fm9fj68",
       "name": "ctd",
-      "label": "CTD"
+      "label": "CTD",
+      "order": 1
     },
     {
       "list_name": "fm9fj68",
       "name": "cuttings",
-      "label": "Cuttings"
+      "label": "Cuttings",
+      "order": 2
     },
     {
       "list_name": "fm9fj68",
       "name": "dredge",
-      "label": "Dredge"
+      "label": "Dredge",
+      "order": 3
     },
     {
       "list_name": "fm9fj68",
       "name": "grab",
-      "label": "Grab"
+      "label": "Grab",
+      "order": 4
     },
     {
       "list_name": "fm9fj68",
       "name": "hole",
-      "label": "Hole"
-    },
-    {
-      "list_name": "fm9fj68",
-      "name": "oriented_core",
-      "label": "Oriented Core"
-    },
-    {
-      "list_name": "fm9fj68",
-      "name": "other",
-      "label": "Other"
-    },
-    {
-      "list_name": "fm9fj68",
-      "name": "rock_powder",
-      "label": "Rock Powder"
-    },
-    {
-      "list_name": "fm9fj68",
-      "name": "site",
-      "label": "Site"
-    },
-    {
-      "list_name": "fm9fj68",
-      "name": "terrestrial_section",
-      "label": "Terrestrial Section"
-    },
-    {
-      "list_name": "fm9fj68",
-      "name": "trawl",
-      "label": "Trawl"
+      "label": "Hole",
+      "order": 5
     },
     {
       "list_name": "fm9fj68",
       "name": "individual_sample",
-      "label": "Individual Sample"
+      "label": "Individual Sample",
+      "order": 6
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "oriented_core",
+      "label": "Oriented Core",
+      "order": 7
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "other",
+      "label": "Other",
+      "order": 8
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "rock_powder",
+      "label": "Rock Powder",
+      "order": 9
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "site",
+      "label": "Site",
+      "order": 10
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "terrestrial_section",
+      "label": "Terrestrial Section",
+      "order": 11
+    },
+    {
+      "list_name": "fm9fj68",
+      "name": "trawl",
+      "label": "Trawl",
+      "order": 12
     },
     {
       "list_name": "to0mv13",
@@ -491,7 +447,7 @@
     },
     {
       "list_name": "jq8qd30",
-      "name": "fragmented_rock",
+      "name": "fragmented_roc",
       "label": "fragmented rock",
       "order": "1"
     },
@@ -518,253 +474,6 @@
       "name": "other",
       "label": "other",
       "order": "5"
-    },
-    {
-      "list_name": "zm5vz64",
-      "name": "hydrothermal",
-      "label": "Hydrothermal"
-    },
-    {
-      "list_name": "zm5vz64",
-      "name": "igneous",
-      "label": "Igneous",
-      "order": 1
-    },
-    {
-      "list_name": "zm5vz64",
-      "name": "metamorphic",
-      "label": "Metamorphic",
-      "order": 2
-    },
-    {
-      "list_name": "zm5vz64",
-      "name": "ore",
-      "label": "Ore",
-      "order": 3
-    },
-    {
-      "list_name": "zm5vz64",
-      "name": "sedimentary",
-      "label": "Sedimentary",
-      "order": 4
-    },
-    {
-      "list_name": "zm5vz64",
-      "name": "unknown",
-      "label": "Unknown",
-      "order": 6
-    },
-    {
-      "list_name": "vy06o90",
-      "name": "breccia",
-      "label": "Breccia"
-    },
-    {
-      "list_name": "vy06o90",
-      "name": "carbonate",
-      "label": "Carbonate"
-    },
-    {
-      "list_name": "vy06o90",
-      "name": "oxide",
-      "label": "Oxide"
-    },
-    {
-      "list_name": "vy06o90",
-      "name": "stockwork",
-      "label": "Stockwork"
-    },
-    {
-      "list_name": "vy06o90",
-      "name": "sulfate",
-      "label": "Sulfate"
-    },
-    {
-      "list_name": "vy06o90",
-      "name": "sulfide",
-      "label": "Sulfide"
-    },
-    {
-      "list_name": "ot98n11",
-      "name": "hypabyssal",
-      "label": "Hypabyssal"
-    },
-    {
-      "list_name": "ot98n11",
-      "name": "plutonic",
-      "label": "Plutonic"
-    },
-    {
-      "list_name": "ot98n11",
-      "name": "volcanic",
-      "label": "Volcanic"
-    },
-    {
-      "list_name": "xo01b09",
-      "name": "exotic",
-      "label": "Exotic"
-    },
-    {
-      "list_name": "xo01b09",
-      "name": "felsic",
-      "label": "Felsic"
-    },
-    {
-      "list_name": "xo01b09",
-      "name": "intermediate",
-      "label": "Intermediate"
-    },
-    {
-      "list_name": "xo01b09",
-      "name": "mafic",
-      "label": "Mafic"
-    },
-    {
-      "list_name": "xo01b09",
-      "name": "ultramafic",
-      "label": "Ultramafic"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "calc_silicate",
-      "label": "Calc-Silicate"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "eclogite",
-      "label": "Eclogite"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "gneiss",
-      "label": "Gneiss"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "granofels",
-      "label": "Granofels"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "granulite",
-      "label": "Granulite"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "mechanicallybroken",
-      "label": "MechanicallyBroken"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "meta_carbonate",
-      "label": "Meta-Carbonate"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "metasedimentary",
-      "label": "Metasedimentary"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "metasomatic",
-      "label": "Metasomatic"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "meta_ultramafic",
-      "label": "Meta-Ultramafic"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "metavolcanic",
-      "label": "Metavolcanic"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "schist",
-      "label": "Schist"
-    },
-    {
-      "list_name": "bk3ri74",
-      "name": "slate",
-      "label": "Slate"
-    },
-    {
-      "list_name": "uo2nd32",
-      "name": "oxide",
-      "label": "Oxide"
-    },
-    {
-      "list_name": "uo2nd32",
-      "name": "sulfide",
-      "label": "Sulfide",
-      "order": 1
-    },
-    {
-      "list_name": "uo2nd32",
-      "name": "other",
-      "label": "Other",
-      "order": 2
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "carbonate",
-      "label": "Carbonate"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "conglomerateandorbreccia",
-      "label": "ConglomerateAndOrBreccia"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "evaporite",
-      "label": "Evaporite"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "glacialandorpaleosol",
-      "label": "GlacialAndOrPaleosol"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "hybrid",
-      "label": "Hybrid"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "ironstone",
-      "label": "Ironstone"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "mixedcarbandorsiliciclastic",
-      "label": "MixedCarbAndOrSiliciclastic"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "mnnoduleandorcrust",
-      "label": "MnNoduleAndOrCrust"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "phosphorite",
-      "label": "Phosphorite"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "siliceousbiogenic",
-      "label": "SiliceousBiogenic"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "siliciclastic",
-      "label": "Siliciclastic"
-    },
-    {
-      "list_name": "pm23g50",
-      "name": "volcaniclastic",
-      "label": "Volcaniclastic"
     },
     {
       "list_name": "za9kv60",
