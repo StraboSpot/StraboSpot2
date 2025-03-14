@@ -12,7 +12,20 @@ const IGSNModalStyles = StyleSheet.create({
   errorContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 20,
     maxHeight: 400,
+  },
+  errorMessageText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    fontWeight: 'bold',
+  },
+  fieldValueText: {
+    fontWeight: '500',
+  },
+  headerText: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    fontWeight: 'bold',
+    margin: 10,
   },
   sesarAuthText: {
     fontSize: 20,
@@ -33,19 +46,11 @@ const IGSNModalStyles = StyleSheet.create({
     margin: 30,
     textAlign: 'center',
   },
-  headerText: {
-    fontSize: themes.MEDIUM_TEXT_SIZE,
-    fontWeight: 'bold',
-    margin: 10,
-  },
   uploadContentText: {
-    padding: 5,
-    fontWeight: 'bold',
     fontSize: themes.MEDIUM_TEXT_SIZE,
+    fontWeight: 'bold',
+    padding: 5,
   },
-  fieldValueText: {
-    fontWeight: '500',
-  }
 });
 
 export default IGSNModalStyles;

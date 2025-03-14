@@ -2,18 +2,32 @@ import {XMLParser} from 'fast-xml-parser';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
-import {useSpots} from '../spots';
-import {setSelectedUserCode, setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
 import useForm from '../form/useForm';
+import {setSelectedUserCode, setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
 
-const useSamples = () => {
+const useSamples = (sampleValue) => {
   const formName = ['general', 'samples'];
   const dispatch = useDispatch();
 
   const {getLabel} = useForm();
-  const {getAllSpotSamplesCount} = useSpots();
-  const {getSesarUserCode, refreshSesarToken} = useServerRequests();
+  const {getSesarUserCode, postToSesar, refreshSesarToken} = useServerRequests();
+  const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const {sesar, name} = useSelector(state => state.user);
+
+  const addIGSNToSample = (data) => {
+    // let spotSamplesData = selectedSpot.properties.samples;
+    return selectedSpot.properties.samples.map((spot) => {
+      if (spot.id === sampleValue.id) {
+        return {
+          ...sampleValue,
+          Sample_IGSN: data.igsn,
+        };
+      }
+      return spot;
+    });
+    // console.log(updatedSamples);
+    // dispatch(editedSpotProperties({field: PAGE_KEYS.SAMPLES, value: updatedSamples}));
+  };
 
   const authenticateWithSesar = async () => {
     const validSesarToken = await getValidToken();
@@ -23,8 +37,7 @@ const useSamples = () => {
     }
     else {
       const xmlData = await getSesarUserCode(validSesarToken);
-      const parser = new XMLParser();
-      const jsonData = parser.parse(xmlData);
+      const jsonData = parseXML(xmlData);
       if (jsonData.results.valid === 'yes') {
         dispatch(setSesarUserCodes(jsonData.results.user_codes.user_code));
         dispatch(setSelectedUserCode(jsonData.results.user_codes.user_code[0]));
@@ -34,36 +47,50 @@ const useSamples = () => {
     }
   };
 
-  const buildSesarJsonObj = (sample) => {
-
-    const selectedFeatureJSON = {
-      user_code: sesar?.selectedUserCode,
-      sample_type: getLabel(sample.sample_type, formName),
-      description: sample?.sample_method_description,
-      name: sample.sample_id_name,
-      material: getLabel(sample.material_type, formName),
-      purpose: sample?.main_sampling_purpose,
-      collection_date: sample?.collection_date,
-      collection_start_time: sample?.collection_time,
-      latitude: sample?.latitude,
-      longitude: sample?.longitude,
-      // rock_classification: getRockClassification(sample.material_type),
-      collector: name,
-    };
-
-    return selectedFeatureJSON;
+  const buildSesarXmlSchema = (data) => {
+    return `content=<?xml version="1.0" encoding="UTF-8"?>
+  <samples xmlns="http://app.geosamples.org"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://app.geosamples.org/4.0/sample.xsd">
+      <sample>
+           <user_code>${data.user_code}</user_code>
+           <collector>${data.collector}</collector>
+           <longitude>${data.longitude}</longitude>
+           <latitude>${data.latitude}</latitude>
+           <collection_start_date>${data.collection_start_date}</collection_start_date>
+           <purpose>${data.purpose}</purpose>
+           <description>${data.description}</description>
+           <material>${data.material}</material>
+           <sample_type>${data.sample_type}</sample_type>
+           <name>${data.name}</name>
+      </sample>
+  </samples>`;
   };
 
-  const getRockClassification = (materialType) => {
-    if (materialType === 'intact_rock' || materialType === 'fragmented_rock') return 'Rock';
+  const getMaterialName = (materialType) => {
+    if (materialType === 'intact_rock' || materialType === 'fragmented_roc') {
+      return 'Rock';
+    }
     else if (materialType === 'carbon_or_animal') return 'Organic Material';
     else return materialType;
   };
 
-  const getAllSamplesCount = async () => {
-    const count = await getAllSpotSamplesCount();
-    console.log('SAMPLE COUNT', count);
-    return count;
+  const straboSesarMapping = () => {
+    const mappedObj = [
+      {label: 'User Code', sesarKey: 'user_code', value: sesar?.selectedUserCode}, //required
+      {label: 'Sample Type:', sesarKey: 'sample_type', value: getLabel(sampleValue?.sample_type, formName)}, //required
+      {label: 'Sample Name:', sesarKey: 'name', value: sampleValue.sample_id_name}, //required
+      {label: 'Material:', sesarKey: 'material', value: getMaterialName(sampleValue?.material_type)}, //required
+      // {label: 'Classification:', sesarKey: 'classification', value: getRockClassification()}, //required
+      {label: 'Description:', sesarKey: 'description', value: sampleValue?.sample_description},
+      {label: 'Purpose:', sesarKey: 'purpose', value: sampleValue?.main_sampling_purpose},
+      {label: 'Collection Date (Time):', sesarKey: 'collection_start_date', value: sampleValue?.collection_date},
+      // {label: 'Collection Time:', sesarKey: 'collection_time', value: sampleValue?.collection_time},
+      {label: 'Latitude:', sesarKey: 'latitude', value: sampleValue?.latitude},
+      {label: 'Longitude:', sesarKey: 'longitude', value: sampleValue?.longitude},
+      {label: 'Collector:', sesarKey: 'collector', value: name},
+    ];
+    return mappedObj;
   };
 
   const getValidToken = async () => {
@@ -96,6 +123,11 @@ const useSamples = () => {
     // formCurrent.setFieldValue(name, value);
   };
 
+  const parseXML = (xmlData) => {
+    const parser = new XMLParser();
+    return parser.parse(xmlData);
+  };
+
   const refreshToken = async () => {
     try {
       const newAccessToken = await refreshSesarToken(sesar?.sesarToken.refresh);
@@ -113,17 +145,45 @@ const useSamples = () => {
     }
   };
 
-  const registerSample = (sample) => {
+  const convertToJSON = (mappingArray) => {
+    return mappingArray.slice().reverse().reduce((acc, item) => {
+      if (item.sesarKey && item.value !== undefined) {
+        acc[item.sesarKey] = item.value;
+      }
+      return acc;
+    }, {});
+  };
+
+  const truncateDateISOString = (date) => {
+    return date.slice(0, date.indexOf('.')) + 'Z';
+  };
+
+  const registerSample = async (sample) => {
     console.log('Register sample', sample);
+    const jsonData = convertToJSON(sample);
+    console.log(jsonData);
+    const updatedJsonData = {...jsonData, collection_start_date: truncateDateISOString(jsonData.collection_start_date)};
+    const xmlSchema = buildSesarXmlSchema(updatedJsonData);
+    console.log('SESAR SCHEMA', xmlSchema);
+    const response = await postToSesar(xmlSchema, sesar.sesarToken.access);
+    const json = parseXML(response);
+    console.log('SAMPLE Response json', json);
+    if (json.results.valid === 'no') {
+      console.error('Error Registering sample', json.results.error);
+      throw Error(json.results.error);
+    }
+    else {
+      const updatedSamples = addIGSNToSample(json.results.sample);
+      return {updatedSamples: updatedSamples, jsonResults: json.results.sample};
+    }
   };
 
   return {
     authenticateWithSesar: authenticateWithSesar,
-    buildSesarJsonObj: buildSesarJsonObj,
-    getAllSamplesCount: getAllSamplesCount,
     getSesarUserCode: getSesarUserCode,
     onSampleFormChange: onSampleFormChange,
     registerSample: registerSample,
+    straboSesarMapping,
   };
 };
 

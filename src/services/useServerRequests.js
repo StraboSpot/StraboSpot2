@@ -1,10 +1,10 @@
 import {Linking} from 'react-native';
+
 import * as Sentry from '@sentry/react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedProjectTransferProgress} from './connections.slice';
-import {MICRO_PATHS, STRABO_APIS} from './urls.constants';
-import {ORCID_PATHS, SESAR_PATHS} from '../services/urls.constants';
+import {MICRO_PATHS, STRABO_APIS, ORCID_PATHS, SESAR_PATHS} from './urls.constants';
 import alert from '../shared/ui/alert';
 
 
@@ -248,12 +248,12 @@ const useServerRequests = () => {
   };
 
   const getSesarUserCode = async (accessToken) => {
-      const userCodeXmlRes = await fetch(SESAR_API + GET_USER_CODE, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
+    const userCodeXmlRes = await fetch(SESAR_API + GET_USER_CODE, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
     return userCodeXmlRes.text();
   };
 
@@ -265,6 +265,28 @@ const useServerRequests = () => {
     }
     catch (err) {
       console.log(err);
+      alert('Error Getting ORCID Token', `${err.toString()}`);
+    }
+  };
+
+  const postToSesar = async (xmlData, accessToken) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append('Authorization', `Bearer ${accessToken}`);
+      myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: xmlData,
+      };
+
+      const response = await fetch(SESAR_API + SESAR_PATHS.UPLOAD, requestOptions);
+      return await response.text();
+    }
+    catch (err) {
+      console.error(err);
+      alert('Error Posting to SESAR', `${err.toString()}`);
     }
   };
 
@@ -581,7 +603,8 @@ const useServerRequests = () => {
     getSesarToken: getSesarToken,
     getSesarUserCode: getSesarUserCode,
     getOrcidToken: getOrcidToken,
-    refreshSesarToken:refreshSesarToken,
+    postToSesar: postToSesar,
+    refreshSesarToken: refreshSesarToken,
     registerUser: registerUser,
     testCustomMapUrl: testCustomMapUrl,
     testEndpoint: testEndpoint,

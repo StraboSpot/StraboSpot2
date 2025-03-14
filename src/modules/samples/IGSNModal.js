@@ -3,17 +3,19 @@ import {ScrollView, Text, useWindowDimensions, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import moment from 'moment';
 import {Button, Overlay, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import IGSNModalStyles from './IGSNModal.styles';
 import useSamples from './useSamples';
-import useForm from '../../modules/form/useForm';
 import useServerRequests from '../../services/useServerRequests';
-import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
+import {isEmpty, truncateText} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import overlayStyles from '../home/overlays/overlay.styles';
+import {PAGE_KEYS} from '../page/page.constants';
+import {editedSpotProperties} from '../spots/spots.slice';
 import {setSelectedUserCode, setSesarToken, updatedKey} from '../user/userProfile.slice';
 
 const IGNSModal = (
@@ -29,7 +31,7 @@ const IGNSModal = (
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {authenticateWithSesar, buildSesarJsonObj, registerSample} = useSamples();
+  const {authenticateWithSesar, straboSesarMapping, registerSample} = useSamples(sampleValues);
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
@@ -41,6 +43,8 @@ const IGNSModal = (
   const [checkSesarAuth, setCheckSesarAuth] = useState(true);
   const [errorView, setErrorView] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
     if (!sesar) {
@@ -58,11 +62,6 @@ const IGNSModal = (
   }, []);
 
   useEffect(() => {
-    const sesarFields = buildSesarJsonObj(sampleValues);
-    setCommonFields(sesarFields);
-  }, [sampleValues]);
-
-  useEffect(() => {
     console.log('Sample Values:', sampleValues);
     if (route.params?.orcidToken) {
       getSesarToken(route.params?.orcidToken)
@@ -75,6 +74,24 @@ const IGNSModal = (
     }
     else sesarAuth().catch(err => console.error('Error logging into SESAR', err));
   }, [route.params]);
+
+  const handleRegisterOnPress = async () => {
+    try {
+      const updatedSampleList = await registerSample(straboSesarMapping());
+      console.log(updatedSampleList.updatedSamples);
+      console.log(updatedSampleList.jsonResults);
+      setStatusMessage(updatedSampleList.jsonResults.status);
+      setIsUploaded(true);
+      dispatch(editedSpotProperties({field: PAGE_KEYS.SAMPLES, value: updatedSampleList}));
+    }
+    catch (err) {
+      const errorMessage = err.toString().split(': ');
+      const reformattedErrorMessage = errorMessage[1].replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
+      setErrorMessage(reformattedErrorMessage);
+      setErrorView(true);
+      setIsUploaded(false);
+    }
+  };
 
   const isoToLocalDateTime = (isoString, type) => {
     const date = new Date(isoString);
@@ -116,8 +133,9 @@ const IGNSModal = (
 
   const renderErrorView = () => {
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center', maxHeight: 400}}>
-        <Text>{errorMessage}</Text>
+      <View style={IGSNModalStyles.errorContainer}>
+        <Text style={IGSNModalStyles.headerText}>There was a error!</Text>
+        <Text style={IGSNModalStyles.errorMessageText}>{errorMessage}</Text>
       </View>
     );
   };
@@ -156,13 +174,15 @@ const IGNSModal = (
   const renderSesarAuth = () => {
     return (
       <>
-        <View style={{backgroundColor: 'rgb(164, 200, 209)'}}>
+        <View style={IGSNModalStyles.sesarImageContainer}>
           <Image
             source={require('../../assets/images/logos/sesar2_logo.png')}
-            style={{height: 100, width: '100%', borderWidth: 2}}
+            style={IGSNModalStyles.sesarImage}
           />
         </View>
-        {checkSesarAuth ? <View><Text>Checking SESAR Auth...</Text></View> : renderUploadContent()}
+        {checkSesarAuth ? <Text style={IGSNModalStyles.sesarAuthText}>Authenticating with SESAR...</Text>
+          : renderUploadContent()
+        }
       </>
     );
   };
@@ -197,78 +217,88 @@ const IGNSModal = (
     );
   };
 
-  const renderUploadContent = () => {
+  const formatContentItems = (item) => {
+    if (item.sesarKey === 'longitude' || item.sesarKey === 'latitude') {
+      return item.value.toFixed(5);
+    }
+    if (item.sesarKey === 'collection_start_date') {
+      return moment(item.value).format('MM-DD-YYYY (h:mm:ss a)');
+      // return isoToLocalDateTime(item.value);
+    }
+    if (item.sesarKey === 'collection_time') {
+      return isoToLocalDateTime(item.value, 'time');
+    }
+    if (item.sesarKey === 'description') return truncateText(item.value, 30);
+    else return item.value;
+  };
+
+  const renderContentItems = () => {
+    const sesarMappedObj = straboSesarMapping();
     return (
       <>
-        {!isEmpty(sampleValues.sample_id_name)
-          ? <ScrollView style={{}}>
-            {changeUserCode ? renderUserCodeSelection()
-              : (
-                <>
-                  <Text style={{textAlign: 'center', padding: 10}}>This is the the data that will be uploaded to
-                    SESAR:</Text>
-                  <View style={{alignContent: 'center'}}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                      <Text style={{textAlign: 'left', padding: 5}}>User Code: {sesar.selectedUserCode}</Text>
-                      <Button
-                        containerStyle={{}}
-                        type={'outline'}
-                        titleStyle={{fontWeight: 'bold', fontSize: 12}}
-                        title={'Switch User'}
-                        onPress={() => setChangeUserCode(true)}
-                      />
-                    </View>
-                    <Text style={commonStyles.textBold}>Sample</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Sample Type: {commonFields.sample_type}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Sample Name: {commonFields.name}</Text>
-                    <Text style={commonStyles.textBold}>Description</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Material: {commonFields.material_type}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Sample Description: {commonFields.description}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Purpose: {commonFields.purpose}</Text>
-                    <Text style={commonStyles.textBold}>Geolocation</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Longitude: {commonFields.longitude.toFixed(5)}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Latitude: {commonFields.latitude.toFixed(5)}</Text>
-                    <Text style={commonStyles.textBold}>Collection</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Collector/Chief Scientist: {commonFields.name}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Collection Date: {isoToLocalDateTime(
-                      commonFields.collection_date)}</Text>
-                    <Text style={{textAlign: 'left', padding: 5}}>Collection Time: {isoToLocalDateTime(
-                      commonFields.collection_date, 'time')}</Text>
+        {!isUploaded ? (
+          <>
+            <Text style={IGSNModalStyles.uploadContentDescription}>This is the the data that will be uploaded to
+              SESAR:</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 
-
-                  </View>
-                  {!isOrcidSignInPrompt && <View style={overlayStyles.buttonContainer}>
-                    <Button
-                      onPress={() => registerSample({user_code: sesar.selectedUserCode, ...commonFields})}
-                      title={'Register Sample'}
-                      containerStyle={{padding: 10}}
-                      buttonStyle={{backgroundColor: 'black', padding: 10}}
-                    />
-                  </View>}
-                </>
-              )
+              <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
+              <Button
+                containerStyle={{marginLeft: 10}}
+                type={'outline'}
+                titleStyle={{fontWeight: 'bold', fontSize: 12}}
+                title={'Switch User'}
+                onPress={() => setChangeUserCode(true)}
+              />
+            </View>
+            {sesarMappedObj.map((item) => {
+              if (item.sesarKey === 'user_code') return null;
+              return (
+                <View key={item.sesarKey}
+                      style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={IGSNModalStyles.uploadContentText}>{item.label}</Text>
+                  <Text style={IGSNModalStyles.fieldValueText}> {formatContentItems(item)}</Text>
+                </View>
+              );
+            })
             }
-          </ScrollView>
-          : renderErrorMessage()}
+          </>
+        ) : (
+          <View style={{padding: 20, marginVertical: 20}}>
+            {/*<Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>*/}
+          </View>
+        )}
       </>
     );
   };
 
-  function renderErrorMessage() {
+  const renderUploadContent = () => {
     return (
-      <View>
-        <Text style={{fontSize: 18, textAlign: 'center'}}>
-          There was a error!
-        </Text>
-      </View>
+      <>
+        {!isEmpty(sampleValues.sample_id_name) && !errorView
+          ? <ScrollView>
+            {changeUserCode ? renderUserCodeSelection()
+              : !errorView &&  (
+              <>
+                <View style={{marginLeft: 30}}>
+                  <View style={{alignItems: 'flex-start'}}>
+                    {renderContentItems()}
+                  </View>
+                </View>
+              </>
+            )
+            }
+          </ScrollView>
+          : renderErrorView()}
+      </>
     );
-  }
+  };
 
   return (
     <Overlay
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {
         ...overlayStyles.overlayContainer,
-        maxHeight: height * 0.80,
+        maxHeight: height * 0.80, width: 500,
       }}
     >
       <Button
@@ -278,9 +308,18 @@ const IGNSModal = (
         containerStyle={{alignItems: 'flex-end'}}
         onPress={onModalCancel}
       />
-      {isOrcidSignInPrompt ? renderOrcidSignIn() : renderSesarAuth()}
-      {errorView && renderErrorView()}
-      <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
+      <View style={IGSNModalStyles.container}>
+        {isOrcidSignInPrompt ? renderOrcidSignIn() : renderSesarAuth()}
+        <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
+      </View>
+      {!isOrcidSignInPrompt && !errorView && !checkSesarAuth && !isUploaded && !changeUserCode && <View style={overlayStyles.buttonContainer}>
+        <Button
+          onPress={handleRegisterOnPress}
+          title={'Register Sample'}
+          containerStyle={{padding: 10}}
+          buttonStyle={{backgroundColor: 'black', padding: 10}}
+        />
+      </View>}
     </Overlay>
   );
 };
