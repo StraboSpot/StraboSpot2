@@ -8629,6 +8629,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:5.0.7":
+  version: 5.0.7
+  resolution: "fast-xml-parser@npm:5.0.7"
+  dependencies:
+    strnum: "npm:^2.0.4"
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: 10c0/32aa3d1fe350ae23616fefa553a01bd3370dd03b5090503adc53b1c0f8aa53682681bfb58e2d208c494381dbae4d600b57116466df6e0e8bb73e8d85d45dd4eb
+  languageName: node
+  linkType: hard
+
 "fast-xml-parser@npm:^4.4.1":
   version: 4.5.1
   resolution: "fast-xml-parser@npm:4.5.1"
@@ -8637,17 +8648,6 @@ __metadata:
   bin:
     fxparser: src/cli/cli.js
   checksum: 10c0/70c6c675770d57d4b73716a1cdccff3780a5f818cffdab9c7560003e1724209001af32fbe7bb27a01107389b1998191c62e20104788ba17e218dfe063aa15b57
-  languageName: node
-  linkType: hard
-
-"fast-xml-parser@npm:^5.0.7":
-  version: 5.0.7
-  resolution: "fast-xml-parser@npm:5.0.7"
-  dependencies:
-    strnum: "npm:^2.0.4"
-  bin:
-    fxparser: src/cli/cli.js
-  checksum: 10c0/32aa3d1fe350ae23616fefa553a01bd3370dd03b5090503adc53b1c0f8aa53682681bfb58e2d208c494381dbae4d600b57116466df6e0e8bb73e8d85d45dd4eb
   languageName: node
   linkType: hard
 
@@ -14799,7 +14799,7 @@ __metadata:
     eslint: "npm:^8.19.0"
     eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-react-native: "npm:^4.1.0"
-    fast-xml-parser: "npm:^5.0.7"
+    fast-xml-parser: "npm:5.0.7"
     formik: "npm:2.4.6"
     generate-changelog: "npm:1.8.0"
     geomagnetism: "npm:0.2.0"
