@@ -66,9 +66,9 @@ const SamplesPage = ({page}) => {
             onPress={() => dispatch(setModalVisible({modal: page.key}))}
           />
         </>
-        <View style={{padding: 10}}>
-          <Text style={commonStyles.importantText}>To register your sample with SESAR press the IGSN logo</Text>
-          <Text style={commonStyles.importantText}>If the logo is green then there is already an IGSN assigned.</Text>
+        <View style={{padding: 20, alignItems: 'center'}}>
+          <Text>To register your sample with SESAR press the "Get IGSN" button.
+         If there is an IGSN logo there is already an IGSN assigned.</Text>
         </View>
         <SamplesList
           onPress={editSample}

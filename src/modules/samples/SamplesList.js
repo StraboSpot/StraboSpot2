@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 import IGSNModal from './IGSNModal';
 import commonStyles from '../../shared/common.styles';
+import {isEmpty} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 
@@ -33,14 +34,16 @@ const SamplesList = ({onPress, page}) => {
           pad={5}
         >
           {<Button
-            icon={<Image
+            title={!item.Sample_IGSN && 'Get \nIGSN'}
+            titleStyle={{fontSize: 12}}
+            icon={item.Sample_IGSN && <Image
               source={require('../../assets/images/logos/IGSN_Logo_200.jpg')}
-              style={{width: 20, height: 20}}
+              style={{width: 20, height: 20 }}
             />}
-            containerStyle={commonStyles.buttonContainer}
-            // buttonStyle={{backgroundColor: 'rgb(164, 200, 209)', borderRadius: 10, borderWidth: 1}}
-            // type={'clear'}
+            buttonStyle={{borderRadius: 10}}
+            type={'clear'}
             onPress={() => openModal(item)}
+            disabled={!isEmpty(item.Sample_IGSN)}
           />}
           <ListItem.Content style={{flexDirection: 'column'}}>
             <ListItem.Title titleStyle={{

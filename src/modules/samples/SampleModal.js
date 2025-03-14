@@ -30,7 +30,6 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const {getChoices, getRelevantFields, getSurvey} = useForm();
   const {checkSampleName, getNewSpotName} = useSpots();
   const {getCurrentLocation, setPointAtCurrentLocation} = useMapLocation();
-  const {getAllSamplesCount} = useSamples();
 
   const initialNamePrefix = preferences.sample_prefix || '';
   const [choicesViewKey, setChoicesViewKey] = useState(null);
@@ -38,7 +37,6 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const [namePostfix, setNamePostfix] = useState(null);
   const [startingNumber, setStartingNumber] = useState(null);
   const [currentLocation, setCurrentLocation] = useState({});
-  const [collectionTime, setCollectionTime] = useState(null);
   const [collectionDate, setCollectionDate] = useState(null);
 
   const formRef = useRef(null);
@@ -72,7 +70,6 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
       .then((location) => {
         const date = new Date().toISOString();
         setCurrentLocation(location);
-        // setCollectionTime(date);
         setCollectionDate(date);
       });
 
