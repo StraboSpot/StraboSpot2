@@ -1,6 +1,6 @@
 import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
-import DocumentPicker from 'react-native-document-picker';
+import {errorCodes, isErrorWithCode, keepLocalCopy, pick, types} from '@react-native-documents/picker';
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch} from 'react-redux';
@@ -267,15 +267,22 @@ const useDevice = () => {
 
   const getExternalProjectData = async () => {
     const options = {
-      type: [DocumentPicker.types.zip],
-      copyTo: 'cachesDirectory',
+      type: [types.zip],
       // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
       transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
     };
-    // try {
-    const res = await DocumentPicker.pickSingle(options);
-    console.log('External Document', res);
-    return res;
+    const [file] = Platform.OS === 'ios' ? await pick(options) : await pick();
+    const [localCopy] = await keepLocalCopy({
+      files: [
+        {
+          uri: file.uri,
+          fileName: file.name ?? 'fallbackName',
+        },
+      ],
+      destination: 'cachesDirectory',
+    });
+    console.log('External Document', localCopy);
+    return {...file, ...localCopy};
   };
 
   // Grab out the name from project.json for a saved MicroProject
@@ -302,7 +309,7 @@ const useDevice = () => {
   };
 
   const isPickDocumentCanceled = (err) => {
-    return DocumentPicker.isCancel(err);
+    return isErrorWithCode(err) === errorCodes.OPERATION_CANCELED;
   };
 
   const makeDirectory = async (directory) => {
@@ -340,7 +347,7 @@ const useDevice = () => {
   };
 
   const pickCSV = async () => {
-    return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
+    return await pick({type: [types.csv]});
   };
 
   const readDirectory = async (directory) => {
