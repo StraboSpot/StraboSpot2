@@ -26,7 +26,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const {getChoices, getSurvey} = useForm();
-  const {getAllSpotSamplesCount, checkSampleName, getNewSpotName} = useSpots();
+  const {checkSampleName, getNewSpotName} = useSpots();
   const {setPointAtCurrentLocation} = useMapLocation();
 
   const initialNamePrefix = preferences.sample_prefix || '';
@@ -87,7 +87,7 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
       setStartingNumber(
         preferences.starting_sample_number
         || spot.properties?.samples?.length + 1
-        || getAllSamplesCount(),
+        || 1,
       );
     }
   }, [spot]);
@@ -111,12 +111,6 @@ const SampleModal = ({onPress, zoomToCurrentLocation}) => {
         {cancelable: false},
       );
     }
-  };
-
-  const getAllSamplesCount = async () => {
-    const count = await getAllSpotSamplesCount();
-    console.log('SAMPLE COUNT', count);
-    setStartingNumber(count);
   };
 
   const onOrientedButtonPress = (i) => {

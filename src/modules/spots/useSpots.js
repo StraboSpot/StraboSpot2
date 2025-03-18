@@ -29,7 +29,6 @@ const useSpots = () => {
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const datasets = useSelector(state => state.project.datasets);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const preferences = useSelector(state => state.project.project?.preferences) || {};
   const recentViews = useSelector(state => state.spot.recentViews);
@@ -250,36 +249,6 @@ const useSpots = () => {
       });
     });
     return JSON.parse(JSON.stringify(allFeatures)).slice(0, 25);
-  };
-
-  const getAllSpotSamplesCount = async () => {
-    // let spotsObjArr = [];
-    let samplesArr = [];
-    //get all datasets with spots
-    await Promise.all(Object.values(datasets).filter((dataset) => {
-        if (!isEmpty(dataset.spotIds)) {
-          dataset.spotIds.map(async (spotId) => {
-            const spotObj = await getSpotById(spotId);
-            if (!isEmpty(spotObj?.properties?.samples)) {
-              spotObj.properties.samples.map((sample) => {
-                samplesArr.push(sample);
-                console.log(1);
-              });
-              console.log(2);
-            }
-            console.log(3);
-          });
-          console.log(4);
-        }
-      }),
-    );
-    console.log(5);
-    console.log('SamplesArr', samplesArr.length);
-    return samplesArr.length;
-
-    //filter out spots with samples in separate array
-
-    //get the length of the array
   };
 
   // Get parent Spot for image basemap
@@ -581,7 +550,6 @@ const useSpots = () => {
     deleteSpot: deleteSpot,
     getActiveSpotsObj: getActiveSpotsObj,
     getAllFeaturesFromSpot: getAllFeaturesFromSpot,
-    getAllSpotSamplesCount: getAllSpotSamplesCount,
     getImageBasemapBySpot: getImageBasemapBySpot,
     getImageBasemaps: getImageBasemaps,
     getIntervalSpotsThisStratSection: getIntervalSpotsThisStratSection,

@@ -10,7 +10,7 @@ import {setModalVisible} from './home.slice';
 import homeStyles from './home.style';
 import * as themes from '../../shared/styles.constants';
 import IconButton from '../../shared/ui/IconButton';
-import Map from '../maps/Map';
+import MapContainer from '../maps/MapContainer';
 import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
 import {MODAL_KEYS} from '../page/page.constants';
@@ -120,7 +120,7 @@ const HomeViewSmallScreen = forwardRef(({
           >
             {() =>
               <>
-                <Map
+                <MapContainer
                   mapMode={mapMode}
                   onEndDrawPressed={onEndDrawPressed}
                   ref={mapComponentRef}

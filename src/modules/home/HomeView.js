@@ -6,7 +6,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {LeftSideButtons, RightSideButtons} from './buttons';
 import DeviceInfo from './DeviceInfo';
 import uiStyles from '../../shared/ui/ui.styles';
-import Map from '../maps/Map';
+import MapContainer from '../maps/MapContainer';
 import OfflineMapLabel from '../maps/offline-maps/OfflineMapsLabel';
 import notebookStyles from '../notebook-panel/notebook.styles';
 import NotebookPanel from '../notebook-panel/NotebookPanel';
@@ -36,7 +36,9 @@ const HomeView = forwardRef(({
 
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
-      <Map
+      <MapContainer
+        isSelectingForStereonet={isSelectingForStereonet}
+        isSelectingForTagging={isSelectingForTagging}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}
         ref={mapComponentRef}
