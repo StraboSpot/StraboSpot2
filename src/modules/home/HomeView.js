@@ -37,8 +37,6 @@ const HomeView = forwardRef(({
   return (
     <SafeAreaView style={uiStyles.safeAreaView}>
       <MapContainer
-        isSelectingForStereonet={isSelectingForStereonet}
-        isSelectingForTagging={isSelectingForTagging}
         mapMode={mapMode}
         onEndDrawPressed={onEndDrawPressed}
         ref={mapComponentRef}
