@@ -21,6 +21,7 @@ const useSamples = (sampleValue) => {
         return {
           ...sampleValue,
           Sample_IGSN: data.igsn,
+          isOnMySesar: true,
         };
       }
       return spot;

@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
+import IGSNModal from './IGSNModal';
 import SamplesList from './SamplesList';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
@@ -20,6 +21,7 @@ const SamplesPage = ({page}) => {
 
   const [isDetailView, setIsDetailView] = useState(false);
   const [selectedSample, setSelectedSample] = useState({});
+  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
 
   useEffect(() => {
     console.log('UE SamplesPage []');
@@ -41,6 +43,11 @@ const SamplesPage = ({page}) => {
     dispatch(setModalVisible({modal: null}));
   };
 
+  const openModal = (item) => {
+    setSelectedSample(item);
+    setIsIGSNModalVisible(true);
+  };
+
   const renderSamplesDetail = () => {
     return (
       <>
@@ -51,6 +58,7 @@ const SamplesPage = ({page}) => {
           }}
           page={page}
           selectedFeature={selectedSample}
+          openModal={openModal}
         />
       </>
     );
@@ -73,6 +81,7 @@ const SamplesPage = ({page}) => {
         <SamplesList
           onPress={editSample}
           page={page}
+          openModal={openModal}
         />
       </View>
     );
@@ -81,6 +90,13 @@ const SamplesPage = ({page}) => {
   return (
     <>
       {isDetailView ? renderSamplesDetail() : renderSamplesMain()}
+      {isIGSNModalVisible && (
+        <IGSNModal
+          onModalCancel={() => setIsIGSNModalVisible(false)}
+          sampleValues={selectedSample}
+          // selectedFeature={selectedFeature}
+        />
+      )}
     </>
   );
 };
