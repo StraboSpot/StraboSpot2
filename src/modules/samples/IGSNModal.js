@@ -31,7 +31,7 @@ const IGNSModal = (
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {authenticateWithSesar, straboSesarMapping, registerSample} = useSamples(sampleValues);
+  const {authenticateWithSesar, straboSesarMapping, uploadSample} = useSamples();
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
@@ -62,7 +62,6 @@ const IGNSModal = (
   }, []);
 
   useEffect(() => {
-    console.log('Sample Values:', sampleValues);
     if (route.params?.orcidToken) {
       getSesarToken(route.params?.orcidToken)
         .then((token) => {
@@ -70,7 +69,12 @@ const IGNSModal = (
           dispatch(setSesarToken(token));
           navigation.setParams({orcidToken: undefined});
         })
-        .catch(error => console.error(error));
+        .catch((error) => {
+          console.error(error)
+          setCheckSesarAuth(false);
+          setErrorMessage(error.toString())
+          setErrorView(true);
+        });
     }
     else sesarAuth().catch(err => console.error('Error logging into SESAR', err));
   }, [route.params]);
@@ -82,11 +86,12 @@ const IGNSModal = (
       console.log(updatedSampleList.jsonResults);
       setStatusMessage(updatedSampleList.jsonResults.status);
       setIsUploaded(true);
-      dispatch(editedSpotProperties({field: PAGE_KEYS.SAMPLES, value: updatedSampleList}));
+      // dispatch(editedSpotProperties({field: PAGE_KEYS.SAMPLES, value: updatedSampleList.updatedSamples}));
     }
     catch (err) {
       const errorMessage = err.toString().split(': ');
       const reformattedErrorMessage = errorMessage[1].replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
+      console.error(errorMessage);
       setErrorMessage(reformattedErrorMessage);
       setErrorView(true);
       setIsUploaded(false);
@@ -181,7 +186,7 @@ const IGNSModal = (
           />
         </View>
         {checkSesarAuth ? <Text style={IGSNModalStyles.sesarAuthText}>Authenticating with SESAR...</Text>
-          : renderUploadContent()
+          : !errorView ? renderUploadContent() : renderErrorView()
         }
       </>
     );
@@ -233,7 +238,7 @@ const IGNSModal = (
   };
 
   const renderContentItems = () => {
-    const sesarMappedObj = straboSesarMapping();
+    const sesarMappedObj = straboSesarMapping(sampleValues);
     return (
       <>
         {!isUploaded ? (
@@ -241,7 +246,6 @@ const IGNSModal = (
             <Text style={IGSNModalStyles.uploadContentDescription}>This is the the data that will be uploaded to
               SESAR:</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-
               <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
               <Button
                 containerStyle={{marginLeft: 10}}
@@ -275,10 +279,10 @@ const IGNSModal = (
   const renderUploadContent = () => {
     return (
       <>
-        {!isEmpty(sampleValues.sample_id_name) && !errorView
-          ? <ScrollView>
+        {!isEmpty(sampleValues.sample_id_name)
+          && <ScrollView>
             {changeUserCode ? renderUserCodeSelection()
-              : !errorView &&  (
+              :  (
               <>
                 <View style={{marginLeft: 30}}>
                   <View style={{alignItems: 'flex-start'}}>
@@ -289,7 +293,7 @@ const IGNSModal = (
             )
             }
           </ScrollView>
-          : renderErrorView()}
+        }
       </>
     );
   };
