@@ -14,9 +14,9 @@ import {DateInputField, NumberInputField, SelectInputField, TextInputField, useF
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
 const Form = ({
+                isEditable,
                 errors,
                 formName,
-                IGSN,
                 onMyChange,
                 setFieldValue,
                 subkey,
@@ -69,8 +69,8 @@ const Form = ({
         appearance={field.appearance}
         placeholder={field.hint}
         onMyChange={onMyChange}
-        IGSN={IGSN}
         onShowFieldInfo={showFieldInfo}
+        editable={isEditable ? isEditable(field.name) : true}
       />
     );
   };

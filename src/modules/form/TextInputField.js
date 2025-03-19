@@ -12,6 +12,7 @@ const TextInputField = ({
                           appearance,
                           autoCapitalize,
                           autoFocus,
+                          editable,
                           keyboardType,
                           label,
                           onMyChange,
@@ -47,6 +48,7 @@ const TextInputField = ({
         autoFocus={autoFocus}
         autoCapitalize={autoCapitalize}
         keyboardType={keyboardType}
+        editable={editable}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </>

@@ -137,6 +137,10 @@ const BasicPageDetail = ({
     return formName;
   };
 
+  const handleIsEditable = (fieldName) => {
+    return fieldName !== 'Sample_IGSN' || !selectedFeature.isOnMySesar;
+  };
+
   const renderFormFields = () => {
     const formName = getFormName();
     return (
@@ -164,6 +168,7 @@ const BasicPageDetail = ({
                       ? ((name, value) => onSampleFormChange(formRef.current, name, value))
                       : undefined
                 ,
+                isEditable: handleIsEditable,
               }}/>
             </>
           )}
