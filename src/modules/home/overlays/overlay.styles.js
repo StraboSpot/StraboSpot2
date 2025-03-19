@@ -42,6 +42,12 @@ const styles = StyleSheet.create({
   disabledButtonText: {
     color: themes.PRIMARY_TEXT_COLOR,
   },
+  headerText: {
+    color: 'red',
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   importantText: {
     color: 'red',
     fontWeight: themes.TEXT_WEIGHT,

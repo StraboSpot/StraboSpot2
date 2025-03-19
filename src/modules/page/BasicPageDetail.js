@@ -35,6 +35,8 @@ const BasicPageDetail = ({
   const spot = useSelector(state => state.spot.selectedSpot);
 
   const [IGSNChecked, setIGSNChecked] = useState(false);
+  const [isWarningOverlayVisible, setIsWarningOverlayVisible] = useState(false);
+  const [isMessageOverlayVisible, setIsMessageOverlayVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -111,20 +113,25 @@ const BasicPageDetail = ({
   };
 
   const deleteFeatureConfirm = () => {
-    alert('Delete ' + title,
-      'Are you sure you would like to delete this ' + title + '?',
-      [
-        {
-          text: 'No',
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => deleteFeature(),
-        },
-      ],
-      {cancelable: false},
-    );
+    if (pageKey === PAGE_KEYS.SAMPLES && selectedFeature.isOnMySesar) {
+      setIsWarningOverlayVisible(true);
+    }
+    else {
+      alert('Delete ' + title,
+        'Are you sure you would like to delete this ' + title + '?',
+        [
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () => deleteFeature(),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
 
   const getFormName = () => {
@@ -261,6 +268,15 @@ const BasicPageDetail = ({
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
       )}
+      <DeleteOverlay
+        isVisible={isWarningOverlayVisible}
+        closeModal={() => setIsWarningOverlayVisible(false)}
+        deleteSample={deleteFeature}
+      />
+      <MessageOverlay
+        isVisible={isMessageOverlayVisible}
+        closeModal={() => setIsMessageOverlayVisible(false)}
+      />
     </>
   );
 };
