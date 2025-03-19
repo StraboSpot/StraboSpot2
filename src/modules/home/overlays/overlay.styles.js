@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     bottom: 60,
     left: 70,
     position: 'absolute',
+    zIndex: 1,
   },
   selectGeometryTypeContent: {
     alignItems: 'flex-start',
