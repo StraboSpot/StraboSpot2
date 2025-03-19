@@ -15,14 +15,10 @@ import SplashScreen from '../splash-screen/SplashScreen';
 import {login} from '../user/userProfile.slice';
 
 const SignIn = ({navigation, route}) => {
-  // console.log('Rendering SignIn...');
-  // console.count('Rendering SignIn...');
 
   const dispatch = useDispatch();
   const customDatabaseEndpoint = useSelector(state => state.connections.databaseEndpoint);
   const isOnline = useSelector(state => state.connections.isOnline);
-
-  const {isSelected, isVerified} = customDatabaseEndpoint;
 
   const [errorMessage, setErrorMessage] = useState('');
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
