@@ -70,9 +70,9 @@ const IGNSModal = (
           navigation.setParams({orcidToken: undefined});
         })
         .catch((error) => {
-          console.error(error)
+          console.error(error);
           setCheckSesarAuth(false);
-          setErrorMessage(error.toString())
+          setErrorMessage(error.toString());
           setErrorView(true);
         });
     }
@@ -81,16 +81,14 @@ const IGNSModal = (
 
   const handleRegisterOnPress = async () => {
     try {
-      const updatedSampleList = await registerSample(straboSesarMapping());
-      console.log(updatedSampleList.updatedSamples);
-      console.log(updatedSampleList.jsonResults);
-      setStatusMessage(updatedSampleList.jsonResults.status);
-      setIsUploaded(true);
-      // dispatch(editedSpotProperties({field: PAGE_KEYS.SAMPLES, value: updatedSampleList.updatedSamples}));
+      const res = await uploadSample(sampleValues);
+      setStatusMessage(res.status);
+      setIsUploaded(prevState => true);
     }
     catch (err) {
       const errorMessage = err.toString().split(': ');
-      const reformattedErrorMessage = errorMessage[1].replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
+      const reformattedErrorMessage = errorMessage[1].replace(/^_*(.)|_+(.)/g,
+        (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
       console.error(errorMessage);
       setErrorMessage(reformattedErrorMessage);
       setErrorView(true);
@@ -241,37 +239,31 @@ const IGNSModal = (
     const sesarMappedObj = straboSesarMapping(sampleValues);
     return (
       <>
-        {!isUploaded ? (
-          <>
-            <Text style={IGSNModalStyles.uploadContentDescription}>This is the the data that will be uploaded to
-              SESAR:</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
-              <Button
-                containerStyle={{marginLeft: 10}}
-                type={'outline'}
-                titleStyle={{fontWeight: 'bold', fontSize: 12}}
-                title={'Switch User'}
-                onPress={() => setChangeUserCode(true)}
-              />
-            </View>
-            {sesarMappedObj.map((item) => {
-              if (item.sesarKey === 'user_code') return null;
-              return (
-                <View key={item.sesarKey}
-                      style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                  <Text style={IGSNModalStyles.uploadContentText}>{item.label}</Text>
-                  <Text style={IGSNModalStyles.fieldValueText}> {formatContentItems(item)}</Text>
-                </View>
-              );
-            })
-            }
-          </>
-        ) : (
-          <View style={{padding: 20, marginVertical: 20}}>
-            {/*<Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>*/}
+        <>
+          <Text style={IGSNModalStyles.uploadContentDescription}>This is the the data that will be uploaded to
+            SESAR:</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
+            <Button
+              containerStyle={{marginLeft: 10}}
+              type={'outline'}
+              titleStyle={{fontWeight: 'bold', fontSize: 12}}
+              title={'Switch User'}
+              onPress={() => setChangeUserCode(true)}
+            />
           </View>
-        )}
+          {sesarMappedObj.map((item) => {
+            if (item.sesarKey === 'user_code') return null;
+            return (
+              <View key={item.sesarKey}
+                    style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={IGSNModalStyles.uploadContentText}>{item.label}</Text>
+                <Text style={IGSNModalStyles.fieldValueText}> {formatContentItems(item)}</Text>
+              </View>
+            );
+          })
+          }
+        </>
       </>
     );
   };
@@ -279,20 +271,25 @@ const IGNSModal = (
   const renderUploadContent = () => {
     return (
       <>
-        {!isEmpty(sampleValues.sample_id_name)
-          && <ScrollView>
+        {!isEmpty(sampleValues.sample_id_name) && !isUploaded
+          ? <ScrollView>
             {changeUserCode ? renderUserCodeSelection()
-              :  (
-              <>
-                <View style={{marginLeft: 30}}>
-                  <View style={{alignItems: 'flex-start'}}>
-                    {renderContentItems()}
+              : (
+                <>
+                  <View style={{marginLeft: 30}}>
+                    <View style={{alignItems: 'flex-start'}}>
+                      {renderContentItems()}
+                    </View>
                   </View>
-                </View>
-              </>
-            )
+                </>
+              )
             }
           </ScrollView>
+          : (
+            <View style={{padding: 20, marginVertical: 20}}>
+              <Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>
+            </View>
+          )
         }
       </>
     );
@@ -316,14 +313,15 @@ const IGNSModal = (
         {isOrcidSignInPrompt ? renderOrcidSignIn() : renderSesarAuth()}
         <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
       </View>
-      {!isOrcidSignInPrompt && !errorView && !checkSesarAuth && !isUploaded && !changeUserCode && <View style={overlayStyles.buttonContainer}>
-        <Button
-          onPress={handleRegisterOnPress}
-          title={'Register Sample'}
-          containerStyle={{padding: 10}}
-          buttonStyle={{backgroundColor: 'black', padding: 10}}
-        />
-      </View>}
+      {!isOrcidSignInPrompt && !errorView && !checkSesarAuth && !isUploaded && !changeUserCode &&
+        <View style={overlayStyles.buttonContainer}>
+          <Button
+            onPress={handleRegisterOnPress}
+            title={'Register Sample'}
+            containerStyle={{padding: 10}}
+            buttonStyle={{backgroundColor: 'black', padding: 10}}
+          />
+        </View>}
     </Overlay>
   );
 };
