@@ -10,6 +10,11 @@ const sampleStyles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  listContentContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   logoDisplayContainer: {
     marginRight: 20,
   },
