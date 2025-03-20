@@ -1,28 +1,28 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 
-import {Button, Icon, Image} from 'react-native-elements';
+import {Button, Image} from 'react-native-elements';
 
+import sampleStyles from './samples.styles';
 import IGSNLogo from '../../assets/images/logos/IGSN_Logo_200.jpg';
-import NoIGSNIcon from './NoIGSNIcon';
 
 const IGSNDisplay = ({item, openModal}) => {
   return (
-    <View style={{marginHorizontal: 5}}>
+    <View style={sampleStyles.logoDisplayContainer}>
       {openModal && !item.isOnMySesar ? <Button
         buttonStyle={{flexDirection: 'column-reverse'}}
         title={'Get'}
-        titleStyle={{fontSize: 14}}
-        icon={<Image source={IGSNLogo} style={{width: 20, height: 20}} />}
+        titleStyle={{fontSize: 14, color: 'black'}}
+        icon={<Image source={IGSNLogo} style={sampleStyles.IGSNLogoSmall}/>}
         type={'clear'}
         onPress={() => openModal && openModal(item)}
       /> : item.isOnMySesar
-        ? <Image
-          source={IGSNLogo}
-          style={{width: 30, height: 30}}
-        />
-        :
-          <NoIGSNIcon/>
+        && (
+          <Image
+            source={IGSNLogo}
+            style={sampleStyles.IGSNLogo}
+          />
+        )
       }
     </View>
   );

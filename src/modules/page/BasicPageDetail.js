@@ -1,8 +1,8 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, Image} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';
@@ -15,19 +15,21 @@ import GeoFieldsInputs from '../geography/GeoFieldInputs';
 import NoteForm from '../notes/NoteForm';
 import usePetrology from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
-import IGSNModal from '../samples/IGSNModal';
 import useSamples from '../samples/useSamples';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSed from '../sed/useSed';
 import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTags} from '../tags';
+import DeleteOverlay from './ui/DeleteOverlay';
+import MessageOverlay from './ui/MessageOverlay';
 
 const BasicPageDetail = ({
                            closeDetailView,
                            deleteTemplate,
                            groupKey = 'general',
                            page,
+                           openModal,
                            selectedFeature,
                            saveTemplate,
                          }) => {
