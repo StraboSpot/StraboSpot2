@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import IGSNDisplay from './IGSNDisplay';
+import sampleStyles from './samples.styles';
 import commonStyles from '../../shared/common.styles';
 import {truncateText} from '../../shared/Helpers';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
@@ -26,15 +27,19 @@ const SamplesList = ({onPress, page, openModal}) => {
           onPress={() => onPress(item)}
           pad={5}
         >
-          <IGSNDisplay item={item} openModal={openModal}/>
-          <ListItem.Content>
-            <ListItem.Title titleStyle={{
-              ...commonStyles.listItemTitle,
-              textAlign: 'left',
-            }}>{item.sample_id_name || 'Unknown'}</ListItem.Title>
-            <ListItem.Subtitle>
-              {oriented} - {item.sample_description ? truncateText(item.sample_description, 35) : 'No Description'}
-            </ListItem.Subtitle>
+          <ListItem.Content style={sampleStyles.listContentContainer}>
+            <View>
+              <ListItem.Title titleStyle={{
+                ...commonStyles.listItemTitle,
+                textAlign: 'left',
+              }}>{item.sample_id_name || 'Unknown'}</ListItem.Title>
+              <ListItem.Subtitle>
+                {oriented} - {item.sample_description ? truncateText(item.sample_description, 25) : 'No Description'}
+              </ListItem.Subtitle>
+            </View>
+            <View>
+              <IGSNDisplay item={item} openModal={openModal}/>
+            </View>
           </ListItem.Content>
           <ListItem.Chevron/>
         </ListItem>
