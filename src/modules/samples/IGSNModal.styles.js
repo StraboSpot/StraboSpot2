@@ -35,11 +35,13 @@ const IGSNModalStyles = StyleSheet.create({
   },
   sesarImage: {
     borderWidth: 2,
-    height: 100,
-    width: 300,
+    height: 120,
+    width: 340,
   },
   sesarImageContainer: {
+    alignContent: 'center',
     backgroundColor: 'rgb(164, 200, 209)',
+    justifyContent: 'center',
   },
   uploadContentDescription: {
     fontSize: themes.MEDIUM_TEXT_SIZE,

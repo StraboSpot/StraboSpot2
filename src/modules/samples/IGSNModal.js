@@ -14,8 +14,6 @@ import {isEmpty, truncateText} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
 import overlayStyles from '../home/overlays/overlay.styles';
-import {PAGE_KEYS} from '../page/page.constants';
-import {editedSpotProperties} from '../spots/spots.slice';
 import {setSelectedUserCode, setSesarToken, updatedKey} from '../user/userProfile.slice';
 
 const IGNSModal = (
@@ -31,7 +29,7 @@ const IGNSModal = (
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {authenticateWithSesar, straboSesarMapping, uploadSample} = useSamples();
+  const {authenticateWithSesar, getAndSaveSesarCode, straboSesarMapping, uploadSample} = useSamples();
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
@@ -43,10 +41,13 @@ const IGNSModal = (
   const [checkSesarAuth, setCheckSesarAuth] = useState(true);
   const [errorView, setErrorView] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [subtitle, setSubtitle] = useState('This is the the data that will be uploaded to SESAR:');
   const [isUploaded, setIsUploaded] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [modalPage, setModalPage] = useState('auth');
 
   useEffect(() => {
+    setStatusMessage('Authenticating with SESAR...');
     if (!sesar) {
       dispatch(updatedKey({
         sesar: {
@@ -91,7 +92,7 @@ const IGNSModal = (
         (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
       console.error(errorMessage);
       setErrorMessage(reformattedErrorMessage);
-      setErrorView(true);
+      setModalPage(null);
       setIsUploaded(false);
     }
   };
@@ -105,13 +106,18 @@ const IGNSModal = (
   const sesarAuth = async () => {
     try {
       setIsLoading(true);
-      setCheckSesarAuth(true);
-      if (await authenticateWithSesar()) {
-        setCheckSesarAuth(false);
+
+      const token = await authenticateWithSesar();
+      if (token) {
+        if (!sampleValues.isOnMySesar) {
+          setIsLoading(true);
+          await getAndSaveSesarCode(token);
+          setIsLoading(false);
+        }
+        if (isEmpty(sesar.selectedUserCode)) setModalPage('changeUserCode');
+        else setModalPage('content');
       }
-      else {
-        setIsOrcidSignInPrompt(true);
-      }
+      else setModalPage('orcidSignIn');
       setIsLoading(false);
     }
     catch (error) {
@@ -119,6 +125,23 @@ const IGNSModal = (
       setErrorMessage(error.toString());
       setErrorView(true);
     }
+  };
+
+  const setPage = () => {
+    switch (modalPage) {
+      case 'auth':
+        return renderSesarAuth();
+      case 'changeUserCode':
+        return renderUserCodeSelection();
+      case 'content':
+        return renderUploadContent();
+      case 'orcidSignIn':
+        return renderOrcidSignIn();
+      default:
+        return renderErrorView();
+    }
+
+
   };
 
   const signIntoOrcid = async () => {
@@ -177,15 +200,7 @@ const IGNSModal = (
   const renderSesarAuth = () => {
     return (
       <>
-        <View style={IGSNModalStyles.sesarImageContainer}>
-          <Image
-            source={require('../../assets/images/logos/sesar2_logo.png')}
-            style={IGSNModalStyles.sesarImage}
-          />
-        </View>
-        {checkSesarAuth ? <Text style={IGSNModalStyles.sesarAuthText}>Authenticating with SESAR...</Text>
-          : !errorView ? renderUploadContent() : renderErrorView()
-        }
+        <Text style={IGSNModalStyles.sesarAuthText}>{statusMessage}</Text>
       </>
     );
   };
@@ -213,7 +228,7 @@ const IGNSModal = (
         </Picker>
         <Button
           title={'Select User Code'}
-          onPress={() => setChangeUserCode(false)}
+          onPress={() => setModalPage('content')}
           type={'clear'}
         />
       </View>
@@ -239,31 +254,30 @@ const IGNSModal = (
     const sesarMappedObj = straboSesarMapping(sampleValues);
     return (
       <>
-        <>
-          <Text style={IGSNModalStyles.uploadContentDescription}>This is the the data that will be uploaded to
-            SESAR:</Text>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-            <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
+        <Text style={IGSNModalStyles.uploadContentDescription}>{subtitle}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
+          {!sampleValues.isOnMySesar && (
             <Button
               containerStyle={{marginLeft: 10}}
               type={'outline'}
               titleStyle={{fontWeight: 'bold', fontSize: 12}}
               title={'Switch User'}
-              onPress={() => setChangeUserCode(true)}
+              onPress={() => setModalPage('changeUserCode')}
             />
-          </View>
-          {sesarMappedObj.map((item) => {
-            if (item.sesarKey === 'user_code') return null;
-            return (
-              <View key={item.sesarKey}
-                    style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={IGSNModalStyles.uploadContentText}>{item.label}</Text>
-                <Text style={IGSNModalStyles.fieldValueText}> {formatContentItems(item)}</Text>
-              </View>
-            );
-          })
-          }
-        </>
+          )}
+        </View>
+        {sesarMappedObj.map((item) => {
+          if (item.sesarKey === 'user_code') return null;
+          return (
+            <View key={item.sesarKey}
+                  style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={IGSNModalStyles.uploadContentText}>{item.label}</Text>
+              <Text style={IGSNModalStyles.fieldValueText}> {formatContentItems(item)}</Text>
+            </View>
+          );
+        })
+        }
       </>
     );
   };
@@ -273,17 +287,11 @@ const IGNSModal = (
       <>
         {!isEmpty(sampleValues.sample_id_name) && !isUploaded
           ? <ScrollView>
-            {changeUserCode ? renderUserCodeSelection()
-              : (
-                <>
-                  <View style={{marginLeft: 30}}>
-                    <View style={{alignItems: 'flex-start'}}>
-                      {renderContentItems()}
-                    </View>
-                  </View>
-                </>
-              )
-            }
+            <View style={{marginLeft: 30}}>
+              <View style={{alignItems: 'flex-start'}}>
+                {renderContentItems()}
+              </View>
+            </View>
           </ScrollView>
           : (
             <View style={{padding: 20, marginVertical: 20}}>
@@ -309,18 +317,26 @@ const IGNSModal = (
         containerStyle={{alignItems: 'flex-end'}}
         onPress={onModalCancel}
       />
+
       <View style={IGSNModalStyles.container}>
-        {isOrcidSignInPrompt ? renderOrcidSignIn() : renderSesarAuth()}
+        <View style={IGSNModalStyles.sesarImageContainer}>
+          <Image
+            source={require('../../assets/images/logos/sesar2_logo.png')}
+            style={IGSNModalStyles.sesarImage}
+          />
+        </View>
+        {/*{isOrcidSignInPrompt ? renderOrcidSignIn() : renderSesarAuth()}*/}
+        {setPage()}
         <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
       </View>
-      {!isOrcidSignInPrompt && !errorView && !checkSesarAuth && !isUploaded && !changeUserCode &&
+      {modalPage === 'content' && !isUploaded &&
         <View style={overlayStyles.buttonContainer}>
-          <Button
+          {!sampleValues.isOnMySesar && <Button
             onPress={handleRegisterOnPress}
             title={'Register Sample'}
             containerStyle={{padding: 10}}
             buttonStyle={{backgroundColor: 'black', padding: 10}}
-          />
+          />}
         </View>}
     </Overlay>
   );
