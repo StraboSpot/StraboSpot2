@@ -52,7 +52,8 @@ const SpotDataModelModal = ({close}) => {
 
             // Get survey fields
             const survey = formValue.survey.reduce((acc2, field) => {
-              if (field.name && field.name !== 'start' && field.name !== 'end' && field.name !== '__version__' && field.name !== '_version_') {
+              if (field.type && field.type !== 'start' && field.type !== 'end' && field.type !== 'calculate'
+                && field.type !== 'begin_group' && field.type !== 'end_group') {
                 let fieldObj = JSON.parse(JSON.stringify(field));
 
                 // Get choices
@@ -80,7 +81,10 @@ const SpotDataModelModal = ({close}) => {
           // console.log('categoryKey:', categoryKey, 'Form:', formsObj);
 
           if (categoryKey === 'general') {
-            spotDataModelTemp = {...spotDataModelTemp, properties: {...spotDataModelTemp.properties, ...formsObj, ...geographyTemp}};
+            spotDataModelTemp = {
+              ...spotDataModelTemp,
+              properties: {...spotDataModelTemp.properties, ...formsObj, ...geographyTemp},
+            };
           }
           else if (categoryKey === 'measurement') {
             spotDataModelTemp = {
