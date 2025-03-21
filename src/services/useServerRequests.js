@@ -230,7 +230,6 @@ const useServerRequests = () => {
     const res = await fetch(SESAR_API + GET_TOKEN, {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
       },
       // body: JSON.stringify({connection: 'strabospot', orcid_id_token: orcidToken}),
@@ -282,7 +281,7 @@ const useServerRequests = () => {
       };
 
       const response = await fetch(SESAR_API + SESAR_PATHS.UPLOAD, requestOptions);
-      return await response.text();
+      return response
     }
     catch (err) {
       console.error(err);
@@ -302,6 +301,27 @@ const useServerRequests = () => {
     });
     return await res.json();
   };
+
+  const updateSampleWithSesar = async (xmlData, accessToken) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append('Authorization', `Bearer ${accessToken}`);
+      myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: xmlData,
+      };
+
+      const response = await fetch(SESAR_API + SESAR_PATHS.UPDATE, requestOptions);
+      return await response.text();
+    }
+    catch (err) {
+      console.error(err);
+      alert('Error Posting to SESAR', `${err.toString()}`);
+    }
+  }
 
   const handleError = async (response) => {
     console.log('RESPONSE', response);
@@ -605,6 +625,7 @@ const useServerRequests = () => {
     getOrcidToken: getOrcidToken,
     postToSesar: postToSesar,
     refreshSesarToken: refreshSesarToken,
+    updateSampleWithSesar:updateSampleWithSesar,
     registerUser: registerUser,
     testCustomMapUrl: testCustomMapUrl,
     testEndpoint: testEndpoint,

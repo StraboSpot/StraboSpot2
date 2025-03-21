@@ -222,6 +222,7 @@ const BasicPageDetail = ({
 
       if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
         await checkSampleName(editedFeatureData.sample_id_name);
+        if (editedFeatureData.isOnMySesar) openModal(editedFeatureData);
       }
     }
     catch (err) {

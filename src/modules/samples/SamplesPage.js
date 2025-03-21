@@ -43,7 +43,7 @@ const SamplesPage = ({page}) => {
     dispatch(setModalVisible({modal: null}));
   };
 
-  const openModal = (item) => {
+  const openModal = (item, isUpdating) => {
     setSelectedSample(item);
     setIsIGSNModalVisible(true);
   };

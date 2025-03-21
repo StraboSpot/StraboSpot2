@@ -55,6 +55,7 @@ export const SESAR_PATHS = {
   GET_USER_CODE: '/credentials_service_v2.php',
   SESAR_API: sesarAPI,
   UPLOAD: '/upload.php',
+  UPDATE: '/update.php',
 };
 
 export const ORCID_PATHS = {
