@@ -9,6 +9,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import IGSNModalStyles from './IGSNModal.styles';
 import useSamples from './useSamples';
+import OrcidLogo from '../../assets/images/logos/orcid_logo.png';
+import SesarLogo from '../../assets/images/logos/sesar2_logo.png';
 import useServerRequests from '../../services/useServerRequests';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
@@ -29,14 +31,14 @@ const IGNSModal = (
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {authenticateWithSesar, getAndSaveSesarCode, straboSesarMapping, uploadSample} = useSamples();
+  const {authenticateWithSesar, getAndSaveSesarCode, straboSesarMapping, updateSampleIsSesar, uploadSample} = useSamples();
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
 
   const [changeUserCode, setChangeUserCode] = useState(false);
   const [commonFields, setCommonFields] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isOrcidSignInPrompt, setIsOrcidSignInPrompt] = useState(false);
   const [checkSesarAuth, setCheckSesarAuth] = useState(true);
   const [errorView, setErrorView] = useState(false);
@@ -45,9 +47,9 @@ const IGNSModal = (
   const [isUploaded, setIsUploaded] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [modalPage, setModalPage] = useState('auth');
+  const [sampleToUpload, setSampleToUpload] = useState(sampleValues);
 
   useEffect(() => {
-    setStatusMessage('Authenticating with SESAR...');
     if (!sesar) {
       dispatch(updatedKey({
         sesar: {
@@ -82,7 +84,7 @@ const IGNSModal = (
 
   const handleRegisterOnPress = async () => {
     try {
-      const res = await uploadSample(sampleValues);
+      const res = await uploadSample(sampleToUpload);
       setStatusMessage(res.status);
       setIsUploaded(prevState => true);
     }
@@ -105,17 +107,28 @@ const IGNSModal = (
 
   const sesarAuth = async () => {
     try {
-      setIsLoading(true);
-
+      setStatusMessage('Authenticating with SESAR...');
       const token = await authenticateWithSesar();
       if (token) {
-        if (!sampleValues.isOnMySesar) {
+        if (isEmpty(sesar.userCodes)) {
           setIsLoading(true);
           await getAndSaveSesarCode(token);
           setIsLoading(false);
         }
-        if (isEmpty(sesar.selectedUserCode)) setModalPage('changeUserCode');
-        else setModalPage('content');
+        else if (isEmpty(sesar.selectedUserCode)) setModalPage('changeUserCode');
+        else {
+          setStatusMessage('This is the the data that will be uploaded to SESAR:');
+          setModalPage('content');
+          if (sampleToUpload.isOnMySesar) {
+            setIsLoading(true);
+            const res = await updateSampleIsSesar(sampleToUpload);
+            if (res.status) {
+              setIsLoading(false);
+              setIsUploaded(true);
+              setStatusMessage(res.status);
+            }
+          }
+        }
       }
       else setModalPage('orcidSignIn');
       setIsLoading(false);
