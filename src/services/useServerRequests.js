@@ -18,7 +18,7 @@ const useServerRequests = () => {
   const {SESAR_API, GET_TOKEN, GET_USER_CODE, REFRESH_TOKEN} = SESAR_PATHS;
   const {ORCID, AUTH, SCOPE, REDIRECT_URL} = ORCID_PATHS;
 
-  const user = useSelector(state => state.user);
+  const {encoded_login, sesar} = useSelector(state => state.user);
 
   const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
     return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
@@ -302,10 +302,10 @@ const useServerRequests = () => {
     return await res.json();
   };
 
-  const updateSampleWithSesar = async (xmlData, accessToken) => {
+  const updateSampleWithSesar = async (xmlData) => {
     try {
       const myHeaders = new Headers();
-      myHeaders.append('Authorization', `Bearer ${accessToken}`);
+      myHeaders.append('Authorization', `Bearer ${sesar.sesarToken.access}`);
       myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
 
       const requestOptions = {
@@ -315,7 +315,7 @@ const useServerRequests = () => {
       };
 
       const response = await fetch(SESAR_API + SESAR_PATHS.UPDATE, requestOptions);
-      return await response.text();
+      return response;
     }
     catch (err) {
       console.error(err);
