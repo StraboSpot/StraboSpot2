@@ -53,7 +53,7 @@ const useSamples = () => {
       <sample>
            ${!isUpdating ? `<user_code>${data.user_code}</user_code>` : ''}
            <collector>${data.collector}</collector>
-           ${data.igsn ? <igsn>${data.igsn}</igsn> : ''}
+           ${data.igsn ? `<igsn>${data.igsn}</igsn>` : ''}
            <longitude>${data.longitude}</longitude>
            <latitude>${data.latitude}</latitude>
            <collection_start_date>${data.collection_start_date}</collection_start_date>
