@@ -17,6 +17,7 @@ import {
 import {setCenter, setZoom} from './maps.slice';
 import useMapCoords from './useMapCoords';
 import {isEmpty, isEqual} from '../../shared/Helpers';
+import {useCallback} from 'react';
 
 const useMapView = () => {
   const dispatch = useDispatch();
@@ -79,10 +80,10 @@ const useMapView = () => {
 
   const isOnStratSection = feature => feature.properties?.strat_section_id;
 
-  const setMapView = (newCenter, newZoom) => {
+  const setMapView = useCallback((newCenter, newZoom) => {
     if (!isEqual(center, newCenter)) dispatch(setCenter(newCenter));
     if (zoom !== newZoom) dispatch(setZoom(newZoom));
-  };
+  }, [center, dispatch, zoom]);
 
   const zoomToSpotsNow = async (spotsToZoomTo, map, camera) => {
     if (spotsToZoomTo.length === 0) {

@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {PixelRatio, Platform} from 'react-native';
 
 import * as turf from '@turf/turf';
@@ -503,7 +503,7 @@ const useMapFeaturesDraw = ({
       : addVertexToPolygon(spotEditingCopy, newVertex);
   };
 
-  const getSpotToEdit = async (e, screenPointX, screenPointY, spotToEdit) => {
+  const getSpotToEdit = useCallback(async (e, screenPointX, screenPointY, spotToEdit) => {
     if (isEmpty(spotToEdit)) console.log('Already in editing mode and no Spot found where pressed. No action taken.');
     else if (!isEmpty(spotEditing)) {
       let spotEditingCopy = JSON.parse(JSON.stringify(spotEditing));
@@ -529,7 +529,7 @@ const useMapFeaturesDraw = ({
       else console.log('Selected Spot is not a line or polygon. No action taken.');
     }
     else console.log('No feature selected. No action taken.');
-  };
+  }, [addNewVertex, deleteSelectedVertex, getDrawFeatureAtPress, setIsShowVertexActionsModal, setVertexActionValues, spotEditing]);
 
   const getSpotToEditCont = (spotEditingCopy) => {
     console.log('Edited coords:', turf.getCoords(spotEditingCopy));
@@ -877,7 +877,7 @@ const useMapFeaturesDraw = ({
     if (spotToEdit?.geometry?.type === 'Point') setSelectedVertexToEdit(spotToEdit);
   };
 
-  const switchToEditing = async (screenPointX, screenPointY, spotToEdit, setMapModeToEdit) => {
+  const switchToEditing = useCallback(async (screenPointX, screenPointY, spotToEdit, setMapModeToEdit) => {
     let closestVertexDetails = {};
     let closestVertexToSelect = await getDrawFeatureAtPress(screenPointX, screenPointY);
     if (isEmpty(closestVertexToSelect)) {
@@ -887,7 +887,7 @@ const useMapFeaturesDraw = ({
       closestVertexToSelect = closestVertexDetails[0];
       startEditing(spotToEdit, closestVertexToSelect, closestVertexDetails[1], setMapModeToEdit);
     }
-  };
+  }, [getDrawFeatureAtPress, identifyClosestVertexOnSpotPress, spotsEdited, startEditing]);
 
   return {
     addNewVertex: addNewVertex,

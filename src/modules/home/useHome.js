@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 
 import {useToast} from 'react-native-toast-notifications';
@@ -168,10 +168,10 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
     setMapMode(mapModeToSet);
   };
 
-  const setMapModeToEdit = () => {
+  const setMapModeToEdit = useCallback(() => {
     lockOrientation();
     setMapMode(MAP_MODES.EDIT);
-  };
+  }, [lockOrientation]);
 
   // Toggle given dialog between true (visible) and false (hidden)
   const toggleDialog = (dialog) => {

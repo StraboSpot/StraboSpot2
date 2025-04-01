@@ -1,4 +1,4 @@
-// import './wdyr';
+import './wdyr';
 import {AppRegistry, LogBox, Platform} from 'react-native';
 import 'react-native-devsettings';   // Not supported in react-native-web
 

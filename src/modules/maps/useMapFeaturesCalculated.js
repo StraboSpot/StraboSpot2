@@ -7,6 +7,7 @@ import useMapCoords from './useMapCoords';
 import {isEmpty} from '../../shared/Helpers';
 import useNesting from '../nesting/useNesting';
 import {useSpots} from '../spots';
+import {useCallback} from 'react';
 
 const useMapFeaturesCalculated = (mapRef) => {
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
@@ -112,7 +113,7 @@ const useMapFeaturesCalculated = (mapRef) => {
   };
 
   // Get the nearest feature to a target point in screen coordinates within a bounding box from given layers
-  const getNearestFeatureInBBox = async ([x, y], layers) => {
+  const getNearestFeatureInBBox = useCallback(async ([x, y], layers) => {
     // First get all the features in the bounding box
     const bbox = getBBoxPaddedInPixels([x, y]);
     const nearFeaturesCollection = Platform.OS === 'web' ? mapRef.current.queryRenderedFeatures(bbox, {layers: layers})
@@ -123,16 +124,16 @@ const useMapFeaturesCalculated = (mapRef) => {
     // If more than one near feature is found, return a random one (user needs to zoom in if too many features found)
     const randomIndex = Math.floor(Math.random() * nearFeatures.length);
     return Promise.resolve(nearFeatures[randomIndex] || []);
-  };
+  }, [getBBoxPaddedInPixels, mapRef]);
 
   // Get the Spot where screen was pressed
-  const getSpotAtPress = async (screenPointX, screenPointY) => {
+  const getSpotAtPress = useCallback(async (screenPointX, screenPointY) => {
     const nearestFeature = await getNearestFeatureInBBox([screenPointX, screenPointY], spotLayers);
     const nearestSpot = nearestFeature?.properties?.id ? getSpotById(nearestFeature.properties.id) || nearestFeature : {};
     if (isEmpty(nearestSpot)) console.log('No spots near press.');
     else console.log('Got nearest spot:', nearestSpot);
     return Promise.resolve(...[nearestSpot]);
-  };
+  } ,[getNearestFeatureInBBox, getSpotById, spotLayers]);
 
   // This method is required when the draw features at press returns empty
   // We explode the features and identify the closest vertex from the screen point (x,y) on the spot

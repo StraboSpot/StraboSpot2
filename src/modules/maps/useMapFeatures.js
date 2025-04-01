@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setMapSymbols} from './maps.slice';
 import {isEmpty} from '../../shared/Helpers';
 import {useSpots} from '../spots';
+import {useCallback} from 'react';
 
 const useMapFeatures = () => {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const useMapFeatures = () => {
   const stratSection = useSelector(state => state.map.stratSection);
 
   // All Spots mapped on current map
-  const getAllMappedSpots = () => {
+  const getAllMappedSpots = useCallback(() => {
     const spotsWithGeometry = getMappableSpots();      // Spots with geometry
     let mappedSpots;
     if (currentImageBasemap) {
@@ -36,7 +37,7 @@ const useMapFeatures = () => {
     // console.log('All Mapped Active Spots on this map', mappedSpots);
     // console.log('Number of Active Spots Mapped on this map:', mappedSpots.length);
     return mappedSpots;
-  };
+  },[currentImageBasemap, getMappableSpots, stratSection]);
 
   // Get selected and not selected Spots to display when not editing
   const getDisplayedSpots = (selectedSpots) => {

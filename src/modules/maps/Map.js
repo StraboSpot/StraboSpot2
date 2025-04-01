@@ -1,10 +1,8 @@
-import React, {forwardRef, useEffect, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 
 import MapboxGL from '@rnmapbox/maps';
 import {useSelector} from 'react-redux';
-
-import {MapLayers} from './layers';
 import {BACKGROUND, MAPBOX_TOKEN} from './maps.constants';
 import mapStyles from './maps.styles';
 import useMapMoveEvents from './useMapMoveEvents';
@@ -17,20 +15,22 @@ MapboxGL.setAccessToken(MAPBOX_TOKEN);
 const scaleBarPosition = SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
 
 const Map = ({
-                   allowMapViewMove,
-                   basemap,
-                   drawFeatures,
-                   editFeatureVertex,
-                   handleMapLongPress,
-                   handleMapPress,
-                   isShowMacrostratOverlay,
-                   location,
-                   mapMode,
-                   measureFeatures,
-                   showUserLocation,
-                   spotsNotSelected,
-                   spotsSelected,
-                 }, forwardedRef) => {
+               allowMapViewMove,
+               basemap,
+               drawFeatures,
+               editFeatureVertex,
+               handleMapLongPress,
+               handleMapPress,
+               isShowMacrostratOverlay,
+               location,
+               mapMode,
+               measureFeatures,
+               showUserLocation,
+               spotsNotSelected,
+               spotsSelected,
+               children,
+               setIsStratStyleLoaded,
+             }, forwardedRef) => {
   // console.log('Rendering Map...');
   const zoomTextStyle = basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
     : homeStyles.currentZoomTextBlack;
@@ -41,7 +41,7 @@ const Map = ({
 
   const {handleMapMoved} = useMapMoveEvents({mapRef});
 
-  const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
+  // const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
 
   useEffect(() => {
     console.log('isShowMacrostratOverlay', isShowMacrostratOverlay);
@@ -50,9 +50,9 @@ const Map = ({
   // Set flag for when the map has been loaded
   // This is a fix for patterns loading too slowly after v10 update
   // ToDo: Check if this bug is fixed in rnmapbox and therefore can be removed
-  const onDidFinishLoadingMap = () => {
+  const onDidFinishLoadingMap = useCallback(() => {
     stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
-  };
+  }, [setIsStratStyleLoaded, stratSection]);
 
   return (
     <>
@@ -86,20 +86,7 @@ const Map = ({
         styleURL={currentImageBasemap || stratSection ? JSON.stringify(BACKGROUND) : JSON.stringify(basemap)}
         zoomEnabled={allowMapViewMove}
       >
-        <MapLayers
-          basemap={basemap}
-          drawFeatures={drawFeatures}
-          editFeatureVertex={editFeatureVertex}
-          isShowMacrostratOverlay={isShowMacrostratOverlay}
-          isStratStyleLoaded={isStratStyleLoaded}
-          location={location}
-          mapMode={mapMode}
-          measureFeatures={measureFeatures}
-          ref={cameraRef}
-          showUserLocation={showUserLocation}
-          spotsNotSelected={spotsNotSelected}
-          spotsSelected={spotsSelected}
-        />
+        {children}
       </MapboxGL.MapView>
       {vertexStartCoords && <VertexDrag/>}
     </>

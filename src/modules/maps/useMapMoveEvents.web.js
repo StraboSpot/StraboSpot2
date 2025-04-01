@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ZOOM_STRAT_SECTION} from './maps.constants';
 import {setIsMapMoved} from './maps.slice';
 import useMapView from './useMapView';
+import {useCallback} from 'react';
 
 const useMapMoveEvents = ({setViewState}) => {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const useMapMoveEvents = ({setViewState}) => {
   const {setMapView} = useMapView();
 
   // Update spots in extent and saved view (center and zoom)
-  const handleMapMoved = async (e) => {
+  const handleMapMoved =useCallback(async (e) => {
     // console.log('Event onMapMoved', e);
     if (!isMapMoved) dispatch(setIsMapMoved(true));
     if (currentImageBasemap || stratSection) {
@@ -28,7 +29,7 @@ const useMapMoveEvents = ({setViewState}) => {
       const newZoom = e.viewState.zoom;
       setMapView(newCenter, newZoom);
     }
-  };
+  }, [currentImageBasemap, dispatch, isMapMoved, setMapView, setViewState, stratSection]);
 
   return {
     handleMapMoved: handleMapMoved,

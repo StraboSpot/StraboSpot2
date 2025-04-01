@@ -30,6 +30,7 @@ import {
 import {useImages} from '../images';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
+import {MapLayers} from './layers';
 
 const MapContainer = forwardRef(({
                           isSelectingForStereonet,
@@ -355,6 +356,15 @@ const MapContainer = forwardRef(({
     };
   });
 
+  const [isStratStyleLoaded, setIsStratStyleLoaded] = useState(false);
+
+  // Set flag for when the map has been loaded
+  // This is a fix for patterns loading too slowly after v10 update
+  // ToDo: Check if this bug is fixed in rnmapbox and therefore can be removed
+  const onDidFinishLoadingMap = () => {
+    stratSection ? setIsStratStyleLoaded(true) : setIsStratStyleLoaded(false);
+  };
+
   return (
     <View style={{flex: 1, zIndex: -1}}>
       {currentBasemap && (
@@ -373,7 +383,23 @@ const MapContainer = forwardRef(({
           showUserLocation={showUserLocation}
           spotsNotSelected={spotsNotSelected}
           spotsSelected={spotsSelected}
-        />
+          setIsStratStyleLoaded={setIsStratStyleLoaded}
+        >
+          <MapLayers
+            basemap={currentBasemap}
+            drawFeatures={drawFeatures}
+            editFeatureVertex={editFeatureVertex}
+            isShowMacrostratOverlay={isShowMacrostratOverlay}
+            isStratStyleLoaded={isStratStyleLoaded}
+            location={location}
+            mapMode={mapMode}
+            measureFeatures={measureFeatures}
+            ref={cameraRef}
+            showUserLocation={showUserLocation}
+            spotsNotSelected={spotsNotSelected}
+            spotsSelected={spotsSelected}
+          />
+        </Map>
       )}
       {currentBasemap?.source === 'macrostrat' && isOnline && (
         <MacrostratOverlay
