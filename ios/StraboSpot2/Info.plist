@@ -100,7 +100,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>strabofield</string> <!-- Replace "myapp" with your custom scheme -->
+          <string>strabofield</string>
         </array>
       </dict>
     </array>

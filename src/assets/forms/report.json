@@ -1,0 +1,104 @@
+{
+  "survey": [
+    {
+      "type": "start",
+      "name": "start"
+    },
+    {
+      "type": "end",
+      "name": "end"
+    },
+    {
+      "type": "select_one bm0fb04",
+      "name": "report_type",
+      "label": "Report Type",
+      "required": "false"
+    },
+    {
+      "type": "select_one xd4uv60",
+      "name": "privacy",
+      "label": "Privacy",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "subject",
+      "label": "Subject",
+      "required": "false"
+    },
+    {
+      "type": "text",
+      "name": "notes",
+      "label": "Notes",
+      "required": "false",
+      "appearance": "multiline"
+    }
+  ],
+  "choices": [
+    {
+      "list_name": "bm0fb04",
+      "name": "private",
+      "label": "PRIVATE"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "project_protocol",
+      "label": "PROJECT PROTOCOL"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "model",
+      "label": "MODEL"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "hypothesis",
+      "label": "Hypothesis"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "reflection",
+      "label": "Reflection"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "question",
+      "label": "(Question)?"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "quality_assessment",
+      "label": "Quality Assessment"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "data_concern",
+      "label": "Data Concern"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "summary",
+      "label": "Summary"
+    },
+    {
+      "list_name": "bm0fb04",
+      "name": "other",
+      "label": "Other"
+    },
+    {
+      "list_name": "xd4uv60",
+      "name": "individual",
+      "label": "Individual"
+    },
+    {
+      "list_name": "xd4uv60",
+      "name": "group",
+      "label": "Group"
+    },
+    {
+      "list_name": "xd4uv60",
+      "name": "public",
+      "label": "Public"
+    }
+  ]
+}

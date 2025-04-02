@@ -25,13 +25,12 @@ const HomeViewSmallScreen = forwardRef(({
                                           dialogs,
                                           distance,
                                           endMeasurement,
-                                          isSelectingForStereonet,
-                                          isSelectingForTagging,
                                           mapMode,
                                           onEndDrawPressed,
                                           openMainMenuPanel,
                                           openNotebookPanel,
                                           openSpotInNotebook,
+                                          selectingMode,
                                           setDistance,
                                           setMapModeToEdit,
                                           toggleDialog,
@@ -122,11 +121,10 @@ const HomeViewSmallScreen = forwardRef(({
             {() =>
               <>
                 <MapContainer
-                  isSelectingForStereonet={isSelectingForStereonet}
-                  isSelectingForTagging={isSelectingForTagging}
                   mapMode={mapMode}
                   onEndDrawPressed={onEndDrawPressed}
                   ref={mapComponentRef}
+                  selectingMode={selectingMode}
                   setDistance={setDistance}
                   setMapModeToEdit={setMapModeToEdit}
                 />
@@ -174,6 +172,7 @@ const HomeViewSmallScreen = forwardRef(({
                     mapComponentRef={mapComponentRef}
                     mapMode={mapMode}
                     onEndDrawPressed={onEndDrawPressed}
+                    selectingMode={selectingMode}
                     toggleDialog={toggleDialog}
                   />
                 </View>

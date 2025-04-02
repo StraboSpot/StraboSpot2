@@ -20,6 +20,7 @@ import rockTypePlutonic from './pet/rock-type-igneous-plutonic.json';
 import rockTypeVolcanic from './pet/rock-type-igneous-volcanic.json';
 import rockTypeMetamorphic from './pet/rock-type-metamorphic.json';
 import projectDescription from './project-description.json';
+import report from './report.json';
 import sample from './sample.json';
 import addInterval from './sed/add-interval.json';
 import sedBeddingSharedInterbedded from './sed/bedding-shared-interbedded.json';
@@ -92,6 +93,7 @@ const forms = {
     surface_feature: surfaceFeature,
     trace: trace,
     user_profile: userProfile,
+    reports: report,
   },
   measurement: {
     linear_orientation: linearOrientation,

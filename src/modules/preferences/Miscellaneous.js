@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import {Button, Input, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
+import SpotDataModelModal from './SpotDataModelModal';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
@@ -23,6 +24,7 @@ const Miscellaneous = () => {
   const {endpoint} = useSelector(state => state.connections.databaseEndpoint);
 
   const [isErrorMessage, setIsErrorMessage] = useState(false);
+  const [isSpotDataModelModalVisible, setIsSpotDataModelModalVisible] = useState(false);
   const [isTestingModalVisible, setIsTestingModalVisible] = useState(false);
   const [numRandomSpots, setNumRandomSpots] = useState(100);
   const [password, setPassword] = useState('');
@@ -116,6 +118,21 @@ const Miscellaneous = () => {
     </StandardModal>
   );
 
+  const renderSpotDataModelSection = () => {
+    return (
+      <>
+        <SectionDivider dividerText={'Spot Data Model'}/>
+        <Button
+          title={'Show Data Model'}
+          titleStyle={commonStyles.standardButtonText}
+          type={'clear'}
+          onPress={() => setIsSpotDataModelModalVisible(true)}
+        />
+        {isSpotDataModelModalVisible && <SpotDataModelModal close={() => setIsSpotDataModelModalVisible(false)}/>}
+      </>
+    );
+  };
+
   const renderTestingModeField = () => (
     <>
       <SectionDivider dividerText={'Testing Mode'}/>
@@ -140,19 +157,22 @@ const Miscellaneous = () => {
   };
 
   return (
-    <Formik
-      innerRef={formRef}
-      onSubmit={values => console.log('Submitting Form', values)}
-      initialValues={initialValues}
-      enableReinitialize
-    >
-      <>
-        {renderCustomEndpoint()}
-        {renderTestingModeField()}
-        {isTestingMode && renderGenerateRandomSpotsSection()}
-        {renderPrompt()}
-      </>
-    </Formik>
+    <>
+      <Formik
+        innerRef={formRef}
+        onSubmit={values => console.log('Submitting Form', values)}
+        initialValues={initialValues}
+        enableReinitialize
+      >
+        <>
+          {renderCustomEndpoint()}
+          {renderTestingModeField()}
+          {isTestingMode && renderGenerateRandomSpotsSection()}
+          {renderPrompt()}
+        </>
+      </Formik>
+      {renderSpotDataModelSection()}
+    </>
   );
 };
 

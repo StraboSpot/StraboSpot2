@@ -11,10 +11,11 @@ const ActionButtonsSmallScreen = ({
                                     dialogClickHandler,
                                     dialogs,
                                     distance,
-                                    onEndDrawPressed,
                                     endMeasurement,
-                                    mapMode,
                                     mapComponentRef,
+                                    mapMode,
+                                    onEndDrawPressed,
+                                    selectingMode,
                                     toggleDialog,
                                   }) => {
 
@@ -33,6 +34,7 @@ const ActionButtonsSmallScreen = ({
           endMeasurement={endMeasurement}
           mapMode={mapMode}
           onEndDrawPressed={onEndDrawPressed}
+          selectingMode={selectingMode}
         />
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>

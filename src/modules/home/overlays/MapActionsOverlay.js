@@ -17,9 +17,9 @@ const MapActionsOverlay = ({
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const stratSection = useSelector(state => state.map.stratSection);
   const {isInternetReachable, isConnected} = useSelector(state => state.connections.isOnline);
-  const {isSelected} = useSelector(state => state.connections.databaseEndpoint);
 
   const actions = [
     {key: 'zoom', title: 'Zoom to Extent of Spots'},
@@ -27,6 +27,7 @@ const MapActionsOverlay = ({
     {key: 'stereonet', title: 'Lasso Spots for Stereonet'},
     // {key: 'zoomToOfflineMap', title: 'Zoom to Offline Map'},
     {key: 'addTag', title: 'Add Tag(s) to Spot(s)'},
+    {key: 'addToReport', title: 'Add Spot(s) to Report'},
     {key: 'mapMeasurement', title: 'Measure Distance'},
     {key: 'stratSection', title: 'Strat Section Settings'},
   ];
@@ -36,8 +37,9 @@ const MapActionsOverlay = ({
         || (!isInternetReachable && isConnected && currentBasemap?.source)) && Platform.OS !== 'web')
       || (item.key === 'stereonet' && Platform.OS === 'ios')
       || (item.key === 'stratSection' && stratSection)
+      || (item.key === 'addToReport' && isTestingMode)
       || (item.key === 'mapMeasurement' && !stratSection && !currentImageBasemap)
-      || item.key !== 'saveMap' && item.key !== 'stereonet' && item.key !== 'stratSection'
+      || item.key !== 'saveMap' && item.key !== 'stereonet' && item.key !== 'stratSection' && item.key !== 'addToReport'
       && item.key !== 'mapMeasurement') {
       return (
         <ListItem

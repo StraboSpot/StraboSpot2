@@ -18,9 +18,8 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
   const [dialogs, setDialogs] = useState(
     {mapActionsMenuVisible: false, mapSymbolsMenuVisible: false, baseMapMenuVisible: false});
   const [distance, setDistance] = useState(0);
-  const [isSelectingForStereonet, setIsSelectingForStereonet] = useState(false);
-  const [isSelectingForTagging, setIsSelectingForTagging] = useState(false);
   const [mapMode, setMapMode] = useState(MAP_MODES.VIEW);
+  const [selectingMode, setSelectingMode] = useState(null);
 
   const {lockOrientation, unlockOrientation} = useDeviceOrientation();
   const {setPointAtCurrentLocation} = useMapLocation();
@@ -54,6 +53,7 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
       case MAP_MODES.DRAW.FREEHANDPOLYGON:
       case MAP_MODES.DRAW.FREEHANDLINE:
       case MAP_MODES.DRAW.POINTLOCATION:
+        setSelectingMode(null);
         dispatch(clearedSelectedSpots());
         const selectedDataset = getSelectedDatasetFromId();
         if (!isEmpty(selectedDataset) && name === MAP_MODES.DRAW.POINTLOCATION) await createPointAtCurrentLocation();
@@ -92,7 +92,14 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
       case 'addTag':
         // console.log(`${name}`, ' was clicked');
         mapComponentRef.current?.clearSelectedSpots();
-        setIsSelectingForTagging(true);
+        setSelectingMode('tag');
+        setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
+        break;
+      case 'addToReport':
+        mapComponentRef.current?.clearSelectedSpots();
+        setSelectingMode('report');
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
@@ -100,7 +107,7 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
       case 'stereonet':
         // console.log(`${name}`, ' was clicked');
         mapComponentRef.current?.clearSelectedSpots();
-        setIsSelectingForStereonet(true);
+        setSelectingMode('stereonet');
         setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
         break;
       case 'mapMeasurement':
@@ -141,9 +148,10 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
       dispatch(setLoadingStatus({view: 'home', bool: true}));
       const newOrEditedSpot = await mapComponentRef.current?.endDraw();
       setMapMode(MAP_MODES.VIEW);
-      if (!isEmpty(newOrEditedSpot) && !isSelectingForStereonet) openNotebookPanel(PAGE_KEYS.OVERVIEW);
-      setIsSelectingForStereonet(false);
-      setIsSelectingForTagging(false);
+      if (!isEmpty(newOrEditedSpot) && (!selectingMode || selectingMode === 'tag')) {
+        openNotebookPanel(PAGE_KEYS.OVERVIEW);
+      }
+      setSelectingMode(null);
       dispatch(setLoadingStatus({view: 'home', bool: false}));
     }
     catch (err) {
@@ -189,8 +197,9 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
     dialogs: dialogs,
     distance: distance,
     endMeasurement: endMeasurement,
-    isSelectingForStereonet: isSelectingForStereonet,
-    isSelectingForTagging: isSelectingForTagging,
+    // isSelectingForStereonet: isSelectingForStereonet,
+    // isSelectingForTagging: isSelectingForTagging,
+    selectingMode: selectingMode,
     mapMode: mapMode,
     onEndDrawPressed: onEndDrawPressed,
     setDistance: setDistance,

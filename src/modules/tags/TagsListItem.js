@@ -11,6 +11,11 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import {setSelectedTag} from '../project/projects.slice';
 
 const TagsListItem = ({
+                        isCheckBoxVisible,
+                        isChecked,
+                        isChevronVisible,
+                        onChecked,
+                        onPress,
                         openMainMenuPanel,
                         tag,
                       }) => {
@@ -30,7 +35,7 @@ const TagsListItem = ({
     <ListItem
       containerStyle={commonStyles.listItem}
       key={tag.id}
-      onPress={openTag}
+      onPress={() => onPress ? onPress(tag) : isChevronVisible ? openTag() : onChecked()}
       pad={5}
     >
       <ListItem.Content>
@@ -39,7 +44,8 @@ const TagsListItem = ({
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
       </ListItem.Content>
-      <ListItem.Chevron/>
+      {isCheckBoxVisible && <ListItem.CheckBox checked={isChecked} onPress={onChecked}/>}
+      {isChevronVisible && <ListItem.Chevron/>}
     </ListItem>
   );
 };

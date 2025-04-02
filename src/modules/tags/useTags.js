@@ -9,7 +9,12 @@ import {useForm} from '../form';
 import MeasurementLabel from '../measurements/MeasurementLabel';
 import OtherFeatureLabel from '../other-features/OtherFeatureLabel';
 import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
-import {addedTagToSelectedSpot, setSelectedTag, updatedProject} from '../project/projects.slice';
+import {
+  addedTagToSelectedSpot,
+  deletedTagIdFromReports,
+  setSelectedTag,
+  updatedProject,
+} from '../project/projects.slice';
 import {setSelectedAttributes} from '../spots/spots.slice';
 import ThreeDStructureLabel from '../three-d-structures/ThreeDStructureLabel';
 
@@ -122,6 +127,7 @@ const useTags = () => {
 
   const deleteTag = (tagToDelete) => {
     let updatedTags = projectTags.filter(tag => tag.id !== tagToDelete.id);
+    dispatch(deletedTagIdFromReports(tagToDelete.id));
     dispatch(updatedProject({field: 'tags', value: updatedTags}));
     dispatch(setSelectedTag({}));
   };

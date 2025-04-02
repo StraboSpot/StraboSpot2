@@ -17,11 +17,12 @@ import LoadingSpinner from '../../shared/ui/Loading';
 import SaveMapsModal from '../maps/offline-maps/SaveMapsModal';
 
 const OverlaysContainer = forwardRef(({
-                             closeNotebookPanel,
-                             openMainMenuPanel,
-                             openNotebookPanel,
-                             zoomToCurrentLocation,
-                           }, mapComponentRef) => {
+                                        openSpotInNotebook,
+                                        closeNotebookPanel,
+                                        openMainMenuPanel,
+                                        openNotebookPanel,
+                                        zoomToCurrentLocation,
+                                      }, mapComponentRef) => {
 
   const dispatch = useDispatch();
   const backupFileName = useSelector(state => state.project.backupFileName);
@@ -74,6 +75,8 @@ const OverlaysContainer = forwardRef(({
         <Dialog
           closeNotebookPanel={closeNotebookPanel}
           openNotebookPanel={openNotebookPanel}
+          openSpotInNotebook={openSpotInNotebook}
+          updateSpotsInMapExtent={mapComponentRef.current?.updateSpotsInMapExtent}
           zoomToCurrentLocation={zoomToCurrentLocation}
         />
       )}

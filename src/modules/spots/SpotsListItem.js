@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {Avatar, ListItem} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -10,12 +10,7 @@ import {isEmpty} from '../../shared/Helpers';
 import usePage from '../page/usePage';
 import {useTags} from '../tags';
 
-const SpotsListItem = ({
-                         doShowTags,
-                         isCheckedList,
-                         onPress,
-                         spot,
-                       }) => {
+const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onPress, spot}) => {
   // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
   const {getSpotGeometryIconSource} = useSpots();
@@ -27,29 +22,28 @@ const SpotsListItem = ({
   const renderCheckboxes = () => {
     return (
       <ListItem.CheckBox
-        checked={selectedTag.spots && selectedTag.spots.includes(spot.properties.id)}
-        onPress={() => addRemoveSpotFromTag(spot.properties.id, selectedTag)}
+        checked={isItemChecked}
+        onPress={() => onChecked ? onChecked(spot.properties.id)
+          : addRemoveSpotFromTag(spot.properties.id, selectedTag)}
       />
     );
   };
 
   const renderSpotDataIcons = () => (
-    <View>
-      <FlatList
-        data={getPopulatedPagesKeys(spot)}
-        horizontal={false}
-        keyExtractor={(item, index) => index.toString()}
-        listKey={new Date().toISOString()}
-        numColumns={5}
-        renderItem={({item}) => (
-          <Avatar
-            source={getSpotDataIconSource(item)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
-        )}
-      />
-    </View>
+    <FlatList
+      data={getPopulatedPagesKeys(spot)}
+      horizontal={false}
+      keyExtractor={(item, index) => index.toString()}
+      listKey={new Date().toISOString()}
+      numColumns={5}
+      renderItem={({item}) => (
+        <Avatar
+          source={getSpotDataIconSource(item)}
+          placeholderStyle={{backgroundColor: 'transparent'}}
+          size={20}
+        />
+      )}
+    />
   );
 
   const renderTags = () => {
@@ -62,7 +56,7 @@ const SpotsListItem = ({
     <ListItem
       containerStyle={commonStyles.listItem}
       keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
-      onPress={() => onPress(spot)}
+      onPress={() => onPress && onPress(spot)}
     >
       <Avatar
         placeholderStyle={{backgroundColor: 'transparent'}}

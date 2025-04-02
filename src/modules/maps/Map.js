@@ -17,20 +17,20 @@ MapboxGL.setAccessToken(MAPBOX_TOKEN);
 const scaleBarPosition = SMALL_SCREEN ? {top: 20, left: 70} : {bottom: 20, left: 80};
 
 const Map = ({
-                   allowMapViewMove,
-                   basemap,
-                   drawFeatures,
-                   editFeatureVertex,
-                   handleMapLongPress,
-                   handleMapPress,
-                   isShowMacrostratOverlay,
-                   location,
-                   mapMode,
-                   measureFeatures,
-                   showUserLocation,
-                   spotsNotSelected,
-                   spotsSelected,
-                 }, forwardedRef) => {
+               allowMapViewMove,
+               basemap,
+               drawFeatures,
+               editFeatureVertex,
+               handleMapLongPress,
+               handleMapPress,
+               isShowMacrostratOverlay,
+               location,
+               mapMode,
+               measureFeatures,
+               showUserLocation,
+               spotsNotSelected,
+               spotsSelected,
+             }, forwardedRef) => {
   // console.log('Rendering Map...');
   const zoomTextStyle = basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
     : homeStyles.currentZoomTextBlack;

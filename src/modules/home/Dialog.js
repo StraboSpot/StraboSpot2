@@ -7,7 +7,13 @@ import {SMALL_SCREEN} from '../../shared/styles.constants';
 import {MODAL_KEYS, MODALS, PAGE_KEYS} from '../page/page.constants';
 import {clearedSelectedSpots} from '../spots/spots.slice';
 
-const Dialog = ({closeNotebookPanel, openNotebookPanel, zoomToCurrentLocation}) => {
+const Dialog = ({
+                  closeNotebookPanel,
+                  openNotebookPanel,
+                  openSpotInNotebook,
+                  updateSpotsInMapExtent,
+                  zoomToCurrentLocation,
+                }) => {
   console.log('Rendering Dialog...');
 
   const dispatch = useDispatch();
@@ -41,6 +47,8 @@ const Dialog = ({closeNotebookPanel, openNotebookPanel, zoomToCurrentLocation}) 
         <ModalDisplayed
           modalKey={modal.key}
           onPress={modalHandler}
+          openSpotInNotebook={openSpotInNotebook}
+          updateSpotsInMapExtent={updateSpotsInMapExtent}
           zoomToCurrentLocation={zoomToCurrentLocation}
         />
       );

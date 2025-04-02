@@ -19,9 +19,11 @@ import useMapLocation from '../maps/useMapLocation';
 import {MODAL_KEYS, PAGE_KEYS, PRIMARY_PAGES} from '../page/page.constants';
 import {TAG_TYPES} from '../project/project.constants';
 import {addedTagToSelectedSpot} from '../project/projects.slice';
-import {TagDetailModal, useTags} from '../tags';
+import {TagDetailModal, TagsListItem, useTags} from '../tags';
 
 const TagsModal = ({
+                     checkedTagsIds,
+                     handleTagChecked,
                      isFeatureLevelTagging,
                      zoomToCurrentLocation,
                    }) => {
@@ -33,7 +35,7 @@ const TagsModal = ({
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
   const modalVisible = useSelector(state => state.home.modalVisible);
   const pagesStack = useSelector(state => state.notebook.visibleNotebookPagesStack);
-  const selectedFeature = useSelector(state => state.spot.selectedAttributes[0]);
+  const selectedFeature = useSelector(state => state.spot.selectedAttributes?.[0]);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const selectedSpotFeaturesForTagging = useSelector(state => state.spot.selectedAttributes) || [];
   const selectedSpotsForTagging = useSelector(state => state.spot.intersectedSpotsForTagging);
@@ -55,8 +57,8 @@ const TagsModal = ({
   const addTag = () => setIsDetailModalVisible(true);
 
   const checkTags = (tag) => {
-    const checkedTagsIds = checkedTagsTemp.map(checkedTag => checkedTag.id);
-    if (checkedTagsIds.includes(tag.id)) {
+    const checkedTagsIdsHere = checkedTagsTemp.map(checkedTag => checkedTag.id);
+    if (checkedTagsIdsHere.includes(tag.id)) {
       const filteredCheckedTags = checkedTagsTemp.filter(checkedTag => checkedTag.id !== tag.id);
       setCheckedTagsTemp(filteredCheckedTags);
     }
@@ -138,8 +140,11 @@ const TagsModal = ({
           data={getRelevantTags().sort((tagA, tagB) => tagA.name.localeCompare(tagB.name))}  // alphabetize by name
           renderItem={({item}) => renderTagItem(item)}
           ItemSeparatorComponent={FlatListItemSeparator}
-          ListEmptyComponent={<ListEmptyText
-            text={!isEmpty(tags) && isEmpty(getRelevantTags()) ? 'There are no tags with this type.' : ''}/>}
+          ListEmptyComponent={
+            <ListEmptyText
+              text={!isEmpty(tags) && isEmpty(getRelevantTags()) ? 'There are no tags with this type.' : ''}
+            />
+          }
         />
       </>
     );
@@ -153,45 +158,33 @@ const TagsModal = ({
         && selectedSpotFeaturesForTagging.every(
           element => tag.features[selectedSpot.properties.id].includes(element.id));
     }
-    return (
-      <ListItem
-        containerStyle={commonStyles.listItem}
-        key={tag.id}
-        onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+
+    const isChecked = checkedTagsIds ? checkedTagsIds.includes(tag.id)
+      : isFeatureLevelTagging
+        ? !isMultipleFeaturesTaggingEnabled
+          ? tag.features && tag.features[selectedSpot.properties.id] && selectedFeature
+          && tag.features[selectedSpot.properties.id].includes(selectedFeature.id)
+          : isAlreadyChecked
+        : (modalVisible && modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
           && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
-          && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) ? addRemoveTag(tag, selectedSpot) : checkTags(tag)}
-      >
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
-        </ListItem.Content>
-        {(!isFeatureLevelTagging) && (
-          <ListItem.CheckBox
-            checked={(modalVisible && modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
-              && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
-              && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
-              ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
-              : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id)}
-            onPress={() => (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
-              && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
-              && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) ? addRemoveTag(tag, selectedSpot)
-              : checkTags(tag)}
-          />
-        )}
-        {(isFeatureLevelTagging) && (
-          <ListItem.CheckBox
-            checked={!isMultipleFeaturesTaggingEnabled
-              ? tag.features && tag.features[selectedSpot.properties.id] && selectedFeature
-              && tag.features[selectedSpot.properties.id].includes(selectedFeature.id) : isAlreadyChecked
-            }
-            onPress={() => !isMultipleFeaturesTaggingEnabled
-              ? addRemoveTag(tag, selectedSpot, isFeatureLevelTagging)
-              : addRemoveTag(tag, selectedSpot, isFeatureLevelTagging, isAlreadyChecked)}
-          />
-        )}
-      </ListItem>
+          && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS)
+          ? tag && tag.spots && tag.spots.includes(selectedSpot.properties.id)
+          : checkedTagsTemp.map(checkedTag => checkedTag.id).includes(tag.id);
+
+    const onChecked = () => {
+      handleTagChecked ? handleTagChecked(tag.id)
+        : isFeatureLevelTagging
+          ? !isMultipleFeaturesTaggingEnabled
+            ? addRemoveTag(tag, selectedSpot, isFeatureLevelTagging)
+            : addRemoveTag(tag, selectedSpot, isFeatureLevelTagging, isAlreadyChecked)
+          : (modalVisible !== MODAL_KEYS.SHORTCUTS.TAG
+            && modalVisible !== MODAL_KEYS.SHORTCUTS.GEOLOGIC_UNITS
+            && modalVisible !== MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS) ? addRemoveTag(tag, selectedSpot)
+            : checkTags(tag);
+    };
+
+    return (
+      <TagsListItem isCheckBoxVisible isChecked={isChecked} onChecked={onChecked} tag={tag}/>
     );
   };
 
@@ -215,15 +208,15 @@ const TagsModal = ({
             : <Text style={modalStyle.textStyle}>No {label}</Text>}
         </View>
         {renderSpotTagsList()}
-        {(!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS)
-          && (
-            <SaveButton
-              buttonStyle={{backgroundColor: 'red'}}
-              title={`Save ${label}`}
-              onPress={() => save()}
-              disabled={isEmpty(checkedTagsTemp)}
-            />
-          )}
+        {(!isEmpty(tags) && modalVisible !== MODAL_KEYS.NOTEBOOK.TAGS && modalVisible !== MODAL_KEYS.OTHER.FEATURE_TAGS
+          && modalVisible !== MODAL_KEYS.NOTEBOOK.REPORTS) && (
+          <SaveButton
+            buttonStyle={{backgroundColor: 'red'}}
+            title={`Save ${label}`}
+            onPress={save}
+            disabled={isEmpty(checkedTagsTemp)}
+          />
+        )}
       </View>
       {isDetailModalVisible && <TagDetailModal closeModal={closeTagDetailModal}/>}
     </>

@@ -6,6 +6,7 @@ import {useTags} from '../tags';
 
 const usePage = () => {
   const isTestingMode = useSelector(state => state.project.isTestingMode);
+  const reports = useSelector(state => state.project.project?.reports) || [];
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
 
   const {getTagsAtSpot} = useTags();
@@ -15,6 +16,13 @@ const usePage = () => {
     const populatedPagesKeys = NOTEBOOK_PAGES.reduce((acc, page) => {
       let isPopulated = false;
       switch (page.key) {
+        case PAGE_KEYS.REPORTS: {
+          if (!isEmpty(reports)
+            && !isEmpty(reports.filter(report => report.spots && report.spots.includes(spot.properties.id)))) {
+            isPopulated = true;
+          }
+          break;
+        }
         case PAGE_KEYS.TAGS: {
           const tagsAtSpot = getTagsAtSpot(spot.properties.id);
           if (!isEmpty(tagsAtSpot.filter(t => t.type !== PAGE_KEYS.GEOLOGIC_UNITS))) isPopulated = true;

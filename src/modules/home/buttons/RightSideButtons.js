@@ -20,6 +20,7 @@ const RightSideButtons = ({
                             mapMode,
                             onEndDrawPressed,
                             openNotebookPanel,
+                            selectingMode,
                           }) => {
   console.log('Rendering RightSideButtons...');
 
@@ -59,6 +60,7 @@ const RightSideButtons = ({
             endMeasurement={endMeasurement}
             mapMode={mapMode}
             onEndDrawPressed={onEndDrawPressed}
+            selectingMode={selectingMode}
           />
         </View>
         <DrawActionButtons

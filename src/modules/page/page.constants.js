@@ -9,7 +9,7 @@ import Geography from '../geography/Geography';
 import AddEarthquakeModal from '../geomorph/AddEarthquakeModal';
 import EarthquakesPage from '../geomorph/EarthquakesPage';
 import ImagesOverview from '../images/ImagesOverview'; // import {ImagesOverview, ImagesViewPage} from '../images'; errors in web
-import ImagesViewPage from '../images/ImagesViewPage';
+import ImagesPage from '../images/ImagesPage';
 import AddIntervalModal from '../maps/strat-section/AddIntervalModal';
 import AddMeasurementModal from '../measurements/AddMeasurementModal';
 import MeasurementsOverview from '../measurements/MeasurementsOverview';
@@ -33,6 +33,7 @@ import RockMetamorphicPage from '../petrology/RockMetamorphicPage';
 import RockSedimentaryPage from '../petrology/RockSedimentaryPage';
 import TernaryPage from '../petrology/TernaryPage';
 import DailyNotesModal from '../project/description/DailyNotesModal';
+import {ReportModal, ReportsListModal, ReportsPage} from '../reports';
 import SampleModal from '../samples/SampleModal';
 import SamplesOverview from '../samples/SamplesOverview';
 import SamplesPage from '../samples/SamplesPage';
@@ -77,6 +78,7 @@ export const PAGE_KEYS = {
   OTHER_FEATURES: 'other_features',
   OVERVIEW: 'overview',
   REACTIONS: 'reactions',
+  REPORTS: 'reports',
   ROCK_TYPE_ALTERATION_ORE: 'alteration_or',
   ROCK_TYPE_FAULT: 'fault',
   ROCK_TYPE_IGNEOUS: 'igneous',
@@ -133,7 +135,7 @@ export const PRIMARY_PAGES = [
     icon_src: require('../../assets/icons/Photo.png'),
     icon_pressed_src: require('../../assets/icons/Photo_pressed.png'),
     overview_component: ImagesOverview,
-    page_component: ImagesViewPage,
+    page_component: ImagesPage,
   }, {
     key: PAGE_KEYS.TAGS,
     label: 'Tags',
@@ -152,6 +154,15 @@ export const PRIMARY_PAGES = [
     page_component: SamplesPage,
     modal_component: SampleModal,
     action_label: 'Add a Sample',
+  }, {
+    key: PAGE_KEYS.REPORTS,
+    label: 'Reports',
+    icon_src: require('../../assets/icons/Reports.png'),
+    icon_pressed_src: require('../../assets/icons/Reports_pressed.png'),
+    page_component: ReportsPage,
+    modal_component: ReportModal,
+    action_label: 'Create New Report',
+    testing: true,
   },
 ];
 
@@ -398,11 +409,12 @@ export const MODAL_KEYS = {
     PHOTO: 'photo',
   },
   OTHER: {
+    ADD_INTERVAL: 'add_interval',
+    ADD_SPOTS_TO_REPORTS: 'AddSpotsToReports',
     ADD_TAGS_TO_SPOTS: 'AddTagsToSpots',
+    DAILY_NOTES: 'daily_setup',
     FEATURE_TAGS: 'FeatureTags',
     GEOLOGIC_UNITS: 'geologic_unit',
-    DAILY_NOTES: 'daily_setup',
-    ADD_INTERVAL: 'add_interval',
   },
 };
 
@@ -416,7 +428,7 @@ export const SHORTCUT_MODALS = [
     icon_src: require('../../assets/icons/GeologicUnitButtonShortcut.png'),
     icon_pressed_src: require('../../assets/icons/GeologicUnitButtonShortcut_pressed.png'),
     modal_component: TagsShortcutModal,
-    notebook_modal_key: MODAL_KEYS.NOTEBOOK.TAGS,
+    notebook_modal_key: MODAL_KEYS.NOTEBOOK.GEOLOGIC_UNITS,
   }, {
     key: MODAL_KEYS.SHORTCUTS.TAG,
     label: 'Tag',
@@ -466,21 +478,25 @@ export const SHORTCUT_MODALS = [
 
 const OTHER_MODALS = [
   {
+    key: MODAL_KEYS.OTHER.ADD_INTERVAL,
+    label: 'Add Interval',
+    modal_component: AddIntervalModal,
+  }, {
+    key: MODAL_KEYS.OTHER.ADD_SPOTS_TO_REPORTS,
+    label: 'Add Spots To Reports',
+    modal_component: ReportsListModal,
+  }, {
     key: MODAL_KEYS.OTHER.ADD_TAGS_TO_SPOTS,
     label: 'Add Tags To Spots',
     modal_component: AddTagsToSpotsShortcutModal,
-  }, {
-    key: MODAL_KEYS.OTHER.FEATURE_TAGS,
-    label: 'Add Feature Tags',
-    modal_component: FeatureTagsModal,
   }, {
     key: MODAL_KEYS.OTHER.DAILY_NOTES,
     label: 'Daily Notes',
     modal_component: DailyNotesModal,
   }, {
-    key: MODAL_KEYS.OTHER.ADD_INTERVAL,
-    label: 'Add Interval',
-    modal_component: AddIntervalModal,
+    key: MODAL_KEYS.OTHER.FEATURE_TAGS,
+    label: 'Add Feature Tags',
+    modal_component: FeatureTagsModal,
   },
 ];
 
