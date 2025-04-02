@@ -165,7 +165,7 @@ const useProject = () => {
 
   const getAllServerProjects = async () => {
     try {
-      return await getMyProjects(user.encoded_login);
+      return await getMyProjects();
     }
     catch (err) {
       console.error(err);
