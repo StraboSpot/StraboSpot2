@@ -2,7 +2,7 @@ import React from 'react';
 import {Platform, SectionList} from 'react-native';
 
 import {ListItem} from 'react-native-elements';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {MAIN_MENU_DATA, MAIN_MENU_ITEMS} from './mainMenu.constants';
 import {setMenuSelectionPage} from './mainMenuPanel.slice';
@@ -12,15 +12,17 @@ import SectionDivider from '../../shared/ui/SectionDivider';
 
 const MainMenuPanelList = ({activeProject}) => {
   const dispatch = useDispatch();
+  const isTestingMode = useSelector(state => state.project.isTestingMode);
 
   const renderMenuListItem = ({item}) => {
 
     const handleMenuItemPress = () => dispatch(setMenuSelectionPage({name: item}));
 
     if (item !== MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT && item !== MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS
-      && item !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS
+      && item !== MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS && item !== MAIN_MENU_ITEMS.MANAGE.REPORTS
       || ((item === MAIN_MENU_ITEMS.MANAGE.UPLOAD_BACKUP_EXPORT || item === MAIN_MENU_ITEMS.MANAGE.STRABOMICRO_PROJECTS
-        || item === MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS) && Platform.OS !== 'web')) {
+        || item === MAIN_MENU_ITEMS.MAPS.MANAGE_OFFLINE_MAPS) && Platform.OS !== 'web')
+      || (item === MAIN_MENU_ITEMS.MANAGE.REPORTS && isTestingMode)) {
       return (
         <ListItem containerStyle={commonStyles.listItem} onPress={handleMenuItemPress}>
           <ListItem.Content>

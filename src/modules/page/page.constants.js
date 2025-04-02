@@ -162,6 +162,7 @@ export const PRIMARY_PAGES = [
     page_component: ReportsPage,
     modal_component: ReportModal,
     action_label: 'Create New Report',
+    testing: true,
   },
 ];
 
