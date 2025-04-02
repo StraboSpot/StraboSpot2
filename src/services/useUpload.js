@@ -63,12 +63,12 @@ const useUpload = () => {
       let datasetCopy = JSON.parse(JSON.stringify(dataset));
       delete datasetCopy.spotIds;
       datasetCopy.images && delete datasetCopy.images;
-      const resJSON = await updateDataset(datasetCopy, user.encoded_login);
+      const resJSON = await updateDataset(datasetCopy);
       if (resJSON.modified_on_server) {
         console.log('Dataset that was uploaded:', resJSON);
         // console.log(dataset.name + ': Uploading Dataset Properties...');
         // dispatch(addedStatusMessage('Uploading properties...'));
-        await addDatasetToProject(project.id, dataset.id, user.encoded_login);
+        await addDatasetToProject(project.id, dataset.id);
         setUploadStatusMessage(`Finished uploading dataset ${dataset.name}...`);
         // dispatch(removedLastStatusMessage());
         await uploadSpots(dataset);
@@ -148,7 +148,7 @@ const useUpload = () => {
   const uploadProject = async () => {
     console.log(`Uploading ${project.description.project_name} Properties...`);
     setUploadStatusMessage(`Uploading ${project.description.project_name} Properties...`);
-    await updateProject(project, user.encoded_login);
+    await updateProject(project);
     setUploadStatusMessage(`Finished uploading ${project.description.project_name} Properties.`);
     return true;
   };
@@ -163,7 +163,7 @@ const useUpload = () => {
     try {
       if (isEmpty(datasetSpots)) {
         setUploadStatusMessage('There are no spots to upload.');
-        await deleteAllSpotsInDataset(dataset.id, user.encoded_login);
+        await deleteAllSpotsInDataset(dataset.id);
       }
       else {
         const spotCollection = {
@@ -172,7 +172,7 @@ const useUpload = () => {
         };
         console.log(dataset.name + ': Uploading Spots...', spotCollection);
         setUploadStatusMessage(`Uploading ${dataset.name} spots...`);
-        await updateDatasetSpots(dataset.id, spotCollection, user.encoded_login);
+        await updateDatasetSpots(dataset.id, spotCollection);
         setUploadStatusMessage(`Finished uploading ${dataset.name} spots.`);
         // dispatch(removedLastStatusMessage());
         // dispatch(addedStatusMessage('\nFinished uploading spots.\n'));

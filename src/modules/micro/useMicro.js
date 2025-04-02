@@ -1,11 +1,8 @@
-import {useSelector} from 'react-redux';
-
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDevice from '../../services/useDevice';
 import useServerRequests from '../../services/useServerRequests';
 
 const useMicro = () => {
-  const user = useSelector(state => state.user);
 
   const {doesMicroProjectPDFExist, getMicroProjectName, readDirectory} = useDevice();
   const {getMyMicroProjects} = useServerRequests();
@@ -30,7 +27,7 @@ const useMicro = () => {
 
   const getAllServerMicroProjects = async () => {
     try {
-      return await getMyMicroProjects(user.encoded_login);
+      return await getMyMicroProjects();
     }
     catch (err) {
       return err.ok;

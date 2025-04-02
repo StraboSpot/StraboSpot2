@@ -7,7 +7,6 @@ import {updatedProjectTransferProgress} from './connections.slice';
 import {MICRO_PATHS, STRABO_APIS, ORCID_PATHS, SESAR_PATHS} from './urls.constants';
 import alert from '../shared/ui/alert';
 
-
 const useServerRequests = () => {
   const dispatch = useDispatch();
   const {endpoint, isSelected} = useSelector(state => state.connections.databaseEndpoint);
@@ -20,8 +19,8 @@ const useServerRequests = () => {
 
   const {encoded_login, sesar} = useSelector(state => state.user);
 
-  const addDatasetToProject = (projectId, datasetId, encodedLogin) => {
-    return post('/projectDatasets/' + projectId, encodedLogin, {id: datasetId});
+  const addDatasetToProject = (projectId, datasetId) => {
+    return post('/projectDatasets/' + projectId, encoded_login, {id: datasetId});
   };
 
   const authenticateUser = async (username, password) => {
@@ -42,8 +41,8 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
-  const deleteAllSpotsInDataset = (datasetId, encodedLogin) => {
-    return request('DELETE', '/datasetSpots/' + datasetId, encodedLogin);
+  const deleteAllSpotsInDataset = (datasetId) => {
+    return request('DELETE', '/datasetSpots/' + datasetId, encoded_login);
   };
 
   const deleteProfile = async (login) => {
@@ -91,7 +90,7 @@ const useServerRequests = () => {
   //       {
   //         method: 'DELETE',
   //         headers: {
-  //           'Authorization': 'Basic ' + user.encoded_login,
+  //           'Authorization': 'Basic ' + encoded_login,
   //           'Content-Type': 'application/json',
   //         },
   //       },
@@ -104,8 +103,8 @@ const useServerRequests = () => {
   //   }
   // };
 
-  const downloadImage = (imageId, encodedLogin) => {
-    return request('GET', '/image/' + imageId, encodedLogin, {responseType: 'blob'});
+  const downloadImage = (imageId) => {
+    return request('GET', '/image/' + imageId, encoded_login, {responseType: 'blob'});
   };
 
   const getDataset = (datasetId) => {
@@ -130,7 +129,7 @@ const useServerRequests = () => {
       method: 'GET',
       responseType: 'blob',
       headers: {
-        'Authorization': 'Basic ' + user.encoded_login,
+        'Authorization': 'Basic ' + encoded_login,
         'Accept': 'application/json',
       },
     });
@@ -169,12 +168,12 @@ const useServerRequests = () => {
     return handleResponse(response);
   };
 
-  const getMyMicroProjects = (encodedLogin) => {
-    return requestMicro('GET', MICRO_PATHS.MY_PROJECTS, encodedLogin);
+  const getMyMicroProjects = () => {
+    return requestMicro('GET', MICRO_PATHS.MY_PROJECTS, encoded_login);
   };
 
-  const getMyProjects = (encodedLogin) => {
-    return request('GET', '/myProjects', encodedLogin);
+  const getMyProjects = () => {
+    return request('GET', '/myProjects', encoded_login);
   };
 
   const getProfile = async (encodedLogin) => {
@@ -500,17 +499,17 @@ const useServerRequests = () => {
       .catch(timeoutPromiseException).finally(() => clearTimeout(timer));
   };
 
-  const updateDataset = (dataset, encodedLogin) => {
-    return post('/dataset', encodedLogin, dataset);
+  const updateDataset = (dataset) => {
+    return post('/dataset', encoded_login, dataset);
   };
 
-  const updateDatasetSpots = (datasetId, spotCollection, encodedLogin) => {
-    return post('/datasetspots/' + datasetId, encodedLogin, spotCollection);
+  const updateDatasetSpots = (datasetId, spotCollection) => {
+    return post('/datasetspots/' + datasetId, encoded_login, spotCollection);
   };
 
   const updateProfile = (data) => {
     console.log(data);
-    return post('/profile', user.encoded_login, data);
+    return post('/profile', encoded_login, data);
   };
 
   const uploadProgress = (event) => {
@@ -519,8 +518,8 @@ const useServerRequests = () => {
     dispatch(updatedProjectTransferProgress(event.loaded / event.total));
   };
 
-  const updateProject = async (project, encodedLogin) => {
-    return post('/project', encodedLogin, project);
+  const updateProject = async (project) => {
+    return post('/project', encoded_login, project);
   };
 
   const uploadImage = async (formdata, encodedLogin, isProfileImage) => {
@@ -540,7 +539,7 @@ const useServerRequests = () => {
       if (isProfileImage) xhr.open('POST', baseUrl + '/profileImage');
       else xhr.open('POST', baseUrl + '/image');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
-      xhr.setRequestHeader('Authorization', 'Basic ' + encodedLogin);
+      xhr.setRequestHeader('Authorization', 'Basic ' + encoded_login);
       xhr.send(formdata);
     });
   };
@@ -550,7 +549,7 @@ const useServerRequests = () => {
       method: 'POST',
       headers: {
         // 'Content-Type': 'multipart/form-data',
-        'Authorization': 'Basic ' + encodedLogin,
+        'Authorization': 'Basic ' + encoded_login,
       },
       body: formData,
     });
@@ -563,16 +562,17 @@ const useServerRequests = () => {
     return await testEndpoint(customEndpointURL);
   };
 
+  //TODO: Seems to be not being used
   const verifyImageExistence = (imageId, encodedLogin) => {
     return request('GET', '/verifyimage/' + imageId, encodedLogin);
   };
 
   const verifyImagesExistence = async (imageIdsArray) => {
-    // return request('POST', '/verifyImages/', user.encoded_login, imageIdArray);
+    // return request('POST', '/verifyImages/', encoded_login, imageIdArray);
     const response = await timeoutPromise(60000, fetch(baseUrl + '/verifyImages/', {
       method: 'POST',
       headers: {
-        'Authorization': 'Basic ' + user.encoded_login + '/',
+        'Authorization': 'Basic ' + encoded_login + '/',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(imageIdsArray),
@@ -604,8 +604,8 @@ const useServerRequests = () => {
     // deleteProject: deleteProject,
     downloadImage: downloadImage,
     getDataset: getDataset,
-    getDatasetSpots: getDatasetSpots,
-    getDatasets: getDatasets,
+    getDatasetSpots: getDatasetSpots, //TODO: Find out why the encoded login is being passed so deeply
+    getDatasets: getDatasets, //TODO: Is encoded login being passed because of web autolog? Is there a better way to pass this?
     getDbUrl: getDbUrl,
     getImage: getImage,
     getImageUrl: getImageUrl,
@@ -615,10 +615,10 @@ const useServerRequests = () => {
     getMyMapsBbox: getMyMapsBbox,
     getMyMicroProjects: getMyMicroProjects,
     getMyProjects: getMyProjects,
-    getProfile: getProfile,
-    getProfileImage: getProfileImage,
-    getProfileImageURL: getProfileImageURL,
-    getProject: getProject,
+    getProfile: getProfile, // TODO: does encoded login need to be passed so deeply
+    getProfileImage: getProfileImage, // TODO: does encoded login need to be passed so deeply
+    getProfileImageURL: getProfileImageURL, // TODO: does encoded login need to be passed so deeply
+    getProject: getProject, // TODO: does encoded login need to be passed so deeply
     getTilehostUrl: getTilehostUrl,
     getSesarToken: getSesarToken,
     getSesarUserCode: getSesarUserCode,
