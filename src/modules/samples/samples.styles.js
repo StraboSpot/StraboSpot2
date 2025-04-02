@@ -1,4 +1,6 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+
+import * as themes from '../../shared/styles.constants';
 
 const sampleStyles = StyleSheet.create({
   IGSNLogo: {
@@ -17,6 +19,11 @@ const sampleStyles = StyleSheet.create({
   },
   logoDisplayContainer: {
     marginRight: 20,
+  },
+  mySesarUpdateDisclaimer: {
+    fontSize: themes.MEDIUM_TEXT_SIZE,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
