@@ -5,7 +5,7 @@ import {Button} from 'react-native-elements';
 
 import styles from '../../shared/ui/ui.styles';
 
-const SaveAndCancelButtons = ({cancel, save}) => {
+const SaveAndCancelButtons = ({cancel, save, getIsDisabled}) => {
   return (
     <View style={styles.navButtonsContainer}>
       <View style={styles.leftContainer}>
@@ -23,6 +23,7 @@ const SaveAndCancelButtons = ({cancel, save}) => {
             title={'Save'}
             type={'clear'}
             onPress={save}
+            disabled={getIsDisabled}
           />
         )}
       </View>

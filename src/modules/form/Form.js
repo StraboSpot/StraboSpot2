@@ -14,7 +14,7 @@ import {DateInputField, NumberInputField, SelectInputField, TextInputField, useF
 import {LABELS_WITH_ABBREVIATIONS} from '../petrology/petrology.constants';
 
 const Form = ({
-                isEditable,
+                getIsDisabled,
                 errors,
                 formName,
                 onMyChange,
@@ -70,7 +70,7 @@ const Form = ({
         placeholder={field.hint}
         onMyChange={onMyChange}
         onShowFieldInfo={showFieldInfo}
-        editable={isEditable ? isEditable(field.name) : true}
+        editable={getIsDisabled ? !getIsDisabled(field.name) : true}
       />
     );
   };
@@ -90,11 +90,13 @@ const Form = ({
   };
 
   const renderSelectInput = (field, isExpanded) => {
+    const isDisabled = getIsDisabled ? getIsDisabled(field.name) : false;
     const [fieldType, choicesListName] = field.type.split(' ');
     const fieldChoices = getChoices(formName).filter(choice => choice.list_name === choicesListName);
     const fieldChoicesCopy = JSON.parse(JSON.stringify(fieldChoices));
     fieldChoicesCopy.map((choice) => {
       choice.value = choice.name;
+      choice.disabled = isDisabled;
       delete choice.name;
       return choice;
     });

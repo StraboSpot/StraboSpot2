@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
@@ -22,7 +22,7 @@ import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTags} from '../tags';
 import DeleteOverlay from './ui/DeleteOverlay';
-import MessageOverlay from './ui/MessageOverlay';
+import sampleStyles from '../samples/samples.styles';
 
 const BasicPageDetail = ({
                            closeDetailView,
@@ -35,10 +35,10 @@ const BasicPageDetail = ({
                          }) => {
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
+  const {isInternetReachable} = useSelector(state => state.connections.isOnline);
 
   const [IGSNChecked, setIGSNChecked] = useState(false);
-  const [isWarningOverlayVisible, setIsWarningOverlayVisible] = useState(false);
-  const [isMessageOverlayVisible, setIsMessageOverlayVisible] = useState(false);
+  const [isDeleteOverlayVisible, setIsDeleteOverlayVisible] = useState(false);
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -116,7 +116,7 @@ const BasicPageDetail = ({
 
   const deleteFeatureConfirm = () => {
     if (pageKey === PAGE_KEYS.SAMPLES && selectedFeature.isOnMySesar) {
-      setIsWarningOverlayVisible(true);
+      setIsDeleteOverlayVisible(true);
     }
     else {
       alert('Delete ' + title,
@@ -146,8 +146,11 @@ const BasicPageDetail = ({
     return formName;
   };
 
-  const handleIsEditable = (fieldName) => {
-    return fieldName !== 'Sample_IGSN' || !selectedFeature.isOnMySesar;
+  const getIsDisabled = (fieldName) => {
+    return selectedFeature.isOnMySesar
+      ? isInternetReachable
+        ? fieldName === 'Sample_IGSN' : true
+      : false;
   };
 
   const renderFormFields = () => {
@@ -177,7 +180,7 @@ const BasicPageDetail = ({
                       ? ((name, value) => onSampleFormChange(formRef.current, name, value))
                       : undefined
                 ,
-                isEditable: handleIsEditable,
+                getIsDisabled: getIsDisabled,
               }}/>
             </>
           )}
@@ -207,6 +210,30 @@ const BasicPageDetail = ({
         />
       </View>
     );
+  };
+
+  const renderSesarUploadDisclosure = () => {
+    if (!isInternetReachable) {
+      return (
+        <View style={{padding: 20}}>
+          <Text style={sampleStyles.mySesarUpdateDisclaimer}>This sample has already been registered in your MYSESAR
+            account with an IGSN number and needs to sync. You will need to be online make any updates.</Text>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={{padding: 20}}>
+          <Text style={sampleStyles.mySesarUpdateDisclaimer}>This sample has already been registered in your MYSESAR
+            account. Any changes will be automatically updated. You may be prompted to sign into your MySesar
+            account.</Text>
+        </View>
+      );
+    }
+  };
+
+  const saveButtonOnPress = () => {
+    isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current);
   };
 
   const saveFeature = async (formCurrent) => {
@@ -265,20 +292,18 @@ const BasicPageDetail = ({
         <>
           <SaveAndCancelButtons
             cancel={cancelForm}
-            save={() => isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current)}
+            save={saveButtonOnPress}
+            getIsDisabled={(!isInternetReachable && selectedFeature.isOnMySesar)}
           />
+          {page.key === PAGE_KEYS.SAMPLES && selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
       )}
       <DeleteOverlay
-        isVisible={isWarningOverlayVisible}
-        closeModal={() => setIsWarningOverlayVisible(false)}
+        isVisible={isDeleteOverlayVisible}
+        closeModal={() => setIsDeleteOverlayVisible(false)}
         deleteSample={deleteFeature}
-      />
-      <MessageOverlay
-        isVisible={isMessageOverlayVisible}
-        closeModal={() => setIsMessageOverlayVisible(false)}
       />
     </>
   );
