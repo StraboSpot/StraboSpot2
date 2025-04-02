@@ -10,46 +10,61 @@ import {setNotebookPageVisible} from '../../modules/notebook-panel/notebook.slic
 import {MODAL_KEYS, PAGE_KEYS} from '../../modules/page/page.constants';
 import ReturnToOverviewButton from '../../modules/page/ui/ReturnToOverviewButton';
 import {setMultipleFeaturesTaggingEnabled} from '../../modules/project/projects.slice';
-import {setSelectedAttributes} from '../../modules/spots/spots.slice';
 import commonStyles from '../common.styles';
+import {isEmpty} from '../Helpers';
+import alert from './alert';
 
 const NotebookContentTopSection = ({returnToOverviewAction}) => {
   const dispatch = useDispatch();
   const isMultipleFeaturesTaggingEnabled = useSelector(state => state.project.isMultipleFeaturesTaggingEnabled);
+  const selectedFeaturesForTagging = useSelector(state => state.spot.selectedAttributes);
 
-  const taggingMultipleFeatures = () => {
+  const selectFeaturesToTag = () => {
     dispatch(setMultipleFeaturesTaggingEnabled(true));
-    dispatch(setSelectedAttributes([]));
-    dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.FEATURE_TAGS}));
+  };
+
+  const selectTagsForFeatures = () => {
+    if (isEmpty(selectedFeaturesForTagging)) {
+      alert('No Features!', 'No features have been selected.');
+      dispatch(setMultipleFeaturesTaggingEnabled(false));
+    }
+    else dispatch(setModalVisible({modal: MODAL_KEYS.OTHER.FEATURE_TAGS}));
   };
 
   return (
     <View>
-      {!isMultipleFeaturesTaggingEnabled && (
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <ReturnToOverviewButton
-            onPress={() => {
-              dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
-              if (returnToOverviewAction) returnToOverviewAction();
-            }}
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <ReturnToOverviewButton
+          onPress={() => {
+            dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW));
+            if (returnToOverviewAction) returnToOverviewAction();
+          }}
+        />
+        {isMultipleFeaturesTaggingEnabled ? (
+          <ButtonRounded
+            title={'Select Tags'}
+            titleStyle={commonStyles.standardDescriptionText}
+            buttonStyle={[imageStyles.buttonContainer, {padding: 5}]}
+            type={'outline'}
+            onPress={selectTagsForFeatures}
           />
+        ) : (
           <ButtonRounded
             title={'Tag/Untag Features(s)'}
             titleStyle={commonStyles.standardDescriptionText}
             buttonStyle={[imageStyles.buttonContainer, {padding: 5}]}
             type={'outline'}
-            onPress={() => taggingMultipleFeatures()}
+            onPress={selectFeaturesToTag}
           />
-        </View>
-      )}
+        )}
+      </View>
       {isMultipleFeaturesTaggingEnabled && (
-        <View>
-          <Text style={[{fontWeight: 'bold', textAlign: 'center', padding: 5}]}> Select Features and Check Tags </Text>
-          <Text style={[{textAlign: 'justify', paddingHorizontal: 10, paddingBottom: 10}]}>
-            If features with different tags are selected, only common tags will appear selected.
-            Checking a tag applies it to all selected features.
-          </Text>
-        </View>
+        <Text style={[{textAlign: 'justify', paddingHorizontal: 10, paddingBottom: 10}]}>
+          1. Select feature(s) to tag below.{'\n'}
+          2. Hit Select Tags button.{'\n'}
+          *If features with different tags are selected, only common tags will appear selected.
+          Checking a tag will apply it to all selected features.
+        </Text>
       )}
     </View>
   );

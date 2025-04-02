@@ -18,6 +18,7 @@ const Modal = ({
                  cancel,
                  children,
                  closeModal,
+                 isFullScreen,
                  onPress,
                  title,
                }) => {
@@ -66,17 +67,18 @@ const Modal = ({
   };
 
   if (modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT
-    || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS || SMALL_SCREEN) {
+    || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS || SMALL_SCREEN || isFullScreen) {
     return (
       <Overlay
-        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT
-          || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS || SMALL_SCREEN}
-        overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {
+        isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
+          || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS
+          || SMALL_SCREEN || isFullScreen}
+        overlayStyle={SMALL_SCREEN || isFullScreen ? overlayStyles.overlayContainerFullScreen : {
           ...overlayStyles.overlayContainer,
           maxHeight: height * 0.80,
           width: modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS ? width * 0.80 : 300,
         }}
-        fullScreen={SMALL_SCREEN}
+        fullScreen={SMALL_SCREEN || isFullScreen}
         animationType={'slide'}
       >
         <ModalHeader

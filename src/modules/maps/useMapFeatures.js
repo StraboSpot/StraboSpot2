@@ -100,9 +100,8 @@ const useMapFeatures = () => {
   const getVisibleMappedSpots = (mappedSpots) => {
     return (
       mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
-        || (spot.properties.orientation_data
-          && !isEmpty(spot.properties.orientation_data.filter(orientation => orientation.feature_type
-            && selectedSymbols.includes(orientation.feature_type)))))
+        || !isEmpty(spot?.properties?.orientation_data?.filter(
+          orientation => selectedSymbols.includes(orientation?.feature_type))))
     );
   };
 

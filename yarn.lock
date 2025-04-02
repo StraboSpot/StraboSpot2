@@ -5094,6 +5094,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/base16@npm:^1.0.2":
+  version: 1.0.5
+  resolution: "@types/base16@npm:1.0.5"
+  checksum: 10c0/c3859a03ab50bf96e9d08ffb97209f150fd7c7bcfe5fa04b5dc9c874740b9c4f0d6774c6a364dce0aa00b1d3bc5ee80fb07d9cfde83b82dae7e0a2f575eca4b1
+  languageName: node
+  linkType: hard
+
 "@types/body-parser@npm:*":
   version: 1.19.5
   resolution: "@types/body-parser@npm:1.19.5"
@@ -5313,6 +5320,13 @@ __metadata:
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
   checksum: 10c0/6bf5337bc447b706bb5b4431d37686aa2ea6d07cfd6f79cc31de80170d6ff9b1c7384a9c0ccbc45b3f512bae9e9f75c2e12109806a15331dc94e8a8db6dbb4ac
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.178":
+  version: 4.17.16
+  resolution: "@types/lodash@npm:4.17.16"
+  checksum: 10c0/cf017901b8ab1d7aabc86d5189d9288f4f99f19a75caf020c0e2c77b8d4cead4db0d0b842d009b029339f92399f49f34377dd7c2721053388f251778b4c23534
   languageName: node
   linkType: hard
 
@@ -6523,6 +6537,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base16@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "base16@npm:1.0.0"
+  checksum: 10c0/af1aee7b297d968528ef47c8de2c5274029743e8a4a5f61ec823e36b673781691d124168cb22936c7997f53d89b344c58bf7ecf93eeb148cffa7e3fb4e4b8b18
+  languageName: node
+  linkType: hard
+
 "base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
@@ -7069,7 +7090,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color@npm:^3.1.2":
+"color@npm:^3.1.2, color@npm:^3.2.1":
   version: 3.2.1
   resolution: "color@npm:3.2.1"
   dependencies:
@@ -7427,7 +7448,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csstype@npm:^3.0.2":
+"csstype@npm:^3.0.10, csstype@npm:^3.0.2":
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
   checksum: 10c0/80c089d6f7e0c5b2bd83cf0539ab41474198579584fa10d86d0cafe0642202343cbc119e076a0b1aece191989477081415d66c9fefbf3c957fc2fc4b7009f248
@@ -11106,6 +11127,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.curry@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "lodash.curry@npm:4.1.1"
+  checksum: 10c0/f0431947dc9236df879fc13eb40c31a2839c958bd0eaa39170a5758c25a7d85d461716a851ab45a175371950b283480615cdd4b07fb0dd1afff7a2914a90696f
+  languageName: node
+  linkType: hard
+
 "lodash.debounce@npm:^4.0.8":
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
@@ -13007,6 +13035,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-base16-styling@npm:^0.8.0":
+  version: 0.8.2
+  resolution: "react-base16-styling@npm:0.8.2"
+  dependencies:
+    "@types/base16": "npm:^1.0.2"
+    "@types/lodash": "npm:^4.14.178"
+    base16: "npm:^1.0.0"
+    color: "npm:^3.2.1"
+    csstype: "npm:^3.0.10"
+    lodash.curry: "npm:^4.1.1"
+  checksum: 10c0/8a661ff23565237744b1dcdd6655cae7e876f35feaea57d9e95e58ca513bbd8b3888796a8c0c590b756632b132ec35ace28ddb46c897e29c6fa8be2182837c1d
+  languageName: node
+  linkType: hard
+
 "react-datepicker@npm:8.0.0":
   version: 8.0.0
   resolution: "react-datepicker@npm:8.0.0"
@@ -13263,6 +13305,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/a9e29cf3d7115bcd497b6075936c36d1385e31cd4d4a06c41260dcc40eb1db5561016122a9d46d9e632a448332011743547c40e9612f7e39394871edc341610e
+  languageName: node
+  linkType: hard
+
+"react-native-json-tree@npm:1.5.0":
+  version: 1.5.0
+  resolution: "react-native-json-tree@npm:1.5.0"
+  dependencies:
+    prop-types: "npm:^15.7.2"
+    react-base16-styling: "npm:^0.8.0"
+  peerDependencies:
+    react: 15.x || >=16.0.0-alpha.6
+    react-native: ">=0.43.2"
+  checksum: 10c0/02bc4196407835efe81f50b999988fae8ddb4d55d37715b38d6339993fa68b2decf08263f6c2bc1da866b6dc435a679ee8ec0794b29a198bed5261787f68f547
   languageName: node
   linkType: hard
 
@@ -14815,6 +14870,7 @@ __metadata:
     react-native-image-picker: "npm:8.0.0"
     react-native-image-resizer: "npm:1.4.5"
     react-native-indicators: "npm:0.17.0"
+    react-native-json-tree: "npm:1.5.0"
     react-native-keep-awake: "npm:4.0.0"
     react-native-multiple-select: "npm:0.5.12"
     react-native-orientation-locker: "npm:1.7.0"
