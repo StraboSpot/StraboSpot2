@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Platform, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Appearance, Platform, Text, View} from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -21,8 +21,18 @@ const DateInputField = ({
                         }) => {
   const [isDatePickerModalVisible, setIsDatePickerModalVisible] = useState(false);
   const [date, setDate] = useState(Date.parse(value) ? new Date(value) : new Date());
+  const [colorScheme, setColorScheme] = useState(Appearance.getColorScheme());
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(
+      ({colorScheme: newColorScheme}) => {
+        setColorScheme(newColorScheme);
+      },
+    );
+    return () => subscription.remove();
+    }, [colorScheme]);
 
   let title = value ? isShowTimeOnly ? moment(value).format('h:mm:ss a')
       : isShowTime ? moment(value).format('MM/DD/YYYY, h:mm:ss a')
@@ -72,8 +82,9 @@ const DateInputField = ({
         <DateTimePicker
           mode={isShowTimeOnly ? 'time' : 'date'}
           value={date}
+          textColor={colorScheme === 'dark' && 'black'}
           onChange={changeDate}
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           neutralButton={{label: 'Clear', textColor: 'grey'}} // Android only
         />
       </View>
