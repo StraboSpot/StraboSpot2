@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import {Formik} from 'formik';
 import {Button, Overlay} from 'react-native-elements';
 
-import {Form, MainButtons, useForm} from '../form';
+import {Form, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {PAGE_KEYS} from '../page/page.constants';
 
@@ -20,29 +20,12 @@ const ReportForm = forwardRef(({initialValues}, formRef) => {
   const survey = getSurvey(formName);
   const choices = getChoices(formName);
 
-  const topButtonsKeys = ['report_type', 'privacy'];
-  const mainFormKeys = ['subject', 'notes'];
+  const mainFormKeys = ['report_privacy', 'report_type', 'subject', 'notes'];
   const mainFormKeysFields = mainFormKeys.map(k => survey.find(f => f.name === k));
 
   const onMyChange = async (name, value) => {
     await formRef.current.setFieldValue(name, value);
     setChoicesViewKey(null);
-  };
-
-  const renderForm = (formProps) => {
-    return (
-      <>
-        <View style={{width: 400, alignSelf: 'center'}}>
-          <MainButtons
-            mainKeys={topButtonsKeys}
-            formName={formName}
-            setChoicesViewKey={setChoicesViewKey}
-            formProps={formProps}
-          />
-        </View>
-        <Form {...{formName: formName, surveyFragment: mainFormKeysFields, ...formProps}}/>
-      </>
-    );
   };
 
   const renderSubform = (formProps) => {
@@ -76,7 +59,7 @@ const ReportForm = forwardRef(({initialValues}, formRef) => {
     >
       {formProps => (
         <View style={{flex: 1}}>
-          {renderForm(formProps)}
+          <Form {...{formName: formName, surveyFragment: mainFormKeysFields, ...formProps}}/>
           {choicesViewKey && renderSubform(formProps)}
         </View>
       )}

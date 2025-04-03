@@ -1,13 +1,13 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Icon, ListItem} from 'react-native-elements';
+import {CheckBox, Icon, ListItem} from 'react-native-elements';
 import MultiSelect from 'react-native-multiple-select';
 
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
-import {DARKGREY, PRIMARY_ACCENT_COLOR} from '../../shared/styles.constants';
+import {DARKGREY, PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles} from '../form';
 
 const SelectInputField = ({
@@ -41,32 +41,43 @@ const SelectInputField = ({
     return choiceFound ? choiceFound.label : '';
   };
 
-  const renderChoiceItem = (item) => {
+  const renderChoiceItem = (item, isWrapped) => {
     const radioSelected = <Icon name={'radiobox-marked'} type={'material-community'} color={PRIMARY_ACCENT_COLOR}/>;
     const radioUnselected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
       <React.Fragment key={item.value}>
-        <ListItem containerStyle={commonStyles.listItemFormField}>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
-          </ListItem.Content>
-          {single && (
-            <ListItem.CheckBox
-              checked={value === item.value}
-              checkedIcon={radioSelected}
-              uncheckedIcon={radioUnselected}
-              onPress={() => fieldValueChanged([item.value])}
-            />
-          )}
-          {!single && (
-            <ListItem.CheckBox
-              checked={value?.includes(item.value)}
-              onPress={() => value?.includes(item.value)
-                ? fieldValueChanged(value.filter(v => v !== item.value))
-                : fieldValueChanged([...value || [], item.value])}
-            />
-          )}
-        </ListItem>
+        {isWrapped ? (
+          <CheckBox
+            checked={value === item.value}
+            checkedIcon={radioSelected}
+            uncheckedIcon={radioUnselected}
+            onPress={() => fieldValueChanged([item.value])}
+            title={item.label}
+            containerStyle={{backgroundColor: SECONDARY_BACKGROUND_COLOR, borderWidth: 0, padding: 1}}
+          />
+        ) : (
+          <ListItem containerStyle={commonStyles.listItemFormField}>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
+            </ListItem.Content>
+            {single && (
+              <ListItem.CheckBox
+                checked={value === item.value}
+                checkedIcon={radioSelected}
+                uncheckedIcon={radioUnselected}
+                onPress={() => fieldValueChanged([item.value])}
+              />
+            )}
+            {!single && (
+              <ListItem.CheckBox
+                checked={value?.includes(item.value)}
+                onPress={() => value?.includes(item.value)
+                  ? fieldValueChanged(value.filter(v => v !== item.value))
+                  : fieldValueChanged([...value || [], item.value])}
+              />
+            )}
+          </ListItem>
+        )}
       </React.Fragment>
     );
   };
@@ -80,7 +91,11 @@ const SelectInputField = ({
             {renderFieldLabel()}
           </ListItem.Content>
         </ListItem>
-        {choices.map((item, index) => renderChoiceItem(item, index))}
+        {name === 'report_type' || name === 'report_privacy' ? (
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            {choices.map(item => renderChoiceItem(item, true))}
+          </View>
+        ) : choices.map(item => renderChoiceItem(item))}
       </>
     );
   };
