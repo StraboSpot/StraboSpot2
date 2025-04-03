@@ -12,11 +12,11 @@ const styles = StyleSheet.create({
     marginTop: -5,
   },
   dropdownSelectedContainer: {
-    paddingTop: 0, //Overrides default
+    borderBottomWidth: 0,
+    marginRight: -20,
     paddingBottom: 0, //Overrides default
     paddingRight: 15,
-    marginRight: -20,
-    borderBottomWidth: 0,
+    paddingTop: 0, //Overrides default
   },
   dropdownSelectionListHeader: {
     fontSize: themes.PRIMARY_TEXT_SIZE,
@@ -49,13 +49,12 @@ const styles = StyleSheet.create({
   },
   fieldValueFull: {
     maxHeight: height * 0.5,
-    minHeight: height * .50,
+    minHeight: height * 0.5,
     verticalAlign: 'top',
   },
   fieldValueMultiline: {
     height: 75,
     verticalAlign: 'top',
-    backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
   },
   formButton: {
     borderColor: themes.MEDIUMGREY,
