@@ -33,7 +33,7 @@ const useMapPressEvents = ({
 
   const {isDrawMode} = useMap();
   const {getAllMappedSpots} = useMapFeatures();
-  const {getMeasureFeatures} = useMapMeasure();
+  const {getMeasureFeatures} = useMapMeasure(mapRef);
   const {getSpotAtPress} = useMapFeaturesCalculated(mapRef);
   const {getSpotWithThisStratSection} = useSpots();
 
