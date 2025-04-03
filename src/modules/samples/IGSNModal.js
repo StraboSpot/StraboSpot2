@@ -31,7 +31,13 @@ const IGNSModal = (
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {authenticateWithSesar, getAndSaveSesarCode, straboSesarMapping, updateSampleIsSesar, uploadSample} = useSamples();
+  const {
+    authenticateWithSesar,
+    getAndSaveSesarCode,
+    straboSesarMapping,
+    updateSampleIsSesar,
+    uploadSample,
+  } = useSamples();
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
@@ -65,6 +71,7 @@ const IGNSModal = (
   }, []);
 
   useEffect(() => {
+    setStatusMessage('Authenticating with SESAR...');
     if (route.params?.orcidToken) {
       getSesarToken(route.params?.orcidToken)
         .then((token) => {
@@ -87,6 +94,7 @@ const IGNSModal = (
       const res = await uploadSample(sampleToUpload);
       setStatusMessage(res.status);
       setIsUploaded(prevState => true);
+      setModalPage('updated')
     }
     catch (err) {
       const errorMessage = err.toString().split(': ');
@@ -107,26 +115,28 @@ const IGNSModal = (
 
   const sesarAuth = async () => {
     try {
-      setStatusMessage('Authenticating with SESAR...');
       const token = await authenticateWithSesar();
       if (token) {
         if (isEmpty(sesar.userCodes)) {
           setIsLoading(true);
           await getAndSaveSesarCode(token);
+          // setModalPage('changeUserCode')
           setIsLoading(false);
         }
-        else if (isEmpty(sesar.selectedUserCode)) setModalPage('changeUserCode');
         else {
-          setStatusMessage('This is the the data that will be uploaded to SESAR:');
-          setModalPage('content');
           if (sampleToUpload.isOnMySesar) {
             setIsLoading(true);
+            setModalPage('updated');
             const res = await updateSampleIsSesar(sampleToUpload);
             if (res.status) {
               setIsLoading(false);
               setIsUploaded(true);
               setStatusMessage(res.status);
             }
+          }
+          else {
+            setStatusMessage('This is the the data that will be uploaded to SESAR:');
+            setModalPage('content');
           }
         }
       }
@@ -148,6 +158,8 @@ const IGNSModal = (
         return renderUserCodeSelection();
       case 'content':
         return renderUploadContent();
+      case 'updated':
+        return renderUploadedSample();
       case 'orcidSignIn':
         return renderOrcidSignIn();
       default:
@@ -298,7 +310,7 @@ const IGNSModal = (
     console.log('SAMPLE', sampleToUpload.sample_id_name);
     return (
       <>
-        {!isEmpty(sampleToUpload.sample_id_name) && !isUploaded ? (
+        {!isEmpty(sampleToUpload.sample_id_name) && (
           <ScrollView>
             <View style={{marginLeft: 30}}>
               <View style={{alignItems: 'flex-start'}}>
@@ -306,12 +318,22 @@ const IGNSModal = (
               </View>
             </View>
           </ScrollView>
-        ) : (
-          <View style={{padding: 20, marginVertical: 20}}>
-            <Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>
-          </View>
-        )}
+        )
+          //   : (
+          //   <View style={{padding: 20, marginVertical: 20}}>
+          //     <Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>
+          //   </View>
+          // )
+        }
       </>
+    );
+  };
+
+  const renderUploadedSample = () => {
+    return (
+      <View style={{padding: 20, marginVertical: 20}}>
+        <Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>
+      </View>
     );
   };
 
