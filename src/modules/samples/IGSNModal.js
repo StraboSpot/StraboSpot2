@@ -117,7 +117,7 @@ const IGNSModal = (
     try {
       const token = await authenticateWithSesar();
       if (token) {
-        if (isEmpty(sesar.userCodes)) {
+        if (isEmpty(sesar.userCodes) && !sampleToUpload.isOnMySesar) {
           setIsLoading(true);
           await getAndSaveSesarCode(token);
           // setModalPage('changeUserCode')
