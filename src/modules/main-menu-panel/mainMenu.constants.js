@@ -7,7 +7,7 @@ export const MAIN_MENU_ITEMS = {
     UPLOAD_BACKUP_EXPORT: 'Upload, Backup & Export',
     // DATABASE_DETAILS: 'Database Details',
     STRABOMICRO_PROJECTS: 'StraboMicro Projects',
-    REPORTS: 'Reports',
+    REPORTS: 'Reports (In Testing)',
   },
   ATTRIBUTES: {
     SPOTS: 'Spots',
