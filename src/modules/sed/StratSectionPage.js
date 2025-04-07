@@ -90,25 +90,17 @@ const StratSectionPage = ({page}) => {
           cancel={() => dispatch(setNotebookPageVisible(PAGE_KEYS.OVERVIEW))}
           save={saveStratSection}
         />
-        <View style={{flex: 1}}>
-          <FlatList
-            ListHeaderComponent={
-              <>
-                <Formik
-                  innerRef={stratSectionRef}
-                  onSubmit={() => console.log('Submitting form...')}
-                  onReset={() => console.log('Resetting form...')}
-                  validate={values => validateForm({formName: formName, values: values})}
-                  initialValues={stratSection}
-                  validateOnChange={false}
-                  enableReinitialize={true}
-                >
-                  {formProps => <Form {...{...formProps, formName: formName}}/>}
-                </Formik>
-              </>
-            }
-          />
-        </View>
+        <Formik
+          innerRef={stratSectionRef}
+          onSubmit={() => console.log('Submitting form...')}
+          onReset={() => console.log('Resetting form...')}
+          validate={values => validateForm({formName: formName, values: values})}
+          initialValues={stratSection}
+          validateOnChange={false}
+          enableReinitialize={true}
+        >
+          {formProps => <Form {...{...formProps, formName: formName}}/>}
+        </Formik>
       </View>
     );
   };
@@ -135,36 +127,46 @@ const StratSectionPage = ({page}) => {
     return (
       <View style={{flex: 1, justifyContent: 'flex-start'}}>
         <ReturnToOverviewButton/>
-        {renderStratSectionToggle()}
-        {!isEmpty(stratSection) && (
-          <View style={{flex: 1}}>
-            <FlatListItemSeparator/>
-            <ListItem
-              containerStyle={commonStyles.listItem}
-              key={'strat_section'}
-              onPress={() => {
-                dispatch(setLoadingStatus({view: 'home', bool: true}));
-                if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
-                setTimeout(() => {
-                  dispatch(setStratSection(stratSection));
-                  dispatch(setLoadingStatus({view: 'home', bool: false}));
-                }, 500);
-              }}
-            >
-              <Avatar
-                source={require('../../assets/icons/SedStratColumn.png')}
-                size={20}
-                containerStyle={{alignSelf: 'center'}}
-              />
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-            {renderImageOverlaysSection()}
-            {renderSectionSettingsSection()}
-          </View>
-        )}
-        {selectedImage && <AddImageOverlayModal closeModal={() => setSelectedImage(undefined)} image={selectedImage}/>}
+        <View style={{flex: 1}}>
+          <FlatList
+            ListHeaderComponent={
+              <>
+                {renderStratSectionToggle()}
+                {!isEmpty(stratSection) && (
+                  <View style={{flex: 1}}>
+                    <FlatListItemSeparator/>
+                    <ListItem
+                      containerStyle={commonStyles.listItem}
+                      key={'strat_section'}
+                      onPress={() => {
+                        dispatch(setLoadingStatus({view: 'home', bool: true}));
+                        if (SMALL_SCREEN) navigation.navigate('HomeScreen', {screen: 'Map'});
+                        setTimeout(() => {
+                          dispatch(setStratSection(stratSection));
+                          dispatch(setLoadingStatus({view: 'home', bool: false}));
+                        }, 500);
+                      }}
+                    >
+                      <Avatar
+                        source={require('../../assets/icons/SedStratColumn.png')}
+                        size={20}
+                        containerStyle={{alignSelf: 'center'}}
+                      />
+                      <ListItem.Content>
+                        <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
+                      </ListItem.Content>
+                    </ListItem>
+                    {renderImageOverlaysSection()}
+                    {renderSectionSettingsSection()}
+                  </View>
+                )}
+                {selectedImage && (
+                  <AddImageOverlayModal closeModal={() => setSelectedImage(undefined)} image={selectedImage}/>
+                )}
+              </>
+            }
+          />
+        </View>
       </View>
     );
   };
