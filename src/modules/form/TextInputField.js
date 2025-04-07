@@ -13,7 +13,6 @@ const TextInputField = ({
                           autoCapitalize,
                           autoFocus,
                           editable,
-                          keyboardType,
                           label,
                           onMyChange,
                           onShowFieldInfo,
@@ -47,7 +46,6 @@ const TextInputField = ({
         multiline={appearance === 'multiline' || appearance === 'full'}
         autoFocus={autoFocus}
         autoCapitalize={autoCapitalize}
-        keyboardType={keyboardType}
         editable={editable}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
