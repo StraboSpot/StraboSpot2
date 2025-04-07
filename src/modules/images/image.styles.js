@@ -17,6 +17,12 @@ const imageStyles = StyleSheet.create({
     margin: 5,
     padding: 5,
   },
+  cardImageContainer: {
+    alignSelf: 'center',
+    height: 150,
+    padding: 5,
+    width: 150,
+  },
   cardTitle: {
     alignSelf: 'center',
     fontSize: MEDIUM_TEXT_SIZE,

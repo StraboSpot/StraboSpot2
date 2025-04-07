@@ -17,6 +17,7 @@ const ImageCard = ({
                      imageThumbnails,
                      index,
                      isImageLoadedObj,
+                     isOnReport,
                      setImageToView,
                      setIsImageLoadedObj,
                      setIsImageModalVisible,
@@ -42,15 +43,18 @@ const ImageCard = ({
 
   return (
     <Card containerStyle={imageStyles.cardContainer}>
-      <TextInput
-        onBlur={() => setIsEditingTitle(false)}
-        onChangeText={text => handleEditImageName( text)}
-        style={imageStyles.cardTitle}
-        value={isEditingTitle ? image.title?.toString() : image.title?.toString() || 'Untitled ' + (index + 1)}
-      />
+      {!isOnReport && (
+        <TextInput
+          onBlur={() => setIsEditingTitle(false)}
+          onChangeText={text => handleEditImageName(text)}
+          style={imageStyles.cardTitle}
+          value={isEditingTitle ? image.title?.toString() : image.title?.toString() || 'Untitled ' + (index + 1)}
+        />
+      )}
+
       <Card.Image
         resizeMode={'cover'}
-        containerStyle={{padding: 5}}
+        containerStyle={imageStyles.cardImageContainer}
         source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
         onPress={() => viewImage(image)}
         PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
@@ -64,29 +68,31 @@ const ImageCard = ({
         }}
       />
 
-      <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 5}}>
-        <Switch
-          onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
-          style={{height: 20, alignSelf: 'center'}}
-          value={image.annotated}
-        />
-        <Text style={{fontSize: SMALL_TEXT_SIZE, textAlign: 'left', paddingRight: 10}}>
-          Use Image as{'\n'}a Basemap?
-        </Text>
-        <Button
-          disabled={!image.annotated}
-          icon={
-            <Icon
-              type={'ionicon'}
-              size={20}
-              name={'map-outline'}
-              color={image.annotated ? PRIMARY_ACCENT_COLOR : MEDIUMGREY}
-            />
-          }
-          onPress={() => getImageBasemap(image)}
-          type={'clear'}
-        />
-      </View>
+      {!isOnReport && (
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 5}}>
+          <Switch
+            onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
+            style={{height: 20, alignSelf: 'center'}}
+            value={image.annotated}
+          />
+          <Text style={{fontSize: SMALL_TEXT_SIZE, textAlign: 'left', paddingRight: 10}}>
+            Use Image as{'\n'}a Basemap?
+          </Text>
+          <Button
+            disabled={!image.annotated}
+            icon={
+              <Icon
+                type={'ionicon'}
+                size={20}
+                name={'map-outline'}
+                color={image.annotated ? PRIMARY_ACCENT_COLOR : MEDIUMGREY}
+              />
+            }
+            onPress={() => getImageBasemap(image)}
+            type={'clear'}
+          />
+        </View>
+      )}
     </Card>
   );
 };

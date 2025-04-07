@@ -8,7 +8,7 @@ import {ImageModal, useImages} from './index';
 import commonStyles from '../../shared/common.styles';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 
-const ImagesList = ({deleteImage, images, saveImages, saveUpdatedImage}) => {
+const ImagesList = ({deleteImage, images, isOnReport = false, saveImages, saveUpdatedImage}) => {
 
   const [imageThumbnails, setImageThumbnails] = useState({});
   const [imageToView, setImageToView] = useState({});
@@ -52,6 +52,7 @@ const ImagesList = ({deleteImage, images, saveImages, saveUpdatedImage}) => {
         imageThumbnails={imageThumbnails}
         index={index}
         isImageLoadedObj={isImageLoadedObj}
+        isOnReport={isOnReport}
         setImageToView={setImageToView}
         setIsImageLoadedObj={setIsImageLoadedObj}
         setIsImageModalVisible={setIsImageModalVisible}

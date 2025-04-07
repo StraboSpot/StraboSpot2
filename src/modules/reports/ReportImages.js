@@ -50,6 +50,7 @@ const ReportImages = ({setUpdatedImages, updatedImages}) => {
       <ImagesList
         deleteImage={deleteImage}
         images={updatedImages}
+        isOnReport
         saveImages={saveImagesToReport}
         saveUpdatedImage={saveUpdatedImage}
       />
