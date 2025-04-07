@@ -61,24 +61,25 @@ const AddImageOverlayModal = ({
   };
 
   const getImageChoices = () => {
-    const getImageLabel = image => (image.title || 'Untitled') + ' (' + image.width + ' x ' + image.height + ')';
+    const getImageLabel = (img, i) => (img.title || 'Untitled ' + (i + 1))
+      + ' (' + img.width + ' x ' + img.height + ')';
 
-    return spot.properties.images?.map(i => ({
-      label: getImageLabel(i),
-      value: i.id,
+    return spot.properties.images?.map((img, i) => ({
+      label: getImageLabel(img, i),
+      value: img.id,
     })) || [];
   };
 
   // Resize image preserving image ratio
   const onMyChange = async (name, value) => {
-    const image = spot.properties.images.find(i => i.id === overlayFormRef.current?.values?.id);
+    const img = spot.properties.images.find(i => i.id === overlayFormRef.current?.values?.id);
     if (value && name === 'image_width') {
       overlayFormRef.current.setFieldValue('image_width', value);
-      overlayFormRef.current.setFieldValue('image_height', Math.round(image.height / image.width * value));
+      overlayFormRef.current.setFieldValue('image_height', Math.round(img.height / img.width * value));
     }
     else if (value && name === 'image_height') {
       overlayFormRef.current.setFieldValue('image_height', value);
-      overlayFormRef.current.setFieldValue('image_width', Math.round(image.width / image.height * value));
+      overlayFormRef.current.setFieldValue('image_width', Math.round(img.width / img.height * value));
     }
     else if (name === 'image_width' || name === 'image_height') {
       overlayFormRef.current?.setFieldValue('image_height', undefined);

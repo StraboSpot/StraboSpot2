@@ -58,8 +58,9 @@ const StratSectionPage = ({page}) => {
   };
 
   const getImageLabel = (id) => {
-    const image = spot.properties.images.find(i => id === i.id);
-    return image && image.title ? image.title : 'Untitled';
+    const index = spot.properties.images.findIndex(i => id === i.id);
+    const image = spot.properties.images[index];
+    return image && image.title ? image.title : 'Untitled ' + (index + 1);
   };
 
   const renderImageOverlaysSection = () => {
