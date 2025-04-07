@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {MEDIUM_TEXT_SIZE} from '../../shared/styles.constants';
 
 const imageStyles = StyleSheet.create({
   buttonContainer: {
@@ -13,12 +14,14 @@ const imageStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   cardContainer: {
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    margin: 0,
-    // paddingHorizontal: 10,
-    padding: 0,
-    paddingTop: 10,
+    margin: 5,
+    padding: 5,
+  },
+  cardTitle: {
+    alignSelf: 'center',
+    fontSize: MEDIUM_TEXT_SIZE,
+    fontWeight: 'bold',
+    paddingTop: 5,
   },
   closeButtonContainer: {
     position: 'absolute',

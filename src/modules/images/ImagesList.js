@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Switch, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 
-import {Button, Card, Icon, Image} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 
-import {ImageModal, imageStyles, useImages} from './index';
-import placeholderImage from '../../assets/images/noimage.jpg';
+import ImageCard from './ImageCard';
+import {ImageModal, useImages} from './index';
 import commonStyles from '../../shared/common.styles';
-import {isEmpty} from '../../shared/Helpers';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 
 const ImagesList = ({deleteImage, images, saveImages, saveUpdatedImage}) => {
@@ -17,7 +16,7 @@ const ImagesList = ({deleteImage, images, saveImages, saveUpdatedImage}) => {
   const [isImageLoadedObj, setIsImageLoadedObj] = useState({});
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
-  const {getImageBasemap, getImageThumbnailURIs, setAnnotation} = useImages();
+  const {getImageThumbnailURIs} = useImages();
 
   useEffect(() => {
     console.log('UE ImagesList [images]', images);
@@ -46,58 +45,31 @@ const ImagesList = ({deleteImage, images, saveImages, saveUpdatedImage}) => {
     </View>
   );
 
-  const renderImage = (image) => {
+  const renderImageCard = (image, index) => {
     return (
-      <Card containerStyle={imageStyles.cardContainer}>
-        <Card.Title style={{fontSize: 12}}>{image.title ?? image.id}</Card.Title>
-        <Card.Image
-          resizeMode={'contain'}
-          source={imageThumbnails[image.id] ? {uri: imageThumbnails[image.id]} : placeholderImage}
-          onPress={() => viewImage(image)}
-          PlaceholderContent={isEmpty(isImageLoadedObj) || !isImageLoadedObj[image.id] ? <ActivityIndicator/>
-            : <Image style={imageStyles.thumbnail} source={placeholderImage}/>}
-          placeholderStyle={commonStyles.imagePlaceholder}
-          onError={() => {
-            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
-          }}
-          onLoadEnd={() => {
-            if (!isImageLoadedObj[image.id]) setIsImageLoadedObj(i => ({...i, [image.id]: true}));
-          }}
-        />
-
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 15}}>
-          <Text style={{fontSize: 14, textAlign: 'left'}}>Image as {'\n'}Basemap?</Text>
-          <Switch
-            style={{height: 20}}
-            onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
-            value={image.annotated}
-          />
-        </View>
-        <Button
-          type={'clear'}
-          onPress={() => getImageBasemap(image)}
-          title={'View as Image Basemap'}
-          disabled={!image.annotated}
-          disabledTitleStyle={{color: 'white'}}
-          titleStyle={commonStyles.standardButtonText}/>
-      </Card>
-    );
-  };
-
-  const renderImages = () => {
-    return (
-      <FlatList
-        data={images}
-        renderItem={({item}) => renderImage(item)}
-        numColumns={2}
-        ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+      <ImageCard
+        image={image}
+        imageThumbnails={imageThumbnails}
+        index={index}
+        isImageLoadedObj={isImageLoadedObj}
+        setImageToView={setImageToView}
+        setIsImageLoadedObj={setIsImageLoadedObj}
+        setIsImageModalVisible={setIsImageModalVisible}
       />
     );
   };
 
-  const viewImage = (image) => {
-    setImageToView(image);
-    setIsImageModalVisible(true);
+  const renderImages = () => {
+    const sortedImages = JSON.parse(JSON.stringify(images)).sort(
+      (titleA, titleB) => (titleA?.title || 'Untitled').localeCompare(titleB?.title || 'Untitled'));  // alphabetize by name}
+    return (
+      <FlatList
+        data={sortedImages}
+        renderItem={({item, index}) => renderImageCard(item, index)}
+        numColumns={2}
+        ListEmptyComponent={<ListEmptyText text={'No Images'}/>}
+      />
+    );
   };
 
   return (

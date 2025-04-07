@@ -87,6 +87,7 @@ const spotSlice = createSlice({
         || state.selectedSpot.properties.id === foundSpot.properties.id ? foundSpot : state.selectedSpot;
         console.log('Edit Image for selectedSpot', selectedSpotCopy);
         state.selectedSpot = selectedSpotCopy;
+        state.selectedSpot.properties.modified_timestamp = Date.now();
         state.spots = {...state.spots, [foundSpot.properties.id]: foundSpot};
       }
     },
