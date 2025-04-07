@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
-import {Platform, Text, View} from 'react-native';
+import {Platform, ScrollView, Text, View} from 'react-native';
 
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -117,7 +117,7 @@ const Notes = ({zoomToCurrentLocation}) => {
         )
       }
       {!isShowTemplates && (
-        <>
+        <ScrollView>
           <NoteForm
             formRef={formRef}
             initialNotesValues={initialNotesValues}
@@ -128,7 +128,7 @@ const Notes = ({zoomToCurrentLocation}) => {
               onPress={() => saveForm(formRef.current, false)}
             />
           )}
-        </>
+        </ScrollView>
       )}
       <Text style={noteStyle.messageText}>Notes will save automatically if you navigate away.</Text>
     </View>
