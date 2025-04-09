@@ -201,14 +201,18 @@ const BasicPageDetail = ({
   const renderIGSNUploadCheckbox = () => {
     return (
       <View style={{justifyContent: 'flex-start', alignItems: 'center'}}>
-        {!selectedFeature.isOnMySesar && <Text style={sampleStyles.mySesarUpdateDisclaimer}>To upload to your MYSESAR account and obtain an IGSN check below:</Text>}
+        {!selectedFeature.isOnMySesar
+          && (
+            <Text style={sampleStyles.mySesarUpdateDisclaimer}>To upload to your MYSESAR account and obtain an IGSN
+              check below:</Text>
+          )
+        }
         <CheckBox
           title={'Upload to MYSESAR'}
           checked={isIGSNChecked || selectedFeature.isOnMySesar}
           checkedTitle={selectedFeature.isOnMySesar && 'On MYSESAR and IGSN assigned'}
           onPress={() => setIsIGSNChecked(!isIGSNChecked)}
           disabled={selectedFeature.isOnMySesar}
-          // disabledStyle={{color: themes.RED}}
         />
       </View>
     );
@@ -289,8 +293,8 @@ const BasicPageDetail = ({
       }
       else {
         if (formCurrent?.values.isOnMySesar || isIGSNChecked) {
-          setSelectedSample(formCurrent)
-          setIsIGSNModalVisible(true)
+          setSelectedSample(formCurrent);
+          setIsIGSNModalVisible(true);
         }
         else {
           await saveFeature(formCurrent);
@@ -304,13 +308,10 @@ const BasicPageDetail = ({
     }
   };
 
-  const saveFromIGSNModal = async () => {
-    console.log('Saving Sample To SESAR', formRef.current.values);
-    const formCurrent = formRef.current;
+  const onSampleSaved = async (formCurrent) => {
+    console.log('Saving Sample To SESAR', formRef.current?.values);
     await saveFeature(formCurrent);
-    await formCurrent.resetForm();
-    closeDetailView();
-  }
+  };
 
   const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
@@ -336,9 +337,8 @@ const BasicPageDetail = ({
       {isIGSNModalVisible && (
         <IGSNModal
           onModalCancel={() => setIsIGSNModalVisible(false)}
-          sampleValues={formRef.current.values}
-          onSampleSaved={saveFromIGSNModal}
-          closeDetailView={closeDetailView}
+          onSampleSaved={onSampleSaved}
+          ref={formRef}
         />
       )}
       <DeleteOverlay

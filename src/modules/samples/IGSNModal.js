@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, forwardRef} from 'react';
 import {ScrollView, Text, useWindowDimensions, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import {Button, Overlay, Image} from 'react-native-elements';
-import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import IGSNModalStyles from './IGSNModal.styles';
@@ -19,14 +18,12 @@ import Loading from '../../shared/ui/Loading';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSelectedUserCode, setSesarToken, updatedKey} from '../user/userProfile.slice';
 
-const IGNSModal = (
-  {
-    closeDetailView,
-    sampleValues,
-    onModalCancel,
-    onSampleSaved,
-  },
-) => {
+const IGNSModal = forwardRef(({
+                                sampleValues,
+                                onModalCancel,
+                                onSampleSaved,
+                              }, formRef) => {
+  const currentFormValues = formRef.current?.values;
   const {height} = useWindowDimensions();
 
   const dispatch = useDispatch();
@@ -42,20 +39,16 @@ const IGNSModal = (
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
-  const toast = useToast();
 
-  const [changeUserCode, setChangeUserCode] = useState(false);
   const [commonFields, setCommonFields] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [isOrcidSignInPrompt, setIsOrcidSignInPrompt] = useState(false);
   const [checkSesarAuth, setCheckSesarAuth] = useState(true);
   const [errorView, setErrorView] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  // const [subtitle, setSubtitle] = useState();
   const [isUploaded, setIsUploaded] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [modalPage, setModalPage] = useState('auth');
-  const [sampleToUpload, setSampleToUpload] = useState(sampleValues);
 
   useEffect(() => {
     if (!sesar) {
@@ -91,17 +84,26 @@ const IGNSModal = (
     else sesarAuth().catch(err => console.error('Error logging into SESAR', err));
   }, [route.params]);
 
-  const handleRegisterOnPress = async () => {
-    try {
-      onModalCancel();
-      setModalPage('auth');
-      const id = toast.show('Uploading Sample to MYSESAR...', {placement: 'center'});
+  const handleConfirmOnPress = () => {
+    onSampleSaved(formRef.current);
+  };
 
-      const res = await uploadSample(sampleToUpload);
+  const registerSample = async () => {
+    try {
+      let res;
+      setIsLoading(true);
+      if (currentFormValues.isOnMySesar) {
+        console.log('UPDATING SESAR');
+        res = await updateSampleIsSesar(currentFormValues);
+        setIsUploaded(true);
+      }
+      else {
+        res = await uploadSample(currentFormValues);
+        setIsUploaded(true);
+      }
       setStatusMessage(res.status);
-      // setIsUploaded(prevState => true);
-      toast.update(id, res.status, {type: 'success', duration: 4000});
-      onSampleSaved();
+      await formRef.current.setValues({...formRef.current.values, Sample_IGSN: res.igsn, isOnMySesar: true});
+      console.log('Updated FormRef', formRef.current);
     }
     catch (err) {
       const errorMessage = err.toString().split(': ');
@@ -122,38 +124,22 @@ const IGNSModal = (
 
   const sesarAuth = async () => {
     try {
+      setModalPage('content');
       console.log('SESAR AUTH');
       setStatusMessage('Authenticating with SESAR...');
       const token = await authenticateWithSesar();
       if (token) {
-        if (isEmpty(sesar.userCodes) && !sampleToUpload.isOnMySesar) {
+        if (isEmpty(sesar.userCodes) && !currentFormValues.isOnMySesar) {
           setIsLoading(true);
           await getAndSaveSesarCode(token);
         }
-        else {
-          if (sampleToUpload.isOnMySesar) {
-            setStatusMessage('Updating Sample...');
-            setIsLoading(true);
-            const id = toast.show('Updating Sample on MYSESAR...', {placement: 'center'});
-            const res = await updateSampleIsSesar(sampleToUpload);
-            if (res.status) {
-              onModalCancel();
-              closeDetailView();
-              toast.update(id, res.status, {type: 'success', duration: 4000});
-            }
-          }
-          else {
-            setStatusMessage('This is the the data that will be uploaded to SESAR:');
-            setModalPage('content');
-          }
-        }
+        await registerSample();
       }
       else setModalPage('orcidSignIn');
       setIsLoading(false);
     }
     catch (error) {
       setIsLoading(false);
-      toast.hideAll();
       setErrorMessage(error.toString());
       setModalPage('error');
     }
@@ -163,12 +149,8 @@ const IGNSModal = (
     switch (modalPage) {
       case 'error':
         return renderErrorView('error');
-      case 'changeUserCode':
-        return renderUserCodeSelection();
       case 'content':
         return renderUploadContent();
-      case 'updated':
-        return renderUploadedSample();
       case 'orcidSignIn':
         return renderOrcidSignIn();
       default:
@@ -206,7 +188,6 @@ const IGNSModal = (
           source={OrcidLogo}
           style={{height: 60, width: 200}}
         />
-
         {isLoading
           ? (
             <Text style={{fontSize: 18, textAlign: 'center', fontWeight: 'bold', padding: 20}}>
@@ -238,35 +219,35 @@ const IGNSModal = (
     );
   };
 
-  const renderUserCodeSelection = () => {
-    return (
-      <View>
-        <Picker
-          selectedValue={sesar.selectedUserCode}
-          onValueChange={(itemValue, itemIndex) => {
-            console.log(itemValue, itemIndex);
-            dispatch(setSelectedUserCode(itemValue));
-          }}
-        >
-          {sesar.userCodes.map((userCode) => {
-              return (
-                <Picker.Item
-                  key={userCode}
-                  label={userCode}
-                  value={userCode}
-                />
-              );
-            },
-          )}
-        </Picker>
-        <Button
-          title={'Select User Code'}
-          onPress={() => setModalPage('content')}
-          type={'clear'}
-        />
-      </View>
-    );
-  };
+  // const renderUserCodeSelection = () => {
+  //   return (
+  //     <View>
+  //       <Picker
+  //         selectedValue={sesar.selectedUserCode}
+  //         onValueChange={(itemValue, itemIndex) => {
+  //           console.log(itemValue, itemIndex);
+  //           dispatch(setSelectedUserCode(itemValue));
+  //         }}
+  //       >
+  //         {sesar.userCodes.map((userCode) => {
+  //             return (
+  //               <Picker.Item
+  //                 key={userCode}
+  //                 label={userCode}
+  //                 value={userCode}
+  //               />
+  //             );
+  //           },
+  //         )}
+  //       </Picker>
+  //       <Button
+  //         title={'Select User Code'}
+  //         onPress={() => setModalPage('content')}
+  //         type={'clear'}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   const formatContentItems = (item) => {
     if (item.sesarKey === 'longitude' || item.sesarKey === 'latitude') {
@@ -284,24 +265,11 @@ const IGNSModal = (
   };
 
   const renderContentItems = () => {
-    const sesarMappedObj = straboSesarMapping(sampleToUpload);
+    const sesarMappedObj = straboSesarMapping(currentFormValues);
     return (
       <>
         <Text style={IGSNModalStyles.uploadContentDescription}>{statusMessage}</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Text style={IGSNModalStyles.uploadContentText}>User Code: {sesar.selectedUserCode}</Text>
-          {!sampleToUpload.isOnMySesar && (
-            <Button
-              containerStyle={{marginLeft: 10}}
-              type={'outline'}
-              titleStyle={{fontWeight: 'bold', fontSize: 12}}
-              title={'Switch User'}
-              onPress={() => setModalPage('changeUserCode')}
-            />
-          )}
-        </View>
-        {sesarMappedObj.map((item) => {
-          if (item.sesarKey === 'user_code') return null;
+        {isUploaded && sesarMappedObj.map((item) => {
           return (
             <View key={item.sesarKey}
                   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
@@ -317,10 +285,10 @@ const IGNSModal = (
 
   const renderUploadContent = () => {
     console.log('RENDER CONTENT', modalPage);
-    console.log('SAMPLE', sampleToUpload.sample_id_name);
+    console.log('SAMPLE', currentFormValues.sample_id_name);
     return (
       <>
-        {!isEmpty(sampleToUpload.sample_id_name) && (
+        {!isEmpty(currentFormValues.sample_id_name) && (
           <ScrollView>
             <View style={{marginLeft: 30}}>
               <View style={{alignItems: 'flex-start'}}>
@@ -328,22 +296,8 @@ const IGNSModal = (
               </View>
             </View>
           </ScrollView>
-        )
-          //   : (
-          //   <View style={{padding: 20, marginVertical: 20}}>
-          //     <Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>
-          //   </View>
-          // )
-        }
+        )}
       </>
-    );
-  };
-
-  const renderUploadedSample = () => {
-    return (
-      <View style={{padding: 20, marginVertical: 20}}>
-        <Text style={{fontSize: 18, textAlign: 'center'}}>{statusMessage}</Text>
-      </View>
     );
   };
 
@@ -355,14 +309,6 @@ const IGNSModal = (
       }}
       animationType={'fade'}
     >
-      <Button
-        title={'X'}
-        type={'clear'}
-        titleStyle={{color: 'black'}}
-        containerStyle={{alignItems: 'flex-end'}}
-        onPress={onModalCancel}
-      />
-
       <View style={IGSNModalStyles.container}>
         <View style={IGSNModalStyles.sesarImageContainer}>
           {modalPage !== 'orcidSignIn'
@@ -376,11 +322,11 @@ const IGNSModal = (
         {setPage()}
       </View>
       <View style={overlayStyles.buttonContainer}>
-        {!sampleToUpload.isOnMySesar && modalPage === 'content' && !isUploaded
+        {modalPage === 'content' && isUploaded
           && (
             <Button
-              onPress={handleRegisterOnPress}
-              title={'Register Sample'}
+              onPress={handleConfirmOnPress}
+              title={'Ok'}
               containerStyle={{padding: 10}}
               buttonStyle={{backgroundColor: 'black', padding: 10}}
             />
@@ -389,6 +335,6 @@ const IGNSModal = (
       <Loading isLoading={isLoading} style={{backgroundColor: 'transparent'}}/>
     </Overlay>
   );
-};
+});
 
 export default IGNSModal;
