@@ -267,10 +267,10 @@ const useServerRequests = () => {
     }
   };
 
-  const postToSesar = async (xmlData, accessToken) => {
+  const postToSesar = async (xmlData) => {
     try {
       const myHeaders = new Headers();
-      myHeaders.append('Authorization', `Bearer ${accessToken}`);
+      myHeaders.append('Authorization', `Bearer ${sesar.sesarToken.access}`);
       myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
 
       const requestOptions = {

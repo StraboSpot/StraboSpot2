@@ -3,9 +3,7 @@ import {Text, View} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import IGSNModal from './IGSNModal';
 import SamplesList from './SamplesList';
-import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {setModalVisible} from '../home/home.slice';
@@ -52,7 +50,6 @@ const SamplesPage = ({page}) => {
           }}
           page={page}
           selectedFeature={selectedSample}
-          openModal={openModal}
         />
       </>
     );
@@ -75,7 +72,6 @@ const SamplesPage = ({page}) => {
         <SamplesList
           onPress={editSample}
           page={page}
-          openModal={openModal}
         />
       </View>
     );
