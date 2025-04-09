@@ -5,6 +5,7 @@ import {Picker} from '@react-native-picker/picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import {Button, Overlay, Image} from 'react-native-elements';
+import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 
 import IGSNModalStyles from './IGSNModal.styles';
@@ -20,10 +21,10 @@ import {setSelectedUserCode, setSesarToken, updatedKey} from '../user/userProfil
 
 const IGNSModal = (
   {
+    closeDetailView,
     sampleValues,
     onModalCancel,
-    onSavePress,
-    selectedFeature,
+    onSampleSaved,
   },
 ) => {
   const {height} = useWindowDimensions();
@@ -41,6 +42,7 @@ const IGNSModal = (
   const {encoded_login, sesar} = useSelector(state => state.user);
 
   const {getSesarToken, getOrcidToken} = useServerRequests();
+  const toast = useToast();
 
   const [changeUserCode, setChangeUserCode] = useState(false);
   const [commonFields, setCommonFields] = useState({});
@@ -71,19 +73,19 @@ const IGNSModal = (
   }, []);
 
   useEffect(() => {
-    setStatusMessage('Authenticating with SESAR...');
     if (route.params?.orcidToken) {
       getSesarToken(route.params?.orcidToken)
         .then((token) => {
           console.log('SESAR TOKEN', token);
           dispatch(setSesarToken(token));
           navigation.setParams({orcidToken: undefined});
+          setModalPage('content');
         })
         .catch((error) => {
           console.error(error);
           setCheckSesarAuth(false);
           setErrorMessage(error.toString());
-          setErrorView(true);
+          setModalPage('error');
         });
     }
     else sesarAuth().catch(err => console.error('Error logging into SESAR', err));
@@ -91,10 +93,15 @@ const IGNSModal = (
 
   const handleRegisterOnPress = async () => {
     try {
+      onModalCancel();
+      setModalPage('auth');
+      const id = toast.show('Uploading Sample to MYSESAR...', {placement: 'center'});
+
       const res = await uploadSample(sampleToUpload);
       setStatusMessage(res.status);
-      setIsUploaded(prevState => true);
-      setModalPage('updated')
+      // setIsUploaded(prevState => true);
+      toast.update(id, res.status, {type: 'success', duration: 4000});
+      onSampleSaved();
     }
     catch (err) {
       const errorMessage = err.toString().split(': ');
@@ -102,7 +109,7 @@ const IGNSModal = (
         (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
       console.error(errorMessage);
       setErrorMessage(reformattedErrorMessage);
-      setModalPage(null);
+      setModalPage('error');
       setIsUploaded(false);
     }
   };
@@ -115,23 +122,24 @@ const IGNSModal = (
 
   const sesarAuth = async () => {
     try {
+      console.log('SESAR AUTH');
+      setStatusMessage('Authenticating with SESAR...');
       const token = await authenticateWithSesar();
       if (token) {
         if (isEmpty(sesar.userCodes) && !sampleToUpload.isOnMySesar) {
           setIsLoading(true);
           await getAndSaveSesarCode(token);
-          // setModalPage('changeUserCode')
-          setIsLoading(false);
         }
         else {
           if (sampleToUpload.isOnMySesar) {
+            setStatusMessage('Updating Sample...');
             setIsLoading(true);
-            setModalPage('updated');
+            const id = toast.show('Updating Sample on MYSESAR...', {placement: 'center'});
             const res = await updateSampleIsSesar(sampleToUpload);
             if (res.status) {
-              setIsLoading(false);
-              setIsUploaded(true);
-              setStatusMessage(res.status);
+              onModalCancel();
+              closeDetailView();
+              toast.update(id, res.status, {type: 'success', duration: 4000});
             }
           }
           else {
@@ -145,15 +153,16 @@ const IGNSModal = (
     }
     catch (error) {
       setIsLoading(false);
+      toast.hideAll();
       setErrorMessage(error.toString());
-      setModalPage('');
+      setModalPage('error');
     }
   };
 
   const setPage = () => {
     switch (modalPage) {
-      case 'auth':
-        return renderSesarAuth();
+      case 'error':
+        return renderErrorView('error');
       case 'changeUserCode':
         return renderUserCodeSelection();
       case 'content':
@@ -163,7 +172,7 @@ const IGNSModal = (
       case 'orcidSignIn':
         return renderOrcidSignIn();
       default:
-        return renderErrorView();
+        return renderSesarAuth();
     }
   };
 
@@ -176,7 +185,8 @@ const IGNSModal = (
     }
     catch (error) {
       console.error(error.toString());
-      setErrorView(true);
+      setErrorMessage(error.toString());
+      setModalPage('error');
     }
   };
 
@@ -343,6 +353,7 @@ const IGNSModal = (
         ...overlayStyles.overlayContainer,
         maxHeight: height * 0.80, width: 500,
       }}
+      animationType={'fade'}
     >
       <Button
         title={'X'}

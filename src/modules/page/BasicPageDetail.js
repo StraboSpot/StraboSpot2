@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button} from 'react-native-elements';
+import {Button, CheckBox} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';
@@ -15,6 +15,7 @@ import GeoFieldsInputs from '../geography/GeoFieldInputs';
 import NoteForm from '../notes/NoteForm';
 import usePetrology from '../petrology/usePetrology';
 import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
+import IGSNModal from '../samples/IGSNModal';
 import useSamples from '../samples/useSamples';
 import {LITHOLOGY_SUBPAGES} from '../sed/sed.constants';
 import useSed from '../sed/useSed';
@@ -37,8 +38,10 @@ const BasicPageDetail = ({
   const spot = useSelector(state => state.spot.selectedSpot);
   const {isInternetReachable} = useSelector(state => state.connections.isOnline);
 
-  const [IGSNChecked, setIGSNChecked] = useState(false);
+  const [isIGSNChecked, setIsIGSNChecked] = useState(false);
   const [isDeleteOverlayVisible, setIsDeleteOverlayVisible] = useState(false);
+  const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
+  const [sampleFormRef, setSelectedSample] = useState({});
 
   const {showErrors, validateForm} = useForm();
   const {deletePetFeature, onMineralChange, savePetFeature} = usePetrology();
@@ -195,6 +198,22 @@ const BasicPageDetail = ({
     );
   };
 
+  const renderIGSNUploadCheckbox = () => {
+    return (
+      <View style={{justifyContent: 'flex-start', alignItems: 'center'}}>
+        {!selectedFeature.isOnMySesar && <Text style={sampleStyles.mySesarUpdateDisclaimer}>To upload to your MYSESAR account and obtain an IGSN check below:</Text>}
+        <CheckBox
+          title={'Upload to MYSESAR'}
+          checked={isIGSNChecked || selectedFeature.isOnMySesar}
+          checkedTitle={selectedFeature.isOnMySesar && 'On MYSESAR and IGSN assigned'}
+          onPress={() => setIsIGSNChecked(!isIGSNChecked)}
+          disabled={selectedFeature.isOnMySesar}
+          // disabledStyle={{color: themes.RED}}
+        />
+      </View>
+    );
+  };
+
   const renderNotesField = () => {
     return (
       <View style={{flex: 1}}>
@@ -249,7 +268,6 @@ const BasicPageDetail = ({
 
       if (page.key === PAGE_KEYS.SAMPLES && editedFeatureData.sample_id_name) {
         await checkSampleName(editedFeatureData.sample_id_name);
-        if (editedFeatureData.isOnMySesar) openModal(editedFeatureData);
       }
     }
     catch (err) {
@@ -270,15 +288,29 @@ const BasicPageDetail = ({
         await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
       }
       else {
-        await saveFeature(formCurrent);
-        await formCurrent.resetForm();
-        closeDetailView();
+        if (formCurrent?.values.isOnMySesar || isIGSNChecked) {
+          setSelectedSample(formCurrent)
+          setIsIGSNModalVisible(true)
+        }
+        else {
+          await saveFeature(formCurrent);
+          await formCurrent.resetForm();
+          closeDetailView();
+        }
       }
     }
     catch (err) {
       console.error('ERROR saving form', err);
     }
   };
+
+  const saveFromIGSNModal = async () => {
+    console.log('Saving Sample To SESAR', formRef.current.values);
+    const formCurrent = formRef.current;
+    await saveFeature(formCurrent);
+    await formCurrent.resetForm();
+    closeDetailView();
+  }
 
   const saveTemplateForm = async (formCurrent) => {
     await formCurrent.submitForm();
@@ -296,9 +328,18 @@ const BasicPageDetail = ({
             getIsDisabled={(!isInternetReachable && selectedFeature.isOnMySesar)}
           />
           {page.key === PAGE_KEYS.SAMPLES && selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
+          {page.key === PAGE_KEYS.SAMPLES && renderIGSNUploadCheckbox()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
+      )}
+      {isIGSNModalVisible && (
+        <IGSNModal
+          onModalCancel={() => setIsIGSNModalVisible(false)}
+          sampleValues={formRef.current.values}
+          onSampleSaved={saveFromIGSNModal}
+          closeDetailView={closeDetailView}
+        />
       )}
       <DeleteOverlay
         isVisible={isDeleteOverlayVisible}
