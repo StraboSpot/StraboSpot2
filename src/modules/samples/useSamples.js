@@ -177,7 +177,6 @@ const useSamples = () => {
   };
 
   const postSampleToSesar = async (xmlSchema, sample, isUpdating) => {
-
     const response = isUpdating ? await updateSampleWithSesar(xmlSchema) : await postToSesar(xmlSchema, sesar.sesarToken.access);
     const resText = await response.text();
     const json = parseXML(resText);
@@ -186,9 +185,10 @@ const useSamples = () => {
       isEmpty(sample.Sample_IGSN) && addIGSNToSample(json.results.sample, sample);
       return json.results.sample;
     }
-    else {
-      throw Error('Unable to complete request. Please try again later.');
+    else if (json.results.sample.error) {
+      throw Error(json.results.sample.error);
     }
+    else throw Error('Something happened. Please try again later.');
   };
 
   const uploadSample = async (sample) => {
