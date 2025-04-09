@@ -8,7 +8,6 @@ const initialMapsState = {
   currentImageBasemap: undefined,
   customMaps: {},
   freehandFeatureCoords: undefined,
-  isAllSymbolsOn: true,
   isMapMoved: true,
   isShowOnly1stMeas: false,
   isShowSpotLabelsOn: true,
@@ -57,11 +56,6 @@ const mapsSlice = createSlice({
     selectedCustomMapToEdit(state, action) {
       state.selectedCustomMapToEdit = action.payload;
     },
-    setAllSymbolsToggled(state, action) {
-      // console.log('Map All Symbols Toggled', action.payload);
-      state.isAllSymbolsOn = action.payload;
-      state.symbolsOn = action.payload ? state.mapSymbols : state.symbolsOn;
-    },
     setCenter(state, action) {
       state.center = action.payload;
     },
@@ -100,7 +94,6 @@ const mapsSlice = createSlice({
     setSymbolsDisplayed(state, action) {
       // console.log('Map Symbols Displayed', action.payload);
       state.symbolsOn = action.payload;
-      state.isAllSymbolsOn = action.payload.length < state.mapSymbols.length ? false : state.isAllSymbolsOn;
     },
     setTagTypeForColor(state, action) {
       state.tagTypeForColor = action.payload;
@@ -132,7 +125,6 @@ export const {
   deletedCustomMap,
   resetMapState,
   selectedCustomMapToEdit,
-  setAllSymbolsToggled,
   setCenter,
   setCurrentBasemap,
   setCurrentImageBasemap,

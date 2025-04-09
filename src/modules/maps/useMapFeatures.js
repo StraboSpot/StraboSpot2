@@ -1,8 +1,7 @@
-import * as turf from '@turf/turf';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {setMapSymbols} from './maps.slice';
-import {isEmpty} from '../../shared/Helpers';
+import {setMapSymbols, setSymbolsDisplayed} from './maps.slice';
+import {isEmpty, isEqualUnordered} from '../../shared/Helpers';
 import {useSpots} from '../spots';
 
 const useMapFeatures = () => {
@@ -11,11 +10,38 @@ const useMapFeatures = () => {
   const {getMappableSpots} = useSpots();
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const isShowOnly1stMeas = useSelector(state => state.map.isShowOnly1stMeas);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
   const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const stratSection = useSelector(state => state.map.stratSection);
+
+  // Filter Spots currently visible on the map by feature type (i.e. toggled on in the Map Symbols Overlay)
+  const filterByFeatureType = (mappedSpots) => {
+    console.log('selectedSymbols', selectedSymbols);
+    const selectedSymbolsCleaned = selectedSymbols.reduce((acc, symbol) => {
+      return mapSymbols.includes(symbol) ? [...acc, symbol] : acc;
+    }, []);
+    console.log('symbolsToCleanup', selectedSymbolsCleaned);
+
+    if (!isEqualUnordered(selectedSymbols, selectedSymbolsCleaned)) {
+      dispatch(setSymbolsDisplayed(selectedSymbolsCleaned));
+    }
+
+    const filteredFeatures = mappedSpots.filter((spot) => {
+      return (!spot?.properties && selectedSymbolsCleaned.includes('unspecified'))
+        || (!spot.properties.orientation_data && !spot.properties.orientation
+          && selectedSymbolsCleaned.includes('unspecified'))
+        || (spot.properties.orientation_data
+          && (!isEmpty((spot.properties.orientation_data.filter(
+            orientation => selectedSymbolsCleaned.includes(orientation?.feature_type)
+              || (!orientation?.feature_type) && selectedSymbolsCleaned.includes('unspecified'))))))
+        || (spot.properties.orientation
+          && ((spot.properties.orientation.feature_type
+              && selectedSymbolsCleaned.includes(spot.properties.orientation.feature_type))
+            || (!spot.properties.orientation.feature_type && selectedSymbolsCleaned.includes('unspecified'))));
+    });
+    return filteredFeatures;
+  };
 
   // All Spots mapped on current map
   const getAllMappedSpots = () => {
@@ -43,9 +69,6 @@ const useMapFeatures = () => {
 
     let mappedSpots = getAllMappedSpots();
     updateMapSymbols(mappedSpots);
-
-    // If any map symbol toggle is ON filter out the Point features & Spots that are not visible
-    if (!isAllSymbolsOn) mappedSpots = getVisibleMappedSpots(mappedSpots);
 
     // Separate selected Spots and not selected Spots (Point Spots need to be in both
     // selected and not selected since the selected symbology is a halo around the point)
@@ -93,16 +116,7 @@ const useMapFeatures = () => {
       }
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
-    return mappedFeatures;
-  };
-
-  // Point Spots currently visible on the map (i.e. not toggled off in the Map Symbol Switcher)
-  const getVisibleMappedSpots = (mappedSpots) => {
-    return (
-      mappedSpots.filter(spot => turf.getType(spot) !== 'Point'
-        || !isEmpty(spot?.properties?.orientation_data?.filter(
-          orientation => selectedSymbols.includes(orientation?.feature_type))))
-    );
+    return filterByFeatureType(mappedFeatures);
   };
 
   // Gather and set the feature types that are present in the mapped Spots
@@ -110,11 +124,14 @@ const useMapFeatures = () => {
     const featureTypes = mappedSpots.reduce((acc, spot) => {
       const spotFeatureTypes = spot.properties.orientation_data
         && spot.properties.orientation_data.reduce((acc1, orientation) => {
-          return orientation?.feature_type ? [...new Set([...acc1, orientation.feature_type])] : acc1;
+          return [...new Set([...acc1, orientation?.feature_type ? orientation.feature_type : 'unspecified'])];
         }, []);
-      return spotFeatureTypes ? [...new Set([...acc, ...spotFeatureTypes])] : acc;
+      return [...new Set([...acc, ...(spotFeatureTypes ? spotFeatureTypes : ['unspecified'])])];
     }, []);
-    if (JSON.stringify(mapSymbols) !== JSON.stringify(featureTypes)) dispatch(setMapSymbols(featureTypes));
+    if (JSON.stringify(mapSymbols) !== JSON.stringify(featureTypes)) {
+      featureTypes.sort();
+      dispatch(setMapSymbols(featureTypes));
+    }
   };
 
   return {

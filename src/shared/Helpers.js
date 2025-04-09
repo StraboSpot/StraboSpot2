@@ -197,6 +197,11 @@ export const isEqual = (a, b) => {
   return isEqual;
 };
 
+// Compare two arrays regardless of order
+export const isEqualUnordered = (a, b) => {
+  return JSON.stringify(JSON.parse(JSON.stringify(a)).sort()) === JSON.stringify(JSON.parse(JSON.stringify(b)).sort());
+};
+
 // Convert a string to title case and properly handles (s) in a word by keeping the s lowercase
 export function toTitleCase(str) {
   return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');

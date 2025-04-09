@@ -3,6 +3,7 @@ import {useWindowDimensions} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import {isEqualUnordered} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import useMap from '../../maps/useMap';
@@ -13,9 +14,10 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
   const {height} = useWindowDimensions();
   const {setBasemap} = useMap();
 
-  const isAllSymbolsOn = useSelector(state => state.map.isAllSymbolsOn);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const mapSymbols = useSelector(state => state.map.mapSymbols);
   const stratSection = useSelector(state => state.map.stratSection);
+  const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
 
   return (
     <>
@@ -25,7 +27,7 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         onPress={() => toggleDialog('mapActionsMenuVisible')}
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
-      {isAllSymbolsOn
+      {isEqualUnordered(mapSymbols, symbolsOn)
         ? (
           <IconButton
             source={SMALL_SCREEN ? require('../../../assets/icons/Symbols.png')
