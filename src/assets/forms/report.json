@@ -17,7 +17,7 @@
     {
       "type": "select_one xd4uv60",
       "name": "report_privacy",
-      "label": "Privacy",
+      "label": "Intended Audience",
       "required": "false"
     },
     {
@@ -62,25 +62,20 @@
     },
     {
       "list_name": "xd4uv60",
-      "name": "group",
-      "label": "Group"
+      "name": "anyone",
+      "label": "Anyone"
     },
     {
       "list_name": "xd4uv60",
-      "name": "public",
-      "label": "Public",
+      "name": "collaborators",
+      "label": "Collaborators",
       "order": 1
     },
     {
       "list_name": "xd4uv60",
-      "name": "admin",
-      "label": "Admin",
+      "name": "only_me",
+      "label": "Only me",
       "order": 2
-    },
-    {
-      "list_name": "xd4uv60",
-      "name": "private",
-      "label": "Private"
     }
   ]
 }
