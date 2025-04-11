@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 
-import {Button, CheckBox, Icon, Overlay, SearchBar} from 'react-native-elements';
+import {Button, Icon, SearchBar} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import {useSpots} from '.';
@@ -12,13 +12,9 @@ import * as themes from '../../shared/styles.constants';
 import {
   DARKGREY,
   PRIMARY_BACKGROUND_COLOR,
-  PRIMARY_TEXT_COLOR,
-  PRIMARY_TEXT_SIZE,
-  SECONDARY_BACKGROUND_COLOR,
 } from '../../shared/styles.constants';
-import SectionDivider from '../../shared/ui/SectionDivider';
+import PickerOverlay from '../../shared/ui/PickerOverlay';
 import UpdateSpotsInMapExtentButton from '../../shared/ui/UpdateSpotsInMapExtentButton';
-import overlayStyles from '../home/overlays/overlay.styles';
 
 const SpotFilters = ({
                        activeSpots,
@@ -149,30 +145,14 @@ const SpotFilters = ({
           type={'clear'}
         />
       </View>
-      <Overlay
-        isVisible={isPickerVisible}
-        onBackdropPress={closePicker}
-        overlayStyle={overlayStyles.overlayContainer}
-      >
-        <SectionDivider dividerText={'Sort'}/>
-        <FlatList
-          data={Object.values(SORT_ORDER)}
-          renderItem={({item}) => {
-            return (
-              <CheckBox
-                checked={item === sortOrder}
-                checkedIcon={'check'}
-                containerStyle={{backgroundColor: SECONDARY_BACKGROUND_COLOR, borderWidth: 0}}
-                iconType={'material'}
-                onPress={() => updateSort(item)}
-                title={item}
-                titleStyle={{color: PRIMARY_TEXT_COLOR, size: PRIMARY_TEXT_SIZE}}
-                uncheckedIcon={''}
-              />
-            );
-          }}
-        />
-      </Overlay>
+      <PickerOverlay
+        data={Object.values(SORT_ORDER)}
+        value={sortOrder}
+        isPickerVisible={isPickerVisible}
+        closePicker={closePicker}
+        onSelect={item => updateSort(item)}
+        dividerText={'Sort'}
+      />
     </>
   );
 };

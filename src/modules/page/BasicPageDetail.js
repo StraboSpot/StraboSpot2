@@ -9,6 +9,7 @@ import {PAGE_KEYS} from './page.constants';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
+import PickerOverlay from '../../shared/ui/PickerOverlay';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import {Form, useForm} from '../form';
 import GeoFieldsInputs from '../geography/GeoFieldInputs';
@@ -156,6 +157,14 @@ const BasicPageDetail = ({
       : false;
   };
 
+  const openPicker = () => {
+    setIsPickerVisible(true);
+  };
+
+  const closePicker = () => {
+    setIsPickerVisible(false);
+  };
+
   const renderFormFields = () => {
     const formName = getFormName();
     return (
@@ -230,6 +239,38 @@ const BasicPageDetail = ({
           title={'Delete ' + title + (isTemplate ? ' Template' : '')}
           type={'clear'}
           onPress={() => isTemplate ? deleteTemplate() : deleteFeatureConfirm()}
+        />
+      </View>
+    );
+  };
+
+  const renderIGSNUserCodePicker = () => {
+    return (
+      <View style={{padding: 10, marginLeft: 20}}>
+        {!selectedFeature?.isOnMySesar && <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+          <Text style={{fontSize: themes.MEDIUM_TEXT_SIZE, marginRight: 20}}>Sesar User Code:</Text>
+           <Button
+            title={isEmpty(selectedUserCode) ? '-- Sesar User Code --' : selectedUserCode}
+            type={'clear'}
+            iconRight
+            icon={<Icon
+              name={'chevron-down'}
+              containerStyle={{paddingLeft: 5}}
+              type={'ionicon'}
+            />}
+            disabled={selectedFeature.isOnMySesar}
+            disabledTitleStyle={{color: themes.BLACK}}
+            onPress={openPicker}
+            titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE, color: themes.BLACK}}
+          />
+        </View>}
+        <PickerOverlay
+          isPickerVisible={isPickerVisible}
+          data={[...userCodes, null]}
+          onSelect={itemValue => dispatch(setSelectedUserCode(itemValue))}
+          value={selectedUserCode}
+          closePicker={closePicker}
+          dividerText={'Select User Code'}
         />
       </View>
     );
@@ -330,6 +371,7 @@ const BasicPageDetail = ({
           />
           {page.key === PAGE_KEYS.SAMPLES && selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
           {page.key === PAGE_KEYS.SAMPLES && renderIGSNUploadCheckbox()}
+          {page.key === PAGE_KEYS.SAMPLES && isIGSNChecked && renderIGSNUserCodePicker()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>
