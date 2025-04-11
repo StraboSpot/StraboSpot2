@@ -4,10 +4,7 @@ import {XMLParser} from 'fast-xml-parser';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
-import {isEmpty} from '../../shared/Helpers';
 import useForm from '../form/useForm';
-import {PAGE_KEYS} from '../page/page.constants';
-import {editedSpotProperties} from '../spots/spots.slice';
 import {setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
 
 const useSamples = () => {
@@ -149,7 +146,7 @@ const useSamples = () => {
   const straboSesarMapping = (sampleValue) => {
     const mappedObj = [
       {label: 'IGSN:', sesarKey: 'igsn', value: sampleValue?.Sample_IGSN}, // required when updating sample
-      {label: 'User Code', sesarKey: 'user_code', value: sesar?.selectedUserCode}, //required
+      {label: 'User Code', sesarKey: 'user_code', value: sampleValue.sesarUserCode}, //required
       {label: 'Sample Type:', sesarKey: 'sample_type', value: getLabel(sampleValue?.sample_type, formName)}, //required
       {label: 'Sample Name:', sesarKey: 'name', value: sampleValue.sample_id_name}, //required
       {label: 'Material:', sesarKey: 'material', value: getMaterialName(sampleValue?.material_type)}, //required

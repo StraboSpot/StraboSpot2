@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {unixToDateTime} from '../../shared/Helpers';
 
 const initialUserState = {
   email: null,
@@ -9,7 +8,7 @@ const initialUserState = {
   mapboxToken: null,
   name: null,
   sesar: {
-    selectedUserCode: '',
+    selectedUserCode: null,
     userCodes: [],
     sesarToken: {
       access: '',
