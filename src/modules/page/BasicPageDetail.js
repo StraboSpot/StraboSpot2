@@ -262,8 +262,10 @@ const BasicPageDetail = ({
       <View style={{padding: 10, marginLeft: 20}}>
         {!selectedFeature?.isOnMySesar && <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
           <Text style={{fontSize: themes.MEDIUM_TEXT_SIZE, marginRight: 20}}>Sesar User Code:</Text>
-           <Button
-            title={isEmpty(selectedUserCode) ? '-- Sesar User Code --' : selectedUserCode}
+          {!isEmpty(userCodes)
+            && (
+              <Button
+            title={selectedUserCode}
             type={'clear'}
             iconRight
             icon={<Icon
@@ -276,6 +278,7 @@ const BasicPageDetail = ({
             onPress={openPicker}
             titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE, color: themes.BLACK}}
           />
+            )}
         </View>}
         <PickerOverlay
           isPickerVisible={isPickerVisible}
@@ -384,8 +387,8 @@ const BasicPageDetail = ({
             getIsDisabled={(!isInternetReachable && isIGSNChecked) || (isIGSNChecked && isEmpty(selectedUserCode))}
           />
           {page.key === PAGE_KEYS.SAMPLES && selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
-          {page.key === PAGE_KEYS.SAMPLES && renderIGSNUploadCheckbox()}
-          {page.key === PAGE_KEYS.SAMPLES && isIGSNChecked && renderIGSNUserCodePicker()}
+          {page.key === PAGE_KEYS.SAMPLES && isInternetReachable && renderIGSNUploadCheckbox()}
+          {page.key === PAGE_KEYS.SAMPLES && isIGSNChecked && !isEmpty(userCodes) && renderIGSNUserCodePicker()}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>

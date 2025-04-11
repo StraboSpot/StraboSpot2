@@ -1,6 +1,7 @@
 import React, {useEffect, useState, forwardRef} from 'react';
 import {ScrollView, Text, useWindowDimensions, View} from 'react-native';
 
+import {Picker} from '@react-native-picker/picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import {Button, Overlay, Image} from 'react-native-elements';
@@ -21,6 +22,7 @@ const IGNSModal = forwardRef(({
                                 sampleValues,
                                 onModalCancel,
                                 onSampleSaved,
+                                openPicker
                               }, formRef) => {
   const {height} = useWindowDimensions();
 
@@ -90,6 +92,7 @@ const IGNSModal = forwardRef(({
   const registerSample = async () => {
     try {
       let res;
+      setModalPage('content');
       const sesarUserCode = !formRef.current.values.isOnMySesar ? sesar.selectedUserCode : formRef.current.values.sesarUserCode;
       await formRef.current.setValues({...formRef.current.values, sesarUserCode: sesarUserCode});
       console.log('Updated FormRef', formRef.current.values);
@@ -106,6 +109,7 @@ const IGNSModal = forwardRef(({
         setIsUploaded(true);
       }
       setStatusMessage(res.status);
+      setIsLoading(false);
       await formRef.current.setValues({...formRef.current.values, Sample_IGSN: res.igsn, isOnMySesar: true});
       console.log('Updated FormRef', formRef.current.values);
 
@@ -137,8 +141,12 @@ const IGNSModal = forwardRef(({
         if (isEmpty(sesar.userCodes) && !formRef.current.values.isOnMySesar) {
           setIsLoading(true);
           await getAndSaveSesarCode(token);
+          setModalPage('sesarCodePicker')
         }
-        await registerSample();
+        else {
+          await registerSample();
+          console.log('Register Sample');
+        }
       }
       else setModalPage('orcidSignIn');
       setIsLoading(false);
@@ -158,6 +166,8 @@ const IGNSModal = forwardRef(({
         return renderUploadContent();
       case 'orcidSignIn':
         return renderOrcidSignIn();
+      case 'sesarCodePicker':
+        return renderUserCodeSelection();
       default:
         return renderSesarAuth();
     }
@@ -193,45 +203,42 @@ const IGNSModal = forwardRef(({
 
   const renderOrcidSignIn = () => {
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center', maxHeight: 400}}>
+      <>
         <Button
           title={'X'}
           type={'clear'}
           titleStyle={{color: 'black'}}
-          containerStyle={{alignItems: 'flex-end'}}
+          containerStyle={{alignItems: 'flex-end', width: '100%'}}
           onPress={onModalCancel}
         />
-        <Image
-          source={OrcidLogo}
-          style={{height: 60, width: 200}}
-        />
-        {isLoading
-          ? (
-            <Text style={{fontSize: 18, textAlign: 'center', fontWeight: 'bold', padding: 20}}>
-              Checking ORCID Credentials...
-            </Text>
-          )
-          : (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{textAlign: 'center', padding: 20, fontSize: 18, fontWeight: 'bold'}}>
-                Please sign into your ORCID account to continue.
+        <View style={{justifyContent: 'center', alignItems: 'center', maxHeight: 400}}>
+          <Image
+            source={OrcidLogo}
+            style={{height: 60, width: 200}}
+          />
+          {isLoading
+            ? (
+              <Text style={{fontSize: 18, textAlign: 'center', fontWeight: 'bold', padding: 20}}>
+                Checking ORCID Credentials...
               </Text>
-              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-              <Button
-                title={'Sign into Orcid'}
-                onPress={signIntoOrcid}
-                buttonStyle={{backgroundColor: 'rgb(78, 114, 33)', paddingHorizontal: 50}}
-              />
-              <Button
-                title={'Cancel'}
-                onPress={onModalCancel}
-                buttonStyle={{backgroundColor: 'rgb(78, 114, 33)', paddingHorizontal: 50}}
-              />
+            )
+            : (
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{textAlign: 'center', padding: 20, fontSize: 18, fontWeight: 'bold'}}>
+                  Please sign into your ORCID account to continue.
+                </Text>
+                <View style={{ justifyContent: 'center', alignItems: 'center'}}>
+                  <Button
+                    title={'Sign into Orcid'}
+                    onPress={signIntoOrcid}
+                    buttonStyle={{backgroundColor: 'rgb(78, 114, 33)', paddingHorizontal: 50}}
+                  />
+                </View>
               </View>
-            </View>
-          )
-        }
-      </View>
+            )
+          }
+        </View>
+      </>
     );
   };
 
@@ -243,35 +250,36 @@ const IGNSModal = forwardRef(({
     );
   };
 
-  // const renderUserCodeSelection = () => {
-  //   return (
-  //     <View>
-  //       <Picker
-  //         selectedValue={sesar.selectedUserCode}
-  //         onValueChange={(itemValue, itemIndex) => {
-  //           console.log(itemValue, itemIndex);
-  //           dispatch(setSelectedUserCode(itemValue));
-  //         }}
-  //       >
-  //         {sesar.userCodes.map((userCode) => {
-  //             return (
-  //               <Picker.Item
-  //                 key={userCode}
-  //                 label={userCode}
-  //                 value={userCode}
-  //               />
-  //             );
-  //           },
-  //         )}
-  //       </Picker>
-  //       <Button
-  //         title={'Select User Code'}
-  //         onPress={() => setModalPage('content')}
-  //         type={'clear'}
-  //       />
-  //     </View>
-  //   );
-  // };
+  const renderUserCodeSelection = () => {
+    return (
+      <View>
+        <Text>Select User Code:</Text>
+        <Picker
+          selectedValue={sesar.selectedUserCode}
+          onValueChange={(itemValue, itemIndex) => {
+            console.log(itemValue, itemIndex);
+            dispatch(setSelectedUserCode(itemValue));
+          }}
+        >
+          {sesar.userCodes.map((userCode) => {
+              return (
+                <Picker.Item
+                  key={userCode}
+                  label={userCode}
+                  value={userCode}
+                />
+              );
+            },
+          )}
+        </Picker>
+        <Button
+          title={'Register Sample'}
+          onPress={() => registerSample()}
+          type={'clear'}
+        />
+      </View>
+    );
+  };
 
   const formatContentItems = (item) => {
     if (item.sesarKey === 'longitude' || item.sesarKey === 'latitude') {
