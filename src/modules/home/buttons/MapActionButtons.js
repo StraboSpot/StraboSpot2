@@ -3,21 +3,27 @@ import {useWindowDimensions} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
-import {isEqualUnordered} from '../../../shared/Helpers';
+import {isEmpty} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
 import useMap from '../../maps/useMap';
+import useMapFeatures from '../../maps/useMapFeatures';
 import homeStyles from '../home.style';
 import {MapActionsOverlay, MapLayersOverlay, MapSymbolsOverlay, overlayStyles} from '../overlays';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
   const {height} = useWindowDimensions();
   const {setBasemap} = useMap();
+  const {updateFeatureTypes} = useMapFeatures();
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const mapSymbols = useSelector(state => state.map.mapSymbols);
+  const featureTypesOff = useSelector(state => state.map.featureTypesOff) || [];
   const stratSection = useSelector(state => state.map.stratSection);
-  const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
+
+  const toggleMapSymbolsOverlay = () => {
+    if (!dialogs.mapSymbolsMenuVisible) updateFeatureTypes();
+    toggleDialog('mapSymbolsMenuVisible');
+  };
 
   return (
     <>
@@ -27,19 +33,19 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
         onPress={() => toggleDialog('mapActionsMenuVisible')}
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
-      {isEqualUnordered(mapSymbols, symbolsOn)
+      {isEmpty(featureTypesOff)
         ? (
           <IconButton
             source={SMALL_SCREEN ? require('../../../assets/icons/Symbols.png')
               : require('../../../assets/icons/SymbolsButton.png')}
-            onPress={() => toggleDialog('mapSymbolsMenuVisible')}
+            onPress={toggleMapSymbolsOverlay}
             imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
           />
         ) : (
           <IconButton
             source={SMALL_SCREEN ? require('../../../assets/icons/Symbols_pressed.png')
               : require('../../../assets/icons/SymbolsButton_pressed.png')}
-            onPress={() => toggleDialog('mapSymbolsMenuVisible')}
+            onPress={toggleMapSymbolsOverlay}
             imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
           />
         )

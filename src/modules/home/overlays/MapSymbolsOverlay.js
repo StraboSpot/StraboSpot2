@@ -10,21 +10,20 @@ import {isEmpty, toTitleCase} from '../../../shared/Helpers';
 import * as themes from '../../../shared/styles.constants';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import {
+  setFeatureTypesOff,
   setIsShowOnly1stMeas,
   setIsShowSpotLabelsOn,
-  setSymbolsDisplayed,
   setTagTypeForColor,
 } from '../../maps/maps.slice';
 import styles from '../../measurements/measurements.styles';
 import useMeasurements from '../../measurements/useMeasurements';
 
 const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
-
   const dispatch = useDispatch();
+  const featureTypesOff = useSelector(state => state.map.featureTypesOff) || [];
   const isShowOnly1stMeas = useSelector(state => state.map.isShowOnly1stMeas);
   const isShowSpotLabelsOn = useSelector(state => state.map.isShowSpotLabelsOn);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
-  const symbolsOn = useSelector(state => state.map.symbolsOn) || [];
   const tagTypeForColor = useSelector(state => state.map.tagTypeForColor);
 
   const {getMeasurementLabel} = useMeasurements();
@@ -41,22 +40,22 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
         <ListItem.Content>
           <ListItem.Title>    {getSymbolTitle(item)}</ListItem.Title>
         </ListItem.Content>
-        <Switch onValueChange={() => toggleSymbolSelected(item)} value={symbolsOn.includes(item)}/>
+        <Switch onValueChange={() => toggleFeatureTypesOff(item)} value={!featureTypesOff.includes(item)}/>
       </ListItem>
     );
+  };
+
+  const toggleFeatureTypesOff = (featureType) => {
+    let featureTypesOffCopy = [...featureTypesOff];
+    const i = featureTypesOffCopy.indexOf(featureType);
+    if (i === -1) featureTypesOffCopy.push(featureType);
+    else featureTypesOffCopy.splice(i, 1);
+    dispatch(setFeatureTypesOff(featureTypesOffCopy));
   };
 
   const toggleShowTagColor = () => {
     if (tagTypeForColor) dispatch(setTagTypeForColor(undefined));
     else dispatch(setTagTypeForColor('geologic_unit'));
-  };
-
-  const toggleSymbolSelected = (symbol) => {
-    let symbolsOnCopy = [...symbolsOn];
-    const i = symbolsOnCopy.indexOf(symbol);
-    if (i === -1) symbolsOnCopy.push(symbol);
-    else symbolsOnCopy.splice(i, 1);
-    dispatch(setSymbolsDisplayed(symbolsOnCopy));
   };
 
   return (
@@ -70,18 +69,21 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
       <View style={[overlayStyles.titleContainer]}>
         <Text style={[overlayStyles.titleText]}>Map Symbols</Text>
       </View>
-      <ListItem key={'feature_types'} containerStyle={commonStyles.listItemFormField}>
-        <ListItem.Content>
-          <ListItem.Title>Feature Types</ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
       {!isEmpty(mapSymbols) && (
-        <FlatList
-          keyExtractor={item => item}
-          data={mapSymbols}
-          renderItem={renderSymbolsList}
-          ItemSeparatorComponent={FlatListItemSeparator}
-        />
+        <>
+          <ListItem key={'feature_types'} containerStyle={commonStyles.listItem}>
+            <ListItem.Content>
+              <ListItem.Title>Feature Types</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          <FlatListItemSeparator/>
+          <FlatList
+            keyExtractor={item => item}
+            data={mapSymbols}
+            renderItem={renderSymbolsList}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
+        </>
       )}
       <FlatListItemSeparator/>
       <ListItem key={'spotLabels'} containerStyle={commonStyles.listItemFormField}>

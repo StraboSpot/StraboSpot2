@@ -3,10 +3,11 @@ import {createSlice} from '@reduxjs/toolkit';
 import {LATITUDE, LONGITUDE, ZOOM} from './maps.constants';
 
 const initialMapsState = {
-  center: [LONGITUDE, LATITUDE || [0,0]],
+  center: [LONGITUDE, LATITUDE || [0, 0]],
   currentBasemap: null,
   currentImageBasemap: undefined,
   customMaps: {},
+  featureTypesOff: [],
   freehandFeatureCoords: undefined,
   isMapMoved: true,
   isShowOnly1stMeas: false,
@@ -15,7 +16,6 @@ const initialMapsState = {
   selectedCustomMapToEdit: {},
   spotsInMapExtentIds: [],
   stratSection: undefined,
-  symbolsOn: [],
   tagTypeForColor: undefined,
   vertexEndCoords: undefined,
   vertexStartCoords: undefined,
@@ -68,6 +68,10 @@ const mapsSlice = createSlice({
       state.stratSection = undefined;
       state.currentImageBasemap = action.payload;
     },
+    setFeatureTypesOff(state, action) {
+      // console.log('Map Symbols Displayed', action.payload);
+      state.featureTypesOff = action.payload;
+    },
     setFreehandFeatureCoords(state, action) {
       state.freehandFeatureCoords = action.payload;
     },
@@ -90,10 +94,6 @@ const mapsSlice = createSlice({
     setStratSection(state, action) {
       state.currentImageBasemap = undefined;
       state.stratSection = action.payload;
-    },
-    setSymbolsDisplayed(state, action) {
-      // console.log('Map Symbols Displayed', action.payload);
-      state.symbolsOn = action.payload;
     },
     setTagTypeForColor(state, action) {
       state.tagTypeForColor = action.payload;
@@ -128,8 +128,9 @@ export const {
   setCenter,
   setCurrentBasemap,
   setCurrentImageBasemap,
+  setFeatureTypesOff,
   setFreehandFeatureCoords,
-  setIsMapMoved: setIsMapMoved,
+  setIsMapMoved,
   setIsShowOnly1stMeas,
   setIsShowSpotLabelsOn,
   setMapSymbols,

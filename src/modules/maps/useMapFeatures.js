@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from 'react-redux';
 
-import {setMapSymbols, setSymbolsDisplayed} from './maps.slice';
+import {setMapSymbols} from './maps.slice';
 import {isEmpty, isEqualUnordered} from '../../shared/Helpers';
 import {useSpots} from '../spots';
 
@@ -10,36 +10,37 @@ const useMapFeatures = () => {
   const {getMappableSpots} = useSpots();
 
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
+  const featureTypesOff = useSelector(state => state.map.featureTypesOff);
   const isShowOnly1stMeas = useSelector(state => state.map.isShowOnly1stMeas);
   const mapSymbols = useSelector(state => state.map.mapSymbols);
-  const selectedSymbols = useSelector(state => state.map.symbolsOn) || [];
   const stratSection = useSelector(state => state.map.stratSection);
 
   // Filter Spots currently visible on the map by feature type (i.e. toggled on in the Map Symbols Overlay)
-  const filterByFeatureType = (mappedSpots) => {
-    console.log('selectedSymbols', selectedSymbols);
-    const selectedSymbolsCleaned = selectedSymbols.reduce((acc, symbol) => {
-      return mapSymbols.includes(symbol) ? [...acc, symbol] : acc;
-    }, []);
-    console.log('symbolsToCleanup', selectedSymbolsCleaned);
+  const filterByFeatureType = (mappedFeatures) => {
+    console.log('Mapped Features:', mappedFeatures);
+    console.log('Feature Types Off', featureTypesOff);
 
-    if (!isEqualUnordered(selectedSymbols, selectedSymbolsCleaned)) {
-      dispatch(setSymbolsDisplayed(selectedSymbolsCleaned));
-    }
+    const filteredFeatures = mappedFeatures.filter((spot) => {
 
-    const filteredFeatures = mappedSpots.filter((spot) => {
-      return (!spot?.properties && selectedSymbolsCleaned.includes('unspecified'))
+      const featuresWithNoOrientationToHide = !spot?.properties && featureTypesOff.includes('unspecified')
         || (!spot.properties.orientation_data && !spot.properties.orientation
-          && selectedSymbolsCleaned.includes('unspecified'))
-        || (spot.properties.orientation_data
-          && (!isEmpty((spot.properties.orientation_data.filter(
-            orientation => selectedSymbolsCleaned.includes(orientation?.feature_type)
-              || (!orientation?.feature_type) && selectedSymbolsCleaned.includes('unspecified'))))))
-        || (spot.properties.orientation
-          && ((spot.properties.orientation.feature_type
-              && selectedSymbolsCleaned.includes(spot.properties.orientation.feature_type))
-            || (!spot.properties.orientation.feature_type && selectedSymbolsCleaned.includes('unspecified'))));
+          && featureTypesOff.includes('unspecified'));
+
+      const nonPointFeaturesToHide = spot.properties.orientation_data
+        && spot.properties.orientation_data.filter(
+          orientation => featureTypesOff.includes(orientation?.feature_type)
+            || (!orientation?.feature_type && featureTypesOff.includes('unspecified')));
+
+      const pointFeatureToHide = spot.properties.orientation
+        && ((spot.properties.orientation.feature_type
+            && featureTypesOff.includes(spot.properties.orientation.feature_type))
+          || (!spot.properties.orientation.feature_type && featureTypesOff.includes('unspecified')));
+
+      return isEmpty(nonPointFeaturesToHide) && !pointFeatureToHide && !featuresWithNoOrientationToHide;
     });
+
+    console.log('Filtered Mapped Features', filteredFeatures);
+
     return filteredFeatures;
   };
 
@@ -66,9 +67,8 @@ const useMapFeatures = () => {
 
   // Get selected and not selected Spots to display when not editing
   const getDisplayedSpots = (selectedSpots) => {
-
+    console.log('Getting Spots to display...');
     let mappedSpots = getAllMappedSpots();
-    updateMapSymbols(mappedSpots);
 
     // Separate selected Spots and not selected Spots (Point Spots need to be in both
     // selected and not selected since the selected symbology is a halo around the point)
@@ -84,6 +84,7 @@ const useMapFeatures = () => {
 
   // Spots with multiple measurements become multiple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
+    console.log('Getting Spots as mapped features...');
     let mappedFeatures = [];
     spotsToFeatures.map((spot) => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint')
@@ -116,19 +117,24 @@ const useMapFeatures = () => {
       }
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
-    return filterByFeatureType(mappedFeatures);
+    return isEmpty(featureTypesOff) || isEmpty(mappedFeatures) ? mappedFeatures : filterByFeatureType(mappedFeatures);
   };
 
   // Gather and set the feature types that are present in the mapped Spots
-  const updateMapSymbols = (mappedSpots) => {
-    const featureTypes = mappedSpots.reduce((acc, spot) => {
+  const updateFeatureTypes = () => {
+    console.log('Checking Available Feature Types...');
+
+    const spotsWithGeometry = getMappableSpots();      // Spots with geometry
+    const featureTypes = spotsWithGeometry.reduce((acc, spot) => {
       const spotFeatureTypes = spot.properties.orientation_data
         && spot.properties.orientation_data.reduce((acc1, orientation) => {
           return [...new Set([...acc1, orientation?.feature_type ? orientation.feature_type : 'unspecified'])];
         }, []);
       return [...new Set([...acc, ...(spotFeatureTypes ? spotFeatureTypes : ['unspecified'])])];
     }, []);
-    if (JSON.stringify(mapSymbols) !== JSON.stringify(featureTypes)) {
+
+    if (!isEqualUnordered(mapSymbols, featureTypes)) {
+      console.log('Updating Available Feature Types...');
       featureTypes.sort();
       dispatch(setMapSymbols(featureTypes));
     }
@@ -138,6 +144,7 @@ const useMapFeatures = () => {
     getAllMappedSpots: getAllMappedSpots,
     getDisplayedSpots: getDisplayedSpots,
     getSpotsAsFeatures: getSpotsAsFeatures,
+    updateFeatureTypes: updateFeatureTypes,
   };
 };
 
