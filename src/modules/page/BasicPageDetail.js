@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, CheckBox} from 'react-native-elements';
+import {Button, CheckBox, Icon} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';
@@ -25,6 +25,7 @@ import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice'
 import {useTags} from '../tags';
 import DeleteOverlay from './ui/DeleteOverlay';
 import sampleStyles from '../samples/samples.styles';
+import {setSelectedUserCode} from '../user/userProfile.slice';
 
 const BasicPageDetail = ({
                            closeDetailView,
@@ -38,10 +39,12 @@ const BasicPageDetail = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const {isInternetReachable} = useSelector(state => state.connections.isOnline);
+  const {userCodes, selectedUserCode} = useSelector(state => state.user.sesar);
 
-  const [isIGSNChecked, setIsIGSNChecked] = useState(false);
+  const [isIGSNChecked, setIsIGSNChecked] = useState(selectedFeature.isOnMySesar || false);
   const [isDeleteOverlayVisible, setIsDeleteOverlayVisible] = useState(false);
   const [isIGSNModalVisible, setIsIGSNModalVisible] = useState(false);
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [sampleFormRef, setSelectedSample] = useState({});
 
   const {showErrors, validateForm} = useForm();
@@ -216,13 +219,23 @@ const BasicPageDetail = ({
               check below:</Text>
           )
         }
-        <CheckBox
-          title={'Upload to MYSESAR'}
-          checked={isIGSNChecked || selectedFeature.isOnMySesar}
-          checkedTitle={selectedFeature.isOnMySesar && 'On MYSESAR and IGSN assigned'}
-          onPress={() => setIsIGSNChecked(!isIGSNChecked)}
-          disabled={selectedFeature.isOnMySesar}
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <CheckBox
+            title={'Upload to MYSESAR'}
+            checked={isIGSNChecked}
+            checkedTitle={selectedFeature.isOnMySesar && 'On MYSESAR and IGSN assigned'}
+            onPress={() => setIsIGSNChecked(!isIGSNChecked)}
+            disabled={selectedFeature.isOnMySesar}
+          />
+          {isIGSNChecked && isEmpty(selectedUserCode) && <Icon
+            reverse
+            name={'warning-outline'}
+            type={'ionicon'}
+            color={'red'}
+            size={10}
+            onPress={() => alert('Sesar Code Required')}
+          />}
+        </View>
       </View>
     );
   };
@@ -352,6 +365,7 @@ const BasicPageDetail = ({
   const onSampleSaved = async (formCurrent) => {
     console.log('Saving Sample To SESAR', formRef.current?.values);
     await saveFeature(formCurrent);
+    closeDetailView();
   };
 
   const saveTemplateForm = async (formCurrent) => {
@@ -367,7 +381,7 @@ const BasicPageDetail = ({
           <SaveAndCancelButtons
             cancel={cancelForm}
             save={saveButtonOnPress}
-            getIsDisabled={(!isInternetReachable && selectedFeature.isOnMySesar)}
+            getIsDisabled={(!isInternetReachable && isIGSNChecked) || (isIGSNChecked && isEmpty(selectedUserCode))}
           />
           {page.key === PAGE_KEYS.SAMPLES && selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
           {page.key === PAGE_KEYS.SAMPLES && renderIGSNUploadCheckbox()}
