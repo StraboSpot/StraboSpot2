@@ -197,8 +197,6 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
     dialogs: dialogs,
     distance: distance,
     endMeasurement: endMeasurement,
-    // isSelectingForStereonet: isSelectingForStereonet,
-    // isSelectingForTagging: isSelectingForTagging,
     selectingMode: selectingMode,
     mapMode: mapMode,
     onEndDrawPressed: onEndDrawPressed,

@@ -32,10 +32,9 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const MapContainer = forwardRef(({
-                          isSelectingForStereonet,
-                          isSelectingForTagging,
                           mapMode,
                           onEndDrawPressed,
+                          selectingMode,
                           setDistance,
                           setMapModeToEdit,
                         }, mapComponentRef) => {
@@ -90,11 +89,10 @@ const MapContainer = forwardRef(({
     startEditing,
     switchToEditing,
   } = useMapFeaturesDraw({
-    isSelectingForStereonet: isSelectingForStereonet,
-    isSelectingForTagging: isSelectingForTagging,
     mapMode: mapMode,
     mapRef: mapRef,
     onEndDrawPressed: onEndDrawPressed,
+    selectingMode: selectingMode,
     setIsShowVertexActionsModal: setIsShowVertexActionsModal,
     setVertexActionValues: setVertexActionValues,
   });
