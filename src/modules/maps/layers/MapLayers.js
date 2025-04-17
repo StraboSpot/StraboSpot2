@@ -1,4 +1,4 @@
-import React, {forwardRef, memo, useEffect, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
 import {useDispatch, useSelector} from 'react-redux';

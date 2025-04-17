@@ -32,6 +32,7 @@ const Map = ({
                spotsSelected,
              }, forwardedRef) => {
   // console.log('Rendering Map...');
+
   const zoomTextStyle = basemap.id === 'mapbox.satellite' ? homeStyles.currentZoomTextWhite
     : homeStyles.currentZoomTextBlack;
 

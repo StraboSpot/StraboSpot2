@@ -1,6 +1,7 @@
 import React from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
+import * as turf from '@turf/turf';
 import {useSelector} from 'react-redux';
 
 import useMapSymbology from '../symbology/useMapSymbology';
@@ -13,7 +14,7 @@ const FeaturesSelectedLayers = ({featuresSelected, isStratStyleLoaded}) => {
   return (
     <MapboxGL.ShapeSource
       id={'spotsSelectedSource'}
-      shape={featuresSelected}
+      shape={turf.featureCollection(featuresSelected)}
     >
       {/* Polygon Selected */}
       <MapboxGL.FillLayer

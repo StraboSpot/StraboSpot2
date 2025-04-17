@@ -54,6 +54,7 @@ const useMapFeaturesDraw = ({
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
   const datasets = useSelector(state => state.project.datasets);
+  const featureTypesOff = useSelector(state => state.map.featureTypesOff) || [];
   const freehandFeatureCoords = useSelector(state => state.map.freehandFeatureCoords);
   const selectedSpot = useSelector(state => state.spot.selectedSpot);
   const spots = useSelector(state => state.spot.spots);
@@ -72,21 +73,23 @@ const useMapFeaturesDraw = ({
   const [vertexToEdit, setVertexToEdit] = useState([]);
 
   useEffect(() => {
-    // console.log('UE Map [drawFeatures]', drawFeatures);
+    // console.log('UE useMapFeaturesDraw [drawFeatures]');
     if (mapMode === MAP_MODES.DRAW.POINT && drawFeatures.length === 1) onEndDrawPressed();
   }, [drawFeatures]);
 
   useEffect(() => {
-    // console.log('UE Map [vertexEndCoords]', vertexEndCoords);
+    // console.log('UE useMapFeaturesDraw [vertexEndCoords]');
     if (!isEmpty(vertexEndCoords && mapMode === MAP_MODES.EDIT)) moveVertex();
   }, [vertexEndCoords]);
 
   useEffect(() => {
+    // console.log(
+    //   'UE useMapFeaturesDraw [spots, datasets, currentBasemap, currentImageBasemap, stratSection, featureTypesOff]');
     setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
-  }, [spots, datasets, currentBasemap, currentImageBasemap, stratSection]);
+  }, [spots, datasets, currentBasemap, currentImageBasemap, featureTypesOff, stratSection]);
 
   useEffect(() => {
-    // console.log('UE Map [selectedSpot, activeDatasetsIds]', selectedSpot, activeDatasetsIds);
+    // console.log('UE useMapFeaturesDraw [selectedSpot, activeDatasetsIds]');
     //conditional call to avoid multiple renders during edit mode.
     if (mapMode !== MAP_MODES.EDIT) setDisplayedSpots((isEmpty(selectedSpot) ? [] : [{...selectedSpot}]));
   }, [selectedSpot, activeDatasetsIds]);
@@ -386,7 +389,7 @@ const useMapFeaturesDraw = ({
         }
         if (isModified) {
           spotEditingCopy.properties.modified_timestamp = Date.now();
-          console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'spotsSelected', spotsSelected);
+          console.log('Finished editing Spot. Edited Spot:', spotEditingCopy, 'Selected Spots:', spotsSelected);
         }
         else console.warn('Problem editing Spot');
         console.log('Edited coords:', turf.getCoords(spotEditingCopy));
@@ -651,19 +654,19 @@ const useMapFeaturesDraw = ({
   // Set selected and not selected Spots to display when not editing
   const setDisplayedSpots = (selectedSpots) => {
     let [selectedDisplayedSpots, notSelectedDisplayedSpots] = getDisplayedSpots(selectedSpots);
+    let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(selectedDisplayedSpots));
+    let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(notSelectedDisplayedSpots));
+
+    // Convert image pixels to lat, lng
     if (currentImageBasemap || stratSection) {
-      // convert the image pixels to lat, lng before we display them
-      let selectedMappableSpotsCopy = JSON.parse(JSON.stringify(selectedDisplayedSpots));
-      let notSelectedMappableSpotsCopy = JSON.parse(JSON.stringify(notSelectedDisplayedSpots));
       selectedMappableSpotsCopy = selectedMappableSpotsCopy.map(spot => convertImagePixelsToLatLong(spot));
       notSelectedMappableSpotsCopy = notSelectedMappableSpotsCopy.map(spot => convertImagePixelsToLatLong(spot));
-      setSpotsSelected([...selectedMappableSpotsCopy]);
-      setSpotsNotSelected([...notSelectedMappableSpotsCopy]);
     }
-    else {
-      setSpotsSelected([...selectedDisplayedSpots]);
-      setSpotsNotSelected([...notSelectedDisplayedSpots]);
-    }
+
+    console.log('Selected Spots:', selectedMappableSpotsCopy);
+    setSpotsSelected([...selectedMappableSpotsCopy]);
+    console.log('Not Selected Spots:', notSelectedMappableSpotsCopy);
+    setSpotsNotSelected([...notSelectedMappableSpotsCopy]);
   };
 
   // Set selected and not selected Spots to display while editing
@@ -673,20 +676,22 @@ const useMapFeaturesDraw = ({
     }
     console.log('Set displayed Spots while editing. Editing:', spotEditingTmp, 'Edited:', spotsEditedTmp, 'Not edited:',
       spotsNotEditedTmp);
-    if (!currentImageBasemap && !stratSection) {
-      setSpotsSelected(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]);
-      setSpotsNotSelected([...spotsEditedTmp, ...spotsNotEditedTmp]);
-    }
-    else { // if imagebasemap, then all the coordinates have to be converted.
-      let spotsEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsEditedTmp) ? [] : spotsEditedTmp));
-      let spotsNotEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsNotEditedTmp) ? [] : spotsNotEditedTmp));
-      let spotEditingCopy = JSON.parse(JSON.stringify(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]));
+
+    let spotsEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsEditedTmp) ? [] : spotsEditedTmp));
+    let spotsNotEditedCopy = JSON.parse(JSON.stringify(isEmpty(spotsNotEditedTmp) ? [] : spotsNotEditedTmp));
+    let spotEditingCopy = JSON.parse(JSON.stringify(isEmpty(spotEditingTmp) ? [] : [{...spotEditingTmp}]));
+
+    // Convert image pixels to lat, lng
+    if (currentImageBasemap || stratSection) {
       spotsEditedCopy = spotsEditedCopy.map(spot => convertImagePixelsToLatLong(spot));
       spotsNotEditedCopy = spotsNotEditedCopy.map(spot => convertImagePixelsToLatLong(spot));
       spotEditingCopy = spotEditingCopy.map(spot => convertImagePixelsToLatLong(spot));
-      setSpotsSelected(isEmpty(spotEditingCopy) ? [] : spotEditingCopy);
-      setSpotsNotSelected([...spotsEditedCopy, ...spotsNotEditedCopy]);
     }
+
+    console.log('Selected Edit Features:', spotEditingCopy);
+    setSpotsSelected(isEmpty(spotEditingCopy) ? [] : spotEditingCopy);
+    console.log('Unselected Edit Features:', [...spotsEditedCopy, ...spotsNotEditedCopy]);
+    setSpotsNotSelected([...spotsEditedCopy, ...spotsNotEditedCopy]);
   };
 
   const setDrawFeaturesNew = (e) => {

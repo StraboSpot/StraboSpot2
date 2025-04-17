@@ -17,7 +17,7 @@ const useMapFeatures = () => {
 
   // Filter Spots currently visible on the map by feature type (i.e. toggled on in the Map Symbols Overlay)
   const filterByFeatureType = (mappedFeatures) => {
-    console.log('Mapped Features:', mappedFeatures);
+    console.log('Filtering Features...');
     console.log('Feature Types Off', featureTypesOff);
 
     const filteredFeatures = mappedFeatures.filter((spot) => {
@@ -40,7 +40,6 @@ const useMapFeatures = () => {
     });
 
     console.log('Filtered Mapped Features', filteredFeatures);
-
     return filteredFeatures;
   };
 
@@ -84,7 +83,6 @@ const useMapFeatures = () => {
 
   // Spots with multiple measurements become multiple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
-    console.log('Getting Spots as mapped features...');
     let mappedFeatures = [];
     spotsToFeatures.map((spot) => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint')
@@ -117,6 +115,7 @@ const useMapFeatures = () => {
       }
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
+    console.log('Mapped Features:', mappedFeatures);
     return isEmpty(featureTypesOff) || isEmpty(mappedFeatures) ? mappedFeatures : filterByFeatureType(mappedFeatures);
   };
 

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
-import * as turf from '@turf/turf';
 
 import {FeatureHalosLayers, FeaturesNotSelectedLayers, FeaturesSelectedLayers} from './index';
 import {STRAT_PATTERNS} from '../strat-section/stratSection.constants';
@@ -16,8 +15,10 @@ const FeaturesLayers = ({isStratStyleLoaded, spotsNotSelected, spotsSelected}) =
   const {addSymbology} = useMapSymbology();
 
   // Get selected and not selected Spots as features, split into multiple features if multiple orientations
-  const featuresNotSelected = turf.featureCollection(getSpotsAsFeatures(addSymbology(spotsNotSelected)));
-  const featuresSelected = turf.featureCollection(getSpotsAsFeatures(addSymbology(spotsSelected)));
+  console.log('Getting Spots Not Selected as Features...');
+  const featuresNotSelected = getSpotsAsFeatures(addSymbology(spotsNotSelected));
+  console.log('Getting Spots Selected as Features...');
+  const featuresSelected = getSpotsAsFeatures(addSymbology(spotsSelected));
 
   return (
     <>
