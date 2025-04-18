@@ -20,10 +20,15 @@ const FeaturesLayers = ({isStratStyleLoaded, spotsNotSelected, spotsSelected}) =
   console.log('Getting Spots Selected as Features...');
   const featuresSelected = getSpotsAsFeatures(addSymbology(spotsSelected));
 
+  // Selected point Spots need to be shown in the Unselected Features Layer
+  // so we have a point for the selected halo to be around
+  const features = [...featuresNotSelected, ...featuresSelected?.filter(
+    spot => spot.geometry.type === 'Point') || []];
+
   return (
     <>
       {/* Halos Around Point Features Layers */}
-      <FeatureHalosLayers featuresNotSelected={featuresNotSelected} featuresSelected={featuresSelected}/>
+      <FeatureHalosLayers spotsNotSelected={spotsNotSelected} spotsSelected={spotsSelected}/>
 
       <MapboxGL.Images
         images={symbols}
@@ -33,7 +38,7 @@ const FeaturesLayers = ({isStratStyleLoaded, spotsNotSelected, spotsSelected}) =
       />
 
       {/* Not Selected Features Layer */}
-      <FeaturesNotSelectedLayers featuresNotSelected={featuresNotSelected} isStratStyleLoaded={isStratStyleLoaded}/>
+      <FeaturesNotSelectedLayers features={features} isStratStyleLoaded={isStratStyleLoaded}/>
 
       {/* Selected Features Layer */}
       <FeaturesSelectedLayers featuresSelected={featuresSelected} isStratStyleLoaded={isStratStyleLoaded}/>

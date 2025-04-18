@@ -1,5 +1,6 @@
 import React from 'react';
 
+import * as turf from '@turf/turf';
 import {Layer, Source} from 'react-map-gl';
 
 import useMapSymbology from '../symbology/useMapSymbology';
@@ -12,7 +13,7 @@ const FeaturesSelectedLayers = ({featuresSelected}) => {
     <Source
       id={'spotsSelectedSource'}
       type={'geojson'}
-      data={featuresSelected}
+      data={turf.featureCollection(featuresSelected)}
     >
       {/* Polygon Selected */}
       <Layer

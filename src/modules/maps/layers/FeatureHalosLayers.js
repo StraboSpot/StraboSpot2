@@ -5,21 +5,15 @@ import * as turf from '@turf/turf';
 
 import useMapSymbology from '../symbology/useMapSymbology';
 
-const FeatureHalosLayers = ({featuresNotSelected, featuresSelected}) => {
+const FeatureHalosLayers = ({spotsNotSelected, spotsSelected}) => {
   const {getMapSymbology} = useMapSymbology();
-
-  // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
-  const featuresNotSelectedUniq = featuresNotSelected.reduce((acc, f) =>
-    acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []);
-  const featuresSelectedUniq = featuresSelected.reduce((acc, f) =>
-    acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []);
 
   return (
     <>
       {/* Halo Around Selected Point Feature Layer */}
       <MapboxGL.ShapeSource
         id={'pointSpotsSelectedSource'}
-        shape={turf.featureCollection(featuresSelectedUniq)}
+        shape={turf.featureCollection(spotsSelected)}
       >
         <MapboxGL.CircleLayer
           id={'pointLayerSelectedHalo'}
@@ -32,7 +26,7 @@ const FeatureHalosLayers = ({featuresNotSelected, featuresSelected}) => {
       {/* Colored Halo Around Points Layer */}
       <MapboxGL.ShapeSource
         id={'pointSourceColorHalo'}
-        shape={turf.featureCollection(featuresNotSelectedUniq)}
+        shape={turf.featureCollection(spotsNotSelected)}
       >
         <MapboxGL.CircleLayer
           id={'pointLayerColorHalo'}
