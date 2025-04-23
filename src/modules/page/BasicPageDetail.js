@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, CheckBox, Icon} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';
@@ -24,8 +24,8 @@ import {useSpots} from '../spots';
 import {editedSpotProperties, setSelectedAttributes} from '../spots/spots.slice';
 import {useTags} from '../tags';
 import DeleteOverlay from './ui/DeleteOverlay';
-import sampleStyles from '../samples/samples.styles';
-import {setSelectedUserCode} from '../user/userProfile.slice';
+import IGSNUploadAndRegister from '../samples/IGSNUploadAndRegister';
+
 
 const BasicPageDetail = ({
                            closeDetailView,
@@ -39,7 +39,7 @@ const BasicPageDetail = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const {isInternetReachable} = useSelector(state => state.connections.isOnline);
-  const {userCodes, selectedUserCode} = useSelector(state => state.user.sesar);
+  const {selectedUserCode} = useSelector(state => state.user.sesar);
 
   const [isIGSNChecked, setIsIGSNChecked] = useState(selectedFeature.isOnMySesar || false);
   const [isDeleteOverlayVisible, setIsDeleteOverlayVisible] = useState(false);
@@ -143,6 +143,10 @@ const BasicPageDetail = ({
     }
   };
 
+  const handleIGSNChecked = (value) => {
+    setIsIGSNChecked(value);
+  };
+
   const getFormName = () => {
     let formName = [groupKey, pageKey];
     if (groupKey === 'pet' && selectedFeature.rock_type) formName = ['pet_deprecated', pageKey];
@@ -158,14 +162,6 @@ const BasicPageDetail = ({
       ? isInternetReachable
         ? fieldName === 'Sample_IGSN' : true
       : false;
-  };
-
-  const openPicker = () => {
-    setIsPickerVisible(true);
-  };
-
-  const closePicker = () => {
-    setIsPickerVisible(false);
   };
 
   const renderFormFields = () => {
@@ -210,36 +206,6 @@ const BasicPageDetail = ({
     );
   };
 
-  const renderIGSNUploadCheckbox = () => {
-    return (
-      <View style={{justifyContent: 'flex-start', alignItems: 'center'}}>
-        {!selectedFeature.isOnMySesar
-          && (
-            <Text style={sampleStyles.mySesarUpdateDisclaimer}>To upload to your MYSESAR account and obtain an IGSN
-              check below:</Text>
-          )
-        }
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <CheckBox
-            title={'Upload to MYSESAR'}
-            checked={isIGSNChecked}
-            checkedTitle={selectedFeature.isOnMySesar && 'On MYSESAR and IGSN assigned'}
-            onPress={() => setIsIGSNChecked(!isIGSNChecked)}
-            disabled={selectedFeature.isOnMySesar}
-          />
-          {isIGSNChecked && isEmpty(selectedUserCode) && <Icon
-            reverse
-            name={'warning-outline'}
-            type={'ionicon'}
-            color={'red'}
-            size={10}
-            onPress={() => alert('Sesar Code Required')}
-          />}
-        </View>
-      </View>
-    );
-  };
-
   const renderNotesField = () => {
     return (
       <View style={{flex: 1}}>
@@ -255,61 +221,6 @@ const BasicPageDetail = ({
         />
       </View>
     );
-  };
-
-  const renderIGSNUserCodePicker = () => {
-    return (
-      <View style={{padding: 10, marginLeft: 20}}>
-        {!selectedFeature?.isOnMySesar && <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
-          <Text style={{fontSize: themes.MEDIUM_TEXT_SIZE, marginRight: 20}}>Sesar User Code:</Text>
-          {!isEmpty(userCodes)
-            && (
-              <Button
-            title={selectedUserCode}
-            type={'clear'}
-            iconRight
-            icon={<Icon
-              name={'chevron-down'}
-              containerStyle={{paddingLeft: 5}}
-              type={'ionicon'}
-            />}
-            disabled={selectedFeature.isOnMySesar}
-            disabledTitleStyle={{color: themes.BLACK}}
-            onPress={openPicker}
-            titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE, color: themes.BLACK}}
-          />
-            )}
-        </View>}
-        <PickerOverlay
-          isPickerVisible={isPickerVisible}
-          data={[...userCodes, null]}
-          onSelect={itemValue => dispatch(setSelectedUserCode(itemValue))}
-          value={selectedUserCode}
-          closePicker={closePicker}
-          dividerText={'Select User Code'}
-        />
-      </View>
-    );
-  };
-
-  const renderSesarUploadDisclosure = () => {
-    if (!isInternetReachable) {
-      return (
-        <View style={{padding: 20}}>
-          <Text style={sampleStyles.mySesarUpdateDisclaimer}>This sample has already been registered in your MYSESAR
-            account with an IGSN number and needs to sync. You will need to be online make any updates.</Text>
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={{padding: 20}}>
-          <Text style={sampleStyles.mySesarUpdateDisclaimer}>This sample has already been registered in your MYSESAR
-            account. Any changes will be automatically updated. You may be prompted to sign into your MySesar
-            account.</Text>
-        </View>
-      );
-    }
   };
 
   const saveButtonOnPress = () => {
@@ -384,11 +295,14 @@ const BasicPageDetail = ({
           <SaveAndCancelButtons
             cancel={cancelForm}
             save={saveButtonOnPress}
-            getIsDisabled={(!isInternetReachable && isIGSNChecked) || (isIGSNChecked && isEmpty(selectedUserCode))}
+            getIsDisabled={isInternetReachable && isIGSNChecked && isEmpty(selectedUserCode) && !selectedFeature.isOnMySesar}
           />
-          {page.key === PAGE_KEYS.SAMPLES && selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
-          {page.key === PAGE_KEYS.SAMPLES && isInternetReachable && renderIGSNUploadCheckbox()}
-          {page.key === PAGE_KEYS.SAMPLES && isIGSNChecked && !isEmpty(userCodes) && renderIGSNUserCodePicker()}
+          <IGSNUploadAndRegister
+            selectedFeature={selectedFeature}
+            page={page}
+            handleIGSNChecked={handleIGSNChecked}
+            isIGSNChecked={isIGSNChecked}
+          />
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>

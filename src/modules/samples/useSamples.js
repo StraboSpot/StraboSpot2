@@ -82,18 +82,18 @@ const useSamples = () => {
   };
 
   const getValidToken = async () => {
-    let token = sesar?.sesarToken.access;
+    let token = sesar?.sesarToken;
     if (isTokenExpired(token)) {
       console.log('Token expired, refreshing...');
-      token = await refreshToken();
+      token = await refreshToken(token.refresh);
     }
     return token;
   };
 
-  const isTokenExpired = (token) => {
-    if (!token) return true; // No token = expired
+  const isTokenExpired = (accessToken) => {
+    if (!accessToken) return true; // No token = expired
     try {
-      const accessTokenParsed = JSON.parse(atob(token.split('.')[1]));
+      const accessTokenParsed = JSON.parse(atob(accessToken.split('.')[1]));
       return accessTokenParsed.exp < Math.floor(Date.now() / 1000); // Compare expiration to current time
     }
     catch (error) {
@@ -126,16 +126,16 @@ const useSamples = () => {
     else throw Error('Something happened. Please try again later.');
   };
 
-  const refreshToken = async () => {
+  const refreshToken = async (refreshToken) => {
     try {
-      const newAccessToken = await refreshSesarToken(sesar?.sesarToken.refresh);
-      console.log(newAccessToken);
-      if (newAccessToken.error) {
-        console.error('Token refresh failed:', newAccessToken.error);
+      const newTokens = await refreshSesarToken(refreshToken);
+      console.log(newTokens);
+      if (newTokens.error) {
+        console.error('Token refresh failed:', newTokens.error);
         return null;
       }
-      dispatch(setSesarToken(newAccessToken));
-      return newAccessToken.access;
+      dispatch(setSesarToken(newTokens));
+      return newTokens;
     }
     catch (error) {
       console.error('Token refresh failed:', error);
