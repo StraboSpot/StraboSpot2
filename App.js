@@ -38,7 +38,8 @@ if (Platform.OS !== 'web') {
     //   Sentry.mobileReplayIntegration(),
     // ],
   });
-} else console.log('SENTRY NOT RUNNING');
+}
+else console.log('SENTRY NOT RUNNING');
 
 NetInfo.configure({
   // reachabilityUrl: 'https://clients3.google.com/generate_204',
@@ -53,8 +54,8 @@ NetInfo.configure({
 });
 
 
-const linking = {
-  prefixes: ['strabofield://', 'http://strabofield.com'], // Custom URL scheme
+const linking = Platform.OS !== 'web' && {
+  prefixes: ['strabofield://'], // Custom URL scheme
   config: {
     screens: {
       HomeScreen: 'orcid_id/:orcidToken', // Default screen
