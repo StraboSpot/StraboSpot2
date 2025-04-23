@@ -30,11 +30,6 @@ target 'StraboSpot2' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'StraboSpot2Tests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
   post_install do |installer|
      bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
 
