@@ -13154,9 +13154,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-datepicker@npm:8.0.0":
-  version: 8.0.0
-  resolution: "react-datepicker@npm:8.0.0"
+"react-datepicker@npm:8.3.0":
+  version: 8.3.0
+  resolution: "react-datepicker@npm:8.3.0"
   dependencies:
     "@floating-ui/react": "npm:^0.27.3"
     clsx: "npm:^2.1.1"
@@ -13164,7 +13164,7 @@ __metadata:
   peerDependencies:
     react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
     react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-  checksum: 10c0/cdc458179d2e3c32136d8a7131925b215116ae432997bbb5256e5291dcc32e8e73ffbe560096240b1acee6d7d92eca30553fd7d14600626a623e535fe52551f1
+  checksum: 10c0/34a9dcc298c6a2b0ba9482e0e4d5e5834c261ed362c595063e544a7a33c4291d2a1fc59d7b84cf2e839530956744497703c250fc8319f196368c9427847c145b
   languageName: node
   linkType: hard
 
@@ -14928,7 +14928,7 @@ __metadata:
     proj4: "npm:2.15.0"
     prop-types: "npm:15.8.1"
     react: "npm:19.0.0"
-    react-datepicker: "npm:8.0.0"
+    react-datepicker: "npm:8.3.0"
     react-dom: "npm:19.0.0"
     react-image-file-resizer: "npm:0.4.8"
     react-map-gl: "npm:7.1.9"

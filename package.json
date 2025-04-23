@@ -63,7 +63,7 @@
     "proj4": "2.15.0",
     "prop-types": "15.8.1",
     "react": "19.0.0",
-    "react-datepicker": "8.0.0",
+    "react-datepicker": "8.3.0",
     "react-dom": "19.0.0",
     "react-image-file-resizer": "0.4.8",
     "react-map-gl": "7.1.9",
