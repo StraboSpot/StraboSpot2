@@ -82,21 +82,23 @@ const Metadata = () => {
     const isChecked = dataset.spotIds?.includes(spot.properties.id);
     return (
       <ListItem key={dataset.id.toString()} containerStyle={commonStyles.listItem}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{dataset.name}</ListItem.Title>
-          <ListItem.Subtitle>
-            {dataset.spotIds
-              ? `(${dataset.spotIds.length} spot${dataset.spotIds.length !== 1 ? 's' : ''})`
-              : '(0 spots)'}
-          </ListItem.Subtitle>
-        </ListItem.Content>
-        <ListItem.CheckBox
-          checked={isChecked}
-          onPress={() => handleDatasetChecked(dataset)}
-          iconType={'material-community'}
-          checkedIcon={'radiobox-marked'}
-          uncheckedIcon={'radiobox-blank'}
-        />
+        <>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{dataset.name}</ListItem.Title>
+            <ListItem.Subtitle>
+              {dataset.spotIds
+                ? `(${dataset.spotIds.length} spot${dataset.spotIds.length !== 1 ? 's' : ''})`
+                : '(0 spots)'}
+            </ListItem.Subtitle>
+          </ListItem.Content>
+          <ListItem.CheckBox
+            checked={isChecked}
+            onPress={() => handleDatasetChecked(dataset)}
+            iconType={'material-community'}
+            checkedIcon={'radiobox-marked'}
+            uncheckedIcon={'radiobox-blank'}
+          />
+        </>
       </ListItem>
     );
   };

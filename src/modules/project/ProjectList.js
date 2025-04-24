@@ -178,15 +178,19 @@ const ProjectList = ({source}) => {
         disabled={!isOnline.isConnected && source !== 'device'}
         disabledStyle={{backgroundColor: 'lightgrey'}}
       >
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {source === 'server' ? item.name : item.fileName}
-          </ListItem.Title>
-          {modifiedTimeAndDate && modifiedTimeAndDate !== 'Invalid date' && (
-            <ListItem.Subtitle style={commonStyles.listItemSubtitle}>Updated: {modifiedTimeAndDate}</ListItem.Subtitle>
-          )}
-        </ListItem.Content>
-        <ListItem.Chevron/>
+        <>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {source === 'server' ? item.name : item.fileName}
+            </ListItem.Title>
+            {modifiedTimeAndDate && modifiedTimeAndDate !== 'Invalid date' && (
+              <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
+                Updated: {modifiedTimeAndDate}
+              </ListItem.Subtitle>
+            )}
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </>
       </ListItem>
     );
   };

@@ -47,18 +47,20 @@ const TagDetail = ({
           key={spot.properties.id}
           onPress={() => openFeatureDetail(spot, feature, featureType)}
         >
-          <Avatar
-            source={getSpotDataIconSource(featureType)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>
-              {getFeatureDisplayComponent(featureType, feature)}
-            </ListItem.Title>
-            <ListItem.Subtitle>{spot.properties.name}</ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron/>
+          <>
+            <Avatar
+              source={getSpotDataIconSource(featureType)}
+              placeholderStyle={{backgroundColor: 'transparent'}}
+              size={20}
+            />
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>
+                {getFeatureDisplayComponent(featureType, feature)}
+              </ListItem.Title>
+              <ListItem.Subtitle>{spot.properties.name}</ListItem.Subtitle>
+            </ListItem.Content>
+            <ListItem.Chevron/>
+          </>
         </ListItem>
       );
     }

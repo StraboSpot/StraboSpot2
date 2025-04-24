@@ -40,10 +40,12 @@ const FabricListItem = ({
       key={fabric.id}
       onPress={() => editFabric(fabric)}
     >
-      <ListItem.Content style={{overflow: 'hidden'}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(fabric)}</ListItem.Title>
-      </ListItem.Content>
-      <ListItem.Chevron/>
+      <>
+        <ListItem.Content style={{overflow: 'hidden'}}>
+          <ListItem.Title style={commonStyles.listItemTitle}>{getTitle(fabric)}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </>
     </ListItem>
   );
 };
