@@ -180,19 +180,17 @@ const Templates = ({
           onPress={() => setAsTemplate(template)}
           containerStyle={isActive ? commonStyles.listItemInverse : commonStyles.listItem}
         >
-          <>
-            <ListItem.Content>
-              <ListItem.Title style={isActive ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}>
-                {template.name}
-              </ListItem.Title>
-            </ListItem.Content>
-            <Button
-              titleStyle={isActive ? commonStyles.standardButtonTextInverse : commonStyles.standardButtonText}
-              title={'Edit'}
-              type={'save'}
-              onPress={() => editTemplate(template)}
-            />
-          </>
+          <ListItem.Content>
+            <ListItem.Title style={isActive ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}>
+              {template.name}
+            </ListItem.Title>
+          </ListItem.Content>
+          <Button
+            titleStyle={isActive ? commonStyles.standardButtonTextInverse : commonStyles.standardButtonText}
+            title={'Edit'}
+            type={'save'}
+            onPress={() => editTemplate(template)}
+          />
         </ListItem>
       </View>
     );
@@ -336,22 +334,20 @@ const Templates = ({
             listKey={'templates' + type}
             renderItem={({item}) =>
               <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
-                <>
-                  <ListItem.Content>
-                    <ListItem.Title style={commonStyles.listItemTitle}>
-                      {item.name}
-                    </ListItem.Title>
-                  </ListItem.Content>
-                  <Button
-                    titleStyle={commonStyles.standardButtonText}
-                    title={'Change'}
-                    type={'clear'}
-                    onPress={() => {
-                      setIsShowTemplates(true);
-                      setTemplateType(type);
-                    }}
-                  />
-                </>
+                <ListItem.Content>
+                  <ListItem.Title style={commonStyles.listItemTitle}>
+                    {item.name}
+                  </ListItem.Title>
+                </ListItem.Content>
+                <Button
+                  titleStyle={commonStyles.standardButtonText}
+                  title={'Change'}
+                  type={'clear'}
+                  onPress={() => {
+                    setIsShowTemplates(true);
+                    setTemplateType(type);
+                  }}
+                />
               </ListItem>
             }
           />
@@ -364,17 +360,15 @@ const Templates = ({
     return (
       <View>
         <ListItem containerStyle={{padding: 0, paddingLeft: 10, paddingRight: 10}}>
-          <>
-            <ListItem.Content>
-              <ListItem.Title style={commonStyles.listItemTitle}>
-                {'Use Template(s)?'}
-              </ListItem.Title>
-            </ListItem.Content>
-            <Switch
-              onValueChange={toggleUseTemplateSwitch}
-              value={isTemplateInUse}
-            />
-          </>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {'Use Template(s)?'}
+            </ListItem.Title>
+          </ListItem.Content>
+          <Switch
+            onValueChange={toggleUseTemplateSwitch}
+            value={isTemplateInUse}
+          />
         </ListItem>
         {isTemplateInUse && renderTemplatesSelected()}
       </View>

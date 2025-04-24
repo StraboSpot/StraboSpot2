@@ -45,18 +45,16 @@ const MeasurementItem = ({
         onPress={() => onMeasurementPress()}
         pad={5}
       >
-        <>
-          <ListItem.Content>
-            <ListItem.Title
-              style={selectedIds.includes(item.id) ? commonStyles.listItemTitleInverse
-                : commonStyles.listItemTitle}
-            >
-              <MeasurementLabel item={item} isDetail={isDetail}/>
-            </ListItem.Title>
-            <FeatureTagsList spotId={spot.properties.id} featureId={item.id}/>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </>
+        <ListItem.Content>
+          <ListItem.Title
+            style={selectedIds.includes(item.id) ? commonStyles.listItemTitleInverse
+              : commonStyles.listItemTitle}
+          >
+            <MeasurementLabel item={item} isDetail={isDetail}/>
+          </ListItem.Title>
+          <FeatureTagsList spotId={spot.properties.id} featureId={item.id}/>
+        </ListItem.Content>
+        <ListItem.Chevron/>
       </ListItem>
     );
   }

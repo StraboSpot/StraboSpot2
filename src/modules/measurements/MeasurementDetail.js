@@ -351,22 +351,20 @@ const MeasurementDetail = ({
           onPress={() => onSwitchSelectedMeasurement(selectedAttitude)}
           pad={5}
         >
-          <>
-            <ListItem.Content>
-              <ListItem.Title
-                style={selectedMeasurement.id === selectedAttitude.id ? commonStyles.listItemTitleInverse
-                  : commonStyles.listItemTitle}>{mainText}
-              </ListItem.Title>
-            </ListItem.Content>
-            <ListItem.Content>
-              <ListItem.Title
-                style={selectedMeasurement.id === selectedAttitude.id ? commonStyles.listItemTitleInverse
-                  : commonStyles.listItemTitle}
-              >
-                {propertyText}
-              </ListItem.Title>
-            </ListItem.Content>
-          </>
+          <ListItem.Content>
+            <ListItem.Title
+              style={selectedMeasurement.id === selectedAttitude.id ? commonStyles.listItemTitleInverse
+                : commonStyles.listItemTitle}>{mainText}
+            </ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Content>
+            <ListItem.Title
+              style={selectedMeasurement.id === selectedAttitude.id ? commonStyles.listItemTitleInverse
+                : commonStyles.listItemTitle}
+            >
+              {propertyText}
+            </ListItem.Title>
+          </ListItem.Content>
         </ListItem>
         {hasAssociated && (
           <ListItem
@@ -374,24 +372,22 @@ const MeasurementDetail = ({
             onPress={() => onSwitchSelectedMeasurement(selectedAttitude.associated_orientation[0])}
             pad={5}
           >
-            <>
-              <ListItem.Content>
-                <ListItem.Title
-                  style={selectedMeasurement.id === selectedAttitude.associated_orientation[0].id
-                    ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-                >
-                  {mainText2}
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Content>
-                <ListItem.Title
-                  style={selectedMeasurement.id === selectedAttitude.associated_orientation[0].id
-                    ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
-                >
-                  {propertyText2}
-                </ListItem.Title>
-              </ListItem.Content>
-            </>
+            <ListItem.Content>
+              <ListItem.Title
+                style={selectedMeasurement.id === selectedAttitude.associated_orientation[0].id
+                  ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+              >
+                {mainText2}
+              </ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Content>
+              <ListItem.Title
+                style={selectedMeasurement.id === selectedAttitude.associated_orientation[0].id
+                  ? commonStyles.listItemTitleInverse : commonStyles.listItemTitle}
+              >
+                {propertyText2}
+              </ListItem.Title>
+            </ListItem.Content>
           </ListItem>
         )}
         {hasAssociated && (

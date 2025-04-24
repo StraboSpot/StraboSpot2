@@ -38,16 +38,14 @@ const TagsListItem = ({
       onPress={() => onPress ? onPress(tag) : isChevronVisible ? openTag() : onChecked()}
       pad={5}
     >
-      <>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
-        </ListItem.Content>
-        {isCheckBoxVisible && <ListItem.CheckBox checked={isChecked} onPress={onChecked}/>}
-        {isChevronVisible && <ListItem.Chevron/>}
-      </>
+      <ListItem.Content>
+        <ListItem.Title style={commonStyles.listItemTitle}>{tag.name}</ListItem.Title>
+      </ListItem.Content>
+      <ListItem.Content>
+        <ListItem.Title style={commonStyles.listItemTitle}>{toTitleCase(getTagLabel(tag.type))}</ListItem.Title>
+      </ListItem.Content>
+      {isCheckBoxVisible && <ListItem.CheckBox checked={isChecked} onPress={onChecked}/>}
+      {isChevronVisible && <ListItem.Chevron/>}
     </ListItem>
   );
 };

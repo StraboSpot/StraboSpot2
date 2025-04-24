@@ -84,47 +84,45 @@ const DatasetList = () => {
         key={dataset.id}
         containerStyle={commonStyles.listItem}
       >
-        <>
-          <Icon
-            name={'edit'}
-            type={'material'}
-            size={20}
-            color={'darkgrey'}
-            onPress={() => editDataset(dataset.id, dataset.name)}
-          />
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 18)}</ListItem.Title>
-            <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
-              {spotsText}, {'\n'}{imagesText}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <Switch
-            onValueChange={value => onSwitch(value, dataset)}
-            value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
-            disabled={isDisabled(dataset.id)}
-          />
-          {Platform.OS !== 'web' && (
-            <View>
-              {dataset.images?.imageIds && (
-                <Icon
-                  name={spotIds && 'image-outline'}
-                  type={spotIds && 'ionicon'}
-                  size={20}
-                  containerStyle={{paddingBottom: 5}}
-                />
-              )}
+        <Icon
+          name={'edit'}
+          type={'material'}
+          size={20}
+          color={'darkgrey'}
+          onPress={() => editDataset(dataset.id, dataset.name)}
+        />
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{truncateText(dataset.name, 18)}</ListItem.Title>
+          <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
+            {spotsText}, {'\n'}{imagesText}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <Switch
+          onValueChange={value => onSwitch(value, dataset)}
+          value={activeDatasetsIds.some(activeDatasetId => activeDatasetId === dataset.id)}
+          disabled={isDisabled(dataset.id)}
+        />
+        {Platform.OS !== 'web' && (
+          <View>
+            {dataset.images?.imageIds && (
               <Icon
-                name={spotIds ? (needImages ? 'checkmark-outline' : 'download-circle-outline') : 'image-off-outline'}
-                type={spotIds ? (needImages ? 'ionicon' : 'material-community') : 'material-community'}
+                name={spotIds && 'image-outline'}
+                type={spotIds && 'ionicon'}
                 size={20}
-                color={spotIds ? needImages && 'green' : 'black'}
-                disabled={needImages}
-                disabledStyle={{backgroundColor: 'transparent'}}
-                onPress={() => downloadImages(dataset)}
+                containerStyle={{paddingBottom: 5}}
               />
-            </View>
-          )}
-        </>
+            )}
+            <Icon
+              name={spotIds ? (needImages ? 'checkmark-outline' : 'download-circle-outline') : 'image-off-outline'}
+              type={spotIds ? (needImages ? 'ionicon' : 'material-community') : 'material-community'}
+              size={20}
+              color={spotIds ? needImages && 'green' : 'black'}
+              disabled={needImages}
+              disabledStyle={{backgroundColor: 'transparent'}}
+              onPress={() => downloadImages(dataset)}
+            />
+          </View>
+        )}
       </ListItem>
     );
   };

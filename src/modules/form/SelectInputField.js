@@ -59,26 +59,24 @@ const SelectInputField = ({
           />
         ) : (
           <ListItem containerStyle={commonStyles.listItemFormField}>
-            <>
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
-              </ListItem.Content>
-              {single ? (
-                <ListItem.CheckBox
-                  checked={value === item.value}
-                  checkedIcon={radioSelected}
-                  uncheckedIcon={radioUnselected}
-                  onPress={() => fieldValueChanged([item.value])}
-                />
-              ) : (
-                <ListItem.CheckBox
-                  checked={value?.includes(item.value)}
-                  onPress={() => value?.includes(item.value)
-                    ? fieldValueChanged(value.filter(v => v !== item.value))
-                    : fieldValueChanged([...value || [], item.value])}
-                />
-              )}
-            </>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>{item.label}</ListItem.Title>
+            </ListItem.Content>
+            {single ? (
+              <ListItem.CheckBox
+                checked={value === item.value}
+                checkedIcon={radioSelected}
+                uncheckedIcon={radioUnselected}
+                onPress={() => fieldValueChanged([item.value])}
+              />
+            ) : (
+              <ListItem.CheckBox
+                checked={value?.includes(item.value)}
+                onPress={() => value?.includes(item.value)
+                  ? fieldValueChanged(value.filter(v => v !== item.value))
+                  : fieldValueChanged([...value || [], item.value])}
+              />
+            )}
           </ListItem>
         )}
       </React.Fragment>

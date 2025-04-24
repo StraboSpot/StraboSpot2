@@ -36,12 +36,10 @@ const SamplesMenuItem = ({openSpotInNotebook, updateSpotsInMapExtent}) => {
         key={sample.id}
         onPress={() => openSpotInNotebook(spot, PAGE_KEYS.SAMPLES, [sample])}
       >
-        <>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{sample.sample_id_name || 'Unknown'}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{sample.sample_id_name || 'Unknown'}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
       </ListItem>
     );
   };

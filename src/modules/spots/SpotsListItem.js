@@ -58,23 +58,21 @@ const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onP
       keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
       onPress={() => onPress && onPress(spot)}
     >
-      <>
-        <Avatar
-          placeholderStyle={{backgroundColor: 'transparent'}}
-          size={20}
-          source={getSpotGeometryIconSource(spot)}
-        />
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>
-          {doShowTags && spot && renderTags()}
-        </ListItem.Content>
-        {isCheckedList ? renderCheckboxes() : (
-          <>
-            {spot && renderSpotDataIcons()}
-            {spot && <ListItem.Chevron/>}
-          </>
-        )}
-      </>
+      <Avatar
+        placeholderStyle={{backgroundColor: 'transparent'}}
+        size={20}
+        source={getSpotGeometryIconSource(spot)}
+      />
+      <ListItem.Content>
+        <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>
+        {doShowTags && spot && renderTags()}
+      </ListItem.Content>
+      {isCheckedList ? renderCheckboxes() : (
+        <>
+          {spot && renderSpotDataIcons()}
+          {spot && <ListItem.Chevron/>}
+        </>
+      )}
     </ListItem>
   );
 };

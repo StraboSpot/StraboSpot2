@@ -117,14 +117,12 @@ const Documentation = () => {
       onPress={() => handlePress(item)}
       containerStyle={mainMenuPanelStyles.documentListItem}
     >
-      <>
-        <ListItem.Content style={commonStyles.listItemContent}>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {item.name}
-          </ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron size={20}/>
-      </>
+      <ListItem.Content style={commonStyles.listItemContent}>
+        <ListItem.Title style={commonStyles.listItemTitle}>
+          {item.name}
+        </ListItem.Title>
+      </ListItem.Content>
+      <ListItem.Chevron size={20}/>
     </ListItem>
   );
 

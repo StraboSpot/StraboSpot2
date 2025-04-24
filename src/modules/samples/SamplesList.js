@@ -27,23 +27,21 @@ const SamplesList = ({onPress, page, openModal}) => {
           onPress={() => onPress(item)}
           pad={5}
         >
-          <>
-            <ListItem.Content style={sampleStyles.listContentContainer}>
-              <View>
-                <ListItem.Title titleStyle={{
-                  ...commonStyles.listItemTitle,
-                  textAlign: 'left',
-                }}>{item.sample_id_name || 'Unknown'}</ListItem.Title>
-                <ListItem.Subtitle>
-                  {oriented} - {item.sample_description ? truncateText(item.sample_description, 25) : 'No Description'}
-                </ListItem.Subtitle>
-              </View>
-              <View>
-                <IGSNDisplay item={item} openModal={openModal}/>
-              </View>
-            </ListItem.Content>
-            <ListItem.Chevron/>
-          </>
+          <ListItem.Content style={sampleStyles.listContentContainer}>
+            <View>
+              <ListItem.Title titleStyle={{
+                ...commonStyles.listItemTitle,
+                textAlign: 'left',
+              }}>{item.sample_id_name || 'Unknown'}</ListItem.Title>
+              <ListItem.Subtitle>
+                {oriented} - {item.sample_description ? truncateText(item.sample_description, 25) : 'No Description'}
+              </ListItem.Subtitle>
+            </View>
+            <View>
+              <IGSNDisplay item={item} openModal={openModal}/>
+            </View>
+          </ListItem.Content>
+          <ListItem.Chevron/>
         </ListItem>
       </>
     );

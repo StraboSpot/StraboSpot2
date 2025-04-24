@@ -133,17 +133,15 @@ const CustomMapDetails = () => {
     const radioUnselected = <Icon name={'radiobox-blank'} type={'material-community'} color={DARKGREY}/>;
     return (
       <ListItem containerStyle={commonStyles.listItem}>
-        <>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.CheckBox
-            checked={item.source === editableCustomMapData?.source}
-            checkedIcon={radioSelected}
-            uncheckedIcon={radioUnselected}
-            onPress={() => setEditableCustomMapData(e => ({...e, source: item.source}))}
-          />
-        </>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.CheckBox
+          checked={item.source === editableCustomMapData?.source}
+          checkedIcon={radioSelected}
+          uncheckedIcon={radioUnselected}
+          onPress={() => setEditableCustomMapData(e => ({...e, source: item.source}))}
+        />
       </ListItem>
     );
   };
@@ -287,35 +285,31 @@ const CustomMapDetails = () => {
         <Text style={{padding: 10}}>To save this map as an overlay for offline use first save as a basemap then switch
           it to an overlay.</Text>
         <ListItem containerStyle={commonStyles.listItem}>
-          <>
-            <ListItem.Content>
-              <ListItem.Title style={commonStyles.listItemTitle}>Display as overlay</ListItem.Title>
-            </ListItem.Content>
-            <Switch
-              value={editableCustomMapData?.overlay}
-              onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
-            />
-          </>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>Display as overlay</ListItem.Title>
+          </ListItem.Content>
+          <Switch
+            value={editableCustomMapData?.overlay}
+            onValueChange={val => setEditableCustomMapData(e => ({...e, overlay: val}))}
+          />
         </ListItem>
         {editableCustomMapData?.overlay && (
           <ListItem containerStyle={commonStyles.listItem}>
-            <>
-              <ListItem.Content>
-                <ListItem.Title style={commonStyles.listItemTitle}>Opacity</ListItem.Title>
-                <ListItem.Subtitle style={{paddingLeft: 10}}>{sliderValuePercent}%</ListItem.Subtitle>
-              </ListItem.Content>
-              <View style={{flex: 2}}>
-                <SliderBar
-                  value={opacity}
-                  onValueChange={val => setEditableCustomMapData(e => ({...e, opacity: val}))}
-                  maximumValue={1}
-                  minimumValue={0.05}
-                  step={0.05}
-                  rotateLabels
-                  labels={['5%', '50%', '100%']}
-                />
-              </View>
-            </>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>Opacity</ListItem.Title>
+              <ListItem.Subtitle style={{paddingLeft: 10}}>{sliderValuePercent}%</ListItem.Subtitle>
+            </ListItem.Content>
+            <View style={{flex: 2}}>
+              <SliderBar
+                value={opacity}
+                onValueChange={val => setEditableCustomMapData(e => ({...e, opacity: val}))}
+                maximumValue={1}
+                minimumValue={0.05}
+                step={0.05}
+                rotateLabels
+                labels={['5%', '50%', '100%']}
+              />
+            </View>
           </ListItem>
         )}
       </>

@@ -62,19 +62,17 @@ const BasicListItem = ({
       onLongPress={drag}
       delayLongPress={500}
     >
-      <>
-        <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title style={commonStyles.listItemTitle}>{getTitle()}</ListItem.Title>
-        </ListItem.Content>
-        {isReorderingActive ? (
-          <Icon
-            color={MEDIUMGREY}
-            name={'chevron-expand'}
-            size={20}
-            type={'ionicon'}
-          />
-        ) : <ListItem.Chevron color={MEDIUMGREY}/>}
-      </>
+      <ListItem.Content style={{overflow: 'hidden'}}>
+        <ListItem.Title style={commonStyles.listItemTitle}>{getTitle()}</ListItem.Title>
+      </ListItem.Content>
+      {isReorderingActive ? (
+        <Icon
+          color={MEDIUMGREY}
+          name={'chevron-expand'}
+          size={20}
+          type={'ionicon'}
+        />
+      ) : <ListItem.Chevron color={MEDIUMGREY}/>}
     </ListItem>
   );
 };

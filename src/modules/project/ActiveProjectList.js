@@ -21,14 +21,12 @@ const ActiveProjectList = () => {
         containerStyle={commonStyles.listItem}
         onPress={() => dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.PROJECT_DESCRIPTION, bool: true}))}
       >
-        <>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>
-              {!isEmpty(project) && project.description ? project.description.project_name : 'No Project'}
-            </ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron/>
-        </>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {!isEmpty(project) && project.description ? project.description.project_name : 'No Project'}
+          </ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron/>
       </ListItem>
     </View>
   );

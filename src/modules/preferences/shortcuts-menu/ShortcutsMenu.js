@@ -23,19 +23,17 @@ const ShortcutMenu = () => {
       && toggleButton.key !== MODAL_KEYS.SHORTCUTS.PHOTO && toggleButton.key !== MODAL_KEYS.SHORTCUTS.SKETCH)) {
       return (
         <ListItem containerStyle={commonStyles.listItem}>
-          <>
-            <Avatar
-              source={toggleButton.icon_src}
-              placeholderStyle={{backgroundColor: 'transparent'}}
-            />
-            <ListItem.Content>
-              <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
-            </ListItem.Content>
-            <Switch
-              onValueChange={() => toggleSwitch(toggleButton.key)}
-              value={shortcutSwitchPositions[toggleButton.key]}
-            />
-          </>
+          <Avatar
+            source={toggleButton.icon_src}
+            placeholderStyle={{backgroundColor: 'transparent'}}
+          />
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
+          </ListItem.Content>
+          <Switch
+            onValueChange={() => toggleSwitch(toggleButton.key)}
+            value={shortcutSwitchPositions[toggleButton.key]}
+          />
         </ListItem>
       );
     }
@@ -47,15 +45,13 @@ const ShortcutMenu = () => {
         <Text style={shortcutMenuStyles.textStyle}>Shortcuts will create a NEW spot</Text>
       </View>
       <ListItem containerStyle={commonStyles.listItem}>
-        <>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>All</ListItem.Title>
-          </ListItem.Content>
-          <Switch
-            onValueChange={() => toggleSwitch('all')}
-            value={shortcutSwitchPositions.all}
-          />
-        </>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>All</ListItem.Title>
+        </ListItem.Content>
+        <Switch
+          onValueChange={() => toggleSwitch('all')}
+          value={shortcutSwitchPositions.all}
+        />
       </ListItem>
       <FlatList
         keyExtractor={item => item.key}

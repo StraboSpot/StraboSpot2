@@ -69,17 +69,15 @@ const CustomFeatureTypes = () => {
     return (
       <View>
         <ListItem key={feature.name} containerStyle={commonStyles.listItem}>
-          <>
-            <ListItem.Content>
-              <ListItem.Title style={commonStyles.listItemTitle}>{feature}</ListItem.Title>
-            </ListItem.Content>
-            <Button
-              titleStyle={{color: themes.RED}}
-              title={'Delete Feature'}
-              type={'clear'}
-              onPress={() => deleteCustomFeatureValidation(feature)}
-            />
-          </>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{feature}</ListItem.Title>
+          </ListItem.Content>
+          <Button
+            titleStyle={{color: themes.RED}}
+            title={'Delete Feature'}
+            type={'clear'}
+            onPress={() => deleteCustomFeatureValidation(feature)}
+          />
         </ListItem>
       </View>
     );

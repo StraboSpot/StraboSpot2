@@ -137,15 +137,13 @@ const Miscellaneous = () => {
     <>
       <SectionDivider dividerText={'Testing Mode'}/>
       <ListItem containerStyle={commonStyles.listItem}>
-        <>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>Use Testing Mode?</ListItem.Title>
-          </ListItem.Content>
-          <Switch
-            value={isTestingMode}
-            onValueChange={onTestingSwitchChange}
-          />
-        </>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>Use Testing Mode?</ListItem.Title>
+        </ListItem.Content>
+        <Switch
+          value={isTestingMode}
+          onValueChange={onTestingSwitchChange}
+        />
       </ListItem>
     </>
   );

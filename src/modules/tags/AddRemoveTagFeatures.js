@@ -36,25 +36,23 @@ const AddRemoveTagFeatures = () => {
           containerStyle={commonStyles.listItem}
           onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
         >
-          <>
-            <Avatar
-              source={getSpotDataIconSource(featureType)}
-              placeholderStyle={{backgroundColor: 'transparent'}}
-              size={20}
-            />
-            <ListItem.Content>
-              <ListItem.Title style={commonStyles.listItemTitle}>
-                {getFeatureDisplayComponent(featureType, feature)}
-              </ListItem.Title>
-              <ListItem.Subtitle>{spot.properties.name || spotId}</ListItem.Subtitle>
-            </ListItem.Content>
-            <ListItem.CheckBox
-              checked={!isEmpty(selectedTag) && !isEmpty(selectedTag.features)
-                && !isEmpty(selectedTag.features[spotId])
-                && selectedTag.features[spotId].includes(feature.id)}
-              onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
-            />
-          </>
+          <Avatar
+            source={getSpotDataIconSource(featureType)}
+            placeholderStyle={{backgroundColor: 'transparent'}}
+            size={20}
+          />
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {getFeatureDisplayComponent(featureType, feature)}
+            </ListItem.Title>
+            <ListItem.Subtitle>{spot.properties.name || spotId}</ListItem.Subtitle>
+          </ListItem.Content>
+          <ListItem.CheckBox
+            checked={!isEmpty(selectedTag) && !isEmpty(selectedTag.features)
+              && !isEmpty(selectedTag.features[spotId])
+              && selectedTag.features[spotId].includes(feature.id)}
+            onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
+          />
         </ListItem>
       );
     }
