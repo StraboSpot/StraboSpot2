@@ -41,9 +41,9 @@ const IGNSModal = forwardRef(({
 
   useEffect(() => {
     setStatusMessage('Below are the valid relevant fields in your MYSESAR account.');
-    const sesarUserCode = !formRef.current.values.isOnMySesar ? sesar.selectedUserCode : formRef.current.values.sesarUserCode;
-    formRef.current.setValues({...formRef.current.values, sesarUserCode: sesarUserCode}).then(
-      () => console.log('FORMREF.CURRENT.VALUES', formRef.current.values));
+    // const sesarUserCode = !formRef.current.values.isOnMySesar ? sesar.selectedUserCode : formRef.current.values.sesarUserCode;
+    // formRef.current.setValues({...formRef.current.values, sesarUserCode: sesarUserCode}).then(
+    //   () => console.log('FORMREF.CURRENT.VALUES', formRef.current.values));
 
     if (!sesar) {
       dispatch(updatedKey({

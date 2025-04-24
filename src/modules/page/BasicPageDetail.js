@@ -9,7 +9,6 @@ import {PAGE_KEYS} from './page.constants';
 import {isEmpty, toTitleCase} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
-import PickerOverlay from '../../shared/ui/PickerOverlay';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
 import {Form, useForm} from '../form';
 import GeoFieldsInputs from '../geography/GeoFieldInputs';
@@ -39,7 +38,7 @@ const BasicPageDetail = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
   const {isInternetReachable} = useSelector(state => state.connections.isOnline);
-  const {selectedUserCode} = useSelector(state => state.user.sesar);
+  const {sesar, encoded_login} = useSelector(state => state.user);
 
   const [isIGSNChecked, setIsIGSNChecked] = useState(selectedFeature.isOnMySesar || false);
   const [isDeleteOverlayVisible, setIsDeleteOverlayVisible] = useState(false);
@@ -261,6 +260,8 @@ const BasicPageDetail = ({
       }
       else {
         if (formCurrent?.values.isOnMySesar || isIGSNChecked) {
+          await formRef.current.setValues({...formRef.current.values, sesarUserCode: sesar.selectedUserCode});
+          console.log('FORMREF.CURRENT.VALUES', formRef.current.values);
           setSelectedSample(formCurrent);
           setIsIGSNModalVisible(true);
         }
@@ -295,14 +296,18 @@ const BasicPageDetail = ({
           <SaveAndCancelButtons
             cancel={cancelForm}
             save={saveButtonOnPress}
-            getIsDisabled={isInternetReachable && isIGSNChecked && isEmpty(selectedUserCode) && !selectedFeature.isOnMySesar}
+            getIsDisabled={isInternetReachable && isIGSNChecked && isEmpty(sesar.selectedUserCode) && !selectedFeature.isOnMySesar}
           />
-          <IGSNUploadAndRegister
+          {encoded_login && page?.key === PAGE_KEYS.SAMPLES ? <IGSNUploadAndRegister
             selectedFeature={selectedFeature}
             page={page}
             handleIGSNChecked={handleIGSNChecked}
             isIGSNChecked={isIGSNChecked}
+            ref={formRef}
           />
+          : (
+            <Text style={{textAlign: 'center', padding: 20, fontSize: 16}}>You need to login to StraboSpot to upload to Sesar</Text>
+            )}
           <FlatList
             ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
         </>

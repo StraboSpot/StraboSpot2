@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Linking, Text, View} from 'react-native';
 
-import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button, CheckBox, Icon} from 'react-native-elements';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,14 +15,11 @@ import {setLoadingStatus} from '../home/home.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 import {setInitialSesarState, setSelectedUserCode, setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
 import alert from '../../shared/ui/alert';
-import linking from 'react-native-web/src/exports/Linking';
 
 
 const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selectedFeature}) => {
 
   const {authenticateWithSesar, getAndSaveSesarCode} = useSamples();
-  const navigation = useNavigation();
-  const route = useRoute();
   const toast = useToast();
   const {getSesarToken, getOrcidToken} = useServerRequests();
 
@@ -38,17 +34,18 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
 
   useEffect(() => {
     const subscription = Linking.addEventListener('url', handleOpenURL);
+    console.log('Subscribing');
     return () => {
       subscription.remove();
       console.log('Subscription removed from linking');
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log('In 1st UE in IGSNUploadAndRegister page');
-  //   isIGSNChecked && !isEmpty(sesarToken.access) && getSesarTokenAndCodes()
-  //     .catch(err => console.log(err));
-  // }, [isIGSNChecked]);
+  useEffect(() => {
+    console.log('In 1st UE in IGSNUploadAndRegister page');
+    isIGSNChecked && !isEmpty(sesarToken.access) && getSesarTokenAndCodes()
+      .catch(err => console.log(err));
+  }, [isIGSNChecked]);
 
   // useEffect(() => {
   //   console.log('In 2nd UE in IGSNUploadAndRegister page');
@@ -74,14 +71,13 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
         console.log('SESAR TOKEN', tokens);
         dispatch(setSesarToken(tokens));
       }
-      toast.show('Sesar Authenticated!', {duration: 3000, type: 'success'});
       if (tokens.access) {
         const accessTokenParsed = JSON.parse(atob(tokens.access.split('.')[1]));
-        if (accessTokenParsed.exp < Math.floor(Date.now() / 1000)) tokens = await authenticateWithSesar();
+        if (accessTokenParsed.exp < Math.floor(Date.now() / 1000)) tokens = await authenticateWithSesar(tokens);
+        toast.show('Sesar Authenticated!', {duration: 3000, type: 'success'});
         if (!selectedFeature.isOnMySesar && isEmpty(userCodes)) {
-          const sesarCodes = await getAndSaveSesarCode(tokens.access);
-          alert('SESAR CODES', sesarCodes.toString());
-          dispatch(setSesarUserCodes(sesarCodes));
+          const sesarCodesRes = await getAndSaveSesarCode(tokens);
+          dispatch(setSesarUserCodes(sesarCodesRes.results.sesar_codes[0].sesar_code));
         }
         dispatch(setLoadingStatus({view: 'home', bool: false}));
         // handleIGSNChecked(true);
@@ -91,7 +87,7 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
     }
     catch (err) {
       console.error(err);
-      // dispatch(setLoadingStatus({view: 'home', bool: false}));
+      alert(err.toString());
     }
   };
 
@@ -109,6 +105,10 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
 
   const closePicker = () => {
     setIsPickerVisible(false);
+  };
+
+  const onUserCodeSelect = async (userCode) => {
+    dispatch(setSelectedUserCode(userCode));
   };
 
   const renderIGSNUploadCheckbox = () => {
@@ -146,31 +146,31 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
       <View style={{padding: 10, marginLeft: 20}}>
         {/*{!isEmpty(userCodes)*/}
         {/*  && (*/}
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
-              <Text style={{fontSize: themes.MEDIUM_TEXT_SIZE, marginRight: 20}}>Sesar User Code:</Text>
-              <Button
-                raised
-                title={selectedUserCode || 'Select User Code'}
-                type={'outline'}
-                containerStyle={sampleStyles.userCodeButtonContainer}
-                iconRight
-                icon={<Icon
-                  name={'chevron-down-outline'}
-                  containerStyle={{paddingLeft: 5}}
-                  type={'ionicon'}
-                />
-                }
-                disabled={selectedFeature.isOnMySesar}
-                disabledTitleStyle={{color: themes.BLACK}}
-                onPress={openPicker}
-                titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE, color: themes.BLACK}}
-              />
-            </View>
-          {/*)}*/}
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+          <Text style={{fontSize: themes.MEDIUM_TEXT_SIZE, marginRight: 20}}>Sesar User Code:</Text>
+          <Button
+            raised
+            title={selectedUserCode || 'Select User Code'}
+            type={'outline'}
+            containerStyle={sampleStyles.userCodeButtonContainer}
+            iconRight
+            icon={<Icon
+              name={'chevron-down-outline'}
+              containerStyle={{paddingLeft: 5}}
+              type={'ionicon'}
+            />
+            }
+            disabled={selectedFeature.isOnMySesar}
+            disabledTitleStyle={{color: themes.BLACK}}
+            onPress={openPicker}
+            titleStyle={{fontSize: themes.MEDIUM_TEXT_SIZE, color: themes.BLACK}}
+          />
+        </View>
+        {/*)}*/}
         <PickerOverlay
           isPickerVisible={isPickerVisible}
           data={userCodes}
-          onSelect={itemValue => dispatch(setSelectedUserCode(itemValue))}
+          onSelect={onUserCodeSelect}
           value={selectedUserCode}
           closePicker={closePicker}
           dividerText={'Select User Code'}
