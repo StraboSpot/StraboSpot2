@@ -361,10 +361,10 @@ const useImages = () => {
     // return imageRes;
   };
 
-  const setAnnotation = (image, annotation) => {
+  const setAnnotation = (image, annotation, title) => {
     const imageCopy = JSON.parse(JSON.stringify(image));
     imageCopy.annotated = annotation;
-    if (annotation && !imageCopy.title) imageCopy.title = imageCopy.id;
+    if (annotation && !imageCopy.title) imageCopy.title =  title;
     if (selectedSpot && selectedSpot.properties && selectedSpot.properties.images) {
       const updatedImages = selectedSpot.properties.images.filter(image2 => imageCopy.id !== image2.id);
       console.log(updatedImages);

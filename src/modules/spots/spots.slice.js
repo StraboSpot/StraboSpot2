@@ -98,7 +98,10 @@ const spotSlice = createSlice({
         return {id: image.id, height: image.height, width: image.width, image_type: image.image_type};
       });
       tempImages = [...tempImages, ...updatedSpotObj];
-      state.selectedSpot.properties.images = tempImages;
+      const tempImagesWithTitles = tempImages.map((image, i) => {
+        return {...image, title: isEmpty(image.title) ? 'Untitled ' + (i + 1) : image.title.toString()};
+      });
+      state.selectedSpot.properties.images = tempImagesWithTitles;
       state.selectedSpot.properties.modified_timestamp = Date.now();
       state.spots = {...state.spots, [state.selectedSpot.properties.id]: state.selectedSpot};
     },

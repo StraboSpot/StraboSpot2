@@ -62,7 +62,7 @@ const ImagesList = ({deleteImage, images, isOnReport = false, saveImages, saveUp
 
   const renderImages = () => {
     const sortedImages = JSON.parse(JSON.stringify(images)).sort(
-      (titleA, titleB) => (titleA?.title || 'Untitled').localeCompare(titleB?.title || 'Untitled'));  // alphabetize by name}
+      (imgA, imgB) => (imgA?.title?.toString() || 'UntitledA').localeCompare(imgB?.title?.toString() || 'UntitledB'));  // alphabetize by name
     return (
       <FlatList
         data={sortedImages}

@@ -25,15 +25,23 @@ const ImageCard = ({
   const dispatch = useDispatch();
   const spot = useSelector(state => state.spot.selectedSpot);
 
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [title, setTitle] = useState(image.title && image.title !== '' ? image.title.toString() : undefined);
 
   const {getImageBasemap, setAnnotation} = useImages();
 
+  const placeholderTitle = 'Untitled ' + (index + 1);
+
   const handleEditImageName = async (value) => {
-    setIsEditingTitle(true);
-    const updatedImage = {...image, title: value};
-    dispatch(editedSpotImage(updatedImage));
-    dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    if (value && value !== '') setTitle(value);
+    else setTitle(undefined);
+  };
+
+  const handleOnBlur = () => {
+    if (isEmpty(title) || title !== image.title) {
+      const updatedImage = {...image, title: isEmpty(title) ? placeholderTitle : title};
+      dispatch(editedSpotImage(updatedImage));
+      dispatch(updatedModifiedTimestampsBySpotsIds([spot.properties.id]));
+    }
   };
 
   const viewImage = (imageToView) => {
@@ -45,10 +53,11 @@ const ImageCard = ({
     <Card containerStyle={imageStyles.cardContainer}>
       {!isOnReport && (
         <TextInput
-          onBlur={() => setIsEditingTitle(false)}
-          onChangeText={text => handleEditImageName(text)}
+          onEndEditing={handleOnBlur}
+          onChangeText={handleEditImageName}
           style={imageStyles.cardTitle}
-          value={isEditingTitle ? image.title?.toString() : image.title?.toString() || 'Untitled ' + (index + 1)}
+          value={title}
+          placeholder={placeholderTitle}
         />
       )}
 
@@ -71,7 +80,7 @@ const ImageCard = ({
       {!isOnReport && (
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 5}}>
           <Switch
-            onValueChange={isAnnotated => setAnnotation(image, isAnnotated)}
+            onValueChange={isAnnotated => setAnnotation(image, isAnnotated, title ? title : placeholderTitle)}
             style={{height: 20, alignSelf: 'center'}}
             value={image.annotated}
           />
