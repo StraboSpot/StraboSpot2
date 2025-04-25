@@ -25,7 +25,9 @@
     "deploy-beta": "bundle exec fastlane beta",
     "create-changelog": "changelog generate-changelog",
     "web": "webpack serve --mode=development -d inline-source-map --config webpack.config.js --hot --color",
-    "web-deploy": "webpack --mode=production --config webpack.config.js"
+    "web-deploy": "webpack --mode=production --config webpack.config.js",
+    "sourcemaps:ios": "sentry-cli sourcemaps inject --org university-of-kansas --project strabospot-2 ios/main.jsbundle && sentry-cli sourcemaps upload --org university-of-kansas --project strabospot-2 ios/main.jsbundle",
+    "sourcemaps:android": "sentry-cli sourcemaps inject --org university-of-kansas --project strabospot-2 index.android.bundle && sentry-cli sourcemaps upload --org university-of-kansas --project strabospot-2 index.android.bundle"
   },
   "scriptComments": {
     "bundle:android": "Must be run with every build for android before deploying to PlayStore. Removed the --assets flag because of duplicates.",
