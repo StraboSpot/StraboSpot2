@@ -1,4 +1,3 @@
-import {XMLParser} from 'fast-xml-parser';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
