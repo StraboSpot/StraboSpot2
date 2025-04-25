@@ -47,8 +47,7 @@ const VertexActionsOverlay = ({
       animationType={'slide'}
       overlayStyle={overlayStyles.overlayContainer}
       isVisible={isShowVertexActionsModal}
-      onBackdropPress={() => {
-      }}
+      onBackdropPress={() => setIsShowVertexActionsModal(false)}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={overlayStyles.titleText}>Select an Action</Text>
