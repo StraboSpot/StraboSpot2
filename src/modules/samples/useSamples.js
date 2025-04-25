@@ -1,11 +1,11 @@
-import React from 'react';
-
 import {XMLParser} from 'fast-xml-parser';
 import {useDispatch, useSelector} from 'react-redux';
 
 import useServerRequests from '../../services/useServerRequests';
 import useForm from '../form/useForm';
-import {setSesarToken, setSesarUserCodes} from '../user/userProfile.slice';
+import {setSesarToken} from '../user/userProfile.slice';
+
+const parseString = require('react-native-xml2js').parseString;
 
 const useSamples = () => {
   const formName = ['general', 'samples'];
@@ -13,15 +13,15 @@ const useSamples = () => {
 
   const {getLabel} = useForm();
   const {getSesarUserCode, postToSesar, refreshSesarToken, updateSampleWithSesar} = useServerRequests();
-  const {sesar, name} = useSelector(state => state.user);
+  const {name} = useSelector(state => state.user);
 
-  const authenticateWithSesar = async () => {
-    const validSesarToken = await getValidToken();
-    if (!validSesarToken) {
+  const authenticateWithSesar = async (sesarTokens) => {
+    const validSesarTokens = await getValidToken(sesarTokens);
+    if (!validSesarTokens) {
       console.log('No valid token, redirecting to login...');
       return false;
     }
-    else return validSesarToken;
+    else return validSesarTokens;
   };
 
   const buildSesarXmlSchema = (data, isUpdating) => {
@@ -64,13 +64,19 @@ const useSamples = () => {
     }, {});
   };
 
-  const getAndSaveSesarCode = async (token) => {
-    const res = await getSesarUserCode(token);
-    const jsonData = parseXML(res);
-    if (jsonData.results.valid === 'yes') {
-      dispatch(setSesarUserCodes(jsonData.results.user_codes.user_code));
+  const getAndSaveSesarCode = async (sesarTokens) => {
+    const xml = await getSesarUserCode(sesarTokens.access);
+    let json = parseXML(xml);
+
+    if (json.results.valid.includes('yes')) {
+      console.log(json.results.valid);
+      return json;
     }
-    else throw Error();
+    else {
+      const newTokens = await getValidToken(sesarTokens);
+      return await getAndSaveSesarCode(newTokens);
+    }
+    ;
   };
 
   const getMaterialName = (materialType) => {
@@ -81,19 +87,19 @@ const useSamples = () => {
     else return materialType;
   };
 
-  const getValidToken = async () => {
-    let token = sesar?.sesarToken.access;
-    if (isTokenExpired(token)) {
+  const getValidToken = async (sesarTokens) => {
+    let tokens = sesarTokens;
+    if (isTokenExpired(tokens.access)) {
       console.log('Token expired, refreshing...');
-      token = await refreshToken();
+      tokens = await refreshToken(tokens.refresh);
     }
-    return token;
+    return tokens;
   };
 
-  const isTokenExpired = (token) => {
-    if (!token) return true; // No token = expired
+  const isTokenExpired = (accessToken) => {
+    if (!accessToken) return true; // No token = expired
     try {
-      const accessTokenParsed = JSON.parse(atob(token.split('.')[1]));
+      const accessTokenParsed = JSON.parse(atob(accessToken.split('.')[1]));
       return accessTokenParsed.exp < Math.floor(Date.now() / 1000); // Compare expiration to current time
     }
     catch (error) {
@@ -112,8 +118,12 @@ const useSamples = () => {
   };
 
   const parseXML = (xmlData) => {
-    const parser = new XMLParser();
-    return parser.parse(xmlData);
+    let json;
+    parseString(xmlData, {trim: true}, (err, result) => {
+      console.dir(result);
+      json = result;
+    });
+    return json;
   };
 
   const postSampleToSesar = async (xmlSchema, sample, isUpdating) => {
@@ -122,20 +132,21 @@ const useSamples = () => {
     const json = parseXML(resText);
     console.log('SAMPLE Response json', json);
     if (response.ok) return json.results.sample;
-    else if (json.results.error || json.results.sample.error) throw Error(json.results.error || json.results.sample.error);
+    else if (json.results.error || json.results.sample.error) throw Error(
+      json.results.error || json.results.sample.error);
     else throw Error('Something happened. Please try again later.');
   };
 
-  const refreshToken = async () => {
+  const refreshToken = async (refreshToken) => {
     try {
-      const newAccessToken = await refreshSesarToken(sesar?.sesarToken.refresh);
-      console.log(newAccessToken);
-      if (newAccessToken.error) {
-        console.error('Token refresh failed:', newAccessToken.error);
+      const newTokens = await refreshSesarToken(refreshToken);
+      console.log(newTokens);
+      if (newTokens.error) {
+        console.error('Token refresh failed:', newTokens.error);
         return null;
       }
-      dispatch(setSesarToken(newAccessToken));
-      return newAccessToken.access;
+      dispatch(setSesarToken(newTokens));
+      return newTokens;
     }
     catch (error) {
       console.error('Token refresh failed:', error);

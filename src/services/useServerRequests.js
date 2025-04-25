@@ -255,7 +255,7 @@ const useServerRequests = () => {
     return userCodeXmlRes.text();
   };
 
-  const getOrcidToken = async (encoded_login) => {
+  const getOrcidToken = async () => {
     try {
       const url = ORCID + AUTH + SCOPE + REDIRECT_URL + encodeURIComponent(encoded_login);
       console.log(url);
