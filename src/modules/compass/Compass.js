@@ -10,7 +10,6 @@ import CompassFace from './CompassFace';
 import CompassModule from '../../services/CompassModule';
 import useCompass from '../../services/useCompass';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
-import DeviceSound from '../../utils/sounds/sound';
 import {setModalVisible} from '../home/home.slice';
 import useMeasurements from '../measurements/useMeasurements';
 import {MODAL_KEYS} from '../page/page.constants';
@@ -34,7 +33,6 @@ const Compass = ({
 
   const {cartesianToSpherical, getStrikeAndDip, getTrendAndPlunge, getUserDeclination} = useCompass();
 
-  const [buttonSound, setButtonSound] = useState(null);
   const [compassData, setCompassData] = useState({
     magDecHeading: 0,
     trueHeading: 0,
@@ -53,14 +51,6 @@ const Compass = ({
   const [showCompassRawDataView, setShowCompassRawDataView] = useState(false);
   // const [userDeclination, setUserDeclination] = useState('');
   const {createNewMeasurement} = useMeasurements();
-
-  useEffect(() => {
-    console.log('UE Compass []');
-    const buttonClick = new DeviceSound('compass_button_click.mp3', DeviceSound.MAIN_BUNDLE, (error) => {
-      if (error) console.log('Failed to load sound', error);
-    });
-    setButtonSound(buttonClick);
-  }, []);
 
   useEffect(() => {
     console.log('UE Compass []');
@@ -110,12 +100,6 @@ const Compass = ({
   const grabMeasurements = async (isCompassMeasurement) => {
     try {
       if (isCompassMeasurement) {
-        if (buttonSound) {
-          buttonSound.play((success) => {
-            if (success) console.log('successfully finished playing compass sound');
-            else console.log('compass sound failed due to audio decoding errors');
-          });
-        }
         const unixTimestamp = Date.now();
         const sliderQuality = !sliderValue || sliderValue === 6 ? {} : {quality: sliderValue.toString()};
         console.log('Compass measurements', compassData, sliderValue);

@@ -1,3 +1,3 @@
-import Sound from 'react-native-sound';
-
-export default Sound;
+// import Sound from 'react-native-sound';
+//
+// export default Sound;
