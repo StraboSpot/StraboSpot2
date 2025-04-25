@@ -303,7 +303,6 @@ const BasicPageDetail = ({
             page={page}
             handleIGSNChecked={handleIGSNChecked}
             isIGSNChecked={isIGSNChecked}
-            ref={formRef}
           />
           : (
             <Text style={{textAlign: 'center', padding: 20, fontSize: 16}}>You need to login to StraboSpot to upload to Sesar</Text>
