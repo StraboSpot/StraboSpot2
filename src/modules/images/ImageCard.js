@@ -36,7 +36,7 @@ const ImageCard = ({
     else setTitle(undefined);
   };
 
-  const handleOnBlur = () => {
+  const handleEndEditing = () => {
     if (isEmpty(title) || title !== image.title) {
       const updatedImage = {...image, title: isEmpty(title) ? placeholderTitle : title};
       dispatch(editedSpotImage(updatedImage));
@@ -53,7 +53,9 @@ const ImageCard = ({
     <Card containerStyle={imageStyles.cardContainer}>
       {!isOnReport && (
         <TextInput
-          onEndEditing={handleOnBlur}
+          blurOnSubmit={true}                  // Needed for web
+          onSubmitEditing={handleEndEditing}   // Needed for web
+          onEndEditing={handleEndEditing}
           onChangeText={handleEditImageName}
           style={imageStyles.cardTitle}
           value={title}
