@@ -3,6 +3,7 @@ import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
 const devicePath = RNFS.DocumentDirectoryPath;
+const autoBackupPath = (Platform.OS === 'ios' ? devicePath + '/ProjectBackups' : RNFS.DownloadDirectoryPath + '/StraboSpot2/Backups') + '/AutoBackups';
 const exportPath =  Platform.OS === 'ios' ? devicePath : RNFS.DownloadDirectoryPath + '/StraboSpot2';
 const androidDownloadsPath = RNFS.DownloadDirectoryPath + '/StraboSpot2/Backups/'; //Android Only
 const androidExportPath = devicePath + '/AndroidExportFiles/';
@@ -23,6 +24,7 @@ const microExportsPath = exportPath + '/StraboMicro Projects/';
 const microZipsDirectory = appDirectory + '/Micro/Zips/';
 
 export const APP_DIRECTORIES = {
+  AUTO_BACKUP: autoBackupPath,
   ROOT_PATH: devicePath,
   APP_DIR: appDirectory,
   BACKUP_DIR: appDirectoryForBackups,

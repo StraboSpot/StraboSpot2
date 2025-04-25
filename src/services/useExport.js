@@ -12,7 +12,7 @@ import {
   setIsWarningMessagesModalVisible,
 } from '../modules/home/home.slice';
 import {setBackupFileName} from '../modules/project/projects.slice';
-import {isEmpty} from '../shared/Helpers';
+import {isEmpty, unixToDateTime} from '../shared/Helpers';
 
 const useExport = () => {
   const dispatch = useDispatch();
@@ -48,6 +48,14 @@ const useExport = () => {
     otherMapsDb: otherMapsDb,
     projectDb: projectDb,
     spotsDb: spotsDb,
+  };
+
+  const autoBackupProjectToDevice = async () => {
+    const date = Date.now();
+    const timeStamp = unixToDateTime(date);
+
+
+    // exportData(APP_DIRECTORIES.AUTO_BACKUP, dataForExport, timeStamp);
   };
 
   const backupProjectToDevice = async (fileName) => {
@@ -271,6 +279,7 @@ const useExport = () => {
   };
 
   return {
+    autoBackupProjectToDevice: autoBackupProjectToDevice,
     initializeBackup: initializeBackup,
     zipAndExportProjectFolder: zipAndExportProjectFolder,
   };

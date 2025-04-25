@@ -13,6 +13,8 @@ import useHomeContainer from './useHomeContainer';
 import useDevice from '../../services/useDevice';
 import MainMenuPanel from '../main-menu-panel/MainMenuPanel';
 import settingPanelStyles from '../main-menu-panel/mainMenuPanel.styles';
+import {Button} from 'react-native-elements';
+import useExport from '../../services/useExport';
 
 const HomeContainer = ({navigation, route}) => {
   console.log('Rendering HomeContainer...');
@@ -24,6 +26,7 @@ const HomeContainer = ({navigation, route}) => {
   const {email, name} = useSelector(state => state.user);
 
   const {createProjectDirectories} = useDevice();
+  const {autoBackupProjectToDevice} = useExport();
   const {
     animateLeftSide,
     animateMainMenuDrawer,

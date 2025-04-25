@@ -52,6 +52,8 @@ const useDevice = () => {
         console.log('Android Downloads/StraboSpot/Backups directory created');
         await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_ANDROID);
         console.log('AndroidExportFiles directory created');
+        await makeDirectory(APP_DIRECTORIES.AUTO_BACKUP);
+        console.log('AutoBackup directory created');
       }
       else {
         console.log('PERMISSION NOT GRANTED', permissionsGranted);
@@ -60,6 +62,8 @@ const useDevice = () => {
     if (Platform.OS === 'ios') {
       await makeDirectory(APP_DIRECTORIES.EXPORT_FILES_IOS);
       console.log('Distribution directory created for iOS');
+      await makeDirectory(APP_DIRECTORIES.AUTO_BACKUP);
+      console.log('AutoBackup directory created');
     }
     await makeDirectory(APP_DIRECTORIES.APP_DIR);
     console.log('App Directory Created');
