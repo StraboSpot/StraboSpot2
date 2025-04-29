@@ -7,6 +7,7 @@ import {COMPASS_TOGGLE_BUTTONS} from './compass.constants';
 import {setCompassMeasurements} from './compass.slice';
 import compassStyles from './compass.styles';
 import CompassFace from './CompassFace';
+import useCompassSound from './useCompassSound';
 import CompassModule from '../../services/CompassModule';
 import useCompass from '../../services/useCompass';
 import {isEmpty, roundToDecimalPlaces} from '../../shared/Helpers';
@@ -32,6 +33,7 @@ const Compass = ({
   const modalVisible = useSelector(state => state.home.modalVisible);
 
   const {cartesianToSpherical, getStrikeAndDip, getTrendAndPlunge, getUserDeclination} = useCompass();
+  const {playCompassSound} = useCompassSound();
 
   const [compassData, setCompassData] = useState({
     magDecHeading: 0,
@@ -100,6 +102,7 @@ const Compass = ({
   const grabMeasurements = async (isCompassMeasurement) => {
     try {
       if (isCompassMeasurement) {
+        if (playCompassSound) playCompassSound();
         const unixTimestamp = Date.now();
         const sliderQuality = !sliderValue || sliderValue === 6 ? {} : {quality: sliderValue.toString()};
         console.log('Compass measurements', compassData, sliderValue);

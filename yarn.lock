@@ -13627,6 +13627,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-sound-player@npm:0.14.5":
+  version: 0.14.5
+  resolution: "react-native-sound-player@npm:0.14.5"
+  checksum: 10c0/9c1236c9725b5eaef839b9028f046bb59c7531bc0c4bacbb8d584a3197bb3ab5d35e3304f8c96591917914f0a6f04bacd3818cfaf687e5bc65242c23cf223bd0
+  languageName: node
+  linkType: hard
+
 "react-native-system-navigation-bar@npm:2.6.4":
   version: 2.6.4
   resolution: "react-native-system-navigation-bar@npm:2.6.4"
@@ -15021,6 +15028,7 @@ __metadata:
     react-native-safe-area-context: "npm:5.4.0"
     react-native-screens: "npm:4.10.0"
     react-native-sensors: "npm:7.3.6"
+    react-native-sound-player: "npm:0.14.5"
     react-native-system-navigation-bar: "npm:2.6.4"
     react-native-tab-view: "npm:4.0.5"
     react-native-toast-notifications: "npm:3.4.0"
