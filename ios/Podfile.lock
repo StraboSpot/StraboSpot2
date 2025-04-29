@@ -2323,6 +2323,8 @@ PODS:
     - Yoga
   - RNSketchCanvas (0.8.0):
     - React
+  - RNSoundPlayer (0.14.5):
+    - React-Core
   - RNVectorIcons (10.2.0):
     - DoubleConversion
     - glog
@@ -2459,6 +2461,7 @@ DEPENDENCIES:
   - RNSensors (from `../node_modules/react-native-sensors`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - "RNSketchCanvas (from `../node_modules/@StraboSpot/react-native-sketch-canvas`)"
+  - RNSoundPlayer (from `../node_modules/react-native-sound-player`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - RNZipArchive (from `../node_modules/react-native-zip-archive`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -2669,6 +2672,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@sentry/react-native"
   RNSketchCanvas:
     :path: "../node_modules/@StraboSpot/react-native-sketch-canvas"
+  RNSoundPlayer:
+    :path: "../node_modules/react-native-sound-player"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   RNZipArchive:
@@ -2778,6 +2783,7 @@ SPEC CHECKSUMS:
   RNSensors: 111159597ac51505df10413c61b28bcd28e88983
   RNSentry: 3eeea40b871e7e42d74a55dad404b93d4215289c
   RNSketchCanvas: f7da2786bf042a29d5ca7a65571507d5c3108a29
+  RNSoundPlayer: 7961678d02c7339d9e9cfb78b9f3e8fde17f9df2
   RNVectorIcons: 941a39b5d3b9d8cf8ac2e2fc09b07bfafbcf9796
   RNZipArchive: f4a5af907d1581e995c879e34799be35c6bc3e21
   Sentry: 0f9bc9adfc0b960e7f3bb5ec67e9a3d8193f3bdb
