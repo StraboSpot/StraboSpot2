@@ -24,10 +24,10 @@ const imageStyles = StyleSheet.create({
     width: 150,
   },
   cardTitle: {
-    alignSelf: 'center',
     fontSize: MEDIUM_TEXT_SIZE,
     fontWeight: 'bold',
-    paddingTop: 5,
+    paddingVertical: 5,
+    textAlign: 'center',
   },
   closeButtonContainer: {
     position: 'absolute',

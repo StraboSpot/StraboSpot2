@@ -5,16 +5,8 @@ import {Layer, Source} from 'react-map-gl';
 
 import useMapSymbology from '../symbology/useMapSymbology';
 
-const FeatureHalosLayers = ({featuresNotSelected, featuresSelected}) => {
+const FeatureHalosLayers = ({spotsNotSelected, spotsSelected}) => {
   const {getPaintSymbology} = useMapSymbology();
-
-  // Get only 1 selected and not selected feature per id for colored halos so multiple halos aren't stacked
-  const featuresNotSelectedUniq = turf.featureCollection(
-    featuresNotSelected.features?.reduce((acc, f) =>
-      acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
-  const featuresSelectedUniq = turf.featureCollection(
-    featuresSelected.features?.reduce((acc, f) =>
-      acc.map(f1 => f1.properties.id).includes(f.properties.id) ? acc : [...acc, f], []));
 
   return (
     <>
@@ -22,7 +14,7 @@ const FeatureHalosLayers = ({featuresNotSelected, featuresSelected}) => {
       <Source
         id={'pointSpotsSelectedSource'}
         type={'geojson'}
-        data={featuresSelectedUniq}
+        data={turf.featureCollection(spotsSelected)}
       >
         <Layer
           type={'circle'}
@@ -36,7 +28,7 @@ const FeatureHalosLayers = ({featuresNotSelected, featuresSelected}) => {
       <Source
         id={'pointSourceColorHalo'}
         type={'geojson'}
-        data={featuresNotSelectedUniq}
+        data={turf.featureCollection(spotsNotSelected)}
       >
         <Layer
           type={'circle'}

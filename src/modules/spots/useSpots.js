@@ -213,7 +213,7 @@ const useSpots = () => {
   const getActiveSpotsObj = () => {
     let activeSpots = {};
     const activeDatasets = getActiveDatasets();
-    console.groupCollapsed('Getting Spots in Active Datasets...');
+    console.log('Getting Spots in Active Datasets...');
     Object.values(activeDatasets).forEach((dataset) => {
       let missingSpotsCount = 0;
       let missingSpotsIds = [];
@@ -224,10 +224,12 @@ const useSpots = () => {
           missingSpotsIds.push(spotId);
         }
       });
-      console.log(dataset.name, '- Missing', missingSpotsCount, '/', dataset.spotIds?.length || 0, 'Spots',
-        missingSpotsIds);
+      if (missingSpotsCount > 0) {
+        console.warn(dataset.name + ':', 'Missing', missingSpotsCount,
+          '/', dataset.spotIds?.length || 0, 'Spots', missingSpotsIds);
+      }
     });
-    console.groupEnd();
+    console.log('Found', Object.values(activeSpots).length, 'Active Spots:', activeSpots);
     return activeSpots;
   };
 

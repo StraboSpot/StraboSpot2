@@ -69,10 +69,12 @@ const Tags = ({type, updateSpotsInMapExtent}) => {
         type={'outline'}
       />
       <ListItem containerStyle={commonStyles.listItem}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{`Continuous ${label}`}</ListItem.Title>
-        </ListItem.Content>
-        <Switch onValueChange={handleContinuousTaggingSwitched} value={useContinuousTagging}/>
+        <>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{`Continuous ${label}`}</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={handleContinuousTaggingSwitched} value={useContinuousTagging}/>
+        </>
       </ListItem>
       <TagsList type={type} selectedIndex={selectedIndex}/>
       {isDetailModalVisible && <TagDetailModal closeModal={closeDetailModal}/>}

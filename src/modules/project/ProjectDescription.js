@@ -114,12 +114,15 @@ const ProjectDescription = () => {
                   <View>
                     <SectionDivider dividerText={'Privacy Settings'}/>
                     <ListItem containerStyle={commonStyles.listItemFormField}>
-                      <ListItem.Content>
-                        <ListItem.Title style={commonStyles.listItemTitle}>Make Project Public? </ListItem.Title>
-                      </ListItem.Content>
-                      <Switch
-                        value={formProps.values.public}
-                        onValueChange={bool => formProps.setFieldValue('public', bool)}/>
+                      <>
+                        <ListItem.Content>
+                          <ListItem.Title style={commonStyles.listItemTitle}>Make Project Public? </ListItem.Title>
+                        </ListItem.Content>
+                        <Switch
+                          value={formProps.values.public}
+                          onValueChange={bool => formProps.setFieldValue('public', bool)}
+                        />
+                      </>
                     </ListItem>
                     <View style={{paddingBottom: 15}}>
                       <Text style={commonStyles.noValueText}>Datasets that are made public can be accessed by anyone at

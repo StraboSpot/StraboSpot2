@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { FlatList, Linking, Platform, View} from 'react-native';
+import {FlatList, Linking, Platform, View} from 'react-native';
 
 import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
 import Pdf from 'react-native-pdf';
@@ -111,13 +111,16 @@ const Documentation = () => {
   const renderFAQListItem = item => (
     <ListItem
       onPress={() => handlePress(item)}
-      containerStyle={mainMenuPanelStyles.documentListItem}>
-      <ListItem.Content style={commonStyles.listItemContent}>
-        <ListItem.Title style={commonStyles.listItemTitle}>
-          {item.name}
-        </ListItem.Title>
-      </ListItem.Content>
-      <ListItem.Chevron size={20}/>
+      containerStyle={mainMenuPanelStyles.documentListItem}
+    >
+      <>
+        <ListItem.Content style={commonStyles.listItemContent}>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            {item.name}
+          </ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron size={20}/>
+      </>
     </ListItem>
   );
 

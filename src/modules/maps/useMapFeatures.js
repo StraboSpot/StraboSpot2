@@ -17,7 +17,7 @@ const useMapFeatures = () => {
 
   // Filter Spots currently visible on the map by feature type (i.e. toggled on in the Map Symbols Overlay)
   const filterByFeatureType = (mappedFeatures) => {
-    console.log('Mapped Features:', mappedFeatures);
+    console.log('Filtering Features...');
     console.log('Feature Types Off', featureTypesOff);
 
     const filteredFeatures = mappedFeatures.filter((spot) => {
@@ -40,7 +40,6 @@ const useMapFeatures = () => {
     });
 
     console.log('Filtered Mapped Features', filteredFeatures);
-
     return filteredFeatures;
   };
 
@@ -70,12 +69,10 @@ const useMapFeatures = () => {
     console.log('Getting Spots to display...');
     let mappedSpots = getAllMappedSpots();
 
-    // Separate selected Spots and not selected Spots (Point Spots need to be in both
-    // selected and not selected since the selected symbology is a halo around the point)
+    // Separate selected Spots and not selected Spots
     const selectedIds = selectedSpots.map(sel => sel.properties.id);
     const selectedMappedSpots = mappedSpots.filter(spot => selectedIds.includes(spot.properties.id));
-    const notSelectedMappedSpots = mappedSpots.filter(spot => !selectedIds.includes(spot.properties.id)
-      || spot.geometry.type === 'Point');
+    const notSelectedMappedSpots = mappedSpots.filter(spot => !selectedIds.includes(spot.properties.id));
 
     // console.log('Selected Spots to Display on this Map:', selectedMappedSpots);
     // console.log('Not Selected Spots to Display on this Map:', notSelectedMappedSpots);
@@ -84,7 +81,6 @@ const useMapFeatures = () => {
 
   // Spots with multiple measurements become multiple features, one feature for each measurement
   const getSpotsAsFeatures = (spotsToFeatures) => {
-    console.log('Getting Spots as mapped features...');
     let mappedFeatures = [];
     spotsToFeatures.map((spot) => {
       if ((spot.geometry.type === 'Point' || spot.geometry.type === 'MultiPoint')
@@ -117,6 +113,7 @@ const useMapFeatures = () => {
       }
       else mappedFeatures.push(JSON.parse(JSON.stringify(spot)));
     });
+    console.log('Mapped Features:', mappedFeatures);
     return isEmpty(featureTypesOff) || isEmpty(mappedFeatures) ? mappedFeatures : filterByFeatureType(mappedFeatures);
   };
 

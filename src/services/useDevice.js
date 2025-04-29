@@ -1,6 +1,6 @@
 import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
-import DocumentPicker from 'react-native-document-picker';
+import {errorCodes, isErrorWithCode, keepLocalCopy, pick, types} from '@react-native-documents/picker';
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch} from 'react-redux';
@@ -266,16 +266,24 @@ const useDevice = () => {
   };
 
   const getExternalProjectData = async () => {
-    const options = {
-      type: [DocumentPicker.types.zip],
-      copyTo: 'cachesDirectory',
-      // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
-      transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
-    };
-    // try {
-    const res = await DocumentPicker.pickSingle(options);
-    console.log('External Document', res);
-    return res;
+    try {
+      const [{name, uri}] = await pick();
+      const [localCopy] = await keepLocalCopy({
+        destination: 'cachesDirectory',
+        files: [{uri, fileName: name ?? 'fallback-name'}],
+        // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
+        transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
+        type: [types.zip],
+      });
+
+      if (localCopy.status === 'success') {
+        console.log(localCopy.localUri);
+        return {localUri: localCopy.localUri, name: name};
+      }
+    }
+    catch (err) {
+      throw Error(err);
+    }
   };
 
   // Grab out the name from project.json for a saved MicroProject
@@ -302,7 +310,7 @@ const useDevice = () => {
   };
 
   const isPickDocumentCanceled = (err) => {
-    return DocumentPicker.isCancel(err);
+    return isErrorWithCode(err) && err.code === errorCodes.OPERATION_CANCELED;
   };
 
   const makeDirectory = async (directory) => {
@@ -340,7 +348,8 @@ const useDevice = () => {
   };
 
   const pickCSV = async () => {
-    return await DocumentPicker.pickSingle({type: [DocumentPicker.types.csv]});
+    const [res] = await pick({type: [types.csv]});
+    return res;
   };
 
   const readDirectory = async (directory) => {
@@ -442,7 +451,7 @@ const useDevice = () => {
       let fileName = '';
       if (Platform.OS === 'android') {
         if (await RNFS.exists(APP_DIRECTORIES.EXPORT_FILES_ANDROID)) {
-          await RNFS.copyFile(zipFile.fileCopyUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
+          await RNFS.copyFile(zipFile.localUri, APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name);
           console.log('Files copied to Android export folder!');
         }
         else {
@@ -451,7 +460,7 @@ const useDevice = () => {
         }
       }
       fileName = zipFile.name.replace('.zip', '');
-      const source = Platform.OS === 'ios' ? zipFile.fileCopyUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
+      const source = Platform.OS === 'ios' ? zipFile.localUri : APP_DIRECTORIES.EXPORT_FILES_ANDROID + zipFile.name;
       const dest = Platform.OS === 'ios' ? APP_DIRECTORIES.BACKUP_DIR + fileName : APP_DIRECTORIES.BACKUP_DIR + fileName;
 
       console.log('SOURCE', source);

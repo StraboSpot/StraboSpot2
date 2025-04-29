@@ -1,11 +1,12 @@
 import React from 'react';
 
 import MapboxGL from '@rnmapbox/maps';
+import * as turf from '@turf/turf';
 import {useSelector} from 'react-redux';
 
 import useMapSymbology from '../symbology/useMapSymbology';
 
-const FeaturesNotSelectedLayers = ({featuresNotSelected, isStratStyleLoaded}) => {
+const FeaturesNotSelectedLayers = ({features, isStratStyleLoaded}) => {
   const {stratSection} = useSelector(state => state.map);
 
   const {getLinesFilteredByPattern, getMapSymbology} = useMapSymbology();
@@ -13,7 +14,7 @@ const FeaturesNotSelectedLayers = ({featuresNotSelected, isStratStyleLoaded}) =>
   return (
     <MapboxGL.ShapeSource
       id={'spotsNotSelectedSource'}
-      shape={featuresNotSelected}
+      shape={turf.featureCollection(features)}
     >
       {/* Polygon Not Selected */}
       <MapboxGL.FillLayer

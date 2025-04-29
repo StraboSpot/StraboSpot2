@@ -49,10 +49,12 @@ const StratSectionPage = ({page}) => {
         key={image.id}
         onPress={() => setSelectedImage(image)}
       >
-        <ListItem.Content style={{overflow: 'hidden'}}>
-          <ListItem.Title style={commonStyles.listItemTitle}>{getImageLabel(image.id)}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron/>
+        <>
+          <ListItem.Content style={{overflow: 'hidden'}}>
+            <ListItem.Title style={commonStyles.listItemTitle}>{getImageLabel(image.id)}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </>
       </ListItem>
     );
   };
@@ -109,15 +111,17 @@ const StratSectionPage = ({page}) => {
     return (
       <View>
         <ListItem containerStyle={commonStyles.listItem} key={'strat_section_toggle'}>
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>
-              Add a Stratigraphic Section at this Spot?
-            </ListItem.Title>
-          </ListItem.Content>
-          <Switch
-            value={!isEmpty(stratSection)}
-            onValueChange={() => toggleStratSection(spot)}
-          />
+          <>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>
+                Add a Stratigraphic Section at this Spot?
+              </ListItem.Title>
+            </ListItem.Content>
+            <Switch
+              value={!isEmpty(stratSection)}
+              onValueChange={() => toggleStratSection(spot)}
+            />
+          </>
         </ListItem>
       </View>
     );
@@ -147,14 +151,16 @@ const StratSectionPage = ({page}) => {
                         }, 500);
                       }}
                     >
-                      <Avatar
-                        source={require('../../assets/icons/SedStratColumn.png')}
-                        size={20}
-                        containerStyle={{alignSelf: 'center'}}
-                      />
-                      <ListItem.Content>
-                        <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
-                      </ListItem.Content>
+                      <>
+                        <Avatar
+                          source={require('../../assets/icons/SedStratColumn.png')}
+                          size={20}
+                          containerStyle={{alignSelf: 'center'}}
+                        />
+                        <ListItem.Content>
+                          <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
+                        </ListItem.Content>
+                      </>
                     </ListItem>
                     {renderImageOverlaysSection()}
                     {renderSectionSettingsSection()}

@@ -145,14 +145,18 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
     return (
       <ListItem
         key={customMap.id + 'CustomMapItem'}
-        onPress={() => onSetBasemap(customMap)}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
-            ({customMap.source || customMap.sources['raster-tiles'].type})
-          </ListItem.Title>
-        </ListItem.Content>
-        {customMap.id === currentBasemap?.id && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        onPress={() => onSetBasemap(customMap)}
+      >
+        <>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
+              ({customMap.source || customMap.sources['raster-tiles'].type})
+            </ListItem.Title>
+          </ListItem.Content>
+          {customMap.id === currentBasemap?.id &&
+            <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        </>
       </ListItem>
     );
   };
@@ -161,17 +165,20 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
     return (
       <ListItem
         key={customMap.id + 'OfflineCustomMapItem'}
-        onPress={() => onSetBasemap(customMap)}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>
-            {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
-            ({customMap.source || customMap.sources['raster-tiles'].type})
-          </ListItem.Title>
-          {/*{!isInternetReachable && !isConnected*/}
-          {/*  && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles!!!)</ListItem.Subtitle>}*/}
-        </ListItem.Content>
-        {customMap.id === currentBasemap?.id && currentBasemap.sources[currentBasemap.id].tiles[0].includes('file:/')
-          && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        onPress={() => onSetBasemap(customMap)}
+      >
+        <>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>
+              {customMap.title || customMap.name || truncateText(customMap?.id, 16)} -
+              ({customMap.source || customMap.sources['raster-tiles'].type})
+            </ListItem.Title>
+            {/*{!isInternetReachable && !isConnected*/}
+            {/*  && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles!!!)</ListItem.Subtitle>}*/}
+          </ListItem.Content>
+          {customMap.id === currentBasemap?.id && currentBasemap.sources[currentBasemap.id].tiles[0].includes('file:/')
+            && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+        </>
       </ListItem>
     );
   };
@@ -181,13 +188,15 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
       key={map.id + 'DefaultMapItem'}
       onPress={() => isInternetReachable ? setBasemap(map.id) : setOfflineMapTiles(map)}
     >
-      <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
-        {!isInternetReachable
-          && <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>}
-      </ListItem.Content>
-      {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
-        && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+      <>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{map.title || map.name}</ListItem.Title>
+          {!isInternetReachable
+            && <ListItem.Subtitle style={{paddingTop: 5}}>({map.count} tiles)</ListItem.Subtitle>}
+        </ListItem.Content>
+        {currentBasemap && currentBasemap.id && map.id === currentBasemap.id
+          && <Icon type={'ionicon'} color={themes.BLUE} name={'checkmark-outline'}/>}
+      </>
     </ListItem>
   );
 
@@ -196,17 +205,19 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
       containerStyle={overlayStyles.overlayContent}
       key={customMap.id + 'CustomOverlayItem' + (isOffline ? 'Offline' : '')}
     >
-      <ListItem.Content>
-        <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
-          ({customMap.source})</ListItem.Title>
-        {!isInternetReachable
-          && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
-      </ListItem.Content>
-      <Switch
-        style={{marginRight: 10}}
-        value={customMap.isViewable}
-        onValueChange={val => setCustomMapSwitchValue(val, customMap)}
-      />
+      <>
+        <ListItem.Content>
+          <ListItem.Title style={commonStyles.listItemTitle}>{customMap.title || customMap.name} -
+            ({customMap.source})</ListItem.Title>
+          {!isInternetReachable
+            && <ListItem.Subtitle style={{paddingTop: 5}}>({customMap.count} tiles)</ListItem.Subtitle>}
+        </ListItem.Content>
+        <Switch
+          style={{marginRight: 10}}
+          value={customMap.isViewable}
+          onValueChange={val => setCustomMapSwitchValue(val, customMap)}
+        />
+      </>
     </ListItem>
   );
 

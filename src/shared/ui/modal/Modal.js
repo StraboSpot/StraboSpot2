@@ -39,15 +39,17 @@ const Modal = ({
           containerStyle={commonStyles.listItem}
           onPress={() => onPress(shortcutModal.notebook_modal_key)}
         >
-          <Avatar
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-            source={require('../../../assets/icons/NotebookView_pressed.png')}
-          />
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>Go to Last Spot Created</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron/>
+          <>
+            <Avatar
+              placeholderStyle={{backgroundColor: 'transparent'}}
+              size={20}
+              source={require('../../../assets/icons/NotebookView_pressed.png')}
+            />
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>Go to Last Spot Created</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Chevron/>
+          </>
         </ListItem>
       );
     }
@@ -94,7 +96,13 @@ const Modal = ({
     );
   }
   return (
-    <View style={{...overlayStyles.overlayContainer, ...overlayStyles.overlayPosition, maxHeight: height * 0.80, zIndex: 1000}}>
+    <View
+      style={{
+        ...overlayStyles.overlayContainer, ...overlayStyles.overlayPosition,
+        maxHeight: height * 0.80,
+        zIndex: 1000,
+      }}
+    >
       <ModalHeader
         buttonTitleLeft={buttonTitleLeft}
         buttonTitleRight={buttonTitleRight}

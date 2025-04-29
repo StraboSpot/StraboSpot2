@@ -37,10 +37,12 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
   const renderSymbolsList = ({item, index}) => {
     return (
       <ListItem containerStyle={commonStyles.listItemFormField} key={item}>
-        <ListItem.Content>
-          <ListItem.Title>    {getSymbolTitle(item)}</ListItem.Title>
-        </ListItem.Content>
-        <Switch onValueChange={() => toggleFeatureTypesOff(item)} value={!featureTypesOff.includes(item)}/>
+        <>
+          <ListItem.Content>
+            <ListItem.Title>    {getSymbolTitle(item)}</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={() => toggleFeatureTypesOff(item)} value={!featureTypesOff.includes(item)}/>
+        </>
       </ListItem>
     );
   };
@@ -87,24 +89,30 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
       )}
       <FlatListItemSeparator/>
       <ListItem key={'spotLabels'} containerStyle={commonStyles.listItemFormField}>
-        <ListItem.Content>
-          <ListItem.Title>Labels</ListItem.Title>
-        </ListItem.Content>
-        <Switch onValueChange={handleShowSpotLabelsOn} value={isShowSpotLabelsOn}/>
+        <>
+          <ListItem.Content>
+            <ListItem.Title>Labels</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={handleShowSpotLabelsOn} value={isShowSpotLabelsOn}/>
+        </>
       </ListItem>
       <FlatListItemSeparator/>
       <ListItem key={'Only1stMeas'} containerStyle={commonStyles.listItemFormField}>
-        <ListItem.Content>
-          <ListItem.Title>Show Only 1st Meas.</ListItem.Title>
-        </ListItem.Content>
-        <Switch onValueChange={handleShowOnly1stMeas} value={isShowOnly1stMeas}/>
+        <>
+          <ListItem.Content>
+            <ListItem.Title>Show Only 1st Meas.</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={handleShowOnly1stMeas} value={isShowOnly1stMeas}/>
+        </>
       </ListItem>
       <FlatListItemSeparator/>
       <ListItem key={'tag_color'} containerStyle={commonStyles.listItemFormField}>
-        <ListItem.Content>
-          <ListItem.Title>Show Tag Color</ListItem.Title>
-        </ListItem.Content>
-        <Switch onValueChange={toggleShowTagColor} value={tagTypeForColor !== undefined}/>
+        <>
+          <ListItem.Content>
+            <ListItem.Title>Show Tag Color</ListItem.Title>
+          </ListItem.Content>
+          <Switch onValueChange={toggleShowTagColor} value={tagTypeForColor !== undefined}/>
+        </>
       </ListItem>
       {tagTypeForColor && (
         <ButtonGroup

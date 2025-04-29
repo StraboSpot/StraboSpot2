@@ -29,15 +29,17 @@ const ActiveDatasetsList = () => {
           containerStyle={commonStyles.listItem}
           onPress={() => makeDatasetCurrent(datasetId)}
         >
-          <ListItem.Content>
-            <ListItem.Title style={commonStyles.listItemTitle}>{datasetObj.name}</ListItem.Title>
-            <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
-              {datasetObj.spotIds
-                ? `(${datasetObj.spotIds.length} spot${datasetObj.spotIds.length !== 1 ? 's' : ''})`
-                : '(0 spots)'}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          {checked && <Icon name={'checkmark-outline'} type={'ionicon'} color={BLUE}/>}
+          <>
+            <ListItem.Content>
+              <ListItem.Title style={commonStyles.listItemTitle}>{datasetObj.name}</ListItem.Title>
+              <ListItem.Subtitle style={commonStyles.listItemSubtitle}>
+                {datasetObj.spotIds
+                  ? `(${datasetObj.spotIds.length} spot${datasetObj.spotIds.length !== 1 ? 's' : ''})`
+                  : '(0 spots)'}
+              </ListItem.Subtitle>
+            </ListItem.Content>
+            {checked && <Icon name={'checkmark-outline'} type={'ionicon'} color={BLUE}/>}
+          </>
         </ListItem>
       );
     }

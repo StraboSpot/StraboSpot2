@@ -32,13 +32,13 @@ import {updatedModifiedTimestampsBySpotsIds} from '../project/projects.slice';
 import {editedOrCreatedSpot} from '../spots/spots.slice';
 
 const MapContainer = forwardRef(({
-                          mapMode,
-                          onEndDrawPressed,
-                          selectingMode,
-                          setDistance,
-                          setMapModeToEdit,
-                        }, mapComponentRef) => {
-  console.log('Rendering Map...');
+                                   mapMode,
+                                   onEndDrawPressed,
+                                   selectingMode,
+                                   setDistance,
+                                   setMapModeToEdit,
+                                 }, mapComponentRef) => {
+  console.log('Rendering MapContainer...');
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -120,24 +120,25 @@ const MapContainer = forwardRef(({
   const {getTileCountFromHost} = useServerRequests();
 
   useEffect(() => {
+    // console.log('UE MapContainer [featuresSelected, featuresUnselected]');
     spotsRef.current = [...spotsSelected, ...spotsNotSelected];
   }, [spotsSelected, spotsNotSelected]);
 
   useEffect(() => {
-    // console.log('UE Map [currentImageBasemap]', currentImageBasemap);
+    // console.log('UE MapContainer [currentImageBasemap]');
     if (currentImageBasemap && (!currentImageBasemap.height || !currentImageBasemap.width)) {
       setImageHeightAndWidth(currentImageBasemap).catch(console.error);
     }
   }, [currentImageBasemap]);
 
   useEffect(() => {
-    // console.log('UE Map [currentBasemap, isZoomToCenterOffline]', currentBasemap, isZoomToCenterOffline);
+    // console.log('UE MapContainer [currentBasemap, isZoomToCenterOffline]');
     updateMapView().catch(err => console.warn('Error getting center of custom map:', err));
-    if (currentBasemap !== 'macrostrat') setIsShowMacrostratOverlay(false);
+    if (currentBasemap?.source !== 'macrostrat') setIsShowMacrostratOverlay(false);
   }, [currentBasemap, isZoomToCenterOffline]);
 
   useEffect(() => {
-    console.log('UE Map [userEmail, isOnline]', userEmail, isOnline);
+    // console.log('UE MapContainer [userEmail, isOnline]');
     if (isOnline && !currentBasemap) setBasemap().catch(console.error);
     else if (isOnline && currentBasemap) {
       // console.log('ITS IN THIS ONE!!!! -isOnline && currentBasemap');

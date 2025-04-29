@@ -1,10 +1,11 @@
 import React from 'react';
 
+import * as turf from '@turf/turf';
 import {Layer, Source} from 'react-map-gl';
 
 import useMapSymbology from '../symbology/useMapSymbology';
 
-const FeaturesNotSelectedLayers = ({featuresNotSelected}) => {
+const FeaturesNotSelectedLayers = ({features}) => {
 
   const {getLayoutSymbology, getLinesFilteredByPattern, getPaintSymbology} = useMapSymbology();
 
@@ -12,7 +13,7 @@ const FeaturesNotSelectedLayers = ({featuresNotSelected}) => {
     <Source
       id={'spotsNotSelectedSource'}
       type={'geojson'}
-      data={featuresNotSelected}
+      data={turf.featureCollection(features)}
     >
       {/* Polygon Not Selected */}
       <Layer

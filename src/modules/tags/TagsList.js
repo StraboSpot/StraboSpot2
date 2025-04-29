@@ -63,19 +63,21 @@ const TagsList = ({type, selectedIndex}) => {
           dispatch(setSelectedTag(tag));
         }}
       >
-        {useContinuousTagging && (
-          <ListItem.CheckBox
-            checked={tag.continuousTagging}
-            onPress={() => toggleContinuousTagging(tag)}
-          />
-        )}
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Content right>
-          <ListItem.Title>{title}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron/>
+        <>
+          {useContinuousTagging && (
+            <ListItem.CheckBox
+              checked={tag.continuousTagging}
+              onPress={() => toggleContinuousTagging(tag)}
+            />
+          )}
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{getTagTitle(tag)}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Content right>
+            <ListItem.Title>{title}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron/>
+        </>
       </ListItem>
     );
   };

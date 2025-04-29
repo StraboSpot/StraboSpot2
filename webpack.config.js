@@ -74,6 +74,16 @@ const cssLoaderConfiguration = {
   use: ['style-loader', 'css-loader'],
 };
 
+// Added when updated @react-navigation/native to 7.0.1 to make it work on web
+// but this wasn't in any update instructions
+// ToDo Check if we can get rid of this
+const addedForReactNavigation = {
+  test: /\.m?js/,
+  resolve: {
+    fullySpecified: false,
+  },
+};
+
 module.exports = {
   entry: [
     './polyfills-web.js',
@@ -94,7 +104,8 @@ module.exports = {
     },
   },
   module: {
-    rules: [babelLoaderConfiguration, imageLoaderConfiguration, ttfLoaderConfiguration, cssLoaderConfiguration],
+    rules: [babelLoaderConfiguration, imageLoaderConfiguration, ttfLoaderConfiguration, cssLoaderConfiguration,
+      addedForReactNavigation],
   },
   devServer: {
     allowedHosts: 'all',

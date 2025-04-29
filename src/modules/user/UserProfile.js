@@ -39,12 +39,14 @@ const UserProfile = () => {
           onPress={() => dispatch(setSidePanelVisible({view: SIDE_PANEL_VIEWS.USER_PROFILE, bool: true}))}
           disabled={isEmpty(userData.name)}
         >
-          <UserProfileAvatar size={70}/>
-          <ListItem.Content>
-            <ListItem.Title style={userStyles.avatarLabelName}>{getName()}</ListItem.Title>
-            <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{getEmail()}</ListItem.Subtitle>
-          </ListItem.Content>
-          {!isEmpty(userData.name) && <ListItem.Chevron/>}
+          <>
+            <UserProfileAvatar size={70}/>
+            <ListItem.Content>
+              <ListItem.Title style={userStyles.avatarLabelName}>{getName()}</ListItem.Title>
+              <ListItem.Subtitle style={userStyles.avatarLabelEmail}>{getEmail()}</ListItem.Subtitle>
+            </ListItem.Content>
+            {!isEmpty(userData.name) && <ListItem.Chevron/>}
+          </>
         </ListItem>
       </View>
     );

@@ -32,13 +32,15 @@ const OtherFeatureItem = ({editFeature, feature}) => {
       key={feature.id}
       onPress={() => editFeatureItem(feature)}
     >
-      <ListItem.Content style={{overflow: 'hidden'}}>
-        <ListItem.Title style={commonStyles.listItemTitle}>
-          <OtherFeatureLabel item={feature}/>
-        </ListItem.Title>
-        <FeatureTagsList spotId={spot.properties.id} featureId={feature.id}/>
-      </ListItem.Content>
-      <ListItem.Chevron/>
+      <>
+        <ListItem.Content style={{overflow: 'hidden'}}>
+          <ListItem.Title style={commonStyles.listItemTitle}>
+            <OtherFeatureLabel item={feature}/>
+          </ListItem.Title>
+          <FeatureTagsList spotId={spot.properties.id} featureId={feature.id}/>
+        </ListItem.Content>
+        <ListItem.Chevron/>
+      </>
     </ListItem>
   );
 };

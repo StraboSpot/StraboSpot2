@@ -21,10 +21,11 @@ const useMapMoveEvents = ({mapRef}) => {
   const handleMapMoved = async (e) => {
     // console.log('Event onMapMoved Timestamp difference', e.timestamp - cameraChangedTimestampRef.current);
     if (e.timestamp - cameraChangedTimestampRef.current > 1000) {
-      console.log('Map Moved. Updating View...');
+      // console.log('Map Moved.');
       cameraChangedTimestampRef.current = e.timestamp;
       if (!isMapMoved) dispatch(setIsMapMoved(true));
       if (!currentImageBasemap && !stratSection && mapRef?.current) {
+        // console.log('Updating View...');
         const newCenter = await mapRef.current.getCenter();
         const newZoom = await mapRef.current.getZoom();
         dispatch(setZoom(newZoom));

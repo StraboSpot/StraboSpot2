@@ -58,23 +58,26 @@ const ManageCustomMaps = ({zoomToCustomMap}) => {
       <ListItem
         containerStyle={commonStyles.listItem}
         key={item.id}
-        onPress={() => getCustomMapDetails(item)}>
-        <ListItem.Content>
-          <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
-          <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
-        </ListItem.Content>
-        {(item.source === 'mapbox_styles' || item.source === 'strabospot_mymaps') && (
-          <Icon
-            disabled={!isInternetReachable && !isConnected}
-            disabledStyle={{backgroundColor: 'transparent'}}
-            name={(isInternetReachable && isConnected) || !isInternetReachable && isConnected ? 'map-outline'
-              : !isInternetReachable && !isConnected ? 'cloud-offline' : null}
-            type={'ionicon'}
-            color={PRIMARY_ACCENT_COLOR}
-            onPress={() => viewCustomMap(item)}
-          />
-        )}
-        <ListItem.Chevron/>
+        onPress={() => getCustomMapDetails(item)}
+      >
+        <>
+          <ListItem.Content>
+            <ListItem.Title style={commonStyles.listItemTitle}>{item.title}</ListItem.Title>
+            <ListItem.Subtitle>({mapTypeName(item.source)} - {item.id})</ListItem.Subtitle>
+          </ListItem.Content>
+          {(item.source === 'mapbox_styles' || item.source === 'strabospot_mymaps') && (
+            <Icon
+              disabled={!isInternetReachable && !isConnected}
+              disabledStyle={{backgroundColor: 'transparent'}}
+              name={(isInternetReachable && isConnected) || !isInternetReachable && isConnected ? 'map-outline'
+                : !isInternetReachable && !isConnected ? 'cloud-offline' : null}
+              type={'ionicon'}
+              color={PRIMARY_ACCENT_COLOR}
+              onPress={() => viewCustomMap(item)}
+            />
+          )}
+          <ListItem.Chevron/>
+        </>
       </ListItem>
     );
   };

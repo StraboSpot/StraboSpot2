@@ -64,7 +64,12 @@ const AddImageOverlayModal = ({
     const getImageLabel = (img, i) => (img.title || 'Untitled ' + (i + 1))
       + ' (' + img.width + ' x ' + img.height + ')';
 
-    return spot.properties.images?.map((img, i) => ({
+    // Alphabetize images by name
+    const sortedImages = spot.properties?.images ? JSON.parse(JSON.stringify(spot.properties.images)).sort(
+        (imgA, imgB) => (imgA?.title?.toString() || 'UntitledA').localeCompare(imgB?.title?.toString() || 'UntitledB'))
+      : [];
+
+    return sortedImages?.map((img, i) => ({
       label: getImageLabel(img, i),
       value: img.id,
     })) || [];
@@ -204,7 +209,7 @@ const AddImageOverlayModal = ({
             </View>
           )}
         </Formik>
-        {image && (
+        {!isEmpty(image) && (
           <Button
             titleStyle={{color: WARNING_COLOR}}
             title={'Remove Image Overlay'}
