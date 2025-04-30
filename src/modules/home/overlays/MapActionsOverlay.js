@@ -17,7 +17,6 @@ const MapActionsOverlay = ({
 
   const currentBasemap = useSelector(state => state.map.currentBasemap);
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
-  const isTestingMode = useSelector(state => state.project.isTestingMode);
   const stratSection = useSelector(state => state.map.stratSection);
   const {isInternetReachable, isConnected} = useSelector(state => state.connections.isOnline);
 
@@ -37,9 +36,8 @@ const MapActionsOverlay = ({
         || (!isInternetReachable && isConnected && currentBasemap?.source)) && Platform.OS !== 'web')
       || (item.key === 'stereonet' && Platform.OS === 'ios')
       || (item.key === 'stratSection' && stratSection)
-      || (item.key === 'addToReport' && isTestingMode)
       || (item.key === 'mapMeasurement' && !stratSection && !currentImageBasemap)
-      || item.key !== 'saveMap' && item.key !== 'stereonet' && item.key !== 'stratSection' && item.key !== 'addToReport'
+      || item.key !== 'saveMap' && item.key !== 'stereonet' && item.key !== 'stratSection'
       && item.key !== 'mapMeasurement') {
       return (
         <ListItem
