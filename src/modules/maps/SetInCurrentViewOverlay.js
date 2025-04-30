@@ -32,8 +32,7 @@ const SetInCurrentViewOverlay = ({
       animationType={'slide'}
       overlayStyle={overlayStyles.overlayContainer}
       isVisible={showSetInCurrentViewModal}
-      onBackdropPress={() => {
-      }}
+      onBackdropPress={() => setShowSetInCurrentViewModal(false)}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={overlayStyles.titleText}>Select a Geometry Type</Text>

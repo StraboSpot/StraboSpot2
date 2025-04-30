@@ -374,30 +374,32 @@ const MapContainer = forwardRef(({
           spotsSelected={spotsSelected}
         />
       )}
-      {currentBasemap?.source === 'macrostrat' && isOnline && (
-        <MacrostratOverlay
-          closeModal={() => setIsShowMacrostratOverlay(false)}
-          isVisible={isShowMacrostratOverlay}
-          location={location}
-        />
-      )}
-      {showSetInCurrentViewModal && (
-        <SetInCurrentViewOverlay
-          createDefaultGeomContinued={createDefaultGeomContinued}
-          setShowSetInCurrentViewModal={setShowSetInCurrentViewModal}
-          showSetInCurrentViewModal={showSetInCurrentViewModal}
-        />
-      )}
-      {isShowVertexActionsModal && (
-        <VertexActionsOverlay
-          addNewVertex={addNewVertex}
-          deleteSelectedVertex={deleteSelectedVertex}
-          isShowVertexActionsModal={isShowVertexActionsModal}
-          setIsShowVertexActionsModal={setIsShowVertexActionsModal}
-          splitLine={splitLine}
-          vertexActionValues={vertexActionValues}
-        />
-      )}
+        {currentBasemap?.source === 'macrostrat' && isOnline && (
+          <MacrostratOverlay
+            closeModal={() => setIsShowMacrostratOverlay(false)}
+            isVisible={isShowMacrostratOverlay}
+            location={location}
+          />
+        )}
+      <View> {/* Added View to fix issue with overlays moving off-screen after initial press ToDo: Check on this */}
+        {showSetInCurrentViewModal && (
+          <SetInCurrentViewOverlay
+            createDefaultGeomContinued={createDefaultGeomContinued}
+            setShowSetInCurrentViewModal={setShowSetInCurrentViewModal}
+            showSetInCurrentViewModal={showSetInCurrentViewModal}
+          />
+        )}
+        {isShowVertexActionsModal && (
+          <VertexActionsOverlay
+            addNewVertex={addNewVertex}
+            deleteSelectedVertex={deleteSelectedVertex}
+            isShowVertexActionsModal={isShowVertexActionsModal}
+            setIsShowVertexActionsModal={setIsShowVertexActionsModal}
+            splitLine={splitLine}
+            vertexActionValues={vertexActionValues}
+          />
+        )}
+      </View>
     </View>
   );
 });
