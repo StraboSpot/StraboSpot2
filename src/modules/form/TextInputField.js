@@ -1,5 +1,10 @@
 import React from 'react';
-import {Text, TextInput, View} from 'react-native';
+import {
+  Keyboard,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import {Icon} from 'react-native-elements';
 
@@ -47,6 +52,9 @@ const TextInputField = ({
         autoFocus={autoFocus}
         autoCapitalize={autoCapitalize}
         editable={editable}
+        onKeyPress={(event) => {
+          if (event.nativeEvent.key === 'Enter') Keyboard.dismiss();
+        }}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </>

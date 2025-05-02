@@ -11,6 +11,7 @@ import styles from '../../shared/ui/ui.styles';
 import {ImageGallery} from '../images';
 import {ReportsList} from '../reports';
 import SamplesMenuItem from '../samples/SamplesMenuItem';
+import * as themes from '../../shared/styles.constants';
 
 const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebook}) => {
   console.log('Rendering SpotsNavigator...');
@@ -44,6 +45,7 @@ const SpotNavigator = ({closeSpotsNavigator, openNotebookPanel, openSpotInNotebo
         ref={pickerRef}
         selectedValue={pickerKey}
         style={styles.sectionDividerText}
+        itemStyle={{color: themes.BLACK}}
       >
         <Picker.Item label={pickerLabels[pickerKeys.SPOTS]} value={pickerKeys.SPOTS}/>
         <Picker.Item label={pickerLabels[pickerKeys.IMAGES]} value={pickerKeys.IMAGES}/>
