@@ -1,4 +1,4 @@
-# StraboSpot2
+# StraboField
 
 StraboSpot is an application to collect geologic data in a field setting, and is designed to be used by geologists, geology students, and others. The application allows the collection of geologic data using a variety of base maps - including maps, cross-sections, sketches, and images prepared by other users - referenced to their location on the Earth. StraboSpot utilizes a controlled vocabulary developed over years of discussion in the professional geologic community. The application uses nested spots (areas of observation) for spatial grouping of data and tags for conceptual grouping of data. The application currently focuses on Structural Geology and Tectonics data, but is expanding to include Petrology and Sedimentary Geology data.
 
