@@ -72,7 +72,19 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+/**
+ * Keep signing information private
+ * (Copied from https://developer.android.com/build/gradle-tips#remove-private-signing-information-from-your-project)
+ */
+// Create a variable called keystorePropertiesFile, and initializes it to the keystore.properties file.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+// Initializes a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+// Loads the keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -85,7 +97,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 129
         versionName "2.16.0"
-
     }
     signingConfigs {
         debug {
@@ -95,12 +106,10 @@ android {
             keyPassword 'android'
         }
         release {
-          if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-             storeFile file(MYAPP_UPLOAD_STORE_FILE)
-             storePassword MYAPP_UPLOAD_STORE_PASSWORD
-             keyAlias MYAPP_UPLOAD_KEY_ALIAS
-             keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-           }
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
          }
     }
     buildTypes {
