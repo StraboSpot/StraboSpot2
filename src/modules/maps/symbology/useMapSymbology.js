@@ -200,6 +200,7 @@ const useMapSymbology = () => {
     let color = '#663300';
     let width = 2;
     let lineDash = linePatterns.solid;
+
     if (feature.properties.trace) {
       const trace = feature.properties.trace;
 
@@ -246,7 +247,7 @@ const useMapSymbology = () => {
     }
 
     return {
-      'lineColor': color,
+      'lineColor': getTagColor(feature) || color,
       'lineWidth': width,
       'lineDasharray': lineDash,
     };
