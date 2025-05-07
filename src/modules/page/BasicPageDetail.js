@@ -167,6 +167,18 @@ const BasicPageDetail = ({
     const formName = getFormName();
     return (
       <View style={{flex: 1}}>
+        {encoded_login && page?.key === PAGE_KEYS.SAMPLES ? (
+          <IGSNUploadAndRegister
+            selectedFeature={selectedFeature}
+            page={page}
+            handleIGSNChecked={handleIGSNChecked}
+            isIGSNChecked={isIGSNChecked}
+          />
+        ) : (
+          <Text style={{textAlign: 'center', padding: 20, fontSize: 16}}>
+            You need to login to StraboSpot to upload to Sesar
+          </Text>
+        )}
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
@@ -296,19 +308,12 @@ const BasicPageDetail = ({
           <SaveAndCancelButtons
             cancel={cancelForm}
             save={saveButtonOnPress}
-            getIsDisabled={isInternetReachable && isIGSNChecked && isEmpty(sesar.selectedUserCode) && !selectedFeature.isOnMySesar}
+            getIsDisabled={isInternetReachable && isIGSNChecked
+              && isEmpty(sesar.selectedUserCode) && !selectedFeature.isOnMySesar}
           />
-          {encoded_login && page?.key === PAGE_KEYS.SAMPLES ? <IGSNUploadAndRegister
-            selectedFeature={selectedFeature}
-            page={page}
-            handleIGSNChecked={handleIGSNChecked}
-            isIGSNChecked={isIGSNChecked}
-          />
-          : (
-            <Text style={{textAlign: 'center', padding: 20, fontSize: 16}}>You need to login to StraboSpot to upload to Sesar</Text>
-            )}
           <FlatList
-            ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}/>
+            ListHeaderComponent={page?.key === PAGE_KEYS.NOTES ? renderNotesField() : renderFormFields()}
+          />
         </>
       )}
       {isIGSNModalVisible && (
