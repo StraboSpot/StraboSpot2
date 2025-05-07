@@ -1,6 +1,6 @@
 {
   "name": "strabospot2",
-  "version": "2.16.0",
+  "version": "2.16.1",
   "private": true,
   "scripts": {
     "android": "npx react-native run-android",
@@ -81,6 +81,7 @@
     "react-native-indicators": "0.17.0",
     "react-native-json-tree": "1.5.0",
     "react-native-keep-awake": "4.0.0",
+    "react-native-keyboard-manager": "^6.5.16-0",
     "react-native-multiple-select": "0.5.12",
     "react-native-orientation-locker": "1.7.0",
     "react-native-pager-view": "6.7.1",
