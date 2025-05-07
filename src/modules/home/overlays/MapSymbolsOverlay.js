@@ -39,7 +39,7 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
       <ListItem containerStyle={commonStyles.listItemFormField} key={item}>
         <>
           <ListItem.Content>
-            <ListItem.Title>    {getSymbolTitle(item)}</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>    {getSymbolTitle(item)}</ListItem.Title>
           </ListItem.Content>
           <Switch onValueChange={() => toggleFeatureTypesOff(item)} value={!featureTypesOff.includes(item)}/>
         </>
@@ -75,7 +75,7 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
         <>
           <ListItem key={'feature_types'} containerStyle={commonStyles.listItem}>
             <ListItem.Content>
-              <ListItem.Title>Feature Types</ListItem.Title>
+              <ListItem.Title style={commonStyles.listItemTitle}>Feature Types</ListItem.Title>
             </ListItem.Content>
           </ListItem>
           <FlatListItemSeparator/>
@@ -91,7 +91,7 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
       <ListItem key={'spotLabels'} containerStyle={commonStyles.listItemFormField}>
         <>
           <ListItem.Content>
-            <ListItem.Title>Labels</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>Labels</ListItem.Title>
           </ListItem.Content>
           <Switch onValueChange={handleShowSpotLabelsOn} value={isShowSpotLabelsOn}/>
         </>
@@ -100,7 +100,7 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
       <ListItem key={'Only1stMeas'} containerStyle={commonStyles.listItemFormField}>
         <>
           <ListItem.Content>
-            <ListItem.Title>Show Only 1st Meas.</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>Only 1st Measurements</ListItem.Title>
           </ListItem.Content>
           <Switch onValueChange={handleShowOnly1stMeas} value={isShowOnly1stMeas}/>
         </>
@@ -109,7 +109,7 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
       <ListItem key={'tag_color'} containerStyle={commonStyles.listItemFormField}>
         <>
           <ListItem.Content>
-            <ListItem.Title>Show Tag Color</ListItem.Title>
+            <ListItem.Title style={commonStyles.listItemTitle}>Tag Colors</ListItem.Title>
           </ListItem.Content>
           <Switch onValueChange={toggleShowTagColor} value={tagTypeForColor !== undefined}/>
         </>
