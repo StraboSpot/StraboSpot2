@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {FlatList, Platform, Text, View} from 'react-native';
 
+import {useFocusEffect} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
+import KeyboardManager from 'react-native-keyboard-manager';
 
 import ImageCard from './ImageCard';
 import {ImageModal, useImages} from './index';
@@ -17,6 +19,20 @@ const ImagesList = ({deleteImage, images, isOnReport = false, saveImages, saveUp
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
   const {getImageThumbnailURIs} = useImages();
+
+  const onFocusEffect = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      KeyboardManager.setEnable(true);
+    }
+    return () => {
+      if (Platform.OS === 'ios') {
+        console.log('BasicPageDetail onFocusEffect');
+        KeyboardManager.setEnable(false);
+      }
+    };
+  }, []);
+
+  useFocusEffect(onFocusEffect);
 
   useEffect(() => {
     console.log('UE ImagesList [images]', images);

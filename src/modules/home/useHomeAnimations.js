@@ -32,20 +32,6 @@ const useHomeAnimations = ({navigation}) => {
   const animateRightSide = {transform: [{translateX: animatedValueRightSide}]};
   const animateTextInputs = {transform: [{translateY: animatedValueTextInputs}]};
 
-  useEffect(() => {
-    // console.log('UE Home [modalVisible]', modalVisible);
-    if (Platform.OS === 'ios') {
-      Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
-      Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
-      // console.log('Keyboard listeners added to HOME');
-      return function cleanup() {
-        Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow).remove();
-        Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide).remove();
-        // console.log('Home Keyboard Listeners Removed');
-      };
-    }
-  }, [modalVisible]);
-
   // Used to animate open and close of Settings Panel and Notebook Panel
   const animateDrawer = (animatedState, toValue) => {
     Animated.timing(animatedState, {
@@ -70,26 +56,6 @@ const useHomeAnimations = ({navigation}) => {
     animateDrawer(animatedValueNotebookDrawer, NOTEBOOK_DRAWER_WIDTH);
     animateDrawer(animatedValueRightSide, 0);
     setTimeout(() => dispatch(setIsNotebookPanelVisible(false)), 1000);
-  };
-
-  const handleKeyboardDidHide = () => Animated.timing(animatedValueTextInputs,
-    {toValue: 0, duration: 100, useNativeDriver: Platform.OS !== 'web'}).start();
-
-  const handleKeyboardDidShow = (event) => {
-    const keyboardHeight = event.endCoordinates.height;
-    const currentlyFocusedField = TextInputState.currentlyFocusedInput
-      ? findNodeHandle(TextInputState.currentlyFocusedInput()) : TextInputState.currentlyFocusedField();
-    if (currentlyFocusedField === null) return null;
-    else {
-      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
-        const fieldHeight = height + 30;
-        const fieldTop = pageY;
-        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
-        if (gap >= 0) return;
-        Animated.timing(animatedValueTextInputs,
-          {toValue: gap, duration: 100, useNativeDriver: Platform.OS !== 'web'}).start();
-      });
-    }
   };
 
   const openMainMenuPanel = () => {

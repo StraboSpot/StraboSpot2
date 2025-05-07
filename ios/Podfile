@@ -31,6 +31,8 @@ target 'StraboSpot2' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+ pod 'IQKeyboardManagerSwift', :git => 'https://github.com/douglasjunior/IQKeyboardManager.git', :branch => 'react-native-keyboard-manager'
+
   post_install do |installer|
      bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
 

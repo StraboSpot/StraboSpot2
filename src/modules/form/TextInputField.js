@@ -1,12 +1,14 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {
-  Keyboard,
+  Platform,
   Text,
   TextInput,
   View,
 } from 'react-native';
 
+import {useFocusEffect} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
+import KeyboardManager from 'react-native-keyboard-manager';
 
 import * as themes from '../../shared/styles.constants';
 import {formStyles} from '../form';
@@ -23,6 +25,20 @@ const TextInputField = ({
                           onShowFieldInfo,
                           placeholder,
                         }) => {
+
+  const onFocusEffect = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      KeyboardManager.setEnable(true);
+    }
+    return () => {
+      if (Platform.OS === 'ios') {
+        console.log('BasicPageDetail onFocusEffect');
+        KeyboardManager.setEnable(false);
+      }
+    };
+  }, []);
+
+  useFocusEffect(onFocusEffect);
 
   return (
     <>
@@ -52,9 +68,6 @@ const TextInputField = ({
         autoFocus={autoFocus}
         autoCapitalize={autoCapitalize}
         editable={editable}
-        onKeyPress={(event) => {
-          if (event.nativeEvent.key === 'Enter') Keyboard.dismiss();
-        }}
       />
       {errors[name] && <Text style={formStyles.fieldError}>{errors[name]}</Text>}
     </>
