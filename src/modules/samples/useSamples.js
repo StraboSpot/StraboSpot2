@@ -130,9 +130,16 @@ const useSamples = () => {
     const resText = await response.text();
     const json = parseXML(resText);
     console.log('SAMPLE Response json', json);
-    if (response.ok) return json.results.sample;
-    else if (json.results.error || json.results.sample.error) throw Error(
-      json.results.error || json.results.sample.error);
+    if (response.ok) {
+      const singleResObject = Object.fromEntries(
+        Object.entries(json.results.sample[0]).map(([key, value]) => [key, value[0]]),
+      );
+      console.log(singleResObject);
+      return singleResObject;
+    }
+    else if (json.results.error || json.results.sample.error) {
+      throw Error(json.results.error || json.results.sample.error);
+    }
     else throw Error('Something happened. Please try again later.');
   };
 

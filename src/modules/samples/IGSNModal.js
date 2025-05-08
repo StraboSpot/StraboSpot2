@@ -83,8 +83,6 @@ const IGNSModal = forwardRef(({
       setStatusMessage(res.status);
       setIsLoading(false);
       await formRef.current.setValues({...formRef.current.values, Sample_IGSN: res.igsn, isOnMySesar: true});
-      console.log('Updated FormRef', formRef.current.values);
-
     }
     catch (err) {
       const errorMessage = err.toString().split(': ');
