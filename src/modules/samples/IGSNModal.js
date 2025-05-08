@@ -88,6 +88,7 @@ const IGNSModal = forwardRef(({
       const errorMessage = err.toString().split(': ');
       const reformattedErrorMessage = errorMessage[1].replace(/^_*(.)|_+(.)/g,
         (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
+      setIsLoading(false);
       console.error(errorMessage);
       setErrorMessage(reformattedErrorMessage);
       setModalPage('error');

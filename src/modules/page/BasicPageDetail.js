@@ -157,7 +157,7 @@ const BasicPageDetail = ({
   };
 
   const getIsDisabled = (fieldName) => {
-    return selectedFeature.isOnMySesar
+    return selectedFeature.isOnMySesar && selectedFeature.Sample_IGSN
       ? isInternetReachable
         ? fieldName === 'Sample_IGSN' : true
       : false;
