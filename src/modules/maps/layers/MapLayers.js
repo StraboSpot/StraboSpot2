@@ -80,13 +80,13 @@ const MapLayers = ({
       {/* Image Basemap Layer */}
       <ImageBasemapLayer/>
 
-      {/* Sketch Layer */}
-      {(mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE)
-        && (
-          <FreehandSketch>
-            <MapboxGL.RasterLayer id={'sketchLayer'}/>
-          </FreehandSketch>
-        )}
+      {/*/!* Sketch Layer *!/*/}
+      {/*{(mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE)*/}
+      {/*  && (*/}
+      {/*    <FreehandSketch mapRef = {cameraRef}>*/}
+      {/*      <MapboxGL.RasterLayer id={'sketchLayer'}/>*/}
+      {/*    </FreehandSketch>*/}
+      {/*  )}*/}
 
       {/* Features Layers */}
       <FeaturesLayers

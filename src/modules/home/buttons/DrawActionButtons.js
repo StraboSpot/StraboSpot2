@@ -31,13 +31,13 @@ const DrawActionButtons = ({clickHandler, mapMode}) => {
       <IconButton
         source={getImageSource(MAP_MODES.DRAW.LINE)}
         onPress={handleLinePressed}
-        onLongPress={handleLineLongPressed}
+        // onLongPress={handleLineLongPressed}  TODO: Add this back in after fixing  bug with freehand drawing
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
       <IconButton
         source={getImageSource(MAP_MODES.DRAW.POLYGON)}
         onPress={handlePolygonPressed}
-        onLongPress={handlePolygonLongPressed}
+        // onLongPress={handlePolygonLongPressed}   TODO: Add this back in after fixing  bug with freehand drawing
         imageStyle={SMALL_SCREEN && homeStyles.iconSizeSmallScreen}
       />
       <IconButton

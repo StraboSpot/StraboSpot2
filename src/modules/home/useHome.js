@@ -93,22 +93,23 @@ const useHome = ({closeMainMenuPanel, mapComponentRef, openNotebookPanel, zoomTo
         // console.log(`${name}`, ' was clicked');
         mapComponentRef.current?.clearSelectedSpots();
         setSelectingMode('tag');
-        setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
-        if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
-        else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
+        setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
+        // if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error); TODO: Add this back in after fixing  bug with freehand drawing
+        // else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
         break;
       case 'addToReport':
         mapComponentRef.current?.clearSelectedSpots();
         setSelectingMode('report');
-        setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
-        if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
-        else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
+        setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
+        // if (Platform.OS === 'ios') setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error); TODO: Add this back in after fixing  bug with freehand drawing
+        // else setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
         break;
       case 'stereonet':
         // console.log(`${name}`, ' was clicked');
         mapComponentRef.current?.clearSelectedSpots();
         setSelectingMode('stereonet');
-        setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        // setDraw(MAP_MODES.DRAW.FREEHANDPOLYGON).catch(console.error);
+        setDraw(MAP_MODES.DRAW.POLYGON).catch(console.error);
         break;
       case 'mapMeasurement':
         setDraw(MAP_MODES.DRAW.MEASURE).catch(console.error);
