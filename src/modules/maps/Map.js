@@ -5,12 +5,13 @@ import MapboxGL from '@rnmapbox/maps';
 import {useSelector} from 'react-redux';
 
 import {MapLayers} from './layers';
-import {BACKGROUND, MAPBOX_TOKEN} from './maps.constants';
+import {BACKGROUND, MAP_MODES, MAPBOX_TOKEN} from './maps.constants';
 import mapStyles from './maps.styles';
 import useMapMoveEvents from './useMapMoveEvents';
 import VertexDrag from './VertexDrag';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import homeStyles from '../home/home.style';
+import FreehandSketch from '../sketch/FreehandSketch';
 
 MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
@@ -94,7 +95,6 @@ const Map = ({
           isShowMacrostratOverlay={isShowMacrostratOverlay}
           isStratStyleLoaded={isStratStyleLoaded}
           location={location}
-          mapMode={mapMode}
           measureFeatures={measureFeatures}
           ref={cameraRef}
           showUserLocation={showUserLocation}
@@ -102,6 +102,15 @@ const Map = ({
           spotsSelected={spotsSelected}
         />
       </MapboxGL.MapView>
+
+      {/* Sketch Layer */}
+      {(mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE)
+        && (
+          <FreehandSketch mapMode={mapMode}>
+            <MapboxGL.RasterLayer id={'sketchLayer'}/>
+          </FreehandSketch>
+        )}
+
       {vertexStartCoords && <VertexDrag/>}
     </>
   );

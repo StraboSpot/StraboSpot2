@@ -1,11 +1,12 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {WHITE} from '../../shared/styles.constants';
 
 const sketchStyles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: WHITE,
     flex: 1,
     justifyContent: 'center',
   },

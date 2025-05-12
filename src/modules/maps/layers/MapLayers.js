@@ -12,8 +12,6 @@ import {
   MacrostratMarkerLayer,
   MeasureLayers,
 } from '.';
-import FreehandSketch from '../../sketch/FreehandSketch';
-import {MAP_MODES} from '../maps.constants';
 import {setIsMapMoved} from '../maps.slice';
 import CoveredIntervalsXLines from '../strat-section/CoveredIntervalsXLines';
 import StratSectionBackground from '../strat-section/StratSectionBackground';
@@ -26,7 +24,6 @@ const MapLayers = ({
                      isShowMacrostratOverlay,
                      isStratStyleLoaded,
                      location,
-                     mapMode,
                      measureFeatures,
                      showUserLocation,
                      spotsNotSelected,
@@ -79,14 +76,6 @@ const MapLayers = ({
 
       {/* Image Basemap Layer */}
       <ImageBasemapLayer/>
-
-      {/*/!* Sketch Layer *!/*/}
-      {/*{(mapMode === MAP_MODES.DRAW.FREEHANDPOLYGON || mapMode === MAP_MODES.DRAW.FREEHANDLINE)*/}
-      {/*  && (*/}
-      {/*    <FreehandSketch mapRef = {cameraRef}>*/}
-      {/*      <MapboxGL.RasterLayer id={'sketchLayer'}/>*/}
-      {/*    </FreehandSketch>*/}
-      {/*  )}*/}
 
       {/* Features Layers */}
       <FeaturesLayers

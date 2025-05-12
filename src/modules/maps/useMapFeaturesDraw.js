@@ -61,7 +61,7 @@ const useMapFeaturesDraw = ({
   const stratSection = useSelector(state => state.map.stratSection);
   const vertexEndCoords = useSelector(state => state.map.vertexEndCoords);
 
-  const [allowMapViewMove, setAllowMapViewMove] = useState(!isDrawMode(mapMode) && mapMode !== MAP_MODES.EDIT);
+  const [allowMapViewMove, setAllowMapViewMove] = useState(false);
   const [drawFeatures, setDrawFeatures] = useState([]);
   const [editFeatureVertex, setEditFeatureVertex] = useState([]);
   const [spotEditing, setSpotEditing] = useState({});
@@ -71,6 +71,11 @@ const useMapFeaturesDraw = ({
   const [spotsSelected, setSpotsSelected] = useState([]);
   const [vertexIndex, setVertexIndex] = useState([]);
   const [vertexToEdit, setVertexToEdit] = useState([]);
+
+  useEffect(() => {
+    // console.log('UE useMapFeaturesDraw [mapMode]');
+    setAllowMapViewMove(!(isDrawMode(mapMode) || mapMode === MAP_MODES.EDIT));
+  }, [mapMode]);
 
   useEffect(() => {
     // console.log('UE useMapFeaturesDraw [drawFeatures]');

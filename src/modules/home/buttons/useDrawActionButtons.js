@@ -57,7 +57,7 @@ const useDrawActionButtons = ({clickHandler, mapMode}) => {
   };
 
   const handleLineLongPressed = () => {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS !== 'web') {
       setDrawTypes(prevState => ({
           ...prevState,
           line: drawTypes.line === MAP_MODES.DRAW.LINE ? MAP_MODES.DRAW.FREEHANDLINE : MAP_MODES.DRAW.LINE,
@@ -88,7 +88,7 @@ const useDrawActionButtons = ({clickHandler, mapMode}) => {
   };
 
   const handlePolygonLongPressed = () => {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS !== 'web') {
       setDrawTypes(prevState => ({
           ...prevState,
           polygon: drawTypes.polygon === MAP_MODES.DRAW.POLYGON ? MAP_MODES.DRAW.FREEHANDPOLYGON : MAP_MODES.DRAW.POLYGON,
