@@ -21,15 +21,14 @@ const FreehandSketch = ({mapMode}) => {
 
   const clear = ()=> freehandDrawRef.current.clear();
 
-  const onPathsChange = (numPaths) => {
-    if (numPaths > 1) clear();
-  };
-
   const onStrokeChanged = (x, y) => freehandFeatureCoords.push([x, y]);
 
   const onStrokeEnd = () => dispatch(setFreehandFeatureCoords(freehandFeatureCoords));
-  
-  const onStrokeStart = () => freehandFeatureCoords = [];
+
+  const onStrokeStart = () => {
+    if (freehandFeatureCoords.length > 1) clear();
+    freehandFeatureCoords = [];
+  };
 
   return (
     <View style={{position:'absolute', width: width, height: height}}>
@@ -38,7 +37,6 @@ const FreehandSketch = ({mapMode}) => {
         containerStyle={{backgroundColor: 'transparent', flex: 1}}
         defaultStrokeIndex={13} // Orange
         defaultStrokeWidth={3}
-        onPathsChange={onPathsChange}
         onStrokeChanged={onStrokeChanged}
         onStrokeEnd={onStrokeEnd}
         onStrokeStart={onStrokeStart}
