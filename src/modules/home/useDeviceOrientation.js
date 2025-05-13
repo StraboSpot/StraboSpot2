@@ -1,4 +1,4 @@
-import RNOrientationDirector from 'react-native-orientation-director';
+import RNOrientationDirector,  {Orientation} from 'react-native-orientation-director';
 import {useToast} from 'react-native-toast-notifications';
 
 const useDeviceOrientation = () => {
@@ -9,7 +9,7 @@ const useDeviceOrientation = () => {
     console.log('Locking device orientation...');
     RNOrientationDirector.getDeviceOrientation().then((orientation) => {
       console.log('Current Device Orientation:', RNOrientationDirector.convertOrientationToHumanReadableString(orientation));
-      RNOrientationDirector.lockTo(orientation);
+      RNOrientationDirector.lockTo(orientation, Orientation.landscape);
       toast.show('Screen orientation LOCKED');
     });
   };

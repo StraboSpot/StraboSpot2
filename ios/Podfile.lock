@@ -1472,8 +1472,30 @@ PODS:
     - React
   - react-native-netinfo (11.4.1):
     - React-Core
-  - react-native-orientation-locker (1.7.0):
+  - react-native-orientation-director (2.5.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-pager-view (6.7.1):
     - DoubleConversion
     - glog
@@ -2418,7 +2440,7 @@ DEPENDENCIES:
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
-  - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
+  - react-native-orientation-director (from `../node_modules/react-native-orientation-director`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -2584,8 +2606,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-keep-awake"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
-  react-native-orientation-locker:
-    :path: "../node_modules/react-native-orientation-locker"
+  react-native-orientation-director:
+    :path: "../node_modules/react-native-orientation-director"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-pdf:
@@ -2752,7 +2774,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: 17b2d73c030975b6543395c7e7368bc8774c5efa
   react-native-keep-awake: 21ff40767cde4bd81021ffee12480aee4b5b91bb
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
-  react-native-orientation-locker: cc6f357b289a2e0dd2210fea0c52cb8e0727fdaa
+  react-native-orientation-director: dd775f7fe4450b8ea61282d7079446bf21cd25c0
   react-native-pager-view: f238ed7fb53458bd03366944a33686f067c83e9a
   react-native-pdf: 36118ab1926ea47ea8de8b1b8f681b69e3afc7d3
   react-native-safe-area-context: 562163222d999b79a51577eda2ea8ad2c32b4d06
