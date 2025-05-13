@@ -162,7 +162,7 @@ const MapContainer = forwardRef(({
     clearVertexes();
   }, [userEmail, isOnline]);
 
-  // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked
+  // Create a default geometry for a Spot that doesn't have geometry when 'Set in Current View' is clicked,
   // then make it selected for immediate editing
   const createDefaultGeom = async () => {
     if (selectedSpot && selectedSpot.properties && mapRef && mapRef.current) {
@@ -374,14 +374,15 @@ const MapContainer = forwardRef(({
           spotsSelected={spotsSelected}
         />
       )}
-        {currentBasemap?.source === 'macrostrat' && isOnline && (
-          <MacrostratOverlay
-            closeModal={() => setIsShowMacrostratOverlay(false)}
-            isVisible={isShowMacrostratOverlay}
-            location={location}
-          />
-        )}
-      <View> {/* Added View to fix issue with overlays moving off-screen after initial press ToDo: Check on this */}
+      {currentBasemap?.source === 'macrostrat' && isOnline && (
+        <MacrostratOverlay
+          closeModal={() => setIsShowMacrostratOverlay(false)}
+          isVisible={isShowMacrostratOverlay}
+          location={location}
+        />
+      )}
+      {/* Added View to fix issue with overlays moving off-screen after initial press ToDo: Check on this */}
+      <View>
         {showSetInCurrentViewModal && (
           <SetInCurrentViewOverlay
             createDefaultGeomContinued={createDefaultGeomContinued}
