@@ -1,27 +1,22 @@
-import Orientation, {
-  LANDSCAPE_LEFT,
-  LANDSCAPE_RIGHT,
-  PORTRAIT,
-  PORTRAIT_UPSIDE_DOWN,
-} from 'react-native-orientation-locker';
+import RNObject from 'react-native-orientation-director';
 import {useToast} from 'react-native-toast-notifications';
 
 const useDeviceOrientation = () => {
 
+  const {convertOrientationToHumanReadableString, getDeviceOrientation, lockTo, unlock} = RNObject;
   const toast = useToast();
 
   const lockOrientation = () => {
     console.log('Locking device orientation...');
-    Orientation.getDeviceOrientation((deviceOrientation) => {
-      console.log('Current Device Orientation: ', deviceOrientation);
-      if (deviceOrientation === PORTRAIT || deviceOrientation === PORTRAIT_UPSIDE_DOWN) Orientation.lockToPortrait();
-      else if (deviceOrientation === LANDSCAPE_LEFT || deviceOrientation === LANDSCAPE_RIGHT) Orientation.lockToLandscape();
-      toast.show('Screen orientation LOCKED in EDIT mode');
+    getDeviceOrientation().then((orientation) => {
+      console.log('Current Device Orientation:', convertOrientationToHumanReadableString(orientation));
+      lockTo(orientation);
+      toast.show('Screen orientation LOCKED');
     });
   };
 
   const unlockOrientation = () => {
-    Orientation.unlockAllOrientations();
+    unlock();
     toast.show('Screen orientation UNLOCKED');
   };
 

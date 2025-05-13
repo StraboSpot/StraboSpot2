@@ -4,6 +4,7 @@ import {Dimensions, Platform, View} from 'react-native';
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
+import useDeviceOrientation from '../home/useDeviceOrientation';
 import {setFreehandFeatureCoords} from '../maps/maps.slice';
 
 const platform = Platform.OS === 'ios' ? 'window' : 'screen';
@@ -13,7 +14,14 @@ let freehandFeatureCoords = [];
 const FreehandSketch = ({mapMode}) => {
   const dispatch = useDispatch();
 
+  const {lockOrientation, unlockOrientation} = useDeviceOrientation();
+
   const freehandDrawRef = useRef(null);
+
+  useEffect(() => {
+    lockOrientation();
+    return () => unlockOrientation();
+  }, []);
 
   useEffect(() => {
     clear();

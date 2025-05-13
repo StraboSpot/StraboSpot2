@@ -13473,7 +13473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-keyboard-manager@npm:^6.5.16-0":
+"react-native-keyboard-manager@npm:6.5.16-0":
   version: 6.5.16-0
   resolution: "react-native-keyboard-manager@npm:6.5.16-0"
   peerDependencies:
@@ -13497,17 +13497,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-orientation-locker@npm:1.7.0":
-  version: 1.7.0
-  resolution: "react-native-orientation-locker@npm:1.7.0"
+"react-native-orientation-director@npm:2.5.0":
+  version: 2.5.0
+  resolution: "react-native-orientation-director@npm:2.5.0"
   peerDependencies:
-    react: ">=16.13.1"
-    react-native: ">=0.63.2"
-    react-native-windows: ">=0.63.3"
+    expo: ">=47.0.0"
+    react: "*"
+    react-native: "*"
   peerDependenciesMeta:
-    react-native-windows:
+    expo:
       optional: true
-  checksum: 10c0/68ac54460a0722c203cda17d8a26cf8409115e6ed1ecc4324c25b60f94476f6200ae6646fa71495288d553f3a77a20c5548d0d33b434066ef8d7284dbbd094ff
+  checksum: 10c0/0f2de296a697d6d4ca28aaaeece0ca6794ccdf0c6c689b7bd099bd61a60c758f5ae09fdd76b4254964d2bc50f4c2d4c5e00717612c55c2effdf43b5f9fb2eedc
   languageName: node
   linkType: hard
 
@@ -13723,7 +13723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-xml2js@npm:^1.0.3":
+"react-native-xml2js@npm:1.0.3":
   version: 1.0.3
   resolution: "react-native-xml2js@npm:1.0.3"
   dependencies:
@@ -15027,9 +15027,9 @@ __metadata:
     react-native-indicators: "npm:0.17.0"
     react-native-json-tree: "npm:1.5.0"
     react-native-keep-awake: "npm:4.0.0"
-    react-native-keyboard-manager: "npm:^6.5.16-0"
+    react-native-keyboard-manager: "npm:6.5.16-0"
     react-native-multiple-select: "npm:0.5.12"
-    react-native-orientation-locker: "npm:1.7.0"
+    react-native-orientation-director: "npm:2.5.0"
     react-native-pager-view: "npm:6.7.1"
     react-native-pdf: "npm:6.7.7"
     react-native-progress: "npm:5.0.1"
@@ -15044,7 +15044,7 @@ __metadata:
     react-native-toast-notifications: "npm:3.4.0"
     react-native-vector-icons: "npm:10.2.0"
     react-native-web: "npm:0.20.0"
-    react-native-xml2js: "npm:^1.0.3"
+    react-native-xml2js: "npm:1.0.3"
     react-native-zip-archive: "npm:7.0.1"
     react-redux: "npm:9.2.0"
     react-test-renderer: "npm:19.0.0"
