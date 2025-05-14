@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ActivityIndicator, Platform, Text, useWindowDimensions, View} from 'react-native';
+import {ActivityIndicator, Platform, Text, View} from 'react-native';
 
 import {Image} from 'react-native-elements';
 
@@ -7,6 +7,7 @@ import {ImagePropertiesModal, imageStyles, useImages} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import IconButton from '../../shared/ui/IconButton';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import {WarningModal} from '../home/modals';
 import overlayStyles from '../home/overlays/overlay.styles';
 import SketchModal from '../sketch/SketchModal';
@@ -14,7 +15,7 @@ import SketchModal from '../sketch/SketchModal';
 const ImageInfo = ({deleteImage, image, saveImages, saveUpdatedImage, setImageToView, setIsImageModalVisible}) => {
   console.log('Rendering ImageInfo...');
 
-  const {width, height} = useWindowDimensions();
+  const {width, height} = useWindowSize();
 
   const [isImageDeleteModalVisible, setIsImageDeleteModalVisible] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);

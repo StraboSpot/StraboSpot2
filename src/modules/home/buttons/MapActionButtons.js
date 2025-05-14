@@ -1,18 +1,18 @@
 import React from 'react';
-import {useWindowDimensions} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';
 import IconButton from '../../../shared/ui/IconButton';
+import {useWindowSize} from '../../../shared/ui/useWindowSize';
 import useMap from '../../maps/useMap';
 import useMapFeatures from '../../maps/useMapFeatures';
 import homeStyles from '../home.style';
 import {MapActionsOverlay, MapLayersOverlay, MapSymbolsOverlay, overlayStyles} from '../overlays';
 
 const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleDialog}) => {
-  const {height} = useWindowDimensions();
+  const {height} = useWindowSize();
   const {setBasemap} = useMap();
   const {updateFeatureTypes} = useMapFeatures();
 

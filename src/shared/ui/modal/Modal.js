@@ -1,5 +1,5 @@
 import React from 'react';
-import {useWindowDimensions, View} from 'react-native';
+import { View} from 'react-native';
 
 import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -11,6 +11,7 @@ import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/pag
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import {SMALL_SCREEN} from '../../styles.constants';
+import {useWindowSize} from '../useWindowSize';
 
 const Modal = ({
                  buttonTitleLeft,
@@ -23,7 +24,7 @@ const Modal = ({
                  title,
                }) => {
 
-  const {height, width} = useWindowDimensions();
+  const {height, width} = useWindowSize();
 
   const modalVisible = useSelector(state => state.home.modalVisible);
   const selectedAttributes = useSelector(state => state.spot.selectedAttributes);

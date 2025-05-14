@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {FlatList, useWindowDimensions, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
 import {Button, Overlay} from 'react-native-elements';
@@ -10,6 +10,7 @@ import * as themes from '../../shared/styles.constants';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import {Form, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
@@ -17,7 +18,7 @@ import {MODAL_KEYS, PAGE_KEYS} from '../page/page.constants';
 import {useTags} from '../tags';
 
 const TagDetailModal = ({closeModal}) => {
-  const {height} = useWindowDimensions();
+  const {height} = useWindowSize();
 
   const formRef = useRef(null);
 

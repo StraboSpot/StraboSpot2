@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageBackground, Platform, ScrollView, Text, useWindowDimensions, View} from 'react-native';
+import {ImageBackground, Platform, ScrollView, Text, View} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
@@ -9,10 +9,11 @@ import ConnectionStatusIcon from '../../services/ConnectionStatusIcon';
 import {VERSION_NUMBER} from '../../shared/app.constants';
 import {getFontSizeByWindowWidth} from '../../shared/Helpers';
 import Loading from '../../shared/ui/Loading';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import VersionCheckLabel from '../version-check/VersionCheckLabel';
 
 const SplashScreen = ({children}) => {
-  const {width, height} = useWindowDimensions();
+  const {width, height} = useWindowSize();
 
   const fontSize = getFontSizeByWindowWidth({width, height}, 40);
   const titleStyles = [splashScreenStyles.title, {fontSize}];

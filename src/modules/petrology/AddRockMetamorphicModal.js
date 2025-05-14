@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, useWindowDimensions, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
@@ -7,11 +7,12 @@ import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';
 import ModalHeader from '../../shared/ui/modal/ModalHeader';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import {Form, formStyles, MainButtons, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';
 
 const AddRockMetamorphicModal = ({formName, formProps, setChoicesViewKey, survey}) => {
-  const {width} = useWindowDimensions();
+  const {width} = useWindowSize();
 
   const [isFaciesModalVisible, setIsFaciesModalVisible] = useState(false);
 

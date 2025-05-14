@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Platform, ScrollView, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {FlatList, Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 
 import {Button, Icon, Overlay} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -10,13 +10,14 @@ import {SMALL_SCREEN} from '../../shared/styles.constants';
 import ButtonRounded from '../../shared/ui/ButtonRounded';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDivider from '../../shared/ui/SectionDivider';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {imageStyles} from '../images';
 import {SpotsList, SpotsListItem} from '../spots';
 
 const ReportSpots = ({checkedSpotsIds, handleSpotChecked, handleSpotPressed, updateSpotsInMapExtent}) => {
 
-  const {height, width} = useWindowDimensions();
+  const {height, width} = useWindowSize();
   const itemWidth = 300;
   const listWidth = SMALL_SCREEN ? width - 30 : width * 0.80 - 30;
 

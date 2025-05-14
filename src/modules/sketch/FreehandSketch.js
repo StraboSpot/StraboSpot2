@@ -1,13 +1,12 @@
 import React, {useEffect, useRef} from 'react';
-import {Dimensions, Platform, View} from 'react-native';
+import {View} from 'react-native';
 
 import RNSketchCanvas from '@StraboSpot/react-native-sketch-canvas';
 import {useDispatch} from 'react-redux';
 
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import useDeviceOrientation from '../home/useDeviceOrientation';
 import {setFreehandFeatureCoords} from '../maps/maps.slice';
-
-const platform = Platform.OS === 'ios' ? 'window' : 'screen';
 
 let freehandFeatureCoords = [];
 
@@ -17,7 +16,7 @@ const FreehandSketch = ({mapMode}) => {
   const {lockOrientation, unlockOrientation} = useDeviceOrientation();
 
   const freehandDrawRef = useRef(null);
-  const {height, width} = Dimensions.get(platform);
+  const {height, width} = useWindowSize();
 
   useEffect(() => {
     lockOrientation();
@@ -28,7 +27,7 @@ const FreehandSketch = ({mapMode}) => {
     clear();
   }, [mapMode]);
 
-  const clear = ()=> freehandDrawRef.current.clear();
+  const clear = () => freehandDrawRef.current.clear();
 
   const onStrokeChanged = (x, y) => freehandFeatureCoords.push([x, y]);
 
@@ -40,7 +39,7 @@ const FreehandSketch = ({mapMode}) => {
   };
 
   return (
-    <View style={{position:'absolute', width: width, height: height}}>
+    <View style={{position: 'absolute', width: width, height: height}}>
       <RNSketchCanvas
         canvasStyle={{backgroundColor: 'transparent', flex: 1}}
         containerStyle={{backgroundColor: 'transparent', flex: 1}}

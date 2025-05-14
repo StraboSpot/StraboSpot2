@@ -1,8 +1,9 @@
 import React from 'react';
-import {useWindowDimensions, View} from 'react-native';
+import {View} from 'react-native';
 
 import {DrawActionButtons, MapActionButtons, UserLocationButton} from './index';
 import * as themes from '../../../shared/styles.constants';
+import {useWindowSize} from '../../../shared/ui/useWindowSize';
 import homeStyles from '../home.style';
 import DrawInfo from '../pop-ups/DrawInfo';
 
@@ -19,7 +20,7 @@ const ActionButtonsSmallScreen = ({
                                     toggleDialog,
                                   }) => {
 
-  const {height, width} = useWindowDimensions();
+  const {height, width} = useWindowSize();
 
   return (
     <View>

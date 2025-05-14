@@ -1,5 +1,5 @@
 import React, {useEffect, useState, forwardRef} from 'react';
-import {ScrollView, Text, useWindowDimensions, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 
 import moment from 'moment';
 import {Button, Overlay, Image} from 'react-native-elements';
@@ -11,6 +11,7 @@ import SesarLogo from '../../assets/images/logos/sesar2_logo.png';
 import {isEmpty, truncateText} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import Loading from '../../shared/ui/Loading';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import overlayStyles from '../home/overlays/overlay.styles';
 import {updatedKey} from '../user/userProfile.slice';
 
@@ -20,7 +21,7 @@ const IGNSModal = forwardRef(({
                                 onSampleSaved,
                               }, formRef) => {
 
-  const {height} = useWindowDimensions();
+  const {height} = useWindowSize();
 
   const dispatch = useDispatch();
   const {

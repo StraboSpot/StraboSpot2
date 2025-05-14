@@ -1,5 +1,4 @@
 import React from 'react';
-import {useWindowDimensions} from 'react-native';
 
 import {ScaleControl} from 'react-map-gl';
 import {useSelector} from 'react-redux';
@@ -13,6 +12,7 @@ import {
   MacrostratMarkerLayer,
   MeasureLayers,
 } from '.';
+import {useWindowSize} from '../../../shared/ui/useWindowSize';
 import mapStyles from '../maps.styles';
 import CoveredIntervalsXLines from '../strat-section/CoveredIntervalsXLines';
 import StratSectionBackground from '../strat-section/StratSectionBackground';
@@ -30,7 +30,7 @@ const MapLayers = ({
 
   const {currentImageBasemap, stratSection} = useSelector(state => state.map);
 
-  const useDimensions = useWindowDimensions();
+  const useDimensions = useWindowSize();
 
   return (
     <>

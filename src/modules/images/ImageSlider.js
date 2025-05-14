@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {ActivityIndicator, Platform, useWindowDimensions, View} from 'react-native';
+import {ActivityIndicator, Platform, View} from 'react-native';
 
 import {Button, Icon, Image} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,12 +9,13 @@ import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import IconButton from '../../shared/ui/IconButton';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import {PAGE_KEYS} from '../page/page.constants';
 import {setSelectedSpot} from '../spots/spots.slice';
 
 const ImageSlider = ({route, navigation}) => {
   console.log('Rendering ImageSlider...');
-  const {width, height} = useWindowDimensions();
+  const {width, height} = useWindowSize();
   const dispatch = useDispatch();
   const spots = useSelector(state => state.spot.spots);
 

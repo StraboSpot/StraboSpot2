@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, Text, useWindowDimensions, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
@@ -11,6 +11,7 @@ import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN, WARNING_COLOR} from '../../shared/styles.constants';
 import ModalHeader from '../../shared/ui/modal/ModalHeader';
 import SliderBar from '../../shared/ui/SliderBar';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import Compass from '../compass/Compass';
 import compassStyles from '../compass/compass.styles';
 import ManualMeasurement from '../compass/ManualMeasurement';
@@ -23,7 +24,7 @@ const MeasurementModal = ({
                             measurementsGroupLabel,
                             setIsMeasurementModalVisible,
                           }) => {
-  const {height} = useWindowDimensions();
+  const {height} = useWindowSize();
 
   const compassMeasurementTypes = useSelector(state => state.compass.measurementTypes);
 

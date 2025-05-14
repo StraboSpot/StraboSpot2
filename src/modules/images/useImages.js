@@ -1,4 +1,4 @@
-import {Image, PermissionsAndroid, Platform, useWindowDimensions} from 'react-native';
+import {Image, PermissionsAndroid, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -13,6 +13,7 @@ import usePermissions from '../../services/usePermissions';
 import {getNewId} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
 import alert from '../../shared/ui/alert';
+import {useWindowSize} from '../../shared/ui/useWindowSize';
 import {
   addedStatusMessage,
   clearedStatusMessages,
@@ -28,7 +29,7 @@ const useImages = () => {
   const toast = useToast();
   const {copyFiles, deleteFromDevice, doesDeviceDirExist, makeDirectory, moveFile, readDirectory} = useDevice();
   const {checkPermission, requestPermission} = usePermissions();
-  const {width, height} = useWindowDimensions();
+  const {width, height} = useWindowSize();
 
   const dispatch = useDispatch();
   const currentImageBasemap = useSelector(state => state.map.currentImageBasemap);
