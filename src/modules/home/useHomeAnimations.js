@@ -1,7 +1,7 @@
-import {useEffect, useRef} from 'react';
-import {Animated, Dimensions, Easing, findNodeHandle, Keyboard, Platform, TextInput, UIManager} from 'react-native';
+import {useRef} from 'react';
+import {Animated, Easing, Platform} from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {setIsMainMenuPanelVisible} from './home.slice';
 import {MAIN_MENU_DRAWER_WIDTH, NOTEBOOK_DRAWER_WIDTH, SMALL_SCREEN} from '../../shared/styles.constants';
@@ -9,16 +9,10 @@ import {setMenuSelectionPage, setSidePanelVisible} from '../main-menu-panel/main
 import {setIsNotebookPanelVisible, setNotebookPageVisible} from '../notebook-panel/notebook.slice';
 import {PAGE_KEYS} from '../page/page.constants';
 
-const {State: TextInputState} = TextInput;
-
-const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-const {height: windowHeight} = Dimensions.get(platform);
-
 // Animations for Drawers & Keyboard
 const useHomeAnimations = ({navigation}) => {
 
   const dispatch = useDispatch();
-  const modalVisible = useSelector(state => state.home.modalVisible);
 
   const animatedValueLeftSide = useRef(new Animated.Value(0)).current;
   const animatedValueMainMenuDrawer = useRef(new Animated.Value(-MAIN_MENU_DRAWER_WIDTH)).current;
