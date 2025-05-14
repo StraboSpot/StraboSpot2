@@ -70,6 +70,7 @@ const AddRockMetamorphicModal = ({formName, formProps, setChoicesViewKey, survey
     const faciesModalWidth = width > 520 ? 500 : '90%';
     return (
       <Overlay
+        supportedOrientations={['portrait', 'landscape']}
         overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : [overlayStyles.overlayContainer, overlayStyles.overlayPosition, {
           width: faciesModalWidth,
           left: 20,

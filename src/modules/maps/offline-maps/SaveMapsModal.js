@@ -234,6 +234,7 @@ const SaveMapsModal = ({getCurrentZoom, getExtentString, getTileCount}) => {
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'slide'}
       isVisible={isOfflineMapModalVisible}
       backdropStyle={overlayStyles.backdropStyles}

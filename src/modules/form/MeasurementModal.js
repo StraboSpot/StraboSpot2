@@ -73,6 +73,7 @@ const MeasurementModal = ({
           ? overlayStyles.overlayContainerFullScreen
           : [{...overlayStyles.overlayContainer, maxHeight: height * 0.80}, overlayStyles.overlayPosition]
       }
+      supportedOrientations={['portrait', 'landscape']}
       isVisible={true}
       fullScreen={SMALL_SCREEN}
     >

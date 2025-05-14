@@ -79,7 +79,10 @@ const ReportSpots = ({checkedSpotsIds, handleSpotChecked, handleSpotPressed, upd
 
       </View>
       {isSpotsListModalVisible && (
-        <Overlay overlayStyle={{...overlayStyles.overlayContainer, maxHeight: height * 0.80}}>
+        <Overlay
+          supportedOrientations={['portrait', 'landscape']}
+          overlayStyle={{...overlayStyles.overlayContainer, maxHeight: height * 0.80}}
+        >
           <View style={{alignItems: 'flex-end'}}>
             <Button
               onPress={() => setIsSpotsListModalVisible(false)}

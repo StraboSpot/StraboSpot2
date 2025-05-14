@@ -21,6 +21,7 @@ const MicroProjectsStatusOverlay = ({
                                     }) => {
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'slide'}
       isVisible={showLoadingBar || isError || showComplete}
       backdropStyle={overlayStyles.backdropStyles}

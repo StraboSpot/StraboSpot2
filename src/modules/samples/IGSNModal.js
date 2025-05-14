@@ -185,6 +185,7 @@ const IGNSModal = forwardRef(({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {
         ...overlayStyles.overlayContainer,
         maxHeight: height * 0.80, width: 500,

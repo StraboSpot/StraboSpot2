@@ -6,7 +6,10 @@ import Sketch from './Sketch';
 
 const SketchModal = ({image, saveImages, setIsSketchModalVisible}) => {
   return (
-    <Overlay fullScreen>
+    <Overlay
+      supportedOrientations={['portrait', 'landscape']}
+      fullScreen
+    >
       <Sketch image={image} saveImages={saveImages} setIsSketchModalVisible={setIsSketchModalVisible}/>
     </Overlay>
   );

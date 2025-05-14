@@ -78,7 +78,11 @@ const Documentation = () => {
   };
 
   const viewPDF = () => (
-    <Overlay isVisible={visible} fullScreen>
+    <Overlay
+      supportedOrientations={['portrait', 'landscape']}
+      isVisible={visible}
+      fullScreen
+    >
       <Button
         type={'clear'}
         containerStyle={{alignItems: 'flex-end'}}

@@ -11,6 +11,7 @@ const DeleteOverlay = ({closeModal, deleteSample, isVisible}) => {
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       isVisible={isVisible}
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : {...overlayStyles.overlayContainer, height: '30%'}}
       onBackdropPress={closeModal}

@@ -15,6 +15,7 @@ const MenuModal = ({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'fade'}
       overlayStyle={[overlayStyles.overlayContainer, overlayStyle]}
       backdropStyle={overlayStyles.backdropStyles}

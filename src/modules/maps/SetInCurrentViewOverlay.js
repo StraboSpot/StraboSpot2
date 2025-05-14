@@ -29,6 +29,7 @@ const SetInCurrentViewOverlay = ({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'slide'}
       overlayStyle={overlayStyles.overlayContainer}
       isVisible={showSetInCurrentViewModal}

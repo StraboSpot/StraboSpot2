@@ -22,6 +22,7 @@ const PickerOverlay = ({ closePicker, data, dividerText, isPickerVisible, onSele
       isVisible={isPickerVisible}
       onBackdropPress={closePicker}
       overlayStyle={overlayStyles.overlayContainer}
+      supportedOrientations={['portrait', 'landscape']}
     >
       <Button
         title={'X'}

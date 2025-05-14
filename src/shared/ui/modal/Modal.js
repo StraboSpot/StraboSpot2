@@ -72,6 +72,7 @@ const Modal = ({
     || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS || SMALL_SCREEN || isFullScreen) {
     return (
       <Overlay
+        supportedOrientations={['portrait', 'landscape']}
         isVisible={modalVisible === MODAL_KEYS.NOTEBOOK.MEASUREMENTS
           || modalVisible === MODAL_KEYS.SHORTCUTS.MEASUREMENT || modalVisible === MODAL_KEYS.NOTEBOOK.REPORTS
           || SMALL_SCREEN || isFullScreen}

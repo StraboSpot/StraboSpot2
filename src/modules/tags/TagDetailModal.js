@@ -103,6 +103,7 @@ const TagDetailModal = ({closeModal}) => {
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       isVisible
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen
         : {...overlayStyles.overlayContainer, maxHeight: height * 0.80}}

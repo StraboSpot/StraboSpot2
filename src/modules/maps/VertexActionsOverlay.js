@@ -44,6 +44,7 @@ const VertexActionsOverlay = ({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'slide'}
       overlayStyle={overlayStyles.overlayContainer}
       isVisible={isShowVertexActionsModal}

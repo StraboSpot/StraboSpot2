@@ -62,6 +62,7 @@ const MapSymbolsOverlay = ({onTouchOutside, overlayStyle, visible}) => {
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'slide'}
       backdropStyle={{backgroundColor: 'transparent'}}
       isVisible={visible}

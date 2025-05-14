@@ -37,7 +37,11 @@ const MicroProjectPDFOverlay = ({doc, setVisible, visible}) => {
   };
 
   return (
-    <Overlay isVisible={visible} overlayStyle={{height: '100%', width: '100%'}}>
+    <Overlay
+      supportedOrientations={['portrait', 'landscape']}
+      isVisible={visible}
+      overlayStyle={{height: '100%', width: '100%'}}
+    >
       <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
         {wasExported ? (
           <Icon

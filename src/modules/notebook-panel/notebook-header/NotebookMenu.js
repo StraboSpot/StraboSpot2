@@ -86,6 +86,7 @@ const NotebookMenu = ({closeNotebookMenu, isNotebookMenuVisible, zoomToSpots}) =
     <>
       {isNotebookMenuVisible && (
         <Overlay
+          supportedOrientations={['portrait', 'landscape']}
           isVisible={isNotebookMenuVisible}
           onBackdropPress={closeNotebookMenu}
           overlayStyle={notebookStyles.dialogContainer}

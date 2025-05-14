@@ -24,6 +24,7 @@ const StatusDialogBox = ({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'fade'}
       isVisible={isVisible}
       onBackdropPress={onTouchOutside}

@@ -14,6 +14,7 @@ const DeleteConformationDialogBox = ({
                                      }) => {
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'fade'}
       isVisible={isVisible}
       overlayStyle={overlayStyles.overlayContainer}

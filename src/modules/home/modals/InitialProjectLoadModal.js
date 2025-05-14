@@ -257,6 +257,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'slide'}
       isVisible={visible}
       overlayStyle={SMALL_SCREEN ? overlayStyles.overlayContainerFullScreen : overlayStyles.overlayContainer}

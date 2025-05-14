@@ -337,6 +337,7 @@ const ProjectOptionsDialogBox = ({
   return (
     <>
       <Overlay
+        supportedOrientations={['portrait', 'landscape']}
         animationType={'slide'}
         overlayStyle={overlayStyles.overlayContainer}
         backdropStyle={overlayStyles.backdropStyles}
@@ -382,6 +383,7 @@ const ProjectOptionsDialogBox = ({
         </View>}
       </Overlay>
       <Overlay
+        supportedOrientations={['portrait', 'landscape']}
         isVisible={isProgressModalVisibleLocal}
         overlayStyle={overlayStyles.overlayContainer}
       >

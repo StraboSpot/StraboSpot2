@@ -31,7 +31,10 @@ const ReportForm = forwardRef(({initialValues}, formRef) => {
   const renderSubform = (formProps) => {
     const relevantFields = getRelevantFields(survey, choicesViewKey);
     return (
-      <Overlay overlayStyle={overlayStyles.overlayContainer}>
+      <Overlay
+        supportedOrientations={['portrait', 'landscape']}
+        overlayStyle={overlayStyles.overlayContainer}
+      >
         <View style={{alignItems: 'flex-end'}}>
           <Button
             onPress={() => setChoicesViewKey(null)}

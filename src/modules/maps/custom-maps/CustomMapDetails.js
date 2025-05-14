@@ -365,6 +365,7 @@ const CustomMapDetails = () => {
         </View>
       </View>
       <Overlay
+        supportedOrientations={['portrait', 'landscape']}
         isVisible={isLoadingModalVisible}
         overlayStyle={[overlayStyles.overlayContainer, customMapStyles.loadingMapModalContainer]}
       >

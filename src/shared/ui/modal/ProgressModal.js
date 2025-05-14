@@ -20,6 +20,7 @@ const ProgressModal = ({
                        }) => {
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       isVisible={isProgressModalVisible}
       animationType={'fade'}
       overlayStyle={overlayStyles.overlayContainer}

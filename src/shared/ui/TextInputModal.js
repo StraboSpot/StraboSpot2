@@ -30,6 +30,7 @@ const TextInputModal = ({
                         }) => {
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       animationType={'fade'}
       isVisible={visible}
       overlayStyle={[overlayStyles.overlayContainer]}

@@ -65,7 +65,10 @@ const ReportTags = ({checkedTagsIds, handleTagChecked, handleTagPressed}) => {
       </View>
 
       {isTagsListModalVisible && (
-        <Overlay overlayStyle={[overlayStyles.overlayContainer, {height: 500}]}>
+        <Overlay
+          supportedOrientations={['portrait', 'landscape']}
+          overlayStyle={[overlayStyles.overlayContainer, {height: 500}]}
+        >
           <View style={{alignItems: 'flex-end'}}>
             <Button
               onPress={() => setIsTagsListModalVisible(false)}

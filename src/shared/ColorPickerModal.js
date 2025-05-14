@@ -40,6 +40,7 @@ const ColorPickerModal = ({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       isVisible={isVisible}
       animationType={'slide'}
       windowBackgroundColor={'rgba(0, 0, 0, .5)'}

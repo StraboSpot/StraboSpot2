@@ -255,6 +255,7 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
       isVisible={visible}
       onBackdropPress={onTouchOutside}
       overlayStyle={[overlayStyles.overlayContainer, overlayStyle]}
+      supportedOrientations={['portrait', 'landscape']}
     >
       <View style={overlayStyles.titleContainer}>
         <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>

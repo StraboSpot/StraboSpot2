@@ -65,6 +65,7 @@ const MorePagesMenu = ({
 
   return (
     <Overlay
+      supportedOrientations={['portrait', 'landscape']}
       overlayStyle={footerStyles.morePagesDialog}
       isVisible={visible}
       onBackdropPress={closeMorePagesMenu}

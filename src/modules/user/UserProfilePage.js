@@ -225,6 +225,7 @@ const UserProfilePage = () => {
   const renderProfileImageModal = () => {
     return (
       <Overlay
+        supportedOrientations={['portrait', 'landscape']}
         overlayStyle={userStyles.imageSelectionModal}
         isVisible={isImageDialogVisible}
       >

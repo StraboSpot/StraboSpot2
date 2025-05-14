@@ -46,6 +46,7 @@ function TablesData({
         animationType={'slide'}
         overlayStyle={externalDataStyles.overlayContainer}
         isVisible={isTableVisible}
+        supportedOrientations={['portrait', 'landscape']}
       >
         <View style={externalDataStyles.centeredView}>
           <View style={externalDataStyles.buttonClose}>
