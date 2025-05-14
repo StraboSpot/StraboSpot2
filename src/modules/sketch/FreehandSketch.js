@@ -8,7 +8,7 @@ import useDeviceOrientation from '../home/useDeviceOrientation';
 import {setFreehandFeatureCoords} from '../maps/maps.slice';
 
 const platform = Platform.OS === 'ios' ? 'window' : 'screen';
-const {height, width} = Dimensions.get(platform);
+
 let freehandFeatureCoords = [];
 
 const FreehandSketch = ({mapMode}) => {
@@ -17,6 +17,7 @@ const FreehandSketch = ({mapMode}) => {
   const {lockOrientation, unlockOrientation} = useDeviceOrientation();
 
   const freehandDrawRef = useRef(null);
+  const {height, width} = Dimensions.get(platform);
 
   useEffect(() => {
     lockOrientation();

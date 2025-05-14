@@ -1,17 +1,16 @@
-import RNOrientationDirector,  {Orientation} from 'react-native-orientation-director';
+import {Dimensions} from 'react-native';
+
+import RNOrientationDirector, {Orientation} from 'react-native-orientation-director';
 import {useToast} from 'react-native-toast-notifications';
 
 const useDeviceOrientation = () => {
-
   const toast = useToast();
 
   const lockOrientation = () => {
-    console.log('Locking device orientation...');
-    RNOrientationDirector.getDeviceOrientation().then((orientation) => {
-      console.log('Current Device Orientation:', RNOrientationDirector.convertOrientationToHumanReadableString(orientation));
-      RNOrientationDirector.lockTo(orientation, Orientation.landscape);
-      toast.show('Screen orientation LOCKED');
-    });
+    const {width, height} = Dimensions.get('window');
+    const orientation = width > height ? Orientation.landscape : Orientation.portrait;
+    RNOrientationDirector.lockTo(orientation);
+    toast.show('Screen orientation LOCKED');
   };
 
   const unlockOrientation = () => {
