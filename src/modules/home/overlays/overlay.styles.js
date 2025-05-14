@@ -11,11 +11,6 @@ const styles = StyleSheet.create({
   backdropStyles: {
     backgroundColor: 'transparent',
   },
-  baseMapPosition: {
-    bottom: SMALL_SCREEN ? 70 : 40,
-    left: SMALL_SCREEN ? 10 : 75,
-    position: 'absolute',
-  },
   buttonContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -57,16 +52,6 @@ const styles = StyleSheet.create({
     backgroundColor: themes.PRIMARY_BACKGROUND_COLOR,
     borderWidth: 1,
   },
-  mapActionsPosition: {
-    bottom: SMALL_SCREEN ? 10 : 100,
-    left: SMALL_SCREEN ? 10 : 75,
-    position: 'absolute',
-  },
-  mapSymbolsPosition: {
-    bottom: SMALL_SCREEN ? 10 : 100,
-    left: SMALL_SCREEN ? 10 : 75,
-    position: 'absolute',
-  },
   overlayContainer: {
     backgroundColor: themes.SECONDARY_BACKGROUND_COLOR,
     borderColor: themes.MEDIUMGREY,
@@ -86,6 +71,12 @@ const styles = StyleSheet.create({
   overlayContent: {
     alignItems: 'center',
     marginTop: 5,
+  },
+  overlayMapMenuPosition: {
+    bottom: SMALL_SCREEN ? 80 : 100,
+    flex: 1,
+    left: SMALL_SCREEN ? 10 : 75,
+    position: 'absolute',
   },
   overlayPosition: {
     bottom: 60,

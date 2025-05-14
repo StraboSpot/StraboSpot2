@@ -60,19 +60,19 @@ const MapActionButtons = ({dialogClickHandler, dialogs, mapComponentRef, toggleD
       )}
       <MapActionsOverlay
         visible={dialogs.mapActionsMenuVisible}
-        overlayStyle={{...overlayStyles.mapActionsPosition, maxHeight: height * 0.80, flex: 1}}
+        overlayStyle={[overlayStyles.overlayMapMenuPosition, {maxHeight: (height - 40) * 0.80}]}
         onPress={name => dialogClickHandler('mapActionsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapActionsMenuVisible')}
       />
       <MapSymbolsOverlay
         visible={dialogs.mapSymbolsMenuVisible}
-        overlayStyle={{...overlayStyles.mapSymbolsPosition, maxHeight: height * 0.80, flex: 1}}
+        overlayStyle={[overlayStyles.overlayMapMenuPosition, {maxHeight: (height - 40) * 0.80}]}
         onPress={name => dialogClickHandler('mapSymbolsMenuVisible', name)}
         onTouchOutside={() => toggleDialog('mapSymbolsMenuVisible')}
       />
       <MapLayersOverlay
         visible={dialogs.baseMapMenuVisible}
-        overlayStyle={{...overlayStyles.baseMapPosition, maxHeight: height * 0.80, flex: 1}}
+        overlayStyle={[overlayStyles.overlayMapMenuPosition, {maxHeight:(height - 40) * 0.80}]}
         mapComponentRef={mapComponentRef}
         onPress={(name) => {
           setBasemap(name);
