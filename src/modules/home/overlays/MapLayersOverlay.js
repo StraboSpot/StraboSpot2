@@ -259,8 +259,14 @@ const MapLayersOverlay = ({mapComponentRef, onTouchOutside, overlayStyle, visibl
       <View style={overlayStyles.titleContainer}>
         <Text style={[overlayStyles.titleText]}>{dialogTitle}</Text>
       </View>
-      {renderDefaultBasemapsList()}
-      {determineWhatCustomMapListToRender()}
+      <FlatList
+        ListHeaderComponent={
+          <>
+            {renderDefaultBasemapsList()}
+            {determineWhatCustomMapListToRender()}
+          </>
+        }
+      />
     </Overlay>
   );
 };
