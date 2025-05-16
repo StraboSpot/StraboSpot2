@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import {useSelector} from 'react-redux';
@@ -14,8 +14,8 @@ const ProjectTypesButtons = ({
                                onLoadProjectsFromServer,
                                onStartNewProject,
                              }) => {
+  const importLocation = Platform.OS === 'ios' ? 'Documents/Strabofield/Distribution'  :  'Downloads/StraboSpot2/Backups';
   const user = useSelector(state => state.user);
-  const deviceBackUpDirectoryExists = useSelector(state => state.project.deviceBackUpDirectoryExists);
 
   return (
     <View>
@@ -35,17 +35,14 @@ const ProjectTypesButtons = ({
           onPress={() => onLoadProjectsFromServer()}
         />
       )}
-        <Button
-          title={'Projects From Device'}
-          containerStyle={commonStyles.standardButtonContainer}
-          buttonStyle={commonStyles.standardButton}
-          titleStyle={commonStyles.standardButtonText}
-          onPress={() => onLoadProjectsFromDevice()}
-        />
+      <Button
+        title={'Projects From Device'}
+        containerStyle={commonStyles.standardButtonContainer}
+        buttonStyle={commonStyles.standardButton}
+        titleStyle={commonStyles.standardButtonText}
+        onPress={() => onLoadProjectsFromDevice()}
+      />
       <View>
-        <Text style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}>When importing, select the data.json
-          file
-          before selecting any images or maps.</Text>
         <Button
           title={'Import Project'}
           containerStyle={commonStyles.standardButtonContainer}
@@ -53,6 +50,11 @@ const ProjectTypesButtons = ({
           titleStyle={commonStyles.standardButtonText}
           onPress={() => onLoadProjectsFromDownloadsFolder()}
         />
+        <Text
+          style={{...overlayStyles.statusMessageText, fontWeight: 'bold'}}
+        >
+          The imported project should only be a .zip file in the {importLocation} folder.
+        </Text>
       </View>
     </View>
   );
