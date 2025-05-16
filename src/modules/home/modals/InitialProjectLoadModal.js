@@ -77,29 +77,17 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
     );
   };
 
-  const getExportedAndroidProject = async () => {
-    try {
-      dispatch(setLoadingStatus({bool: true, view: 'modal'}));
-      const res = await getExternalProjectData();
-      console.log('EXTERNAL PROJECT', res);
-      dispatch(setLoadingStatus({bool: false, view: 'modal'}));
-      if (!isEmpty(res)) {
-        dispatch(setStatusMessageModalTitle('Import Project'));
-        setImportedProjectData(res);
-        setVisibleInitialSection('importData');
-        dispatch(setLoadingStatus({bool: false, view: 'modal'}));
-      }
+  const getExportedProject = async () => {
+    dispatch(setLoadingStatus({bool: true, view: 'modal'}));
+    const res = await getExternalProjectData();
+    console.log('EXTERNAL PROJECT', res);
+    // dispatch(setLoadingStatus({bool: false, view: 'modal'}));
+    if (!isEmpty(res)) {
+      dispatch(setStatusMessageModalTitle('Import Project'));
+      setImportedProjectData(res);
+      setVisibleInitialSection('importData');
     }
-    catch (err) {
-      dispatch(setLoadingStatus({bool: false, view: 'modal'}));
-      if (err.code === 'DOCUMENT_PICKER_CANCELED') {
-        console.warn(err.message);
-        toast.show(err.message);
-      }
-      else {
-        console.error('Error picking document!');
-      }
-    }
+    dispatch(setLoadingStatus({bool: false, view: 'modal'}));
   };
 
   const handleOnPress = (type) => {
@@ -115,7 +103,7 @@ const InitialProjectLoadModal = ({closeModal, openMainMenuPanel, visible}) => {
         dispatch(setStatusMessageModalTitle('Projects on Device'));
         break;
       case 'exportedProjects':
-        getExportedAndroidProject().catch(err => console.error('Error getting exported project', err));
+        getExportedProject().catch(err => console.error('Error getting exported project', err));
         break;
       case 'project':
         setVisibleInitialSection('project');
