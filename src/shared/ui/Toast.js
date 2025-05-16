@@ -4,13 +4,14 @@ import {Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {ToastProvider} from 'react-native-toast-notifications';
 
-const ToastPopup = ({children}) => {
+const ToastPopup = ({children, placement}) => {
   return (
     <ToastProvider
-      placement={'top'}
-      offset={75}
-      animationDuration={250}
-      duration={3000}
+      placement={'center'}
+      offset={50}
+      animationDuration={500}
+      duration={2000}
+      swipeEnabled
       textStyle={{fontWeight: 'bold', paddingLeft: 5}}
       normalColor={'black'}
       successIcon={

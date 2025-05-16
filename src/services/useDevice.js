@@ -1,19 +1,21 @@
 import {Linking, PermissionsAndroid, Platform} from 'react-native';
 
-import {errorCodes, isErrorWithCode, keepLocalCopy, pick, types} from '@react-native-documents/picker';
+import {errorCodes, isErrorWithCode, keepLocalCopy,  types} from '@react-native-documents/picker';
 import RNFS from 'react-native-fs';
 import {unzip} from 'react-native-zip-archive';
 import {useDispatch} from 'react-redux';
 
 import {APP_DIRECTORIES} from './directories.constants';
 import useServerRequests from './useServerRequests';
+import {setLoadingStatus} from '../modules/home/home.slice';
 import {deletedOfflineMap} from '../modules/maps/offline-maps/offlineMaps.slice';
 import {doesBackupDirectoryExist, doesDownloadsDirectoryExist} from '../modules/project/projects.slice';
 import usePermissions from '../services/usePermissions';
+import {useSafeDocumentPicker} from '../services/useSafeDocumentPicker'
 
 const {PERMISSIONS, RESULTS} = PermissionsAndroid;
-
 const useDevice = () => {
+  const { pick } = useSafeDocumentPicker();
   const {checkPermission} = usePermissions();
 
   const dispatch = useDispatch();
@@ -267,22 +269,26 @@ const useDevice = () => {
 
   const getExternalProjectData = async () => {
     try {
-      const [{name, uri}] = await pick();
-      const [localCopy] = await keepLocalCopy({
-        destination: 'cachesDirectory',
-        files: [{uri, fileName: name ?? 'fallback-name'}],
-        // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
-        transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
-        type: [types.zip],
-      });
+      const res = await pick({type: [types.zip]});
+      if (res) {
+        console.log('Picked ZIP File:', res.name, res.uri);
+        const [localCopy] = await keepLocalCopy({
+          destination: 'cachesDirectory',
+          files: [{uri: res.uri, fileName: res.name}],
+          // presentationStyle: Platform.OS === 'ios' && 'fullScreen',
+          transitionStyle: Platform.OS === 'ios' && 'flipHorizontal',
+          type: [types.zip],
+        });
 
-      if (localCopy.status === 'success') {
-        console.log(localCopy.localUri);
-        return {localUri: localCopy.localUri, name: name};
+        if (localCopy.status === 'success') {
+          console.log(localCopy.localUri);
+          return {localUri: localCopy.localUri, name: res.name};
+        }
       }
     }
     catch (err) {
-      throw Error(err);
+      console.error('Error getting external project data', err);
+      dispatch(setLoadingStatus({bool: false, view: 'home'}));
     }
   };
 

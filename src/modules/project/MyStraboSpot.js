@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Platform, View} from 'react-native';
 
 import {Button} from 'react-native-elements';
-import {useToast} from 'react-native-toast-notifications';
 import {useDispatch} from 'react-redux';
 
 import ActiveProjectList from './ActiveProjectList';
@@ -15,7 +14,6 @@ import useDevice from '../../services/useDevice';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {BLUE} from '../../shared/styles.constants';
-import alert from '../../shared/ui/alert';
 import Spacer from '../../shared/ui/Spacer';
 import {setLoadingStatus} from '../home/home.slice';
 import UserProfile from '../user/UserProfile';
@@ -26,7 +24,6 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
   const [showSection, setShowSection] = useState('none');
 
   const dispatch = useDispatch();
-  const toast = useToast();
   const {doesDeviceBackupDirExist, getExternalProjectData, openURL, makeDirectory} = useDevice();
 
   useEffect(() => {
@@ -52,28 +49,14 @@ const MyStraboSpot = ({openMainMenuPanel}) => {
   };
 
   const getExportedProject = async () => {
-    try {
-      dispatch(setLoadingStatus({bool: true, view: 'home'}));
-      const res = await getExternalProjectData();
-      console.log('EXTERNAL PROJECT', res);
-      if (!isEmpty(res)) {
-        // dispatch(setStatusMessageModalTitle('Import Project'));
-        setImportedProject(res);
-        setShowSection('importData');
-        dispatch(setLoadingStatus({bool: false, view: 'home'}));
-      }
+    dispatch(setLoadingStatus({bool: true, view: 'home'}));
+    const res = await getExternalProjectData();
+    console.log('EXTERNAL PROJECT', res);
+    if (!isEmpty(res)) {
+      setImportedProject(res);
+      setShowSection('importData');
     }
-    catch (err) {
-      dispatch(setLoadingStatus({bool: false, view: 'home'}));
-      if (err.code === 'DOCUMENT_PICKER_CANCELED') {
-        console.warn(err.message);
-        toast.show(err.message);
-      }
-      else {
-        console.error('Error picking document!', err);
-        alert('ERROR', err.toString());
-      }
-    }
+    dispatch(setLoadingStatus({bool: false, view: 'home'}));
   };
 
   const handleImportComplete = (value) => {
