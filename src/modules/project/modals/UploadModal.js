@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import KeepAwake from 'react-native-keep-awake';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';

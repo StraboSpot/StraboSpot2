@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup, ListItem} from 'react-native-elements';
+import {Button, ButtonGroup, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import MeasurementItem from './MeasurementItem';

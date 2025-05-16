@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Button, Image} from 'react-native-elements';
+import {Button, Image} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import sampleStyles from './samples.styles';

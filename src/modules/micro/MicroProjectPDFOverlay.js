@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import {Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from '@rn-vui/base';
 import Pdf from 'react-native-pdf';
 import {useToast} from 'react-native-toast-notifications';
 

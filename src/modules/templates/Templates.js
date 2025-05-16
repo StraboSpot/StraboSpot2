@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Switch, Text, TextInput, View} from 'react-native';
 
-import {Button, ListItem} from 'react-native-elements';
+import {Button, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';

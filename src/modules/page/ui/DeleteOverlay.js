@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, Overlay} from 'react-native-elements';
+import {Button, Overlay} from '@rn-vui/base';
 
 import {messages} from './Messages';
 import {SMALL_SCREEN} from '../../../shared/styles.constants';

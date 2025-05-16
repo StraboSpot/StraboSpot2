@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
-import {Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from '@rn-vui/base';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 

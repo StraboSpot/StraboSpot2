@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, TextInput, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 
 import {isEmpty} from '../../shared/Helpers';
 import * as themes from '../../shared/styles.constants';

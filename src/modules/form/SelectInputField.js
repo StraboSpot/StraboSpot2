@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {CheckBox, Icon, ListItem} from 'react-native-elements';
+import {CheckBox, Icon, ListItem} from '@rn-vui/base';
 import MultiSelect from 'react-native-multiple-select';
 
 import commonStyles from '../../shared/common.styles';

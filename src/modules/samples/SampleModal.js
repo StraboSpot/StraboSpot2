@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, ButtonGroup, CheckBox, Image} from 'react-native-elements';
+import {Button, ButtonGroup, CheckBox, Image} from '@rn-vui/base';
 import Toast from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, Linking, Platform, View} from 'react-native';
 
-import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
+import {Button, Icon, ListItem, Overlay} from '@rn-vui/base';
 import Pdf from 'react-native-pdf';
 import {useSelector} from 'react-redux';
 

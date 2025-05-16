@@ -1,7 +1,7 @@
 import React from 'react';
 import {ActivityIndicator, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 
 const LottieAnimation = ({doesLoop, show, error}) => {
   // console.log('LOOPS', doesLoop);

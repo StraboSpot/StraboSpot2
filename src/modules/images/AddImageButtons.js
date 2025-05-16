@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {Platform, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import {getImageMetaFromWeb, getSize, resizeFile} from './imageHelpers';

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Switch, Text, View} from 'react-native';
 
-import {Input} from 'react-native-elements';
+import {Input} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import uiStyles from './ui.styles';

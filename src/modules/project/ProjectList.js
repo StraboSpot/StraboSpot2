@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {AppState, FlatList, Text, View} from 'react-native';
 
 import moment from 'moment';
-import {Button, ListItem} from 'react-native-elements';
+import {Button, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ProjectOptionsDialogBox from './modals/project-options-modal/ProjectOptionsModal';

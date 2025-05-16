@@ -2,7 +2,7 @@ import React from 'react';
 import {FlatList, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';

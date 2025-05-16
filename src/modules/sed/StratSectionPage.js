@@ -3,7 +3,7 @@ import {FlatList, Switch, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
-import {Avatar, ListItem} from 'react-native-elements';
+import {Avatar, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import AddImageOverlayModal from './AddImageOverlayModal';

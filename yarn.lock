@@ -3097,6 +3097,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rn-vui/base@npm:5.1.3":
+  version: 5.1.3
+  resolution: "@rn-vui/base@npm:5.1.3"
+  dependencies:
+    "@rn-vui/ratings": "npm:^0.4.3"
+    "@types/react-native-vector-icons": "npm:^6.4.10"
+    color: "npm:^3.2.1"
+    deepmerge: "npm:^4.2.2"
+    hoist-non-react-statics: "npm:^3.3.2"
+    react-native-size-matters: "npm:^0.4.0"
+  peerDependencies:
+    react-native-safe-area-context: ">= 3.0.0"
+    react-native-vector-icons: ">7.0.0"
+  checksum: 10c0/4d30ad112b5527bbe2b9f5824c89825983a8ea1f01852d87e6f080dc2f9fbc831b05e8a3d9f550aa6cde583660b19e1a1ac57112bcf75a387cf9b73d24d16322
+  languageName: node
+  linkType: hard
+
+"@rn-vui/ratings@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "@rn-vui/ratings@npm:0.4.3"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/d00d409ab201f1d74a8e76f651ed9bf91478e6195ea0520906a1a299115e9180d7618eef80535cef3e1380feb56a5c695ede14f3daa273d59929d85ccd379482
+  languageName: node
+  linkType: hard
+
+"@rn-vui/themed@npm:5.1.3":
+  version: 5.1.3
+  resolution: "@rn-vui/themed@npm:5.1.3"
+  peerDependencies:
+    "@rn-vui/base": 5.1.3
+  checksum: 10c0/51d979808968e48e4be91e57e85f87435035967b96a2edf1949f634a420991c2b7712a9b754b19508d00944ed601ae09608eed66de54dc2b6267d34f45868934
+  languageName: node
+  linkType: hard
+
 "@rnmapbox/maps@npm:10.1.38":
   version: 10.1.38
   resolution: "@rnmapbox/maps@npm:10.1.38"
@@ -5593,7 +5629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-native-vector-icons@npm:^6.4.6":
+"@types/react-native-vector-icons@npm:^6.4.10":
   version: 6.4.18
   resolution: "@types/react-native-vector-icons@npm:6.4.18"
   dependencies:
@@ -7321,7 +7357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color@npm:^3.1.2, color@npm:^3.2.1":
+"color@npm:^3.2.1":
   version: 3.2.1
   resolution: "color@npm:3.2.1"
   dependencies:
@@ -11349,7 +11385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.isequal@npm:4.5.0, lodash.isequal@npm:^4.5.0":
+"lodash.isequal@npm:4.5.0":
   version: 4.5.0
   resolution: "lodash.isequal@npm:4.5.0"
   checksum: 10c0/dfdb2356db19631a4b445d5f37868a095e2402292d59539a987f134a8778c62a2810c2452d11ae9e6dcac71fc9de40a6fedcb20e2952a15b431ad8b29e50e28f
@@ -11370,7 +11406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
+"lodash@npm:^4, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
@@ -12469,15 +12505,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opencollective-postinstall@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "opencollective-postinstall@npm:2.0.3"
-  bin:
-    opencollective-postinstall: index.js
-  checksum: 10c0/8a0104a218bc1afaae943f0af378461eeb2836f9848bad872bbd067ec5d1d9791636f307454ab77d0746f10341366f295384656a340ebdb87a2585058e8567e5
-  languageName: node
-  linkType: hard
-
 "optionator@npm:^0.9.3":
   version: 0.9.4
   resolution: "optionator@npm:0.9.4"
@@ -13352,25 +13379,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-elements@npm:3.4.3":
-  version: 3.4.3
-  resolution: "react-native-elements@npm:3.4.3"
-  dependencies:
-    "@types/react-native-vector-icons": "npm:^6.4.6"
-    color: "npm:^3.1.2"
-    deepmerge: "npm:^4.2.2"
-    hoist-non-react-statics: "npm:^3.3.2"
-    lodash.isequal: "npm:^4.5.0"
-    opencollective-postinstall: "npm:^2.0.3"
-    react-native-ratings: "npm:8.0.4"
-    react-native-size-matters: "npm:^0.3.1"
-  peerDependencies:
-    react-native-safe-area-context: ">= 3.0.0"
-    react-native-vector-icons: ">7.0.0"
-  checksum: 10c0/0ee536c0e8000248bc33526fd63245a28e9ba8021ba2df4a21bc8315fd9a6e6a418163abe40bb42d9a72cca7f597ddf8014d44208a24e8a0f3d85450aa285fd8
-  languageName: node
-  linkType: hard
-
 "react-native-fs@npm:2.20.0":
   version: 2.20.0
   resolution: "react-native-fs@npm:2.20.0"
@@ -13546,18 +13554,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-ratings@npm:8.0.4":
-  version: 8.0.4
-  resolution: "react-native-ratings@npm:8.0.4"
-  dependencies:
-    lodash: "npm:^4.17.15"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/a7f295fb51c4b0529f77e627ebd2ffcc9c0790d3e793013bba90c769fc91d13eee0193c937c82b701e337bf3f83bdeabd964d9433060e70a60aae3ca8f410015
-  languageName: node
-  linkType: hard
-
 "react-native-reanimated-table@npm:0.0.2":
   version: 0.0.2
   resolution: "react-native-reanimated-table@npm:0.0.2"
@@ -13627,12 +13623,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-size-matters@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "react-native-size-matters@npm:0.3.1"
+"react-native-size-matters@npm:^0.4.0":
+  version: 0.4.2
+  resolution: "react-native-size-matters@npm:0.4.2"
   peerDependencies:
     react-native: "*"
-  checksum: 10c0/3723a84592864d4248ff5c05fb4fc032cbb3b6a96f4452f1cca78a53d78b8fae8ef99158c6f48e89047405e2e91dcf563b01f3463d29ff4dbc7904432530b795
+  checksum: 10c0/56715d33d02f10d4ca358761420cc9a971b3872c11b9fa403afd4f0b2bbf74148fd3c4c799959727fb61c576a474e3e1155ffadc247c12d70fadcb562b4a9f29
   languageName: node
   linkType: hard
 
@@ -14970,6 +14966,8 @@ __metadata:
     "@react-navigation/native": "npm:7.1.6"
     "@react-navigation/stack": "npm:7.2.10"
     "@reduxjs/toolkit": "npm:2.7.0"
+    "@rn-vui/base": "npm:5.1.3"
+    "@rn-vui/themed": "npm:5.1.3"
     "@rnmapbox/maps": "npm:10.1.38"
     "@sentry/cli": "npm:2.41.1"
     "@sentry/react-native": "npm:6.6.0"
@@ -15018,7 +15016,6 @@ __metadata:
     react-native-device-info: "npm:14.0.4"
     react-native-devsettings: "npm:^1.0.5"
     react-native-draggable-flatlist: "npm:4.0.2"
-    react-native-elements: "npm:3.4.3"
     react-native-fs: "npm:2.20.0"
     react-native-gesture-handler: "npm:2.25.0"
     react-native-get-random-values: "npm:1.11.0"

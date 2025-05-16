@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {FlatList, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, Overlay} from 'react-native-elements';
+import {Button, Overlay} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getNewId, isEmpty} from '../../shared/Helpers';

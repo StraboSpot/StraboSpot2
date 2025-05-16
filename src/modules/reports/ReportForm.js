@@ -2,7 +2,7 @@ import React, {forwardRef, useState} from 'react';
 import {View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button, Overlay} from 'react-native-elements';
+import {Button, Overlay} from '@rn-vui/base';
 
 import {Form, useForm} from '../form';
 import overlayStyles from '../home/overlays/overlay.styles';

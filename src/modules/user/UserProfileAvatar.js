@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, View} from 'react-native';
 
-import {Avatar} from 'react-native-elements';
+import {Avatar} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import userStyles from './user.styles';

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 
 import commonStyles from '../../shared/common.styles';
 import {SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';

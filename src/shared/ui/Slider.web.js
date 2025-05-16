@@ -1,3 +1,3 @@
-import {Slider} from 'react-native-elements';
+import {Slider} from '@rn-vui/base';
 
 export default Slider;

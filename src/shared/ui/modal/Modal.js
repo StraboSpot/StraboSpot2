@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Avatar, Button, ListItem, Overlay} from 'react-native-elements';
+import {Avatar, Button, ListItem, Overlay} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import ModalHeader from './ModalHeader';

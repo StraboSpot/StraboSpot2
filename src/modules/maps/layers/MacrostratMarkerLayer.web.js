@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Marker} from 'react-map-gl';
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import {isEmpty} from '../../../shared/Helpers';

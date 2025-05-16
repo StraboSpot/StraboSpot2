@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import shortcutMenuStyles from './shortcutsMenu.styles';

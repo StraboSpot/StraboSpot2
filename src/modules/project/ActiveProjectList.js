@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';

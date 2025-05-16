@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
-import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
+import {Button, Overlay} from '@rn-vui/base';
 
 import {isEmpty} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR, SMALL_SCREEN} from '../../shared/styles.constants';

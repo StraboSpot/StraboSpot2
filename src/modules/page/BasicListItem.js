@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Icon, ListItem} from 'react-native-elements';
+import {Icon, ListItem} from '@rn-vui/base';
 
 import {PAGE_KEYS} from './page.constants';
 import commonStyles from '../../shared/common.styles';

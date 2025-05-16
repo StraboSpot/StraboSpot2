@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {SectionList, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {IGNEOUS_ROCK_CLASSES} from './petrology.constants';

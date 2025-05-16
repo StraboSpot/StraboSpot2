@@ -1,8 +1,8 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
 
+import {Button, ListItem} from '@rn-vui/base';
 import moment from 'moment';
-import {Button, ListItem} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';

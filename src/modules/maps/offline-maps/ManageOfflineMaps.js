@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Animated, FlatList, Platform, Text, View} from 'react-native';
 
-import {Button, Icon, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {editedOfflineMap, setOfflineMapVisible} from './offlineMaps.slice';

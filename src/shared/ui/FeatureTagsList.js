@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
+import {Avatar, ListItem} from '@rn-vui/base';
 
 import usePage from '../../modules/page/usePage';
 import {useTags} from '../../modules/tags';

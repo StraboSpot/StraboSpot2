@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {ButtonGroup} from 'react-native-elements';
+import {ButtonGroup} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import {setModalVisible} from '../../modules/home/home.slice';

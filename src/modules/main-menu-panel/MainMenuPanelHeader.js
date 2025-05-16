@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {MAIN_MENU_TITLE} from './mainMenu.constants';

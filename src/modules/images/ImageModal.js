@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Overlay} from 'react-native-elements';
+import {Overlay} from '@rn-vui/base';
 
 import {ImageInfo} from '.';
 

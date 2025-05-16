@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FlatList } from 'react-native';
 
-import {Button, CheckBox, Overlay} from 'react-native-elements';
+import {Button, CheckBox, Overlay} from '@rn-vui/base';
 
 import SectionDivider from './SectionDivider';
 import overlayStyles from '../../modules/home/overlays/overlay.styles';

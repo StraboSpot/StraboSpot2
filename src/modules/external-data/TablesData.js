@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
 
-import {Button, Icon, ListItem, Overlay} from 'react-native-elements';
+import {Button, Icon, ListItem, Overlay} from '@rn-vui/base';
 import {Rows, Table} from 'react-native-reanimated-table';
 
 import externalDataStyles from './externalData.styles';

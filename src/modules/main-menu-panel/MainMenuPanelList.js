@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, SectionList} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import {MAIN_MENU_DATA, MAIN_MENU_ITEMS} from './mainMenu.constants';

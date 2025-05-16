@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button, Icon} from 'react-native-elements';
+import {Button, Icon} from '@rn-vui/base';
 
 import sidePanelStyles from './sidePanel.styles';
 import projectStyles from '../../project/project.styles';

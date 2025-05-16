@@ -2,7 +2,7 @@ import React, {useLayoutEffect, useRef} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 

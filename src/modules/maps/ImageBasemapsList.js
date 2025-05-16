@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, Platform, Text, View} from 'react-native';
 
-import {Image} from 'react-native-elements';
+import {Image} from '@rn-vui/base';
 
 import placeholderImage from '../../assets/images/noimage.jpg';
 import commonStyles from '../../shared/common.styles';

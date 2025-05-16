@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ActiveDatasetsList from './ActiveDatasetsList';

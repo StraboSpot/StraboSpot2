@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView} from 'react-native';
 
 import Clipboard from '@react-native-clipboard/clipboard';
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import JSONTree from 'react-native-json-tree';
 
 import forms from '../../assets/forms';

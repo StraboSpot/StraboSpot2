@@ -4,7 +4,7 @@ import {FlatList, PermissionsAndroid, Platform, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import {Base64} from 'js-base64';
-import {Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from '@rn-vui/base';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';

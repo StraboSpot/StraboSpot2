@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Overlay} from 'react-native-elements';
+import {Overlay} from '@rn-vui/base';
 
 import overlayStyles from '../home/overlays/overlay.styles';
 
