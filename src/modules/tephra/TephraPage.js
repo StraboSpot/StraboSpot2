@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
 import DraggableFlatList, {ShadowDecorator} from 'react-native-draggable-flatlist';
-import {Button, ButtonGroup} from 'react-native-elements';
+import {Button, ButtonGroup} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {TEPHRA_SUBPAGES} from './tephra.constants';

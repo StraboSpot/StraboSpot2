@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import useNesting from './useNesting';

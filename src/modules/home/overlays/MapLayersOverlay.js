@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
-import {Icon, ListItem, Overlay} from 'react-native-elements';
+import {Icon, ListItem, Overlay} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import overlayStyles from './overlay.styles';

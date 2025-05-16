@@ -3,7 +3,7 @@ import {FlatList, Text, View} from 'react-native';
 
 import * as turf from '@turf/turf';
 import {Field, Formik} from 'formik';
-import {Button, ListItem} from 'react-native-elements';
+import {Button, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';

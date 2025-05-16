@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 
 import {FIRST_ORDER_FABRIC_FIELDS} from './fabric.constants';
 import commonStyles from '../../shared/common.styles';

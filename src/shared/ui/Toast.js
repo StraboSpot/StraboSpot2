@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import {ToastProvider} from 'react-native-toast-notifications';
 
 const ToastPopup = ({children, placement}) => {

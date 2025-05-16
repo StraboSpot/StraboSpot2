@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 
 import {FOLD_GEOMETRY_KEYS, FOLD_ICONS} from './';
 import {SECONDARY_BACKGROUND_COLOR} from '../../../shared/styles.constants';

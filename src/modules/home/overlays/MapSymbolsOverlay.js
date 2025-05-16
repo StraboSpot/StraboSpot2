@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, Switch, Text, View} from 'react-native';
 
-import {ButtonGroup, ListItem, Overlay} from 'react-native-elements';
+import {ButtonGroup, ListItem, Overlay} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import overlayStyles from './overlay.styles';

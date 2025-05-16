@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Alert, Linking, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
-import {Button, Card, Icon} from 'react-native-elements';
+import {Button, Card, Icon} from '@rn-vui/base';
 
 import macrostratOverlayStyles from './macrostratOverlay.styles';
 import useServerRequests from '../../../services/useServerRequests';

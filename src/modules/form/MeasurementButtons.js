@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import {formStyles, useForm} from '.';
@@ -36,7 +36,7 @@ const MeasurementButtons = ({
     return !relevantFields.some(f => !isEmpty(formProps.values[f.name]));
   };
 
-  const buttonText = (field) => {
+  const ButtonText = ({field}) => {
     const getValueText = () => {
       const values = formProps.values;
       const groupKeys = measurementsKeys[field.name];
@@ -87,7 +87,7 @@ const MeasurementButtons = ({
               backgroundColor: isGroupEmpty(field) ? SECONDARY_BACKGROUND_COLOR : PRIMARY_ACCENT_COLOR,
               padding: 1,
             }]}
-            title={() => buttonText(field)}
+            title={<ButtonText field={field}/>}
             type={'outline'}
             onPress={() => addMeasurement(field)}
           />

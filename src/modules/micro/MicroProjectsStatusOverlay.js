@@ -1,7 +1,7 @@
 import React from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 
-import {Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from '@rn-vui/base';
 import ProgressBar from 'react-native-progress/Bar';
 
 import {toNumberFixedValue} from '../../shared/Helpers';

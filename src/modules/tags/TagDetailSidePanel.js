@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import ColorPickerModal from '../../shared/ColorPickerModal';

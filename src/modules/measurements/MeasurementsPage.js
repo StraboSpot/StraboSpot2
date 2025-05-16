@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {SectionList, View} from 'react-native';
 
-import {Button, Icon} from 'react-native-elements';
+import {Button, Icon} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import MeasurementDetail from './MeasurementDetail';

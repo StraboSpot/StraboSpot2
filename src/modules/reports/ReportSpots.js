@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 
-import {Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';

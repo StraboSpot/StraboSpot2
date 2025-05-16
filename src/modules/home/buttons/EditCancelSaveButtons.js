@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 
 import {PRIMARY_TEXT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../../shared/styles.constants';
 import homeStyles from '../home.style';

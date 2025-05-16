@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Field, Formik} from 'formik';
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 

@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import {Platform, Text, TextInput, View} from 'react-native';
 
-import {Button, ButtonGroup, ListItem} from 'react-native-elements';
+import {Button, ButtonGroup, ListItem} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import DataWrapper from './DataWrapper';

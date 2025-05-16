@@ -3,7 +3,7 @@ import {Appearance, Platform, Text, View} from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import DateDialogBox from '../../shared/ui/StatusDialogBox';

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, FlatList, SectionList, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {Icon, Image} from 'react-native-elements';
+import {Icon, Image} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import {imageStyles, useImages} from '.';

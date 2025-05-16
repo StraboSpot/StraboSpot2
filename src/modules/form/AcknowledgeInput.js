@@ -1,7 +1,7 @@
 import React from 'react';
 import {Switch, Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 
 import {formStyles} from './index';
 import * as themes from '../../shared/styles.constants';

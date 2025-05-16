@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Linking, Text, View} from 'react-native';
 
-import {Button, CheckBox, Icon} from 'react-native-elements';
+import {Button, CheckBox, Icon} from '@rn-vui/base';
 import {useToast} from 'react-native-toast-notifications';
 import {useDispatch, useSelector} from 'react-redux';
 

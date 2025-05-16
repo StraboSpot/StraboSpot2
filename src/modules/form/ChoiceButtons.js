@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 import {formStyles, useForm} from '../form';

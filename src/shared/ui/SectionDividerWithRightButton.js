@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Button, Icon} from 'react-native-elements';
+import {Button, Icon} from '@rn-vui/base';
 
 import SectionDivider from './SectionDivider';
 import styles from '../../shared/ui/ui.styles';
@@ -14,15 +14,15 @@ const SectionDividerWithRightButton = ({buttonTitle, disabled, dividerText, icon
       <SectionDivider dividerText={dividerText}/>
       <Button
         title={buttonTitle}
-        icon={!buttonTitle
-          && (
-            <Icon name={iconName || 'add'}
-                  style={{paddingRight: 10, paddingLeft: 10}}
-                  size={ iconSize || 30}
-                  color={PRIMARY_ACCENT_COLOR}
-                  type={iconType}
-            />)
-        }
+        icon={!buttonTitle && (
+          <Icon
+            name={iconName || 'add'}
+            style={{paddingRight: 10, paddingLeft: 10}}
+            size={iconSize || 30}
+            color={PRIMARY_ACCENT_COLOR}
+            type={iconType}
+          />
+        )}
         titleStyle={commonStyles.standardButtonText}
         type={'clear'}
         onPress={onPress}

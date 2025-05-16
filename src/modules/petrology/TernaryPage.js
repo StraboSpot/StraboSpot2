@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import {TERNARY_MINERALS} from './petrology.constants';

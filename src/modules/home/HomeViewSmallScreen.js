@@ -2,7 +2,7 @@ import React, {forwardRef, useState} from 'react';
 import { View} from 'react-native';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {Button, Header, Icon} from 'react-native-elements';
+import {Button, Header, Icon} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {ActionButtonsSmallScreen, MainMenuButton, ShortcutButtons} from './buttons';

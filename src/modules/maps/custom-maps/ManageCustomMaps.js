@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 
-import {Icon, ListItem} from 'react-native-elements';
+import {Icon, ListItem} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import useCustomMap from './useCustomMap';

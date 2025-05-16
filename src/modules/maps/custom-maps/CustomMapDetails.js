@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
-import {Button, Icon, Input, ListItem, Overlay} from 'react-native-elements';
+import {Button, Icon, Input, ListItem, Overlay} from '@rn-vui/base';
 import {Col, Row, Rows, Table, TableWrapper} from 'react-native-reanimated-table';
 import {useDispatch, useSelector} from 'react-redux';
 

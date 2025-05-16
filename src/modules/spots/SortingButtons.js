@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ButtonGroup} from 'react-native-elements';
+import {ButtonGroup} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {SORTED_VIEWS} from './spots.constants';

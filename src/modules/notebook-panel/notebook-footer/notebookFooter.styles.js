@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../../shared/styles.constants';
+import {SECONDARY_BACKGROUND_COLOR} from '../../../shared/styles.constants';
 
 const notebookFooterStyles = StyleSheet.create({
   footerIconContainer: {
@@ -17,6 +18,7 @@ const notebookFooterStyles = StyleSheet.create({
     color: themes.PRIMARY_TEXT_COLOR,
   },
   morePagesDialog: {
+    backgroundColor: SECONDARY_BACKGROUND_COLOR,
     borderRadius: 20,
     bottom: 10,
     height: '95%',

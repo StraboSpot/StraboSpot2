@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import * as themes from '../../shared/styles.constants';
+import {SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
 
 const UserStyles = StyleSheet.create({
   avatarLabelContainer: {
@@ -33,6 +34,7 @@ const UserStyles = StyleSheet.create({
     textAlign: 'center',
   },
   imageSelectionModal: {
+    backgroundColor: SECONDARY_BACKGROUND_COLOR,
     borderRadius: 20,
     padding: 20,
     width: 300,

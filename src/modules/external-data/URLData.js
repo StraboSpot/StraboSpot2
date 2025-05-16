@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, View} from 'react-native';
 
-import {Button, Icon, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem} from '@rn-vui/base';
 import {useDispatch} from 'react-redux';
 
 import externalDataStyles from './externalData.styles';

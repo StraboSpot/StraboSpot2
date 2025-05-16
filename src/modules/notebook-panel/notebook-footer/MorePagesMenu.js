@@ -1,11 +1,12 @@
 import React from 'react';
 import {Platform, Pressable, ScrollView, Switch, Text, View} from 'react-native';
 
-import {Avatar, ListItem, Overlay} from 'react-native-elements';
+import {ListItem, Overlay} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import footerStyles from './notebookFooter.styles';
 import {isEmpty} from '../../../shared/Helpers';
+import {AvatarWrapper} from '../../../shared/ui/avatars';
 import SectionDivider from '../../../shared/ui/SectionDivider';
 import overlayStyles from '../../home/overlays/overlay.styles';
 import usePage from '../../page/usePage';
@@ -45,10 +46,9 @@ const MorePagesMenu = ({
           <Pressable
             style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}
             onPress={() => switchPage(page.key)}>
-            <Avatar
-              source={page.icon_src}
-              placeholderStyle={{backgroundColor: 'transparent'}}
+            <AvatarWrapper
               size={20}
+              source={page.icon_src}
             />
             <ListItem.Title style={footerStyles.morePagesListItemTitle}>{page.label}</ListItem.Title>
           </Pressable>

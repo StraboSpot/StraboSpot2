@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, Text, View} from 'react-native';
 
-import {Button, Icon, Overlay} from 'react-native-elements';
+import {Button, Icon, Overlay} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import Spacer from './ui/Spacer';

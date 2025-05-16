@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import {isEmpty, truncateText} from '../../../shared/Helpers';

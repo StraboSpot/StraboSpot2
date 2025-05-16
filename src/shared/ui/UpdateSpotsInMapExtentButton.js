@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button, Icon} from 'react-native-elements';
+import {Button, Icon} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {setIsMapMoved} from '../../modules/maps/maps.slice';

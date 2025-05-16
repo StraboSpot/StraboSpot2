@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, Platform, Text, View} from 'react-native';
 
-import {Image} from 'react-native-elements';
+import {Image} from '@rn-vui/base';
 
 import {ImagePropertiesModal, imageStyles, useImages} from '.';
 import placeholderImage from '../../assets/images/noimage.jpg';

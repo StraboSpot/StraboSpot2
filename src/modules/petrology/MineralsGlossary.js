@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, Linking, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 
 import {MINERAL_GLOSSARY_INFO} from './petrology.constants';
 import {isEmpty} from '../../shared/Helpers';

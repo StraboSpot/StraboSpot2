@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 
 import commonStyles from '../../shared/common.styles';
 

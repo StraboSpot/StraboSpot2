@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, TextInput, View} from 'react-native';
 
 import moment from 'moment';
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import useExport from '../../../services/useExport';

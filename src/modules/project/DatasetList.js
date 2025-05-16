@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
-import {Button, Icon, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {updatedDatasetProperties} from './projects.slice';

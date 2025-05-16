@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 
-import {Button, Icon, SearchBar} from 'react-native-elements';
+import {Button, Icon, SearchBar} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import {useSpots} from '.';

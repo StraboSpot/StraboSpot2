@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 
 import {truncateText} from '../../shared/Helpers';
 import {PRIMARY_ACCENT_COLOR, SECONDARY_BACKGROUND_COLOR} from '../../shared/styles.constants';
@@ -15,19 +15,21 @@ const MainButtons = ({
                      }) => {
   const {getLabel, getLabels} = useForm();
 
-  const mainButtonsText = key => (
-    <View style={{flex: 1, alignItems: 'center'}}>
-      <Text
-        style={formProps?.values[key] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>
-        {getLabel(key, formName)}
-      </Text>
-      {formProps?.values[key] && (
-        <Text style={[formStyles.formButtonSelectedTitle, {fontWeight: 'bold'}]}>
-          {truncateText(getLabels(formProps.values[key], formName, key), 23)}
+  const MainButtonsText = ({fieldKey}) => {
+    return (
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <Text
+          style={formProps?.values[fieldKey] ? formStyles.formButtonSelectedTitle : formStyles.formButtonTitle}>
+          {getLabel(fieldKey, formName)}
         </Text>
-      )}
-    </View>
-  );
+        {formProps?.values[fieldKey] && (
+          <Text style={[formStyles.formButtonSelectedTitle, {fontWeight: 'bold'}]}>
+            {truncateText(getLabels(formProps.values[fieldKey], formName, fieldKey), 23)}
+          </Text>
+        )}
+      </View>
+    );
+  };
 
   return (
     <View
@@ -40,7 +42,7 @@ const MainButtons = ({
             buttonStyle={[formStyles.formButtonLarge, {
               backgroundColor: formProps?.values[k] ? PRIMARY_ACCENT_COLOR : SECONDARY_BACKGROUND_COLOR,
             }]}
-            title={() => mainButtonsText(k)}
+            title={<MainButtonsText fieldKey={k}/>}
             type={'outline'}
             onPress={() => setChoicesViewKey(k)}
           />

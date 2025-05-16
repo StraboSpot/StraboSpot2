@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, View} from 'react-native';
 
-import {Avatar} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 
 import userStyles from './user.styles';
@@ -10,6 +9,7 @@ import defaultAvatar from '../../assets/images/splash.png';
 import {APP_DIRECTORIES} from '../../services/directories.constants';
 import useDevice from '../../services/useDevice';
 import {isEmpty} from '../../shared/Helpers';
+import {AvatarAccessoryWrapper, AvatarWrapper} from '../../shared/ui/avatars';
 
 const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage, size, tempUserProfileImageURI}) => {
   const isOnline = useSelector(state => state.connections.isOnline);
@@ -43,7 +43,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
   };
 
   return (
-    <Avatar
+    <AvatarWrapper
       containerStyle={{backgroundColor: 'darkgrey'}}
       rounded
       size={size}
@@ -53,7 +53,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
     >
       {isEditable && isOnline.isInternetReachable && Platform.OS !== 'web' && (
         <View style={{position: 'relative', right: 15, bottom: 15}}>
-          <Avatar.Accessory
+          <AvatarAccessoryWrapper
             color={'grey'}
             iconStyle={{color: 'white'}}
             name={'pencil'}
@@ -64,7 +64,7 @@ const UserProfileAvatar = ({isEditable, openProfileImageModal, shouldUpdateImage
           />
         </View>
       )}
-    </Avatar>
+    </AvatarWrapper>
   );
 };
 

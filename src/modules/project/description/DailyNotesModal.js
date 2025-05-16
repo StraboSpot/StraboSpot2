@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import { View} from 'react-native';
 
 import {Field, Formik} from 'formik';
-import {Button, Icon, ListItem} from 'react-native-elements';
+import {Button, Icon, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';

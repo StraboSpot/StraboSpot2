@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {Formik} from 'formik';
-import {Button} from 'react-native-elements';
+import {Button} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {PAGE_KEYS} from './page.constants';

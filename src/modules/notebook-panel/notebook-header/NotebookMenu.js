@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {ListItem, Overlay} from 'react-native-elements';
+import {ListItem, Overlay} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../../shared/common.styles';

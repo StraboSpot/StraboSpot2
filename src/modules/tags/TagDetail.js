@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {deepFindFeatureTypeById, isEmpty} from '../../shared/Helpers';
+import {NotebookPageAvatar} from '../../shared/ui/avatars';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SectionDividerWithRightButton from '../../shared/ui/SectionDividerWithRightButton';
 import {PAGE_KEYS} from '../page/page.constants';
-import usePage from '../page/usePage';
 import {SpotsListItem, useSpots} from '../spots';
 import {useTags} from '../tags';
 
@@ -21,7 +21,6 @@ const TagDetail = ({
                      openSpot,
                      setIsDetailModalVisible,
                    }) => {
-  const {getSpotDataIconSource} = usePage();
   const {getSpotById} = useSpots();
   const {getAllTaggedFeatures, getFeatureDisplayComponent, renderTagInfo} = useTags();
 
@@ -47,11 +46,7 @@ const TagDetail = ({
           key={spot.properties.id}
           onPress={() => openFeatureDetail(spot, feature, featureType)}
         >
-          <Avatar
-            source={getSpotDataIconSource(featureType)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
+          <NotebookPageAvatar pageKey={featureType}/>
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
               {getFeatureDisplayComponent(featureType, feature)}

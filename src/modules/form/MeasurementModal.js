@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {Platform, Text, View} from 'react-native';
 
-import {Button} from 'react-native-elements';
-import {Overlay} from 'react-native-elements/dist/overlay/Overlay';
+import {Button, Overlay} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import {formStyles, useForm} from '.';

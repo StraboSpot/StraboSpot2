@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, Switch, Text, TextInput, View} from 'react-native';
 
-import {Button, Card, Icon, Image} from 'react-native-elements';
+import {Button, Card, Icon, Image} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {imageStyles, useImages} from './index';

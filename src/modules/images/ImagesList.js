@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, Platform, Text, View} from 'react-native';
 
 import {useFocusEffect} from '@react-navigation/native';
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import KeyboardManager from 'react-native-keyboard-manager';
 
 import ImageCard from './ImageCard';

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rn-vui/base';
 import ProgressBar from 'react-native-progress/Bar';
 import {useDispatch, useSelector} from 'react-redux';
 

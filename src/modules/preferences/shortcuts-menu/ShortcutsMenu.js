@@ -1,11 +1,12 @@
 import React from 'react';
 import {FlatList, Platform, Switch, Text, View} from 'react-native';
 
-import {Avatar, ListItem} from 'react-native-elements';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import shortcutMenuStyles from './shortcutsMenu.styles';
 import commonStyles from '../../../shared/common.styles';
+import {AvatarWrapper} from '../../../shared/ui/avatars';
 import FlatListItemSeparator from '../../../shared/ui/FlatListItemSeparator';
 import {setShortcutSwitchPositions} from '../../home/home.slice';
 import {MODAL_KEYS, SHORTCUT_MODALS} from '../../page/page.constants';
@@ -23,9 +24,9 @@ const ShortcutMenu = () => {
       && toggleButton.key !== MODAL_KEYS.SHORTCUTS.PHOTO && toggleButton.key !== MODAL_KEYS.SHORTCUTS.SKETCH)) {
       return (
         <ListItem containerStyle={commonStyles.listItem}>
-          <Avatar
+          <AvatarWrapper
+            size={40}
             source={toggleButton.icon_src}
-            placeholderStyle={{backgroundColor: 'transparent'}}
           />
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>{toggleButton.label}</ListItem.Title>
