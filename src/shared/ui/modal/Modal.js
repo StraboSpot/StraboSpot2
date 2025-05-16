@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Avatar, Button, ListItem, Overlay} from '@rn-vui/base';
+import {Button, ListItem, Overlay} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
 import ModalHeader from './ModalHeader';
@@ -11,6 +11,7 @@ import {MODAL_KEYS, NOTEBOOK_MODELS, SHORTCUT_MODALS} from '../../../modules/pag
 import commonStyles from '../../common.styles';
 import {isEmpty} from '../../Helpers';
 import {SMALL_SCREEN} from '../../styles.constants';
+import {AvatarWrapper} from '../avatars';
 import {useWindowSize} from '../useWindowSize';
 
 const Modal = ({
@@ -40,8 +41,7 @@ const Modal = ({
           containerStyle={commonStyles.listItem}
           onPress={() => onPress(shortcutModal.notebook_modal_key)}
         >
-          <Avatar
-            placeholderStyle={{backgroundColor: 'transparent'}}
+          <AvatarWrapper
             size={20}
             source={require('../../../assets/icons/NotebookView_pressed.png')}
           />

@@ -1,17 +1,16 @@
 import React from 'react';
 import {View} from 'react-native';
 
-import {Avatar, ListItem} from '@rn-vui/base';
+import {ListItem} from '@rn-vui/base';
 
-import usePage from '../../modules/page/usePage';
 import {useTags} from '../../modules/tags';
 import {isEmpty} from '../Helpers';
+import {NotebookPageAvatar} from './avatars';
 
 function FeatureTagsList({
                            featureId,
                            spotId,
                          }) {
-  const {getSpotDataIconSource} = usePage();
   const {getTagsAtFeature} = useTags();
 
   const tags = getTagsAtFeature(spotId, featureId);
@@ -24,11 +23,7 @@ function FeatureTagsList({
           flexDirection: 'row',
           paddingTop: 5,
         }}>
-          <Avatar
-            source={getSpotDataIconSource('tags')}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
+          <NotebookPageAvatar pageKey={'tags'}/>
           <ListItem.Subtitle>{tagsString}</ListItem.Subtitle>
         </View>
       )}

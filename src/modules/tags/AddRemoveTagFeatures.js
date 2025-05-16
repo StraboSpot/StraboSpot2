@@ -1,22 +1,21 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
 
-import {Avatar, ListItem} from '@rn-vui/base';
+import {ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import commonStyles from '../../shared/common.styles';
 import {deepFindFeatureTypeById, isEmpty} from '../../shared/Helpers';
+import {NotebookPageAvatar} from '../../shared/ui/avatars';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import {SIDE_PANEL_VIEWS} from '../main-menu-panel/mainMenu.constants';
 import {setSidePanelVisible} from '../main-menu-panel/mainMenuPanel.slice';
 import SidePanelHeader from '../main-menu-panel/sidePanel/SidePanelHeader';
-import usePage from '../page/usePage';
 import {useSpots} from '../spots';
 import {useTags} from '../tags';
 
 const AddRemoveTagFeatures = () => {
-  const {getSpotDataIconSource} = usePage();
   const {getAllFeaturesFromSpot} = useSpots();
   const {addRemoveSpotFeatureFromTag, getFeatureDisplayComponent} = useTags();
 
@@ -36,11 +35,7 @@ const AddRemoveTagFeatures = () => {
           containerStyle={commonStyles.listItem}
           onPress={() => addRemoveSpotFeatureFromTag(selectedTagCopy, feature, spotId)}
         >
-          <Avatar
-            source={getSpotDataIconSource(featureType)}
-            placeholderStyle={{backgroundColor: 'transparent'}}
-            size={20}
-          />
+          <NotebookPageAvatar pageKey={featureType}/>
           <ListItem.Content>
             <ListItem.Title style={commonStyles.listItemTitle}>
               {getFeatureDisplayComponent(featureType, feature)}

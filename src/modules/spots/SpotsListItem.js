@@ -1,21 +1,20 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 
-import {Avatar, ListItem} from '@rn-vui/base';
+import {ListItem} from '@rn-vui/base';
 import {useSelector} from 'react-redux';
 
-import {useSpots} from '.';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
+import {NotebookPageAvatar, SpotGeometryAvatar} from '../../shared/ui/avatars';
 import usePage from '../page/usePage';
 import {useTags} from '../tags';
 
 const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onPress, spot}) => {
   // console.log('Rendering SpotsListItem', spot.properties?.name, spot.properties?.id?.toString(), '...');
 
-  const {getSpotGeometryIconSource} = useSpots();
   const {addRemoveSpotFromTag, getTagsAtSpot} = useTags();
-  const {getPopulatedPagesKeys, getSpotDataIconSource} = usePage();
+  const {getPopulatedPagesKeys} = usePage();
 
   const selectedTag = useSelector(state => state.project.selectedTag);
 
@@ -36,13 +35,7 @@ const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onP
       keyExtractor={(item, index) => index.toString()}
       listKey={new Date().toISOString()}
       numColumns={5}
-      renderItem={({item}) => (
-        <Avatar
-          source={getSpotDataIconSource(item)}
-          placeholderStyle={{backgroundColor: 'transparent'}}
-          size={20}
-        />
-      )}
+      renderItem={({item}) => <NotebookPageAvatar pageKey={item}/>}
     />
   );
 
@@ -58,11 +51,7 @@ const SpotsListItem = ({doShowTags, isCheckedList, isItemChecked, onChecked, onP
       keyExtractor={(item, index) => item?.properties?.id?.toString() || index.toString()}
       onPress={() => onPress && onPress(spot)}
     >
-      <Avatar
-        placeholderStyle={{backgroundColor: 'transparent'}}
-        size={20}
-        source={getSpotGeometryIconSource(spot)}
-      />
+      <SpotGeometryAvatar spot={spot}/>
       <ListItem.Content>
         <ListItem.Title style={commonStyles.listItemTitle}>{spot?.properties?.name}</ListItem.Title>
         {doShowTags && spot && renderTags()}

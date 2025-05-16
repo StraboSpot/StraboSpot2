@@ -2,8 +2,8 @@ import React, {useRef, useState} from 'react';
 import {FlatList, Switch, View} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
+import {ListItem} from '@rn-vui/base';
 import {Formik} from 'formik';
-import {Avatar, ListItem} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import AddImageOverlayModal from './AddImageOverlayModal';
@@ -11,6 +11,7 @@ import useSed from './useSed';
 import commonStyles from '../../shared/common.styles';
 import {isEmpty} from '../../shared/Helpers';
 import {SMALL_SCREEN} from '../../shared/styles.constants';
+import {AvatarWrapper} from '../../shared/ui/avatars';
 import FlatListItemSeparator from '../../shared/ui/FlatListItemSeparator';
 import ListEmptyText from '../../shared/ui/ListEmptyText';
 import SaveAndCancelButtons from '../../shared/ui/SaveAndCancelButtons';
@@ -147,10 +148,9 @@ const StratSectionPage = ({page}) => {
                         }, 500);
                       }}
                     >
-                      <Avatar
-                        source={require('../../assets/icons/SedStratColumn.png')}
+                      <AvatarWrapper
                         size={20}
-                        containerStyle={{alignSelf: 'center'}}
+                        source={require('../../assets/icons/SedStratColumn.png')}
                       />
                       <ListItem.Content>
                         <ListItem.Title style={commonStyles.listItemTitle}>View Stratigraphic Section</ListItem.Title>
