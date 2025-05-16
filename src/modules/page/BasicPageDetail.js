@@ -163,11 +163,10 @@ const BasicPageDetail = ({
       : false;
   };
 
-  const renderFormFields = () => {
-    const formName = getFormName();
+  const renderIGSNUpload = () => {
     return (
-      <View style={{flex: 1}}>
-        {encoded_login && page?.key === PAGE_KEYS.SAMPLES ? (
+      <>
+        {!isEmpty(encoded_login) ? (
           <IGSNUploadAndRegister
             selectedFeature={selectedFeature}
             page={page}
@@ -179,6 +178,15 @@ const BasicPageDetail = ({
             You need to login to StraboSpot to upload to Sesar
           </Text>
         )}
+      </>
+    );
+  };
+
+  const renderFormFields = () => {
+    const formName = getFormName();
+    return (
+      <View style={{flex: 1}}>
+        {page.key === PAGE_KEYS.SAMPLES && renderIGSNUpload()}
         <Formik
           innerRef={formRef}
           onSubmit={() => console.log('Submitting form...')}
@@ -190,7 +198,7 @@ const BasicPageDetail = ({
         >
           {formProps => (
             <>
-              <GeoFieldsInputs geomFormRef={formRef}/>
+              {page.key === PAGE_KEYS.SAMPLES && <GeoFieldsInputs geomFormRef={formRef}/>}
               <Form {...{
                 ...formProps,
                 formName: formName,

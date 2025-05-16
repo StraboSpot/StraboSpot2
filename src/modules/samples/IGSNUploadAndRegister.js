@@ -233,14 +233,14 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
   return (
     <React.Fragment>
       {__DEV__ && <Button
-        title="Delete Sesar values"
+        title='Delete Sesar values'
         type={'clear'}
         onPress={() => {
           dispatch(setInitialSesarState());
           handleIGSNChecked(false);
         }}
       />}
-      {page.key === PAGE_KEYS.SAMPLES && <View>
+      <View>
         {selectedFeature?.isOnMySesar && renderSesarUploadDisclosure()}
         {renderIGSNUploadCheckbox()}
         {isEmpty(sesarToken.access) && isIGSNChecked && renderOrcidSignInButton()}
@@ -249,7 +249,7 @@ const IGSNUploadAndRegister = ({handleIGSNChecked, isIGSNChecked, page, selected
           && !isEmpty(sesarToken.access)
           && renderIGSNUserCodePicker()
         }
-      </View>}
+      </View>
     </React.Fragment>
   );
 };
