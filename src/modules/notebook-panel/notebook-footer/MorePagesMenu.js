@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, Pressable, ScrollView, Switch, Text, View} from 'react-native';
 
-import {ListItem, Overlay} from '@rn-vui/base';
+import {Avatar, ListItem, Overlay} from '@rn-vui/base';
 import {useDispatch, useSelector} from 'react-redux';
 
 import footerStyles from './notebookFooter.styles';
