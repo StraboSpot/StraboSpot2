@@ -55,7 +55,7 @@ const BasicPageDetail = ({
 
   const formRef = useRef(null);
 
-  const [initialValues, setInitialValues] = useState(selectedFeature);
+  const [initialValues, setInitialValues] = useState({});
 
   const pageKey = page.key === PAGE_KEYS.FABRICS && selectedFeature.type === 'fabric' ? '_3d_structures'
     : page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
@@ -88,15 +88,17 @@ const BasicPageDetail = ({
   }, [selectedFeature]);
 
   const cancelForm = async () => {
-    await formRef.current.resetForm();
     closeDetailView();
   };
 
   const confirmLeavePage = () => {
+    const description = isIGSNChecked
+      ? 'Would you like to save your data before continuing? \n\n \This sample was not registered to Sesar. Please re-save sample to register to Sesar.'
+      : 'Would you like to save your data before continuing?';
     if (!isTemplate && formRef.current && formRef.current.dirty) {
       const formCurrent = formRef.current;
       alert('Unsaved Changes',
-        'Would you like to save your data before continuing?',
+        description,
         [{
           text: 'No',
           style: 'cancel',
@@ -185,12 +187,12 @@ const BasicPageDetail = ({
     );
   };
 
-  const onSubmitForm = async (values, {resetForm}) => {
-      console.log('Submitting form...', values);
-      await resetForm();
-      console.log('Resetting form...');
-      // closeDetailView();
-  }
+  const onSubmitForm = (values, {resetForm}) => {
+    console.log('Submitting form...', values);
+    setInitialValues(values);
+    resetForm({values});
+    console.log('Resetting form...');
+  };
 
   const renderFormFields = () => {
     const formName = getFormName();
@@ -199,7 +201,7 @@ const BasicPageDetail = ({
         {page.key === PAGE_KEYS.SAMPLES && renderIGSNUpload()}
         <Formik
           innerRef={formRef}
-          onSubmit={onSubmitForm }
+          onSubmit={onSubmitForm}
           onReset={() => console.log('Resetting form...')}
           validate={values => validateForm({formName: formName, values: values})}
           initialValues={initialValues}
@@ -256,6 +258,13 @@ const BasicPageDetail = ({
     isTemplate ? saveTemplateForm(formRef.current) : saveForm(formRef.current);
   };
 
+  const updateIGSNAndShowModal = async (formCurrent) => {
+    setIsIGSNModalVisible(true);
+    console.log('setting form values for IGSN modal');
+    await formCurrent.setValues({...formCurrent.values, sesarUserCode: sesar.selectedUserCode});
+    console.log('FORMREF.CURRENT.VALUES', formCurrent.values);
+  };
+
   const saveFeature = async (formCurrent) => {
     try {
       await formCurrent.submitForm();
@@ -279,26 +288,21 @@ const BasicPageDetail = ({
 
   const saveForm = async (formCurrent) => {
     try {
+      if (groupKey === 'pet') {
+        await savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      }
+      else if (groupKey === 'sed' && pageKey === 'bedding') {
+        await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      }
+      else if (groupKey === 'sed') {
+        await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      }
       if (formCurrent?.values.isOnMySesar || isIGSNChecked) {
-        await formRef.current.setValues({...formRef.current.values, sesarUserCode: sesar.selectedUserCode});
-        console.log('FORMREF.CURRENT.VALUES', formRef.current.values);
-        setSelectedSample(formCurrent);
-        setIsIGSNModalVisible(true);
+        await updateIGSNAndShowModal(formCurrent);
+        console.log('IGSN Registered');
       }
-      else {
-        if (groupKey === 'pet') {
-          await savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
-        }
-        else if (groupKey === 'sed' && pageKey === 'bedding') {
-          await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
-        }
-        else if (groupKey === 'sed') {
-          await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
-        }
-        else await saveFeature(formCurrent);
-        // await formCurrent.resetForm();
-        closeDetailView();
-      }
+      else await saveFeature(formCurrent);
+      console.log('Done');
     }
     catch (err) {
       console.error('ERROR saving form', err);

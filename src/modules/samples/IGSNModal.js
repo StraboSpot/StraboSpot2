@@ -194,13 +194,13 @@ const IGNSModal = forwardRef(({
       animationType={'fade'}
     >
       <View style={IGSNModalStyles.container}>
-        <Button
+        {!isUploaded && <Button
           title={'X'}
           type={'clear'}
           titleStyle={{color: 'black'}}
           containerStyle={{alignItems: 'flex-end', width: '100%'}}
           onPress={onModalCancel}
-        />
+        />}
         <View style={IGSNModalStyles.sesarImageContainer}>
           <Image
             source={SesarLogo}
