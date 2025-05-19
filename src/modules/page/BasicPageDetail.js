@@ -55,6 +55,8 @@ const BasicPageDetail = ({
 
   const formRef = useRef(null);
 
+  const [initialValues, setInitialValues] = useState(selectedFeature);
+
   const pageKey = page.key === PAGE_KEYS.FABRICS && selectedFeature.type === 'fabric' ? '_3d_structures'
     : page.key === PAGE_KEYS.ROCK_TYPE_SEDIMENTARY ? PAGE_KEYS.LITHOLOGIES : page.key;
   let pageData = pageKey === PAGE_KEYS.NOTES ? {} : [];
@@ -76,6 +78,7 @@ const BasicPageDetail = ({
 
   useEffect(() => {
     console.log('UE BasicPageDetail []');
+    setInitialValues(selectedFeature);
     return () => dispatch(setSelectedAttributes([]));
   }, []);
 
@@ -182,6 +185,13 @@ const BasicPageDetail = ({
     );
   };
 
+  const onSubmitForm = async (values, {resetForm}) => {
+      console.log('Submitting form...', values);
+      await resetForm();
+      console.log('Resetting form...');
+      // closeDetailView();
+  }
+
   const renderFormFields = () => {
     const formName = getFormName();
     return (
@@ -189,10 +199,10 @@ const BasicPageDetail = ({
         {page.key === PAGE_KEYS.SAMPLES && renderIGSNUpload()}
         <Formik
           innerRef={formRef}
-          onSubmit={() => console.log('Submitting form...')}
+          onSubmit={onSubmitForm }
           onReset={() => console.log('Resetting form...')}
           validate={values => validateForm({formName: formName, values: values})}
-          initialValues={selectedFeature}
+          initialValues={initialValues}
           initialStatus={{formName: formName}}
           enableReinitialize={true}
         >
@@ -269,27 +279,25 @@ const BasicPageDetail = ({
 
   const saveForm = async (formCurrent) => {
     try {
-      if (groupKey === 'pet') {
-        await savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
-      }
-      else if (groupKey === 'sed' && pageKey === 'bedding') {
-        await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
-      }
-      else if (groupKey === 'sed') {
-        await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+      if (formCurrent?.values.isOnMySesar || isIGSNChecked) {
+        await formRef.current.setValues({...formRef.current.values, sesarUserCode: sesar.selectedUserCode});
+        console.log('FORMREF.CURRENT.VALUES', formRef.current.values);
+        setSelectedSample(formCurrent);
+        setIsIGSNModalVisible(true);
       }
       else {
-        if (formCurrent?.values.isOnMySesar || isIGSNChecked) {
-          await formRef.current.setValues({...formRef.current.values, sesarUserCode: sesar.selectedUserCode});
-          console.log('FORMREF.CURRENT.VALUES', formRef.current.values);
-          setSelectedSample(formCurrent);
-          setIsIGSNModalVisible(true);
+        if (groupKey === 'pet') {
+          await savePetFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
         }
-        else {
-          await saveFeature(formCurrent);
-          await formCurrent.resetForm();
-          closeDetailView();
+        else if (groupKey === 'sed' && pageKey === 'bedding') {
+          await saveSedBedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
         }
+        else if (groupKey === 'sed') {
+          await saveSedFeature(pageKey, spot, formRef.current || formCurrent, isEmpty(formRef.current));
+        }
+        else await saveFeature(formCurrent);
+        // await formCurrent.resetForm();
+        closeDetailView();
       }
     }
     catch (err) {
